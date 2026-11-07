@@ -1,4 +1,487 @@
-# 2026-11-05 — Debug Centering screen print pilot
+# 2026-11-07 — Squirtle bottom edge retained for review
+
+Reviewed native source pixels and found that the earlier frozen bottom path
+follows the fading dark band, while a competing path follows the end of the
+visible textured surface. A clipping-aware, explicit DEBUG candidate retains 44
+of 61 observations and appears as an unidentified edge for comparison; existing
+guides, certainty and confirmation are preserved. A synthetic printed stripe
+can imitate the cue, so it is not an automatic cut. Two focused native tests and
+the existing Magic-back transfer test pass. The complete Squirtle measurement
+and physical-cut identity remain unresolved.
+[Evidence](docs/audits/centering-guided-repair.md#squirtle-shadow-contact-alternative--2026-11-07).
+
+# 2026-11-07 — Design evidence combined with boundary fragments
+
+Combined existing reference-profile and multi-candidate photo evidence without
+selecting a boundary or changing app behavior. Dewott's reviewed bottom candidate
+agrees at 34 profile stations, with one unsupported; Squirtle has 15 middle-only
+profile stations and two agreeing candidates that diverge elsewhere. Five focused
+controls and source/output guards pass; ±8 px reference translations retain the
+same supported stations and comparisons. A separate full-silhouette experiment
+passes simple controls but switches with the seed when the physical cut is hidden;
+it is rejected. Next investigate selective native Dewott printed-path transfer
+and separately resolve its physical cut. No automatic pass or calibrated physical
+accuracy claim is added.
+[Evidence](docs/audits/centering-guided-repair.md#reference-fragment-corroboration-and-silhouette-stop--2026-11-07).
+
+# 2026-11-07 — Multi-candidate prototype tested offline
+
+Added a review-only research prototype retaining multiple transitions, fitted
+lines/curves and explicit inferred gaps. Six known-geometry controls pass; an
+initial curve suppression failure was corrected. Squirtle's supported curve
+matches 40 frozen points within four pixels, Dewott has a strong border candidate,
+and three previously working sides match 131 frozen points. Divergent false and
+partly mixed candidates remain, and a competing Squirtle bottom cut changes the
+conditional top share by 1.624 percentage points. No automatic choice, app or
+reporting behavior changed. Next investigate full-image boundary identity.
+[Evidence](docs/audits/centering-guided-repair.md#multi-candidate-prototype-tested-identity-remains-open--2026-11-07).
+
+# 2026-11-07 — Supported segments inform line proposals
+
+Tested connecting supported points instead of discarding a whole side. On
+Squirtle's nine-station gap, a bridge differs by at most 0.880 px from six later
+same-photo observations. Dewott's robust bottom line retains 49/56 candidates
+and excludes points on the card number; the photo crop supports the proposal.
+A synthetic wrong edge nevertheless fits 61/61 points perfectly and passes the
+experimental material gate while missing the actual cut by 24.964 px. Preserve
+observed/inferred distinctions and develop independent identity checks before
+automatic measurement. No new accuracy pass or reporting change.
+[Evidence](docs/audits/centering-guided-repair.md#supported-segment-line-proposals-and-dewott--2026-11-07).
+
+# 2026-11-07 — PRE region trials reject; Dewott review started
+
+PRE's right-side uniform-border and wider RGB-region trials support 0/61 and
+4/61; both reject with previous geometry and limits unchanged. The next existing
+development capture, Dewott `IMG_0795`, registers to a provider image with
+883 inliers across four quadrants but no bottom-fifth matches. Its photo edges
+remain unverified; no automatic pass or production change is claimed.
+[Evidence](docs/audits/centering-guided-repair.md#prismatic-pikachu-region-trials-stopped-dewott-selected-next--2026-11-07).
+
+# 2026-11-07 — Squirtle native physical transfer stopped
+
+The first native diagnostic failed on an unavailable bottom cut; the follow-up
+recorded available sides but is not an accuracy pass. Printed top/right and all
+physical sides remain incomplete. A synthetic stronger interior rule causes the
+offline background tracker to return 61 points per side 24.964 px inside the
+known cut. A stricter border-consistency gate rejects the bottom at 29/61. The
+offline paths remain provisional; no tracker is promoted or threshold relaxed.
+Move to another failing card. Reporting still requires confirmation.
+[Evidence](docs/audits/centering-guided-repair.md#squirtle-native-transfer-stopped-on-physical-edge-identity--2026-11-07).
+
+# 2026-11-07 — Squirtle selective foil paths supported offline
+
+Preserved existing supported edges and added a conservative photo-border chroma
+test for missing right points. The measured-span gap falls from nine to three;
+all eight paths pass offline support, with 334 points frozen for native transfer.
+Right-only reference shifts of ±8 px move shared points at most 0.0072 px and
+leave paired support intact. Synthetic ambiguity and difficult stronger-neighbor
+cases reject. Native and automatic acceptance are still pending; timing work
+remains deferred and reporting requires confirmation.
+[Evidence](docs/audits/centering-guided-repair.md#squirtle-selective-foil-boundary-research--2026-11-07).
+
+# 2026-11-07 — Magic native selective repair accepted; Squirtle remains partial
+
+The opt-in DEBUG family repair passes two focused methods: 344 frozen photo
+positions within four pixels (worst 2.507), other 33 development outputs exact.
+Printed support 40/60/60/48, physical 61 each; shares 45.044967/51.759939%.
+Twelve validated transfers plus PRE partial now select; reporting still requires
+confirmation. Run timing upper median/max 0.994/7.431 s recorded and optimization
+deferred. Squirtle's cut-anchored border and wider region trials reject with 5/61
+and 9/61 right positions. Next investigate foil texture and neighboring rules;
+all 44 acceptance, independent physical calibration and production provisioning
+remain open. [Evidence](docs/audits/centering-guided-repair.md#magic-selective-native-repair-and-squirtle-follow-up--2026-11-07).
+
+# 2026-11-07 — Magic bottom recovered offline while preserving stronger proposals
+
+Complete offline paired support now passes for IMG_0810. Existing detector
+left/top/right proposals are locally refined; the bottom uses region identity
+anchored to observed physical cuts. Printed support 36/61/61/47, shares
+45.000088/51.765894%; 344 source positions frozen for native transfer. Bottom
+±8 px seed perturbations retain the same 47 positions to numerical precision.
+Stopped wider averaging that followed a wrong interior rule, the replacement
+left identity route and publisher registration. No app changes, native run or new
+automatic pass. Next selective native transfer; reporting remains confirmation-gated.
+[Evidence](docs/audits/centering-guided-repair.md#magic-selective-paths-recovered-offline-native-transfer-next--2026-11-07).
+
+# 2026-11-07 — Shared Pokémon backs pass automatic selection; Magic bottom remains partial
+
+Added opt-in native printed continuity and a shared provider reference. Both backs
+pass 742 physical/printed comparisons, worst 0.786 px, and automatic selection in
+the DEBUG library. Other 32 development results are exact; two final methods pass.
+Twelve selections include eleven validated transfers plus PRE partial. Timing
+0.923/4.859 s is recorded/deferred. Magic-back physical paths are supported; bottom
+gradient/region trials remain rejected for insufficient support or an excessive
+gap. Next spatial texture/border-region evidence, preserving all accepted paths.
+Reporting still needs confirmation; all 44 and default provisioning remain open.
+[Evidence](docs/audits/centering-guided-repair.md#shared-pokémon-backs-automatically-selected-magic-seam-isolated--2026-11-07).
+
+# 2026-11-07 — Shared-back physical paths pass; continuity retained for printed edges
+
+One focused native method passes with zero failures/skips: 376 frozen physical
+positions across two Pokémon backs agree within 0.649 px. Offline printed paths
+support paired measurements, with scalar/color shares differing by at most
+0.011 pp. Publisher-profile transfer and simpler isolated-gradient searches fail;
+both stopped without relaxed thresholds. Next native continuity-assisted printed
+paths and full paired validation before shared-design automatic integration.
+No new whole-card automatic pass or default detector change. Timing remains
+recorded/deferred, reporting confirmation-gated, all 44 and provisioning open.
+[Evidence](docs/audits/centering-guided-repair.md#shared-back-physical-paths-accepted-printed-continuity-retained-offline--2026-11-07).
+
+# 2026-11-07 — Saga artwork placement passes; shared-back cut errors isolated
+
+The Saga front’s right-hand artwork rule passes 375 native photo comparisons,
+worst 1.004 px, with correct intended asymmetry and reverse-face rejection. Two
+focused methods pass; other 33 development results are exact. No detector changes.
+Timing median/max 0.817/4.963 s is recorded/deferred. Review of two Pokémon backs
+finds physical left-cut discrepancies up to 28.728/24.247 px despite plausible
+thumbnail guides. Next independent physical refinement for shared backs, followed
+by separate printed-path validation. Automatic reporting still needs confirmation;
+all 44 acceptance and production provisioning remain open.
+[Evidence](docs/audits/centering-guided-repair.md#kyoshi-saga-artwork-placement-accepted-back-card-cut-errors-identified--2026-11-07).
+
+# 2026-11-07 — Y’shtola passes; Ojer artwork retained separately
+
+The existing profile method accepts Y’shtola with no detector changes: 376 native
+photo comparisons, worst 1.139 px, shares 49.869258/20.081672%. Ojer’s artwork also
+passes 188 comparisons, worst 1.400 px, but its shadowed physical right/bottom stay
+open. A direct-gradient alternative supports the bottom; right gaps persist and
+widening the search rejects. Three focused native methods pass; all other 33
+development results are exact. Full-span frozen comparisons are now fixture-backed.
+Timing median/max 0.789/4.859 s is recorded/deferred. Reporting still requires
+confirmation. Next Saga layout; all 44 and production provisioning remain open.
+[Evidence](docs/audits/centering-guided-repair.md#yshtola-transfer-accepted-ojer-artwork-retained-as-partial--2026-11-07).
+
+# 2026-11-07 — Michelangelo passes existing boundary-identity method
+
+Added its provider-only profile reference without changing detector logic or
+thresholds. Two focused native methods pass. All 374 compared positions across
+artwork and physical paths are within four native pixels, worst 1.581 px; left/top
+shares 51.581756/21.050084%. Other 33 development results are exactly preserved.
+The rejected broad search's perfectly supported bottom rule was 23.530 px wrong,
+confirming that boundary identity must precede confidence in geometry. Median/max
+0.771/4.824 s is recorded/deferred. Automatic reporting remains disabled until
+confirmation; remaining failures and production provisioning stay open.
+[Evidence](docs/audits/centering-guided-repair.md#michelangelo-reference-transfer-accepted--2026-11-07).
+
+# 2026-11-07 — Spinerock automatic curved guides integrated
+
+The supplied library now automatically selects Spinerock's curved measurement;
+screen/export retain its observed paths. Four integrated-v2 methods pass, including
+34 images; accessibility-only v3 passes one lifecycle/render check. All other 33
+quads are exact. Confirmation/manual conversion/undo/reset pass; reporting remains
+disabled until review. Validated paths and 49.780625/19.757022% shares reproduce
+exactly. Timing median/max 0.763/4.764 s is recorded/deferred. PRE/Gengar signed and
+unsigned profile transfers lack support and are stopped. Next other observable
+features/cases; default provisioning and all-corpus acceptance remain open.
+[Evidence](docs/audits/centering-guided-repair.md#spinerock-automatic-selection-and-curved-guides-integrated--2026-11-07).
+
+# 2026-11-07 — Spinerock native curved measurement passes
+
+Added optional provider boundary strips, native curved artwork/physical observations
+and bounded paired-path ratios without changing existing straight analysis. Four
+focused methods pass. All 369 photo comparisons across eight native boundaries are
+within four pixels (worst 1.137 px); left/top shares 49.780625/19.757022% differ from
+offline by −0.018369/+0.002109 pp. Known curvature/support controls and Starting Town
+pass. Next integrate path-capable app measurement/guide state and automatic selection;
+current native method is explicitly invoked research. Automatic reporting disabled,
+performance work deferred, full-corpus objective still open.
+[Evidence](docs/audits/centering-guided-repair.md#spinerock-native-curved-paths-and-paired-measurement-accepted--2026-11-07).
+
+# 2026-11-07 — Spinerock foil identity recovered; curvature retained
+
+Moved to Spinerock Tyrant. Reference-profile identity followed by local photo
+gradients fixes the artwork top's jump to the title rule. All four artwork and
+physical paths have supported spans; a known-curvature control recovers 61 points
+within 0.456 px. Preserve the previous accurate left/right/bottom artwork paths.
+Straight fitting misses artwork top by 5.545 px and physical top/bottom by
+8.205/7.842 px, so direct native transfer is stopped before another build. Next
+paired curved-path research measurement; no new ratio, native pass or reporting.
+[Evidence](docs/audits/centering-guided-repair.md#spinerock-foil-paths-recovered-offline-straight-line-transfer-stopped--2026-11-07).
+
+# 2026-11-07 — Native physical cuts refined with artwork preserved
+
+Added independent background-contrast physical fitting to the DEBUG supplied-artwork
+route. Six focused methods pass, including competing-transition rejection and the
+34-image library sweep. All inner quads remain exact; only Starting Town, Kyoshi
+and The Ooze outer quads change. All 547 supported full-span photo observations
+are within four pixels (worst 3.990 px). Timing upper median/max 0.745/1.782 s is
+recorded and deferred. Automatic reporting stays disabled. Next Spinerock Tyrant
+foil artwork; remaining designs, production promotion and full-corpus acceptance
+are still open. [Evidence](docs/audits/centering-guided-repair.md#native-physical-cut-refinement-accepted--2026-11-07).
+
+# 2026-11-07 — Kyoshi and The Ooze artwork pass; physical-cut gap measured
+
+Applied the existing full-span support criteria to artwork and added bounded
+alternate-proposal fitting when initial proposals lack support. Kyoshi's left
+error drops from 17.014 to 0.829 px. The Ooze transfers through the same method,
+worst artwork discrepancy 1.625 px. Both final selections pass four methods;
+each preserves all other 33 native quads exactly. Timing recorded, not optimized.
+Independent physical tracking exposes outer-guide differences up to 11.702 and
+17.937 px, with ratio effects below 1 pp. Next native physical-cut refinement,
+preserving the accurate inner lines. Automatic reporting stays disabled; no
+whole-corpus or physical calibration claim.
+[Evidence](docs/audits/centering-guided-repair.md#kyoshi-and-the-ooze-artwork-transfers-accepted--2026-11-07).
+
+# 2026-11-07 — Kyoshi three-side native transfer; Squirtle bottom support
+
+Dense RGB sampling supports Squirtle's bottom under the existing gap limit; right
+still rejects. Stopped the new region model at 5/61 supported real-photo positions.
+Added the exact Kyoshi transformed-face artwork reference, corrected its provider
+boundary coordinates from source pixels and froze photo observations. Native
+top/right/bottom pass within 0.751 px; left fails at 17.014 px. Four focused methods:
+three pass, one fails. The library selects five designs; all other 33 native quads
+are exact. Warm upper median/max 0.739/0.992 s recorded without optimization. Next
+inspect/reacquire Kyoshi's angled left seed, retaining the accurate sides. Automatic
+reporting remains disabled; the full corpus goal remains open.
+[Evidence](docs/audits/centering-guided-repair.md#kyoshi-native-partial-transfer-and-squirtle-bottom-support--2026-11-07).
+
+# 2026-11-07 — Foil Gengar stop; Squirtle physical edges recovered offline
+
+Provider-only frame landmarks recover native foil-Gengar recognition, but bottom
+localization still rejects. Two targeted methods fail; all 34 native quads are
+unchanged. Warm upper median/max 0.728/0.988 s recorded without optimization.
+Moved to Squirtle: background-contrast polarity supports all four physical paths,
+and ±8 px left-seed controls reproduce the positions. RGB contrast raises printed
+right-side support from 16 to 38 observations, but right/bottom gaps still reject
+a complete ratio. Existing scalar behavior and reference generation reproduce
+exactly. Preserve partial progress; next isolate the missing printed evidence
+before native transfer. No Squirtle app build, UI run, holdout or automatic report.
+[Evidence](docs/audits/centering-guided-repair.md#foil-gengar-stop-and-squirtle-physical-edge-progress--2026-11-07).
+
+# 2026-11-07 — Prismatic foil identity recovered; right-edge uncertainty retained
+
+Added optional chromaticity alternatives with one vote per spatial location and
+provider-only landmark coverage. Native PRE identity now passes; near-tied seeds
+are resolved only through supported geometry agreement. PRE's left/top/bottom
+point comparisons pass, while the right fails at 11.949 px. Six of seven focused
+methods pass. The four-design development sweep passes, and all other 33 native
+quads are exactly unchanged. Warm upper median/max 0.648/0.902 s recorded. Preserve
+the right-side failure and transfer the color method to other foil cases; no
+automatic reporting or production promotion.
+[Evidence](docs/audits/centering-guided-repair.md#prismatic-foil-identity-and-unresolved-right-edge--2026-11-07).
+
+# 2026-11-07 — Gold Pikachu native transfer passes
+
+Corrected endpoint bracketing and added bounded strip consensus on rejected printed
+sides. SSP Pikachu now gives 50.608/52.899% left/top shares; worst reviewed-point
+distance 2.703 native px. Five focused methods pass, including the 34-image
+three-design library sweep. All other 33 native quads exactly match the preceding
+library receipt. Corrected two foil-texture comparison points from native crops
+before validation, preserving their original evidence. Warm median/max 0.557/0.849 s
+recorded; no optimization or UI pass. DEBUG only, automatic reporting disabled.
+Next PRE foil identity and remaining captures; all 44 passing remains open.
+[Evidence](docs/audits/centering-guided-repair.md#native-gold-pikachu-transfer-accepted--2026-11-07).
+
+# 2026-11-07 — Stopped shadow model; exposed gold-card routing and fitting gap
+
+Venipede's separate shadow model passes four synthetic controls but supports zero
+of nine photo locations; stopped without promotion. SSP Pikachu's offline reference
+paths support all four panel sides. A native check exposed false Magic-back routing;
+the DEBUG supplied-reference path now evaluates independent identity despite that
+classification. Correct artwork recognizes, but only bottom native fitting passes,
+so the new gold transfer test still fails. The existing 34-image library control
+passes unchanged. Next reconcile native/photo-side disagreement and retain the
+accepted bottom, not relax thresholds. Automatic reporting remains disabled.
+[Evidence](docs/audits/centering-guided-repair.md#shadow-stop-and-gold-pikachu-routing--2026-11-07).
+
+# 2026-11-07 — Automatic library selection and Venipede selective repair
+
+The DEBUG supplied library now selects Starting Town/Gengar without per-capture
+design selection. Three focused methods pass; all 32 unrelated development images
+retain exact ordinary measurements. Ambiguous identities fall back independently
+of order. Warm median/max 0.546/0.812 s recorded; no more optimization. Venipede's
+offline printed-frame repair combines reference-guided sides with the supported
+existing top. Its physical bottom still follows shadow, so this is not a full-card
+accuracy pass. Retained one local top-seed failure; stopped the unsupported physical
+probe. Next cut/shadow identity, preserving supported inner work. Automatic reporting
+remains disabled. [Evidence](docs/audits/centering-guided-repair.md#reference-library-and-selective-venipede-repair--2026-11-07).
+
+# 2026-11-07 — Native printed-frame pilot validated
+
+Added explicit printed-frame semantics, distinctive-artwork corroboration,
+perimeter candidate selection and native color-edge fitting to the DEBUG matcher.
+PNG Gengar now gives 49.772/45.725% left/top shares, with worst sampled-side
+disagreement 0.723 native px against the frozen photo observations. Five distinct
+focused methods pass; the 34-image sweep preserves all 33 unrelated results
+exactly. Starting Town artwork behavior and confirmation/detector-certainty
+separation remain intact. This is a caller-supplied native pilot, not automatic
+catalog selection or production promotion. Timing recorded; no further optimization.
+[Evidence](docs/audits/centering-guided-repair.md#native-printed-frame-pilot--2026-11-07).
+
+# 2026-11-06 — Design recognition resolves PNG Gengar boundary identity
+
+Two-design recognition across 34 development captures selects only the two
+intended Gengars. Requiring distinctive artwork matches rejects Ferrothorn's
+misleading shared-layout alignment. Reference-guided photo refinement supports
+all four PNG Gengar sides; supported-only paired measurement gives 49.166/45.236%
+left/top shares instead of the footer-based 46.527/15.766%. Foil Gengar rejects
+for weak coverage, with no replacement ratio. These remain offline candidates;
+next add native printed-frame semantics without changing the existing artwork
+route or reporting gate. [Evidence](docs/audits/centering-guided-repair.md#design-identity-and-supported-gengar-frame--2026-11-06).
+
+# 2026-11-06 — Broader development coverage and stopped reacquisition probe
+
+Ran the production analyzer on all 34 development captures, including the PNGs
+omitted by the old HEIC-only batch harness. All decoded/analyzed; the original
+ten exactly reproduce their saved geometry. Reviewed all 24 additional overlays:
+three visible mismatches, five needing closer boundary review, eight plausible
+but unscored, eight requiring a clear design reference. A native search seeded
+from the physical perimeter yields a Gengar-left candidate but fails transfer to
+Venipede and the back control; stopped without app promotion. Next resolve
+semantic reference identity before refining bad inner guides. Holdouts remain
+sealed; no new accuracy pass, app UI run or reporting change.
+[Evidence](docs/audits/centering-guided-repair.md#development-corpus-coverage--2026-11-06).
+
+# 2026-11-06 — Photo-grounded comparison and Pokémon-back transfer
+
+Recorded Charmander's unmarked native-photo bands and compared the frozen
+candidate on a shared central-50% span. Its midpoint differences are
+0.743/1.264 pp; wide visual uncertainty prevents an accuracy certification.
+Transferred the unchanged physical/printed path methods to IMG_0347. Combined
+printed-path perturbations vary ratios by at most 0.013 pp. One local four-pixel
+check fails outside the actual measurement span; preserved without more tuning.
+Next cover remaining cards and handle supported observations explicitly before
+app integration. No app build, UI work, annotation replacement or automatic
+reporting change. [Evidence](docs/audits/centering-guided-repair.md#source-photo-bands-and-back-transfer--2026-11-06).
+
+# 2026-11-06 — Local content and aggregate centering sensitivity
+
+Reference-header patches confirm nonuniform local alignment: BASIC is weak and
+smaller/shifted, while name/HP/symbol patches align more strongly. Do not derive
+precise border geometry from that weak patch. Propagated all saved printed-top
+fits, including unsupported estimates: Clefairy's top-share sensitivity is
+41.287–42.662% with other edges fixed. This is not accuracy truth, but directs
+work toward photo-grounded aggregate scoring and historical-reference adjudication
+rather than indefinite registration tuning. Four-pixel failures remain recorded;
+the product's ≤2 pp accuracy/identity gates remain unmet.
+[Evidence](docs/audits/centering-guided-repair.md#local-reference-content-and-aggregate-sensitivity--2026-11-06).
+
+# 2026-11-06 — Stopped reference-position veto
+
+A fixed reference gate rejects all 15 combinations of saved photo-seed cases and
+reference-line shifts, rather than extrapolate unsupported endpoints. Native
+inspection shows the global projected line 25–31 px above the left printed
+transition. Strong print recognition is insufficient local boundary alignment.
+Next investigate nearby content registration/coverage; do not expand the band
+to conceal the discrepancy. No app or annotation changes.
+[Evidence](docs/audits/centering-guided-repair.md#reference-position-veto-stopped--2026-11-06).
+
+# 2026-11-06 — Clefairy reference recognition
+
+Exact ASC 280 recognition finds 838 inliers across four quadrants; the unrelated
+back is rejected. Global alignment has about 3 px median residual but tails above
+four pixels. A low-order warp and a native-resolution control do not improve the
+worst held-out errors, so neither is promoted. Retain reference alignment for
+boundary identity and use native photo candidates for measurement. No app changes
+or accuracy pass claimed. [Evidence](docs/audits/centering-guided-repair.md#clefairy-exact-print-recognition--2026-11-06).
+
+# 2026-11-06 — Stopped Clefairy signal-only alternatives
+
+Estimator consensus preserves Charmander but fails Clefairy (9.100 px held-out
+error). A native close-up shows grayscale ambiguity between dark foil and blue
+art. An isolated chroma signal also fails (100.551 px worst seed displacement,
+6.280 pp ratio change), so neither route is promoted. Located the exact ASC 280
+provider image in the bundled catalog, downloaded it and verified matching
+printing/art visually. Next use exact-print recognition for boundary identity;
+the reference is not yet registered or scored. [Evidence](docs/audits/centering-guided-repair.md#estimator-consensus-and-color-ablation--2026-11-06).
+
+# 2026-11-06 — Clefairy transfer control
+
+Transferred the frozen selective method to Clefairy's physical perimeter:
+left/right retain all 61 samples, and top has 60 stable samples. Inspected the
+overlay. An isolated printed-top proposal initially follows the border, but
+3/5 perturbations exceed four pixels (worst 8.967 px) despite ratio variation
+below 0.111 pp. Local sharp/broad estimator switching causes the largest miss.
+Stop that printed-top version; next resolve estimator support/disagreement rather
+than tune its width threshold. Zapdos's repair rejects an out-of-image band and
+produces no replacement measurement. No app changes or corpus pass claimed.
+[Record](docs/audits/centering-guided-repair.md#clefairy-transfer-and-estimator-switch-failure--2026-11-06).
+
+# 2026-11-06 — Sharp top-edge localization
+
+The remaining Charmander top miss came from blurred-step fitting on a sharp cut
+with foil texture. Added a separately selectable sharp-gradient estimator and
+retained the broad-transition fitter. All five fixed physical-geometry controls
+now pass the unchanged 4 px / 2 pp limits (max 3.601 px / 0.790 pp). Twenty-seven
+sharp synthetic controls localize within 0.448 px. Inspected the native top strip.
+Freeze this research candidate for transfer to Clefairy; this is stability evidence,
+not independent accuracy or app integration. [Record](docs/audits/centering-guided-repair.md#sharp-physical-top-refinement--2026-11-06).
+
+# 2026-11-06 — Selective measurement stability
+
+Fixed controls exposed a truncated physical-side search: an −8 px seed shift
+made the 16 px window fail right coverage and move the left fit 12.814 px. One
+32 px window control passes all five side-fit cases, worst displacement 1.401 px.
+Reanalyzing all physical sides passes 4/5 cases; the remaining top-path miss is
+4.780 px at a weak observation. All ratio changes remain below 0.658 pp. Preserve
+the wider-window research improvement, retain the top miss, and localize the next
+work there. No app promotion or relaxed thresholds.
+[Evidence](docs/audits/centering-guided-repair.md#selective-measurement-stability--2026-11-06).
+
+# 2026-11-06 — Selective Charmander measurement
+
+Combined the recovered physical-bottom path with the physical-top candidate and
+native left/right fits, preserving all four production printed lines. The paired
+rectified-plane diagnostic gives 45.065% left share / 42.445% top share. Substituting
+earlier reviewed physical left/right/top lines changes the corresponding result
+by 0.064/0.001/0.713 pp. A known perspective control passes numerically. Inspected
+the combined overlay; no text/banner excursions remain. This is same-photo
+corroboration, not a calibrated accuracy pass; weak top/bottom observations and
+deformation uncertainty remain. No app or annotation changes.
+[Record](docs/audits/centering-guided-repair.md#selective-geometry-and-paired-margins--2026-11-06).
+
+# 2026-11-06 — Stopped all-side path generalization
+
+Implemented and inspected two bounded all-side experiments on Charmander.
+Strongest endpoints displace working printed boundaries onto text/banner features.
+A fixed position prior repairs the bottom but breaks the top, with zero stable
+top observations. Stop before ratio calculation or app promotion. Continue with
+selective physical-boundary repair and preserve supported independent printed
+lines. Also corrected the earlier polarity explanation: the original audit's
+inward falling transition already means outward brightening.
+[Evidence](docs/audits/centering-guided-repair.md#stopped-all-side-generalization--2026-11-06).
+
+# 2026-11-06 — Detector-seeded physical boundary tracking
+
+Implemented broad-band continuity tracking from saved production cut geometry.
+Without a hand-supplied vertical crop, Charmander's selected path follows the
+card while preserving a separate sleeve candidate. Worst held-out interpolation
+disagreement is 2.241 px. The same parameters yield 0.705 px on Pokémon back 0347
+and 0.840 px on Clefairy; all three cover every spatial bin. Charmander's refined
+positions are unchanged under ±16 px seed shifts. These are consistency/identity
+diagnostics, not full-card accuracy passes. The next work is all-side path geometry
+and perspective-aware margin measurement, retaining weak/competing evidence.
+[Record](docs/audits/centering-guided-repair.md#detector-seeded-continuity-tracking--2026-11-06).
+
+# 2026-11-06 — Local Charmander boundary refinement
+
+Added local blurred-transition fitting and known-signal controls. In the supplied
+card-edge region, 50/61 observations are stable across two models and three strip
+widths, with all spatial bins covered. Local interpolation worst held-out
+disagreement is 3.873 px; 54 synthetic fits have worst localization error 0.538 px.
+A wider region including sleeve/text fails with 110.916 px worst disagreement.
+The next step is continuity-constrained boundary identity selection, followed by
+this local refinement. Neither this diagnostic nor its unrectified 42.435% margin
+share is accepted automatic centering. [Evidence](docs/audits/centering-guided-repair.md#local-transition-refinement-follow-up--2026-11-06).
+
+# 2026-11-06 — Accuracy-first centering continuation
+
+Validated the pending optimization at `11ff208` plus the working tree. Starting
+Town retains 0.840 px worst artwork-edge error and 0.645 / 0.337 pp ratio error;
+all nine unrelated-photo fallbacks and confirmation checks pass. The three-method
+run has two passing methods and one failing only its timing assertions. Record
+0.853 s upper median, 1.629 s sequence maximum and 2.197 s cold Starting Town.
+Per owner direction, defer timing optimization and UI polish rather than making
+them prerequisites for accuracy research.
+
+Added and ran a bounded native-photo continuity diagnostic on Charmander.
+Strong-edge filtering discards the faint central physical boundary, producing
+misleadingly low fit residuals. Including scale-stable weaker observations exposes
+curvature, but quadratic held-out worst error remains 7.262 px. Stop before
+promotion. Preserve local uncertainty and require spatial coverage in the next
+method. [Full evidence and next direction](docs/audits/centering-guided-repair.md#accuracy-first-continuation--2026-11-06).
+
+# 2026-11-05 — Debug Centering screen print pilot (historical criteria)
 
 Target: the actual Centering screen on the dedicated iPhone 17 Pro simulator,
 with original Starting Town bytes and a caller-supplied print reference.

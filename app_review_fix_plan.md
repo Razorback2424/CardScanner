@@ -1,5 +1,28 @@
 # CardScanner App Review Fix Plan
 
+## Repository review follow-up — 2026-11-06
+
+Owner-authorized high-confidence fixes on `main@11ff208`, preserving the
+existing uncommitted source/test changes. No simulator use, commits, pushes,
+publication or release-readiness claim. Verification uses unsigned generic iOS
+builds, compilation of the existing iOS test target and host catalog-package
+tests; iOS regression methods are not counted as executed.
+
+| Slice | Acceptance / rollback boundary | Status |
+| --- | --- | --- |
+| Certified CSV identity | Reuse a compatible physical certificate across bound/unbound keys; refuse conflicts without changing ownership/history. Local import/store/test diff. | In progress |
+| Yu-Gi-Oh current refresh | Live failure remains failure; initial offline valuation retains dated bundle support. Adapter/test diff. | Pending |
+| Scan artwork latency | Exact identity can finish without awaiting optional image probes; retain signed artwork and later enrichment. Catalog/test diff. | Pending |
+| Graded expiry publication | Known deadlines invalidate published current prices and portfolio projections; preserve history and superseding quotes. Snapshot/monitor/test diff. | Pending |
+| Scanner storage fence | Recheck the captured storage generation within the serialized add; preserve ordinary authorized-write draining. Writer/view-model/test diff. | Pending |
+
+Baseline review evidence: the preceding full app run executed 3,169 tests with
+11 failing methods and 18 skipped; three host catalog packages executed 153
+tests with zero failures and one skipped. This implementation will not use a
+simulator. Centering algorithm changes and unmeasured rendering changes remain
+evidence-dependent. Feed and privacy/support configuration require verified
+published destinations; placeholder URLs will not be enabled.
+
 ## Browse pagination render investigation — 2026-11-05
 
 Owner-authorized follow-up from clean `0a11fc7`. Tracing the held-provider fixture,

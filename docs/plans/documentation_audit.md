@@ -1,12 +1,210 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-11-06
+**Audit date:** 2026-10-02; review evidence updated 2026-11-07
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-11-06
+## Current authority boundary — updated 2026-11-07
+
+**Squirtle shadow-contact research candidate — 2026-11-07.** This qualifies the
+earlier same-photo physical-bottom comparison: source review shows the old frozen
+path follows a fading dark band, while the competing candidate follows the
+visible textured-surface boundary. The new clipping-aware native candidate is
+opt-in, unidentified and user-review-only; a synthetic printed stripe can fool
+it. Existing geometry, default routing, confidence and the confirmation gate stay
+unchanged. No complete Squirtle or full-corpus accuracy pass is added.
+[Current authority](../audits/centering-guided-repair.md#squirtle-shadow-contact-alternative--2026-11-07).
+
+**Reference-fragment research and silhouette stop — 2026-11-07.** This updates
+the proposed full-image identity investigation below: the silhouette can follow
+the seed or an interior panel and is rejected, while registered design profiles
+corroborate portions of retained printed-path candidates. Dewott is promising;
+Squirtle remains ambiguous outside its middle evidence. No candidate is selected,
+no app geometry changes and no native or all-44 acceptance is added.
+[Current authority](../audits/centering-guided-repair.md#reference-fragment-corroboration-and-silhouette-stop--2026-11-07).
+
+**Multi-candidate research checkpoint — 2026-11-07.** This advances the line
+proposal below with six passing known-geometry controls and focused photo
+comparisons. It preserves existing observations and shows plausible correct paths,
+but also retains divergent and partly mixed candidates. Boundary identity,
+native integration, production provisioning and all-44 acceptance remain open.
+[Current authority](../audits/centering-guided-repair.md#multi-candidate-prototype-tested-identity-remains-open--2026-11-07).
+
+**Line proposal evidence — 2026-11-07.** The current direction supersedes the
+pending Dewott start below: robust fitting and bridging yield useful provisional
+geometry, while a synthetic wrong edge passes both line-fit and experimental
+material checks. Preserve the distinction between observed and inferred points;
+no new automatic accuracy or calibrated physical claim is made.
+[Current authority](../audits/centering-guided-repair.md#supported-segment-line-proposals-and-dewott--2026-11-07).
+
+**PRE trials and Dewott start — 2026-11-07.** Both new PRE right-edge region
+trials reject; the partial result remains. Dewott registration is a search
+proposal only and lacks bottom-fifth feature matches. Neither adds an automatic
+accuracy pass or changes the production route.
+[Current authority](../audits/centering-guided-repair.md#prismatic-pikachu-region-trials-stopped-dewott-selected-next--2026-11-07).
+
+**Squirtle transfer stop — 2026-11-07.** This qualifies the numerical offline
+support below. Native physical support is insufficient; the proposed background
+tracker follows a stronger interior rule in a known-geometry control, and a
+border-consistency gate remains below the bottom-side support minimum. Physical
+identity stays provisional; no native/automatic pass is added.
+[Current authority](../audits/centering-guided-repair.md#squirtle-native-transfer-stopped-on-physical-edge-identity--2026-11-07).
+
+**Squirtle offline support — 2026-11-07.** This supersedes the unresolved
+right-gap status below at the research level: selective chroma/rim evidence
+reduces the gap to three, all eight paired support checks pass, and 334 same-photo
+positions are frozen. Native transfer, automatic selection, independent physical
+calibration and all-44 acceptance remain open.
+[Current authority](../audits/centering-guided-repair.md#squirtle-selective-foil-boundary-research--2026-11-07).
+
+**Magic native integration — 2026-11-07.** This supersedes the pending native
+step below. Two focused methods pass; 344 comparisons meet the four-pixel limit
+and the other 33 development outputs are exact. Opt-in DEBUG routing now has
+twelve validated transfers plus PRE partial. A new Squirtle right-side trial
+still rejects; timing is recorded/deferred. This is not default provisioning,
+independent physical calibration or all-44 acceptance.
+[Current authority](../audits/centering-guided-repair.md#magic-selective-native-repair-and-squirtle-follow-up--2026-11-07).
+
+**Magic offline/native boundary — 2026-11-07.** The bottom failure below now has
+a selective offline solution: physical-cut-anchored region fitting, with existing
+stronger proposals preserved. All paired support checks pass; 344 positions are
+frozen and bottom ±8 px seed sensitivity passes. This is not a new native or
+automatic pass. The replacement left identity route and publisher registration
+remain rejected. Next transfer selectively; keep the eleven validated automatic
+transfers plus PRE partial count unchanged.
+[Current authority](../audits/centering-guided-repair.md#magic-selective-paths-recovered-offline-native-transfer-next--2026-11-07).
+
+**Shared-back automatic integration — 2026-11-07.** This supersedes the pending
+native printed step below. Two final methods pass: 742 comparisons (worst
+0.786 px), automatic shared-design selection and other 32 development results
+exact. Twelve references select twelve captures: eleven validated transfers plus
+PRE partial. The next Magic back remains partial because its printed bottom has
+an excessive unsupported gap, even after region-model support improves. No
+threshold relaxation, all-44 claim or default production provisioning.
+[Current authority](../audits/centering-guided-repair.md#shared-pokémon-backs-automatically-selected-magic-seam-isolated--2026-11-07).
+
+**Shared-back transfer boundary — 2026-11-07.** The pending physical transfer
+below is now accepted: one focused method, 376 comparisons, worst 0.649 px.
+Printed continuity supports complete offline measurements but has not transferred
+to native automatic selection. Shared publisher-profile and isolated local-peak
+alternatives fail and are stopped. Neither back increases the whole-card pass
+count; nine validated library transfers plus PRE partial remains the latest
+selection checkpoint. Timing is recorded/deferred and reporting still requires
+confirmation.
+[Current authority](../audits/centering-guided-repair.md#shared-back-physical-paths-accepted-printed-continuity-retained-offline--2026-11-07).
+
+**Saga placement and back-card diagnosis — 2026-11-07.** The Saga front passes
+375 native photo comparisons (worst 1.004 px), correct asymmetric design placement
+and wrong-face rejection. Two focused methods pass; other 33 development results
+are exact. Eleven supplied references select ten designs, nine validated transfers
+plus PRE partial. This is artwork placement, not a symmetric-border grade. Two
+previously unscored backs have observed physical left-cut discrepancies of 28.728 /
+24.247 px and remain unaccepted. Next independent cut refinement for shared backs;
+all 44 and production provisioning remain open.
+[Current authority](../audits/centering-guided-repair.md#kyoshi-saga-artwork-placement-accepted-back-card-cut-errors-identified--2026-11-07).
+
+**Y’shtola full transfer; Ojer artwork only — 2026-11-07.** Three focused methods
+pass; 376 Y’shtola boundary comparisons and 188 Ojer artwork comparisons meet the
+four-pixel limit. The other 33 development results are exact. Ten supplied library
+references select nine designs, including PRE’s partial result; Ojer remains
+outside automatic acceptance because physical shadows are unresolved. Eight
+validated transfers do not establish all 44 passing or production provisioning.
+Timing remains recorded/deferred.
+[Current authority](../audits/centering-guided-repair.md#yshtola-transfer-accepted-ojer-artwork-retained-as-partial--2026-11-07).
+
+**Michelangelo reference transfer — 2026-11-07.** The next failing capture passes
+the existing observed-path route with a new reference, no detector changes.
+Two focused methods pass; all 374 compared positions are within four pixels,
+worst 1.581 px. Other 33 development results are exact. Nine supplied references
+select eight designs, including PRE's unresolved partial candidate: seven validated
+transfers, not eight full passes. Median/max 0.771/4.824 s is recorded/deferred.
+Boundary identity remains necessary even for a fully supported straight edge.
+Production provisioning and all 44 acceptance remain open.
+[Current authority](../audits/centering-guided-repair.md#michelangelo-reference-transfer-accepted--2026-11-07).
+
+**Automatic curved-route integration — 2026-11-07.** The research-only invocation
+gap below is superseded: Spinerock passes automatic supplied-library selection,
+review/render/export and undo. Four integrated-v2 methods pass; the accessibility-only
+v3 follow-up passes one. Other 33 quads are exact; the 369-position accuracy receipt
+still applies because paths/ratios reproduce exactly. Default catalog operation
+and all 44 images are not complete. PRE/Gengar profile transfers lack support and
+are stopped, retaining their failures.
+[Current authority](../audits/centering-guided-repair.md#spinerock-automatic-selection-and-curved-guides-integrated--2026-11-07).
+
+**Native curved-measurement continuation — 2026-11-07.** Spinerock's offline-only
+status below is superseded by four passing focused native methods and an all-eight-
+boundary comparison (369 positions, worst 1.137 px). The stopped straight-line
+approach remains stopped; an additive observed-path representation now measures
+the photo correctly in research. Automatic selection and app guide/report state
+still need integration, so this is not yet an app-wide automatic pass. The earlier
+six-method physical-cut receipt remains historical evidence, not the latest run.
+[Current authority](../audits/centering-guided-repair.md#spinerock-native-curved-paths-and-paired-measurement-accepted--2026-11-07).
+
+**Foil curvature continuation — 2026-11-07.** Spinerock has supported offline
+physical/artwork paths after a provider-profile identity check fixes a title-rule
+jump. It is not another native pass: curvature exceeds the four-pixel straight-line
+tolerance. The six-pass physical-cut run below remains the latest native evidence;
+no additional build was spent on an already inadequate representation. Next pair
+curved paths over supported corresponding spans, retaining the successful straight
+route. [Current authority](../audits/centering-guided-repair.md#spinerock-foil-paths-recovered-offline-straight-line-transfer-stopped--2026-11-07).
+
+**Native physical-cut continuation — 2026-11-07.** The six-method passing
+physical-refinement run supersedes the four-method artwork-only checkpoint below.
+Starting Town, Kyoshi and The Ooze now have independently fitted physical-photo
+comparisons within four pixels over all supported measurement spans; all 34 inner
+quads are exact. Only those three outer quads change. This closes their measured
+native outer discrepancy in the DEBUG supplied-artwork route, not calibration,
+production promotion or all-corpus accuracy. PRE remains partial among six selected
+designs. [Current authority](../audits/centering-guided-repair.md#native-physical-cut-refinement-accepted--2026-11-07).
+
+**Artwork versus physical-cut acceptance — 2026-11-07.** Kyoshi's left-side
+failure below is superseded by its passing v4 run; The Ooze also passes native
+artwork transfer. Each latest selection executes four methods, all passing, with
+the other 33 quads exact. Six selected designs now means five validated inner
+transfers plus PRE partial. Independently observed outer-cut discrepancies remain
+open, so these inner passes do not establish whole-card or full-corpus accuracy.
+[Current authority](../audits/centering-guided-repair.md#kyoshi-and-the-ooze-artwork-transfers-accepted--2026-11-07).
+
+**Kyoshi continuation — 2026-11-07.** The latest native selection is four methods,
+three passed and one failed (Kyoshi left edge); it supersedes the preceding
+Gengar-only two-method run as the latest checkpoint. Five selected designs means
+three validated prior transfers plus PRE/Kyoshi partial candidates. Other 33
+quads are exact. Squirtle's bottom now has supported offline coverage, but right
+still rejects; no new complete accuracy pass is claimed.
+[Current evidence](../audits/centering-guided-repair.md#kyoshi-native-partial-transfer-and-squirtle-bottom-support--2026-11-07).
+
+**Physical/printed evidence continuation — 2026-11-07.** The latest targeted
+foil-Gengar run has two failed methods, not the preceding six-pass/one-failure
+selection below; all 34 development quads remain identical. Recognition alone
+does not establish a fifth transfer. Squirtle's new offline physical-background
+and RGB methods produce partial support, not app integration or another accuracy
+pass. Timing remains deferred under the owner's instruction.
+[Current evidence](../audits/centering-guided-repair.md#foil-gengar-stop-and-squirtle-physical-edge-progress--2026-11-07).
+
+**Foil identity continuation — 2026-11-07.** Four designs now select in the DEBUG
+development library. This supersedes the three-design selection count below, but
+does not mean four accuracy passes: PRE's right-side test remains failing. The
+latest seven-method run has six passes and one failure, with all other 33 native
+quads preserved. [Current evidence](../audits/centering-guided-repair.md#prismatic-foil-identity-and-unresolved-right-edge--2026-11-07).
+
+**Supplied-library centering — 2026-11-07.** The DEBUG route now selects Starting
+Town, Gengar and SSP Pikachu. SSP's earlier failing transfer is superseded by five
+passing focused methods after native bracketing/strip-consensus changes and two
+documented source-photo observation corrections. All other 33 development quads
+are exactly preserved. Older “automatic reference selection unfinished” notes
+refer to the preceding single-reference pilot; catalog provisioning and production
+promotion remain unfinished. Back-family color classification is not verified
+identity: the gold Pikachu false-positive record remains open for production.
+[Current authority](../audits/centering-guided-repair.md#native-gold-pikachu-transfer-accepted--2026-11-07).
+
+**Accuracy-first centering continuation — 2026-11-06.** The pending print-pilot
+optimization preserves reviewed accuracy and all fallback checks. Timing misses
+are recorded and explicitly deferred by the owner, superseding the earlier
+requirement to clear timing and UI gates before the next photo investigation.
+Charmander's native diagnostic identifies missing central boundary support and
+stops before promoting a curve fit. [Current measurement record](../audits/centering-guided-repair.md#accuracy-first-continuation--2026-11-06).
 
 **Known-printing centering control — 2026-11-05.** The exact FIN 289 design
 resolved all four Starting Town artwork sides offline. The default detector,

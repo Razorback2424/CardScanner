@@ -1,5 +1,2010 @@
 # Guided centering repair
 
+## Squirtle shadow-contact alternative — 2026-11-07
+
+One-reader review of enlarged native source crops shows that the previously
+frozen bottom path follows the lower fading dark band, while the competing path
+follows the end of the textured visible card surface. The candidate coordinates
+were already available during review. Neither visual interpretation nor the
+earlier same-photo frozen path is calibrated physical-cut truth; the dark band's
+physical interpretation remains open.
+
+An additive, **explicit DEBUG opt-in** now proposes a texture-to-dark-exterior
+transition using only pixels inside the actual image. On Squirtle it retains
+**44/61** directly observed stations, spread across the side; the fitted straight
+review guide has **0.575 px RMS** to those points and falls in all five broad
+source-review bands. Missing stations remain recorded as gaps. The candidate's
+role is **unidentified**, and it is appended to the existing comparison list;
+it does not move guides, alter confidence or confirm frames. Its display identifies
+the straight approximation and asks for inspection of the gaps. An explicit user
+choice moves only that guide and still does not confirm the frames.
+
+The signal is not physical-cut proof. A stronger interior rule is rejected in a
+textured-card control, but a different synthetic printed stripe followed by a
+smooth region produces the same signal at the wrong edge. It remains an
+unidentified alternative, never an automatic selection. Insufficient exterior
+pixels produce no candidate rather than clamped or fabricated samples. The
+existing `observedPhysicalPath` and all production/default routes remain unchanged.
+
+Two focused native tests pass, covering the Squirtle proposal, unchanged
+measurement/evidence, explicit selection, the stronger rule, the deceptive stripe
+and clipped exterior. A separate existing Magic-back transfer test also passes
+with its prior shares. The [receipt](../../review/centering-evidence/squirtle-shadow-contact-candidate-2026-11-07.json)
+and T7 `CardScanner-Squirtle-Bottom-20261107/` contain the source crops, overlays,
+result bundles and exact source hashes. This is not a complete Squirtle
+measurement, an automatic accuracy pass or independent calibration. Other
+physical sides and printed top/right support remain unresolved. Next improve
+physical-boundary identity using the available source evidence and preserve the
+partial candidates without treating this shadow cue as a selector.
+
+## Reference-fragment corroboration and silhouette stop — 2026-11-07
+
+On `main` at `11ff208` plus the uncommitted research tree, the useful pieces
+are now combined in a [research-only comparison](../../review/centering-harness/reference_fragment_corroboration.py):
+the design-profile method supplies local printed-rule evidence, while the
+existing multiple line/curve proposals retain the photo geometry. The comparison
+records agreement, disagreement, unsupported stations, regional coverage and
+observed versus inferred points. It verifies source hashes, preserves existing
+observations, does not select a path and still requires review.
+
+| Existing capture and side | What the combined evidence shows |
+| --- | --- |
+| Dewott printed bottom | The design profile is stable at **35/61** stations, distributed **1 / 7 / 12 / 8 / 7** across five regions. The previously reviewed line agrees at **34**, with **one unsupported**, and differs by at most **0.161 native px** where comparable. A competing curve disagrees at five, agrees at 27 and is unsupported at three. |
+| Squirtle printed right | The profile is stable at **15/61** stations, all in the middle three regions. Both a straight proposal and the prior-supported curve agree at all 15. Across their 60 non-extrapolated model stations they differ by over four pixels at **21**, up to **10.500 px**; some positions are inferred. The profile cannot choose between their uncorroborated ends. |
+
+The profile and paths use the same source photo, so their agreement is
+correlated and does not establish independent accuracy. Five focused counterexample
+controls pass, including identical middle evidence with divergent endpoints,
+provenance, and the requirement that even one apparent track remains unselected.
+Source mismatch and existing-output preservation guards also pass. Translating
+the registration by **±8 native px** on Squirtle's horizontal axis and Dewott's
+vertical axis preserves all 15 and 35 locally stable stations and all candidate
+comparison counts; the largest shared-point change is **0.0163 px**. This checks
+those bounded translations of the same model and pixels, not absolute accuracy.
+
+A separate [whole-perimeter experiment](../../review/centering-harness/perimeter_identity_research.py)
+was stopped. An initial silhouette fit on Squirtle followed the printed field;
+seeding more foreground followed the physical-looking outline but also followed
+a closed interior panel when the true cut was invisible. With the starting
+outline shifted, that hidden-cut example switches its nearest candidate; the
+Squirtle contour also moves materially. The simple stronger-interior-rule and
+shadow controls pass, but they are insufficient to validate this method. The
+640-pixel working image is too coarse to distinguish Squirtle's close competing
+cuts accurately. Do not use the silhouette experiment to choose a physical cut.
+
+The [receipt](../../review/centering-evidence/reference-fragment-corroboration-2026-11-07.json)
+and T7 `CardScanner-PerimeterIdentity-20261107/` retain hashes, source snapshots,
+per-station outputs and the bounded seed-shift experiment. No app geometry,
+automatic reporting, native acceptance, or 44-card accuracy claim changed.
+Next investigate a selective native research path for Dewott's printed bottom,
+with physical-left identity handled separately; preserve partial support and
+existing successful paths. Squirtle's endpoints remain unresolved rather than
+extending its middle-only reference evidence over the whole side.
+
+## Multi-candidate prototype tested; identity remains open — 2026-11-07
+
+An additive [offline prototype](../../review/centering-harness/multi_hypothesis_boundary_probe.py)
+now retains multiple local transitions, fits whole-side line alternatives, and
+offers a supported prior curve separately. Each proposal records observed,
+interpolated and extrapolated positions. It **does not change app geometry or
+select an automatic result**; every identity remains review-required.
+
+Six focused known-geometry controls pass: a single visible cut, flat image,
+stronger interior rule, outward shadow, hidden cut and curved edge with nine
+missing stations. The curved gap differs from known geometry by at most **0.249
+px**. The interior-rule and shadow controls keep competing lines, and a lone
+visible line with a hidden cut remains unverified. Two artificial tracks that
+switch between the interior-rule edges are flagged as possible track-hopping.
+An earlier curve control failed when a nearby straight fit suppressed the curve;
+the final version retains it as an alternative shape of the same track.
+
+| Existing photo case | Result of the offline prototype |
+| --- | --- |
+| Squirtle printed right | Four hypotheses; a prior-supported curve matches **40/40** frozen points within four pixels, worst **3.333 px**. Its nine missing positions remain inferred; six later recovered points differ by at most **0.880 px**. |
+| Dewott printed bottom | The strongest line follows the previously reviewed border within **0.766 px** at 42 positions and within **0.469 px** at five card-number positions. A competing curve remains, so identity is not selected. |
+| Squirtle physical bottom | The image-clipped search retains two distinct cut candidates. One matches **41/41** frozen points; the other differs by up to **9.294 px**. Holding everything else fixed, the latter changes the top share by **1.624 percentage points** relative to the offline reference. |
+| Previously working sides | One Magic and two Pokémon side paths match **131/131** frozen points within four pixels, worst **0.758 px**. Existing supported points are preserved exactly in all six examined records. |
+
+These photo comparisons reuse the same captures and are not independently
+calibrated accuracy. Competing hypotheses include false or partly mixed tracks;
+the prototype does not yet know which physical/printed identity is correct.
+It cannot be promoted to automatic detection on this evidence. The focused
+[validation](../../review/centering-harness/multi_hypothesis_validation.py),
+[controls](../../review/centering-harness/multi_hypothesis_controls.py) and
+[receipt](../../review/centering-evidence/multi-hypothesis-prototype-v7.json)
+record the result. T7 `CardScanner-MultiHypothesis-20261107/` retains source
+snapshots, hashes, all outputs and the earlier failed curve control. No native
+build, simulator run, automatic-reporting change or new app accuracy pass.
+
+Next test boundary-identity evidence over the full image and card perimeter,
+including the known shadow/interior-rule controls. Preserve competing candidates
+and use targeted review when the physical image cannot distinguish them. The
+twelve prior validated DEBUG transfers plus PRE partial, default provisioning and
+all 44 acceptance remain as previously recorded.
+
+## Supported-segment line proposals and Dewott — 2026-11-07
+
+The user's suggestion to connect the strongest parts of a boundary is useful:
+the current code already uses line consensus and short interpolated gaps, but its
+strict gap gate can discard a side where a well-supported continuation is useful.
+The new [gap/line research probe](../../review/centering-harness/boundary_gap_probe.py)
+keeps direct points separate from fitted proposals and does not alter app output.
+
+On Squirtle's right, the original 43/61 points leave a nine-station gap. A
+straight bridge between its observed endpoints differs by at most **0.880 px**
+from six points independently recovered by another method on the same photo. In
+13 overlapping nine-station withholding checks within the measured span, the
+worst discrepancy is **3.296 px**. These are correlated same-photo observations,
+not an independently calibrated error bound.
+
+On Dewott, all eight raw tracks meet numerical support checks, but the printed
+bottom tracker follows the card number for seven points. A robust line has
+**49/56** candidates within four pixels; the reviewed source crop shows the line
+following the blue/silver boundary under the number. Its early extension is
+inferred because the line's inliers begin at station 12. This is promising guide
+geometry, not a full-card accuracy pass; the physical left also contains
+competing tracks. The [Dewott receipt](../../review/centering-evidence/dewott-offline-research.json)
+records the provisional result.
+
+Line coherence alone cannot identify which line is the card edge: a known
+synthetic wrong rule gives **61/61 line inliers and zero withholding error** while
+lying **24.964 px** inside the true cut. A second synthetic case also passes the
+experimental two-strip border-material gate on that same wrong edge. That gate
+is **unsafe as a standalone identity check** and is not used by the app. The
+[study receipt](../../review/centering-evidence/boundary-gap-fitting-study.json),
+source crops and T7 line-probe artifacts preserve both successes and failures.
+
+Next develop selective line/curve proposals with inferred portions marked
+separately, retain existing observed paths, and require additional independent
+boundary-identity evidence before accepting a measurement. A line can be a useful
+review starting point even when certainty is insufficient. Twelve validated
+transfers plus PRE partial remain the DEBUG checkpoint; reporting still needs user
+confirmation and no all-44 or production-readiness claim is made.
+
+## Prismatic Pikachu region trials stopped; Dewott selected next — 2026-11-07
+
+On the previously partial PRE Pikachu, the right-side uniform-exterior region
+trial supports **0/61** points; wider RGB region fitting supports **4/61**. The
+unchanged minimum is 30 plus coverage and gap requirements. Both methods are
+stopped, the earlier **11.949 px** native right-edge discrepancy remains, and
+no existing output is changed. The [receipt](../../review/centering-evidence/pikachu-pre-wide-region-stop.json)
+and T7 `CardScanner-PrismaticPikachu-20261107/` retain the trials.
+
+Moved to the unscored development image `IMG_0795.HEIC`, Dewott White Flare
+022/086. The [provider-only boundary specification](../../review/centering-evidence/dewott-reference-border.json)
+identifies the blue field, not measured photo geometry. Initial registration
+has 883 inliers across four quadrants, but none in the bottom fifth of the
+reference, so the projected lower edge needs independent photo evidence. No
+new pass or native selection is claimed yet. The capture is part of the existing
+development corpus, not an additional capture set. Reporting remains gated.
+
+## Squirtle native transfer stopped on physical-edge identity — 2026-11-07
+
+The offline Squirtle result below has sufficient *numerical support*, but its
+physical-cut identity is provisional. The first native diagnostic failed because
+the bottom physical side was unavailable. A follow-up diagnostic successfully
+recorded the available sides; it is **not an accuracy test pass**. Using fixed
+offline search seeds, native printed support is **42 / 36 / 37 / 35** on L/T/R/B.
+The printed top has 11 unbracketed frozen points and a 4.464 px worst bracketed
+discrepancy; right has seven unbracketed. Native physical support is **0 / 7 / 15 /
+unavailable**. On the few bracketed right points the worst discrepancy is **125.175
+px**. The bottom search assumes a wider exterior strip than this photo contains.
+
+The offline background tracker cannot simply be promoted as the replacement. A
+known-geometry synthetic card with a stronger interior rule produces **61/61
+supported points on every side**, yet follows that rule **24.964 px** inside the
+actual cut. This is a boundary-identity failure despite apparently excellent
+support. An additional photo-border consistency gate retains **51 / 53 / 45 / 29**
+physical observations; bottom rejects below the unchanged 30-point minimum. Stop
+both transfers rather than loosen acceptance or report a complete card.
+
+The [diagnostic receipt](../../review/centering-evidence/squirtle-native-diagnostic-and-cut-counterexample.json)
+and T7 `CardScanner-Squirtle-20261107/` retain both native runs, the comparison,
+counterexample and rejected gate. Research tools reproduce both observations.
+There is no new native or automatic accuracy pass. The earlier twelve validated
+transfers plus PRE partial remain the DEBUG checkpoint; reporting stays gated on
+confirmation. Next move to another unresolved card while retaining this evidence.
+
+## Squirtle selective foil-boundary research — 2026-11-07
+
+The Squirtle right-side gap now has a **complete offline paired measurement**,
+with all eight paths meeting their unchanged support and gap checks. Its dark
+rim and foil texture create adjacent competing transitions; the strongest peak
+is not consistently the outer edge. The new restricted experiment preserves all
+previously supported points. For missing points it requires one six-trial
+outward-brightening consensus whose nearby exterior chroma agrees with a strip
+anchored to the observed physical cut. A second supported transition causes
+rejection. Unsupported points remain gaps.
+
+| Offline result | Value |
+| --- | --- |
+| Printed L/T/R/B direct observations | **61 / 60 / 51 / 37** |
+| Physical L/T/R/B direct observations | **56 / 60 / 54 / 51** |
+| Largest right-side gap in measured span | **3**, previously 9 |
+| Paired left / top share | **50.855516 / 50.619826%** |
+| Frozen positions for native transfer | **334** |
+| Right reference seed shifts | **−8 / +8 px**, with other paths fixed |
+| Largest movement of shared supported points | **0.0072 px** |
+| Largest paired-share change in those trials | **0.000008 percentage points** |
+
+Eight right positions are newly supported. The unmarked source crops and full
+overlay were inspected. Synthetic controls recover a single known transition and
+reject flat, reversed, mismatched-exterior, ambiguous double-step and difficult
+strong-neighbor cases. The last rejection is intentional: this is a conservative
+brightening-rim hypothesis, not a universal foil solution. A physical-cut-anchored
+uniform-border experiment and wider RGB-region fits supported only 5/61 and 9/61
+right positions; both remain stopped.
+
+The [offline receipt](../../review/centering-evidence/squirtle-selective-offline-transfer.json)
+and [frozen positions](../../TestFixtures/TradingCards/Supplementary/squirtle-foil-photo-paths.json)
+record the result. T7 `CardScanner-Squirtle-20261107/` retains the paths,
+controls, perturbations, source snapshots and full/crop reviews. Spatial trials
+are correlated; these same-photo comparisons and the right-only perturbations
+do not establish independent physical calibration or full-pipeline invariance.
+Next check native physical and printed paths before transferring the new method.
+No new native or automatic pass is claimed, and reporting stays confirmation-gated.
+
+## Magic selective native repair and Squirtle follow-up — 2026-11-07
+
+The selective Magic-back method now transfers into **opt-in DEBUG automatic
+routing** for `IMG_0810.HEIC`. Two focused methods pass with zero failures or
+skips. All **344** frozen photo-boundary comparisons meet the unchanged four-pixel
+limit; worst **2.507 px**. Printed left/top/right/bottom support is **40 / 60 /
+60 / 48**; physical support is **61 on every side**. Paired left/top shares are
+**45.044967 / 51.759939%**. The existing back-family recognition supplies the
+route; it does not assert publisher-design identity. User confirmation is still
+required before reporting.
+
+The other **33 development images** exactly retain their previous selection,
+inner/outer quads and observed-path payloads. The library has twelve publisher
+reference selections plus this family repair: **twelve validated transfers and
+one PRE partial**. The prior ordinary results for two other Magic backs were
+preserved, not newly established as physically accurate. The 34-image run's
+warm upper median was **0.994 s**, maximum and Magic repair **7.431 s**; two other
+Magic backs took **3.970 / 5.853 s**. These are end-to-end DEBUG-run observations,
+not isolated profiles; speed optimization is deferred.
+
+The [integrated receipt](../../review/centering-evidence/magic-back-native-integrated-transfer.json)
+and T7 `CardScanner-MagicBack-20261107/Native-integrated-v2.xcresult` retain
+the result, tested source hashes, path payloads and full timings. The preceding
+offline comparisons use the same photograph and are not independent physical
+calibration. The route is not provisioned for production by default, and all 44
+images have not passed acceptance.
+
+The next unresolved capture is Squirtle `Document_2026-06-06_175439.png`.
+Its previously supported right-side RGB path has a nine-position gap; a
+physical-cut-anchored uniform-border trial supports only **5/61**, and wider
+RGB-region fitting only **9/61**, so neither is promoted. Foil texture and
+adjacent transitions need a more suitable model; the six-sample gap and other
+acceptance limits remain unchanged. T7 `CardScanner-Squirtle-20261107/`
+retains `cut-anchored-right-v1.json` and `region-spatial-right-v1.json`.
+
+## Magic selective paths recovered offline; native transfer next — 2026-11-07
+
+`IMG_0810.HEIC` now has a complete **offline** paired measurement with all eight
+boundary support/span/gap checks passing. No new automatic or native pass is
+claimed. The useful change is selective: retain the existing detector's stronger
+printed-edge proposals and add a physical-cut-anchored region method for the weak
+bottom seam. The earlier replacement tracker introduced the left-side wrong rule;
+this does not establish that the existing app's left guide was wrong.
+
+| Offline selective evidence | Result |
+| --- | --- |
+| Printed L/T/R/B direct observations | **36 / 61 / 61 / 47** |
+| Physical direct observations | **61 on every side** |
+| Paired left / top share | **45.000088 / 51.765894%** |
+| Frozen source positions for native transfer | **344** |
+| Bottom search seed perturbations | **−8 / 0 / +8 native pixels** |
+| Bottom support under all perturbations | **47**, identical support masks |
+| Largest bottom point movement | **<0.000002 px**, numerical precision |
+
+The existing left/top/right proposals are refined from local photo gradients,
+using the same six scale/width trials, strength, search-boundary and four-pixel
+agreement limits. Their supported refinements move at most **2.722 / 2.728 /
+3.772 px** from the original lines. Where both methods directly support a point,
+they agree with the previously reviewed observations to numerical precision.
+This preserves existing boundary identity rather than forcing a new identity
+classifier to replace already useful proposals.
+
+For the bottom, three spatial widths must locate the same entrance into a plain
+outer border, then six existing erf/logistic RGB-region fits place the seam.
+Observed physical paths anchor the comparison strip **24–48 px inward from the
+cut**. The initial printed guide therefore cannot redefine the exterior color
+sample. Fit residual, amplitude, blur, position agreement and final measurement
+support limits are unchanged. Unsupported observations remain gaps. Bottom seed
+perturbations test this new component; they do not establish invariance of the
+entire detector. Spatial averaging correlates samples and is not calibrated
+confidence.
+
+Several alternatives were stopped. Wider averaging alone supported 55 points
+but followed a stronger interior rule at six reviewed positions. A constant
+exterior sample anchored to the printed seed gave a complete result only at some
+seed positions. Anchoring to the physical cut removed that dependence, but the
+new left identity route still had only 28 proposals, below its unchanged 30-point
+gate. It is not promoted; the final selective path uses the existing left proposal
+and 36 actual local observations instead. A
+[publisher back image](https://media.wizards.com/2022/images/daily/en_7C0yERSDK6.png)
+also failed registration: 18 inliers in three quadrants; the gradient alternative
+found six matches. It supplies no accepted app reference.
+
+The [selective receipt](../../review/centering-evidence/magic-back-selective-offline-transfer.json)
+and [frozen photo observations](../../TestFixtures/TradingCards/Supplementary/magic-back-selective-photo-paths.json)
+record the result. Full overlays and unmarked source crops were inspected. T7
+`CardScanner-MagicBack-20261107/` retains all trials, source snapshots/hashes,
+seed perturbations, `selective-offline-summary.json` and the final overlay. The
+research harness includes controls for a weak true border next to a stronger
+interior rule, a single border and no border; each behaves as expected. These
+same-capture observations establish an offline transfer target, not independent
+physical calibration.
+
+Next implement the selective native measurement and compare all 344 positions,
+then validate automatic routing without replacing already working proposals.
+No app source changed and no build/simulator run was needed for this research
+checkpoint. The latest automatic library still has eleven validated transfers
+plus PRE partial; timing remains recorded/deferred. Automatic reporting stays
+confirmation-gated. All 44 acceptance and production provisioning remain open.
+
+## Shared Pokémon backs automatically selected; Magic seam isolated — 2026-11-07
+
+Both `IMG_0798.HEIC` and `IMG_0800.HEIC` now select the shared Pokémon back
+reference and retain independently observed physical and printed paths in the
+DEBUG supplied-reference library. This completes the native printed-transfer step
+below. All **742 frozen boundary comparisons** pass the existing four-pixel limit;
+worst discrepancy **0.786 px**. Automatic reporting still requires confirmation.
+No release/default reference provisioning is implied.
+
+The additive `printedContinuity` method first recognizes the shared design and
+requires the existing printed proposal to identify the same frame within the
+existing 24-pixel seed gate. A continuity proposal follows neighboring image
+evidence; every retained point must then satisfy six local RGB-gradient trials
+across three strip widths and two scales. Unsupported positions stay missing.
+Physical paths are measured separately. Provider pixels supply identity and a
+search region, never measured photo margins. Other references retain their
+existing methods and thresholds. The prepared reference rejects incompatible
+artwork/profile configurations and reproduces from its provider-only recipe.
+
+| Native integrated evidence | IMG_0798 | IMG_0800 |
+| --- | --- | --- |
+| Printed L/T/R/B direct observations | 48 / 60 / 61 / 59 | 60 / 61 / 61 / 61 |
+| Physical direct observations | 61 on every side | 61 on every side |
+| Left / top share | 50.002801 / 52.380142% | 48.084442 / 47.913615% |
+| Largest difference from offline share | 0.010300 pp | 0.012226 pp |
+| Assisted elapsed time | 2.649 s | 2.503 s |
+
+`CardScanner-PokemonBack-20261107/Native-paired-v1.xcresult` reports two focused
+methods passed: full photo transfer plus known-geometry/missing-support controls.
+The final `Native-integrated-v2.xcresult` reports two methods passed, zero
+failures/skips: automatic paired transfer and the 34-image library. All other
+**32 selections, inner/outer quads and observed path payloads exactly match**
+the Saga receipt. Integrated paths exactly equal the preceding research result;
+both overlays were inspected. Twelve supplied references select twelve captures:
+**eleven validated transfers plus PRE partial**, not twelve full passes.
+
+[Frozen paths](../../TestFixtures/TradingCards/Supplementary/pokemon-back-paired-photo-paths.json),
+[provider-only recipe](../../review/centering-evidence/pokemon-back-native-reference-specification.json)
+and [integrated receipt](../../review/centering-evidence/pokemon-back-native-integrated-transfer.json)
+record the scope. T7 retains source snapshots/hashes, exported native paths,
+overlays, metadata and `native-integrated-v2-summary.json`. Candidate is `main`
+at `11ff208` plus uncommitted work; source hashes match. Timing upper median/max
+**0.923/4.859 s** is recorded/deferred, not an isolated performance benchmark.
+No broad suite, device run or UI polish was added. Same-capture observations
+establish transfer, not independent calibrated physical accuracy.
+
+The next capture, Magic back `IMG_0810.HEIC`, has four offline physical paths
+with 61/61 support. Printed color continuity supports 34/61/61/19 positions;
+signed brightness supports 41/60/61/21. The bottom fails the unchanged minimum.
+An existing RGB region-transition model improves bottom support to 40, with
+agreement within 1.172 px where both models are supported, but still leaves an
+eight-missing-sample gap within the measured span. Complete paired measurement
+rejects. Both approaches are stopped without relaxing limits. The printed left
+candidate also needs identity review because local displacement reaches 30 px.
+
+[Magic-back review](../../review/centering-evidence/magic-back-continuity-review.json)
+and T7 `CardScanner-MagicBack-20261107/` preserve the trials and unmarked source
+crops. Next examine spatial texture and border-region evidence for the weak
+bottom seam, with fixed perturbation checks, before native transfer. Preserve
+supported observations and physical paths. All 44 acceptance, unresolved foil/
+shadow cases and production reference provisioning remain open.
+
+## Shared-back physical paths accepted; printed continuity retained offline — 2026-11-07
+
+The two Pokémon backs now pass native physical-path transfer: **376 frozen
+comparisons**, worst **0.649 native pixels**. All four native physical paths have
+61 directly supported positions on each capture. The existing observed-path
+method preserves the cut curvature that a straight fit would lose. One focused
+method passes with zero failures/skips; no detector thresholds or app routing
+changed. This supersedes the prior pending physical-transfer step, but does not
+declare either whole card automatically accepted.
+
+The [frozen physical observations](../../TestFixtures/TradingCards/Supplementary/pokemon-back-physical-photo-paths.json)
+were recorded before native execution. The [transfer receipt](../../review/centering-evidence/pokemon-back-native-transfer.json)
+records per-side errors, printed-path trials and their limits. T7
+`CardScanner-PokemonBack-20261107/Native-physical-v1.xcresult`, source snapshots,
+metadata, exported paths and `native-physical-v1-summary.json` retain the raw
+evidence. The native physical overlay and unmarked printed-boundary crops were
+inspected. Candidate: `main` at `11ff208` plus uncommitted work; tested source
+hashes still match. These are same-capture transfer comparisons, not calibrated
+physical accuracy.
+
+| Capture | Native physical worst discrepancy | Printed color support L/T/R/B | Offline left / top share |
+| --- | --- | --- | --- |
+| IMG_0798 | 0.625 px | 45 / 60 / 61 / 60 | 49.992502 / 52.385311% |
+| IMG_0800 | 0.649 px | 60 / 61 / 61 / 61 | 48.080404 / 47.925841% |
+
+All eight offline paths on both captures meet existing paired-measurement
+support, endpoint and gap checks. Unsupported positions remain gaps. Switching
+printed observations from scalar brightness to dense color contrast changes the
+paired shares by at most **0.010214 percentage points**; directly supported
+positions agree within **0.816 px**. This supports retaining the continuity-based
+photo method for native transfer. It is not an independent truth annotation or
+an automatic app result.
+
+Two alternatives were stopped. The shared publisher reference recognizes the
+design, but its border appearance differs from these prints; neither signed nor
+unsigned profile transfer supports all four sides. A simpler local RGB-gradient
+search with multi-scale agreement and competitor rejection supports only
+16/35/19/48 and 26/46/34/48 positions, respectively: both fail existing support
+requirements. No thresholds were relaxed. Boundary continuity supplies useful
+identity evidence that isolated local peaks lack; provider identity alone is
+insufficient to copy border appearance.
+
+Next transfer the continuity-assisted printed paths into native research, retain
+their directly observed positions and gaps, and validate complete paired results
+before integrating shared-design automatic selection. The validated physical
+paths remain separate from this unfinished printed step. No new whole-card pass
+is added to the nine validated library transfers plus PRE partial. Remaining
+corpus cases, all 44 acceptance and production provisioning stay open; automatic
+reporting still requires confirmation.
+
+Performance remains recorded/deferred: the last Saga library receipt has warm
+upper median/max **0.817/4.963 s**. This physical-only method took **2.862 s** for
+both cards including test overhead; that is not per-card app latency. No broad
+suite, UI polish, additional performance benchmark or device run was added.
+
+## Kyoshi Saga artwork placement accepted; back-card cut errors identified — 2026-11-07
+
+`IMG_0801.HEIC` now selects the Saga front independently from the transformed
+Avatar Kyoshi face in the DEBUG supplied-reference library. Its left field mixes
+text, chapter markers and decoration; it is not one rectangular artwork boundary.
+The [provider-only Saga recipe](../../review/centering-evidence/kyoshi-saga-native-reference-specification.json)
+instead identifies the complete black rule around the right-hand illustration.
+This measures **artwork placement against its matching design**, not a symmetric
+printed-border grade. The intentional large left margin is retained explicitly.
+No detector implementation or thresholds changed; automatic reporting still
+requires confirmation.
+
+| Native Saga evidence | Result |
+| --- | --- |
+| Frozen full-span comparisons | **375**, all within four native pixels |
+| Worst artwork / physical discrepancy | **1.004 / 0.661 px** |
+| Artwork L/T/R/B supported samples | 61 / 61 / 60 / 60 |
+| Physical L/T/R/B supported samples | 61 / 61 / 61 / 61 |
+| Measured left / top share | **87.065734 / 40.748791%** |
+| Published design left / top share | **86.854460 / 40.780142%** |
+| Difference from offline paired measurement | −0.000868 / −0.002579 pp |
+| Warm assisted upper median / max | **0.817 / 4.963 s** |
+| Saga assisted time | **4.868 s** |
+
+The [photo paths](../../TestFixtures/TradingCards/Supplementary/kyoshi-saga-photo-paths.json)
+were frozen after inspection of unmarked artwork and physical source crops,
+before native execution. `CardScanner-KyoshiSaga-20261107/Native-v1.xcresult`
+reports **two methods passed, zero failures/skips**: full path accuracy, intended
+design placement and wrong-face rejection; plus automatic selection across all
+34 development images. Other **33 selections, inner/outer quads and observed
+path payloads exactly match** the Y’shtola receipt. Eleven supplied references
+select ten designs: nine validated transfers plus PRE’s still-partial candidate.
+Native overlay inspected; source snapshots, hashes, XCResult metadata, paths and
+`native-v1-summary.json` retained in that T7 directory. Timing is recorded/deferred;
+the end of the run overlapped offline back-card analysis, so it is not an isolated
+performance benchmark. No UI changes, broad suite or device run.
+
+Review of remaining development captures found a broader physical-edge problem
+in two apparently plausible Pokémon backs. All four independently tracked physical
+sides have 61/61 supported positions in both images. Against the existing baseline,
+the observed **left cut differs by up to 28.728 px in IMG_0798 and 24.247 px in
+IMG_0800**; top discrepancies reach 7.705 / 10.948 px. Unmarked crops and complete
+overlays were inspected. Printed-side candidates have adequate sample support,
+but discrepancies up to 9.806 / 6.238 px still require separate identity/stability
+review; they are not silently accepted as truth or whole-card passes.
+
+[Back-card review](../../review/centering-evidence/pokemon-back-photo-review.json)
+and T7 `CardScanner-BackReview-20261107/` preserve these measurements. Next transfer
+independent physical-edge refinement to the shared back designs, then verify their
+printed boundaries separately. This can improve multiple captures without adding
+a per-print artwork reference to each one. Full 44-card acceptance, unresolved
+foil/shadow cases and production reference provisioning remain open. These receipts
+establish same-capture transfer, not calibrated physical grading.
+
+## Y’shtola transfer accepted; Ojer artwork retained as partial — 2026-11-07
+
+`IMG_0813.HEIC` (Y’shtola Rhul) now passes automatic selection and the complete
+artwork/physical path comparison in the DEBUG supplied-reference library. This
+adds its [provider-only recipe](../../review/centering-evidence/yshtola-native-reference-specification.json)
+without changing detector logic or thresholds. The same method also recovers
+Ojer Axonil’s artwork in `IMG_1477-2.HEIC`, but its shadowed physical right/bottom
+remain unresolved. Ojer is **not added to the automatic test library** and is not
+counted as a whole-card pass. Automatic reporting still requires confirmation.
+
+| Native evidence | Y’shtola | Ojer Axonil |
+| --- | --- | --- |
+| Scope | Artwork and physical paths | Artwork only |
+| Frozen photo comparisons | **376**, all within four native pixels | **188**, all within four native pixels |
+| Worst artwork discrepancy | **0.823 px** | **1.400 px** |
+| Worst physical discrepancy | **1.139 px** | Not accepted |
+| Native artwork L/T/R/B support | 61 / 61 / 61 / 61 | 58 / 59 / 54 / 61 |
+| Native physical L/T/R/B support | 61 / 61 / 58 / 61 | Not asserted |
+| Left / top share | **49.869258 / 20.081672%** | No full-card ratio accepted |
+
+Y’shtola differs from the offline paired result by −0.006974 / −0.001876 pp.
+Its offline physical top/bottom depart from straight fits by 4.230 / 5.565 px;
+retaining observed paths avoids fitting that curvature away. Unmarked source
+crops were inspected before native execution. Frozen full-span observations now
+live in test fixtures for [Y’shtola](../../TestFixtures/TradingCards/Supplementary/yshtola-photo-paths.json)
+and [Ojer artwork](../../TestFixtures/TradingCards/Supplementary/ojer-axonil-artwork-photo-paths.json).
+The native checks compare every frozen position, require bracketing observations
+and reject gaps over six samples. They do not merely compare headline ratios.
+Both native overlays were inspected. These are same-capture transfer comparisons,
+not independent physical calibration or professional grading evidence.
+
+`CardScanner-Yshtola-20261107/Native-v1.xcresult` reports **three methods passed,
+zero failures/skips**: Y’shtola full transfer, Ojer artwork-only transfer and the
+34-image automatic library. All other **33 selections, inner/outer quads and
+observed path payloads exactly match** the Michelangelo receipt. Ten supplied
+references select nine designs: eight validated transfers plus PRE’s still-partial
+candidate. The separate Ojer research fixture does not add a tenth selection.
+Warm assisted upper median/max **0.789/4.859 s**; Y’shtola **4.854 s**. Timing is
+recorded and deferred; no broad suite, device run or UI work was added.
+
+Ojer’s [exact recipe](../../review/centering-evidence/ojer-axonil-native-reference-specification.json)
+retains the provider’s own frame coordinates, including a one-pixel horizontal
+shift from the other designs. Its four offline artwork paths pass support checks.
+The physical failure is distinct from artwork identity:
+
+| Ojer physical experiment | Right support | Bottom support | Decision |
+| --- | --- | --- | --- |
+| Existing adaptive sharp/blurred-step method | 23/61 | 12/61 | Insufficient support |
+| Direct six-gradient consensus from saved trials | 44/61; excessive internal gap | 60/61; span supported | Partial only; not promoted |
+| Full ±80 px gradient search with competing-peak rejection | 0/61 | 11/61 | Stop; widening search does not resolve ambiguity |
+
+The direct bottom candidate differs from previously supported step fits by
+2.084–2.781 px. It remains research evidence, not physical-cut truth. Competing
+responses and model sensitivity around the right-edge shadow require a distinct
+physical-boundary method; a larger search window alone is not the answer. Preserve
+the accepted artwork rather than restarting semantic recognition.
+
+Receipts, source hashes, corpus output and native overlays are in T7
+`CardScanner-Yshtola-20261107/`; Ojer photo/profile/physical experiment receipts
+are in `CardScanner-OjerAxonil-20261107/`. All 44 passing, the remaining foil and
+shadow failures, unscored captures and default production reference provisioning
+remain open. Next assess the Saga front’s distinct layout while retaining the
+separately identified physical-shadow problem for a bounded follow-up.
+
+## Michelangelo reference transfer accepted — 2026-11-07
+
+`IMG_0811.HEIC` (Michelangelo, Weirdness to 11, TMT 121) now selects the existing
+observed-path method automatically in the DEBUG supplied-reference library. This
+adds a [provider-only reference recipe](../../review/centering-evidence/michelangelo-native-reference-specification.json)
+and fixture; **no detector implementation, threshold or UI change** was needed.
+Automatic reporting remains disabled until user confirmation. The decorative
+crown and text box are excluded from the artwork measurement; intentionally
+asymmetric artwork placement is retained.
+
+The broad signed edge search was rejected on all four artwork sides. Its bottom
+result is particularly informative: **61/61 supported samples**, a **0.391 px**
+straight-line residual, yet the neighboring rule is **23.530 native px** from the
+intended boundary at the median station. Sample support and a straight fit cannot
+establish boundary identity. The established provider-profile method identifies
+the intended rule, then six local photo-gradient trials measure its position.
+It recovers 60/60/61/60 offline artwork samples, with independent physical paths
+supporting 61 on each side. All twelve unmarked artwork crops and twelve physical
+crops were inspected and [comparison observations frozen](../../review/centering-evidence/michelangelo-photo-observations.json)
+before native validation. No unsupported samples were filled in as observations.
+
+| Native result | Recorded evidence |
+| --- | --- |
+| Artwork L/T/R/B supported samples | 59 / 60 / 61 / 61 |
+| Physical L/T/R/B supported samples | 61 / 61 / 61 / 61 |
+| Full-span comparison | **374 positions**, all within four native pixels |
+| Worst artwork / physical discrepancy | **1.581 / 0.605 px** |
+| Left / top artwork share | **51.581756 / 21.050084%** |
+| Difference from offline paired measurement | +0.009845 / −0.000705 pp |
+| Warm assisted upper median / max across 34 images | **0.771 / 4.824 s** |
+| Michelangelo assisted time | **4.824 s**, recorded and deferred |
+
+`Native-v1.xcresult` reports **two methods passed, zero failures/skips**: native
+artwork/physical accuracy and automatic library selection over all 34 development
+images. Comparison with the Spinerock integrated-v2 receipt preserves every other
+**33 inner/outer quad, observed path payload and selection result exactly**.
+Nine supplied references select eight designs: seven validated transfers plus
+PRE Pikachu's still-partial candidate. This is not eight complete physical-card
+accuracy passes or all 44 cards passing. The native photo overlay was inspected;
+no UI polish, broad suite, holdout or device run was added.
+
+Receipts: T7 `CardScanner-Michelangelo-20261107/`, including
+`native-v1-summary.json`, exact source hashes, XCResult metadata, native paths,
+34-image corpus output, rejected broad paths, accepted profiles and review images.
+Same-capture agreement is transfer evidence, not independent physical calibration.
+Default catalog/reference provisioning is still open. Next use boundary identity
+to assess the remaining decorative-frame cases; retain the foil failures as open
+and stop methods that lock onto a neighboring rule even when their fit is strong.
+Performance optimization remains deferred as requested.
+
+## Spinerock automatic selection and curved guides integrated — 2026-11-07
+
+The DEBUG supplied-reference analyzer now selects Spinerock's curved route
+automatically. Measurement, screen and export retain observed paths and missing
+observations; headline ratios use the 31 local paired ratios. Straight scaffolds
+are only for compatibility and the explicit **Adjust with straight guides** action.
+That action requires fresh confirmation; undo restores the detected curves.
+Confirmation preserves detector confidence, and reset restores the pending
+proposal. Automatic reporting remains disabled. Precision/tilt/comparison controls
+do not operate on curved paths; derived geometry revisions include the paths.
+
+`Native-integrated-v2.xcresult` verifies **four methods passed, zero failures/skips**:
+automatic view-model lifecycle/render/export/undo, the expanded 34-image library,
+Starting Town and known curved-geometry/support controls. Integrated-v1 failed
+during Swift expression type checking before tests; the expression was simplified
+without changing arithmetic. The final accessibility-only correction removes an
+inactive VoiceOver adjustment action from read-only curves; integrated-v3 verifies
+**one focused lifecycle/render method passed, zero failures/skips**.
+
+All other **33 outer and inner quads are exactly unchanged** from the previous
+physical-refinement corpus receipt. Eight references select seven designs: six
+validated reference transfers plus PRE's still-partial candidate, not seven
+complete physical-card accuracy passes. Spinerock's paths, local ratios and
+headline shares exactly reproduce the native research receipt: **49.780625 /
+19.757022%** left/top; its **369-position** comparison remains valid, worst
+**1.137 px**. Actual SwiftUI canvas and UIKit export images were inspected.
+Warm assisted upper median/max **0.763/4.764 s** is recorded and deferred; Spinerock
+is the maximum. No full suite, holdout or physical-device run.
+
+Source-level `hig-design-gate` verdict: **PASS**, no remaining scoped issues.
+Platform patterns use system buttons; clarity separates review and manual mode;
+typography retains adaptive system sizing; accessibility describes curves and
+removes inactive edit actions; confirmation stays one tap; explicit undoable
+manual conversion avoids misleading guide behavior. Minimal fixes are implemented.
+Runtime VoiceOver/device coverage is not claimed. No top-level navigation changes.
+
+Bounded transfers to the remaining foil failures were stopped:
+
+| Existing failing edge | Signed profile support | Unsigned profile support | Result |
+| --- | --- | --- | --- |
+| PRE Pikachu right | 2/61 | 0/61 | Insufficient support; unchanged native candidate |
+| Halloween foil Gengar bottom | 0/61 | 0/61 | Insufficient support; ordinary fallback retained |
+
+Unsigned matching uses gradient magnitude with unchanged correlation, competitor,
+four-pixel agreement and span limits. The signed known-curve control still
+reproduces 61/61 positions within 0.456 px. Neither foil trial is promoted. Their
+finish-dependent printed borders do not inherit Spinerock's stripe appearance.
+Next inspect other observable design features/cases rather than repeat this failed
+transfer or loosen its limits. PRE, foil Gengar, Squirtle and other captures remain
+open. The foil Gengar source photo was revisited; its footer border is weak and
+decorative overlaps complicate alternative references, so no replacement is claimed.
+
+Receipts and exact source hashes: T7 `CardScanner-Spinerock-20261107/`, including
+`integrated-v2-summary.json`, v2/v3 source/metadata, corpus and image companions.
+Foil trials are in the existing PRE/Gengar T7 directories as `profile-*-v1.json`
+and `unsigned-profile-*-v1.json`. This supersedes the research-only integration gap
+below. The route remains a DEBUG caller-supplied library, not default catalog
+provisioning, production certification or all 44-card acceptance.
+
+## Spinerock native curved paths and paired measurement accepted — 2026-11-07
+
+The stopped straight-line transfer below is superseded by an additive native
+research route that retains curved observations. Provider-only boundary strips
+are optional in prepared references; existing references and straight-guide
+analysis are unchanged. Native pattern correlation identifies the artwork rule,
+then six local photo-gradient trials place it. Physical paths independently use
+background polarity and strip consensus, retaining missing observations rather
+than fitting away curvature. The Spinerock reference supplies all four strips.
+
+The new [paired-path research measurement](../../review/centering-harness/paired_path_measurement.py)
+chooses common sampling spans inside the artwork and brackets those same positions
+with physical and artwork observations. It rejects missing endpoints, gaps over
+six samples and crossing frames. It averages 31 local opposing-margin fractions,
+so a common scale at a station cancels. Offline interpolation is PCHIP; native
+interpolation is linear between retained observations. Neither extrapolates the
+short artwork sides across the whole card. Known flat/projective/bowed/stretched
+controls recover 40/20% shares within 0.000012 pp offline and within the 0.005 pp
+native assertion. This does not invert arbitrary 3D deformation or lens error.
+
+| Spinerock result | Evidence |
+| --- | --- |
+| Native left / top share | **49.780625 / 19.757022%** |
+| Difference from frozen offline paired result | −0.018369 / +0.002109 pp |
+| Native artwork L/T/R/B observations | 60 / 61 / 54 / 61 |
+| Native physical L/T/R/B observations | 60 / 61 / 54 / 61 |
+| Full-span photo comparisons | **369 positions; all within four pixels** |
+| Worst artwork discrepancy | 0.896 native px |
+| Worst physical discrepancy | 1.137 native px |
+
+The native top-only check initially passes two focused methods. The final
+`Native-path-v2.xcresult` executes **four methods, four passed, zero failures/skips**:
+complete Spinerock paired measurement, known geometry/support rejection, top-path
+transfer/wrong-design rejection, and existing Starting Town accuracy/confirmation.
+The final overlay was inspected. Earlier native artwork/physical discrepancies
+are not replaced by ratio-only acceptance: all eight boundaries are compared.
+
+Reference alignment shifted ±8 native pixels changes the offline top share by
+at most 0.0014 pp. A host diagnostic using the app's matcher arithmetic recognizes
+21 coherent interior patches across four quadrants, with title/footer corroboration;
+its predicted search region produces 19.755493% top share. Fixed the host helper's
+previous printed-only assumptions before that check. Native extraction then passes
+using CoreGraphics and the native matcher, not the host result as input.
+
+Receipts, native attachments, all-eight-side comparisons, alignment perturbations,
+exact implementation snapshots/hashes and overlay are under T7
+`CardScanner-Spinerock-20261107/` (`paired-v1.json`, `Native-path-v2-metadata.json`,
+`native-path-v2-comparison.json`, `native-path-v2-source-hashes.json`). No full suite,
+34-image rerun, device, holdout or UI polish. Timing optimization remains deferred.
+
+**Scope remains research:** `observedMeasurement` is explicitly called by the
+native accuracy check; automatic library selection and app guide/report state do
+not yet consume curved measurements. Next integrate a path-capable measurement
+representation and automatic selection while preserving the existing straight
+route. Accurate curved guides are functional correctness, not cosmetic polish.
+This closes the native measurement transfer for this capture, not the app-wide
+automatic pass or all 44-card objective. Automatic reporting remains disabled.
+
+## Spinerock foil paths recovered offline; straight-line transfer stopped — 2026-11-07
+
+Moved to `IMG_0803.HEIC`, ECL 159 Spinerock Tyrant. The matching provider image
+registers with 549 inliers across four quadrants despite rainbow foil reflections.
+The [provider-only specification](../../review/centering-evidence/spinerock-native-reference-specification.json)
+locates the outer black artwork rule against its red stripe. The generated native
+reference is prepared but is not added to the supplied-library tests or promoted.
+
+Initial scalar tracking retains L/T/R/B 61/57/61/61 positions, but direct crop
+review exposes a top-path jump onto the adjacent title rule. Stable local contrast
+alone does not establish boundary identity. The new offline
+[profile probe](../../review/centering-harness/reference_profile_probe.py) compares
+the surrounding provider stripe pattern at three strip widths and two profile
+radii, then independently places the selected edge with local photo gradients.
+All six profile trials must agree within four pixels, meet correlation/competitor
+limits, and pass all six local-gradient stability checks. This is an experimental
+identity check, not calibrated confidence or a native detector change.
+
+The top now follows the intended artwork rule through the former jump. Supported
+L/T/R/B counts are **61/60/46/61**; all four pass their artwork-relative central
+60% span/gap checks. The independently tracked physical sides retain
+**60/61/54/61** and pass physical-relative span/gap checks. A synthetic stripe with
+known curvature, an adjacent competing rule and a brightness gradient recovers
+61/61 positions with worst error **0.456 px**. New L/R/B artwork paths agree with
+the previous supported paths within 0.160/0.153/0.405 px; retain those working
+paths and use the pattern method only for the unresolved top.
+
+However, a straight-line fit across the supported central span misses the artwork
+top by **5.545 px**, physical top by **8.205 px**, and physical bottom by **7.842
+px**. Direct source/overlay inspection supports curved paths. Stopped direct native
+straight-line transfer before another build: this representation would discard
+observed geometry. No centering ratio or additional native accuracy pass is claimed.
+Artwork-relative and physical-relative support domains are different; they must
+be paired at corresponding measured positions before calculating a curved-path
+ratio, without extrapolating short artwork sides across the whole card.
+
+Next add that bounded paired-path measurement to research, with known-curvature
+controls, then consider native integration if the evidence supports it. Preserve
+the successful straight-line route. Registration, v1/v2 probes, inspected crops,
+`v2-assessment.json`, exact source snapshots/hashes and overlay are on T7 under
+`CardScanner-Spinerock-20261107/`. No new simulator/build/UI work for this case.
+The six passing methods in the native physical-cut checkpoint below remain the
+latest native run. Automatic reporting remains disabled; all 44 cards passing
+and production promotion remain open.
+
+## Native physical-cut refinement accepted — 2026-11-07
+
+The DEBUG supplied-artwork route now measures the physical cut independently of
+the artwork reference. It samples original-photo contrast at three strip widths,
+requires consistent background polarity, rejects competing transitions, and
+requires supported measurement spans and agreement within four native pixels.
+All four physical sides must pass and form valid geometry. Existing outer guides
+are retained when they already agree within tolerance; unsupported corrections
+fall back to those guides. Accepted artwork geometry is preserved exactly.
+Printed-reference handling and production defaults are unchanged.
+
+`CardScanner-NativePhysical-20261107/Native-v2.xcresult` on T7 verifies **six
+methods passed, zero failures/skips**, including physical accuracy, synthetic
+sleeve/polarity/image-boundary rejection, artwork accuracy, confirmation behavior
+and the 34-image supplied-library sweep. Every inner quad is exactly unchanged
+from The Ooze v1. Outer geometry changes only for Starting Town, Kyoshi and The
+Ooze; the other 31 outer quads remain exact. The library still selects six designs,
+including the unresolved PRE candidate, so selection is not an accuracy count.
+
+| Physical-cut comparison | Kyoshi | The Ooze | Starting Town |
+| --- | --- | --- | --- |
+| Worst frozen-point discrepancy | 1.957 px | 3.147 px | Not separately frozen |
+| Supported full-span observations | 188 | 187 | 172 |
+| Worst full-span discrepancy | 2.205 px | 3.737 px | 3.990 px |
+| Final left / top margin share | 51.457 / 20.066% | 50.900 / 19.129% | Existing ratio check passes |
+
+All 547 full-span comparisons pass the unchanged four-pixel tolerance; Starting
+Town's right side is close to that limit. These are same-capture checks against
+separately fitted photo paths, not calibrated physical truth. The
+[frozen physical observations](../../review/centering-evidence/magic-physical-photo-observations.json)
+precede native fitting. Native v1 and v2 physical quads for Kyoshi and The Ooze
+reproduce exactly. All three final overlays were inspected. This supersedes the
+native physical-cut gap in the preceding artwork checkpoint, without closing
+physical calibration or full-corpus acceptance.
+
+Warm assisted upper median/max is **0.745/1.782 s**, recorded without further
+optimization. Receipts, exact source snapshots and hashes, native quads,
+`v2-summary.json`, full-span comparisons and the Starting Town follow-up are under
+the T7 root above. No UI polish, full suite, device or holdout run. Automatic
+reporting remains disabled; explicit user confirmation remains separate from
+detector confidence. Next examine Spinerock Tyrant's foil artwork (`IMG_0803`)
+using the same design-recognition/photo-measurement separation. Squirtle's right
+gap, PRE's right edge, foil Gengar, other designs, production promotion and all
+44 cards passing remain open.
+
+## Kyoshi and The Ooze artwork transfers accepted — 2026-11-07
+
+Native diagnostics identify why Kyoshi's left rule was missed: the closest
+proposal retained only 29 fitted observations, while another existing proposal
+within the same 24 px design-distance bound followed the real rule. Artwork
+fitting previously accepted 25 observations without the printed mode's bounded
+measurement-span check. Both reference kinds now require the existing 30-point,
+endpoint-bracketing and maximum-six-missing-sample criteria. When every initial
+proposal lacks support, the matcher refines the remaining existing candidates
+inside the unchanged distance/search limits. All supported alternatives must
+agree within four native pixels; conflicting initial fits still reject and a
+supported initial side is retained. No wider search or lower acceptance limit was
+introduced. Contrast strengths and ranked proposals are retained in DEBUG logs.
+
+Kyoshi's left discrepancy drops from 17.014 to **0.829 px**, with its other three
+accurate sides preserved. `Native-reacquire-v4.xcresult` verifies four executed
+methods, all passed: Kyoshi, the 34-image library sweep, Starting Town and distinct
+supported-edge rejection. A misspelled fifth selector did not execute; it is not
+counted. The correctly named span-control method is included in the subsequent
+The Ooze run. All other **33 native quads are exactly unchanged** from Kyoshi v2.
+
+Added the [provider-only The Ooze reference](../../review/centering-evidence/the-ooze-native-reference-specification.json)
+for `IMG_0809.HEIC`, TMT 177. Its native provider pixels define the same black-rule
+semantics. Explicit reference-defined outward polarity in the offline tracker
+avoids the neighboring title-side transition; all four sides retain 61 stable
+observations. Twelve unmarked crops were inspected and the
+[photo comparison points](../../review/centering-evidence/the-ooze-photo-observations.json)
+were frozen before native transfer. The same polarity also recovers Kyoshi's
+intended bottom offline with 61 observations. This option does not alter default
+scalar tracking or infer polarity from expected ratios.
+
+| Native artwork result | Kyoshi | The Ooze |
+| --- | --- | --- |
+| Left / top margin share | 52.471 / 20.234% | 51.680 / 20.144% |
+| Difference from frozen photo-line shares | 0.141 / 0.024 pp | 0.079 / 0.041 pp |
+| Worst reviewed artwork point | 0.829 native px | 1.625 native px |
+| Automatic reporting | Disabled | Disabled |
+
+The Ooze `Native-v1.xcresult` verifies **four methods passed, zero failures/skips**:
+The Ooze accuracy/wrong-design fallback, the expanded development library, Kyoshi
+accuracy and bounded measurement-span controls. All other **33 native quads are
+exactly unchanged** from Kyoshi v4. Seven supplied references select six designs:
+five validated artwork/printed-frame transfers and the still-partial PRE candidate.
+Foil Gengar retains ordinary geometry. These counts are **inner-reference transfer
+acceptance**, not six complete physical-card accuracy passes.
+
+Independent physical-background tracking adds an important remaining qualification.
+Kyoshi's four physical sides retain 61 observations each; The Ooze retains
+61/61/60/61. All pass span support, and straight-line fits stay within 1.617 and
+3.095 px of their retained observations respectively. However, the unchanged app
+outer guides differ from these photo paths by up to **11.702 px for Kyoshi and
+17.937 px for The Ooze**. Substituting the photo-fitted physical quad while keeping
+native artwork fixed changes left/top shares by −0.845/−0.142 pp and
+−0.571/−0.984 pp respectively. This same-capture comparison is not calibration,
+but proves that accurate artwork alone must not close the physical-cut work.
+Both comparison overlays were inspected; no outer correction was promoted.
+
+Warm assisted upper median/max is 0.741/1.001 s for Kyoshi v4 and 0.750/1.046 s
+for The Ooze v1, with ordinary same-image analysis first. Timing is recorded and
+deferred. Exact sources, metadata, photo observations, native quads and
+`physical-assessment.json` are on T7 under `CardScanner-AvatarKyoshi-20261107/`
+and `CardScanner-TheOoze-20261107/`. No UI, full suite, device or holdout run.
+
+Next transfer supported physical-cut refinement into the native research route
+without disturbing the accurate artwork lines, then verify it on these cards and
+the existing library. Squirtle's right gap, PRE's right edge, foil Gengar, other
+designs, production promotion and all 44 cards passing remain open. Automatic
+reporting stays disabled.
+
+## Kyoshi native partial transfer and Squirtle bottom support — 2026-11-07
+
+Continued the full-corpus objective from the preceding partial repairs. Dense
+tangential sampling (at most one native pixel between samples) reduces aliasing
+from foil texture. The opt-in RGB Squirtle trial retains L/T/R/B 40/41/43/37
+positions. Left/top/bottom pass the unchanged span/gap checks; **right still
+rejects**. Retain the previous better-supported grayscale left/top and the four
+physical paths, plus this newly supported RGB bottom candidate. A lower total
+count can have better measurement coverage: the new bottom has a maximum gap of
+two samples, while the previous 39-point path exceeded six. This is supported
+offline geometry, not an additional full-card accuracy pass.
+
+The separate [RGB region model](../../review/centering-harness/color_region_probe.py)
+fits a shared transition position across three color channels instead of picking
+one gradient maximum. Both synthetic model families recover the known center
+within 0.001 px, but only **5/61** real-photo right-side locations pass all six
+fits. Stopped this model without changing its limits or promoting it. Evidence,
+source snapshots and explicit failures are in T7
+`CardScanner-Squirtle-20261107/dense-and-region-summary.json`.
+
+Moved to Avatar Kyoshi `IMG_0802.HEIC`, using the exact transformed face of
+[TLA 186](https://scryfall.com/card/tla/186/the-legend-of-kyoshi-avatar-kyoshi).
+The ordinary inner frame mixed decorated-title and artwork boundaries. Reference
+registration finds 1,238 inliers across four quadrants. The
+[provider-only specification](../../review/centering-evidence/avatar-kyoshi-native-reference-specification.json)
+defines the artwork's outer black rule against its surrounding white/silver stripe.
+Native reference-pixel cross sections corrected the initial right/bottom coordinates
+from the stripe interior to the actual black/white transitions; the original
+specification and its failed run are preserved. This was a reference-definition
+correction, not a change to historical photo annotations.
+
+Initial native matching recognizes the design but stops on near-tied left seeds.
+The existing photo-fit agreement check is now available to artwork as well as
+printed-frame references; artwork retains its signed inward-contrast fitter.
+After the reference correction the v2 seeds are unambiguous, so this photo does
+not itself demonstrate the new artwork tie branch. Distinct/crossing supported
+line rejection and the existing Starting Town accuracy/confirmation method pass.
+
+[Frozen source-photo observations](../../review/centering-evidence/avatar-kyoshi-photo-observations.json)
+also expose an offline bottom mistake: the strongest unrestricted edge was the
+title-side edge below the white stripe, approximately 16 px from the intended
+artwork rule. Native fitting selects the intended bottom. Its L/T/R/B worst
+point differences are **17.014/0.746/0.751/0.682 native px**. Left fails; the
+other three pass. The candidate's left/top shares are **53.736/20.234%**, within
+1.405/0.024 pp of the frozen straight-line photo comparison. Aggregate ratio
+agreement therefore does not excuse the wrong left-side angle. The native left
+seed is already angled into the artwork; its narrow local search can fit texture
+where the actual rule has left the search band.
+
+`Native-v2.xcresult`: **four methods executed, three passed, one failed, zero
+skipped**. The only failure is Kyoshi's left-side four-pixel check. The six-reference
+34-image library sweep selects five designs (three previously validated transfers,
+PRE partial, Kyoshi partial); foil Gengar still retains ordinary geometry.
+All other **33 native quads are exactly unchanged** from the preceding receipt.
+Warm assisted upper median/max 0.739/0.992 s recorded, with same-image ordinary
+analysis first. No timing optimization, UI work or holdout evaluation. The v1
+two-method failure, v2 metadata, source hashes, native quads and inspected photo
+overlay are in T7 `CodexBuilds/CardScanner-AvatarKyoshi-20261107/`.
+
+Next inspect the competing native left proposals and their contrast/support,
+then reacquire the intended rule without accepting texture or widening all searches
+indiscriminately. Preserve the three accurate Kyoshi sides and the existing cards.
+Squirtle's right gap, PRE's right edge, foil Gengar, other unresolved captures and
+production transfer remain open. Automatic reporting remains disabled; all 44
+cards passing is not established.
+
+## Foil Gengar stop and Squirtle physical-edge progress — 2026-11-07
+
+Performance optimization remains deferred under the owner's accuracy-first
+direction. The [pending optimization receipt](#accuracy-first-continuation--2026-11-06)
+records unchanged geometry, cold 2.197 s, ten-photo upper median 0.853 s and maximum
+1.629 s; its two timing assertions still fail. No further timing or UI work was
+used to gate these photo investigations.
+
+The optional provider-only `includeFrameLandmarks` preparation adds distributed
+features outside the artwork rectangle, without changing existing specifications.
+The [foil Gengar specification](../../review/centering-evidence/gengar-paf-native-reference-specification.json)
+produces 53 distinct positions. Host recognition selects only its intended capture
+among 34 development images; native matching finds 23 coherent artwork positions
+in four quadrants. Recognition is recovered, but the nearest bottom proposal is
+87.814 native px from the expected printed frame, outside the unchanged 24 px gate.
+No replacement is accepted. Global reference projection is also insufficient as a
+direct measurement shortcut: it disagrees with the previously accepted SSP frame
+by up to 5.986 px, beyond the existing four-pixel local tolerance. Stopped that
+shortcut instead of promoting inferred geometry.
+
+`Native-distributed-v1.xcresult` verifies **two methods executed, both failed,
+three assertion failures, zero skips**. Failures concern the expected fifth
+Gengar transfer; all **34 native quads exactly match** the preceding four-design
+receipt. The four existing selections remain, including PRE's explicitly unresolved
+right-edge accuracy. Warm assisted upper median/max is 0.728/0.988 s, following
+same-image ordinary calls; this is not cold performance acceptance. Metadata,
+attachments, source hashes and projection comparisons are in T7
+`CodexBuilds/CardScanner-FoilGengar-20261107/`.
+
+Moved to Squirtle `Document_2026-06-06_175439.png`. Source review confirms the
+ordinary inner top crosses the title and the inner bottom excludes part of the
+printed footer; several physical guides are also inset. The
+[provider specification](../../review/centering-evidence/squirtle-reference-border.json)
+recognizes with 554 global inliers and 225 distinctive-artwork matches across four
+quadrants. The projected frame supplies search locations only.
+
+Two additive, opt-in **offline** methods were evaluated in
+[`track_card_paths.py`](../../review/centering-harness/track_card_paths.py):
+
+- Physical background contrast: infer outward polarity only when at least 80%
+  of sampled positions agree by at least ten luminance units. Restrict the search
+  to real image pixels; never pad an off-image strip. This avoids selecting the
+  stronger, opposite-polarity printed left edge. It supports all four physical
+  paths with L/T/R/B **56/60/54/51** stable observations and passes the existing
+  measurement-span/gap checks. Left seed shifts of ±8 px retain 56 observations,
+  with matched central positions differing by less than 0.000001 px. This verifies
+  repeatability, not independent physical accuracy or immunity to sleeves/shadows.
+- RGB contrast: combine absolute channel gradients so brightness polarity may
+  vary along a printed side. Squirtle's right-side stable count improves from
+  **16 to 38**. A chroma-magnitude trial yields zero and is stopped. RGB still
+  leaves a gap longer than six samples; the grayscale bottom's 39 stable samples
+  also leave an excessive gap. Left/top have 61/60 stable samples. **The full
+  printed-frame measurement remains rejected; no new ratio is accepted.**
+
+The known-edge synthetic RGB control retains 60/61 observations with maximum
+error below 0.000001 px; the abrupt horizontal color junction rejects. An initial
+strict expectation of 61/61 fails and is preserved in `method-controls.json`.
+Inconsistent exterior contrast rejects as intended. Existing scalar left-path
+output reproduces exactly; PRE and foil-Gengar references regenerate exactly.
+[Unmarked photo observations](../../review/centering-evidence/squirtle-photo-observation-review.json)
+and inspected source/overlay crops remain separate from detector support. T7
+`CodexBuilds/CardScanner-Squirtle-20261107/` contains raw paths, rejected trials,
+support failures, seed controls, source snapshots and the observation overlay.
+
+No additional app build, simulator/UI run or holdout evaluation was performed for
+Squirtle. These methods have not been transferred into the app. Next retain the
+supported physical/printed observations and isolate the right/bottom missing
+evidence before native transfer; do not infer a complete frame from counts alone.
+Automatic reporting remains disabled. Three prior native transfers are validated;
+PRE, foil Gengar, Squirtle and full-corpus automatic accuracy remain unfinished.
+
+## Prismatic foil identity and unresolved right edge — 2026-11-07
+
+Added optional color alternatives to the DEBUG reference matcher. Normalized
+red-minus-green and blue-minus-green signals supplement luminance at each patch
+location. The best signal supplies **one spatial vote**, not multiple votes.
+Existing references retain their original grayscale path without color allocation.
+Schema validation rejects duplicate alternative signals and invalid patch sizes.
+The 0.80 correlation, coherent displacement, interior/identity counts, quadrant
+coverage and title/footer corroboration gates remain unchanged.
+
+Prismatic's initial luminance route fails; inverted contrast also fails and was
+stopped. Either color signal alone still lacks a quadrant. A combined reference
+passes the [host C-kernel diagnostic](../../review/centering-harness/native_patch_probe.py)
+on exactly one of 34 development captures, but initial native preparation yields
+only nine coherent artwork locations in three quadrants. Host Pillow preparation
+is therefore explicitly not interchangeable with CoreGraphics acceptance.
+
+The [reference preparation](../../review/centering-evidence/pikachu-pre-native-reference-specification.json)
+now supplements the fixed grid with up to two well-separated corner features per
+artwork quadrant, selected solely from the provider's luminance/color rasters.
+The prepared PRE reference has 40 distinct positions. Native matching finds 15
+coherent artwork locations across all four quadrants and rejects the related SSP
+design. No capture coordinates or expected ratios select the reference features.
+
+Near-tied printed-edge proposals are now refined before deciding whether geometry
+is ambiguous. Every fully supported fit must agree pairwise within four native
+pixels over the measurement span. Distinct supported edges still reject. For PRE,
+two left proposals converge and one of two right proposals passes support. Ordinary
+unambiguous routes and artwork fitting retain their prior behavior. Focused tests
+cover separated parallel edges, crossing edges and missing supported candidates.
+
+The candidate's native left/top shares are **42.636/48.972%**, within 1.525/0.031 pp
+of the frozen photo-observation line calculation. Worst reviewed-point distances
+are L/T/R/B **0.394/1.483/11.949/0.752 px**. The right-side gate **fails**. The
+[photo receipt](../../review/centering-evidence/pikachu-pre-photo-observations.json)
+was frozen before native results; two decorative-overlap observations are recorded
+separately. Subsequent close-up comparison shows right-side foil texture/angle
+ambiguity between the native and grayscale paths. Neither was silently adopted as
+truth, and the frozen right-side failure remains. This is not a full-card pass.
+
+`Native-consensus-v3.xcresult` verifies **seven methods executed, six passed, one
+failed, zero skipped**. The sole assertion failure is PRE's right-side distance.
+The four-design selection sweep passes across 34 development images, with 30
+unrelated measurements exactly ordinary. Its native quad attachment confirms all
+other **33** captures—including the three previously working designs—are exactly
+unchanged from the preceding three-design run. Four recognized designs therefore
+means three previously validated transfers plus one partial PRE candidate, not
+four complete accuracy passes. Earlier v1/v2 failures remain archived.
+
+Warm assisted upper median/max is 0.648/0.902 s, recorded without optimization;
+same-image ordinary analysis precedes each assisted call. Provider/reference hashes,
+source snapshots, native metadata, candidate crops and the corpus attachment are
+in T7 `CodexBuilds/CardScanner-PrismaticPikachu-20261107/`. Automatic reporting stays
+disabled; the candidate still requires review and production defaults are unchanged.
+No holdout or full suite was run. Next transfer the color-recognition improvement
+to other foil failures while retaining PRE's right edge as an explicit unresolved
+accuracy item. Full 44-image automatic-centering acceptance remains open.
+
+## Native gold Pikachu transfer accepted — 2026-11-07
+
+Resolved the prior SSP transfer failure without changing the accepted Gengar or
+Starting Town geometry. Native diagnostics exposed two issues: the span check
+discarded valid bracketing observations more than one sample outside an endpoint,
+and single-pixel color probes selected foil texture on the left/top. The span check
+now uses the nearest supported observation before 20% and after 80%, retaining
+the original minimum 30 samples and maximum six missing samples. Focused controls
+reject missing endpoints, excessive gaps and insufficient total observations.
+
+For a printed side that still fails, the DEBUG matcher now tries tangential strip
+half-widths 4/8/16 native px. At least two fits must independently pass every
+existing support limit; every supported fit must remain within four native pixels
+of the retained fit over the measured span. An incomplete scale supplies no vote.
+The middle-width supported fit is preferred. Ordinary accepted sides are retained;
+artwork-mode fitting is unchanged. Identity, residual and gap limits are unchanged.
+SSP uses strip consensus for left/top (48/48 retained observations), with the
+original right/bottom fits (47/56 observations). A stricter first trial requiring
+all three scales failed at the top's narrow strip; that result remains archived.
+
+Native source-crop review also caught two wrong offline comparison points, both
+on foil texture. The [review receipt](../../review/centering-evidence/pikachu-ssp-photo-observation-review.json)
+records their original values, corrected intervals and limitations. These corrections
+were frozen before the new native result; the other fourteen points and aggregate
+transfer thresholds were unchanged. Historical ground-truth files are untouched.
+
+| Native SSP observation | Result |
+| --- | --- |
+| Left / top share | 50.608% / 52.899% |
+| Difference from original supported-path aggregate | 0.179 / 0.643 pp |
+| Worst reviewed-point distance, L/T/R/B | 2.695 / 2.703 / 1.568 / 2.507 native px |
+| Physical outer quad | Exactly unchanged |
+| Automatic reporting | Disabled |
+
+`Native-strip-v5.xcresult` verifies **five methods passed, zero failures/skips**:
+SSP geometry/wrong-design fallback, bounded endpoint support, the three-design
+34-image library sweep, Gengar geometry/confirmation/export and Starting Town
+geometry/confirmation/export. The sweep selects exactly those three designs and
+leaves the other 31 measurements equal to ordinary analysis. Comparing its native
+quad attachment to the preceding two-design library receipt confirms all other
+33 captures—including Gengar and Starting Town—are exactly unchanged. The earlier
+diagnostic and strict-consensus failures remain in their original result bundles.
+
+Warm assisted upper median/max is 0.557/0.849 s, recorded without optimization.
+Each follows ordinary same-image analysis; this is not cold performance acceptance.
+Source hashes, corrected-point crops, reconstructed native-line overlay, corpus
+attachment and result metadata are in T7
+`CodexBuilds/CardScanner-GoldPikachu-20261107/`. The overlay was inspected. No full
+suite, device or UI screenshot run is claimed. This is a **DEBUG supplied-library
+transfer pass**, not independent physical calibration or production promotion.
+
+Next investigate the remaining PRE foil identity failure using the now-validated
+native path, then resume the other unresolved captures. Venipede's physical cut,
+foil Gengar, production back-family identity, library provisioning, reference
+adjudication and full 44-image automatic-centering acceptance remain unfinished.
+
+## Shadow stop and gold Pikachu routing — 2026-11-07
+
+Continued from the prior checkpoint without altering working Gengar/Starting Town
+geometry. Venipede's physical-bottom tracker without a position prior improves
+from 15 to 28 stable samples, still below the existing 30-sample requirement and
+still following the shadow transition. A separate
+[cut-plus-shadow diagnostic](../../review/centering-harness/shadow_transition_probe.py)
+fits a blurred material step plus a decaying shadow. Four noiseless synthetic
+controls recover the known cut within 0.1 px, but **0/9** photo locations pass the
+fixed cross-strip/blur/restart sensitivity check. Some equivalent fits shift the
+cut by over 30 px; footer text also violates the model. Stopped this approach
+without producing a physical replacement or relaxing limits. Evidence remains in
+T7 `CardScanner-Venipede-20261107/physical-bottom-no-prior` and `shadow-model-v1`.
+
+Moved to the two gold Pikachu PNGs. The
+[provider-only specifications](../../review/centering-evidence/gold-pikachu-reference-borders.json)
+describe PRE 179 and SSP 247, including intentional artwork overlap across the
+panel. Both references globally match both captures through shared typography.
+Distinctive-artwork corroboration accepts only the correct SSP reference on
+`Document_2026-06-06_152530.png` (966 global / 96 artwork inliers, four artwork
+quadrants). PRE has only nine artwork matches in three quadrants and remains
+unresolved. A fixed gradient-magnitude alternative does not rescue it (five/two);
+stopped without changing default luminance registration, which exactly reproduces
+the saved SSP result. Shared layout is still insufficient identity evidence.
+
+Reference-guided SSP photo paths support all four sides (L/T/R/B counts
+40/46/52/49). With the unchanged physical quad, the research evaluator changes
+left/top shares from 71.188/40.976% to 50.786/52.256%. Source/overlay review supports
+the intended panel choice, but these remain candidate observations, not independent
+accuracy truth. Decorative overlap, local fit errors and nonstraight boundaries
+still need distinction before native acceptance.
+
+The focused native transfer uncovered a routing defect: the ordinary analyzer
+labels this Pikachu **Magic classic back**, bypassing supplied-reference matching.
+The DEBUG route now permits independent supplied-reference identity checks even
+after back-layout classification; unmatched/ambiguous references retain ordinary
+behavior. Native SSP then matches 15 coherent artwork patches in four quadrants.
+However, **only its bottom side passes native fitting**; the complete replacement
+still rejects. No unsupported geometry is promoted, and the wrong ordinary back
+label remains in the fallback result. Production's coarse back-family classifier
+is unchanged and still requires an identity-evidence correction.
+
+`Native-v1.xcresult`: one method fails. `Native-v2.xcresult`: the new gold transfer
+method fails seven assertions, while the existing 34-image library method passes
+(both known designs preserved, all 32 unrelated results exact). Legacy result
+metadata verifies 1/1 and 2/1 executed/failed method counts, with zero skips.
+The failed research test and prepared
+[SSP native reference](../../TestFixtures/TradingCards/PrintReferences/pikachu-ssp-247.json)
+remain explicit unfinished work; SSP is not added to the validated library sweep.
+Artifacts are in T7 `CodexBuilds/CardScanner-GoldPikachu-20261107/`. No UI polish,
+timing optimization, holdout evaluation or automatic-reporting change followed.
+
+Next reconcile the supported offline paths with the native fitter at the actual
+photo transitions, preserving the accepted bottom. Do not weaken identity or
+support checks merely to promote SSP. Venipede cut/shadow ambiguity and PRE foil
+recognition remain open, alongside production identity routing and all 44 passing.
+
+## Reference library and selective Venipede repair — 2026-11-07
+
+The DEBUG matcher now selects automatically from a caller-supplied library.
+Exactly one design must be recognized before geometry fitting. Identical entries
+are deduplicated; conflicting identities retain the ordinary result, regardless
+of order or later fit success. The view model carries the library across captures.
+Catalog retrieval/library provisioning and Release promotion remain open;
+automatic reporting remains disabled.
+
+Three focused native methods pass (zero failures/skips). The 34-image development
+sweep selects Starting Town and PNG Gengar, reproduces their explicit single-reference
+results, preserves their physical quads, and leaves all other 32 measurements
+exactly unchanged. Controls cover order, duplicates, ambiguity, an empty library,
+switching designs and superseded captures. No holdout was opened. Warm upper
+median/max assisted analysis is 0.546/0.812 s; each follows ordinary analysis of
+the same image, so this is recorded timing, not cold performance acceptance.
+Evidence: T7 `CodexBuilds/CardScanner-ReferenceLibrary-20261107/Library-v1.xcresult`
+and log. Legacy metadata confirms 3 tests, 0 failures/skips, 14 build warnings.
+
+IMG_1712 is Venipede Black Bolt 132/086. Its
+[provider-only specification](../../review/centering-evidence/venipede-reference-border.json)
+locates the full printed frame. Registration has 944 inliers but only one in the
+top band: identity does not guarantee local placement. Reference-seeded photo paths
+support left/right/bottom with 61/61/50 observations; the projected top has six
+and rejects. Reacquiring the existing detector's top supplies 58 supported samples.
+The [research evaluator](../../review/centering-harness/measure_reference_candidate.py)
+can retain an alternate side only after primary support fails, capture hashes
+match, coverage/gap rules pass, and points stay within the existing ±80 px reference
+search band. Here the maximum distance is 33.836 px. No support limit was relaxed;
+primary-only rejection and mismatched-capture rejection were checked.
+
+Combined inner paths yield conditional left/top shares 48.441/48.227% using the
+unchanged physical quad. This is **not an accuracy pass**: source-photo review
+shows the ordinary physical bottom follows shadow near the right corner. The
+original inner geometry also fails the research evaluator's paired-span coverage;
+that failure is recorded separately. Four ±8 px translation/tilt controls of the
+retained top change the ratio by at most 0.021 pp. Three pass the four-pixel local
+check; one fails at 5.701 px and remains recorded. A targeted physical-bottom probe
+has only 15 stable observations and is stopped without promotion.
+
+Raw rejected paths, controls, measurements and overlays are in T7
+`CodexBuilds/CardScanner-Venipede-20261107/`. Venipede remains offline research,
+not a native-library entry. Next distinguish physical cut from cast shadow while
+preserving supported inner edges. The methodological gain is independent side
+selection: design references identify the intended frame, and photo evidence
+determines which existing or proposed sides can be retained. The full 44-image
+objective remains open.
+
+## Native printed-frame pilot — 2026-11-07
+
+Implemented an additive printed-frame mode in
+[the native matcher](../../TradingCardScanner/Services/CardCenteringPrintReference.swift).
+Legacy references keep the existing artwork route. Printed references carry an
+explicit frame kind and a distinctive artwork region. The prepared
+[Gengar reference](../../TestFixtures/TradingCards/PrintReferences/gengar-151-094.json)
+contains 43 provider-image patches, 18 marked for artwork identity; no photographed
+card coordinates or target ratios enter that reference.
+
+The printed mode requires at least six coherent artwork patches across four
+artwork quadrants, alongside the existing full-frame coverage and title/footer
+corroboration. It uses the perimeter candidate search, then fits independent
+native sides from color contrast rather than assuming an inward brightness drop.
+At least 30 retained observations must bracket the central measurement span,
+with bounded gaps. All four fits and valid frame geometry are required; otherwise
+the ordinary result is retained. The artwork mode keeps its prior criteria.
+
+The new `matchedPrintedBorder` definition preserves the distinction between
+printed-frame and artwork placement in guidance/export text. Confirmation remains
+required and does not raise detector confidence. The feature remains **DEBUG and
+caller supplied**; production defaults and automatic reporting are unchanged.
+At this checkpoint automatic library selection was not implemented; the later
+checkpoint above adds supplied-library selection. Catalog retrieval remains open.
+
+| Native PNG Gengar observation | Result |
+| --- | --- |
+| Coherent distinctive-artwork matches | 17 across all four quadrants |
+| Selected candidate distance from reference hypothesis, L/T/R/B | 0.583 / 1.179 / 1.828 / 0.494 native px |
+| Left / top margin share | 49.772% / 45.725% |
+| Difference from frozen supported Python paths | 0.607 / 0.488 pp |
+| Worst distance to frozen directly supported photo observations | 0.723 native px |
+| Physical outer quad | Exactly unchanged |
+
+This is cross-implementation/photo-observation agreement, not independent
+physical calibration or a newly accepted historical accuracy reference. The
+four-pixel side comparisons prevent opposing-edge errors from hiding in aggregate
+ratios. The ordinary PNG top share had been 15.766% because it selected a footer.
+
+Two focused runs cover five distinct methods (six executions), all passing:
+printed-frame geometry and confirmation/export semantics, wrong-design/shared-layout
+fallback, unchanged Starting Town artwork accuracy, missing/superseded reference
+behavior, and the 34-image development sweep. The sweep selects only PNG Gengar;
+all 33 other measurements equal the ordinary analyzer exactly. Source hashes and
+the manifest count are checked. No holdout was evaluated. The earlier artwork
+worst edge error remains 0.840 px and its margin shares remain 49.274% / 20.173%.
+
+The 34-image single-run upper median is 0.542 s and maximum 0.768 s. Each assisted
+analysis follows an ordinary analysis of the same bytes, so these are warm-run
+observations, not cold latency or performance acceptance. No timing gate or
+optimization work was added. Evidence is in
+T7 `CodexBuilds/CardScanner-PrintedFrame-20261106/`, with `Native-v1.xcresult`
+(four methods) and `Native-corpus-v2.xcresult` (two methods), corresponding logs
+and the corpus attachment. The modern result-summary reader had a cache-path
+error; legacy result metadata verifies 4/0 and 2/0 passed/failed counts, rather
+than relying only on the success banner. No full suite, Release, device or UI
+screenshot run is claimed.
+
+Next extend the native design route to additional failing references and check
+automatic reference selection separately. The foil Gengar currently has only
+offline support-rejection evidence; this native run used the 151 design and
+therefore tests it as a wrong-design fallback, not a matched-foil precision case.
+The full 44-image objective and historical reference adjudication remain open.
+
+## Design identity and supported Gengar frame — 2026-11-06
+
+Located the two Gengar images in the bundled catalog and inspected the provider
+renders. The [reference-only specification](../../review/centering-evidence/gengar-reference-borders.json)
+records full printed-frame coordinates and a distinctive artwork interior in
+each 600×825 image, with source URLs and hashes. These provider renders are not
+calibrated physical truth. IMG_1038 is a Halloween variant of the Paldean Fates
+design; its stamp/foil differ, so recognition cannot certify exact printing or
+finish. The reference describes the underlying design.
+
+The existing SIFT matcher finds 1,335 global inliers for the PNG Gengar and 595
+for IMG_1038, across four quadrants. Wrong-design cross-matches reject despite
+sharing the name and layout. A [development batch](../../review/centering-harness/design_reference_batch.py)
+adds an explicit identity check inside the reference-only artwork region: at
+least 20 inliers across four artwork quadrants. All 34 development captures were
+evaluated against both designs without filename-based selection. Only the two
+intended designs select, with 661 and 73 artwork inliers respectively; 32 captures
+select neither, with no ambiguous selections. This is a two-design library
+control, not global catalog recognition or a generalization claim.
+
+The artwork check matters: the earlier global-only acceptance rule accepts both
+Gengar references on Ferrothorn IMG_0797 (27/26 inliers in shared design elements).
+Both have zero artwork-interior inliers and now reject. A coherent homography
+over shared typography is insufficient evidence of design identity.
+
+[Reference projection](../../review/centering-harness/reference_frame_proposal.py)
+creates explicit search hypotheses, preserving the original production inner
+quad separately. The unchanged native tracker then measures the photographed
+boundary. Both projections and the PNG's refined overlay were inspected. PNG
+left/top/right/bottom support is 58/61/61/60 of 61 samples. The foil capture has
+21/36/47/6, so recognition has not solved its photo-edge observability.
+
+The [supported-path measurement](../../review/centering-harness/measure_reference_candidate.py)
+excludes unsupported observations, requires support bracketing the actual 20–80%
+measurement span, and rejects gaps longer than six samples. It reuses the prior
+consensus probe's 30-observation/six-gap limits. Unmeasured endpoints need not
+be supported, and no measurement endpoint is extrapolated. Raw rejected points
+remain in the evidence; interpolation does not relabel them as observations.
+The PNG has at most one missing sample within the measurement span and yields
+49.166% left share / 45.236% top share, with the physical quad unchanged. Production
+gave 46.527% / 15.766%, with its bottom on the footer divider. These are candidate
+measurements, not errors against accepted photo annotations or new accuracy passes.
+The foil replacement rejects on left support, a top gap and bottom support; no
+replacement ratio is emitted.
+
+Controls verify that an unsupported point outside the measured span is harmless,
+while a long interior gap or unsupported measurement endpoint rejects. The batch
+selection receipt was checked against all 34 entries. Syntax and new document
+links pass; no new app build was needed because this pass only changes research
+tools. Automatic reporting and production behavior remain unchanged.
+
+Next bring recognized **printed-frame** selection into the native implementation
+as an additive route. The existing DEBUG matcher is specifically an artwork
+matcher: its title/footer checks, candidate search plan, inward-brightness-drop
+fit and report role cannot simply be reused as printed-frame semantics. Preserve
+the working artwork route and unrelated-card fallback. For the foil case,
+evaluate design-placement inference separately from directly observed edges;
+do not keep widening local-search thresholds to manufacture support.
+
+T7 `CodexBuilds/CardScanner-DesignReferences-20261106/` contains provider images,
+positive/wrong-design registration receipts, `batch/recognition.json`, projected
+seeds, native paths, `gengar-151-measurement.json` and the rejected
+`gengar-paf-measurement.json`, plus frozen sources. Historical annotations and
+production accuracy counts remain unchanged; ten interim holdouts remain sealed.
+
+## Development corpus coverage — 2026-11-06
+
+The [production corpus runner](../../review/centering-harness/corpus_main.swift)
+now processes both HEIC and PNG development captures and checks their manifest
+hashes. It uses the ordinary analyzer, saves native-coordinate proposals, and
+excludes the ten interim holdouts. The standalone optimized simulator executable
+links the production C pixel kernels; its first compile omitted that bridge and
+failed, then the corrected [runner](../../review/centering-harness/run_corpus.sh)
+compiled and completed. No full app build or UI session was needed.
+
+All 34 development files analyzed without an error: 33 inner proposals and one
+absent reference, with automatic reporting disabled on all 34. Every native
+outer/inner coordinate on the original ten exactly matches the previous saved
+baseline. This expands observed coverage; it does not add accuracy passes.
+
+Inspected source-only contact sheets and [production overlays](../../review/centering-harness/corpus_review.py)
+for the 24 additional development images. The [per-image triage](../../review/centering-evidence/development-triage-2026-11-06.json)
+records three visible mismatches, five needing closer boundary review, eight
+visually plausible but unscored, and eight requiring an explicit design reference.
+The three clear mismatches are the PNG Gengar's footer selection, IMG_1038's
+slanted left printed guide, and IMG_1712's inner bottom crossing artwork far
+above the perimeter. The last also needs physical-bottom review. In particular,
+decorative Magic frames and intentional footer asymmetry must not be called
+detection errors solely because the resulting margins differ from 50/50.
+
+The frozen local path tracker supports only 12/61 samples on IMG_1038's bad left
+guide: the seed is too far from the relevant boundary. An isolated
+[physical-perimeter-seeded native search](../../review/centering-harness/outer_seeded_inner.py)
+reuses the production profile's nominal 2–12% shallow interval and fits each
+side independently. Gengar left retains 32/61 samples in five bins, RMS 0.840 px;
+its overlay was inspected. This is a candidate, not verified centering accuracy.
+Venipede retains its left/right candidates but rejects top/bottom. The Pokémon
+back control retains only top and rejects three sides. Stop this version rather
+than replacing working guides or widening thresholds. Saved proposals, failures
+and geometry remain available; no app integration follows.
+
+Next prioritize semantic boundary selection for the newly exposed failures.
+Generate candidate locations independently of bad inner guides, use known design
+structure to distinguish the actual printed perimeter from headers/footers, then
+apply native localization only to supported sides. Continue toward all 44 images;
+the ten holdouts remain reserved for the frozen candidate. The current historical
+accuracy count remains 5/9 plus one correct abstention; all 34 additional images
+still lack accepted accuracy references despite 24 now having visual triage.
+
+Evidence: T7 `CodexBuilds/CardScanner-Corpus-20261106/` contains
+`production-corpus.json`, `run.log`, source sheets, native overlays,
+`gengar-left/`, `outer-seeded-gengar/`, `outer-seeded-venipede/`, and
+`outer-seeded-back/`. Contact sheets are identity review, not pixel scoring.
+
+## Accuracy-first continuation — 2026-11-06
+
+Validated the pending shared-buffer optimization at `11ff208` with the current
+working tree. The owner explicitly deferred performance gating and UI polish
+until the measurement methodology is solid. Timing remains recorded, with no
+threshold change or claim that the historical performance test passes.
+
+| Pilot observation | Before optimization (v2) | After optimization (v3 retry) |
+| --- | --- | --- |
+| Starting Town cold analysis | 2.470 s | 2.197 s |
+| Starting Town in ten-photo sequence | 1.222 s | 1.002 s |
+| Ten-photo upper median | 0.814 s | 0.853 s |
+| Ten-photo maximum | 1.634 s | 1.629 s |
+| Worst reviewed artwork-edge error | 0.840 native px | 0.840 native px |
+| Horizontal / vertical margin-share error | 0.645 / 0.337 pp | 0.645 / 0.337 pp |
+
+These are single simulator runs, not a controlled speed comparison. All nine
+unrelated photos retained exactly their ordinary measurements. Missing-reference,
+superseded-capture, confirmation and export assertions passed. Three methods ran,
+two passed and one failed only its two timing assertions. The initial v3 attempt
+could not find the removed simulator; the retry used a new dedicated simulator.
+Logs and result bundles are on T7 under `CodexBuilds/CardScanner-PrintPilot-20261105/`
+(`Print-v3-retry.log` and `Print-v3-retry.xcresult`). No UI screenshot, broader
+regression suite or Release build was requested for this pass.
+
+### Charmander physical boundary
+
+Inspected the original IMG_0348 bottom strip and seven native cross sections.
+The card-to-background transition brightens outward, while the sleeve has a
+separate boundary below it. Direction-label correction from the subsequent
+all-side pass: `edge_annotation_audit.py` samples along an **inward** normal,
+so its original `falling` polarity already represents outward brightening.
+The earlier suggestion that this was simply the wrong polarity was incorrect.
+Changing that setting to `rising` also fails straight-edge coverage. Allowing
+either polarity produces a line but does not establish physical boundary identity.
+
+The additive [continuity diagnostic](../../review/centering-harness/bottom_edge_continuity.py)
+samples 61 positions in a visually supplied region, x=500–2550 and y=3780–3850.
+It compares fixed smoothing scales of 1, 2 and 4 native pixels. A position needs
+at most four pixels of scale disagreement and gradient strength at least 2.5 at
+each scale. Thirty positions qualify, occupying four of five bins; the center
+bin has no qualifying evidence. Alternating positions train and check a straight
+or quadratic fit. Held-out RMS is 2.457 / 1.469 px respectively, and worst error
+is 5.370 / 4.008 px. Missing central evidence prevents a precision claim even
+when a fit's aggregate residual looks small.
+
+A separately labeled exploratory diagnostic removes only the strength cutoff.
+Fifty-four positions are stable across scales, including faint central samples.
+Their held-out straight / quadratic RMS is 5.823 / 2.987 px, with worst errors
+12.126 / 7.262 px. Curvature helps, but neither model satisfies the four-pixel
+precision target. This is a stopped candidate-fit experiment, not an improved
+automatic measurement or replacement annotation.
+
+Sensitivity illustrates why this matters. The saved production geometry yields
+a top margin share of 37.85%. Substituting the independently sampled printed
+frame alone gives 37.63%. Extrapolating the strong-sample straight and quadratic
+bottom candidates gives 41.40% and 42.68%. These last two numbers use experimental
+corner extrapolation and are **not accepted measurements**. They demonstrate
+that a plausible-looking boundary choice changes the result materially. The
+historical annotation's 31.36% is also unsuitable as a target: its printed bottom
+crosses interior content rather than the print-to-silver boundary.
+
+Next direction: retain a local boundary path and localization uncertainty,
+corroborate its identity against the rounded corners and sleeve boundary, then
+propagate that uncertainty into margin ratios. Evaluate all spatial regions,
+including weak ones, before accepting a measurement. Avoid promoting a global
+straight or quadratic fit solely because its retained points have low residuals.
+The supplied search region still needs automatic localization. All evidence here
+comes from one exposed photo and is not independent calibrated truth.
+
+Native diagnostic observations and inspected overlay are on T7 under
+`CodexBuilds/CardScanner-Charmander-20261106/continuity.json` and `continuity.png`.
+Automatic reporting remains disabled. No production detector behavior changed
+in this continuation, and historical corpus accuracy is not revised.
+
+### Local transition refinement follow-up — 2026-11-06
+
+Added [local profile fitting](../../review/centering-harness/local_transition_probe.py)
+and [known-signal controls](../../review/centering-harness/local_transition_controls.py).
+Each of 61 columns fits a blurred positive step plus a linear background, using
+erf and logistic models at strip widths 9, 17 and 33 px. Three initial centers
+reduce dependence on optimizer initialization. All observations remain in the
+receipt. The fixed stability check requires six converged fits without active
+bounds, center spread at most 4 px, and residual RMS / transition amplitude at
+most 0.15. This is a diagnostic criterion, not calibrated confidence.
+
+In the previously supplied x=500–2550, y=3780–3850 region, 50/61 positions pass,
+covering all five spatial bins. A shape-preserving local interpolator trained on
+alternating positions has held-out RMS 1.328 px and worst disagreement 3.873 px
+over all 30 held-out positions, including unstable ones. This improves internal
+consistency over the global quadratic fit; it does not prove physical accuracy.
+The overlay was inspected against the original bottom strip.
+
+Fifty-four known synthetic transitions (three locations, three contrasts, three
+blur widths and two fitting families, seeded noise) have worst localization error
+0.538 px. They test the numerical localizer on ideal steps, not real sleeves.
+Using all local observations and the previously reviewed top/printed edges gives
+an **unrectified diagnostic** top-margin share of 42.435%, with fitting-choice
+sensitivity 42.358–42.521%. This interval excludes boundary-identity, perspective,
+model-mismatch and other-edge uncertainty and must not be reported as a physical
+confidence interval or accepted centering measurement.
+
+The wider y=3760–3900 control includes copyright/sleeve competitors. It fails:
+only 13/61 positions qualify, in the two outer bins, and worst held-out disagreement
+is 110.916 px. This is evidence against using the local fitter as a boundary
+selector. Next implement continuity-constrained candidate tracking from reliable
+side sections across the weak center, retaining competing card/sleeve paths, then
+apply local refinement after identity selection. The narrow supplied region must
+be removed before claiming automatic recovery.
+
+Evidence is on T7 under `CodexBuilds/CardScanner-Charmander-20261106/` in
+`local-profile/` and `wide-profile/`. Each contains `local-transition.json` and
+an inspected-overlay candidate PNG; `local-profile/controls.json` holds numerical
+controls and margin sensitivity. No app code or annotations changed in this pass.
+
+### Detector-seeded continuity tracking — 2026-11-06
+
+The [boundary tracker](../../review/centering-harness/track_bottom_boundary.py)
+removes the hand-supplied narrow vertical region. It uses the saved production
+cut's central 80% span and a ±80 native-pixel band around its bottom line. It
+samples 61 columns, extracts brightening gradients, and tracks a continuous path
+between the strongest endpoint peaks. Dynamic programming penalizes offset
+changes with sigma 4 px and limits each step to 8 px. Nine combinations of the
+three strongest peaks at each end remain in the receipt as competing hypotheses.
+The selected path seeds the existing local transition fitter within ±28 px.
+Neither reviewed coordinates nor expected centering enter prediction.
+
+| Photo | Stable local observations / 61 | Spatial bins | Held-out local interpolation RMS / worst |
+| --- | --- | --- | --- |
+| Charmander 0348 | 41 | 5/5 | 0.994 / 2.241 px |
+| Pokémon back 0347 | 60 | 5/5 | 0.272 / 0.705 px |
+| Clefairy 0351 | 58 | 5/5 | 0.333 / 0.840 px |
+
+All three overlays were inspected. The selected paths follow the visible card
+bottoms. Charmander's sleeve remains a separate candidate below the card. Its
+refined path differs from the earlier supplied-region diagnostic by RMS 1.294 px
+and worst 3.330 px on the overlapping span. Translating its initial detector line
+by −16 or +16 native pixels leaves every refined position exactly unchanged.
+This is an encouraging identity/continuity control, not independent precision
+truth. The other photos were evaluated without changing tracker parameters.
+
+Important limits remain. Endpoint strength is still a hypothesis about card
+identity, rather than rounded-corner corroboration. Charmander's card and sleeve
+path costs are close (34.342 versus 36.213); these scores are not probabilities,
+and their normalization depends on the search band. Twenty Charmander locations
+fail the local stability checks and remain in the evidence. Alternate-position
+interpolation uses the same image and is not a physical accuracy measurement.
+The algorithm currently handles only brightening bottom boundaries. No automatic
+full-card pass or corrected ratio is claimed.
+
+Next extend the path representation to the remaining physical and printed sides,
+preserving polarity, competing-path evidence and weak observations. Measure
+opposing margins along corresponding positions with perspective accounted for;
+do not collapse the recovered curved boundary back into a straight guide merely
+to fit the existing quadrilateral model. Evaluate boundary identity separately
+from local fit precision before any app integration or confidence change.
+
+External evidence lives under `CodexBuilds/CardScanner-Charmander-20261106/`:
+`tracked/`, `tracked-0347/`, `tracked-0351/`, `tracked-shift-16/`, and
+`tracked-shift16/`. Each stores `tracked-boundary.json` and an overlay. The summary
+receipt and exact research source copies accompany those directories. This pass
+made no app changes, ran no simulator tests, and left reporting gated by review.
+
+### Stopped all-side generalization — 2026-11-06
+
+Added [all-side path research](../../review/centering-harness/track_card_paths.py),
+sampling along each side's outward normal and retaining physical/printed frames
+separately. Two versions were evaluated on Charmander before ratio calculation.
+Neither is promoted. The original bottom-only experiment remains intact.
+
+| Version | What improved | Why it stops |
+| --- | --- | --- |
+| Strongest endpoint pair, either polarity | Outer bottom and several straight printed sides follow their intended features. | Printed bottom follows text; printed top follows the BASIC banner; physical left wanders. Relative to the earlier sampled review lines, worst printed bottom/top/left deviations are 76.24/61.69/83.17 px. |
+| Fixed 16 px position prior around existing detector lines | Printed bottom returns to the correct border and printed left avoids the large text excursion. | Printed top flips polarity and tracks the banner/foil region; 0/61 top observations pass the unchanged local stability checks. Physical left remains unreliable. |
+
+Both full-card overlays were inspected, with cyan physical and green printed
+paths. The printed-frame regressions are sufficient to stop before computing a
+centering ratio. These same-image line comparisons diagnose wrong feature
+selection; they are not independent ground-truth accuracy scores.
+
+The lesson is to preserve already-supported printed geometry and apply local
+path repair selectively to unresolved physical sides. Strong endpoints, path
+continuity and closeness to an old line do not by themselves establish boundary
+identity. A generic all-side replacement would regress the working detector.
+The next experiment should assemble the successful physical-bottom repair with
+the existing independent printed lines, retaining provenance for every side,
+and isolate remaining physical-side uncertainty before accepting a full ratio.
+
+Evidence is in T7 `CodexBuilds/CardScanner-Charmander-20261106/all-sides/` and
+`all-sides-prior/`, each containing `card-paths.json` and `card-paths.png`.
+The position-prior option defaults to disabled in the shared tracker; the earlier
+bottom-only route therefore retains its previous recurrence. No app changes,
+annotation changes, confidence upgrades or automatic reporting followed.
+
+### Selective geometry and paired margins — 2026-11-06
+
+Implemented [selective path measurement](../../review/centering-harness/selective_path_measurement.py).
+The prediction preserves all four independent production printed lines. Physical
+bottom comes from the successful dedicated tracker; the top candidate comes from
+the all-side experiment's physical frame only. Left and right physical lines are
+refined by the existing native audit, seeded by the production cut with a fixed
+16 px window and inward-falling polarity. No review coordinates enter prediction.
+Those side fits retain 45/61 and 57/61 observations, cover all five spatial bins,
+and have RMS residuals 1.443 and 1.255 native px respectively.
+
+Paths are transformed into the production cut's rectified plane. Opposing margins
+are sampled at 31 corresponding positions over the central 60% span, without
+extrapolating the curved paths into unseen corners. Ratios use mean opposing
+widths. A known rectangular-margin control remains 40% / 40% after a synthetic
+perspective transform and inverse, with numerical error below 1e-8 pp.
+
+| Charmander geometry | Left share | Top share |
+| --- | --- | --- |
+| Production lines in the paired sampler | 48.357% | 37.852% |
+| Repair physical bottom only | 48.357% | 39.073% |
+| Repair physical top and bottom | 48.357% | 42.445% |
+| Add native physical left/right refinement | 45.065% | 42.445% |
+
+The final combined overlay was inspected; the supported printed frame is intact
+and physical paths follow the visible card perimeter. After prediction is frozen,
+substituting the earlier reviewed left, right, or top cut line changes the relevant
+share by 0.064, 0.001, or 0.713 pp respectively. This is corroborating same-photo
+evidence, not an independent accuracy pass. Top/bottom fitting-choice extremes
+span 42.253–42.598% top share; that range excludes physical-side model error,
+boundary identity, perspective-calibration error and lens/card deformation.
+
+The top candidate still has only 17/61 observations passing the strict local
+fit checks; bottom has 41/61. These observations were retained, not hidden by
+averaging. The experiment therefore establishes a coherent selective measurement
+and a useful next validation target, not a calibrated confidence interval, a
+historical test pass or readiness to enable automatic reporting. Validate the
+combined measurement's stability and curved-edge precision before app promotion,
+then assess transfer to the other current corpus cards without overwriting their
+working boundary choices. No annotations or app behavior changed here.
+
+Evidence on T7 is `CodexBuilds/CardScanner-Charmander-20261106/`:
+`selective-measurement.json`, `selective-top-bottom-bounds.json`, and the final
+`selective-hybrid-paths.json` (native paths, transform, provenance, side samples,
+controls and score-only substitutions), plus `selective-hybrid.png` and the exact
+research source. Earlier unrectified margin diagnostics remain separate.
+
+### Selective measurement stability — 2026-11-06
+
+The [fixed stability controls](../../review/centering-harness/selective_stability.py)
+retain the original photo and printed lines. Five cases use the original outer
+seed, translations of (+8,+8) and (−8,−8) px, and two opposing corner-tilt patterns
+of ±8 px. Limits remain at most 4 native px path/line displacement and 2 pp ratio
+change relative to the prior selective hybrid. These are seed-sensitivity limits,
+not independent physical accuracy measurements.
+
+The 16 px physical-side window fails the negative translation: the right fit
+loses coverage, and the left moves by 12.814 px despite RMS residual 1.213 px.
+The image contains evidence beyond the truncated search window. One bounded
+32 px window control resolves this failure. With curved paths held fixed, all
+five cases pass; maximum side displacement is 1.401 px and maximum ratio change
+is 0.612 pp. The updated research measurement accepts `--straight-radius 32`;
+the earlier 16 px evidence and its failure remain preserved.
+
+Next all four physical boundaries were reanalyzed for each case, including the
+top's position-prior tracker and dedicated bottom tracker. Four of five cases
+pass both limits. Negative translation fails the top-path limit at 4.780 px near
+native x=1603.5; the closest observation is already marked unstable. Bottom
+displacement in that case is 3.001 px. Across all cases, horizontal and vertical
+ratio changes stay below 0.560 and 0.658 pp respectively. The test therefore
+supports ratio stability while explicitly rejecting a blanket four-pixel
+localization claim. Do not discard the weak top observation or relax the limit.
+
+The unperturbed wider-window candidate measures 44.907% left / 42.445% top.
+Substituting the earlier reviewed left/right/top line changes the corresponding
+share by 0.057/0.038/0.713 pp. The next localized task is top-edge localization
+and uncertainty under changed sampling positions. This pass repairs the narrow
+side-search failure; the full selective method remains research-only.
+
+T7 receipts under `CodexBuilds/CardScanner-Charmander-20261106/` are
+`stability-radius16.json`, `stability-radius32.json`,
+`stability-full-radius32.json` and its per-case source/candidate directories,
+plus `selective-hybrid-radius32.json`. The full log and exact source snapshot
+accompany them. Printed lines were held fixed throughout, so this evidence does
+not certify their detection or the complete app/corpus. No simulator run or app
+behavior change was needed.
+
+### Sharp physical-top refinement — 2026-11-06
+
+Inspection of the failed top region showed that the tracked gradient stayed near
+the cut while the blurred-step fitter moved toward foil texture. Several fits
+hit their minimum blur-width bound. The additive research option
+`selective_stability.py --adaptive-sharp --rerun-curves` chooses a local gradient
+peak when median half-height gradient width is at most 8 px. It samples strip
+widths 9/17/33 at Gaussian scales 1/2, refines each peak subpixel within ±6 px of
+the tracked path, and retains all six locations. Sharp stability requires spread
+at most 4 px, strength at least 2.5 and no peak at the search boundary. Broad
+transitions retain the existing step fitter; its raw trial evidence also remains
+in sharp-route receipts. The option defaults off and was evaluated only for the
+physical top in the selective route.
+
+All five fixed all-physical-side perturbation cases now satisfy the original
+4 px / 2 pp limits. Maximum boundary displacement from the frozen earlier hybrid
+is 3.601 px; maximum ratio change is 0.790 pp. The original-seed top has 57/61
+stable observations instead of 17/61 under the blurred-step model. These counts
+use estimator-appropriate checks; they do not upgrade app detector confidence.
+Twenty-seven seeded ideal sharp transitions have worst localization error
+0.448 px; the existing 54 broader-transition controls still have worst 0.538 px.
+The top-strip overlay was inspected against the native photo.
+
+The resulting research measurement is 44.907% left / 42.585% top share. The earlier
+reviewed top-line substitution differs by 0.853 pp. Top/bottom fitting-choice
+sensitivity spans 42.306–42.722% and still excludes physical/model uncertainty.
+This is a stable selective candidate on one exposed image, not an independent
+accuracy pass or app integration. Next assess transfer to Clefairy with supported
+printed geometry preserved, and retain this candidate as a frozen comparison.
+
+T7 `CodexBuilds/CardScanner-Charmander-20261106/` contains
+`stability-sharp-top.json`, its five per-case candidate directories and log,
+`sharp-and-local-controls.json`, `physical-top-sharp.json`,
+`selective-sharp-top.json`, the inspected top strip and the exact source snapshot.
+The previous 4.780 px failure remains recorded. No threshold was relaxed, no
+historical annotation changed, and automatic reporting remains disabled.
+
+### Clefairy transfer and estimator-switch failure — 2026-11-06
+
+Added a [frozen transfer runner](../../review/centering-harness/run_selective_candidate.py)
+and a [single-side transfer control](../../review/centering-harness/score_path_transfer.py).
+The Charmander method's physical-edge settings were applied to Clefairy without
+per-photo tuning. Left/right native fits retain all 61 observations in all five
+bins, with RMS 1.015/1.028 px; the physical top has 60/61 stable observations.
+The inspected physical-frame overlay follows the visible card. With production
+printed lines preserved, the diagnostic shares change from 52.804%/42.415% to
+48.562%/41.594% (left/top). These are research measurements, not new truth labels.
+
+Clefairy's previously unresolved printed top was then evaluated alone, using
+`track_card_paths.py --frame inner --side top --position-sigma 16 --adaptive-sharp`.
+The unshifted proposal follows the printed perimeter and has 54/61 stable samples.
+Replacing only that side gives 48.562% left / 41.828% top. The other printed sides
+and all physical paths are held fixed during the five printed-seed controls.
+
+The position gate fails 3/5 cases: worst displacement is 8.967 px for (+8,+8),
+4.210 px for (−8,−8), and 4.091 px for one tilt. The other tilt is 3.971 px; identity
+is unchanged. All ratio changes are at most 0.111 pp. The largest miss is near
+native x=1433: an initially stable gradient-peak estimate switches to an unstable
+blurred-step estimate when the seed changes. The two sample grids predict y≈266.5
+and y≈276.0 nearby. This identifies an estimator-switch discontinuity, not a
+reason to loosen the position limit or retune the width cutoff to this card.
+Stop this printed-top version before promotion. Next compare both estimators'
+support and disagreement explicitly so uncertain transitions cannot acquire a
+precise position merely by crossing a sharp/broad classification threshold.
+
+Zapdos 0349 was also attempted as an existing passing-card control. The repair
+rejects because its sampling band extends beyond the available image; no complete
+replacement measurement or overlay is produced. This is not a regression pass
+and does not certify runtime fallback. Future additive routing must retain the
+existing result when a repair lacks image support; no app result was changed here.
+
+T7 evidence is `CodexBuilds/CardScanner-Clefairy-20261106/transfer/`,
+`printed-top/`, `printed-top-controls/`, and `zapdos-control/`. The successful
+physical-frame and single printed-top overlays were inspected. Control receipts,
+rejection log and exact research source copies accompany them. The original
+Charmander candidate and its five passing stability controls remain preserved.
+
+### Estimator consensus and color ablation — 2026-11-06
+
+The [consensus diagnostic](../../review/centering-harness/reconcile_edge_estimators.py)
+compares independently retained gradient/step trials. It marks supported methods
+that disagree by more than 4 px as conflicts, preserves unsupported observations,
+and infers only gaps of at most six positions between supported endpoints.
+Inferred points remain labeled, and alternating supported anchors check the
+interpolator. This was evaluated from saved evidence, without new pixel fitting.
+
+Charmander passes all five consensus position/interpolation controls (worst
+held-out 2.400 px, worst seed displacement 2.213 px). Clefairy fails: the identity
+case's held-out error is 9.100 px, and shifted cases differ by up to 8.868 px. One
+apparently supported step estimate at native x≈1173 lies inside the artwork while
+neighbors follow the border. The native close-up shows dark foil and blue artwork
+with similar brightness. Model support in a grayscale profile is not evidence
+that the chosen location represents the intended printed feature.
+
+An isolated color ablation changes only the signal to CIELab chroma magnitude
+(`--signal lab_chroma`); search, tracking, refinement and position/ratio limits
+remain fixed. Its unshifted top overlay looks plausible but has only 38 stable
+observations. Four of five controls fail. The worst seed displacement is 100.551
+px and worst ratio change is 6.280 pp. Stop both the Clefairy consensus route and
+the color-only replacement. Signal strength and local fitting alone are not
+reliable semantic selection for this printed border.
+
+The app's bundled catalog provides an exact ASC 280 image for Lillie's Clefairy
+ex in `PokemonChecklistSnapshot/sets/b6ce3b5859cc78a5.json`. Downloaded and visually
+checked the [catalog-provider reference](https://assets.tcgdex.net/en/me/me02.5/280/high.png):
+name, ASC 280/217 and illustration match the existing photograph. It is a 600×825
+provider rendering with a gray border, unlike the photographed foil appearance;
+it is design context, not physical measurement truth. SHA-256 is
+`f9a8641750f9765ae3d438578da0efb9223e5ce1fbef7f92e8d28c5fc3a84b72`.
+Next reuse the successful exact-print recognition approach to establish border
+identity, then validate native-photo localization separately. Registration and
+accuracy of this reference have not yet been tested.
+
+T7 `CodexBuilds/CardScanner-Clefairy-20261106/` holds `estimator-consensus.json`,
+`printed-top-chroma/`, `printed-top-chroma-controls/`, the native failure crop,
+and `clefairy-ASC280-provider.png`. Charmander's consensus receipt remains in its
+own evidence directory. No app changes, annotation replacements or confidence
+upgrades resulted from these failed controls.
+
+### Clefairy exact-print recognition — 2026-11-06
+
+The [generic recognition control](../../review/centering-harness/register_print_reference.py)
+matches only the reference's central 90% region, avoiding its physical silhouette.
+Using the catalog's exact ASC 280 rendering, it finds 1,095 unique matches and
+838 RANSAC inliers across all four quadrants. Reference coverage spans 79.3% of
+width and 89.3% of height. The unrelated Pokémon-back control has 18 matches and
+is rejected before registration. The match overlay was inspected across the card.
+
+Recognition is strong, but a global transform is not four-pixel precision truth.
+Top-region residual median/p95 is 2.903/6.597 native px. Two spatial checkerboard
+holdouts have median errors 3.138/2.977 px and worst errors 9.680/9.382 px. Matches
+were RANSAC-filtered before the split, so these residuals are optimistic. The
+reference frame's top transition at y=22.5 was checked in the provider raster;
+it defines a design feature, not a measured photo edge.
+
+A [low-order residual-field control](../../review/centering-harness/reference_warp_control.py)
+fits six quadratic terms to interior match displacement, using fixed robust
+weights. Held-out medians improve to 2.679/2.548 px, but worst errors worsen to
+15.363/10.265 px. Projected top positions differ by up to 3.184 px between spatial
+halves. Stop this correction before adopting it as measurement geometry.
+
+One native-resolution control preserves the effective RANSAC tolerance (8.4
+native px, equivalent to 2.5 working px at the 1,200 px cap). It finds 744 inliers
+across four quadrants, but top median/p95 becomes 5.045/7.777 px and held-out worst
+errors are 11.464/10.209 px. Higher resolution does not resolve the precision
+problem. Keep the simpler reference registration as an identity cue; next use it
+to rank actual photo-derived boundary candidates, not replace them with a template
+projection. No four-pixel accuracy pass or automatic-reporting change is claimed.
+
+T7 `CodexBuilds/CardScanner-Clefairy-20261106/` contains
+`reference-registration/`, `reference-negative-back/`, `reference-warp.json`, and
+`reference-native/`, including all match coordinates, spatial residuals and source
+hashes. The original selective geometry and failed local-signal controls remain
+separate. No app, annotation or historical test expectation changed.
+
+### Reference-position veto stopped — 2026-11-06
+
+The [reference candidate gate](../../review/centering-harness/reference_candidate_gate.py)
+tests whether recognized design geometry can veto incorrect photo-derived local
+fits. It checks matching capture hashes and never substitutes projected points
+for measurements. The fixed 16 px coarse band reuses the existing position-prior
+scale; it is not presented as a calibrated registration interval. The same five
+saved photo-seed cases are evaluated with reference-line shifts −4, 0 and +4 px.
+
+All 15 combinations reject for insufficient endpoint support rather than emit
+an interpolated/extrapolated measurement. At the left end, both local estimators
+lie about 25–31 px from the projected reference line; even near x=767 the gap is
+about 24 px. The native photo crop and provider crop were inspected. The reference
+projection runs through foil above the visible printed/BASIC boundary, while the
+photo-derived candidates follow the visible transition. A strong global printing
+match does not establish local border alignment.
+
+Do not widen the gate merely to accept those points, or force the template line
+onto the card. The next direction is local registration using nearby printed
+content, with explicit spatial coverage near the disputed edge. The current
+global recognizer masks the outer 5% of the reference (top 41 px), excluding some
+near-border header features. Local content registration must distinguish missing
+feature coverage, local deformation and provider-render differences before it
+can arbitrate edge candidates. No cause among those has yet been proven.
+
+Evidence in T7 `CodexBuilds/CardScanner-Clefairy-20261106/` includes
+`reference-candidate-gate.json`, `left-reference-discrepancy.png` (cyan projected
+line on native photo), and `provider-header.png`, with the exact gate source.
+This failed identity veto does not change the prior selective measurement, app
+behavior, annotations or automatic-reporting policy.
+
+### Local reference content and aggregate sensitivity — 2026-11-06
+
+The [local patch diagnostic](../../review/centering-harness/local_reference_patches.py)
+uses five rectangles selected only in the provider reference, recorded in
+[the patch specification](../../review/centering-evidence/clefairy-reference-header-patches.json).
+It matches content in a 4× globally rectified photo, with fixed scales
+0.8/0.9/1.0/1.1/1.2 and ±16 reference-pixel search. The aligned header comparison
+was inspected. BASIC lettering matches weakly (NCC 0.464), favors scale 0.9 and
+displacement (+4.26,+6.98) reference pixels. Other header patches favor scale 1.0:
+Lillie's lettering scores 0.771 with +2.88 px vertical shift; Clefairy lettering
+scores 0.805 with +0.25 px; HP scores 0.923 with +0.20 px; the symbol scores 0.882
+with +2.37 px. This nonuniform evidence cannot justify a precise border correction
+from the BASIC patch. Local deformation, rendering and foil differences remain
+possible contributors; the cause is not uniquely established.
+
+Rechecked the plan's outcome requirements: automatic ratio error ≤2 pp on both
+axes and correct boundary identity remain the product gates. The four-pixel
+research controls remain failed where recorded; they are not discarded or
+relabeled as passing. However, chasing a perfectly aligned reference header is
+not itself the product objective. Prioritize photo-grounded aggregate accuracy
+and reference adjudication before more registration tuning.
+
+The [all-estimator propagation](../../review/centering-harness/measure_path_alternatives.py)
+includes every saved gradient and blurred-step trial, even unsupported ones, at
+every printed-top position in all five seed cases. With other boundaries and
+rectification fixed, the resulting top-share envelope is 41.287–42.662%, width
+1.374 pp. Left share stays 48.562%. This only covers the saved candidate set; it
+does not bound missing physical explanations, other-edge error or distortion,
+and is not a calibrated confidence interval or an accuracy pass. It shows why
+local position misses and aggregate centering error must be assessed separately.
+
+Next validate aggregate ratios against source-photo evidence, adjudicate the
+historical reference mismatches, and evaluate the current corpus without treating
+local registration refinements as a prerequisite indefinitely. Preserve per-side
+identity/geometry failures and require stronger evidence before app promotion.
+T7 `CodexBuilds/CardScanner-Clefairy-20261106/` stores
+`local-header-registration.json`, `aligned-headers.png`,
+`all-estimator-ratio-sensitivity.json`, the patch specification and exact sources.
+No app or annotation behavior changed in this pass.
+
+### Source-photo bands and back transfer — 2026-11-06
+
+Generated unmarked native crops using
+[the review packet tool](../../review/centering-harness/native_review_packet.py)
+and recorded [Charmander's visible boundary bands](../../review/centering-evidence/charmander-photo-bands.json)
+before comparing this pass's candidate coordinates. This is a single reader who
+has seen earlier detector output, not a blind or independent-observer annotation.
+The historical ground-truth files remain unchanged.
+
+[Band scoring](../../review/centering-harness/score_photo_bands.py) uses the same
+central 50% span for every candidate, avoiding extrapolation beyond the five
+reviewed positions per side. This span differs from the earlier 20–80% research
+measurement, so the two receipts must not be compared as identical metrics.
+
+| Charmander, paired central 50% | Left share | Top share |
+| --- | --- | --- |
+| Visual band midpoints | 45.650% | 43.695% |
+| Frozen selective candidate | 44.907% | 42.431% |
+| Production geometry | 48.357% | 37.852% |
+| Historical reference geometry | 47.968% | 30.598% |
+
+The selective candidate differs from the reviewed midpoint by 0.743 / 1.264 pp,
+versus production's 2.707 / 5.844 pp. However, the 256 combinations of each side's
+lower/upper visual band give 41.584–49.675% left and 39.747–47.873% top. These
+wide review alternatives do not certify ≤2 pp accuracy. They also do not bound
+all physical explanations or every interpolated path. The historical top-share
+reference falls outside even this broad set, consistent with its visibly wrong
+printed-bottom identity. Preserve this improvement evidence and move on rather
+than narrowing visual bands to obtain a pass.
+
+The same frozen physical-edge recipe transfers to Pokémon back IMG_0347 without
+parameter changes: left/top shares move from 53.960/44.888% to 54.248/45.016%.
+The bottom has 60/61 stable observations. Applying the existing printed-path
+tracker gives left/top/right/bottom support of 61/61/59/60 observations and paired
+shares 54.900/45.642%. Both overlays were inspected. No reviewed geometry enters
+these predictions. This remains offline research, not an app improvement or a
+new historical accuracy pass.
+
+Five combined printed-frame perturbations preserve the ratios within 0.012807 pp
+horizontal and 0.009137 pp vertical. Four pass the existing four-pixel local
+check. The −8 px case fails at 12.764 px on the printed bottom; that observation
+is flagged unsupported and lies at rectified x=0.861, beyond the measurement's
+0.2–0.8 span. Keep the failed diagnostic; do not equate it with a failed ratio
+stability check or spend another tuning pass on it now. This also exposes an
+integration requirement: raw research paths include unsupported observations,
+so a shipping measurement must explicitly handle support over its actual sampling
+span, preserve inferred-point provenance, and avoid unsupported extrapolation.
+The raw control paths and `transfer.json` are retained in `printed-controls/`.
+
+Next apply the supported-boundary methodology across the remaining available
+cards and identify actual boundary-identity/ratio failures. Broader corpus
+coverage and an additive app integration remain outstanding; no new production
+pass is claimed from this offline transfer.
+
+The Charmander crops and score are under T7
+`CodexBuilds/CardScanner-Charmander-20261106/native-review/`; the back transfer and
+printed paths are under `CodexBuilds/CardScanner-Back-20261106/`. The known
+perspective calculation still recovers 40/40 within numerical precision.
+
 ## Exact printing and artwork placement — 2026-11-05
 
 **The offline Starting Town control recovered all four artwork edges.** With the
