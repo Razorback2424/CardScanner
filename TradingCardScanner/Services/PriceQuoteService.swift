@@ -70,14 +70,16 @@ struct PriceQuoteService: Sendable {
     }
 
     func refresh(card: IdentifiedCard, variant: PhysicalVariant?,
-                 pokemonPrintRun: PokemonPrintRun?) async throws -> PriceLookup {
+                 pokemonPrintRun: PokemonPrintRun?,
+                 allowsHistoricalFallback: Bool = true) async throws -> PriceLookup {
         let override: (@Sendable () async throws -> PriceLookup)?
         if let catalogRefreshOverride {
             override = { try await catalogRefreshOverride(card, variant, pokemonPrintRun) }
         } else { override = nil }
         return try await refresh(.init(identity: .legacy(card), variant: variant,
                                        pokemonPrintRun: pokemonPrintRun,
-                                       catalogRefreshOverride: override))
+                                       catalogRefreshOverride: override,
+                                       allowsHistoricalFallback: allowsHistoricalFallback))
     }
 
     func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {

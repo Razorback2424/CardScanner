@@ -331,7 +331,7 @@ final class CardGameForwardCompatibilityTests: XCTestCase {
                        VariantLock.selectable(for: .pokemon))
         XCTAssertEqual(PhysicalVariant.selectable(for: .pokemon), [
             .normal, .holo, .reverse, .pokeBall, .masterBall, .duskBall,
-            .friendBall, .quickBall, .loveBall, .firstEdition
+            .friendBall, .quickBall, .loveBall, .jumbo, .firstEdition
         ])
         XCTAssertEqual(PhysicalVariant.selectable(for: .magic), [.nonfoil, .foil, .etched])
     }

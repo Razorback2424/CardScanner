@@ -206,7 +206,10 @@ enum VariantResolver {
             return .resolved(ResolvedVariant(variant: nil, resolution: .catalogSilent))
         }
 
-        if possible.count == 1 && evidence.physicalCoverageVerified {
+        // Checklist/cache membership can supply a sole supported Pokémon
+        // finish without certifying exhaustive physical coverage. That still
+        // needs no tap; background reconciliation checks coverage separately.
+        if possible.count == 1 {
             return .resolved(
                 ResolvedVariant(
                     variant: possible[0],
@@ -628,7 +631,8 @@ enum PokemonFinishReconciliation {
         let currentEvidence = printRun == nil
             ? evidence
             : evidence.excludingFirstEditionPseudoFinish()
-        guard case let .resolved(resolved) = VariantResolver.resolve(currentEvidence),
+        guard currentEvidence.physicalCoverageVerified,
+              case let .resolved(resolved) = VariantResolver.resolve(currentEvidence),
               let variant = resolved.variant,
               variant.id != storedVariantID else {
             return nil

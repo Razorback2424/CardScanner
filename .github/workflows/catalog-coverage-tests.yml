@@ -112,6 +112,9 @@ jobs:
             -only-testing:TradingCardScannerTests/HistoricalCatalogRequestTests \
             -only-testing:TradingCardScannerTests/VariantResolverTests \
             -only-testing:TradingCardScannerTests/PokemonFinishEvidenceTests \
+            -only-testing:TradingCardScannerTests/RetailVariantTests/testSevenOrdinaryHoloMinimumsAutoResolveRetainNormalAndUseExactProducts \
+            -only-testing:TradingCardScannerTests/ScannerViewModelTests/testAutoModeAddsSoleBundledPokemonVariantWithoutPausing \
+            -only-testing:TradingCardScannerTests/ScannerViewModelTests/testAutoModeAddsSoleLegacyCachedVariantsAndStillAsksForMultipleVariants \
             -only-testing:TradingCardScannerTests/PokemonTCGCSVPriceTests \
             -only-testing:TradingCardScannerTests/CollectionKeyTests \
             -only-testing:TradingCardScannerTests/CardLatchTests \

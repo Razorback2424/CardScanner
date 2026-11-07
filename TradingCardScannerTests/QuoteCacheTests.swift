@@ -4,6 +4,84 @@ import XCTest
 
 @MainActor
 final class QuoteCacheTests: XCTestCase {
+    func testNonPokemonPriceChecksShowStaleEvidenceAndRetainNewerQuotes() async throws {
+        for game in [CardGame.magic, .lorcana, .yuGiOh] {
+            let context = try makeContext()
+            let scan = try rawScan(game: game)
+            let retained = quote(12, at: .now.addingTimeInterval(-2 * 86_400))
+            let older = quote(7, at: .now.addingTimeInterval(-3 * 86_400))
+            let cache = QuoteCache(context: context)
+            cache.store(retained, game: game, printingID: scan.card.providerID, variantID: "normal")
+            let coordinator = PriceCheckCoordinator(context: context,
+                refreshProvider: StubPriceCheckProvider(outcome: .quote(older)))
+
+            var result = coordinator.present(scan)
+            XCTAssertEqual(result.quoteState, .stale, game.rawValue)
+            XCTAssertEqual(result.successfulQuoteState, .stale, game.rawValue)
+            let outcome = await coordinator.refresh(result)
+            XCTAssertEqual(outcome, .quote(retained), game.rawValue)
+            result.completeRefresh(retained)
+            XCTAssertEqual(result.quoteState, .stale, game.rawValue)
+            XCTAssertEqual(cache.quote(game: game, printingID: scan.card.providerID,
+                variantID: "normal")?.effectiveAmount, 12)
+
+            result.completeRefresh(quote(15, at: .now))
+            XCTAssertEqual(result.quoteState, .current, game.rawValue)
+        }
+    }
+
+    func testPriceCheckCannotReportAnOfflineYuGiOhBundleAsASuccessfulCheck() async throws {
+        let context = try makeContext()
+        let date = Date.now.addingTimeInterval(-2 * 86_400)
+        let timestamp = ISO8601DateFormatter().string(from: date)
+        var object = YuGiOhFixture.object()
+        object["capturedAt"] = timestamp
+        var rows = try XCTUnwrap(object["printings"] as? [[String: Any]])
+        rows[0]["m"] = [["e": "yugioh1stEdition", "t": "providerMarket", "q": 7,
+                         "h": String(repeating: "a", count: 64), "s": timestamp, "st": "providerSnapshot"]]
+        object["printings"] = rows
+        let catalog = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
+        let printing = try XCTUnwrap(catalog.printingByID.values.first)
+        let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: printing.id).card
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let adapter = YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhDailyPriceSource(transport:
+            .init(baseURL: nil, cacheDirectory: root)))
+        let service = PriceQuoteService(registry: CardGameRegistry(descriptors: [
+            .init(game: .yuGiOh, displayName: "Yu-Gi-Oh!", sortOrder: 0, capabilities: [.pricing])
+        ]), adapters: try .init(adapters: [adapter]))
+        let scan = ResolvedScan(request: .init(subject: try YuGiOhFixture.subject(catalog),
+            purpose: .priceCheck, generation: 0), card: card,
+            resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed),
+            pokemonPrintRun: nil, options: [.yugiohFirstEdition])
+
+        // Initial offline valuation still works, with its original evidence date.
+        let historical = try await service.refresh(card: card, variant: .yugiohFirstEdition, pokemonPrintRun: nil)
+        let cache = QuoteCache(context: context)
+        cache.store(historical, game: .yuGiOh, printingID: card.providerID,
+            variantID: PhysicalVariant.yugiohFirstEdition.id, at: date)
+        let coordinator = PriceCheckCoordinator(context: context, quoteService: service)
+        var result = coordinator.present(scan)
+        XCTAssertEqual(result.quoteState, .stale)
+        XCTAssertNil(result.lastSuccessfulCheckAt)
+
+        let outcome = await coordinator.refresh(result)
+        XCTAssertEqual(outcome, .failed(.providerUnavailable))
+        result.recordFailedCheck(at: try XCTUnwrap(coordinator.recordRefreshFailure(for: result)))
+        XCTAssertEqual(result.quote, historical)
+        XCTAssertEqual(result.refreshFeedback, .failed)
+        XCTAssertNil(result.lastSuccessfulCheckAt)
+        let reopened = PriceCheckCoordinator(context: ModelContext(try XCTUnwrap(container)),
+            quoteService: service).present(scan)
+        XCTAssertEqual(reopened.display.amount, 7)
+        XCTAssertEqual(reopened.display.sourceUpdatedAt, ISO8601DateFormatter().date(from: timestamp))
+        XCTAssertEqual(reopened.refreshFeedback, .failed)
+        XCTAssertNil(reopened.lastSuccessfulCheckAt)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceCheckDay>()).isEmpty)
+    }
+
     func testForeignRefreshCannotOverwriteLastGoodUSDReferenceQuote() async throws {
         let context = try makeContext()
         let scan = priceCheckScan()
@@ -844,6 +922,18 @@ final class QuoteCacheTests: XCTestCase {
             unsupportedFinishCoordinator.present(scan)
         )
         XCTAssertEqual(unsupportedFinish, .failed(.unsupportedFinish))
+    }
+
+    private func rawScan(game: CardGame) throws -> ResolvedScan {
+        let card = try ResolvedCatalogCard(game: game, physicalPrintingID: "fixture-printing",
+            canonicalCardID: "fixture-card", language: "en", name: "Fixture Card", setName: "Fixture Set",
+            setCode: "FIX", cardNumber: "1", printedIdentifier: "FIX 1",
+            variantEvidence: .init(game: game, setID: "fixture", cardNumber: "1", catalogVariants: [.normal]))
+        let identifier = try ScanIdentifier(game: game, namespace: "fixture",
+            fields: [.init(key: "number", value: "1")], displayIdentifier: "FIX 1", suppressionIdentity: "fixture")
+        return ResolvedScan(request: .init(subject: .init(identifier: identifier), purpose: .priceCheck, generation: 0),
+            card: card, resolved: .init(variant: .normal, resolution: .userConfirmed),
+            pokemonPrintRun: nil, options: [.normal])
     }
 
     private func priceCheckScan(

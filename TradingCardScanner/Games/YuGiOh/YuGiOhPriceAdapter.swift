@@ -1,13 +1,16 @@
 import Foundation
 
 protocol YuGiOhMarketPriceSource: Sendable {
-    func quote(printing: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String, minimumFetchedAt: Date?) async throws -> PriceLookup
+    func quote(printing: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String,
+               minimumFetchedAt: Date?, allowsHistoricalFallback: Bool) async throws -> PriceLookup
 }
 /// Offline snapshot consumption only. Daily ingestion belongs on the existing
 /// publisher host; a device cache does not authorize direct TCGCSV requests.
 struct YuGiOhBundledPriceSource: YuGiOhMarketPriceSource {
-    func quote(printing p: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String, minimumFetchedAt: Date?) async throws -> PriceLookup {
+    func quote(printing p: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String,
+               minimumFetchedAt: Date?, allowsHistoricalFallback: Bool = true) async throws -> PriceLookup {
         try Task.checkCancellation()
+        guard allowsHistoricalFallback else { throw PriceQuoteError.providerUnavailable }
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         guard let m = p.membership.first(where: { $0.e == edition }), let amount = m.q,
@@ -28,7 +31,7 @@ struct YuGiOhBundledPriceSource: YuGiOhMarketPriceSource {
 struct YuGiOhDailyPriceSource: YuGiOhMarketPriceSource {
     var transport: TCGCSVProductPriceSource = .shared
     func quote(printing: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String,
-               minimumFetchedAt: Date?) async throws -> PriceLookup {
+               minimumFetchedAt: Date?, allowsHistoricalFallback: Bool = true) async throws -> PriceLookup {
         do {
             return try await transport.quote(category: 2, group: printing.set.groupID,
                 productID: printing.productID, name: printing.productName, number: printing.code,
@@ -41,6 +44,7 @@ struct YuGiOhDailyPriceSource: YuGiOhMarketPriceSource {
             throw PriceQuoteError.identityMismatch
         } catch {
             try Task.checkCancellation()
+            guard allowsHistoricalFallback else { throw error }
             return try await YuGiOhBundledPriceSource().quote(printing: printing, edition: edition,
                 generation: generation, minimumFetchedAt: minimumFetchedAt)
         }
@@ -86,7 +90,7 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
         }
         let card = try exactCard(printingID)
         return try await refresh(.init(identity: .legacy(card), variant: variant, pokemonPrintRun: nil,
-            catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt))
+            catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt, allowsHistoricalFallback: false))
     }
     private func exactCard(_ id: String) throws -> ResolvedCatalogCard {
         guard let uuid = UUID(uuidString: id), uuid.uuidString.lowercased() == id,
@@ -105,7 +109,8 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
               let p = catalog.printingByID[id], p.editions.contains(edition) else { throw PriceQuoteError.identityMismatch }
         // pe is build evidence only. Valid physical mappings always reach the
         // existing transport, so a newly available quote is discoverable.
-        let quote = try await source.quote(printing: p, edition: edition, generation: catalog.generation, minimumFetchedAt: request.minimumFetchedAt)
+        let quote = try await source.quote(printing: p, edition: edition, generation: catalog.generation,
+            minimumFetchedAt: request.minimumFetchedAt, allowsHistoricalFallback: request.allowsHistoricalFallback)
         try Task.checkCancellation()
         if case var .price(price) = quote {
             guard price.source == .tcgCSV, price.currencyCode == "USD", price.unitMarketPriceUSD.isFinite,

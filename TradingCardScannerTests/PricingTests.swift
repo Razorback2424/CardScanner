@@ -3386,7 +3386,7 @@ final class PriceHistoryChartModelTests: XCTestCase {
         XCTAssertEqual(model.currentPrice?.effectiveAsOf, asOf)
         XCTAssertEqual(model.currentPrice?.state(now: now), .stale)
         XCTAssertEqual(model.currentPrice?.refreshFailed, true)
-        XCTAssertTrue(try XCTUnwrap(model.currentPrice).priceCaption.hasSuffix(
+        XCTAssertTrue(try XCTUnwrap(model.sample(at: now)).priceCaption.hasSuffix(
             asOf.formatted(date: .abbreviated, time: .omitted)))
     }
 

@@ -111,9 +111,9 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         XCTAssertEqual(celebrationIDs.count, 50)
         let normalControl = IdentifiedCard.pokemon(try card("ru1-2", in: snapshot), setCode: "RUM").variantEvidence
         XCTAssertFalse(normalControl.physicalCoverageVerified)
-        XCTAssertEqual(VariantResolver.resolve(normalControl), .needsChoice(options: [.normal], lockDidNotApply: nil))
+        XCTAssertEqual(VariantResolver.resolve(normalControl), .resolved(.init(variant: .normal, resolution: .uniqueInCatalog)))
         XCTAssertEqual(VariantResolver.resolve(normalControl, finishLock: PhysicalVariant.normal),
-            .resolved(.init(variant: .normal, resolution: .finishLock)))
+            .resolved(.init(variant: .normal, resolution: .uniqueInCatalog)))
         for number in ["24a", "28a", "54a", "55a", "92a", "107a"] {
             let value = try card("xya-\(number)", in: snapshot)
             let expected: Set<PhysicalVariant> = ["92a", "107a"].contains(number) ? [.normal, .holo] : [.holo]
@@ -121,7 +121,7 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         }
     }
 
-    func testMissingEvidenceNeverBecomesNormalAndIncompleteSingletonAcceptsOnlySupportedLock() throws {
+    func testMissingEvidenceNeverBecomesNormalAndSupportedSingletonResolvesAutomatically() throws {
         let empty = TCGdexCard(id: "fixture-1", localId: "1", name: "Unknown", image: nil, rarity: nil,
             set: .init(id: "fixture", name: "Fixture", cardCount: .init(total: 1, official: 1)),
             variants: nil, pricing: nil, variantsDetailed: nil)
@@ -133,25 +133,26 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         XCTAssertEqual(PokemonMasterSetDefinition.requiredVariants(for: explicitNormal).map(\.variant), [.normal])
         let partial = VariantEvidence(game: .pokemon, setID: "fixture", cardNumber: "1", catalogVariants: [.holo],
             physicalCoverageVerified: false, explicitMembershipSupported: true)
-        XCTAssertEqual(VariantResolver.resolve(partial), .needsChoice(options: [.holo], lockDidNotApply: nil))
-        XCTAssertEqual(VariantResolver.resolve(partial, finishLock: PhysicalVariant.holo), .resolved(.init(variant: .holo, resolution: .finishLock)))
+        XCTAssertEqual(VariantResolver.resolve(partial), .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
+        XCTAssertEqual(VariantResolver.resolve(partial, finishLock: PhysicalVariant.holo), .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
         XCTAssertEqual(VariantResolver.resolveAcquisition(partial, printedEdition: .absent, finishLock: .init(finish: .holo)),
-            .resolved(.init(variant: .holo, resolution: .finishLock)))
-        XCTAssertEqual(VariantResolver.resolve(partial, finishLock: PhysicalVariant.normal), .needsChoice(options: [.holo], lockDidNotApply: .init(finish: .normal)))
+            .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
+        XCTAssertEqual(VariantResolver.resolve(partial, finishLock: PhysicalVariant.normal),
+            .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
         let verified = VariantEvidence(game: .pokemon, setID: "fixture", cardNumber: "1", catalogVariants: [.normal], physicalCoverageVerified: true)
         XCTAssertEqual(VariantResolver.resolve(verified), .resolved(.init(variant: .normal, resolution: .uniqueInCatalog)))
         let silent = IdentifiedCard.pokemon(empty, setCode: "FIX").variantEvidence
         XCTAssertTrue(VariantResolver.options(for: silent).isEmpty)
     }
 
-    func testReviewedMinimumDoesNotCertifyRetainedNormalOrExhaustiveCoverage() async throws {
+    func testReviewedMinimumAutoResolvesSupportedHoloWithoutCertifyingRetainedNormal() async throws {
         let snapshot = try await snapshot()
         let value = try card("dv1-21", in: snapshot)
         let evidence = IdentifiedCard.pokemon(value, setCode: "DRV").variantEvidence
         XCTAssertFalse(evidence.physicalCoverageVerified)
         XCTAssertEqual(VariantResolver.options(for: evidence), [.holo])
-        XCTAssertEqual(VariantResolver.resolve(evidence), .needsChoice(options: [.holo], lockDidNotApply: nil))
-        XCTAssertEqual(VariantResolver.resolve(evidence, finishLock: PhysicalVariant.holo), .resolved(.init(variant: .holo, resolution: .finishLock)))
+        XCTAssertEqual(VariantResolver.resolve(evidence), .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
+        XCTAssertEqual(VariantResolver.resolve(evidence, finishLock: PhysicalVariant.holo), .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
         XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: "dv1-21", variant: .normal))
         XCTAssertFalse(PokemonVariantRules.requiresPhysicalReview(cardID: "xy12-80", variant: .normal))
     }
@@ -228,7 +229,7 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         let hit = try XCTUnwrap(loaded)
         XCTAssertEqual(Set(hit.card.catalogVariants), [.normal, .holo])
         XCTAssertEqual(VariantResolver.resolve(IdentifiedCard.pokemon(hit.card, setCode: hit.setCode).variantEvidence),
-            .needsChoice(options: [.holo], lockDidNotApply: nil))
+            .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
         let preserved = await reopened.card(for: "fixture-1")
         XCTAssertEqual(preserved?.card.catalogVariants, [.normal])
     }
@@ -555,7 +556,7 @@ final class RetailVariantTests: XCTestCase {
         return try JSONDecoder().decode(TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object))
     }
 
-    func testSevenOrdinaryHoloMinimumsRequireChoiceRetainNormalAndUseExactProducts() throws {
+    func testSevenOrdinaryHoloMinimumsAutoResolveRetainNormalAndUseExactProducts() throws {
         let registry = try ordinaryCorrectionRegistry()
         // Expectations from the separate official/marketplace review receipts.
         for (number, name, product) in [("XY111", "Celebi", 114526), ("XY112", "Jirachi", 117266),
@@ -567,7 +568,7 @@ final class RetailVariantTests: XCTestCase {
             let identified = IdentifiedCard.pokemon(card, setCode: "XY")
             XCTAssertEqual(VariantResolver.options(for: identified.variantEvidence), [.holo])
             XCTAssertFalse(identified.variantEvidence.physicalCoverageVerified)
-            XCTAssertEqual(VariantResolver.resolve(identified.variantEvidence), .needsChoice(options: [.holo], lockDidNotApply: nil))
+            XCTAssertEqual(VariantResolver.resolve(identified.variantEvidence), .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
             XCTAssertNil(PokemonFinishReconciliation.repair(storedVariantID: "normal", storedResolution: .uniqueInCatalog,
                 itemKind: .rawCard, printRun: nil, card: identified))
             XCTAssertNil(usd(CardPricing.price(for: identified, variant: .normal, magicTreatments: [])))
@@ -958,6 +959,38 @@ final class VariantResolverTests: XCTestCase {
         let outcome = VariantResolver.resolve(pokemon(setID: "sv03", variants: [.holo]))
 
         XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)))
+    }
+
+    func testUnverifiedPokemonSingletonAutoResolvesWithoutBypassingAcquisitionGates() {
+        for variant in [PhysicalVariant.normal, .holo, .reverse] {
+            let evidence = VariantEvidence(game: .pokemon, setID: "fixture", cardNumber: "1",
+                catalogVariants: [variant], physicalCoverageVerified: false, explicitMembershipSupported: true)
+            XCTAssertEqual(VariantResolver.resolveAcquisition(evidence, printedEdition: .absent),
+                .resolved(.init(variant: variant, resolution: .uniqueInCatalog)), variant.id)
+        }
+
+        let ambiguous = VariantEvidence(game: .pokemon, setID: "fixture", cardNumber: "1",
+            catalogVariants: [.normal, .reverse], physicalCoverageVerified: false, explicitMembershipSupported: true)
+        XCTAssertEqual(VariantResolver.resolveAcquisition(ambiguous, printedEdition: .absent),
+            .needsChoice(options: [.reverse, .normal], lockDidNotApply: nil))
+
+        let unsupported = VariantEvidence(game: .pokemon, setID: "fixture", cardNumber: "1",
+            catalogVariants: [.holo], physicalCoverageVerified: false)
+        XCTAssertEqual(VariantResolver.resolveAcquisition(unsupported, printedEdition: .absent),
+            .needsChoice(options: [], lockDidNotApply: nil))
+
+        let supported = VariantEvidence(game: .pokemon, setID: "fixture", cardNumber: "1",
+            catalogVariants: [.holo], physicalCoverageVerified: false, explicitMembershipSupported: true)
+        XCTAssertEqual(VariantResolver.resolveAcquisition(supported, printedEdition: .observed(.normal)),
+            .needsChoice(options: [], lockDidNotApply: nil))
+        XCTAssertEqual(VariantResolver.resolveAcquisition(supported,
+            printedEdition: .init(observed: [.normal, .holo], illegible: false)),
+            .needsChoice(options: [], lockDidNotApply: nil))
+
+        let otherGame = VariantEvidence(game: .magic, setID: "fixture", cardNumber: "1",
+            catalogVariants: [.foil], physicalCoverageVerified: false, explicitMembershipSupported: true)
+        XCTAssertEqual(VariantResolver.resolveAcquisition(otherGame, printedEdition: .absent),
+            .needsChoice(options: [.foil], lockDidNotApply: nil))
     }
 
     func testCatalogWithNothingToSayRecordsUnknownRatherThanGuessing() {

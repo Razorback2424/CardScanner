@@ -318,6 +318,93 @@ private struct ScannerPrintingCatalogFixture: GameCatalogAdapter {
 
 @MainActor
 final class ScannerViewModelTests: XCTestCase {
+    func testAutoModeAddsSoleBundledPokemonVariantWithoutPausing() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let offline = PokemonOfflineCatalog(store: PokemonChecklistStore(root: root))
+        let fixtures: [(setID: String, code: String, number: String, total: Int, variant: PhysicalVariant)] = [
+            ("sv03", "OBF", "199", 197, .holo),
+            ("ru1", "RU1", "2", 16, .normal)
+        ]
+
+        for fixture in fixtures {
+            let model = try makeModel(variants: [], catalogMiss: true, offline: offline)
+            defer { model.viewDisappeared() }
+            XCTAssertTrue(model.finishLocks.isEmpty, "Exercise Auto without a Finish Lock")
+            let identifier = ScanIdentifier.pokemon(
+                setCode: fixture.code, cardNumber: fixture.number, printedTotal: fixture.total,
+                setDefinition: .init(printedCode: fixture.code, tcgdexSetID: fixture.setID,
+                    officialCount: fixture.total, releaseIndex: 0)
+            )
+
+            confirm(model, identifier, encounterID: UUID())
+            await assertEventually {
+                model.successCount == 1 || model.pendingChoice != nil || !model.unresolvedScans.isEmpty
+            }
+
+            XCTAssertEqual(model.successCount, 1, fixture.setID)
+            XCTAssertNil(model.pendingChoice, "A sole catalog option must not interrupt Auto")
+            XCTAssertNil(model.pendingPrintRunChoice)
+            XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+            XCTAssertTrue(model.unresolvedScans.isEmpty)
+            XCTAssertEqual(model.recent.first?.card.providerID, "\(fixture.setID)-\(fixture.number)")
+            XCTAssertEqual(model.recent.first?.card.variantEvidence.physicalCoverageVerified, false)
+            let rows = try context().fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(rows.first?.variant, fixture.variant)
+            XCTAssertEqual(rows.first?.quantity, 1)
+        }
+    }
+
+    func testAutoModeAddsSoleLegacyCachedVariantsAndStillAsksForMultipleVariants() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let entries: [[String: Any]] = [
+            ("001", [PhysicalVariant.normal]),
+            ("002", [.holo]),
+            ("003", [.normal, .reverse])
+        ].map { number, variants in
+            ["key": "pokemon|test-set|\(Int(number)!)|10",
+             "storedAt": ISO8601DateFormatter().string(from: .now),
+             "cardID": "test-set-\(number)", "localID": number, "name": "Cached Card \(number)",
+             "setID": "test-set", "setName": "Test Set", "officialCount": 10, "setCode": "TST",
+             "variants": variants.map { ["id": $0.id, "label": $0.label] }]
+        }
+        // This pre-repair cache has no finishCoverageVerified field.
+        try JSONSerialization.data(withJSONObject: [
+            "appVersion": "scanner-tests", "schemaGeneration": 2, "entries": entries
+        ]).write(to: root.appendingPathComponent("ResolvedPokemonCards.json"))
+        let model = try makeModel(variants: [], catalogMiss: true,
+            resolvedDiskCache: ResolvedPokemonCardCache(root: root, appVersion: "scanner-tests"))
+        defer { model.viewDisappeared() }
+        XCTAssertTrue(model.finishLocks.isEmpty)
+
+        for (index, variant) in [PhysicalVariant.normal, .holo].enumerated() {
+            let number = index == 0 ? "001" : "002"
+            confirm(model, scannerIdentifier(cardNumber: number), encounterID: UUID())
+            await assertEventually {
+                model.successCount == index + 1 || model.pendingChoice != nil || !model.unresolvedScans.isEmpty
+            }
+            XCTAssertEqual(model.successCount, index + 1)
+            XCTAssertNil(model.pendingChoice)
+            XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+            XCTAssertEqual(model.recent.first?.card.variantEvidence.physicalCoverageVerified, false)
+            let rows = try context().fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, index + 1)
+            XCTAssertEqual(rows.first { $0.cardNumber == number }?.variant, variant)
+            guard model.pendingChoice == nil else { return }
+        }
+
+        confirm(model, scannerIdentifier(cardNumber: "003"), encounterID: UUID())
+        await assertEventually { model.pendingChoice != nil || !model.unresolvedScans.isEmpty }
+        XCTAssertEqual(Set(model.pendingChoice?.options ?? []), [.normal, .reverse])
+        XCTAssertTrue(model.scanner.isRecognitionPausedForTesting)
+        XCTAssertEqual(model.successCount, 2)
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<CollectedCard>()), 2)
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+    }
+
     private func printingIdentifier() throws -> ScanIdentifier {
         try .init(game: .onePiece, namespace: "numbered-card",
                   fields: [.init(key: "number", value: "OP01-120")], displayIdentifier: "OP01-120",
@@ -1811,7 +1898,9 @@ final class ScannerViewModelTests: XCTestCase {
 
         let authorized = await waitUntil { authorizedEncounterID != nil }
         XCTAssertTrue(authorized)
-        await settle()
+        await assertEventually {
+            model.scanAcknowledgement == nil && !model.isIdentificationProcessingForTesting
+        }
 
         XCTAssertEqual(model.recent.count, 1)
         XCTAssertEqual(model.successCount, 1)
@@ -4629,6 +4718,7 @@ final class ScannerViewModelTests: XCTestCase {
         sessionMetricsLog: ScanSessionMetricsLog? = nil,
         metricsDefaults: UserDefaults = .standard,
         offline: PokemonOfflineCatalog? = nil,
+        resolvedDiskCache: ResolvedPokemonCardCache? = nil,
         printingCatalog: (any GameCatalogAdapter)? = nil,
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
         magicCatalogCoordinator: MagicCatalogCoordinator? = nil
@@ -4668,7 +4758,7 @@ final class ScannerViewModelTests: XCTestCase {
                 failureSwitch: failureSwitch
             ),
             offline: offline ?? PokemonOfflineCatalog(store: checklistStore),
-            resolvedDiskCache: ResolvedPokemonCardCache(
+            resolvedDiskCache: resolvedDiskCache ?? ResolvedPokemonCardCache(
                 root: root,
                 appVersion: "scanner-tests"
             ),
@@ -4758,7 +4848,7 @@ final class ScannerViewModelTests: XCTestCase {
             collectorNumber: "001",
             thumbnailURL: nil,
             imageURL: nil,
-            masterSetVariant: includeFinishChoice ? .normal : nil
+            masterSetVariant: includeFinishChoice ? .normal : .holo
         )
         let firstHoloSummary = CatalogCardSummary(
             game: .pokemon,
@@ -4781,7 +4871,8 @@ final class ScannerViewModelTests: XCTestCase {
             name: "Second Held Card",
             collectorNumber: "001",
             thumbnailURL: nil,
-            imageURL: nil
+            imageURL: nil,
+            masterSetVariant: .holo
         )
         let snapshot = PokemonChecklistSnapshot(
             manifest: PokemonChecklistSnapshotManifest(

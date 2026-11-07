@@ -4846,12 +4846,12 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             // Fates must not become an automatic Normal finish.
             XCTAssertEqual(
                 VariantResolver.resolve(identified.variantEvidence),
-                .needsChoice(options: [.holo], lockDidNotApply: nil),
+                .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)),
                 printed
             )
             XCTAssertFalse(identified.variantEvidence.physicalCoverageVerified)
             XCTAssertEqual(VariantResolver.resolve(identified.variantEvidence, finishLock: PhysicalVariant.holo),
-                .resolved(.init(variant: .holo, resolution: .finishLock)))
+                .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
         }
 
         let entry = try XCTUnwrap(snapshot.entry(forProviderID: "sma"))

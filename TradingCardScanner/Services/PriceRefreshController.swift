@@ -2481,8 +2481,10 @@ extension PokemonFinishReconciliation {
                 let evidence = row.pokemonPrintRun == nil
                     ? card.variantEvidence
                     : card.variantEvidence.excludingFirstEditionPseudoFinish()
-                let outcome = VariantResolver.resolve(evidence)
-                guard case let .resolved(resolved) = outcome,
+                // A sole supported scan option does not certify enough
+                // coverage to change a previously stored finish.
+                guard evidence.physicalCoverageVerified,
+                      case let .resolved(resolved) = VariantResolver.resolve(evidence),
                       let variant = resolved.variant else {
                     stagePendingFinish(
                         for: row,

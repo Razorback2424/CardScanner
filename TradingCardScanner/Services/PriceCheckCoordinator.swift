@@ -109,7 +109,8 @@ final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
             let catalogQuote = try await quoteService.refresh(
                 card: card,
                 variant: variant,
-                pokemonPrintRun: pokemonPrintRun
+                pokemonPrintRun: pokemonPrintRun,
+                allowsHistoricalFallback: false
             )
             if case .price = catalogQuote,
                PriceCheckCoordinator.isUsableUSD(catalogQuote) {
@@ -329,7 +330,7 @@ final class PriceCheckCoordinator {
                 resolvedScan, key: key,
                 quote: catalogQuote,
                 retrievedAt: catalogEvidence.retrievedAt,
-                quoteState: key.game == .pokemon && Self.isStale(catalogEvidence, game: key.game, now: now()) ? .stale : .current,
+                quoteState: Self.isStale(catalogEvidence, game: key.game, now: now()) ? .stale : .current,
                 // Identification stays fast, but an old session-cache payload
                 // must not disable the newer-price check.
                 shouldAutoRefresh: Self.isStale(catalogEvidence, game: key.game, now: now())
@@ -364,7 +365,7 @@ final class PriceCheckCoordinator {
                 resolvedScan, key: key,
                 quote: localLookup,
                 retrievedAt: local.retrievedAt,
-                quoteState: key.game == .pokemon && Self.isStale(local, game: key.game, now: now()) ? .stale : .current,
+                quoteState: Self.isStale(local, game: key.game, now: now()) ? .stale : .current,
                 shouldAutoRefresh: Self.isStale(local, game: key.game, now: now())
             )
         }
@@ -461,14 +462,17 @@ final class PriceCheckCoordinator {
         if case .unavailable(nil)? = lookup {
             return .failed(.providerUnavailable)
         }
-        if result.card.game == .pokemon,
-           case let .price(candidate)? = lookup,
-           case let .price(previous) = result.quote, previous.isUsableUSD,
-           (candidate.effectiveAsOf < previous.effectiveAsOf
-            || (previous.sourceUpdatedAt != nil && candidate.sourceUpdatedAt == nil)) {
-            // A successful check can still return older upstream data.
-            // Preserve the better quote while the view records this new check.
-            outcome = issue.map { .lastKnown(result.quote, $0) } ?? .quote(result.quote)
+        if case let .price(candidate)? = lookup,
+           case let .price(previous) = result.quote, previous.isUsableUSD {
+            let isOlder = result.card.game == .pokemon
+                ? (candidate.effectiveAsOf < previous.effectiveAsOf
+                    || (previous.sourceUpdatedAt != nil && candidate.sourceUpdatedAt == nil))
+                : candidate.fetchedAt < previous.fetchedAt
+            if isOlder {
+                // A successful check can still return older upstream data.
+                // Preserve the better quote while the view records this new check.
+                outcome = issue.map { .lastKnown(result.quote, $0) } ?? .quote(result.quote)
+            }
         }
         let successfulQuote: PriceLookup?
         switch outcome {

@@ -1462,29 +1462,40 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
     }
 
     @MainActor
-    func testAutomaticNormalCollectionFinishIsRepairedAndPricedInOneRefresh() async throws {
-        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
-                                          configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
-        let context = container.mainContext
-        _ = try CollectionStore(context: context).add(
-            .pokemon(try Self.card("30th-c-014"), setCode: "30C"),
-            resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog), source: .scan
-        )
-        let actor = PriceRefreshModelActor(modelContainer: container)
-        await actor.setPokemonFetchOverrideForTesting { _ in throw URLError(.notConnectedToInternet) }
-        await actor.setTCGCSVSourceForTesting(RecordedTCGCSV(snapshot: try snapshot("30th-c")))
-        let result = await actor.run(PriceRefreshRequest(
-            usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: false,
-            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false
-        ), progress: { _ in }, shouldContinue: nil)
-        guard case let .completed(report) = result else { return XCTFail("Expected completed refresh") }
-        XCTAssertEqual(report.repairedFinishes, 1)
-        XCTAssertEqual(report.priced, 1)
-        let readContext = ModelContext(container)
-        let rows = try readContext.fetch(FetchDescriptor<CollectedCard>()).filter { $0.quantity > 0 }
-        XCTAssertEqual(rows.count, 1)
-        XCTAssertEqual(rows[0].variantID, PhysicalVariant.holo.id)
-        XCTAssertEqual(PriceStore(context: readContext).record(forKey: rows[0].priceKey)?.source, .tcgCSV)
+    func testCatalogFinishRefreshPreservesUnlistedNormalAndRepairsAutomaticReverse() async throws {
+        for storedVariant in [PhysicalVariant.normal, .reverse] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                                              configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let context = container.mainContext
+            _ = try CollectionStore(context: context).add(
+                .pokemon(try Self.card("30th-c-014"), setCode: "30C"),
+                resolved: ResolvedVariant(variant: storedVariant, resolution: .uniqueInCatalog), source: .scan
+            )
+            let actor = PriceRefreshModelActor(modelContainer: container)
+            await actor.setPokemonFetchOverrideForTesting { _ in throw URLError(.notConnectedToInternet) }
+            await actor.setTCGCSVSourceForTesting(RecordedTCGCSV(snapshot: try snapshot("30th-c")))
+            let result = await actor.run(PriceRefreshRequest(
+                usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: false,
+                sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false
+            ), progress: { _ in }, shouldContinue: nil)
+            guard case let .completed(report) = result else { return XCTFail("Expected completed refresh") }
+            // Unlisted Normal needs physical review; a reviewed mapping can
+            // still repair another automatically inferred finish and price it.
+            let expectsRepair = storedVariant == .reverse
+            XCTAssertEqual(report.repairedFinishes, expectsRepair ? 1 : 0)
+            XCTAssertEqual(report.priced, expectsRepair ? 1 : 0)
+            let readContext = ModelContext(container)
+            let rows = try readContext.fetch(FetchDescriptor<CollectedCard>()).filter { $0.quantity > 0 }
+            XCTAssertEqual(rows.count, 1)
+            let row = try XCTUnwrap(rows.first)
+            XCTAssertEqual(row.variant, expectsRepair ? .holo : .normal)
+            let price = PriceStore(context: readContext).record(forKey: row.priceKey)
+            if expectsRepair {
+                XCTAssertEqual(price?.source, .tcgCSV)
+            } else {
+                XCTAssertNil(price?.effectiveUnitMarketPriceUSD, "Normal must not borrow the Holo quote")
+            }
+        }
     }
 
     private func server() throws -> TCGCSVTestServer {

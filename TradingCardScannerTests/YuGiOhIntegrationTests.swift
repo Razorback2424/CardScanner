@@ -583,7 +583,8 @@ private actor YuGiOhTestPriceSource: YuGiOhMarketPriceSource {
     var available = false
     var calls: [String] = []
     func enable() { available = true }
-    func quote(printing: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String, minimumFetchedAt: Date?) async throws -> PriceLookup {
+    func quote(printing: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String,
+               minimumFetchedAt: Date?, allowsHistoricalFallback: Bool) async throws -> PriceLookup {
         calls.append("2:\(printing.set.groupID):\(printing.productID):\(edition.tcgplayerSubtype)")
         guard available else { return .unavailable(.tcgCSV) }
         return .price(.init(unitMarketPriceUSD: 12.34, currencyCode: "USD", source: .tcgCSV,
@@ -642,6 +643,11 @@ final class YuGiOhPricingTests: XCTestCase {
         XCTAssertEqual(fresh.catalogIdentity, YuGiOhPriceAdapter.mappingIdentity(printing, .unlimited))
         XCTAssertEqual(fresh.sourceVariantID, "tcgplayer:\(printing.productID):Unlimited")
         XCTAssertNil(fresh.sourceUpdatedAt)
+        let currentCheck = try await adapter.refresh(.init(identity: .legacy(
+            try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: printing.id).card),
+            variant: .yugiohUnlimited, pokemonPrintRun: nil, catalogRefreshOverride: nil,
+            allowsHistoricalFallback: false))
+        XCTAssertEqual(currentCheck, .price(fresh), "Current checks must still accept a valid daily feed")
         amount = nil
         let absent = try await adapter.refreshStoredPrinting(printing.idString, variant: .yugiohUnlimited, minimumFetchedAt: .now)
         XCTAssertEqual(absent, .unavailable(.tcgCSV), "A fresh null lane cannot borrow another edition or an older bundle")
@@ -650,14 +656,19 @@ final class YuGiOhPricingTests: XCTestCase {
             .init(baseURL: nil, session: session, cacheDirectory: root.appendingPathComponent("offline"))))
         let historical = try await YuGiOhBundledPriceSource().quote(printing: printing, edition: .first,
             generation: catalog.generation, minimumFetchedAt: nil)
-        let offlinePrice = try await offline.refreshStoredPrinting(printing.idString, variant: .yugiohFirstEdition)
+        let offlinePrice = try await offline.refresh(.init(identity: .legacy(
+            try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: printing.id).card),
+            variant: .yugiohFirstEdition, pokemonPrintRun: nil, catalogRefreshOverride: nil))
         guard case var .price(expected) = historical else { return XCTFail("Expected a dated bundle quote") }
         expected.catalogIdentity = YuGiOhPriceAdapter.mappingIdentity(printing, .first)
         XCTAssertEqual(offlinePrice, .price(expected))
-        do {
-            _ = try await offline.refreshStoredPrinting(printing.idString, variant: .yugiohFirstEdition, minimumFetchedAt: .now)
-            XCTFail("An old bundle cannot fulfill a current-check watermark")
-        } catch PriceQuoteError.providerUnavailable {}
+        for minimum: Date? in [nil, .now] {
+            do {
+                _ = try await offline.refreshStoredPrinting(printing.idString,
+                    variant: .yugiohFirstEdition, minimumFetchedAt: minimum)
+                XCTFail("A collection refresh cannot report an offline bundle as a successful current check")
+            } catch PriceQuoteError.providerUnavailable {}
+        }
 
         for mode in ["identity", "cancelled"] {
             let strict = YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhDailyPriceSource(transport:
@@ -736,7 +747,10 @@ final class YuGiOhPricingTests: XCTestCase {
             XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<PriceCheckDay>()), coverage)
         }
         let other = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 476160 })
-        let result = try await YuGiOhPriceAdapter(catalog: catalog).refreshStoredPrinting(other.idString, variant: .yugiohUnlimited)
+        let initial = YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhBundledPriceSource())
+        let result = try await initial.refresh(.init(identity: .legacy(
+            try YuGiOhCatalogAdapter(catalog: catalog).resolutionForExistingHolding(other.id).card),
+            variant: .yugiohUnlimited, pokemonPrintRun: nil, catalogRefreshOverride: nil))
         guard case let .price(price) = result else { return XCTFail() }
         XCTAssertLessThan(price.fetchedAt, catalog.capturedAt)
         XCTAssertEqual(price.fetchedAt, price.sourceUpdatedAt)
@@ -1036,6 +1050,43 @@ final class YuGiOhImportTests: XCTestCase {
 
 @MainActor
 final class YuGiOhWorkflowTests: XCTestCase {
+    func testFailedRawPriceCheckPersistsItsAttemptWithoutChangingTheRetainedQuote() async throws {
+        struct UnavailableProvider: PriceCheckRefreshProvider {
+            func refresh(card: IdentifiedCard, variant: PhysicalVariant?, pokemonPrintRun: PokemonPrintRun?) async -> PriceCheckRefreshOutcome {
+                .failed(.providerUnavailable)
+            }
+        }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-failed-check-\(UUID())")
+        let catalog = try YuGiOhFixture.catalog(), store = try container(root.appendingPathComponent("collection.store"))
+        let bound = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: store)
+        let printing = try XCTUnwrap(catalog.printingByID.values.first)
+        let date = Date.now.addingTimeInterval(-2 * 86_400)
+        QuoteCache(context: store.mainContext).store(.price(.init(unitMarketPriceUSD: 7, currencyCode: "USD",
+            source: .tcgCSV, sourceVariantID: "retained", sourceUpdatedAt: date, fetchedAt: date)),
+            game: .yuGiOh, printingID: printing.idString, variantID: PhysicalVariant.yugiohFirstEdition.id, at: date)
+        let model = ScannerViewModel(gameRegistry: bound.registry, priceQuoteService: bound.makePriceQuoteService(),
+            catalog: bound.makeCardCatalog(), priceCheckRefreshProvider: UnavailableProvider(),
+            unresolvedScanStore: UnresolvedScanStore(fileURL: root.appendingPathComponent("recovery.json")))
+        model.start(context: store.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+        defer { model.viewDisappeared() }
+        model.setPurpose(.priceCheck)
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(),
+            try YuGiOhFixture.subject(catalog, .observed(.yugiohFirstEdition)), nil)
+        let finished = await waitUntil { model.priceCheckResult?.refreshFeedback == .failed && model.priceCheckResult?.isRefreshing == false }
+        XCTAssertTrue(finished)
+        let result = try XCTUnwrap(model.priceCheckResult)
+        let reference = try XCTUnwrap(QuoteCache(context: ModelContext(store)).quote(game: .yuGiOh,
+            printingID: printing.idString, variantID: PhysicalVariant.yugiohFirstEdition.id))
+        XCTAssertEqual(reference.effectiveAmount, 7)
+        XCTAssertEqual(reference.retrievedAt, date)
+        XCTAssertNotNil(reference.lastFailureAt)
+        XCTAssertNil(reference.lastSuccessfulCheckAt)
+        XCTAssertEqual(PriceCheckCoordinator(context: ModelContext(store)).present(result.resolvedScan).refreshFeedback, .failed)
+        XCTAssertTrue(try store.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(try store.mainContext.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        XCTAssertTrue(try store.mainContext.fetch(FetchDescriptor<PriceCheckDay>()).isEmpty)
+    }
+
     func testMP24WriterRejectsContradictionWithdrawalAndStaleGenerationWithoutPartialWrites() async throws {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-MP24-write-\(UUID())/collection.store")
         let original = try container(url), catalog = try YuGiOhCatalog.bundled.get()
@@ -2076,7 +2127,7 @@ final class YuGiOhCatalogTests: XCTestCase {
     }
     func testFourSetPricingSamplePreservesExactProductsEditionsAndSourceDates() async throws {
         let catalog = try YuGiOhCatalog.bundled.get()
-        let adapter = YuGiOhPriceAdapter(catalog: catalog)
+        let adapter = YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhBundledPriceSource())
         XCTAssertFalse(YuGiOhGameRuntime.capabilities(for: catalog).contains(.gradedPricing))
         var groups = Set<Int>()
         for code in ["LOB-001", "PSV-000", "RA02-EN037", "MP24-EN001"] {
@@ -2085,8 +2136,10 @@ final class YuGiOhCatalogTests: XCTestCase {
             }.sorted { $0.idString < $1.idString }.first)
             let membership = try XCTUnwrap(printing.membership.first { $0.q != nil })
             groups.insert(printing.set.groupID)
-            guard case let .price(price) = try await adapter.refreshStoredPrinting(printing.idString,
-                variant: membership.e.variant) else { return XCTFail("Missing snapshot quote for \(code)") }
+            guard case let .price(price) = try await adapter.refresh(.init(identity: .legacy(
+                try YuGiOhCatalogAdapter(catalog: catalog).resolutionForExistingHolding(printing.id).card),
+                variant: membership.e.variant, pokemonPrintRun: nil, catalogRefreshOverride: nil))
+            else { return XCTFail("Missing snapshot quote for \(code)") }
             XCTAssertEqual(price.sourceVariantID, "tcgplayer:\(printing.productID):\(membership.e.tcgplayerSubtype)", code)
             XCTAssertEqual(price.unitMarketPriceUSD, membership.q, code)
             let formatter = ISO8601DateFormatter()

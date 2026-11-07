@@ -31,6 +31,9 @@ struct GamePriceRequest: Sendable {
     let pokemonPrintRun: PokemonPrintRun?
     let catalogRefreshOverride: (@Sendable () async throws -> PriceLookup)?
     var minimumFetchedAt: Date? = nil
+    /// Initial offline valuation may reuse a dated bundle. A current-price
+    /// check must preserve a source failure instead of reporting that replay as success.
+    var allowsHistoricalFallback = true
 }
 
 protocol GamePriceAdapter: Sendable {
