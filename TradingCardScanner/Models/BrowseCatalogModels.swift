@@ -957,6 +957,7 @@ struct CatalogCachedPrice: Codable, Equatable, Sendable {
     static let currentHistoryMetadataVersion = 1
 
     let value: Double?
+    let confirmsNoUSDQuote: Bool
     /// Scryfall bulk-dataset day associated with the pricing response. Older
     /// caches decode with nil and are refreshed before Stage 4A history use.
     let providerUpdatedAt: Date?
@@ -966,21 +967,24 @@ struct CatalogCachedPrice: Codable, Equatable, Sendable {
 
     init(
         value: Double?,
+        confirmsNoUSDQuote: Bool = false,
         providerUpdatedAt: Date? = nil,
         historyMetadataVersion: Int = Self.currentHistoryMetadataVersion
     ) {
         self.value = value
+        self.confirmsNoUSDQuote = confirmsNoUSDQuote
         self.providerUpdatedAt = providerUpdatedAt
         self.historyMetadataVersion = historyMetadataVersion
     }
 
     enum CodingKeys: String, CodingKey {
-        case value, providerUpdatedAt, historyMetadataVersion
+        case value, confirmsNoUSDQuote, providerUpdatedAt, historyMetadataVersion
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         value = try container.decodeIfPresent(Double.self, forKey: .value)
+        confirmsNoUSDQuote = try container.decodeIfPresent(Bool.self, forKey: .confirmsNoUSDQuote) ?? false
         providerUpdatedAt = try container.decodeIfPresent(Date.self, forKey: .providerUpdatedAt)
         historyMetadataVersion = try container.decodeIfPresent(
             Int.self,
@@ -991,6 +995,7 @@ struct CatalogCachedPrice: Codable, Equatable, Sendable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(value, forKey: .value)
+        try container.encode(confirmsNoUSDQuote, forKey: .confirmsNoUSDQuote)
         try container.encodeIfPresent(providerUpdatedAt, forKey: .providerUpdatedAt)
         try container.encode(historyMetadataVersion, forKey: .historyMetadataVersion)
     }

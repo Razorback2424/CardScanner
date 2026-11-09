@@ -185,7 +185,10 @@ struct LorcanaCatalogAdapter: GameCatalogAdapter {
             printedIdentifier: footer.displayIdentifier, rarity: registry.familiesByFooter[footer]?.rarity,
             displayImageURL: printing.imageURL, thumbnailImageURL: printing.imageURL,
             variantEvidence: .init(game: game, setID: footer.setScopeID,
-                cardNumber: footer.collectorNumber, catalogVariants: variants))
+                cardNumber: footer.collectorNumber, catalogVariants: variants),
+            marketProductIDsByVariant: Dictionary(uniqueKeysWithValues: (printing.marketMappings ?? [])
+                .filter { $0.hasValidMarketLane && $0.productID > 0 }
+                .map { ($0.finish.rawValue, String($0.productID)) }))
         return .init(card, retrievedAt: registry.physicalCatalog!.manifest.reviewedAt, path: .cacheHit)
     }
 }

@@ -10,6 +10,8 @@ struct ImportedCatalogMetadata: Sendable {
     let thumbnailURL: String?
     let tcgplayerURL: String?
     let updatesProviderPurchaseURL: Bool
+    let tcgplayerProductID: String?
+    let updatesMarketplaceProductID: Bool
     let setReleaseOrder: Int
     let justTCGCardID: String?
     let justTCGVariantID: String?
@@ -26,7 +28,9 @@ struct ImportedCatalogMetadata: Sendable {
         justTCGCardID: String? = nil,
         justTCGVariantID: String? = nil,
         justTCGAPIVersion: String? = nil,
-        updatesProviderPurchaseURL: Bool = true
+        updatesProviderPurchaseURL: Bool = true,
+        tcgplayerProductID: String? = nil,
+        updatesMarketplaceProductID: Bool = false
     ) {
         self.providerID = providerID
         self.setCode = setCode
@@ -35,6 +39,8 @@ struct ImportedCatalogMetadata: Sendable {
         self.thumbnailURL = thumbnailURL
         self.tcgplayerURL = tcgplayerURL
         self.updatesProviderPurchaseURL = updatesProviderPurchaseURL
+        self.tcgplayerProductID = tcgplayerProductID
+        self.updatesMarketplaceProductID = updatesMarketplaceProductID
         self.setReleaseOrder = setReleaseOrder
         self.justTCGCardID = justTCGCardID
         self.justTCGVariantID = justTCGVariantID
@@ -1472,7 +1478,7 @@ enum CatalogIdentityNormalization {
     static func canonicalText(_ value: String) -> String {
         let folded = value.folding(
             options: [.caseInsensitive, .diacriticInsensitive],
-            locale: .current
+            locale: Locale(identifier: "en_US_POSIX")
         ).replacingOccurrences(of: "&", with: " and ")
         let scalars = folded.unicodeScalars.map {
             CharacterSet.alphanumerics.contains($0) ? Character($0) : " "

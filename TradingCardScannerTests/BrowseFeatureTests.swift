@@ -31,6 +31,43 @@ private actor DetailImageLoadGate {
 }
 
 final class BrowseLoadingRefinementTests: XCTestCase {
+    func testMagicConfirmedPriceGapSurvivesDiskPageReplayWithoutDetailRequest() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let requests = BrowseRefinementRequestCount()
+        let response = pageJSON
+        BrowseRefinementURLProtocol.setHandler { loader in
+            requests.increment()
+            loader.respond(response)
+        }
+        let set = set()
+        let summary = CatalogCardSummary(game: .magic, providerID: "cached-no-usd",
+            setID: set.catalogID, setName: set.name, setCode: set.code, name: "Llanowar Elves",
+            collectorNumber: "218", thumbnailURL: nil, imageURL: nil)
+        let key = CatalogCacheStore.cardPageKey(for: set, cursor: nil)
+        let writer = CatalogCacheStore(root: root)
+        await writer.storeCardPage(CatalogPage(items: [summary], nextCursor: nil), for: key)
+        await writer.storeMagicPrices([summary.id: .init(value: nil, confirmsNoUSDQuote: true)], for: key)
+        let reopened = BrowseCatalog(cache: CatalogCacheStore(root: root), magicSession: session)
+        let page = try await reopened.cards(in: set, cursor: nil)
+        var last: CatalogPriceUpdate?
+        for await update in reopened.sortPriceUpdates(for: page.items) { last = update }
+        XCTAssertEqual(last?.resolvedIDs, [summary.id])
+        XCTAssertTrue(last?.prices.isEmpty == true)
+        XCTAssertTrue(last?.unresolvedIDs.isEmpty == true)
+        XCTAssertEqual(requests.value, 0)
+
+        // A later successful retry must supersede the older page's gap.
+        await writer.storeSortPrices([summary.id: .init(price: 2.5, checkedAt: .now)], for: set.catalogID.id)
+        let afterRetry = BrowseCatalog(cache: CatalogCacheStore(root: root), magicSession: session)
+        let retriedPage = try await afterRetry.cards(in: set, cursor: nil)
+        for await update in afterRetry.sortPriceUpdates(for: retriedPage.items) { last = update }
+        XCTAssertEqual(last?.prices[summary.id], 2.5)
+        XCTAssertEqual(requests.value, 0)
+    }
+
     func testMagicPriceRetryFetchesAgainAfterCachedGap() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }

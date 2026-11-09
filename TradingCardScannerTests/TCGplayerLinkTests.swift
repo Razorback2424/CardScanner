@@ -5,45 +5,102 @@ import XCTest
 /// A link that occasionally opens the wrong reprint would defeat that entirely,
 /// so most of these tests are about what the builder refuses to do.
 final class TCGplayerLinkTests: XCTestCase {
-    func testEveryGameGetsAnExplicitSearchWithoutInventingMarketplaceIdentity() throws {
+    func testMissingMarketplaceIdentityDoesNotOfferSearch() {
         for game: CardGame in [.pokemon, .magic, .yuGiOh, .lorcana, .onePiece, .init(rawValue: "future-game")] {
             let row = card(game: game, name: "Farfetch’d & Friends / \"Rare\"", variant: .jumbo)
             row.pokemonPrintRunRaw = "shadowless"
-            let link = TCGplayerLinkBuilder.destination(for: row)
-            XCTAssertFalse(link.isExactProduct)
-            XCTAssertEqual(link.title, "Search TCGplayer")
-            XCTAssertEqual(link.url.scheme, "https")
-            XCTAssertEqual(link.url.host, "www.tcgplayer.com")
-            let query = try XCTUnwrap(URLComponents(url: link.url, resolvingAgainstBaseURL: false)?.queryItems)
-            let term = try XCTUnwrap(query.first { $0.name == "q" }?.value)
-            for fragment in [row.name, row.setName, row.cardNumber, "Jumbo"] { XCTAssertTrue(term.contains(fragment)) }
+            XCTAssertNil(TCGplayerLinkBuilder.destination(for: row))
             XCTAssertNil(row.tcgplayerProductID)
-            XCTAssertNil(TCGplayerLinkBuilder.url(for: row), "Search is not exact product evidence")
+            XCTAssertNil(TCGplayerLinkBuilder.url(for: row))
         }
     }
 
-    func testExactDestinationRetainsVerifiedProductAndDoesNotMislabelAProviderSearch() {
+    func testExactDestinationRetainsVerifiedProductAndRejectsAProviderSearch() throws {
         let row = card(productID: "247241")
-        let product = TCGplayerLinkBuilder.destination(for: row)
+        let product = try XCTUnwrap(TCGplayerLinkBuilder.destination(for: row))
         XCTAssertTrue(product.isExactProduct)
         XCTAssertEqual(product.title, "View on TCGplayer")
         XCTAssertEqual(product.url, TCGplayerLinkBuilder.url(for: row))
         let unverified = card(providerURL: "https://www.tcgplayer.com/search/all/product?q=anything")
-        XCTAssertFalse(TCGplayerLinkBuilder.destination(for: unverified).isExactProduct)
-        XCTAssertFalse(TCGplayerLinkBuilder.destination(for: card(providerURL: "https://evil.example/product/1")).isExactProduct)
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: unverified))
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: card(providerURL: "https://evil.example/product/1")))
     }
 
-    func testCatalogSummaryCanLinkDuringLoadingAndFailureWithoutAProviderMatch() throws {
-        let summary = CatalogCardSummary(game: .pokemon, providerID: "30th-116",
-            setID: .init(game: .pokemon, providerID: "30th"), setName: "30th Celebration", setCode: "30C",
-            name: "Eevee", collectorNumber: "116/128", thumbnailURL: nil, imageURL: nil,
-            masterSetVariant: .pokemonFoilPattern("cosmos"))
-        let link = TCGplayerLinkBuilder.destination(for: summary)
-        XCTAssertFalse(link.isExactProduct)
-        XCTAssertEqual(link.url.path, "/search/pokemon/product")
-        let query = try XCTUnwrap(URLComponents(url: link.url, resolvingAgainstBaseURL: false)?.queryItems)
-        XCTAssertEqual(query.first { $0.name == "q" }?.value, "Eevee 30th Celebration 116/128 Cosmos")
-        XCTAssertEqual(query.first { $0.name == "productLineName" }?.value, "pokemon")
+    func testResolvedCatalogMappingOpensExactProductForSelectedFinish() throws {
+        let card = try ResolvedCatalogCard(game: .onePiece, physicalPrintingID: "printing",
+            canonicalCardID: "canonical", language: "en", name: "Test", setName: "Set",
+            setCode: "OP", cardNumber: "1", printedIdentifier: "1",
+            variantEvidence: .init(game: .onePiece, setID: "set", cardNumber: "1",
+                catalogVariants: [.normal, .foil]),
+            marketProductIDsByVariant: [PhysicalVariant.normal.id: "123", PhysicalVariant.foil.id: "456"])
+        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: card, variant: .foil)?.url.path, "/product/456")
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: card, variant: nil))
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: card, variant: .holo))
+        let partial = try ResolvedCatalogCard(game: .onePiece, physicalPrintingID: "partial",
+            canonicalCardID: "canonical", language: "en", name: "Test", setName: "Set",
+            setCode: "OP", cardNumber: "1", printedIdentifier: "1",
+            variantEvidence: .init(game: .onePiece, setID: "set", cardNumber: "1",
+                catalogVariants: [.normal, .foil]),
+            marketProductIDsByVariant: [PhysicalVariant.foil.id: "456"])
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: partial, variant: nil))
+    }
+
+    func testCatalogMappingsRequireSupportedFinishAndCompleteAgreementWithoutASelection() throws {
+        let shared = try mappedCard([PhysicalVariant.normal.id: "123", PhysicalVariant.foil.id: "123"])
+        XCTAssertEqual(TCGplayerLinkBuilder.url(for: shared, variant: nil)?.path, "/product/123")
+        XCTAssertNil(TCGplayerLinkBuilder.url(for: shared, variant: .foil, pokemonPrintRun: .firstEdition))
+        let unsupported = try mappedCard([PhysicalVariant.holo.id: "456"])
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: unsupported, variant: .holo))
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: try mappedCard([:]), variant: nil))
+    }
+
+    func testCatalogWithdrawalClearsStoredURLAndProductID() throws {
+        let original = try mappedCard([PhysicalVariant.foil.id: "123"])
+        let row = CollectedCard(card: original, resolved: .init(variant: .foil, resolution: .userConfirmed))
+        row.tcgplayerProductID = "stale-product"
+        row.applyCatalogMetadata(from: original)
+        XCTAssertEqual(row.tcgplayerProductID, "123")
+        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: row)?.url.path, "/product/123")
+        row.applyCatalogMetadata(from: try mappedCard([:]))
+        XCTAssertNil(row.tcgplayerProductID)
+        XCTAssertNil(row.tcgplayerURL)
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: row))
+    }
+
+    func testPokemonConflictingOrIncompleteFinishEvidenceDoesNotChooseFirstProduct() throws {
+        for records in [
+            #"{"type":"holo","languages":["en"],"thirdParty":{"tcgplayer":100}},{"type":"holo","languages":["en"],"thirdParty":{"tcgplayer":200}}"#,
+            #"{"type":"holo","languages":["en"],"thirdParty":{"tcgplayer":100}},{"type":"reverse","languages":["en"]}"#
+        ] {
+            let pokemon = try JSONDecoder().decode(TCGdexCard.self, from: Data("""
+            {"id":"svp-1","localId":"1","name":"Test","set":{"id":"svp","name":"Set","cardCount":{"total":2,"official":2}},"variants_detailed":[\(records)]}
+            """.utf8))
+            let identified = IdentifiedCard.pokemon(pokemon, setCode: "SVP")
+            XCTAssertNil(TCGplayerLinkBuilder.destination(for: identified, variant: nil))
+            if records.contains("200") {
+                XCTAssertNil(TCGplayerLinkBuilder.destination(for: identified, variant: .holo))
+            }
+        }
+    }
+
+    func testRefreshMetadataReplacesAndWithdrawsObsoleteStoredProductHandles() throws {
+        let row = card(game: .onePiece, variant: .foil, productID: "111",
+            providerURL: "https://www.tcgplayer.com/product/111")
+        for id: String? in ["222", nil] {
+            row.applyCatalogMetadata(ImportedCatalogMetadata(providerID: row.providerID,
+                setCode: row.setCode, rarity: nil, imageURL: nil, thumbnailURL: nil,
+                tcgplayerURL: id.map { "https://www.tcgplayer.com/product/\($0)" },
+                setReleaseOrder: 0, tcgplayerProductID: id, updatesMarketplaceProductID: true))
+            XCTAssertEqual(row.tcgplayerProductID, id)
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: row)?.url.path, id.map { "/product/\($0)" })
+        }
+    }
+
+    private func mappedCard(_ mappings: [String: String]) throws -> ResolvedCatalogCard {
+        try .init(game: .onePiece, physicalPrintingID: "printing", canonicalCardID: "canonical",
+            language: "en", name: "Test", setName: "Set", setCode: "OP", cardNumber: "1", printedIdentifier: "1",
+            variantEvidence: .init(game: .onePiece, setID: "set", cardNumber: "1", catalogVariants: [.normal, .foil]),
+            marketProductIDsByVariant: mappings)
     }
 
     private func card(
@@ -179,7 +236,7 @@ final class TCGplayerLinkTests: XCTestCase {
     }
 
     func testNonNumericOrEmptyProductIdentityIsRejected() {
-        for identity in ["", "  ", "abc", "247241x", "247-241"] {
+        for identity in ["", "  ", "abc", "247241x", "247-241", "0", "000", "١٢٣", "１２３", "-1", "1/2"] {
             XCTAssertNil(
                 TCGplayerLinkBuilder.url(for: card(productID: identity)),
                 "accepted \(identity)"
@@ -193,6 +250,13 @@ final class TCGplayerLinkTests: XCTestCase {
             "https://tcgplayer.com.evil.example/x", // lookalike host
             "https://www.ebay.com/itm/1",
             "not a url at all",
+            "https://www.tcgplayer.com/search/all/product?q=card",
+            "https://www.tcgplayer.com/product/0",
+            "https://www.tcgplayer.com/product/١٢٣",
+            "https://www.tcgplayer.com/product/123abc",
+            "https://user:password@www.tcgplayer.com/product/1",
+            "https://www.tcgplayer.com:8443/product/1",
+            "https://tcgplayer-cdn.tcgplayer.com/product/1",
             ""
         ]
         for raw in rejected {
@@ -231,6 +295,9 @@ final class TCGplayerLinkTests: XCTestCase {
     func testBrowsePokemonRequiresAnUnambiguousProductWithoutASelectedFinish() throws {
         let pokemon = try browsePokemon()
         let card = IdentifiedCard.pokemon(pokemon, setCode: "SVP")
+
+        XCTAssertEqual(TCGplayerLinkBuilder.url(for: card, variant: .firstEdition)?.path, "/product/102")
+        XCTAssertNil(TCGplayerLinkBuilder.url(for: card, variant: .firstEdition, pokemonPrintRun: .unlimited))
 
         XCTAssertNil(TCGplayerLinkBuilder.url(for: card, variant: nil))
         XCTAssertEqual(

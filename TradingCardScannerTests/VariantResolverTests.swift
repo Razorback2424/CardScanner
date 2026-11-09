@@ -363,8 +363,8 @@ final class RetailVariantTests: XCTestCase {
         XCTAssertEqual(Set(VariantResolver.options(for: identified.variantEvidence)), [.holo, cosmos])
         XCTAssertNil(usd(CardPricing.price(for: identified, variant: cosmos, magicTreatments: [])))
         XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: cosmos, printRun: nil), 717879)
-        XCTAssertTrue(TCGplayerLinkBuilder.destination(for: identified, variant: cosmos).isExactProduct)
-        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: cosmos).url.path, "/product/717879")
+        XCTAssertTrue(TCGplayerLinkBuilder.destination(for: identified, variant: cosmos)?.isExactProduct == true)
+        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: cosmos)?.url.path, "/product/717879")
         XCTAssertEqual(usd(CardPricing.price(for: identified, variant: .holo, magicTreatments: [])), 1.25)
         let slots = PokemonMasterSetDefinition.requiredVariants(for: card)
         XCTAssertTrue(try XCTUnwrap(slots.first { $0.variant == cosmos }).isExpanded)
@@ -385,8 +385,8 @@ final class RetailVariantTests: XCTestCase {
         XCTAssertEqual(usd(CardPricing.price(for: identified, variant: .jumbo, magicTreatments: [])), 7)
         XCTAssertEqual(usd(CardPricing.price(for: identified, variant: .holo, magicTreatments: [])), 2)
         XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: identified, variant: .jumbo), [.tcgplayerID("641615")])
-        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: .jumbo).url.path, "/product/641615")
-        XCTAssertFalse(TCGplayerLinkBuilder.destination(for: identified, variant: nil).isExactProduct)
+        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: .jumbo)?.url.path, "/product/641615")
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: identified, variant: nil))
         XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: .jumbo, printRun: .firstEdition))
         XCTAssertFalse(PokemonMasterSetDefinition.requiredVariants(for: card).contains { $0.variant == .jumbo })
     }
@@ -490,7 +490,7 @@ final class RetailVariantTests: XCTestCase {
             let identified = IdentifiedCard.pokemon(card, setCode: "SVP")
             XCTAssertTrue(card.catalogVariants.contains(.jumbo), id)
             XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .jumbo, printRun: nil), product, id)
-            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: .jumbo).url.path, "/product/\(product)", id)
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: .jumbo)?.url.path, "/product/\(product)", id)
             if id == "svp-162" {
                 XCTAssertNil(usd(CardPricing.price(for: identified, variant: .jumbo, magicTreatments: [])), "Never relabel the replaced product's quote")
             }
@@ -575,7 +575,7 @@ final class RetailVariantTests: XCTestCase {
             XCTAssertNil(usd(CardPricing.price(for: identified, variant: .holo, magicTreatments: [])), "Never borrow the flat Normal quote")
             XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: .normal, printRun: nil))
             XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .holo, printRun: nil), product)
-            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: .holo).url.path, "/product/\(product)")
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: identified, variant: .holo)?.url.path, "/product/\(product)")
             XCTAssertEqual(card.applyingAdditionalVariants(from: try ordinaryCorrectionRegistry(includeCorrections: false)).catalogVariants, [.normal])
         }
         let matching = try ordinaryPromo(detailedProduct: 114526).applyingAdditionalVariants(from: registry)
@@ -619,7 +619,7 @@ final class RetailVariantTests: XCTestCase {
         let identified = IdentifiedCard.pokemon(corrected, setCode: "SVE")
         XCTAssertNil(CardPricing.tcgplayerProductID(for: identified, variant: stamp, printRun: nil))
         XCTAssertNil(usd(CardPricing.price(for: identified, variant: stamp, magicTreatments: [])))
-        XCTAssertFalse(TCGplayerLinkBuilder.destination(for: identified, variant: stamp).isExactProduct)
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: identified, variant: stamp))
         XCTAssertEqual(usd(CardPricing.price(for: identified, variant: .pokemonFoilPattern("cosmos"), magicTreatments: [])), 2)
         let sibling = IdentifiedCard.pokemon(try energy("010").applyingAdditionalVariants(from: registry), setCode: "SVE")
         XCTAssertEqual(CardPricing.tcgplayerProductID(for: sibling, variant: stamp, printRun: nil), 651037)

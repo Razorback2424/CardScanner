@@ -1363,9 +1363,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 }
                 sortPriceCache[card.id] = value
                 sortPriceCheckedAt[card.id] = date
+            } else if entry.confirmsNoUSDQuote, asOf <= .now,
+                      Date.now.timeIntervalSince(asOf) < 6 * 60 * 60 {
+                resolvedSortPrices.insert(card.id)
+                unresolvedSortPrices.remove(card.id)
+                sortPriceCache.removeValue(forKey: card.id)
+                sortPriceCheckedAt[card.id] = asOf
             } else {
-                // This cache predates status-bearing results. A nil amount
-                // cannot tell a confirmed Scryfall gap from missing price data.
+                // Legacy nil amounts do not establish a provider answer.
                 resolvedSortPrices.remove(card.id)
                 unresolvedSortPrices.remove(card.id)
                 sortPriceCache.removeValue(forKey: card.id)
@@ -1478,7 +1483,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 // A newer provider check may have disproved a persisted price.
                 // Do not resurrect that old ordering hint on this screen.
                 if resolvedSortPrices.contains(id),
-                   sortPriceCheckedAt[id] != nil,
+                   let checkedAt = sortPriceCheckedAt[id], checkedAt >= hint.checkedAt,
                    sortPriceCache[id] == nil { continue }
                 if let date = sortPriceCheckedAt[id], date > hint.checkedAt { continue }
                 sortPriceCache[id] = hint.price
@@ -2226,8 +2231,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
             detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(
                 card: .magic(card), set: set, retrievedAt: retrievedAt
             )
+            let amount = CardPricing.highestPublishedUSDPrice(for: .magic(card))
             prices[summary.id] = CatalogCachedPrice(
-                value: CardPricing.highestPublishedUSDPrice(for: .magic(card)),
+                value: amount,
+                confirmsNoUSDQuote: amount == nil,
                 providerUpdatedAt: nil
             )
             return summary

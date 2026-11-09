@@ -19,72 +19,31 @@ enum TCGplayerLinkBuilder {
     struct Destination: Equatable {
         let url: URL
         let isExactProduct: Bool
-        var title: String { isExactProduct ? "View on TCGplayer" : "Search TCGplayer" }
-        var accessibilityLabel: String {
-            isExactProduct ? "View this printing on TCGplayer" : "Search TCGplayer for this card"
-        }
+        var title: String { "View on TCGplayer" }
+        var accessibilityLabel: String { "View this printing on TCGplayer" }
     }
 
-    /// Every detail screen gets a destination. Searching is explicitly labeled
-    /// and never supplies a product identity, price, or persisted association.
-    static func destination(for card: CollectedCard) -> Destination {
-        if let exact = url(for: card), isProductPage(exact) { return .init(url: exact, isExactProduct: true) }
-        return search(game: card.cardGame, name: card.name, setName: card.setName,
-            number: card.cardNumber, variant: card.variantID.map(PhysicalVariant.resolving),
-            pokemonPrintRun: card.pokemonPrintRun)
+    /// Only show a marketplace action when the exact product is known.
+    static func destination(for card: CollectedCard) -> Destination? {
+        guard let exact = url(for: card), isProductPage(exact) else { return nil }
+        return .init(url: exact, isExactProduct: true)
     }
 
     static func destination(for card: IdentifiedCard, variant: PhysicalVariant?,
-                            pokemonPrintRun: PokemonPrintRun? = nil) -> Destination {
+                            pokemonPrintRun: PokemonPrintRun? = nil) -> Destination? {
         if let exact = url(for: card, variant: variant, pokemonPrintRun: pokemonPrintRun), isProductPage(exact) {
             return .init(url: exact, isExactProduct: true)
         }
-        if card.game == .pokemon, let variant,
-           let id = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun),
-           let exact = productURL(productID: String(id), variantID: variant.id, game: card.game) {
-            return .init(url: exact, isExactProduct: true)
-        }
-        return search(game: card.game, name: card.name, setName: card.setName, number: card.cardNumber,
-            variant: variant, pokemonPrintRun: pokemonPrintRun)
-    }
-
-    static func destination(for summary: CatalogCardSummary) -> Destination {
-        search(game: summary.game, name: summary.name, setName: summary.setName,
-            number: summary.collectorNumber, variant: summary.masterSetVariant, pokemonPrintRun: summary.pokemonPrintRun)
+        return nil
     }
 
     private static func isProductPage(_ url: URL) -> Bool {
         let parts = url.pathComponents
-        return parts.count > 2 && parts[1] == "product" && !parts[2].isEmpty && parts[2].allSatisfy(\.isNumber)
+        return parts.count > 2 && parts[1] == "product" && validProductID(parts[2])
     }
 
-    static func search(game: CardGame, name: String, setName: String, number: String,
-                       variant: PhysicalVariant? = nil, pokemonPrintRun: PokemonPrintRun? = nil) -> Destination {
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = host
-        components.path = "/search/all/product"
-        let terms = [name, setName, number, variant?.label, pokemonPrintRun?.label]
-            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
-        var query = [URLQueryItem(name: "q", value: terms.joined(separator: " ")),
-                     URLQueryItem(name: "view", value: "grid")]
-        let productLine: String?
-        switch game {
-        case .pokemon: productLine = "pokemon"
-        case .magic: productLine = "magic"
-        case .yuGiOh: productLine = "yugioh"
-        case .lorcana: productLine = "lorcana-tcg"
-        case .onePiece: productLine = "one-piece-card-game"
-        default: productLine = nil
-        }
-        if let productLine {
-            components.path = "/search/\(productLine)/product"
-            query.append(.init(name: "productLineName", value: productLine))
-        }
-        components.queryItems = query
-        // All structural components are constants; card text is encoded only
-        // as query-item values, including non-ASCII names and punctuation.
-        return .init(url: components.url!, isExactProduct: false)
+    private static func validProductID(_ id: String) -> Bool {
+        !id.isEmpty && id.utf8.allSatisfy { (48...57).contains($0) } && id.contains { $0 != "0" }
     }
 
     /// The destination for a card, or `nil` when the app has no marketplace
@@ -119,7 +78,20 @@ enum TCGplayerLinkBuilder {
         pokemonPrintRun: PokemonPrintRun? = nil
     ) -> URL? {
         switch card.legacyIdentity {
-        case .none: return nil
+        case .none:
+            guard pokemonPrintRun == nil else { return nil }
+            let ids = card.marketProductIDsByVariant
+            let productID: String?
+            if let variant {
+                guard card.variantEvidence.catalogVariants.contains(where: { $0.id == variant.id }) else { return nil }
+                productID = ids[variant.id]
+            } else {
+                let distinct = Set(ids.values)
+                let supported = Set(card.variantEvidence.catalogVariants.map(\.id))
+                productID = !supported.isEmpty && Set(ids.keys) == supported && distinct.count == 1
+                    ? distinct.first : nil
+            }
+            return productURL(productID: productID, variantID: variant?.id, game: card.game)
         case let .magic(magic):
             return productURL(
                 productID: magic.tcgplayerProductID(for: variant).map(String.init),
@@ -146,14 +118,15 @@ enum TCGplayerLinkBuilder {
             let selected = pokemonPrintRun == .firstEdition ? PhysicalVariant.firstEdition : variant
             let productID: String?
             if let selected {
-                let detailed = pokemon.detailedVariant(for: selected)
-                productID = detailed?.isStandardEnglish == true
-                    ? detailed?.thirdParty?.tcgplayer.map(String.init) : nil
+                productID = CardPricing.tcgplayerProductID(for: card, variant: selected,
+                    printRun: pokemonPrintRun ?? (selected == .firstEdition ? .firstEdition : nil)).map(String.init)
             } else {
-                let ids = Set((pokemon.variantsDetailed ?? []).compactMap { detailed in
-                    detailed.isStandardEnglish ? detailed.thirdParty?.tcgplayer : nil
-                })
-                productID = ids.count == 1 ? ids.first.map(String.init) : nil
+                let variants = pokemon.catalogVariants
+                let ids = variants.compactMap {
+                    CardPricing.tcgplayerProductID(for: card, variant: $0, printRun: pokemonPrintRun)
+                }
+                productID = !variants.isEmpty && ids.count == variants.count && Set(ids).count == 1
+                    ? ids.first.map(String.init) : nil
             }
             return productURL(productID: productID, variantID: selected?.id, game: .pokemon)
         }
@@ -163,8 +136,7 @@ enum TCGplayerLinkBuilder {
     /// maps onto a TCGplayer printing without guessing.
     static func productURL(productID: String?, variantID: String?, game: CardGame) -> URL? {
         guard let id = productID?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !id.isEmpty,
-              id.allSatisfy(\.isNumber) else { return nil }
+              validProductID(id) else { return nil }
 
         var components = URLComponents()
         components.scheme = "https"
@@ -213,8 +185,10 @@ enum TCGplayerLinkBuilder {
               !raw.isEmpty,
               let url = URL(string: raw),
               url.scheme?.lowercased() == "https",
+              url.user == nil, url.password == nil, url.port == nil,
               let host = url.host?.lowercased(),
-              host == "tcgplayer.com" || host.hasSuffix(".tcgplayer.com") else { return nil }
+              host == "tcgplayer.com" || host == "www.tcgplayer.com",
+              isProductPage(url) else { return nil }
         return url
     }
 }

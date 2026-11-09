@@ -77,6 +77,8 @@ final class LorcanaPricingTests: XCTestCase {
             }
             let card = try LorcanaCatalogAdapter(registry: catalog.registry).resolution(forPrintingID: printing.id).card
             for mapping in mappings {
+                XCTAssertEqual(TCGplayerLinkBuilder.destination(for: card,
+                    variant: mapping.finish.variant)?.url.path, "/product/\(mapping.productID)")
                 guard case let .price(price) = try await adapter.refreshStoredPrinting(card.providerID, variant: mapping.finish.variant) else {
                     return XCTFail("Missing mapped quote for Lorcana set \(code) / \(mapping.finish)")
                 }

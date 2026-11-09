@@ -165,6 +165,14 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
             variantEvidence: .init(game: game, setID: printing.releaseID ?? "one-piece-distribution",
                 cardNumber: canonical.printedNumber, catalogVariants: printing.supportedVariantIDs.compactMap { id in
                     registry.variantsByID[id].map { PhysicalVariant(id: $0.id, label: $0.label) }
+                }),
+            marketProductIDsByVariant: Dictionary(uniqueKeysWithValues: Dictionary(grouping: printing.marketMappings
+                .filter { $0.status == .exact && $0.provider == "tcgplayer" && $0.market == "us"
+                    && $0.currency == "USD" && $0.condition == "aggregate"
+                    && Int($0.productID).map({ $0 > 0 }) == true
+                    && printing.supportedVariantIDs.contains($0.variantID) }, by: \.variantID)
+                .compactMap { variant, mappings in
+                    mappings.count == 1 ? (variant, mappings[0].productID) : nil
                 }))
         return .init(card, retrievedAt: registry.retrievedAt, path: .cacheHit)
     }

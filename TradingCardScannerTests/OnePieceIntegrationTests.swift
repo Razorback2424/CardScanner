@@ -118,6 +118,52 @@ private final class OnePieceRecoveryReadGate: @unchecked Sendable {
 
 @MainActor
 final class OnePieceIntegrationTests: XCTestCase {
+    func testBuiltAppConfiguresOnePieceMarketPriceFeed() throws {
+        XCTAssertEqual(try XCTUnwrap(TCGCSVPriceMirror.baseURL).absoluteString,
+            "https://catalog.scan-stash.com/market-prices/v1")
+    }
+
+    func testLivePublishedOnePiecePriceCheck() async throws {
+        // Opt in with a short-lived receipt in the test host's sandbox.
+        // Ordinary regressions never depend on a network or daily price.
+        struct Acceptance: Decodable { let expiresAt: Date; let amounts: [String: Double] }
+        let receipt = FileManager.default.temporaryDirectory
+            .appendingPathComponent("one-piece-price-feed-live-acceptance.json")
+        guard let data = try? Data(contentsOf: receipt),
+              let acceptance = try? JSONDecoder().decode(Acceptance.self, from: data),
+              acceptance.expiresAt > .now, acceptance.expiresAt.timeIntervalSinceNow < 3_600 else {
+            throw XCTSkip("Live feed acceptance requires an unexpired local receipt")
+        }
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime())
+        let catalog = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter)
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let source = OnePieceTCGCSVPriceSource(cacheDirectory: root)
+        let runtimes = try CardGameRuntimeContainer(runtimes: [runtime])
+        let service = PriceQuoteService(registry: runtimes.registry, adapters: try .init(adapters: [
+            OnePiecePriceAdapter(registry: catalog.registry, source: source)
+        ]))
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let provider = LivePriceCheckRefreshProvider(quoteService: service,
+            fallbackResolver: PriceFallbackQuoteResolver(context: container.mainContext))
+        for number in ["OP01-120", "OP05-119", "ST01-012", "EB01-001"] {
+            let printing = try XCTUnwrap(catalog.registry.printingsByCanonicalID["one-piece:en:" + number]?
+                .first { $0.status == .verified && $0.treatment == "Standard artwork" && !$0.marketMappings.isEmpty })
+            let mapping = try XCTUnwrap(printing.marketMappings.first)
+            let card = try catalog.resolution(forPrintingID: printing.id).card
+            let variant: PhysicalVariant = mapping.variantID == "foil" ? .foil : .normal
+            let outcome = await provider.refresh(card: card, variant: variant, pokemonPrintRun: nil)
+            guard case let .quote(.price(price)) = outcome else {
+                return XCTFail("Live Price Check failed for \(number): \(outcome)")
+            }
+            XCTAssertEqual(price.unitMarketPriceUSD, try XCTUnwrap(acceptance.amounts[number]), number)
+            XCTAssertEqual(price.sourceVariantID, "tcgplayer:\(mapping.productID):\(mapping.providerVariantID!)")
+            XCTAssertEqual(price.catalogIdentity, OnePiecePriceAdapter.mappingIdentity(mapping))
+            XCTAssertLessThan(Date.now.timeIntervalSince(price.fetchedAt), 86_400)
+        }
+    }
+
     func testFourReleaseFamilyPricingSampleUsesReviewedProductMappings() async throws {
         let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime())
         let catalog = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter)
@@ -150,6 +196,11 @@ final class OnePieceIntegrationTests: XCTestCase {
             }
             let card = try catalog.resolution(forPrintingID: printing.id).card
             let variant: PhysicalVariant = mapping.variantID == "foil" ? .foil : .normal
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: card, variant: variant)?.url.path,
+                "/product/\(productID)", number)
+            XCTAssertEqual(CollectedCard(card: card,
+                resolved: .init(variant: variant, resolution: .userConfirmed)).tcgplayerURL,
+                "https://www.tcgplayer.com/product/\(productID)", number)
             guard case let .price(price) = try await adapter.refreshStoredPrinting(card.providerID, variant: variant) else {
                 return XCTFail("Missing mapped quote for \(number)")
             }
@@ -1550,7 +1601,7 @@ final class OnePieceIntegrationTests: XCTestCase {
     }
 
     func testOnePieceMetadataRefreshPreservesPurchaseLink() async throws {
-        let registry = try registry()
+        let registry = try registry(withMarketMapping: true)
         let card = try OnePieceCatalogAdapter(registry: registry).resolution(forPrintingID: uuid(1)).card
         let row = CollectedCard(card: card, resolved: .init(variant: .foil, resolution: .userConfirmed))
         row.tcgplayerURL = "https://www.tcgplayer.com/product/454664"

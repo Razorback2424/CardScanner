@@ -338,6 +338,10 @@ final class CollectedCard {
         imageURL = card.storedImageURL
         thumbnailURL = card.catalogMetadataThumbnailURL
         if card.updatesProviderPurchaseURL { tcgplayerURL = card.providerPurchaseURL(for: variant) }
+        if card.legacyIdentity == nil {
+            // Current catalog authority also withdraws obsolete stored handles.
+            tcgplayerProductID = variantID.flatMap { card.marketProductIDsByVariant[$0] }
+        }
     }
 
     func applyCatalogMetadata(
@@ -364,6 +368,9 @@ final class CollectedCard {
         }
         if metadata.updatesProviderPurchaseURL && (!fillMissingOnly || tcgplayerURL == nil) {
             tcgplayerURL = metadata.tcgplayerURL
+        }
+        if metadata.updatesMarketplaceProductID && (!fillMissingOnly || tcgplayerProductID == nil) {
+            tcgplayerProductID = metadata.tcgplayerProductID
         }
         justTCGCardID = metadata.justTCGCardID ?? justTCGCardID
         justTCGVariantID = metadata.justTCGVariantID ?? justTCGVariantID

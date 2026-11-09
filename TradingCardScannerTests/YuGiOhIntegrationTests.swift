@@ -608,6 +608,54 @@ private final class YuGiOhPricingProtocol: URLProtocol {
 
 @MainActor
 final class YuGiOhPricingTests: XCTestCase {
+    func testLivePublishedYuGiOhPriceCheckAcrossEditionsAndRarities() async throws {
+        // A short-lived receipt opts into real provider acceptance. Normal
+        // regression runs remain independent of the network and daily prices.
+        struct Acceptance: Decodable { let expiresAt: Date; let amounts: [String: Double] }
+        let receipt = FileManager.default.temporaryDirectory
+            .appendingPathComponent("yugioh-price-feed-live-acceptance.json")
+        guard let data = try? Data(contentsOf: receipt),
+              let acceptance = try? JSONDecoder().decode(Acceptance.self, from: data),
+              acceptance.expiresAt > .now, acceptance.expiresAt.timeIntervalSinceNow < 3_600 else {
+            throw XCTSkip("Live feed acceptance requires an unexpired local receipt")
+        }
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let source = YuGiOhDailyPriceSource(transport: .init(cacheDirectory: root))
+        let runtimes = try CardGameRuntimeContainer(runtimes: [catalog.runtime])
+        let service = PriceQuoteService(registry: runtimes.registry, adapters: try .init(adapters: [
+            YuGiOhPriceAdapter(catalog: catalog, source: source)
+        ]))
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let provider = LivePriceCheckRefreshProvider(quoteService: service,
+            fallbackResolver: PriceFallbackQuoteResolver(context: container.mainContext))
+        let samples: [(Int, YuGiOhEdition)] = [
+            (21792, .unlimited), (21792, .first), (26366, .limited),
+            (579846, .first), (552423, .first), (550853, .first)
+        ]
+        XCTAssertEqual(acceptance.amounts.count, 5)
+        for (productID, edition) in samples {
+            let printing = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == productID })
+            let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: printing.id).card
+            let outcome = await provider.refresh(card: card, variant: edition.variant, pokemonPrintRun: nil)
+            let key = "\(productID):\(edition.tcgplayerSubtype)"
+            guard let expected = acceptance.amounts[key] else {
+                XCTAssertEqual(outcome, .quote(.unavailable(.tcgCSV)), key)
+                continue
+            }
+            guard case let .quote(.price(price)) = outcome else {
+                return XCTFail("Live Price Check failed for \(key): \(outcome)")
+            }
+            XCTAssertEqual(price.unitMarketPriceUSD, expected, key)
+            XCTAssertEqual(price.sourceVariantID, "tcgplayer:\(key)")
+            XCTAssertEqual(price.catalogIdentity, YuGiOhPriceAdapter.mappingIdentity(printing, edition))
+            XCTAssertLessThan(Date.now.timeIntervalSince(price.fetchedAt), 86_400)
+            XCTAssertGreaterThan(price.fetchedAt, catalog.capturedAt)
+        }
+    }
+
     func testDailyMirrorPricesAnUnpricedSeedEditionAndKeepsOfflineSnapshotDates() async throws {
         var object = YuGiOhFixture.object()
         var rows = object["printings"] as! [[String: Any]]
@@ -734,7 +782,7 @@ final class YuGiOhPricingTests: XCTestCase {
         let coverage = try container.mainContext.fetchCount(FetchDescriptor<PriceCheckDay>())
         for watermark: Date? in [nil, .now] {
             do {
-                let quote = try await YuGiOhPriceAdapter(catalog: catalog).refreshStoredPrinting(p.idString,
+                let quote = try await YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhBundledPriceSource()).refreshStoredPrinting(p.idString,
                     variant: .yugiohFirstEdition, minimumFetchedAt: watermark)
                 _ = prices.store(quote, game: .yuGiOh, printingID: p.idString, variantID: YuGiOhEdition.first.rawValue)
                 XCTFail("A historical missing quote must not stamp a successful current check")
@@ -759,7 +807,7 @@ final class YuGiOhPricingTests: XCTestCase {
         let positiveKey = PriceRecord.key(game: .yuGiOh, printingID: other.idString, variantID: YuGiOhEdition.unlimited.rawValue)
         XCTAssertEqual(prices.record(forKey: positiveKey)?.lastSuccessfulCheckAt, price.fetchedAt)
         do {
-            _ = try await YuGiOhPriceAdapter(catalog: catalog).refreshStoredPrinting(other.idString,
+            _ = try await YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhBundledPriceSource()).refreshStoredPrinting(other.idString,
                 variant: .yugiohUnlimited, minimumFetchedAt: .now)
             XCTFail("A historical bundle cannot fulfill a live refresh")
         } catch PriceQuoteError.providerUnavailable {}
@@ -840,6 +888,8 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
         let p = try XCTUnwrap(catalog.printingByID.values.first)
         let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
         for edition in YuGiOhEdition.allCases {
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: card,
+                variant: edition.variant)?.url.path, "/product/\(p.productID)")
             var request = CardMarketHistoryRequest(card: card, variant: edition.variant, printRun: nil)
             request.exactProductID = "untrusted-stored-product"
             request.marketVariantID = "untrusted-stored-variant"
@@ -1229,7 +1279,8 @@ final class YuGiOhWorkflowTests: XCTestCase {
         try verify(2)
         let printing = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 21792 })
         do {
-            _ = try await YuGiOhPriceAdapter(catalog: catalog).refreshStoredPrinting(printing.idString, variant: .yugiohFirstEdition)
+            _ = try await YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhBundledPriceSource())
+                .refreshStoredPrinting(printing.idString, variant: .yugiohFirstEdition)
             XCTFail("Listing-only First Edition must remain unvalued")
         } catch PriceQuoteError.providerUnavailable {}
     }

@@ -172,7 +172,9 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
             printedIdentifier: p.code, rarity: p.rarity, displayImageURL: p.imageURL, thumbnailImageURL: p.thumbnailURL,
             setReleaseOrder: order ?? 0, variantEvidence: .init(game: game, setID: "tcgplayer-group:\(p.set.groupID)",
                 cardNumber: p.code, catalogVariants: p.explicitSelectionSupported ? p.editions.map(\.variant) : [],
-                physicalCoverageVerified: p.coverageVerified, explicitMembershipSupported: p.explicitSelectionSupported))
+                physicalCoverageVerified: p.coverageVerified, explicitMembershipSupported: p.explicitSelectionSupported),
+            marketProductIDsByVariant: p.explicitSelectionSupported && p.productID > 0
+                ? Dictionary(uniqueKeysWithValues: p.editions.map { ($0.rawValue, String(p.productID)) }) : [:])
         return .init(card, retrievedAt: catalog.capturedAt, path: .cacheHit)
     }
 }

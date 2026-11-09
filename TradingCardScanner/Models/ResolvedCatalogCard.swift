@@ -25,6 +25,8 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
     let storedImageURL: String?
     let setReleaseOrder: Int
     let variantEvidence: VariantEvidence
+    /// Reviewed marketplace product IDs keyed by the physical finish.
+    let marketProductIDsByVariant: [String: String]
     private let collectionBaseKey: String
     let legacyIdentity: LegacyResolvedCard?
 
@@ -36,7 +38,8 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
          language: String, name: String, setName: String, setCode: String,
          cardNumber: String, printedIdentifier: String, rarity: String? = nil,
          displayImageURL: URL? = nil, thumbnailImageURL: URL? = nil,
-         setReleaseOrder: Int = 0, variantEvidence: VariantEvidence) throws {
+         setReleaseOrder: Int = 0, variantEvidence: VariantEvidence,
+         marketProductIDsByVariant: [String: String] = [:]) throws {
         guard !game.rawValue.isEmpty, !game.rawValue.contains(":"),
               !physicalPrintingID.isEmpty, !physicalPrintingID.contains("#"),
               !canonicalCardID.isEmpty, !language.isEmpty else {
@@ -67,6 +70,7 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
         self.storedImageURL = displayImageURL?.absoluteString
         self.setReleaseOrder = setReleaseOrder
         self.variantEvidence = variantEvidence
+        self.marketProductIDsByVariant = marketProductIDsByVariant
         self.collectionBaseKey = "\(game.rawValue):\(physicalPrintingID)"
         self.legacyIdentity = nil
     }
@@ -89,6 +93,7 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
         storedImageURL = legacy.storedImageURL
         setReleaseOrder = legacy.setReleaseOrder
         variantEvidence = legacy.variantEvidence
+        marketProductIDsByVariant = [:]
         collectionBaseKey = legacy.collectionKey(variant: nil)
         legacyIdentity = legacy
     }
@@ -105,10 +110,12 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
     var marketPrices: [CardMarketPrice] { CardPricing.publishedPrices(for: self) }
     var providerPurchaseURL: String? { legacyIdentity?.providerPurchaseURL }
     func providerPurchaseURL(for variant: PhysicalVariant?) -> String? {
-        guard case .magic = legacyIdentity else { return providerPurchaseURL }
+        if case .pokemon = legacyIdentity { return providerPurchaseURL }
         return TCGplayerLinkBuilder.url(for: self, variant: variant)?.absoluteString
     }
-    var updatesProviderPurchaseURL: Bool { legacyIdentity?.updatesProviderPurchaseURL ?? false }
+    var updatesProviderPurchaseURL: Bool {
+        legacyIdentity?.updatesProviderPurchaseURL ?? true
+    }
     var catalogMetadataThumbnailURL: String? {
         legacyIdentity?.catalogMetadataThumbnailURL ?? thumbnailImageURL?.absoluteString
     }

@@ -75,6 +75,7 @@ struct GameImportAdapterRegistry: Sendable {
         // A writable descriptor for a newer game does not prove printing identity.
         let legacyGames: Set<CardGame> = [PokemonGameRuntime.descriptor.game, MagicGameRuntime.descriptor.game]
         guard legacyGames.contains(entry.game) else { throw GameImportValidationError.missingAdapter }
+        guard entry.hasCompatibleRawOwnershipKey else { throw GameImportValidationError.invalidOwnershipKey }
     }
     func replacing(_ adapter: any GameImportAdapter) -> Self {
         try! Self(adapters: adapters.values.filter { $0.game != adapter.game } + [adapter])

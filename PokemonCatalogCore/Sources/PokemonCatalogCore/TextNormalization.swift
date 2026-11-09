@@ -7,7 +7,7 @@ public enum PokemonCatalogTextNormalization {
     public static func canonicalMembershipName(_ value: String) -> String {
         let folded = value.folding(
             options: [.caseInsensitive, .diacriticInsensitive],
-            locale: .current
+            locale: Locale(identifier: "en_US_POSIX")
         ).replacingOccurrences(of: "&", with: " and ")
         return folded.unicodeScalars.map { scalar in
             CharacterSet.alphanumerics.contains(scalar) ? String(scalar) : " "

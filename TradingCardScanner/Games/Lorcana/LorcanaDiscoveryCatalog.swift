@@ -423,7 +423,10 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
             rarity: row.rarity, displayImageURL: row.imageURL, thumbnailImageURL: row.thumbnailURL,
             setReleaseOrder: Int(row.sourceSetCode) ?? 0,
             variantEvidence: .init(game: game, setID: row.setID.providerID,
-                cardNumber: row.footer?.collectorNumber ?? row.number, catalogVariants: row.variants))
+                cardNumber: row.footer?.collectorNumber ?? row.number, catalogVariants: row.variants),
+            marketProductIDsByVariant: Dictionary(uniqueKeysWithValues: (browseMappings[row.id] ?? [])
+                .filter { $0.hasValidMarketLane && $0.productID > 0 }
+                .map { ($0.finish.rawValue, String($0.productID)) }))
         return .init(card, retrievedAt: capturedAt, path: .cacheHit)
     }
 

@@ -4,9 +4,8 @@
 // comment; Xcode expands the empty variable reference back to `https://`.
 POKEMON_CATALOG_BASE_URL = https:/$()/catalog.scan-stash.com
 POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = catalog.scan-stash.com
-// Activate only after the scoped daily feed is published and read back.
-// Devices retain saved quotes while this endpoint is unconfigured.
-TCGCSV_PRICE_BASE_URL =
+// Shared daily market feed for reviewed product/finish mappings across games.
+TCGCSV_PRICE_BASE_URL = https:/$()/catalog.scan-stash.com/market-prices/v1
 // Set these only after the owner-approved public pages are published and
 // verified. Target settings must not override this release configuration.
 CARD_SCANNER_PRIVACY_URL =
