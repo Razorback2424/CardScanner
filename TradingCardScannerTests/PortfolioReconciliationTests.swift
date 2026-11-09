@@ -3739,7 +3739,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         let plan = CollectionCSVImportPlan(
             entries: [
                 CollectionCSVEntry(
-                    collectionKey: "csv-position",
+                    collectionKey: "csv-printing",
                     game: .pokemon,
                     providerID: "csv-printing",
                     name: "Imported Collection",
@@ -3760,7 +3760,8 @@ final class PortfolioReconciliationTests: XCTestCase {
             skippedCSVText: nil
         )
 
-        _ = try CollectionCSV.apply(plan, to: context)
+        let imported = try CollectionCSV.apply(plan, to: context)
+        XCTAssertTrue(imported.failedRows.isEmpty)
 
         let events = InventoryLedger(context: context).allEvents().map(PortfolioEngine.entry(from:))
         let observations = try PortfolioEngine.observations(in: context)
@@ -3788,7 +3789,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         let plan = CollectionCSVImportPlan(
             entries: [
                 CollectionCSVEntry(
-                    collectionKey: "csv-unpriced-position",
+                    collectionKey: "csv-printing",
                     game: .pokemon,
                     providerID: "csv-printing",
                     name: "Imported Without Price",
@@ -3809,7 +3810,8 @@ final class PortfolioReconciliationTests: XCTestCase {
             skippedCSVText: nil
         )
 
-        _ = try CollectionCSV.apply(plan, to: context)
+        let imported = try CollectionCSV.apply(plan, to: context)
+        XCTAssertTrue(imported.failedRows.isEmpty)
         let events = InventoryLedger(context: context).allEvents().map(PortfolioEngine.entry(from:))
         let eventTime = try XCTUnwrap(events.first?.occurredAt)
         let card = try XCTUnwrap(try context.fetch(FetchDescriptor<CollectedCard>()).first)

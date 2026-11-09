@@ -499,7 +499,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             performanceFactor: 1,
             isLive: false
         )
-        let dateLabel = point.displayDay.formatted(date: .complete, time: .omitted)
+        let dateLabel = point.displayDay.formatted(PortfolioCalendar.dayFormat(date: .complete))
 
         XCTAssertEqual(
             PortfolioHeadlineAccessibility.label(

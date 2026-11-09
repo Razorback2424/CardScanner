@@ -273,6 +273,163 @@ final class RefreshStructuralWriteTests: XCTestCase {
         return container
     }
 
+    func testGradedCheckpointPreservesHistoryWhenOwnerWasRemoved() throws {
+        for removed in [false, true] {
+            let container = try makeContainer()
+            let mutation = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+                try CollectionStore(context: context).addScannedGraded(
+                    underlying: .pokemon(Self.card(id: "binding-history"), setCode: "STR"),
+                    company: .psa, grade: CardGrade(value: "10"), certificationNumber: nil,
+                    resolved: .init(variant: .holo, resolution: .userConfirmed))
+            }
+            let seed = ModelContext(container)
+            let row = try XCTUnwrap(CollectionStore(context: seed).card(forKey: mutation.collectionKey))
+            XCTAssertEqual(try seed.fetch(FetchDescriptor<CollectionActivity>()).first?.source, .scan)
+            XCTAssertEqual(try seed.fetch(FetchDescriptor<InventoryEvent>()).first?.source, .scan)
+            let oldKey = row.priceKey
+            let original = Date.now.addingTimeInterval(-172800)
+            let prices = PriceStore(context: seed)
+            XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 8, currencyCode: "USD",
+                source: .importedCSV, sourceVariantID: "old", sourceUpdatedAt: nil, fetchedAt: original)),
+                game: .pokemon, printingID: row.priceStorageID, variantID: row.variantID, at: original))
+            XCTAssertTrue(prices.save())
+            let staged = PriceStore(context: ModelContext(container), checkpointsInFreshContext: true)
+            let variant = GradedVariant(id: "bound-variant", company: .psa, grade: CardGrade(value: "10"),
+                marketPriceUSD: 12, updatedAt: .now)
+            XCTAssertTrue(staged.enqueueGradedBinding(variant, collectionKey: row.collectionKey,
+                expectedPriceKey: oldKey, expectedVariantID: row.variantID, expectedMarketVariantID: nil,
+                game: .pokemon, treatmentIDs: [], at: .now))
+            if removed {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+                    _ = try CollectionStore(context: context).remove(collectionKey: mutation.collectionKey)
+                }
+            }
+            XCTAssertTrue(staged.save())
+            let verification = ModelContext(container)
+            let events = try verification.fetch(FetchDescriptor<InventoryEvent>())
+            let expected = removed ? oldKey : PriceRecord.key(game: .pokemon,
+                printingID: "justtcg:v2:bound-variant", variantID: PhysicalVariant.holo.id)
+            XCTAssertTrue(events.allSatisfy { $0.priceStorageKey == expected })
+            let observations = try verification.fetch(FetchDescriptor<PriceObservation>())
+            XCTAssertTrue(observations.contains { $0.instrumentKey == expected && $0.source == .importedCSV })
+            let saved = CollectionStore(context: verification).card(forKey: mutation.collectionKey)
+            XCTAssertEqual(saved?.justTCGVariantID, removed ? nil : "bound-variant")
+        }
+    }
+
+    func testGradedCheckpointRollsBackBindingWhenNewerQuoteRejectsResponse() throws {
+        let container = try makeContainer()
+        let mutation = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            try CollectionStore(context: context).addScannedGraded(
+                underlying: .pokemon(Self.card(id: "binding-rollback"), setCode: "STR"),
+                company: .psa, grade: CardGrade(value: "10"), certificationNumber: nil,
+                resolved: .init(variant: .holo, resolution: .userConfirmed))
+        }
+        let context = ModelContext(container)
+        let row = try XCTUnwrap(CollectionStore(context: context).card(forKey: mutation.collectionKey))
+        let oldKey = row.priceKey
+        let requestedAt = Date.now
+        let newer = GradedVariant(id: "rollback-variant", company: .psa, grade: CardGrade(value: "10"),
+            marketPriceUSD: 30, updatedAt: requestedAt.addingTimeInterval(60),
+            quoteLifecycle: .init(status: "current", lastPrice: nil, lastSaleAt: requestedAt,
+                priceExpiresAt: requestedAt.addingTimeInterval(86400)))
+        let store = PriceStore(context: context)
+        XCTAssertTrue(GradedVariantBinding.storeUnboundVariantQuote(newer, game: .pokemon,
+            variantID: row.variantID, treatmentIDs: [], store: store,
+            at: requestedAt.addingTimeInterval(60)).wasAccepted)
+        XCTAssertTrue(store.save())
+        let staged = PriceStore(context: ModelContext(container), checkpointsInFreshContext: true)
+        let older = GradedVariant(id: newer.id, company: .psa, grade: CardGrade(value: "10"),
+            marketPriceUSD: 12, updatedAt: requestedAt)
+        XCTAssertTrue(staged.enqueueGradedBinding(older, collectionKey: row.collectionKey,
+            expectedPriceKey: oldKey, expectedVariantID: row.variantID, expectedMarketVariantID: nil,
+            game: .pokemon, treatmentIDs: [], at: requestedAt))
+        XCTAssertFalse(staged.save())
+        let verification = ModelContext(container)
+        XCTAssertNil(CollectionStore(context: verification).card(forKey: mutation.collectionKey)?.justTCGVariantID)
+        XCTAssertTrue(try verification.fetch(FetchDescriptor<InventoryEvent>()).allSatisfy {
+            $0.priceStorageKey == oldKey
+        })
+        let newKey = PriceRecord.key(game: .pokemon, printingID: "justtcg:v2:\(newer.id)", variantID: row.variantID)
+        XCTAssertEqual(PriceStore(context: verification).record(forKey: newKey)?.unitMarketPriceUSD, 30)
+    }
+
+    func testGradedRefreshKeepsFinishKeysDistinctWhenRowsShareMarketHandle() async throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let finishes: [PhysicalVariant?] = [nil, .normal]
+        for (index, finish) in finishes.enumerated() {
+            let row = CollectedCard(collectionKey: "shared-handle-\(index)", game: .pokemon,
+                providerID: "binding-shared", name: "Structural Card", setName: "Structural Fixture",
+                setCode: "STR", cardNumber: "1", rarity: nil, imageURL: nil, thumbnailURL: nil,
+                variant: finish, variantResolution: .userConfirmed)
+            row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+            row.gradingCompanyRaw = GradingCompany.psa.rawValue
+            row.gradeRaw = "10"
+            row.justTCGVariantID = "shared-bound-variant"
+            row.justTCGAPIVersion = "v2"
+            context.insert(row)
+        }
+        try context.save()
+        let worker = PriceRefreshModelActor(modelContainer: container)
+        await worker.setGradedLookupOverrideForTesting { _, _ in
+            .matched([GradedVariant(id: "shared-bound-variant", company: .psa,
+                grade: CardGrade(value: "10"), printing: "Normal", marketPriceUSD: 12, updatedAt: nil)])
+        }
+        guard case let .completed(result) = await worker.run(PriceRefreshRequest(
+            usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false),
+            progress: { _ in }, shouldContinue: nil) else { return XCTFail("Expected refresh completion") }
+        XCTAssertFalse(result.persistenceFailed)
+        let verification = ModelContext(container)
+        let store = PriceStore(context: verification)
+        for finish in finishes {
+            let key = PriceRecord.key(game: .pokemon, printingID: "justtcg:v2:shared-bound-variant",
+                variantID: finish?.id)
+            XCTAssertEqual(store.record(forKey: key)?.effectiveUnitMarketPriceUSD, 12)
+        }
+    }
+
+    func testCachedSealedAddDoesNotRenewProviderCheck() throws {
+        let container = try makeContainer()
+        let original = Date.now.addingTimeInterval(-172800)
+        let product = SealedProductSummary(id: "cached-box", name: "Box", setName: nil,
+            variantID: "box-variant", marketPriceUSD: 20, updatedAt: nil, imageURL: nil,
+            retrievedAt: original)
+        try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            _ = try CollectionStore(context: context).addSealed(product, game: .pokemon)
+        }
+        let context = ModelContext(container)
+        let record = try XCTUnwrap(context.fetch(FetchDescriptor<PriceRecord>()).first)
+        XCTAssertEqual(record.fetchedAt, original)
+        XCTAssertEqual(record.lastSuccessfulCheckAt, original)
+        XCTAssertEqual(record.display.state(), .stale)
+        let today = PortfolioCalendar.day(containing: .now, in: .current)
+        XCTAssertFalse(try context.fetch(FetchDescriptor<PriceCheckDay>()).contains { $0.portfolioDay == today })
+    }
+
+    func testQuantityReadDoesNotRepairOrStageHistory() throws {
+        let container = try makeContainer()
+        let mutation = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            try CollectionStore(context: context).add(.pokemon(Self.card(id: "quantity-read"), setCode: "STR"),
+                resolved: .init(variant: .holo, resolution: .userConfirmed))
+        }
+        let context = ModelContext(container)
+        XCTAssertEqual(try CollectionStore(context: context).logicalQuantity(forAnyKey: mutation.collectionKey), 1)
+        XCTAssertFalse(context.hasChanges)
+    }
+
+    func testDecimalFilterInputAndNegativeCacheCompatibility() throws {
+        XCTAssertEqual(PriceFilterView.decimal("1,50", locale: Locale(identifier: "de_DE")), 1.5)
+        XCTAssertNil(PriceFilterView.decimal("1,50oops", locale: Locale(identifier: "de_DE")))
+        XCTAssertEqual(PriceFilterView.decimal("1.50", locale: Locale(identifier: "en_US")), 1.5)
+        XCTAssertEqual(PriceFilterView.decimal("١٫٥٠", locale: Locale(identifier: "ar_EG")), 1.5)
+        let legacy = try JSONDecoder().decode(CatalogCachedPrice.self, from: Data("{}".utf8))
+        XCTAssertFalse(legacy.confirmsNoUSDQuote)
+        let gap = CatalogCachedPrice(value: nil, confirmsNoUSDQuote: true)
+        XCTAssertEqual(try JSONDecoder().decode(CatalogCachedPrice.self, from: JSONEncoder().encode(gap)), gap)
+    }
+
     private func seedRows(count: Int, in container: ModelContainer) throws {
         let context = container.mainContext
         for index in 0..<count {

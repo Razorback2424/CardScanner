@@ -495,10 +495,7 @@ struct PortfolioView: View {
                 Text(
                     selectedHistoryPoint.isLive
                         ? "Today"
-                        : selectedHistoryPoint.displayDay.formatted(
-                            date: .abbreviated,
-                            time: .omitted
-                        )
+                        : selectedHistoryPoint.displayDay.formatted(PortfolioCalendar.dayFormat(date: .abbreviated))
                 )
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.secondary)
@@ -1689,7 +1686,7 @@ private struct PortfolioDetailsView: View {
                 DisclosureGroup("Reconciled days (\(result.revisions.count))") {
                     ForEach(result.revisions, id: \.date) { revision in
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(revision.date.formatted(date: .abbreviated, time: .omitted))
+                            Text(revision.date.formatted(PortfolioCalendar.dayFormat(date: .abbreviated)))
                                 .font(.subheadline.weight(.semibold))
                             Text("Original \(revision.original.closeValue.formatted()) · Latest \(revision.latest.closeValue.formatted())")
                                 .font(.footnote)

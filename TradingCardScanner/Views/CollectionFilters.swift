@@ -400,6 +400,27 @@ struct PriceFilterView: View {
     @State private var customMin: String = ""
     @State private var customMax: String = ""
 
+    static func decimal(_ text: String, locale: Locale = .current) -> Double? {
+        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let separator = locale.decimalSeparator ?? "."
+        let parts = text.components(separatedBy: separator)
+        guard parts.count <= 2, parts.contains(where: { !$0.isEmpty }),
+              parts.allSatisfy({ $0.unicodeScalars.allSatisfy(CharacterSet.decimalDigits.contains) }) else { return nil }
+        let normalized = parts.map { $0.compactMap(\.wholeNumberValue).map(String.init).joined() }
+            .joined(separator: ".")
+        guard let value = Double(normalized), value.isFinite else { return nil }
+        return value
+    }
+
+    private var rangeIsValid: Bool {
+        let minimum = Self.decimal(customMin)
+        let maximum = Self.decimal(customMax)
+        return (minimum != nil || maximum != nil)
+            && (customMin.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || minimum != nil)
+            && (customMax.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || maximum != nil)
+            && (minimum == nil || maximum == nil || minimum! <= maximum!)
+    }
+
     var body: some View {
         List {
             Section {
@@ -438,15 +459,15 @@ struct PriceFilterView: View {
                         .multilineTextAlignment(.trailing)
                 }
                 Button("Apply range") { applyCustom() }
-                    .disabled(Double(customMin) == nil && Double(customMax) == nil)
+                    .disabled(!rangeIsValid)
             }
         }
         .navigationTitle("Price")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             if case let .custom(min, max) = selection {
-                customMin = min.map { String($0) } ?? ""
-                customMax = max.map { String($0) } ?? ""
+                customMin = min.map { $0.formatted(.number.grouping(.never).precision(.fractionLength(0...16))) } ?? ""
+                customMax = max.map { $0.formatted(.number.grouping(.never).precision(.fractionLength(0...16))) } ?? ""
             }
         }
     }
@@ -456,7 +477,8 @@ struct PriceFilterView: View {
         // selection and leaves you here; a custom range doing something
         // different made the same screen behave two ways. Back and Done remain
         // the only ways out.
-        selection = .custom(min: Double(customMin), max: Double(customMax))
+        guard rangeIsValid else { return }
+        selection = .custom(min: Self.decimal(customMin), max: Self.decimal(customMax))
     }
 
     private func row(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {

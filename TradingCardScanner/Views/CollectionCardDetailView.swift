@@ -1318,9 +1318,11 @@ private struct CollectionCardDetailContent: View {
 
     @ViewBuilder
     private var marketplaceSection: some View {
-        CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(for: card))
-            .padding(.horizontal, 16)
-            .padding(.top, 20)
+        if let destination = TCGplayerLinkBuilder.destination(for: card) {
+            CardDetailMarketplaceButton(destination: destination)
+                .padding(.horizontal, 16)
+                .padding(.top, 20)
+        }
     }
 
     private var conflictNotice: some View {
@@ -1640,6 +1642,7 @@ private struct CollectionCardDetailContent: View {
         let treatments = card.magicTreatmentIDsRaw
         let hasMarketplaceURL = card.tcgplayerURL != nil
         let providerID = card.catalogProviderID ?? card.providerID
+        let variant = card.variant
         guard game == .magic,
               treatments.isEmpty,
               MagicTreatmentKeyCodec.collectionTreatmentIDs(from: collectionKey).isEmpty,
@@ -1648,7 +1651,7 @@ private struct CollectionCardDetailContent: View {
 
         guard let resolved = try? await ScryfallService().fetchCard(id: providerID),
               !Task.isCancelled,
-              let url = resolved.purchaseURIs?.tcgplayer else {
+              let url = TCGplayerLinkBuilder.url(for: .magic(resolved), variant: variant) else {
             return
         }
         let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
@@ -3227,7 +3230,9 @@ struct MovementDetailsView: View {
                 positionSection
                 calculationSection
                 guidanceSection
-                CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(for: card))
+                if let destination = TCGplayerLinkBuilder.destination(for: card) {
+                    CardDetailMarketplaceButton(destination: destination)
+                }
             }
             .padding(20)
             .contentWidthLimit(.standard)

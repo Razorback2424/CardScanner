@@ -1,5 +1,17 @@
 import Foundation
 
+/// The API key belongs only to the requested endpoint. Reject a redirect
+/// before URLSession can forward custom authentication headers elsewhere.
+final class PricingRedirectGuard: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
+    static let shared = PricingRedirectGuard()
+
+    func urlSession(_ session: URLSession, task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
+                    completionHandler: @escaping (URLRequest?) -> Void) {
+        completionHandler(nil)
+    }
+}
+
 enum HTTPDateParser {
     static func rfc1123Date(from value: String?) -> Date? {
         guard let value else { return nil }
@@ -363,7 +375,7 @@ actor JustTCGTransport {
                 "path=\(requestPath) result=\(requestOutcome)"
             )
         }
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await session.data(for: request, delegate: PricingRedirectGuard.shared)
         guard let http = response as? HTTPURLResponse else {
             throw TransportError.badResponse(status: -1)
         }

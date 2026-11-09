@@ -1,5 +1,32 @@
 import Foundation
 
+/// Parses the entire localized input. NumberFormatter's number(from:) also
+/// accepts numeric prefixes, which can silently change a pasted value.
+enum LocalizedNumberInput {
+    static func parse(_ text: String, locale: Locale, currencyCode: String? = nil) -> Double? {
+        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return nil }
+        // Decimal entry fields do not use scientific notation. Currency
+        // formatting can contain letters (US$, CHF), handled by its own style.
+        guard currencyCode != nil || text.rangeOfCharacter(from: .letters) == nil else { return nil }
+        let formatter = NumberFormatter()
+        formatter.locale = locale
+        formatter.numberStyle = currencyCode == nil ? .decimal : .currency
+        if let currencyCode { formatter.currencyCode = currencyCode }
+        formatter.isLenient = false
+        var object: AnyObject?
+        var range = NSRange(location: 0, length: text.utf16.count)
+        do {
+            try formatter.getObjectValue(&object, for: text, range: &range)
+        } catch {
+            return nil
+        }
+        guard range.location == 0, range.length == text.utf16.count,
+              let number = object as? NSNumber, number.doubleValue.isFinite else { return nil }
+        return number.doubleValue
+    }
+}
+
 /// Exact USD money, stored as a signed count of ten-thousandths of a dollar.
 ///
 /// Portfolio arithmetic has to reconcile to *exactly* zero, not to within an

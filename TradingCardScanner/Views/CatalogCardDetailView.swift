@@ -70,10 +70,6 @@ struct CatalogCardDetailView: View {
                         }.buttonStyle(.borderedProminent)
                     }
                 }
-                if details == nil {
-                    CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(for: summary))
-                        .padding(20)
-                }
             }
             .onChange(of: details?.card.id) { _, _ in
 #if DEBUG
@@ -175,11 +171,11 @@ struct CatalogCardDetailView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-            CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(
-                for: details.card,
-                variant: summary.masterSetVariant,
-                pokemonPrintRun: summary.pokemonPrintRun
-            ))
+            if let destination = TCGplayerLinkBuilder.destination(
+                for: details.card, variant: summary.masterSetVariant,
+                pokemonPrintRun: summary.pokemonPrintRun) {
+                CardDetailMarketplaceButton(destination: destination)
+            }
 
             if let reason = details.collectionWriteUnavailableReason {
                 Text(reason).font(.footnote).foregroundStyle(.secondary)

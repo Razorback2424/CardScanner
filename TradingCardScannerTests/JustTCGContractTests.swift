@@ -1,5 +1,6 @@
 import XCTest
 import SwiftData
+import Network
 @testable import TradingCardScanner
 
 private actor MarketRefreshProgressProbe {
@@ -26,6 +27,64 @@ private actor EditionPriceProbe {
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    func testAuthenticatedPricingClientsRejectRedirectsBeforeForwardingKeys() async throws {
+        let suite = "PricingRedirects-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let server = try PricingRedirectServer()
+        let base = try await server.start()
+        defer { server.stop() }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel() }
+        let source = base.appendingPathComponent("cards")
+        var destinationComponents = try XCTUnwrap(URLComponents(url: base, resolvingAgainstBaseURL: false))
+        destinationComponents.host = "localhost"
+        let destination = try XCTUnwrap(destinationComponents.url).appendingPathComponent("redirected")
+
+        // The fixture must actually follow redirects without the guard.
+        server.reset(status: 302, destination: destination)
+        var unprotected = URLRequest(url: source)
+        unprotected.setValue("synthetic-review-key", forHTTPHeaderField: "x-api-key")
+        let (_, response) = try await session.data(for: unprotected)
+        XCTAssertEqual(response.url, destination)
+        XCTAssertEqual(server.requests().map(\.path), ["/cards", "/redirected"])
+        XCTAssertEqual(server.requests().last?.key, "synthetic-review-key")
+
+        var transportConfig = JustTCGTransport.Configuration()
+        transportConfig.baseURL = source.deletingLastPathComponent()
+        transportConfig.minimumRequestInterval = 0
+        let transport = JustTCGTransport(configuration: transportConfig, session: session,
+            ledger: .init(defaults: defaults), pacer: .init(), apiKeyOverride: "synthetic-review-key")
+        var productConfig = ProductPriceService.Configuration()
+        productConfig.baseURL = transportConfig.baseURL
+        productConfig.minimumRequestInterval = 0
+        let product = ProductPriceService(configuration: productConfig, session: session,
+            pacer: .init(), budget: .init(defaults: defaults), apiKeyOverride: "synthetic-review-key")
+        let subject = ProductPriceSubject(game: .magic, catalogID: "fixture", name: "Fixture",
+            setName: "Fixture", cardNumber: "1", japaneseSetID: nil, pokemonPrintRun: nil,
+            vendorCardID: "exact-card", magicTreatmentIDsRaw: [])
+        for status in [301, 302, 303, 307, 308] {
+            for target in [destination, source.deletingLastPathComponent().appendingPathComponent("redirected")] {
+                server.reset(status: status, destination: target)
+                do {
+                    let _: [String: String] = try await transport.get("cards", lane: .interactive)
+                    XCTFail("Authenticated redirect must not return a successful response")
+                } catch JustTCGTransport.TransportError.badResponse(let received) {
+                    XCTAssertEqual(received, status)
+                }
+                XCTAssertEqual(server.requests().map(\.path), ["/cards"])
+
+                server.reset(status: status, destination: target)
+                let outcome = await product.quote(for: subject, variant: .nonfoil, lane: .interactive)
+                XCTAssertEqual(outcome, .requestFailed)
+                XCTAssertEqual(server.requests().map(\.path), ["/cards"])
+            }
+        }
+    }
+
     func testRetainedGradedIdentifiersSkipDiscoveryButStillVerifyEveryBindingAxis() async throws {
         let directory = ProductSetDirectoryProvider()
         _ = try await directory.directory(for: .pokemon) {
@@ -619,6 +678,35 @@ final class JustTCGContractTests: XCTestCase {
                 catalogID: catalogID, finish: .holo)
             XCTAssertEqual(identity.matches(card, variant: try XCTUnwrap(card.variants?.first), game: .pokemon), accepted)
         }
+    }
+
+    @MainActor
+    func testValidHistorySurvivesDerivedCacheWriteFailure() async throws {
+        let suite = "HistoryCacheFailure-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(suite)
+        let sentinel = Data("Existing file blocks cache directory".utf8)
+        try sentinel.write(to: root)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        let service = CardMarketHistoryService(transport: .init(configuration: settings,
+            session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+            pacer: .init(), apiKeyOverride: "fixture-key"), root: root)
+        let card = CollectedCard(collectionKey: "history-test", game: .magic, providerID: "test-printing",
+            name: "Test", setName: "Test", setCode: "tst", cardNumber: "1",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .nonfoil,
+            variantResolution: .userConfirmed)
+        card.justTCGVariantID = "normal-nm"
+        RecordingURLProtocol.reset(body: #"{"data":[{"variants":[{"uuid":"normal-nm","printing":"Normal","priceHistory":[{"p":20,"t":1700000000}]}]}]}"#)
+        let points = try await service.history(for: CardMarketHistoryRequest(card: card))
+        XCTAssertEqual(points.map(\.p), [20])
+        XCTAssertEqual(try Data(contentsOf: root), sentinel)
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
     }
 
     @MainActor
@@ -4057,5 +4145,84 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertNotNil(
             syncLedger.deltaCutoff(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion)
         )
+    }
+}
+
+/// A real loopback server exercises URLSession's redirect handling; synthetic
+/// URLProtocol redirect callbacks do not model the async session reliably.
+private final class PricingRedirectServer: @unchecked Sendable {
+    private let listener: NWListener
+    private let queue = DispatchQueue(label: "PricingRedirectTests")
+    private let lock = NSLock()
+    private var recorded: [(path: String, key: String?)] = []
+    private var status = 302
+    private var destination = URL(string: "http://localhost/redirected")!
+
+    init() throws {
+        let parameters = NWParameters.tcp
+        parameters.requiredLocalEndpoint = .hostPort(host: .ipv4(.loopback), port: .any)
+        listener = try NWListener(using: parameters)
+        listener.newConnectionHandler = { [weak self] connection in
+            guard let self else { connection.cancel(); return }
+            connection.start(queue: self.queue)
+            self.receive(connection)
+        }
+    }
+
+    func start() async throws -> URL {
+        let listener = listener
+        let port: NWEndpoint.Port = try await withCheckedThrowingContinuation { continuation in
+            listener.stateUpdateHandler = { state in
+                switch state {
+                case .ready:
+                    listener.stateUpdateHandler = nil
+                    if let port = listener.port { continuation.resume(returning: port) }
+                    else { continuation.resume(throwing: URLError(.cannotConnectToHost)) }
+                case let .failed(error):
+                    listener.stateUpdateHandler = nil
+                    continuation.resume(throwing: error)
+                default: break
+                }
+            }
+            listener.start(queue: queue)
+        }
+        return URL(string: "http://127.0.0.1:\(port.rawValue)")!
+    }
+
+    func stop() { listener.cancel() }
+
+    func reset(status: Int, destination: URL) {
+        lock.lock(); defer { lock.unlock() }
+        recorded = []; self.status = status; self.destination = destination
+    }
+    func requests() -> [(path: String, key: String?)] {
+        lock.lock(); defer { lock.unlock() }
+        return recorded
+    }
+    private func receive(_ connection: NWConnection, bytes: Data = Data()) {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) { [weak self] data, _, complete, error in
+            guard let self else { connection.cancel(); return }
+            let bytes = bytes + (data ?? Data())
+            if let text = String(data: bytes, encoding: .utf8), text.contains("\r\n\r\n") {
+                self.respond(to: text, connection: connection)
+            } else if complete || error != nil { connection.cancel() }
+            else { self.receive(connection, bytes: bytes) }
+        }
+    }
+    private func respond(to text: String, connection: NWConnection) {
+        let lines = text.components(separatedBy: "\r\n")
+        let target = lines.first?.split(separator: " ").dropFirst().first.map(String.init) ?? ""
+        let path = String(target.split(separator: "?", maxSplits: 1).first ?? "")
+        let key = lines.dropFirst().first { $0.lowercased().hasPrefix("x-api-key:") }
+            .map { String($0.dropFirst("x-api-key:".count)).trimmingCharacters(in: .whitespaces) }
+        lock.lock()
+        recorded.append((path, key))
+        let status = status, destination = destination
+        lock.unlock()
+        let isDestination = path == "/redirected"
+        let body = isDestination ? #"{"data":[]}"# : ""
+        let location = isDestination ? "" : "Location: \(destination.absoluteString)\r\n"
+        let headers = "HTTP/1.1 \(isDestination ? 200 : status) Test\r\n\(location)Content-Type: application/json\r\nContent-Length: \(body.utf8.count)\r\nConnection: close\r\n\r\n"
+        connection.send(content: Data((headers + body).utf8), completion: .contentProcessed { _ in connection.cancel() })
     }
 }

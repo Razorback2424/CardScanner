@@ -590,8 +590,8 @@ enum PriceIdentityLineageMigration {
         guard didChange else { return false }
 
         // InventoryEvent is part of the ownership ledger, so callers that
-        // change it must run inside CollectionWriteSerializer. Refresh workers
-        // use migratePriceSide and apply this retargeting as a guarded row patch.
+        // change it must run inside CollectionWriteSerializer, including the
+        // refresh checkpoint that commits the row's market binding.
         let events = try context.fetch(
             FetchDescriptor<InventoryEvent>(
                 predicate: #Predicate { $0.priceStorageKey == oldKey }
@@ -601,9 +601,7 @@ enum PriceIdentityLineageMigration {
         return true
     }
 
-    /// Moves only price-side rows. This variant is safe for the refresh actor:
-    /// ownership-ledger references are patched later in a fresh serialized
-    /// collection context alongside the row's market binding.
+    /// Price-side portion of the complete identity migration above.
     @discardableResult
     static func migratePriceSide(
         from oldKey: String,
@@ -708,6 +706,40 @@ struct PriceStore {
 
     private enum CheckpointError: Error { case writeFailed }
     struct CheckpointWriteError: Error {}
+
+    /// Binding and every instrument reference commit together. The owner is
+    /// checked again after network I/O, inside the fresh serialized checkpoint.
+    func enqueueGradedBinding(_ variant: GradedVariant, collectionKey: String,
+                              expectedPriceKey: String, expectedVariantID: String?,
+                              expectedMarketVariantID: String?, game: CardGame,
+                              treatmentIDs: [String], at date: Date) -> Bool {
+        let printingID = "justtcg:v2:\(variant.id)"
+        let newKey = PriceRecord.key(game: game, printingID: printingID,
+            variantID: expectedVariantID, treatmentIDs: treatmentIDs)
+        return enqueue(keys: [expectedPriceKey, newKey]) { fresh in
+            let rows = try fresh.context.fetch(FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey == collectionKey }))
+            let owners = rows.filter {
+                $0.itemKind == .gradedCard && $0.priceKey == expectedPriceKey
+                    && $0.variantID == expectedVariantID && $0.justTCGVariantID == expectedMarketVariantID
+            }
+            // A removed/corrected owner cannot authorize moving its history.
+            if !owners.isEmpty {
+                try PriceIdentityLineageMigration.migrate(from: expectedPriceKey, to: newKey,
+                    game: game, printingID: printingID, variantID: expectedVariantID,
+                    treatmentIDs: treatmentIDs, in: fresh.context, index: fresh.index)
+                for row in owners {
+                    row.justTCGVariantID = variant.id
+                    row.justTCGCardID = variant.cardID ?? row.justTCGCardID
+                    row.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
+                    row.tcgplayerProductID = variant.verifiedProductID ?? row.tcgplayerProductID
+                }
+            }
+            let receipt = GradedVariantBinding.storeUnboundVariantQuote(variant, game: game,
+                variantID: expectedVariantID, treatmentIDs: treatmentIDs, store: fresh, at: date)
+            guard receipt.wasAccepted else { throw CheckpointError.writeFailed }
+        }
+    }
 
     /// Keep this decision identical for canonical writes and alias promotion.
     static func retainsNewerMarketData(existing record: PriceRecord, incoming price: NormalizedPrice,
@@ -852,22 +884,6 @@ struct PriceStore {
         record.exactGradedQuoteEvidence = evidence
         PriceObservationLog(context: context, index: index)
             .recordLocalQuoteReceipt(for: record, learnedAt: evidence.checkedAt)
-    }
-
-    func migratePriceSide(
-        from oldKey: String, to newKey: String, game: CardGame,
-        printingID: String, variantID: String?, treatmentIDs: [String]
-    ) throws {
-        if enqueue(keys: [oldKey, newKey], {
-            try $0.migratePriceSide(
-                from: oldKey, to: newKey, game: game, printingID: printingID,
-                variantID: variantID, treatmentIDs: treatmentIDs
-            )
-        }) { return }
-        try PriceIdentityLineageMigration.migratePriceSide(
-            from: oldKey, to: newKey, game: game, printingID: printingID,
-            variantID: variantID, treatmentIDs: treatmentIDs, in: context, index: index
-        )
     }
 
     func discardPendingWrites() {

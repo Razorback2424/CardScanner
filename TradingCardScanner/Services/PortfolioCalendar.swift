@@ -38,6 +38,16 @@ enum PortfolioCalendar {
         return calendar
     }
 
+    /// Economic days keep their published date when the device travels.
+    static func dayFormat(
+        date: Date.FormatStyle.DateStyle = .omitted,
+        timeZone: TimeZone? = nil,
+        locale: Locale = .current
+    ) -> Date.FormatStyle {
+        let zone = timeZone ?? pinnedTimeZone() ?? .current
+        return Date.FormatStyle(date: date, time: .omitted, locale: locale, timeZone: zone)
+    }
+
     /// The portfolio day `date` falls in. Days are half-open `[start, next)`,
     /// so an event landing exactly on the next day's `startOfDay` belongs to
     /// the next day — never to both and never to neither.

@@ -39,10 +39,7 @@ enum PortfolioHeadlineAccessibility {
         isRecomputing: Bool
     ) -> String {
         if let selectedPoint, !selectedPoint.isLive {
-            let date = selectedPoint.displayDay.formatted(
-                date: .complete,
-                time: .omitted
-            )
+            let date = selectedPoint.displayDay.formatted(PortfolioCalendar.dayFormat(date: .complete))
             return "Collection value on \(date), \(selectedPoint.value.formatted())"
         }
         guard let currentValue else {
@@ -121,14 +118,14 @@ struct PortfolioHistoryView: View {
             .overlay(alignment: .bottom) {
                 HStack {
                     if let firstPoint = result.points.first {
-                        Text(firstPoint.displayDay.formatted(.dateTime.month(.abbreviated).day()))
+                        Text(firstPoint.displayDay.formatted(PortfolioCalendar.dayFormat().month(.abbreviated).day()))
                     }
                     Spacer()
                     if let lastPoint = result.points.last {
                         Text(
                             lastPoint.isLive
                                 ? "today"
-                                : lastPoint.displayDay.formatted(.dateTime.month(.abbreviated).day())
+                                : lastPoint.displayDay.formatted(PortfolioCalendar.dayFormat().month(.abbreviated).day())
                         )
                     }
                 }
@@ -340,7 +337,7 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
         let dateLabels = result.points.map {
             $0.isLive
                 ? "Market movement today"
-                : "Market movement on \($0.displayDay.formatted(date: .abbreviated, time: .omitted))"
+                : "Market movement on \($0.displayDay.formatted(PortfolioCalendar.dayFormat(date: .abbreviated)))"
         }
         let xAxis = AXCategoricalDataAxisDescriptor(title: "Date", categoryOrder: dateLabels)
         let points = result.points.enumerated().compactMap { index, point -> AXDataPoint? in

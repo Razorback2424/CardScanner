@@ -389,7 +389,7 @@ actor ProductPriceService {
         try await pace(lane: lane)
         try checkAllowance(await budget.reserveRequest(lane: lane))
 
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await session.data(for: request, delegate: PricingRedirectGuard.shared)
         guard let http = response as? HTTPURLResponse else {
             throw ProductPriceError.badResponse
         }

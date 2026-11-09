@@ -8,10 +8,9 @@ import XCTest
 @MainActor
 final class DetailDeletionRenderTests: XCTestCase {
     func testMarketplaceLinkLabelsRemainReadableAtAccessibleSizes() throws {
-        let search = TCGplayerLinkBuilder.search(game: .pokemon, name: "Eevee", setName: "30th Celebration", number: "116/128")
         let exact = TCGplayerLinkBuilder.Destination(url: try XCTUnwrap(URL(string: "https://www.tcgplayer.com/product/641615")),
             isExactProduct: true)
-        for destination in [search, exact] {
+        for destination in [exact] {
             let content = CardDetailMarketplaceButton(destination: destination)
                 .padding(20).background(Color.black).environment(\.dynamicTypeSize, .accessibility3)
             let renderer = ImageRenderer(content: content.frame(width: 320))
@@ -23,9 +22,9 @@ final class DetailDeletionRenderTests: XCTestCase {
             try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
             let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
             XCTAssertTrue(text.localizedCaseInsensitiveContains("TCGplayer"), text)
-            XCTAssertTrue(text.localizedCaseInsensitiveContains(destination.isExactProduct ? "View on" : "Search"), text)
+            XCTAssertTrue(text.localizedCaseInsensitiveContains("View on"), text)
             let attachment = XCTAttachment(image: image)
-            attachment.name = destination.isExactProduct ? "tcgplayer-exact-accessibility3" : "tcgplayer-search-accessibility3"
+            attachment.name = "tcgplayer-exact-accessibility3"
             attachment.lifetime = .keepAlways
             add(attachment)
         }

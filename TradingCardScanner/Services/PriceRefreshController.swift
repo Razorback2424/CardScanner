@@ -243,11 +243,6 @@ struct RefreshRowPatch: Sendable {
         case catalogMetadata(ImportedCatalogMetadata, checkedAt: Date)
         case sealedArtwork(url: String?, checkedAt: Date)
         case vendorBinding(productID: String?, sku: String?, exactProductID: String?, cardID: String?, variantID: String?)
-        case gradedBinding(
-            marketVariantID: String,
-            marketCardID: String?,
-            apiVersion: String
-        )
         case pendingCatalogFinish(
             expected: PendingCatalogFinishState,
             replacement: PendingCatalogFinishState
@@ -278,7 +273,9 @@ struct RefreshRowPatch: Sendable {
             imageURL: imageURL,
             thumbnailURL: thumbnailURL,
             tcgplayerURL: tcgplayerURL,
-            setReleaseOrder: card.setReleaseOrder
+            setReleaseOrder: card.setReleaseOrder,
+            tcgplayerProductID: row.variantID.flatMap { card.marketProductIDsByVariant[$0] },
+            updatesMarketplaceProductID: card.legacyIdentity == nil
         )
         return Self(
             collectionKey: row.collectionKey,
@@ -1203,41 +1200,6 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                             case let .vendorBinding(productID, sku, exactProductID, cardID, variantID):
                                 PriceRefreshController.applyVendorBinding(to: row, productID: productID,
                                     sku: sku, exactProductID: exactProductID, cardID: cardID, variantID: variantID)
-                            case let .gradedBinding(
-                                marketVariantID,
-                                marketCardID,
-                                apiVersion
-                            ):
-                                guard row.itemKind == .gradedCard,
-                                      row.justTCGVariantID == nil
-                                        || row.justTCGVariantID == marketVariantID else {
-                                    skipped += 1
-                                    continue
-                                }
-                                let oldPriceKey = row.priceKey
-                                let marketPrintingID = "justtcg:\(apiVersion):\(marketVariantID)"
-                                let newPriceKey = PriceRecord.key(
-                                    game: row.cardGame,
-                                    printingID: marketPrintingID,
-                                    variantID: row.variantID,
-                                    treatmentIDs: row.priceTreatmentIDs
-                                )
-                                if oldPriceKey != newPriceKey {
-                                    let events = try context.fetch(
-                                        FetchDescriptor<InventoryEvent>(
-                                            predicate: #Predicate {
-                                                $0.priceStorageKey == oldPriceKey
-                                            }
-                                        )
-                                    )
-                                    for event in events {
-                                        event.priceStorageKey = newPriceKey
-                                    }
-                                }
-                                row.justTCGVariantID = marketVariantID
-                                row.justTCGCardID = marketCardID ?? row.justTCGCardID
-                                row.justTCGAPIVersion = apiVersion
-                                row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
                             case let .pendingCatalogFinish(expected, replacement):
                                 guard PendingCatalogFinishState.read(from: row) == expected else {
                                     skipped += 1
@@ -1905,11 +1867,6 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         let gradedRowsByPriceKey = PriceRefreshController.rowIdentitiesByPriceKey(
             in: modelContext
         ).mapValues { $0.filter { $0.itemKind == .gradedCard } }
-        let gradedRowsByMarketVariant = Dictionary(
-            grouping: gradedRowsByPriceKey.values.flatMap { $0 }
-                .filter { $0.marketVariantID != nil },
-            by: { $0.marketVariantID! }
-        )
 
         func selectGradedVariant(
             from variants: [GradedVariant],
@@ -1939,14 +1896,6 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 boundVariantID: target.marketVariantID,
                 catalogID: target.gradedIdentity?.catalogID ?? target.catalogPrintingID
             )
-        }
-
-        func rowIdentity(for target: PriceTarget) -> RefreshRowIdentity? {
-            if let handle = target.marketVariantID,
-               let existing = gradedRowsByMarketVariant[handle]?.first {
-                return existing
-            }
-            return gradedRowsByPriceKey[target.id]?.first
         }
 
         func checkpoint(force: Bool = false) async {
@@ -2035,7 +1984,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             }
         }
 
-        groupLoop: for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
+        for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
             if Task.isCancelled || !(storageContinuation?() ?? true) { break }
             guard let identity = group.first?.gradedIdentity,
                   let game = group.first?.game else { continue }
@@ -2110,66 +2059,25 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     continue
                 }
 
-                let owner = rowIdentity(for: target)
-                if owner != nil, target.marketVariantID == nil {
-                    // Queue the lineage move before the vendor quote so both
-                    // use current rows in the fresh price checkpoint. The
-                    // collection row remains a guarded patch after that save.
-                    let apiVersion = JustTCGV2GradedClient.apiVersion
-                    let printingID = "justtcg:\(apiVersion):\(variant.id)"
-                    do {
-                        try store.migratePriceSide(
-                            from: target.id,
-                            to: PriceRecord.key(
-                                game: target.game,
-                                printingID: printingID,
-                                variantID: target.variantID,
-                                treatmentIDs: target.magicTreatmentIDsRaw
-                            ),
-                            game: target.game,
-                            printingID: printingID,
-                            variantID: target.variantID,
-                            treatmentIDs: target.magicTreatmentIDsRaw
-                        )
-                    } catch {
-                        modelContext.rollback()
-                        store.discardPendingWrites()
-                        store.index?.reload()
-                        identityIndex?.reload()
-                        pendingRowPatches.removeAll()
-                        stagedWriteCount = 0
-                        stagedPriced = 0
-                        persistenceFailed = true
-                        break groupLoop
-                    }
-                }
-                let binding = GradedVariantBinding.storeUnboundVariantQuote(
-                    variant,
-                    game: target.game,
-                    variantID: target.variantID,
-                    treatmentIDs: target.magicTreatmentIDsRaw,
-                    store: store,
-                    at: .now
-                )
+                let owner = gradedRowsByPriceKey[target.id]?.first
+                let priceKey = PriceRecord.key(game: target.game,
+                    printingID: "justtcg:v2:\(variant.id)", variantID: target.variantID,
+                    treatmentIDs: target.magicTreatmentIDsRaw)
+                let accepted: Bool
                 if let owner {
-                    pendingRowPatches.append(
-                        RefreshRowPatch(
-                            collectionKey: owner.collectionKey,
-                            expectedPriceKey: owner.priceKey,
-                            expectedVariantID: owner.variantID,
-                            expectedMarketVariantID: owner.marketVariantID,
-                            change: .gradedBinding(
-                                marketVariantID: variant.id,
-                                marketCardID: variant.cardID,
-                                apiVersion: JustTCGV2GradedClient.apiVersion
-                            )
-                        )
-                    )
+                    accepted = store.enqueueGradedBinding(variant, collectionKey: owner.collectionKey,
+                        expectedPriceKey: owner.priceKey, expectedVariantID: owner.variantID,
+                        expectedMarketVariantID: owner.marketVariantID, game: target.game,
+                        treatmentIDs: target.magicTreatmentIDsRaw, at: .now)
+                } else {
+                    accepted = GradedVariantBinding.storeUnboundVariantQuote(variant,
+                        game: target.game, variantID: target.variantID,
+                        treatmentIDs: target.magicTreatmentIDsRaw, store: store, at: .now).wasAccepted
                 }
-                if binding.wasAccepted {
+                if accepted {
                     if variant.marketPriceUSD != nil { stagedPriced += 1 }
                     stagedWriteCount += 1
-                    rememberPriceKey(binding.priceKey)
+                    rememberPriceKey(priceKey)
                 }
                 else { persistenceFailed = true }
             }

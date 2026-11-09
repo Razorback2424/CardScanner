@@ -374,6 +374,22 @@ final class PortfolioLedgerTests: XCTestCase {
         XCTAssertNotEqual(auckland, denver)
     }
 
+    func testEconomicDayLabelsKeepTheirDateAcrossTravelAndDST() throws {
+        let denver = zone("America/Denver")
+        let locale = Locale(identifier: "en_US")
+        let calendar = PortfolioCalendar.calendar(in: denver)
+        for (month, day) in [(3, 8), (11, 1), (11, 8)] {
+            let date = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: month, day: day)))
+            let label = date.formatted(PortfolioCalendar.dayFormat(date: .abbreviated, timeZone: denver, locale: locale))
+            XCTAssertEqual(label, month == 3 ? "Mar 8, 2026" : "Nov \(day), 2026")
+            XCTAssertEqual(date.formatted(PortfolioCalendar.dayFormat(timeZone: denver, locale: locale).month(.abbreviated).day()),
+                           month == 3 ? "Mar 8" : "Nov \(day)")
+            let traveled = date.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted,
+                locale: locale, timeZone: zone("Pacific/Honolulu")))
+            XCTAssertNotEqual(label, traveled)
+        }
+    }
+
     func testPinnedZoneIsCapturedOnceAndReadBackThereafter() {
         let defaults = UserDefaults(suiteName: "PortfolioLedgerTests.\(UUID().uuidString)")!
         defer { defaults.removeSuite(named: defaults.description) }

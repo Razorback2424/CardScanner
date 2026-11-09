@@ -335,7 +335,8 @@ actor CardMarketHistoryService {
             byTime[point.t] = point
         }
         let points = byTime.values.sorted { $0.t < $1.t }
-        try writeCache(Cached(requestData: identityData(request), fetchedAt: now, points: points,
+        // This is derived data. A full disk must not hide a successful response.
+        try? writeCache(Cached(requestData: identityData(request), fetchedAt: now, points: points,
                               sourceProductID: sourceProductID))
         return points
     }
