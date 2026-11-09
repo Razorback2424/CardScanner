@@ -277,7 +277,8 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
             // direction and amount the phone needs to move to become parallel.
             let x = max(-1, min(1, gravity.x))
             let y = max(-1, min(1, gravity.y))
-            self.levelOffset = CGSize(width: x * 90, height: -y * 90)
+            self.levelOffset = CameraRotationTracker.levelOffset(
+                gravityX: x, gravityY: y, rotationAngle: self.rotation.currentAngle)
             self.isLevel = hypot(x, y) < 0.025
         }
     }

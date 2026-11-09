@@ -113,8 +113,14 @@
         /// analyzer result is changed by observing a curved boundary.
         static func observedArtworkPath(_ side: Side, reference: CardCenteringPrintReference,
                                         analysis: CardCenteringAnalysis, source: UIImage) -> ObservedPath? {
-            guard let profile = reference.boundaryProfiles?.first(where: { $0.side == side.rawValue }),
+            guard reference.boundaryProfiles?.contains(where: { $0.side == side.rawValue }) == true,
                   let region = registeredRegion(reference, in: analysis) else { return nil }
+            return observedArtworkPath(side, reference: reference, region: region, source: source)
+        }
+
+        private static func observedArtworkPath(_ side: Side, reference: CardCenteringPrintReference,
+                                                region: CardCenteringQuad, source: UIImage) -> ObservedPath? {
+            guard let profile = reference.boundaryProfiles?.first(where: { $0.side == side.rawValue }) else { return nil }
             let rect = CardCenteringRectification(outerQuad: region)
             guard rect.isNumericallyValid else { return nil }
             let line = edge(region, side), a = line.start, b = line.end
@@ -618,7 +624,15 @@
 
         static func observedMeasurement(reference: CardCenteringPrintReference, analysis: CardCenteringAnalysis,
                                         source: UIImage) -> ObservedMeasurement? {
-            guard let mapping = analysis.coordinateMapping, let region = registeredRegion(reference,in: analysis) else { return nil }
+            guard let region = registeredRegion(reference,in: analysis) else { return nil }
+            return observedMeasurement(reference: reference, analysis: analysis, region: region, source: source)
+        }
+
+        // The selected design's registration is immutable for this analysis;
+        // reuse it for all four paths rather than registering each side again.
+        private static func observedMeasurement(reference: CardCenteringPrintReference, analysis: CardCenteringAnalysis,
+                                                region: CardCenteringQuad, source: UIImage) -> ObservedMeasurement? {
+            guard let mapping = analysis.coordinateMapping else { return nil }
             let outerSeed = mapping.nativeQuad(fromWorking: analysis.measurement.geometryOuterQuad)
             let inner: [ObservedPath]
             let innerSeed: CardCenteringQuad
@@ -635,7 +649,7 @@
                 inner = Side.allCases.compactMap { observedPrintedContinuityPath($0,seed:innerSeed,source:source) }
             } else {
                 innerSeed = region
-                inner = Side.allCases.compactMap { observedArtworkPath($0,reference: reference,analysis: analysis,source: source) }
+                inner = Side.allCases.compactMap { observedArtworkPath($0,reference: reference,region: region,source: source) }
             }
             let outer = Side.allCases.compactMap { observedPhysicalPath($0,seed: outerSeed,source: source) }
             guard !Task.isCancelled else { return nil }
@@ -1099,7 +1113,7 @@
                                          candidateScan: () throws -> [CardCenteringBoundaryCandidate]) -> CardCenteringAnalysis {
             if reference.boundaryProfiles?.count == 4 || reference.boundaryMethod == .printedContinuity {
                 guard let mapping = baseline.coordinateMapping,
-                      let observed = observedMeasurement(reference: reference,analysis: baseline,source: source),
+                      let observed = observedMeasurement(reference: reference,analysis: baseline,region: region,source: source),
                       let outer = guideQuad(observed.outerPaths), let inner = guideQuad(observed.innerPaths),
                       !Task.isCancelled else { return baseline }
                 let old = baseline.measurement

@@ -1385,7 +1385,13 @@ import XCTest
                 XCTAssertEqual(measured.referenceDefinition, .matchedArtwork)
                 continue
             }
-            XCTAssertEqual(measured, try CardCenteringAnalyzer.analyze(bytes).measurement, tag)
+            var diagnostics = CardCenteringAnalyzer.Diagnostics()
+            // Match ordinary analysis, without the diagnostic-only front-bottom experiment.
+            diagnostics.frontBottomCandidateGenerationEnabled = false
+            diagnostics.analysisDiagnosticSink = { diagnostic in
+                print("PRINT_BASE_STAGES \(tag) \(diagnostic.stageTimings)")
+            }
+            XCTAssertEqual(measured, try diagnostics.analyze(bytes).measurement, tag)
             XCTAssertFalse(measured.canReportRatios)
             XCTAssertNil(measured.reviewedDesign)
         }

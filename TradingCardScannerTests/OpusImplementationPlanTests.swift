@@ -5657,7 +5657,9 @@ final class CenteringProfileDumpTests: XCTestCase {
             )
         }
 
-        for fixture in ["IMG_0783", "IMG_0347"] {
+        // Backs now use registered templates; retain a front that exercises
+        // profile normalization instead of requiring a back to take that path.
+        for fixture in ["IMG_0783", "IMG_0347", "IMG_0348"] {
             let data = try fixtureData(fixture)
             let source = try XCTUnwrap(UIImage(data: data))
             let groundTruth = try fixtureRecord(fixture)
@@ -5776,7 +5778,7 @@ final class CenteringProfileDumpTests: XCTestCase {
             }
         }
 
-        XCTAssertEqual(dumps.count, 24)
+        XCTAssertEqual(dumps.count, 36)
         XCTAssertTrue(dumps.contains { $0.profileDisposition == "evaluated" && $0.records.count == 4 },
                       "E-E must still exercise the profile branch")
         try encoder.encode(dumps).write(

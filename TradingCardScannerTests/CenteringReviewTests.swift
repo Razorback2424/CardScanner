@@ -47,21 +47,30 @@ final class CenteringReviewTests: XCTestCase {
         let inner = CardCenteringQuad.axisAligned(.init(left: 60, top: 80, right: 540, bottom: 760))
         let value = CardCenteringMeasurement(imageWidth: 600, imageHeight: 840,
             outerQuad: outer, innerQuad: inner, warnings: [])
+        var photoFrame: CGRect?
         let canvas = CardCenteringCanvas(image: photo(), measurement: value,
             rotationDegrees: 0, imageRevision: 0, lumaField: nil,
             selection: .constant(nil), onBeginEdit: {}, onEdit: { _ in },
-            onAccessibilityNudge: { _ in })
+            onAccessibilityNudge: { _ in }, onFrameChange: { photoFrame = $0 })
             .frame(width: 300, height: 420)
         let renderer = ImageRenderer(content: canvas)
         renderer.scale = 2
         let raster = try pixels(XCTUnwrap(renderer.uiImage))
+        let frame = try XCTUnwrap(photoFrame)
         XCTAssertEqual(raster.width, 600)
         XCTAssertEqual(raster.height, 840)
         func pixel(_ x: Int, _ y: Int) -> (Int, Int, Int) {
             let offset = (y * raster.width + x) * 4
             return (Int(raster.bytes[offset]), Int(raster.bytes[offset + 1]), Int(raster.bytes[offset + 2]))
         }
-        let red = pixel(300, 40), cyan = pixel(300, 80), photoPixel = pixel(300, 60)
+        // The canvas fits the card, rather than leaving the whole photo at
+        // zoom 1. Sample the same photo coordinates in its rendered frame.
+        func pixelAtPhotoCoordinate(_ x: CGFloat, _ y: CGFloat) -> (Int, Int, Int) {
+            pixel(Int((frame.minX + x / 600 * frame.width) * renderer.scale),
+                  Int((frame.minY + y / 840 * frame.height) * renderer.scale))
+        }
+        let red = pixelAtPhotoCoordinate(300, 40), cyan = pixelAtPhotoCoordinate(300, 80)
+        let photoPixel = pixelAtPhotoCoordinate(300, 60)
         XCTAssertGreaterThan(red.0, red.1 + 50)
         XCTAssertGreaterThan(red.0, red.2 + 50)
         XCTAssertGreaterThan(cyan.1, cyan.0 + 30)
