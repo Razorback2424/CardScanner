@@ -35,6 +35,50 @@ pages are published; do not invent destinations or treat this as an unfinished
 engineering fix. Before launch, configure `/privacy` and `/support`, inspect the
 built Release Info.plist, and open both links from the installed app.
 
+### Full-checkout regression status — 2026-11-09
+
+The [current regression record](../../app_review_fix_plan.md#full-checkout-regression-investigation--2026-11-09)
+supersedes older full-target failure inventories as current checkout evidence.
+The unfiltered baseline reports 3,195 passed, 32 failed and 21 skipped; after
+CSV replay, signed-finish cache and camera-lifecycle fixes, the broad final-source
+rerun reports 3,174 passed, two failed and 21 skipped. All three catalog packages
+pass (152 passed, one skipped). These are distinct runs, not additive coverage.
+The broad selection does not repeat the two long centering research classes
+wholesale; all five failed/interrupted cases were rerun separately. The interrupted
+Prismatic library case passes. Six centering gates remain unmet: initial guides,
+the supplied-layout probe, two foil Gengar checks, the Prismatic right edge, and
+assisted-reference timing. Fresh-host DEBUG-assisted timing is 0.963 s upper
+median / 2.393 s maximum against unchanged 0.8 / 1.5 s limits; profile/device
+evidence is needed before changing performance behavior. The complete target
+remains uncertified. Preserve the [centering accuracy authority](../audits/centering-guided-repair.md)
+and the physical-device/provider gates below; no threshold or manual-review guard
+was weakened to obtain passing workflow checks.
+
+### Refinement runtime acceptance — 2026-11-09
+
+The six source-review fixes are implemented; see the
+[progress record](../../progress.md#2026-11-09--production-refinement-fixes).
+Affected-scope signed Debug simulator verification passed 383 tests with
+zero failures and one existing live-provider skip; the final scanner/catalog
+rerun after completing the historical-choice policy passed 223 tests with zero
+failures and zero skips. These checks do not close
+the physical-device or live-provider gates.
+Keep these runtime checks open:
+
+- On iPad, verify the photo level indicator's correction directions in portrait,
+  upside-down portrait and both landscape orientations. Unit vector checks do
+  not establish physical-device acceptance.
+- During collection intake with omitted provider artwork, verify prompt saves
+  and subsequent exact artwork enrichment when Collection opens. Read-only
+  presentation still supports recovery and its disk cache.
+- Confirm cached Browse identity/actions remain usable during delayed pricing,
+  and consecutive sealed additions followed by Undo retain the prior copies.
+
+The review's native-detail crop measurement (about 5.3 ms cold on Simulator),
+whole-store reconciliation observations and shared OCR/tracking scheduling do
+not establish device performance defects. Use the existing hang inspection
+protocol and representative device/collection workloads before changing them.
+
 The [hang inspection protocol](hang-inspection-plan.md) defines the repeatable
 capture, source-attribution and fix-verification workflow for responsiveness
 work, including RF-1/RF-2. It does not close these gates; current device evidence

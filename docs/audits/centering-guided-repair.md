@@ -1,5 +1,74 @@
 # Guided centering repair
 
+## Six remaining failures: focused investigation — 2026-11-09
+
+Investigated the six persistent failures from the
+[full-checkout regression review](../../app_review_fix_plan.md#full-checkout-regression-investigation--2026-11-09)
+on `dd48a5f` plus the existing refinement changes. Accuracy tolerances,
+annotations, native support/consensus gates and manual confirmation remain
+unchanged. Timing budgets also remain at 0.8 s upper median and 1.5 s maximum.
+
+| Failing gate | Further evidence and disposition |
+| --- | --- |
+| Untouched initial guides | Native-mapped overlays reproduce the same four problematic photos: IMG_0347, IMG_0348, IMG_0351 and IMG_0780. Both physical-cut proposals and printed-reference selection contribute; no common coordinate-conversion error was found. The existing 2 pp checks remain failures. A correction must establish the intended photo boundary, not optimize against its historical ratio. |
+| Supplied-layout artwork window | IMG_0780 still misses the reviewed region. Its historical annotation spans approximately y=481–2432, whereas this probe explicitly excludes the gold banners and requires top y=535–575 and bottom y=2190–2250. These are different targets, not two interchangeable accuracy references. Neither annotation nor probe bands were changed. Resolve intended boundary identity with source review before changing routing. |
+| Foil Gengar transfer and library membership | Design identity succeeds, but the nearest bottom candidate is 87.814 native pixels from registration, outside the unchanged 24 px gate. The candidate pool contains interior/footer lines rather than a supported perimeter seed. Enlarged source inspection shows foil texture and the footer near this boundary; it does not establish a safe alternative selector. Ordinary fallback remains intact. The two failing methods share this cause. |
+| Prismatic Pikachu right edge | Recognition and ratio checks pass; native right-edge error remains 11.949 px against the unchanged 4 px limit. Enlarged source pixels show the printed transition amid foil texture and decorative overlap. There is no demonstrated small rule that selects the intended line while preserving the existing controls. Frozen observations remain unchanged. |
+| Assisted-reference latency | The matched Starting Town route still takes about 2 s in these Debug simulator runs. Unrelated-photo outliers also vary substantially. This injected reference route is DEBUG-only, so these results do not establish Release/device latency. Raising a maximum to accommodate a host outlier would not demonstrate an improvement. |
+
+One concrete repetition was removed in the DEBUG print matcher. A selected
+reference with four boundary profiles previously registered the same immutable
+image/reference six times: selection, paired measurement and each side. Private
+overloads now pass that registration through the existing fitting functions;
+the direct paired-measurement entry registers once instead of five times.
+Printed-continuity transfers also reuse selection's registration. No cache,
+shared state, public bypass or new matching rule was added. Regression risk is
+limited to forwarding the same quad to existing fitters; all acceptance checks
+and cancellation checks remain.
+
+The before/after Spinerock attachments compare **exactly equal**, including all
+native observations, local shares, margins and the outer seed. Diagnostic output
+confirms five registrations before and one after for the direct entry. Whole-test
+time was 5.833 s before and 6.005 s after under uncontrolled host conditions;
+**an end-to-end speedup is not established**. The benefit demonstrated here is
+eliminated repeated registration work, not a claimed latency-budget fix.
+
+The existing latency test now prints named analyzer stages during its ordinary
+comparison, after the timed view-model interval. It explicitly disables the
+diagnostic-only front-bottom experiment to match ordinary analysis. All nine
+unrelated results still compare exactly equal to ordinary analysis. On the
+corrected diagnostic run, ordinary decode/orientation/downscale costs roughly
+0.21–0.31 s, scalar fields 0.12–0.15 s and inner candidate generation 0.007–0.31 s;
+the stage totals do not include assisted matching. Upper median was 0.704 s,
+but maximum was 4.807 s on unrelated IMG_0348; matched IMG_0780 took 1.970 s.
+The preceding timed run had upper median 0.691 s and maximum 2.035 s. These
+are single simulator runs, not controlled before/after performance evidence.
+Further timing work should separate native strip/crop work from registration
+and repeat an optimized build/device workload under a stable host load before
+changing budgets or pixel sampling.
+
+Evidence is retained on the external T7 under
+`ScanStash_ReadOnly_20261109/CenteringInvestigation/`, with focused results in
+`CenteringBaselineStages.xcresult` and `CenteringRegionReuse.xcresult`. The first
+diagnostic experiment inadvertently enabled its default experimental front-bottom
+branch for the ordinary comparison; those comparison failures are not app
+regressions. The final diagnostic configuration disables it and preserves exact
+fallback equality. The baseline's timed interval and Spinerock observation
+comparison are unaffected by that diagnostic configuration correction.
+
+Final focused verification comprises **26 test executions across 23 distinct
+methods: 17 distinct methods pass and the same six acceptance methods fail**.
+`CenteringRegionReuse.xcresult` has five passed/five failed methods;
+`CenteringTransferRegression.xcresult` has fifteen passed/one failed, with three
+passing methods repeated across the selections. The latter includes the
+34-photo development-library control: the same four of five expected designs
+match, with Foil Gengar still missing. Curved/reference transfers, standalone
+path entry points, printed-continuity paths, known geometry, missing-support
+rejection, duplicate/conflicting references and superseded-photo fallback pass.
+No new failed method remains. These are focused simulator results, not a new
+full-target or physical-device acceptance run. Added documentation links and
+anchors validate; `git diff --check` passes. No commit or publication was made.
+
 ## Squirtle shadow-contact alternative — 2026-11-07
 
 One-reader review of enlarged native source crops shows that the previously

@@ -1,5 +1,90 @@
 # CardScanner App Review Fix Plan
 
+## Centering follow-up — 2026-11-09
+
+The [focused six-failure investigation](docs/audits/centering-guided-repair.md#six-remaining-failures-focused-investigation--2026-11-09)
+adds native-source review, clarifies the two different Starting Town reference
+targets and records named timing stages. One bounded DEBUG-only optimization
+reuses a selected design's immutable registration across paired paths; the
+before/after Spinerock geometry is exactly equal. No accuracy selector, annotation,
+support threshold, confidence guard or timing budget was changed. Eliminating
+repeated registration does not establish an end-to-end speedup or resolve the
+six failed acceptance methods. These remain open; the earlier broad regression
+counts below are historical evidence for that run, not a new full-target result.
+Focused follow-up verification covers 23 distinct methods: **17 pass, six fail**,
+with no new failed method. The affected native transfers and fallback controls
+pass, including the 34-photo library's unrelated-result preservation checks.
+
+## Full-checkout regression investigation — 2026-11-09
+
+Baseline: `dd48a5f` plus the existing November 9 refinement changes. The signed,
+unfiltered Debug simulator target executed **3,248 cases: 3,195 passed, 32 failed,
+21 skipped**. The three catalog packages separately executed **153 cases:
+152 passed, one skipped, zero failed**. Failed tests are not 32 independent app
+bugs: the full run included a camera-permission overlay, the owner shutting down
+the simulator, three CSV assertion crashes, outdated test assumptions and known
+centering research/accuracy gates.
+
+Three small, high-confidence source fixes followed:
+
+| Finding and location | Demonstrated behavior, remedy and benefit | Risk, complexity and verification |
+| --- | --- | --- |
+| CSV replay leaves staged ownership repairs — [CollectionCSV.swift](TradingCardScanner/Services/CollectionCSV.swift) | Moving replay recognition after identity validation exposed read-through repairs that dirty the context. Returning without saving/rolling back tripped the Debug serializer assertion in two Lorcana imports and a mixed-game Yu-Gi-Oh! import. Roll back this no-op row and discard its pending artwork cleanup after validation; retain the conflicting-identity checks. | Low risk: prior rows already commit individually. No quantity, history or schema rule changes. Complexity is preserved with two existing cleanup calls. Verify a clean context and unchanged material digest on replay, plus repeated isolated imports, failed-row retry and mixed-game reopen/resume. |
+| Signed finish corrections become durable provider evidence — [PokemonCatalogSupport.swift](TradingCardScanner/Games/Pokemon/PokemonCatalogSupport.swift) | The resolved-card cache flattened the signed variant overlay into its stored finish list, so revoked authorization could survive cache reads. Store the underlying evidence without `reviewedAdditionalVariants`; existing reads reapply the current registry. Cache generation 3 rejects previously flattened files. | High confidence, low behavioral risk; old resolved caches incur a one-time miss/rebuild. No ownership data or SwiftData schema changes. Complexity is preserved. Verify live-to-cache reads, registry withdrawal, a cold adapter, weaker coverage, minimum finishes and old-generation rejection. The withdrawal fixture now isolates its provider from the bundled checklist. |
+| Foreground return ignores disabled capture — [ScannerViewModel.swift](TradingCardScanner/Views/ScannerViewModel.swift) | `startCamera: false` applied only to the initial start. Foreground callbacks subsequently opened capture, requesting permission or producing simulator camera errors that invalidated a later pending choice. Retain the session's capture policy and honor it on foreground return; recognition eligibility still resumes independently. | High confidence, low risk: ordinary capture-enabled sessions retain their start path. One Boolean preserves the existing input across lifecycle callbacks. Verify the session requests no camera start, its preserved choice remains actionable, and a second choice is canceled only by backgrounding. All 136 scanner view-model tests pass. |
+
+Test corrections preserve the checks' purpose: canvas pixel probes use the
+rendered photo frame after automatic card fitting; profile normalization adds a
+front fixture because the two back fixtures now bypass that branch; SwiftData
+notification assertions require the consumed identifier keys while permitting
+additional framework metadata. Current-format weak-coverage cache fixtures use
+generation 3. No centering accuracy tolerance, annotation, reporting guard,
+experimental promotion gate or timing budget was relaxed.
+
+Broad post-fix verification executed **3,197 cases: 3,174 passed, two failed,
+21 skipped**. All launch, Browse render, CSV replay/ownership, cache, scanner and
+corrected diagnostic tests pass. The two failures are the unchanged initial-guide
+accuracy and supplied-layout accuracy gates. The 45 print-pilot and seven native
+research cases were run in the unfiltered baseline rather than repeated wholesale
+in this broad selection; all five of their failed/interrupted cases were rerun
+separately. The interrupted Prismatic library case passes. Three accuracy cases
+and the assisted latency case still fail, leaving six persistent centering test
+failures across the final-source runs. Every original failure group has a
+disposition; no workflow failure is being hidden by an expected-failure marker.
+Result-tree reconciliation confirms all **32 originally failed method IDs**
+were rerun on final source: **26 pass, six fail, none are missing**.
+This is not a green full-target or release-readiness claim.
+
+### Remaining centering acceptance
+
+| Gate | Reproduced evidence | Conservative next step |
+| --- | --- | --- |
+| Untouched initial guides | Four existing photos exceed the unchanged 2 percentage-point ratio limit; worst top/bottom error is about 10.97 pp. Final-source broad rerun reproduces the same errors. | Improve proposals using independently reviewed photo boundaries. Keep manual confirmation and the current annotations. |
+| Supplied-layout probe | `IMG_0780` does not recover all reviewed boundaries. This is a DEBUG interpretation experiment. | Keep automatic routing stopped; validate boundary identity before implementing/promoting a new candidate. |
+| Foil Gengar transfer and library membership (two methods) | The transfer remains unverified; four designs match where the experiment expects five. Both methods reproduce in `PilotFailureIsolation.xcresult`. | Preserve ordinary fallback and investigate the unsupported physical/printed boundary. A recognized design alone does not establish measured geometry. |
+| Prismatic printed-frame right edge | Reproduces about 11.95 native pixels of error against the unchanged four-pixel limit. | Resolve the already documented partial right-edge transfer against the source photo; do not relax the limit. |
+| Assisted-reference latency | Fresh-host rerun fails both budgets: upper median **0.963 s** versus 0.8 s, maximum **2.393 s** versus 1.5 s. | Profile named stages and measure representative device behavior before optimizing. Source tracing confirms this injected-reference route is DEBUG-only; these timings characterize that experimental path. |
+
+Confidence is high that these gates remain unmet. A small, accuracy-preserving
+algorithm fix is not established by the evidence; none was guessed here.
+The [centering accuracy investigation](docs/audits/centering-guided-repair.md)
+retains the failed candidates, independent-photo limits and promotion criteria.
+An intermediate focused run exposed current-format cache fixtures that still
+used generation 2; those fixtures were corrected and pass in the broad final run.
+
+Artifacts and build data are on the external T7 SSD under
+`ScanStash_ReadOnly_20261109`. The full run is `FullRegression.xcresult`; the broad
+final-source result is `PostFixBroad.xcresult`; remaining pilot cases are in
+`PilotFailureIsolation.xcresult` (one passed, three failed), and fresh-host timing
+is in `LatencyIsolation.xcresult` (one failed). No commit or publication was made.
+Final **unsigned ARM64 Release simulator compilation passes** with no compiler
+errors (`ReleaseVerification.xcresult`). Added local documentation links and
+anchors validate, and `git diff --check` passes. No production source changed
+after the final test runs. Compilation is separate from device/archive acceptance.
+Physical-device, live-provider, CloudKit, archive and sandbox interruption gates
+remain open. Privacy/support publication remains explicitly owner-deferred until
+final launch preparation in [release follow-ups](docs/plans/release_followups.md#owner-deferred-launch-links--2026-11-08).
+
 ## Ownership and purchase refinement — 2026-11-08
 
 Owner-authorized fixes for the third review's two High and two Medium findings.

@@ -1,3 +1,155 @@
+# 2026-11-09 — Startup database blockers and export timing
+
+- Moved production storage opening and legacy probing off-main while retaining
+  serialized opens, Cloud readiness ordering and generation checks for delayed
+  successes and failures. Magic migration now passes only the container into an
+  explicitly concurrent phase; empty exact-ID work skips the treatment catalog.
+- Moved portfolio epoch/close transactions to the dedicated background model
+  executor. Main-actor presentation follows persistence, respects obsolete
+  storage and preserves live price deltas received during the save.
+- Added privacy-safe `CSVExport` console timings and performance markers for
+  preparation, fetch/filter/sort/format/assembly, serialization, picker lifecycle
+  and cleanup. Each operation carries one opaque ID into its FileDocument.
+- Final focused/expanded simulator selection: **255 passed, 7 skipped, zero
+  failed** (262 cases), DebugRemoteLocal on iPhone 17 Pro / iOS 27.0. An initial
+  queued-container test hit a yield-count completion wait; bounded asynchronous
+  completion helpers fix the test timing assumption, and the complete selection
+  passes. Native picker UI automation remained unreliable; device timing and
+  save/cancel verification remain open.
+- Scope, diagnostics instructions and evidence are in the existing
+  [hang inspection plan](docs/plans/hang-inspection-plan.md#startup-and-unpriced-export-implementation--2026-11-09).
+  No physical-device, provider, CloudKit, full-target or release gate is closed.
+
+# 2026-11-09 — Automatic market-feed refresh repaired
+
+The 8 November scheduled publication failed on a timeout while unnecessarily
+downloading the old price namespace. Pushed the focused publisher/workflow repair
+as `950236b` and runner follow-up `91f9491`, preserving unrelated workspace edits.
+Publication stages a complete validated replacement before catalog restoration,
+retries transient reads twice, runs every six hours, and renews twelve-hour-old
+captures only by fetching upstream again. Freshness checks protect publication
+and readback; the active workflow uses an explicit supported Intel runner.
+
+Restored the validated feed through existing local Firebase access while the
+hosted ARM runner was queued. All 2,367 One Piece mappings and 59,965 Yu-Gi-Oh
+edition mappings match product/name/number identity; 58,275 Yu-Gi-Oh lanes have
+amounts and 1,690 lack them. ProfileLocal's optimized ReleaseLocal simulator build
+passes. Three ProfileLocal test-action cases pass, including live checks for both
+games; all 23 publisher/preservation Python tests pass. The repaired hosted
+workflow publishes successfully and verifies all 1,335 feed files from the
+production origin. Automatic publication remains enabled every six hours.
+[Authority](docs/plans/documentation_audit.md#2026-11-09--automatic-market-feed-refresh-reliability).
+
+# 2026-11-09 — Remaining centering failure investigation
+
+Investigated all six persistent methods using native-mapped overlays, enlarged
+source pixels, reference/candidate tracing and named timing stages. Starting
+Town's historical annotation and supplied-layout probe target different
+rectangles; neither was edited. Foil Gengar's missing bottom seed remains about
+88 px from registration, beyond the unchanged 24 px gate. Prismatic Pikachu's
+right edge remains 11.949 px from frozen observations, beyond the unchanged 4 px
+limit. The four historical initial-guide misses also reproduce unchanged.
+
+Removed redundant registrations from the DEBUG paired-reference path by passing
+the selected immutable quad through private helpers. The direct Spinerock entry
+registers once instead of five times, with every observation, margin, local
+share and seed exactly equal to the pre-change attachment. This does not affect
+Release routing or establish an end-to-end speedup. Timing still fails its
+existing maximum, with substantial unrelated-photo variability; budgets remain
+0.8 s upper median and 1.5 s maximum. No accuracy tolerance, annotation or manual
+reporting guard was relaxed. The
+[current centering ledger](docs/audits/centering-guided-repair.md#six-remaining-failures-focused-investigation--2026-11-09)
+contains the investigation, diagnostic correction and external T7 evidence.
+
+Final focused verification: **26 executions, 23 distinct methods; 17 distinct
+methods pass and the same six acceptance methods fail**, with no new failed
+method. All affected native-transfer and fallback controls pass. The 34-photo
+development-library check still fails only its expected Foil Gengar membership
+and four-versus-five count. Results are `CenteringRegionReuse.xcresult` and
+`CenteringTransferRegression.xcresult` under T7
+`ScanStash_ReadOnly_20261109/`. Added local links/anchors validate and
+`git diff --check` passes. This was focused simulator verification; no new
+full-target, physical-device or release-readiness claim. No commit or publication.
+
+# 2026-11-09 — Full-checkout tests and regression fixes
+
+Ran the unfiltered, signed Debug simulator target on `dd48a5f` plus the existing
+refinement diffs: **3,195 passed, 32 failed, 21 skipped** (3,248 cases).
+All three catalog package suites also completed: **152 passed, one skipped,
+zero failed**. Investigated every failure group; the simulator shutdown was
+owner-confirmed, and a permission overlay explained the missing active scenes.
+
+Fixed CSV replay's staged read-through identity repairs without moving replay
+recognition ahead of validation; repeated isolated imports no longer trip the
+Debug unsaved-write assertion. Resolved Pokémon cache entries retain underlying
+finish evidence rather than signed overlays, and generation 3 discards earlier
+flattened entries. Disabled camera capture remains disabled across foreground
+callbacks, preserving the synthetic/review workflow and its pending decisions.
+No ownership schema, dependency or purchase authority changed.
+
+Corrected three demonstrated test assumptions: card-fit coordinates in canvas
+pixel probes, back-only fixtures in a profile-branch diagnostic, and SwiftData's
+additional save-notification metadata. Cache fixtures track the new derived
+format. Accuracy thresholds, annotations, reporting guards and timing budgets
+are unchanged. The final-source broad rerun reports **3,174 passed, two failed,
+21 skipped** across 3,197 cases, including all 136 scanner view-model tests.
+The remaining two failures are existing centering accuracy gates. The two long
+research classes completed in the unfiltered baseline; their failed/interrupted
+cases are checked separately, not counted as a green full-target rerun.
+
+All five failed/interrupted pilot cases were subsequently rerun: the interrupted
+Prismatic library case passes, three accuracy checks still fail, and the
+assisted-reference latency budget still fails in a fresh host (upper median
+0.963 s, maximum 2.393 s). Together with the two broad-run accuracy failures,
+six centering gates remain open. The injected-reference timing route is
+DEBUG-only. No algorithm, promotion criterion or budget was changed to conceal
+these failures; device profiling remains necessary for Release performance.
+Result-tree reconciliation accounts for all 32 original failures: 26 pass on
+final source, six still fail, and none were left unrerun.
+Final unsigned ARM64 Release simulator compilation passes with no compiler
+errors. Added documentation links/anchors validate and `git diff --check` passes;
+production source is unchanged since final test verification.
+
+Detailed findings, risks and verification are in the
+[fix record](app_review_fix_plan.md#full-checkout-regression-investigation--2026-11-09).
+Build data and result bundles use the T7 SSD. No commit, publication, device,
+provider, CloudKit, archive or release acceptance is claimed. Privacy/support
+URLs remain owner-deferred until final launch preparation.
+
+# 2026-11-09 — Production refinement fixes
+
+Implemented the six focused findings from the source-wide refinement review.
+Retry Save preserves the original catalog/quote timestamp. Automatic collection
+intake no longer waits on optional Pokémon image discovery; signed/payload images
+remain immediate, Collection retains its existing exact metadata enrichment,
+and read-only presentation retains artwork recovery and durable image caching.
+Browse presents card identity before supplemental TCGCSV prices, retaining quote
+provenance and offline evidence. Unowned-card price lookups skip collection
+projection rebuilds. Sealed additions can proceed during the latest Undo banner,
+with active-write/undo guards retained. The shared photo level indicator maps
+device gravity into the current interface orientation.
+
+No schemas, dependencies, ownership rules or purchase access rules changed.
+Affected-scope signed Debug simulator verification: **383 passed, 0 failed,
+1 existing live-provider skip**. After extending the same nonblocking policy to
+explicit historical printing choices and recovery, the final scanner/catalog
+rerun passed **223 tests, 0 failed, 0 skipped**. The complementary expanded run passed **468
+tests, 0 failed, 1 existing live-provider skip** before the final artwork-cache
+refinement. Regression coverage includes retry timestamp preservation, content
+loading without price-source requests, offline quote provenance, missing-artwork
+intake, retained read-only artwork recovery/cold-cache persistence, scanner
+workflows, normalization, ownership history and all four level orientations.
+An initially incomplete new artwork fixture was corrected before the final pass.
+Build data and result bundles are on the external T7 SSD. This is selected-scope
+simulator evidence, not full-suite, device, provider, archive or release proof.
+
+Privacy/support URLs remain explicitly owner-deferred until final launch
+preparation, as recorded in the
+[release follow-ups](docs/plans/release_followups.md#owner-deferred-launch-links--2026-11-08).
+Physical-device level directions, camera cadence/thermal behavior, large-store
+latency and native-detail slider performance remain measurement gates; no
+speculative optimizations were introduced. Nothing was committed or published.
+
 # 2026-11-08 — Ownership and purchase refinement fixes
 
 Implemented the third review's two High and two Medium findings, preserving all

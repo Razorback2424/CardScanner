@@ -1,12 +1,32 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-11-07
+**Audit date:** 2026-10-02; review evidence updated 2026-11-09
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-11-07
+## Current authority boundary — updated 2026-11-09
+
+**Centering follow-up — 2026-11-09.** The
+[focused six-failure investigation](../audits/centering-guided-repair.md#six-remaining-failures-focused-investigation--2026-11-09)
+records a small DEBUG-only registration reuse, exact native-path equivalence,
+source-photo investigation and stage timing evidence. No accuracy threshold,
+annotation, timing budget or production routing changes. Six centering acceptance
+methods remain unresolved; this follow-up does not supersede the complete-target
+inventory with a green suite claim.
+
+**Full-checkout regression investigation — 2026-11-09.** The unfiltered signed
+simulator baseline executed 3,248 cases (3,195 passed, 32 failed, 21 skipped).
+Three small fixes address CSV replay staging, persisted signed-finish authority
+and disabled-capture lifecycle policy. The broad final-source rerun executes
+3,197 cases (3,174 passed, two failed, 21 skipped); two long research classes
+are not repeated wholesale. These dated results supersede older full-target
+failure inventories as current evidence, but do not establish a green complete
+suite or close centering accuracy, device, provider, CloudKit or release gates.
+The [fix record](../../app_review_fix_plan.md#full-checkout-regression-investigation--2026-11-09)
+owns exact scope and failure dispositions; [release follow-ups](release_followups.md#full-checkout-regression-status--2026-11-09)
+retain runtime acceptance. Privacy/support publication remains owner-deferred.
 
 **Squirtle shadow-contact research candidate — 2026-11-07.** This qualifies the
 earlier same-photo physical-bottom comparison: source review shows the old frozen
@@ -2362,3 +2382,51 @@ default source. Explicit bundled-source injection restores their intended
 offline assertions; no additional app pricing code change was required. The
 shared build-time endpoint still requires a new app build for existing installs.
 Simulator/provider results do not establish physical-device or release readiness.
+
+## 2026-11-09 — Automatic market-feed refresh reliability
+
+The successful 7 November acceptance was point-in-time evidence. The next
+scheduled publication failed on a connection timeout while restoring the entire
+old price namespace, even though a complete replacement was already prepared.
+With one attempt per day and reused capture receipts, that left the installed
+feed outside the app's 24-hour freshness policy on 9 November.
+
+The three-file repair is pushed to main as `950236b`, followed by runner selection
+`91f9491`. The [workflow](../../.github/workflows/yugioh-catalog.yml) now stages and
+validates replacement prices before restoring catalogs, including checking
+Pokémon/Magic pointers rather than assuming those namespaces are absent. The
+[publisher](../../scripts/market_price_feeds.py) retries transient network/server
+failures twice, preserves fail-closed validation, and actually re-fetches captures
+after twelve hours, including stale retained YGO source files. It never renews
+old receipts without a real fetch. Publication/readback require captures younger
+than eighteen hours. Scheduled attempts run every six hours with bounded job
+timeouts and the existing production-hosting concurrency lock.
+
+The ARM macOS-latest pool was queued during recovery. The price jobs now pin
+`macos-15-intel`, listed in [GitHub's supported runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
+The separate legacy contract workflow still requests an unsupported macOS 14
+runner and was cancelled before executing tests; no green result is claimed for
+that separate workflow. Its 23 publisher/preservation tests pass locally.
+
+The fresh artifact was published using existing local Firebase access from an
+isolated checkout, after complete validation and catalog restoration. The public
+custom-domain index matches that artifact. Its upstream build is
+`2026-11-08T20:05:45+0000`, with actual fresh capture receipts. All 2,367 existing
+One Piece mappings have amounts. All 59,965 supported Yu-Gi-Oh edition mappings
+match product/name/printed-number identity, with 58,275 amounts and 1,690 absent
+amounts. This does not add physical identities or price unsupported finishes.
+
+ProfileLocal's actual ReleaseLocal simulator build succeeds and its app contains
+the endpoint plus both bundled catalogs. Its DebugRemoteLocal test action passes
+the built-endpoint check and both live pricing tests (three cases, no skips or
+failures): four One Piece samples, five priced Yu-Gi-Oh samples across editions
+and art variants, and the missing First Edition quote that cannot borrow
+Unlimited pricing. Temporary test receipts were removed. These are distinct
+build and simulator/provider checks, not a physical-device or release gate.
+
+Final [hosted repair verification](https://github.com/Razorback2424/CardScanner/actions/runs/42658906922)
+passed ingestion, hosted publication and complete hash/size/freshness readback of
+all 1,335 feed files. Its artifact is identical to the feed used by the live app
+tests. Automatic publication remains enabled through
+`MARKET_PRICE_FEEDS_ACTIVE=true`; the existing client freshness and identity
+checks remain in force.

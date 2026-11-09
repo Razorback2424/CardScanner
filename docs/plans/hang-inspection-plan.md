@@ -19,6 +19,77 @@ owns its M/P findings, the [Browse report](../audits/browse-performance-repair-2
 owns its captures, and [release follow-ups](release_followups.md) retains device
 and release acceptance. Link findings here rather than opening competing lists.
 
+## Startup and unpriced export implementation — 2026-11-09
+
+The owner authorized startup repairs and export timing after reporting two
+launch hangs and further hangs during the Developer export in an Xcode build.
+No incident call stacks were available. These changes address source-level
+blocking work; they do not establish the cause of those individual incidents or
+a clean physical-device capture. Baseline: `91f9491` plus the existing working
+tree changes.
+
+- Storage container opening and the legacy database probe now run off-main.
+  Opens remain serialized, and superseded successes/failures cannot replace a
+  newer ready session. Cloud readiness is still armed before opening a container.
+- Magic migration keeps its public context access on the main actor and passes
+  only the container into an explicitly concurrent phase. Fresh read/transaction
+  contexts stay with their synchronous operation. The writer lock, cancellation
+  and storage continuation remain in force; empty exact-ID work skips the lazy
+  treatment catalog. The executor hop preserves the same task and its rewrite
+  authorization.
+- Portfolio epoch establishment and close persistence use the dedicated
+  background model executor. Presentation waits for persistence; a live price
+  delta arriving during that await keeps its newer headline and queues a replay.
+  Epoch and close workers check storage currency before transactions and saves.
+
+`CSVExport` console diagnostics use subsystem `TradingCardScanner`, category
+`CSVExport`; Instruments intervals/events use the existing `Performance`
+category. Each operation has an opaque `id`, its export kind, phase and
+`main=true/false`. Completed intervals include `elapsed_ms`. Metadata contains
+counts, byte sizes and fixed outcomes, without card identities, collection keys,
+destination paths, credentials or error descriptions.
+
+For an Xcode reproduction, filter the console for `CSVExport` and retain all
+lines for one `id`. `tapToReady` covers the button-to-ready wait, including UI
+resumption; `createWorker`, `workerRoundTrip`, `fetchCards`, `fetchPrices`,
+`filterIndex`, `filterUnpriced`, `rowIndex`, `sort`, `formatRows` and
+`assembleCSV` separate preparation costs. `encodeUTF8`, `fileWrapper` and
+`serialized` cover document serialization. `presentationRequested` and
+`presentationBinding` record the handoff request, **not proof of a displayed
+frame**. `pickerLifecycle` ends at saved/failed/cancelled and **includes user
+selection time**, so it must not be reported as a hang duration.
+`releaseDocument` times the completion cleanup. A begin without its matching
+end identifies the unfinished phase; correlate it with a Hangs/Time Profiler
+capture to establish main-thread attribution.
+
+Startup adds `Launch.containerOpen`, `Launch.magicPhase`,
+`Launch.portfolioEpoch` and `Portfolio.persistCloses` alongside the existing
+launch/ownership-lock markers. An off-main duration can include database or
+network waiting; it is not itself evidence of an unresponsive UI. Simulator
+correctness/executor tests do not replace the optimized device protocol below.
+
+**Simulator verification:** the final DebugRemoteLocal selection on iPhone 17
+Pro / iOS 27.0 executes 262 cases: **255 passed, 7 skipped, zero failed**.
+It covers opening, bootstrap/policy/continuity/mode transitions, worker executor
+and writer-contention checks, Magic migration, portfolio eligibility/replay,
+revision monitoring and diagnostic CSV content. Superseded container successes
+and failures retain the newer ready session. Export timing preserves the CSV
+payload and carries one operation ID into the document. An initial expanded run
+exposed an iteration-count wait in the queued-container lifetime test; its
+completion helpers now use a bounded asynchronous deadline rather than counting
+task yields. The complete selection then passes. Result:
+`/Volumes/T7/CodexBuild/HangInspection/20261109-startup-fixes-final.xcresult`.
+No full-target, physical-device, provider, CloudKit or release acceptance is
+claimed.
+
+**UI smoke-check limit:** the built simulator app reached the ordinary portfolio
+and the isolated Lorcana synthetic review. Simulator remote automation initially
+timed out and subsequently returned a stale hierarchy after actions, so the
+native Files save/cancel workflow is not certified by this pass. Preparation
+timing was observed in the test console with `main=false`; serialization and
+picker markers are installed but still need an ordinary Xcode/device export
+reproduction. No incident hang duration is inferred from these checks.
+
 ## What we are measuring
 
 A hang is a period when the main run loop cannot respond. A slow catalog request
