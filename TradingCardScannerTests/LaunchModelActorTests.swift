@@ -21,6 +21,56 @@ final class LaunchModelActorTests: XCTestCase {
         ))
     }
 
+    func testMagicMigrationDatabasePhasesLeaveTheMainThreadAndSkipEmptyNetworkWork() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let observedMain = BuildFlag()
+        let fetched = BuildFlag()
+        let continuation: StorageGenerationContinuation = {
+            if Thread.isMainThread { observedMain.mark() }
+            return true
+        }
+        let local = await MagicTreatmentMigration.runLocal(
+            in: container.mainContext, shouldContinue: continuation
+        )
+        let network = await MagicTreatmentMigration.runNetwork(
+            in: container.mainContext, shouldContinue: continuation,
+            fetchCards: { _ in fetched.mark(); return [] }
+        )
+        XCTAssertTrue(local.isComplete)
+        XCTAssertTrue(network.isComplete)
+        XCTAssertFalse(observedMain.value, "Migration reads and writes must leave the caller's main actor")
+        XCTAssertFalse(fetched.value, "An empty collection must not request network evidence")
+    }
+
+    func testPortfolioStartupDoesNotBlockTheUIWaitingForAnOwnershipWriter() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let defaults = UserDefaults.standard
+        let keys = [PortfolioEpoch.defaultsKey, PortfolioEpoch.deferralKey, PortfolioCalendar.defaultsKey]
+        let original = keys.map { defaults.object(forKey: $0) }
+        defer { for (key, value) in zip(keys, original) { defaults.set(value, forKey: key) } }
+        defaults.removeObject(forKey: PortfolioEpoch.defaultsKey)
+        let locked = expectation(description: "Ownership writer acquired lock")
+        let heartbeat = DispatchSemaphore(value: 0)
+        let holder = Task.detached {
+            try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                locked.fulfill()
+                // Shorter than the old 1.5-second main-thread lock timeout.
+                return heartbeat.wait(timeout: .now() + 1) == .success
+            }
+        }
+        await fulfillment(of: [locked], timeout: 3)
+        DispatchQueue.main.async { heartbeat.signal() }
+        let engine = PortfolioEngine()
+        engine.start(context: container.mainContext)
+        let responsive = try await holder.value
+        await engine.recomputeAndWait(context: container.mainContext)
+        XCTAssertTrue(responsive, "Opening the portfolio must let the main queue service input during writer contention")
+        XCTAssertNotNil(PortfolioEpoch.startedAt())
+        XCTAssertNotNil(engine.summary)
+    }
+
     func testCatalogAuthorityWithdrawalKeepsMainActorResponsiveAndPreservesUnmanagedPrices() async throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
@@ -161,6 +211,7 @@ final class LaunchModelActorTests: XCTestCase {
         try container.mainContext.save()
 
         try await assertBackground(await PortfolioComputationActor.makeBackground(modelContainer: container))
+        try await assertBackground(await PortfolioPersistenceActor.makeBackground(modelContainer: container))
         try await assertBackground(await CollectionProjectionActor.makeBackground(modelContainer: container))
         try await assertBackground(await PriceSnapshotModelActor.makeBackground(modelContainer: container))
         try await assertBackground(await StoreRevisionModelActor.makeBackground(modelContainer: container))

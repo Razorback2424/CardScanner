@@ -308,6 +308,9 @@ enum CollectionStorageModelSchema {
 /// real CloudKit account.
 @MainActor
 struct CollectionStorageBootstrapDependencies {
+    // Container opening can migrate SQLite metadata. Keep concurrent launch
+    // attempts serialized even though the main actor is free to handle retries.
+    nonisolated private static let storeOpenLock = NSLock()
 #if DEBUG
     /// One-shot launch-argument seam for exercising manifest recovery in the
     /// simulator without altering the production container factory.
@@ -319,14 +322,14 @@ struct CollectionStorageBootstrapDependencies {
     var accountAvailability: @MainActor () async -> CloudAccountAvailability
     var anchorState: @MainActor () async -> CloudCollectionAnchorState = { .unknown }
     var claimAnchor: @MainActor (UUID) async -> CloudCollectionAnchorClaimResult
-    var makeContainer: @MainActor (CollectionStorageMode) throws -> ModelContainer
+    var makeContainer: @MainActor (CollectionStorageMode) async throws -> ModelContainer
     var readinessSource: any CloudRestorationReadinessSource
     var structuredStoreFilePresent: @MainActor () -> Bool
     var structuredStoreBaseFilePresent: @MainActor () -> Bool
     var localHasUserData: @MainActor () -> Bool
     var storeFileIdentity: @MainActor () throws -> String
     var readStoreFileIdentity: @MainActor () throws -> String?
-    var adoptLegacyStore: @MainActor () throws -> LegacyCollectionStoreAdoption?
+    var adoptLegacyStore: @MainActor () async throws -> LegacyCollectionStoreAdoption?
     /// Test-only provenance guard: production wiring is never acceptable for
     /// storage-suite fixtures unless an entitled integration test opts in.
     var usesProductionDependencies: Bool = false
@@ -353,48 +356,11 @@ struct CollectionStorageBootstrapDependencies {
             explicitStructuredStoreURL: paths.structuredStoreURL
         )
 
-        let adoptLegacyStore: @MainActor () throws -> LegacyCollectionStoreAdoption? = {
-            guard fileManager.fileExists(atPath: paths.structuredStoreURL.path) else {
-                return nil
-            }
-
-            // The old build already used this same SQLite file. Probe it with
-            // the five structured models only, without a CloudKit-backed
-            // configuration, before creating any identity or asking CloudKit
-            // about an account. This is metadata adoption, not a migration:
-            // the original store bytes remain at their original URL.
-            let probeConfiguration = ModelConfiguration(
-                "CardScannerLegacyProbe",
-                schema: CollectionStorageModelSchema.synced,
-                url: paths.structuredStoreURL,
-                cloudKitDatabase: .none
-            )
-            let probe = try ModelContainer(
-                for: CollectionStorageModelSchema.synced,
-                configurations: [probeConfiguration]
-            )
-            let context = probe.mainContext
-            let cardCount = try context.fetchCount(FetchDescriptor<CollectedCard>())
-            let priceCount = try context.fetchCount(FetchDescriptor<PriceRecord>())
-            let identityCount = try context.fetchCount(FetchDescriptor<ProductIdentity>())
-            let activityCount = try context.fetchCount(FetchDescriptor<CollectionActivity>())
-            let eventCount = try context.fetchCount(FetchDescriptor<InventoryEvent>())
-            let hasUserData = cardCount > 0
-                || priceCount > 0
-                || identityCount > 0
-                || activityCount > 0
-                || eventCount > 0
-
-            let manifest = CollectionStoreManifest(
-                storeID: UUID(),
-                attachmentState: .neverAttached,
-                storeFileIdentity: try manifestStore.ensureStoreFileIdentity()
-            )
-            try manifestStore.save(manifest)
-            return LegacyCollectionStoreAdoption(
-                manifest: manifest,
-                localHasUserData: hasUserData
-            )
+        let resolvedPaths = paths
+        let adoptLegacyStore: @MainActor () async throws -> LegacyCollectionStoreAdoption? = {
+            try await Task.detached(priority: .userInitiated) { () throws -> LegacyCollectionStoreAdoption? in
+                try Self.adoptLegacyStore(paths: resolvedPaths, manifestStore: manifestStore, fileManager: fileManager)
+            }.value
         }
 
 #if LOCAL_ONLY_SIGNING
@@ -451,7 +417,14 @@ struct CollectionStorageBootstrapDependencies {
                     )
                 }
 #endif
-                return try Self.makeContainer(paths: paths, mode: mode)
+                return try await Task.detached(priority: .userInitiated) {
+                    let interval = PerformanceSignpost.beginInterval(
+                        "Launch.containerOpen", id: PerformanceSignpost.makeID(),
+                        "mode=\(mode.rawValue) main=\(PerformanceSignpost.currentThreadIsMain)"
+                    )
+                    defer { PerformanceSignpost.endInterval("Launch.containerOpen", interval, "") }
+                    return try Self.makeContainer(paths: resolvedPaths, mode: mode)
+                }.value
             },
             readinessSource: readinessSource,
             structuredStoreFilePresent: {
@@ -471,11 +444,43 @@ struct CollectionStorageBootstrapDependencies {
         )
     }
 
-    @MainActor
-    static func makeContainer(
+    nonisolated private static func adoptLegacyStore(
+        paths: CollectionStoragePaths,
+        manifestStore: CollectionStoreManifestStore,
+        fileManager: FileManager
+    ) throws -> LegacyCollectionStoreAdoption? {
+        storeOpenLock.lock()
+        defer { storeOpenLock.unlock() }
+        guard fileManager.fileExists(atPath: paths.structuredStoreURL.path) else { return nil }
+        // Probe the original SQLite file with the five structured models and
+        // no CloudKit configuration before establishing its local metadata.
+        let configuration = ModelConfiguration(
+            "CardScannerLegacyProbe", schema: CollectionStorageModelSchema.synced,
+            url: paths.structuredStoreURL, cloudKitDatabase: .none
+        )
+        let probe = try ModelContainer(for: CollectionStorageModelSchema.synced, configurations: [configuration])
+        let context = ModelContext(probe)
+        let cardCount = try context.fetchCount(FetchDescriptor<CollectedCard>())
+        let priceCount = try context.fetchCount(FetchDescriptor<PriceRecord>())
+        let identityCount = try context.fetchCount(FetchDescriptor<ProductIdentity>())
+        let activityCount = try context.fetchCount(FetchDescriptor<CollectionActivity>())
+        let eventCount = try context.fetchCount(FetchDescriptor<InventoryEvent>())
+        let hasUserData = cardCount > 0 || priceCount > 0 || identityCount > 0 || activityCount > 0 || eventCount > 0
+        // A newer launch may already have adopted this file while we waited.
+        let manifest = try manifestStore.load() ?? CollectionStoreManifest(
+            storeID: UUID(), attachmentState: .neverAttached,
+            storeFileIdentity: try manifestStore.ensureStoreFileIdentity()
+        )
+        try manifestStore.save(manifest)
+        return LegacyCollectionStoreAdoption(manifest: manifest, localHasUserData: hasUserData)
+    }
+
+    nonisolated static func makeContainer(
         paths: CollectionStoragePaths,
         mode: CollectionStorageMode
     ) throws -> ModelContainer {
+        storeOpenLock.lock()
+        defer { storeOpenLock.unlock() }
         guard paths.isStable else {
             throw CollectionStorageBootstrapError.storageLocationUnavailable
         }
@@ -794,8 +799,10 @@ final class CollectionStorageBootstrap: ObservableObject {
     }
 
     func start() async {
-        if let reusable = reusableUnprovenLocalSession() {
-            generation &+= 1
+        generation &+= 1
+        let currentGeneration = generation
+        if let reusable = await reusableUnprovenLocalSession() {
+            guard currentGeneration == generation else { return }
             confirmationAccepted = false
             pendingAttachment = nil
             restorationContainer = nil
@@ -810,8 +817,7 @@ final class CollectionStorageBootstrap: ObservableObject {
             return
         }
 
-        generation &+= 1
-        let currentGeneration = generation
+        guard currentGeneration == generation else { return }
         dependencies.storageGeneration.suspend()
         PriceRefreshController.shared.cancelRefresh()
         MagicTreatmentMigrationCoordinator.shared.suspendStorageSession()
@@ -835,14 +841,14 @@ final class CollectionStorageBootstrap: ObservableObject {
     /// still selects that exact store under unproven readiness. This preserves
     /// the storage-generation token and avoids opening the same SQLite files a
     /// second time during background-to-foreground handoff.
-    private func reusableUnprovenLocalSession() -> (
+    private func reusableUnprovenLocalSession() async -> (
         session: CollectionStorageSession,
         attachmentState: CloudAttachmentState
     )? {
         guard !dependencies.readinessSource.isProven,
               let session = dependencies.storageGeneration.activeSession(),
               session.mode == .onDevice,
-              let local = try? localFacts() else { return nil }
+              let local = try? await localFacts() else { return nil }
         let decision = CollectionStoragePolicy.decide(
             CollectionStoragePolicyInput(
                 local: local,
@@ -889,6 +895,7 @@ final class CollectionStorageBootstrap: ObservableObject {
                 generation: currentGeneration
             )
         } catch {
+            guard currentGeneration == generation else { return }
             showRecovery(error, category: "restoration-fallback")
         }
     }
@@ -909,13 +916,15 @@ final class CollectionStorageBootstrap: ObservableObject {
                 generation: currentGeneration
             )
         } catch {
+            guard currentGeneration == generation else { return }
             showRecovery(error, category: "keep-on-device")
         }
     }
 
     private func evaluate(generation currentGeneration: UInt) async {
         do {
-            let local = try localFacts()
+            let local = try await localFacts()
+            guard currentGeneration == generation else { return }
             let readinessProven = dependencies.readinessSource.isProven
             let account = readinessProven
                 ? await dependencies.accountAvailability()
@@ -948,11 +957,12 @@ final class CollectionStorageBootstrap: ObservableObject {
                 generation: currentGeneration
             )
         } catch {
+            guard currentGeneration == generation else { return }
             showRecovery(error, category: "storage-preflight")
         }
     }
 
-    private func localFacts() throws -> CollectionStorageLocalFacts {
+    private func localFacts() async throws -> CollectionStorageLocalFacts {
         var manifest: CollectionStoreManifest?
         do {
             manifest = try dependencies.manifestStore.load()
@@ -966,7 +976,7 @@ final class CollectionStorageBootstrap: ObservableObject {
         let baseFilePresent = dependencies.structuredStoreBaseFilePresent()
         var localHasUserData = dependencies.localHasUserData()
         if manifest == nil, filePresent,
-           let adoption = try dependencies.adoptLegacyStore() {
+           let adoption = try await dependencies.adoptLegacyStore() {
             manifest = adoption.manifest
             localHasUserData = adoption.localHasUserData
         }
@@ -1090,6 +1100,7 @@ final class CollectionStorageBootstrap: ObservableObject {
                     generation: currentGeneration
                 )
             } catch {
+                guard currentGeneration == generation else { return }
                 showRecovery(error, category: "pending-local-replica")
             }
 
@@ -1101,6 +1112,7 @@ final class CollectionStorageBootstrap: ObservableObject {
                     generation: currentGeneration
                 )
             } catch {
+                guard currentGeneration == generation else { return }
                 showRecovery(error, category: "local-container")
             }
 
@@ -1367,7 +1379,7 @@ final class CollectionStorageBootstrap: ObservableObject {
             )
             let probe = dependencies.readinessSource.arm(request)
             defer { probe.cancel() }
-            let container = try dependencies.makeContainer(.cloudKit)
+            let container = try await dependencies.makeContainer(.cloudKit)
             guard currentGeneration == generation else { return }
             restorationContainer = container
             state = .restoringFromCloud(.checkingRemoteCollection)
@@ -1408,6 +1420,7 @@ final class CollectionStorageBootstrap: ObservableObject {
                 }
             }
         } catch {
+            guard currentGeneration == generation else { return }
             showRecovery(error, category: "cloud-container")
         }
     }
@@ -1436,7 +1449,7 @@ final class CollectionStorageBootstrap: ObservableObject {
         )
         TradingCardScannerApp.activeCloudAccountStatusRaw = reason.rawValue
         TradingCardScannerApp.activeAttachmentStateRaw = targetAttachmentState.rawValue
-        let container = try dependencies.makeContainer(.onDevice)
+        let container = try await dependencies.makeContainer(.onDevice)
         guard currentGeneration == generation else { return }
         do {
             try persistManifest(

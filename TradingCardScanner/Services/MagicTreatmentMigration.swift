@@ -11,7 +11,6 @@ import SwiftData
 /// enough: the same number can have several printings, and a dual-finish
 /// printing still needs the selected finish before a foil-only treatment can be
 /// attached.
-@MainActor
 enum MagicTreatmentMigration {
     /// Bump this when the exact-printing enrichment rules change. The watermark
     /// lives on each collection row so a new import, or a row arriving from
@@ -95,6 +94,7 @@ enum MagicTreatmentMigration {
     /// The app uses the two phase-specific entry points so portfolio startup
     /// is never held behind network enrichment.
     @discardableResult
+    @MainActor
     static func run(
         in context: ModelContext,
         now: Date = .now,
@@ -112,13 +112,14 @@ enum MagicTreatmentMigration {
     /// catalog entries, and leaves ordinary catalog misses untouched for the
     /// deferred network phase.
     @discardableResult
+    @MainActor
     static func runLocal(
         in context: ModelContext,
         now: Date = .now,
         shouldContinue: StorageGenerationContinuation? = nil
     ) async -> Report {
         await runPhase(
-            in: context,
+            in: context.container,
             now: now,
             fetchBatch: nil,
             shouldContinue: shouldContinue
@@ -130,6 +131,7 @@ enum MagicTreatmentMigration {
     /// 75 so an ordinary collection does not turn launch into one sequential
     /// request per Magic row.
     @discardableResult
+    @MainActor
     static func runNetwork(
         in context: ModelContext,
         now: Date = .now,
@@ -146,6 +148,7 @@ enum MagicTreatmentMigration {
     /// test needs to contact Scryfall, while production still uses exact-id
     /// identifiers and the same bounded request shape.
     @discardableResult
+    @MainActor
     static func runNetwork(
         in context: ModelContext,
         now: Date = .now,
@@ -153,7 +156,7 @@ enum MagicTreatmentMigration {
         fetchCards: @escaping @Sendable ([String]) async throws -> [ScryfallCard]
     ) async -> Report {
         await runPhase(
-            in: context,
+            in: context.container,
             now: now,
             fetchBatch: fetchCards,
             shouldContinue: shouldContinue
@@ -165,6 +168,7 @@ enum MagicTreatmentMigration {
     /// adapter preserves the old fixture API without reintroducing a
     /// one-request-per-row launch path.
     @discardableResult
+    @MainActor
     static func run(
         in context: ModelContext,
         now: Date = .now,
@@ -222,6 +226,7 @@ enum MagicTreatmentMigration {
                 requiresProviderFinish.insert(key)
             }
         }
+        guard !exactIDs.isEmpty else { return [] }
         let catalog = MagicTreatmentCatalogStore.bundledDefault
         return exactIDs
             .filter { key, exactID in
@@ -231,14 +236,22 @@ enum MagicTreatmentMigration {
             .sorted()
     }
 
+    // Explicitly leave the caller's executor, while retaining its task's
+    // cancellation and identity-rewrite authorization. Each synchronous read
+    // or transaction creates and releases its own context before an await.
+    @concurrent
     private static func runPhase(
-        in context: ModelContext,
+        in container: ModelContainer,
         now: Date,
         fetchBatch: (@Sendable ([String]) async throws -> [ScryfallCard])?,
         shouldContinue: StorageGenerationContinuation?
     ) async -> Report {
         var report = Report()
-        let container = context.container
+        let interval = PerformanceSignpost.beginInterval(
+            "Launch.magicPhase", id: PerformanceSignpost.makeID(),
+            "network=\(fetchBatch != nil) main=\(PerformanceSignpost.currentThreadIsMain)"
+        )
+        defer { PerformanceSignpost.endInterval("Launch.magicPhase", interval, "") }
 
         func isCurrent() -> Bool {
             shouldContinue?() ?? true
@@ -259,11 +272,9 @@ enum MagicTreatmentMigration {
         var evidenceByExactID: [String: ExactEvidence] = [:]
         var failedExactIDs: Set<String> = []
 
-        if let fetchBatch {
-            // Only the network phase reads the compact catalog here. The local
-            // phase runs on the main actor at every launch, and decoding the
-            // bundled catalog before the pending-row guard below would charge
-            // that cost even when nothing needs migrating.
+        if let fetchBatch, !remoteExactIDs.isEmpty {
+            // Both phases leave the lazy catalog unloaded when no exact
+            // printing needs evidence. Response enrichment also stays off-main.
             let catalog = MagicTreatmentCatalogStore.bundledDefault
             let maximumBatchSize = 75
             for batchStart in stride(from: 0, to: remoteExactIDs.count, by: maximumBatchSize) {
@@ -341,7 +352,7 @@ enum MagicTreatmentMigration {
         do {
             return try CollectionWriteSerializer.perform(
                 container: container,
-                timeout: .mainThread
+                timeout: .wait
             ) { writeContext in
         let collectionStore = CollectionStore(context: writeContext)
 

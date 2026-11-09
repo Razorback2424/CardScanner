@@ -106,7 +106,7 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         readiness: any CloudRestorationReadinessSource = FixedCloudRestorationReadinessSource(
             result: .readyEmpty
         ),
-        makeContainer: (@MainActor (CollectionStorageMode) throws -> ModelContainer)? = nil,
+        makeContainer: (@MainActor (CollectionStorageMode) async throws -> ModelContainer)? = nil,
         structuredStoreFilePresent: Bool = false,
         structuredStoreBaseFilePresent: Bool? = nil,
         structuredStorePresence: (@MainActor () -> Bool)? = nil,
@@ -165,6 +165,49 @@ final class CollectionStorageBootstrapTests: XCTestCase {
             },
             adoptLegacyStore: { nil }
         )
+    }
+
+    func testSupersededContainerOpenCannotReplaceNewerReadySessionOrReportItsFailure() async throws {
+        for failsFirstOpen in [false, true] {
+            let started = expectation(description: "First container open suspended")
+            var pending: CheckedContinuation<ModelContainer, Error>?
+            var opens = 0
+            let newerContainer = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let dependencies = try makeDependencies(account: { .noAccount }, makeContainer: { _ in
+                opens += 1
+                if opens == 1 {
+                    return try await withCheckedThrowingContinuation { continuation in
+                        pending = continuation
+                        started.fulfill()
+                    }
+                }
+                return newerContainer
+            })
+            let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+            let older = Task { await bootstrap.start() }
+            await fulfillment(of: [started], timeout: 3)
+            await bootstrap.start()
+            guard case let .ready(session) = bootstrap.state else {
+                pending?.resume(throwing: CollectionStorageBootstrapError.storageSessionUnavailable)
+                await older.value
+                return XCTFail("The newer launch must become ready")
+            }
+            XCTAssertTrue(session.container === newerContainer)
+            if failsFirstOpen {
+                pending?.resume(throwing: CollectionStorageBootstrapError.storageSessionUnavailable)
+            } else {
+                let olderContainer = try ModelContainer(for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+                pending?.resume(returning: olderContainer)
+            }
+            await older.value
+            guard case let .ready(retained) = bootstrap.state else {
+                return XCTFail("An obsolete open must not replace readiness with recovery")
+            }
+            XCTAssertTrue(retained.container === newerContainer)
+            XCTAssertNil(bootstrap.lastErrorCategory)
+        }
     }
 
     func testSupersededAnchorClaimCannotReplaceNewerReadyState() async throws {
@@ -247,9 +290,12 @@ final class CollectionStorageBootstrapTests: XCTestCase {
     }
 
 #if LOCAL_ONLY_SIGNING
-    func testLocalOnlyBuildRejectsCloudKitConfigurationForEntitlementReason() throws {
+    func testLocalOnlyBuildRejectsCloudKitConfigurationForEntitlementReason() async throws {
         let dependencies = CollectionStorageBootstrapDependencies.production()
-        XCTAssertThrowsError(try dependencies.makeContainer(.cloudKit)) { error in
+        do {
+            _ = try await dependencies.makeContainer(.cloudKit)
+            XCTFail("Local-only builds must reject a CloudKit configuration")
+        } catch {
             XCTAssertEqual(
                 error as? CollectionStorageBootstrapError,
                 .cloudKitUnavailableInLocalOnlyBuild

@@ -2468,9 +2468,12 @@ final class PortfolioReconciliationTests: XCTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) async {
-        for _ in 0..<10_000 {
+        // A yield count is not a completion deadline once close persistence
+        // runs on another executor. Give that worker time without spinning.
+        let deadline = ContinuousClock.now.advanced(by: .seconds(10))
+        while ContinuousClock.now < deadline {
             guard engine.isRecomputing else { return }
-            await Task.yield()
+            try? await Task.sleep(for: .milliseconds(10))
         }
         XCTFail("Portfolio recompute did not finish", file: file, line: line)
     }
@@ -2481,9 +2484,10 @@ final class PortfolioReconciliationTests: XCTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) async {
-        for _ in 0..<10_000 {
+        let deadline = ContinuousClock.now.advanced(by: .seconds(10))
+        while ContinuousClock.now < deadline {
             if await gate.waitingCount() == count { return }
-            await Task.yield()
+            try? await Task.sleep(for: .milliseconds(10))
         }
         XCTFail("Expected (count) computation(s) waiting at the gate", file: file, line: line)
     }

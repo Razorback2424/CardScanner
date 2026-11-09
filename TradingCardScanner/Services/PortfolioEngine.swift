@@ -202,31 +202,9 @@ final class PortfolioEngine: ObservableObject {
     /// Opens the books if they are not open, seeds the observation log from
     /// whatever prices already exist, and computes today.
     func start(context: ModelContext, now: Date = .now) {
-        do {
-            _ = try CollectionWriteSerializer.perform(
-                container: context.container,
-                timeout: .mainThread
-            ) { writeContext in
-                try PortfolioEpoch.establishIfNeeded(
-                    context: writeContext,
-                    at: now,
-                    isCloudSyncing: TradingCardScannerApp.activeStorageMode.isCloudSyncing
-                )
-            }
-            needsEpochRetry = false
-        } catch {
-            // A failed baseline save must not transition the UI into the
-            // migration-day "tracking started" state. Recompute can still
-            // show the current collection value; the retry below re-attempts
-            // the durable epoch transaction.
-            //
-            // This also covers `awaitingInitialSync`, where the books are
-            // deliberately held shut until CloudKit has finished delivering a
-            // collection whose ledger has not arrived yet.
-            needsEpochRetry = true
-            recompute(context: context, now: now)
-            return
-        }
+        // The computation task establishes the epoch before replaying history.
+        // Neither its writer-lock wait nor its baseline writes run on the UI.
+        needsEpochRetry = true
         recompute(context: context, now: now)
     }
 
@@ -321,8 +299,8 @@ final class PortfolioEngine: ObservableObject {
     ///
     /// Everything expensive — fetching and flattening the ledger, the
     /// observation log and the check-day rows, then replaying them — happens on
-    /// `PortfolioComputationActor`. Only the small act of building the summary
-    /// and writing at most a few hundred close rows happens here.
+    /// `PortfolioComputationActor`. Epoch and daily-close persistence also run
+    /// off-main; only the presentation values are published here.
     func recompute(context: ModelContext, now: Date = .now, bypassPriceRefreshGate: Bool = false) {
         let intervalMetadata = "api=recompute"
         let intervalState = PerformanceSignpost.beginInterval(
@@ -355,12 +333,6 @@ final class PortfolioEngine: ObservableObject {
             )
             return
         }
-        // Recompute is what runs when the inputs change, which is exactly when
-        // a deferred baseline becomes decidable: the arriving inventory events
-        // are themselves the evidence that no baseline is needed. Costs one
-        // `UserDefaults` read once the epoch exists.
-        retryEpochIfNeeded(context: context, now: now)
-
         guard computationTask == nil else {
             if let pendingRecompute {
                 PerformanceSignpost.endInterval(
@@ -414,14 +386,20 @@ final class PortfolioEngine: ObservableObject {
             status = .computing
         }
 
-        let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
-
-        let epoch = PortfolioEpoch.startedAt() ?? now
-
+        let storage = CollectionStorageGeneration.shared
+        let token = storage.activeSession()?.container === container ? storage.currentToken() : nil
+        let shouldContinue: StorageGenerationContinuation = token.map { storage.continuation(for: $0) } ?? { true }
         let computationProvider = self.computationProvider
         computationTask = Task { @MainActor [weak self] in
             // Publication still uses the context after the background read ends.
             defer { withExtendedLifetime(container) {} }
+            await self?.retryEpochIfNeeded(container: container, now: now, shouldContinue: shouldContinue)
+            guard !Task.isCancelled, shouldContinue() else {
+                self?.finishCancelledComputation()
+                return
+            }
+            let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
+            let epoch = PortfolioEpoch.startedAt() ?? now
             let computation: PortfolioReplaySnapshotBuilder.Computation
             if let computationProvider {
                 computation = await computationProvider(
@@ -439,32 +417,29 @@ final class PortfolioEngine: ObservableObject {
                 )
             }
             guard let self else { return }
-            guard !Task.isCancelled else {
+            guard !Task.isCancelled, shouldContinue() else {
                 self.finishCancelledComputation()
                 return
             }
-            self.apply(
+            await self.apply(
                 computation,
                 now: now,
                 timeZone: timeZone,
-                context: context
+                context: context,
+                shouldContinue: shouldContinue
             )
         }
     }
 
-    private func retryEpochIfNeeded(context: ModelContext, now: Date) {
+    private func retryEpochIfNeeded(container: ModelContainer, now: Date,
+                                    shouldContinue: @escaping StorageGenerationContinuation) async {
         guard needsEpochRetry else { return }
         do {
-            _ = try CollectionWriteSerializer.perform(
-                container: context.container,
-                timeout: .mainThread
-            ) { writeContext in
-                try PortfolioEpoch.establishIfNeeded(
-                    context: writeContext,
-                    at: now,
-                    isCloudSyncing: TradingCardScannerApp.activeStorageMode.isCloudSyncing
-                )
-            }
+            let worker = await PortfolioPersistenceActor.makeBackground(modelContainer: container)
+            try await worker.establishEpoch(
+                now: now, isCloudSyncing: TradingCardScannerApp.activeStorageMode.isCloudSyncing,
+                shouldContinue: shouldContinue
+            )
             needsEpochRetry = false
         } catch {
             // Still waiting, or still failing. Either way the recomputation
@@ -504,8 +479,9 @@ final class PortfolioEngine: ObservableObject {
         _ computation: PortfolioReplaySnapshotBuilder.Computation,
         now: Date,
         timeZone: TimeZone,
-        context: ModelContext
-    ) {
+        context: ModelContext,
+        shouldContinue: @escaping StorageGenerationContinuation
+    ) async {
         defer { finishAppliedComputation() }
 
         // A failed read must never replace a known-good summary with a
@@ -533,13 +509,6 @@ final class PortfolioEngine: ObservableObject {
             return
         }
 
-        lastComputedDay = PortfolioCalendar.day(containing: now, in: timeZone)
-
-        // Bumped here rather than when the work starts. Consumers key their
-        // recomputation off this, and a revision published before the result
-        // exists means they run once against a nil summary and never run again.
-        inputRevision &+= 1
-
         let today = PortfolioCalendar.day(containing: now, in: timeZone)
         let valuation = computation.valuation
 
@@ -553,23 +522,8 @@ final class PortfolioEngine: ObservableObject {
         summary.isAuthoritative = computation.isAuthoritative && summary.defects.isEmpty
 
         let replay = computation.replay
-        contributionIndex = replay.contributionIndex
-        holdings = computation.holdings
-        performanceFactors = PortfolioPerformanceFactors(
-            daily: Dictionary(
-                replay.days.compactMap { day in
-                    day.performanceFactor.map { (day.displayDay, $0) }
-                },
-                uniquingKeysWith: { _, latest in latest }
-            ),
-            live: replay.live?.performanceFactor
-        )
-
         guard let epoch = PortfolioEpoch.startedAt() else {
-            integrityDefects = summary.defects
-            lastUsableSummary = summary
-            replaySummary = summary
-            status = .ready(summary)
+            publishPresentation(computation, summary: summary, now: now, timeZone: timeZone)
             return
         }
 
@@ -609,16 +563,42 @@ final class PortfolioEngine: ObservableObject {
             // Replay closes must agree with independently measured current
             // value before they can become durable accounting evidence.
             if summary.isAuthoritative {
-                summary.revisionNote = Self.publish(
-                    replay.days,
-                    timeZone: timeZone,
+                let startingPriceRevision = livePriceRevision
+                let worker = await PortfolioPersistenceActor.makeBackground(modelContainer: context.container)
+                summary.revisionNote = await worker.publish(
+                    replay.days, timeZoneIdentifier: timeZone.identifier,
                     coverageWindowStart: computation.coverage.windowStart,
-                    context: context
-                )?
-                    .revisionNote
+                    shouldContinue: shouldContinue
+                )
+                guard !Task.isCancelled, shouldContinue() else { return }
+                // A live price delta can arrive while the durable closes save.
+                // Preserve that newer headline and queue an authoritative replay.
+                guard livePriceRevision == startingPriceRevision else {
+                    recompute(context: context, now: now)
+                    return
+                }
             }
         }
 
+        publishPresentation(computation, summary: summary, now: now, timeZone: timeZone)
+    }
+
+    private func publishPresentation(
+        _ computation: PortfolioReplaySnapshotBuilder.Computation,
+        summary: PortfolioSummary,
+        now: Date,
+        timeZone: TimeZone
+    ) {
+        lastComputedDay = PortfolioCalendar.day(containing: now, in: timeZone)
+        contributionIndex = computation.replay.contributionIndex
+        holdings = computation.holdings
+        performanceFactors = PortfolioPerformanceFactors(
+            daily: Dictionary(
+                computation.replay.days.compactMap { day in
+                    day.performanceFactor.map { (day.displayDay, $0) }
+                }, uniquingKeysWith: { _, latest in latest }
+            ), live: computation.replay.live?.performanceFactor
+        )
         integrityDefects = summary.defects
 
 #if DEBUG
@@ -643,6 +623,8 @@ final class PortfolioEngine: ObservableObject {
         lastUsableSummary = summary
         replaySummary = summary
         status = .ready(summary)
+        // Observers see this only after both persistence and presentation settle.
+        inputRevision &+= 1
     }
 
     private func finishAppliedComputation() {
@@ -821,14 +803,15 @@ final class PortfolioEngine: ObservableObject {
     /// stored, not by an input fingerprint alone: changing how the replay is
     /// computed should not manufacture a revision on every historical day.
     @discardableResult
-    static func publish(
+    nonisolated static func publish(
         _ days: [PortfolioReplayDay],
         timeZone: TimeZone,
         /// The first day the coverage index could answer for. Days before it
         /// keep the coverage their published close already records — see
         /// `resolvedCoverage`. `nil` means the index covered everything.
         coverageWindowStart: Date? = nil,
-        context: ModelContext
+        context: ModelContext,
+        beforeSave: () throws -> Void = {}
     ) -> PortfolioDailyClose? {
         guard !days.isEmpty else { return nil }
 
@@ -914,6 +897,7 @@ final class PortfolioEngine: ObservableObject {
 
         if !insertedCloses.isEmpty {
             do {
+                try beforeSave()
                 try context.save()
             } catch {
                 // Delete only the objects this publisher inserted. A rollback
@@ -938,7 +922,7 @@ final class PortfolioEngine: ObservableObject {
     /// revised. A normal replay that produces no close changes performs no
     /// InventoryEvent fetch at all; a revision pass performs one date-bounded
     /// fetch instead of materializing the whole ledger table.
-    private static func lateInventoryTruthDays(
+    nonisolated private static func lateInventoryTruthDays(
         for candidates: [LateInventoryTruthCandidate],
         timeZone: TimeZone,
         context: ModelContext
@@ -970,7 +954,7 @@ final class PortfolioEngine: ObservableObject {
         })
     }
 
-    private static func hasLateInventoryTruth(
+    nonisolated private static func hasLateInventoryTruth(
         for day: Date,
         timeZone: TimeZone,
         existing: PortfolioDailyClose,
@@ -1011,7 +995,7 @@ final class PortfolioEngine: ObservableObject {
         var carriedForwardValue: Money
     }
 
-    private static func resolvedCoverage(
+    nonisolated private static func resolvedCoverage(
         for day: PortfolioReplayDay,
         existing: PortfolioDailyClose?,
         windowStart: Date?
@@ -1033,7 +1017,7 @@ final class PortfolioEngine: ObservableObject {
     }
 
     /// Whether a stored close already says exactly what the replay derived.
-    private static func matches(
+    nonisolated private static func matches(
         _ stored: PortfolioDailyClose,
         _ day: PortfolioReplayDay,
         coverage: ResolvedCoverage
@@ -1054,7 +1038,7 @@ final class PortfolioEngine: ObservableObject {
             && stored.excludedCount == day.excludedQuantity
     }
 
-    static func allCloses(in context: ModelContext) throws -> [PortfolioDailyClose] {
+    nonisolated static func allCloses(in context: ModelContext) throws -> [PortfolioDailyClose] {
         let descriptor = FetchDescriptor<PortfolioDailyClose>(
             sortBy: [SortDescriptor(\.date, order: .forward), SortDescriptor(\.revision, order: .forward)]
         )
@@ -1100,5 +1084,61 @@ final class PortfolioEngine: ObservableObject {
             currencyCode: row.currencyCode,
             receivedAt: row.receivedAt,
         )
+    }
+}
+
+/// Owns epoch and daily-close transactions away from the UI. Only value results
+/// leave this worker; fetched models never leave their transaction context.
+@ModelActor
+actor PortfolioPersistenceActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
+    func establishEpoch(now: Date, isCloudSyncing: Bool,
+                        shouldContinue: @escaping StorageGenerationContinuation = { true }) throws {
+        let interval = PerformanceSignpost.beginInterval(
+            "Launch.portfolioEpoch", id: PerformanceSignpost.makeID(), "main=\(Thread.isMainThread)"
+        )
+        defer { PerformanceSignpost.endInterval("Launch.portfolioEpoch", interval, "") }
+        try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            try PortfolioEpoch.establishIfNeeded(
+                context: context, at: now, isCloudSyncing: isCloudSyncing,
+                save: { context in
+                    try Task.checkCancellation()
+                    guard shouldContinue() else { throw CancellationError() }
+                    try context.save()
+                }
+            )
+        }
+    }
+
+    func publish(_ days: [PortfolioReplayDay], timeZoneIdentifier: String,
+                 coverageWindowStart: Date?,
+                 shouldContinue: @escaping StorageGenerationContinuation = { true }) -> String? {
+        let interval = PerformanceSignpost.beginInterval(
+            "Portfolio.persistCloses", id: PerformanceSignpost.makeID(),
+            "days=\(days.count) main=\(Thread.isMainThread)"
+        )
+        defer { PerformanceSignpost.endInterval("Portfolio.persistCloses", interval, "") }
+        return try? CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { context in
+            try Task.checkCancellation()
+            guard shouldContinue() else { throw CancellationError() }
+            let note = PortfolioEngine.publish(
+                days, timeZone: TimeZone(identifier: timeZoneIdentifier) ?? .current,
+                coverageWindowStart: coverageWindowStart, context: context,
+                beforeSave: {
+                    try Task.checkCancellation()
+                    guard shouldContinue() else { throw CancellationError() }
+                }
+            )?.revisionNote
+            // A failed/cancelled close save may leave staged deletions of its
+            // temporary rows. This fresh context owns no unrelated changes.
+            if context.hasChanges { context.rollback() }
+            return note
+        }
     }
 }

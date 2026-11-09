@@ -82,7 +82,6 @@ enum PortfolioEpoch {
     /// Opens the ledger if it has not been opened. Safe to call on every
     /// launch: it writes nothing once a baseline exists, and its writes are
     /// idempotent per position if two devices race.
-    @MainActor
     @discardableResult
     static func establishIfNeeded(
         context: ModelContext,
@@ -303,7 +302,6 @@ enum PortfolioEpoch {
     /// `TradingCardScannerApp.makeContainer()` uses to decide whether to hand
     /// SwiftData a mirrored configuration. A local-only device cannot be
     /// waiting on anything, and must not be delayed.
-    @MainActor
     private static func isAwaitingInitialSync(
         context: ModelContext,
         defaults: UserDefaults,
