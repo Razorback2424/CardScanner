@@ -139,9 +139,27 @@ actor CardCatalog {
         try await resolution(for: identifier).card
     }
 
-    func resolution(for identifier: ScanIdentifier) async throws -> CatalogResolution {
+    func resolution(for identifier: ScanIdentifier, recoverArtwork: Bool = true) async throws -> CatalogResolution {
         switch try await lookupOutcome(for: identifier) {
-        case let .resolved(resolution): return resolution
+        case let .resolved(resolution):
+            // Intake consumes identity immediately. Read-only presentation can
+            // still request optional artwork without holding the shared lookup.
+            guard recoverArtwork, resolution.path != .cacheHit,
+                  resolution.card.storedImageURL == nil,
+                  identifier.game == .pokemon,
+                  let adapter = gameCatalogAdapters.pokemonCatalog else { return resolution }
+            let prepared = try adapter.prepareLookupIdentifier(identifier)
+            let enriched = await adapter.recoveringArtwork(for: resolution, identifier: prepared)
+            try Task.checkCancellation()
+            try await adapter.validateLookupContext(prepared)
+            guard gameCatalogAdapters.pokemonCatalog?.acceptsCompletion(for: prepared, fromGeneration: adapter.generation) == true else {
+                throw CatalogLookupError.staleCatalog
+            }
+            if case let .resolved(cached)? = adapterOutcomes[prepared],
+               cached.retrievedAt == resolution.retrievedAt {
+                adapterOutcomes[prepared] = .resolved(enriched)
+            }
+            return enriched
         case let .needsPrintingChoice(canonical, candidates):
             throw CatalogLookupError.printingChoiceRequired(canonical, candidates)
         case let .catalogIncomplete(canonical): throw CatalogLookupError.catalogIncomplete(canonical)
@@ -287,9 +305,10 @@ actor CardCatalog {
         return resolution.card
     }
 
-    func card(for candidate: PokemonCatalogCardIdentity, matching evidence: PokemonHistoricalScanEvidence) async throws -> IdentifiedCard {
+    func card(for candidate: PokemonCatalogCardIdentity, matching evidence: PokemonHistoricalScanEvidence,
+              recoverArtwork: Bool = true) async throws -> IdentifiedCard {
         guard let adapter = gameCatalogAdapters.pokemonCatalog else { throw PokemonHistoricalCatalogError.unsupported }
-        return try await adapter.card(for: candidate, matching: evidence)
+        return try await adapter.card(for: candidate, matching: evidence, recoverArtwork: recoverArtwork)
     }
 
     static func classify(_ error: Error) -> CatalogFailure {

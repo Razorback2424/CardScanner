@@ -335,9 +335,12 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             let catalog = BrowseCatalog(cache: cache,
                 pokemonTransport: BrowseSupplementTransport(card: try Self.card(summary.providerID), state: state),
                 tcgCSVSource: BrowseSupplementSource(state: state), now: { state.now })
-            let first = try await catalog.details(for: summary)
-            let originalQuote = CardPricing.price(for: first.card, variant: .holo, magicTreatments: [])
+            _ = try await catalog.details(for: summary)
+            _ = try await catalog.details(for: summary)
+            XCTAssertEqual(state.snapshotRequests, 0, "Content and cached content must not wait for pricing")
+            let originalQuote = try await catalog.price(for: summary, variant: .holo)
             guard case .price = originalQuote else { return XCTFail("Expected a supplemental quote") }
+            let first = try await catalog.details(for: summary)
 
             state.goOffline(after: TimeInterval(elapsed))
             let retained = try await catalog.details(for: summary)
@@ -349,6 +352,8 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             let empty = PokemonTCGCSVSnapshot(schemaVersion: 1, setID: "30th-c", feedBuild: "empty",
                 fetchedAt: state.now, validatedAt: state.now, valuesByCardID: [:])
             state.recover(with: empty)
+            let updatedQuote = try await catalog.price(for: summary, variant: .holo)
+            XCTAssertEqual(updatedQuote, .unavailable(.tcgCSV))
             let updated = try await catalog.details(for: summary)
             XCTAssertTrue(updated.card.marketPrices.allSatisfy(\.isGap))
         }
@@ -1543,10 +1548,12 @@ private final class BrowseSupplementState: @unchecked Sendable {
     private var instant = Date.now
     private var offline = false
     private var value: PokemonTCGCSVSnapshot
+    private var requests = 0
 
     init(snapshot: PokemonTCGCSVSnapshot) { value = snapshot }
     var now: Date { lock.withLock { instant } }
     var isOffline: Bool { lock.withLock { offline } }
+    var snapshotRequests: Int { lock.withLock { requests } }
     func goOffline(after elapsed: TimeInterval) {
         lock.withLock { instant.addTimeInterval(elapsed); offline = true }
     }
@@ -1555,6 +1562,7 @@ private final class BrowseSupplementState: @unchecked Sendable {
     }
     func snapshot() throws -> PokemonTCGCSVSnapshot {
         try lock.withLock {
+            requests += 1
             if offline { throw URLError(.notConnectedToInternet) }
             return value
         }

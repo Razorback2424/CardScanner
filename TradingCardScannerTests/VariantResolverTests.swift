@@ -194,8 +194,8 @@ final class PokemonFinishEvidenceTests: XCTestCase {
     func testStaleResolvedCacheAndProviderPayloadCannotEraseMinimum() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
-        // A generation-2 cache written before this repair: no coverage field,
-        // Normal-only affected entry and an unrelated entry. No cache purge.
+        // Current format with stale finish evidence: no coverage field,
+        // Normal-only affected entry and an unrelated entry. No per-card purge.
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         let date = ISO8601DateFormatter().string(from: .now)
         let rows = try ledger()
@@ -205,7 +205,7 @@ final class PokemonFinishEvidenceTests: XCTestCase {
                     "setID": parts[0], "setName": "Cached Set", "officialCount": 20, "setCode": "FIX",
                     "variants": [["id": "normal", "label": "Normal"]]]
         }
-        try JSONSerialization.data(withJSONObject: ["appVersion": "fixture", "schemaGeneration": 2, "entries": entries])
+        try JSONSerialization.data(withJSONObject: ["appVersion": "fixture", "schemaGeneration": 3, "entries": entries])
             .write(to: root.appendingPathComponent("ResolvedPokemonCards.json"))
         let oldCache = ResolvedPokemonCardCache(root: root, appVersion: "fixture")
         for row in rows {
@@ -634,16 +634,26 @@ final class RetailVariantTests: XCTestCase {
         let source = RetailVariantSource(cards: ["xyp-XY111": try ordinaryPromo()])
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
-        let adapter = PokemonCatalogAdapter(source: source, resolvedDiskCache: .init(root: root), registry: try ordinaryCorrectionRegistry())
+        let adapter = PokemonCatalogAdapter(source: source,
+            offline: PokemonOfflineCatalog(store: .init(root: root.appendingPathComponent("offline"), bundle: nil)),
+            resolvedDiskCache: .init(root: root), registry: try ordinaryCorrectionRegistry())
         let identifier = try XCTUnwrap(PokemonScanProfile(registry: try ordinaryCorrectionRegistry()).parse("XY111"))
         for _ in 0..<2 {
             guard case let .resolved(result) = try await adapter.lookup(identifier) else { return XCTFail("Expected promo printing") }
             XCTAssertEqual(VariantResolver.options(for: result.card.variantEvidence), [.holo])
             XCTAssertFalse(result.card.variantEvidence.physicalCoverageVerified)
         }
-        let removed = await adapter.updating(try ordinaryCorrectionRegistry(includeCorrections: false))
+        let withdrawn = try ordinaryCorrectionRegistry(includeCorrections: false)
+        let removed = await adapter.updating(withdrawn)
         guard case let .resolved(result) = try await removed.lookup(identifier) else { return XCTFail("Expected promo printing") }
         XCTAssertEqual(VariantResolver.options(for: result.card.variantEvidence), [.normal])
+        let cold = PokemonCatalogAdapter(source: source,
+            offline: PokemonOfflineCatalog(store: .init(root: root.appendingPathComponent("offline"), bundle: nil)),
+            resolvedDiskCache: .init(root: root), registry: withdrawn)
+        guard case let .resolved(reopened) = try await cold.lookup(identifier) else { return XCTFail("Expected cached printing") }
+        XCTAssertEqual(reopened.path, .cacheHit)
+        XCTAssertEqual(VariantResolver.options(for: reopened.card.variantEvidence), [.normal],
+            "A withdrawn signed correction must not become durable provider evidence")
     }
 
     @MainActor

@@ -24,6 +24,7 @@ actor PokemonCatalogCoordinator {
     private let keys: [PokemonCatalogSignatureVerifier.PinnedKey]
     private let rolloutMode: PokemonCatalogRolloutMode
     private let diagnostics: PokemonCatalogRolloutDiagnostics
+    private let now: @Sendable () -> Date
 
     // MARK: - State
 
@@ -32,6 +33,9 @@ actor PokemonCatalogCoordinator {
     private var continuations: [UUID: AsyncStream<ActivationEvent>.Continuation] = [:]
     private var didPerformInitialLoad = false
     private var initialLoadTask: Task<Void, Never>?
+    private var automaticRefreshTask: Task<RefreshResult, Never>?
+    private var automaticRefreshRetryAfter: Date?
+    static let automaticRefreshFailureCooldown: TimeInterval = 5 * 60
 
     // MARK: - Init
 
@@ -40,13 +44,15 @@ actor PokemonCatalogCoordinator {
         client: PokemonCatalogUpdateClient = PokemonCatalogUpdateClient(),
         keys: [PokemonCatalogSignatureVerifier.PinnedKey] = PokemonCatalogSignatureVerifier.pinnedKeys,
         rolloutMode: PokemonCatalogRolloutMode = .configured,
-        diagnostics: PokemonCatalogRolloutDiagnostics = .shared
+        diagnostics: PokemonCatalogRolloutDiagnostics = .shared,
+        now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.store = store
         self.client = client
         self.keys = keys
         self.rolloutMode = rolloutMode
         self.diagnostics = diagnostics
+        self.now = now
         self.activeRegistry = PokemonCatalogRegistry.bundledSeed
         self.activeRevision = nil
     }
@@ -143,6 +149,24 @@ actor PokemonCatalogCoordinator {
         case validated(PokemonCatalogRolloutValidation)
         case notModified
         case rejected(Error)
+    }
+
+    /// Share automatic checks across callers and wait five minutes after a
+    /// failure. Direct `refresh()` calls remain available for an explicit retry.
+    func refreshAutomatically() async -> RefreshResult? {
+        if let automaticRefreshTask { return await automaticRefreshTask.value }
+        if let automaticRefreshRetryAfter, now() < automaticRefreshRetryAfter { return nil }
+
+        let task = Task { await self.refresh() }
+        automaticRefreshTask = task
+        let result = await task.value
+        if case .rejected(let error) = result, !(error is CancellationError), !task.isCancelled {
+            automaticRefreshRetryAfter = now().addingTimeInterval(Self.automaticRefreshFailureCooldown)
+        } else {
+            automaticRefreshRetryAfter = nil
+        }
+        automaticRefreshTask = nil
+        return result
     }
 
     func refresh() async -> RefreshResult {

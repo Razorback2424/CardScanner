@@ -412,7 +412,8 @@ struct CatalogCardDetailView: View {
                 mappedPrices[variant.id] = quote
                 let treatments = MagicTreatmentKeyCodec.storedIDs(from: card.magicTreatments(for: variant))
                 if let token {
-                    for entry in ownedPrice(for: variant).reconcilableEntries(variant: variant, treatmentIDs: treatments) {
+                    let entries = ownedPrice(for: variant).reconcilableEntries(variant: variant, treatmentIDs: treatments)
+                    for entry in entries {
                         let result = try await CollectionExclusiveWrites.retryingIfRequired {
                             try await writer.reconcileOwnedPrice(quote, collectionKey: entry.collectionKey,
                                 shouldContinue: generation.continuation(for: token))
@@ -420,7 +421,9 @@ struct CatalogCardDetailView: View {
                         guard !Task.isCancelled, generation.isCurrent(token), priceRetryID == retryID else { return }
                         ownedPriceChecks[entry.collectionKey] = result.retainedReason
                     }
-                    await projectionStore.rebuild(container: modelContext.container)
+                    if !entries.isEmpty {
+                        await projectionStore.rebuild(container: modelContext.container)
+                    }
                 }
             } catch PriceQuoteError.mappingUnavailable {
                 guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }

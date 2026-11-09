@@ -62,6 +62,14 @@ private enum SliceFFixture {
     }
 }
 
+private final class SliceFClock: @unchecked Sendable {
+    private let lock = NSLock()
+    private var instant = Date(timeIntervalSince1970: 1_700_000_000)
+
+    var date: Date { lock.withLock { instant } }
+    func advance(_ seconds: TimeInterval) { lock.withLock { instant.addTimeInterval(seconds) } }
+}
+
 private final class SliceFURLProtocol: URLProtocol {
     static var handler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
 
@@ -124,6 +132,60 @@ final class PokemonCatalogSliceFTests: XCTestCase {
             baseURL: URL(string: "https://catalog.test")!,
             diagnostics: diagnostics
         )
+    }
+
+    func testAutomaticRefreshCooldownPreservesCurrentReleaseAndAllowsExplicitRetry() async throws {
+        let clock = SliceFClock()
+        let diagnostics = PokemonCatalogRolloutDiagnostics()
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [SliceFURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel() }
+        SliceFURLProtocol.handler = { request in
+            (HTTPURLResponse(url: request.url!, statusCode: 404, httpVersion: nil, headerFields: nil)!, Data())
+        }
+        let coordinator = PokemonCatalogCoordinator(
+            store: PokemonCatalogReleaseStore(root: root),
+            client: PokemonCatalogUpdateClient(session: session, diagnostics: diagnostics),
+            keys: [SliceFFixture.pinnedKey], rolloutMode: .remoteAuthority,
+            diagnostics: diagnostics, now: { clock.date }
+        )
+        guard case .activated = await coordinator.activateEnvelope(try SliceFFixture.envelope()) else {
+            return XCTFail("Expected an active release before the failed update")
+        }
+
+        guard case .rejected(PokemonCatalogUpdateClient.UpdateError.badResponse(statusCode: 404))? =
+                await coordinator.refreshAutomatically() else {
+            return XCTFail("Expected the automatic request to report the 404")
+        }
+        let revisionAfterFailure = await coordinator.revision
+        XCTAssertEqual(revisionAfterFailure, 1)
+        let immediately = await coordinator.refreshAutomatically()
+        XCTAssertNil(immediately)
+        clock.advance(PokemonCatalogCoordinator.automaticRefreshFailureCooldown - 1)
+        let beforeDeadline = await coordinator.refreshAutomatically()
+        XCTAssertNil(beforeDeadline)
+        let duringCooldown = await diagnostics.snapshot()
+        XCTAssertEqual(duringCooldown.networkRequestCount, 1)
+
+        guard case .rejected = await coordinator.refresh() else {
+            return XCTFail("An explicit retry must bypass the automatic cooldown")
+        }
+        let afterExplicitRetry = await diagnostics.snapshot()
+        XCTAssertEqual(afterExplicitRetry.networkRequestCount, 2)
+
+        SliceFURLProtocol.handler = { request in
+            (HTTPURLResponse(url: request.url!, statusCode: 304, httpVersion: nil, headerFields: nil)!, Data())
+        }
+        clock.advance(1)
+        guard case .notModified? = await coordinator.refreshAutomatically() else {
+            return XCTFail("Automatic refresh must resume at the cooldown deadline")
+        }
+        guard case .notModified? = await coordinator.refreshAutomatically() else {
+            return XCTFail("A successful check must clear the failure cooldown")
+        }
+        let recovered = await diagnostics.snapshot()
+        XCTAssertEqual(recovered.networkRequestCount, 4)
     }
 
     func testBundledValidationOnlyVerifiesAndDiscardsRemoteRelease() async throws {

@@ -607,9 +607,8 @@ final class PokemonCatalogDiagnosticsTests: XCTestCase {
     }
 
     func testDisplayCodeFallbackCounter() {
-        PokemonCatalogDiagnostics.recordDisplayCodeFallback(providerSetID: "sv99")
-        PokemonCatalogDiagnostics.recordDisplayCodeFallback(providerSetID: "sv99")
-        PokemonCatalogDiagnostics.recordDisplayCodeFallback(providerSetID: "me99")
+        PokemonCatalogDiagnostics.recordDisplayCodeFallbacks(providerSetIDs: ["sv99", "me99"])
+        PokemonCatalogDiagnostics.recordDisplayCodeFallbacks(providerSetIDs: ["SV99"])
         XCTAssertEqual(PokemonCatalogDiagnostics.displayCodeFallbackCounts["sv99"], 2)
         XCTAssertEqual(PokemonCatalogDiagnostics.displayCodeFallbackCounts["me99"], 1)
     }
@@ -620,7 +619,7 @@ final class PokemonCatalogDiagnosticsTests: XCTestCase {
     }
 
     func testResetClearsAllCounters() {
-        PokemonCatalogDiagnostics.recordDisplayCodeFallback(providerSetID: "a")
+        PokemonCatalogDiagnostics.recordDisplayCodeFallbacks(providerSetIDs: ["a"])
         PokemonCatalogDiagnostics.recordPersistedPlaceholderCode(providerSetID: "b")
         PokemonCatalogDiagnostics.resetCounters()
         XCTAssertTrue(PokemonCatalogDiagnostics.displayCodeFallbackCounts.isEmpty)

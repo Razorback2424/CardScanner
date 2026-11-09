@@ -90,8 +90,19 @@ struct PokemonCatalogAdapter: GameCatalogAdapter {
     func candidates(for number: PokemonPrintedNumberEvidence) async -> [PokemonCatalogCardIdentity] {
         await engine.candidates(for: number)
     }
-    func card(for candidate: PokemonCatalogCardIdentity, matching evidence: PokemonHistoricalScanEvidence) async throws -> IdentifiedCard {
-        try await engine.card(for: candidate, matching: evidence)
+    func recoveringArtwork(for resolution: CardCatalog.CatalogResolution,
+                           identifier: ScanIdentifier) async -> CardCatalog.CatalogResolution {
+        let card = await engine.recoveringArtworkIfNeeded(for: resolution.card)
+        let enriched = CardCatalog.CatalogResolution(card, isPersistable: resolution.isPersistable,
+            retrievedAt: resolution.retrievedAt, path: resolution.path)
+        if card.storedImageURL != nil {
+            await engine.persistResolution(enriched, for: identifier)
+        }
+        return enriched
+    }
+    func card(for candidate: PokemonCatalogCardIdentity, matching evidence: PokemonHistoricalScanEvidence,
+              recoverArtwork: Bool = true) async throws -> IdentifiedCard {
+        try await engine.card(for: candidate, matching: evidence, recoverArtwork: recoverArtwork)
     }
 }
 
@@ -170,7 +181,8 @@ actor PokemonCatalogEngine {
 
     func card(
         for candidate: PokemonCatalogCardIdentity,
-        matching evidence: PokemonHistoricalScanEvidence
+        matching evidence: PokemonHistoricalScanEvidence,
+        recoverArtwork: Bool = true
     ) async throws -> IdentifiedCard {
         guard PokemonNameMatcher.agrees(
             cardName: candidate.name,
@@ -197,7 +209,8 @@ actor PokemonCatalogEngine {
             matching: evidence,
             registry: catalogRegistry
         )
-        let enriched = await recoveringArtworkIfNeeded(for: applyingSignedArtwork(to: card))
+        let authorized = applyingSignedArtwork(to: card)
+        let enriched = recoverArtwork ? await recoveringArtworkIfNeeded(for: authorized) : authorized
         try Task.checkCancellation()
         return applyingSignedArtwork(to: enriched)
     }
@@ -208,18 +221,18 @@ actor PokemonCatalogEngine {
         let resolution = try await fetchResolution(identifier)
         if case .pokemonHistorical = identifier.legacyIdentity,
            identifier.catalogGeneration != catalogGeneration { throw CatalogLookupError.staleCatalog }
-        var card = applyingSignedArtwork(to: resolution.card)
-        let isHistorical: Bool
-        if case .pokemonHistorical = identifier.legacyIdentity { isHistorical = true } else { isHistorical = false }
-        if resolution.path == .network || (isHistorical && resolution.path == .historicalFallback) {
-            card = await recoveringArtworkIfNeeded(for: card)
-            try Task.checkCancellation()
-            if isHistorical, identifier.catalogGeneration != catalogGeneration { throw CatalogLookupError.staleCatalog }
-            card = applyingSignedArtwork(to: card)
-        }
+        // Optional image discovery must not hold the serial scan lane. Signed
+        // and payload artwork remain immediate; Collection's existing missing-
+        // metadata normalizer recovers omitted provider images after intake.
+        let card = applyingSignedArtwork(to: resolution.card)
         let enriched = CatalogResolution(card, isPersistable: resolution.isPersistable,
             retrievedAt: resolution.retrievedAt, path: resolution.path)
-        if enriched.isPersistable, case let .pokemon(pokemonCard, setCode) = card.legacyIdentity,
+        await persistResolution(enriched, for: identifier)
+        return enriched
+    }
+
+    func persistResolution(_ enriched: CatalogResolution, for identifier: ScanIdentifier) async {
+        if enriched.isPersistable, case let .pokemon(pokemonCard, setCode) = enriched.card.legacyIdentity,
            let key = Self.persistentKey(for: identifier) {
             let count: Int?
             switch identifier.legacyIdentity {
@@ -229,7 +242,6 @@ actor PokemonCatalogEngine {
             }
             await resolvedDiskCache.store(card: pokemonCard, setCode: setCode, key: key, officialCount: count)
         }
-        return enriched
     }
 
     func currentRegistry() -> PokemonCatalogRegistry { catalogRegistry }
@@ -546,10 +558,10 @@ actor PokemonCatalogEngine {
         )
     }
 
-    private func recoveringArtworkIfNeeded(for identifiedCard: IdentifiedCard) async -> IdentifiedCard {
+    func recoveringArtworkIfNeeded(for identifiedCard: IdentifiedCard) async -> IdentifiedCard {
         guard case let .pokemon(card, setCode) = identifiedCard.legacyIdentity,
               card.storedArtworkURL == nil else { return identifiedCard }
-        return .pokemon(await pokemonSource.recoveringArtwork(for: card), setCode: setCode)
+        return applyingSignedArtwork(to: .pokemon(await pokemonSource.recoveringArtwork(for: card), setCode: setCode))
     }
 
     private func applyingSignedArtwork(to identifiedCard: IdentifiedCard) -> IdentifiedCard {

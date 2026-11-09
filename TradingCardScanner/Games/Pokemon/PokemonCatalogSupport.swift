@@ -743,10 +743,10 @@ actor ResolvedPokemonCardCache {
         let entries: [Entry]
     }
 
-    /// Generation 2 discards entries written before the cache's provenance
-    /// gate. Those files cannot distinguish a complete primary-provider card
-    /// from outage-time fallback data that lacked variant evidence.
-    private static let schemaGeneration = 2
+    /// Generation 3 discards entries that flattened revocable signed finish
+    /// corrections into provider evidence. Registry overlays are reapplied on
+    /// reads and must not survive their withdrawal through this cache.
+    private static let schemaGeneration = 3
     private static let maxAge: TimeInterval = 28 * 24 * 60 * 60
     private static let maxEntries = 512
 
@@ -840,7 +840,9 @@ actor ResolvedPokemonCardCache {
         officialCount: Int? = nil
     ) async {
         await loadIfNeeded()
-        let variants = card.catalogVariants
+        var providerCard = card
+        providerCard.reviewedAdditionalVariants = []
+        let variants = providerCard.catalogVariants
         guard !variants.isEmpty else {
             // An incomplete live response is not evidence that an already
             // cached, fully resolved card ceased to have finishes. Retain the

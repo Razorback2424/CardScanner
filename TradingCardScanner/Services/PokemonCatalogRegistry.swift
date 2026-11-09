@@ -454,9 +454,20 @@ enum PokemonCatalogDiagnostics {
         lock.withLock { _persistedPlaceholderCodeCounts }
     }
 
-    static func recordDisplayCodeFallback(providerSetID: String) {
-        lock.withLock { _displayCodeFallbackCounts[providerSetID, default: 0] += 1 }
-        logger.info("Display code unavailable; using placeholder for provider set: \(providerSetID, privacy: .public)")
+    static func recordDisplayCodeFallbacks(providerSetIDs: [String]) {
+        let newlyMissing = lock.withLock {
+            var newlyMissing: [String] = []
+            for id in providerSetIDs {
+                let key = id.lowercased()
+                if _displayCodeFallbackCounts[key] == nil { newlyMissing.append(key) }
+                _displayCodeFallbackCounts[key, default: 0] += 1
+            }
+            return newlyMissing.sorted()
+        }
+        guard !newlyMissing.isEmpty else { return }
+        // This is directory-building evidence, not a claim about visible or
+        // persisted placeholders. Report each missing set once per process.
+        logger.info("Set-directory display codes unavailable for \(newlyMissing.count) provider sets: \(newlyMissing.joined(separator: ", "), privacy: .public)")
     }
 
     static func recordPersistedPlaceholderCode(providerSetID: String) {

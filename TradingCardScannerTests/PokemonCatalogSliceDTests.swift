@@ -329,6 +329,8 @@ final class PokemonCatalogSliceDTests: XCTestCase {
     }
 
     func testProductionBrowseUsesRegistryAndPublishesAuthorizedContent() async throws {
+        PokemonCatalogDiagnostics.resetCounters()
+        defer { PokemonCatalogDiagnostics.resetCounters() }
         let root = SliceDFixture.tempRoot()
         defer { try? FileManager.default.removeItem(at: root) }
 
@@ -355,6 +357,8 @@ final class PokemonCatalogSliceDTests: XCTestCase {
         )
 
         await catalog.refreshCatalogNow()
+        XCTAssertNil(PokemonCatalogDiagnostics.displayCodeFallbackCounts["sv-new"],
+            "Rows excluded by signed authority must not report display-code gaps")
         let sets = try await catalog.sets(for: .pokemon)
         let set = try XCTUnwrap(sets.first)
         XCTAssertEqual(sets.count, 1)

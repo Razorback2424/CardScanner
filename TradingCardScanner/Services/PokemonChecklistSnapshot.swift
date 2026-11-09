@@ -351,6 +351,7 @@ enum PokemonMasterSetChecklistBuilder {
         let hasCompleteSignedOrder = rows.allSatisfy {
             registry?.releaseOrder(forProviderSetID: $0.id) != nil
         }
+        var missingDisplayCodeSetIDs: [String] = []
         let baseSets = rows.enumerated().compactMap { pair -> CatalogSet? in
             let index = pair.offset
             let row = pair.element
@@ -372,7 +373,7 @@ enum PokemonMasterSetChecklistBuilder {
             } else if let registryCode = PokemonCatalogRegistry.bundledSeed.printedCode(forProviderSetID: row.id) {
                 displayCode = registryCode
             } else {
-                PokemonCatalogDiagnostics.recordDisplayCodeFallback(providerSetID: row.id)
+                missingDisplayCodeSetIDs.append(row.id)
                 displayCode = "Code pending"
             }
             return CatalogSet(
@@ -401,6 +402,7 @@ enum PokemonMasterSetChecklistBuilder {
                 }
             )
         }
+        PokemonCatalogDiagnostics.recordDisplayCodeFallbacks(providerSetIDs: missingDisplayCodeSetIDs)
         return baseSets
     }
 
