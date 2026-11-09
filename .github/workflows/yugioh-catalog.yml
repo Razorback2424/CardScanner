@@ -7,12 +7,13 @@ on:
         type: boolean
         default: false
   schedule:
-    - cron: "13 7 * * *"
+    - cron: "23 1,7,13,19 * * *"
 permissions:
   contents: read
 jobs:
   ingest-candidate:
     runs-on: macos-latest
+    timeout-minutes: 45
     concurrency:
       group: scanstash-tcgcsv-daily-ingestion
       cancel-in-progress: false
@@ -96,8 +97,7 @@ jobs:
           name: yugioh-catalog-candidate
           path: ${{ runner.temp }}/yugioh
           retention-days: 7
-      # Deliberately no deployment. Production activation requires the existing
-      # signed-release/restore path to adopt this namespace and owner approval.
+      # Catalog candidates remain separate from the price-only publication below.
 
   publish-prices:
     needs: ingest-candidate
@@ -106,6 +106,7 @@ jobs:
       ((github.event_name == 'workflow_dispatch' && inputs.publish_prices == true) ||
        (github.event_name == 'schedule' && vars.MARKET_PRICE_FEEDS_ACTIVE == 'true'))
     runs-on: macos-latest
+    timeout-minutes: 30
     environment: pokemon-catalog-production
     concurrency:
       group: scanstash-catalog-production-hosting
@@ -120,11 +121,9 @@ jobs:
         with:
           name: market-price-feeds
           path: publisher/price-candidate
-      - name: Restore every existing catalog and price namespace
-        run: >-
-          bash scripts/restore_catalog_hosting_site.sh '' '' publisher/site
-          https://scanstash-catalog-prod.web.app
-      - name: Validate and install only the prepared price namespace
+      # Stage the complete validated replacement first. The restore script then
+      # verifies these local prices instead of downloading the obsolete feed.
+      - name: Validate and stage the prepared price namespace
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -134,13 +133,31 @@ jobs:
           def no_network(*args, **kwargs):
               raise ValueError('The prepared artifact must be complete')
           source = Path('publisher/price-candidate/site')
-          assert restore(source, fetch=no_network)
+          assert restore(source, fetch=no_network, require_fresh=True)
           destination = Path('publisher/site') / NAMESPACE
           if destination.exists():
               shutil.rmtree(destination)
           shutil.copytree(source / NAMESPACE, destination)
           PY
           bash scripts/verify_pokemon_catalog_hosting_config.sh
+      - name: Restore every existing catalog alongside the prepared prices
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import os, sys
+          sys.path.insert(0, 'scripts')
+          from market_price_feeds import read_http, ORIGIN
+          root = Path(os.environ['RUNNER_TEMP']) / 'price-catalog-pointers'
+          root.mkdir(parents=True, exist_ok=True)
+          for name, namespace in [('pokemon', 'v1'), ('magic', 'magic/v1')]:
+              raw = read_http(ORIGIN + '/' + namespace + '/current.json', 68 * 1024 * 1024, absent_ok=True)
+              if raw is not None:
+                  (root / (name + '-current.json')).write_bytes(raw)
+          PY
+          bash scripts/restore_catalog_hosting_site.sh \
+            "$RUNNER_TEMP/price-catalog-pointers/pokemon-current.json" \
+            "$RUNNER_TEMP/price-catalog-pointers/magic-current.json" publisher/site \
+            https://scanstash-catalog-prod.web.app
       - name: Install Firebase CLI
         run: npm install --global firebase-tools@13.35.1
       - name: Publish the complete preserved site
@@ -160,7 +177,7 @@ jobs:
           sys.path.insert(0, 'scripts')
           from market_price_feeds import restore, NAMESPACE
           destination = Path('publisher/price-readback')
-          assert restore(destination)
+          assert restore(destination, require_fresh=True)
           expected = Path('publisher/site') / NAMESPACE / 'index.json'
           assert (destination / NAMESPACE / 'index.json').read_bytes() == expected.read_bytes()
           PY

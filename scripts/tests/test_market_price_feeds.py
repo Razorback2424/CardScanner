@@ -1,10 +1,13 @@
 import copy
+import io
 import json
 import os
 from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+from urllib.error import HTTPError, URLError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import market_price_feeds as feeds
@@ -94,14 +97,91 @@ class MarketPriceFeedTests(unittest.TestCase):
             feeds.prepare({(2, 1): {123: {"Holofoil"}}}, self.root / "cache", self.root / "mixed",
                           fetch=self.fetch, now=lambda: self.captured, pause=lambda _: None, yugioh_source=source)
 
-    def test_stale_receipts_and_corrupted_retained_bytes_cannot_be_republished(self):
+    def test_old_yugioh_job_capture_is_refetched_even_when_upstream_build_is_unchanged(self):
+        source = self.root / "yugioh"
+        (source / "tcgcsv").mkdir(parents=True)
+        for name in ("source-build-start.txt", "source-build-end.txt"):
+            (source / name).write_text(self.marker)
+        self.products["results"][0]["categoryId"] = 2
+        self.products["results"][1]["categoryId"] = 2
+        for resource, doc in [("products", self.products), ("prices", self.prices)]:
+            path = source / "tcgcsv" / f"1-{resource}.json"
+            path.write_bytes(feeds.packed(doc))
+            timestamp = feeds.instant(self.captured).timestamp()
+            os.utime(path, (timestamp, timestamp))
+        feeds.prepare({(2, 1): {123: {"Holofoil"}}}, self.root / "cache", self.root / "site",
+                      fetch=self.fetch, now=lambda: "2026-10-30T08:00:00+00:00", pause=lambda _: None,
+                      yugioh_source=source)
+        self.assertIn("https://tcgcsv.com/tcgplayer/2/1/products", self.calls)
+        self.assertIn("https://tcgcsv.com/tcgplayer/2/1/prices", self.calls)
+        prices = json.loads((self.root / "site" / feeds.NAMESPACE / "tcgplayer/2/1/prices").read_bytes())
+        self.assertEqual(prices["sourceFetchedAt"], "2026-10-30T08:00:00+00:00")
+
+    def test_aging_captures_are_refetched_without_relabeling_cached_bytes(self):
         self.prepare()
-        with self.assertRaises(ValueError):
-            self.prepare("stale", now="2026-10-30T08:00:00+00:00")
+        self.calls.clear()
+        self.prepare("renewed", now="2026-10-29T20:00:00+00:00")
+        self.assertEqual(self.calls, ["https://tcgcsv.com/last-updated.txt",
+            "https://tcgcsv.com/tcgplayer/71/1/products", "https://tcgcsv.com/tcgplayer/71/1/prices",
+            "https://tcgcsv.com/last-updated.txt"])
+        doc = json.loads((self.root / "renewed" / feeds.NAMESPACE / "tcgplayer/71/1/prices").read_bytes())
+        self.assertEqual(doc["sourceFetchedAt"], "2026-10-29T20:00:00+00:00")
+        self.assertEqual(doc["sourceBuild"], self.marker)
+
+    def test_failed_renewal_never_stamps_old_captures_as_new(self):
+        self.prepare()
+        receipts = next((self.root / "cache").glob("*/captures.json"))
+        original = receipts.read_bytes()
+        fetch = self.fetch
+        def unavailable(url, *args, **kwargs):
+            if not url.endswith("last-updated.txt"):
+                raise TimeoutError("upstream unavailable")
+            return fetch(url, *args, **kwargs)
+        self.fetch = unavailable
+        with self.assertRaises(TimeoutError):
+            self.prepare("failed", now="2026-10-30T08:00:00+00:00")
+        self.assertEqual(receipts.read_bytes(), original)
+        self.assertFalse((self.root / "failed").exists())
+
+    def test_corrupted_retained_bytes_cannot_be_republished(self):
+        self.prepare()
         raw = next((self.root / "cache").glob("*/71-1-prices.json"))
         raw.write_bytes(b"changed")
         with self.assertRaises(ValueError):
             self.prepare("changed")
+
+    def test_http_reads_retry_transient_timeouts_and_server_errors(self):
+        with patch.object(feeds, "build_opener") as opener, patch.object(feeds.time, "sleep") as pause:
+            opener.return_value.open.side_effect = [URLError(TimeoutError()),
+                HTTPError("https://feed.test", 503, "temporary", {}, None), io.BytesIO(b"valid")]
+            self.assertEqual(feeds.read_http("https://feed.test"), b"valid")
+            self.assertEqual(opener.return_value.open.call_count, 3)
+            self.assertEqual([call.args[0] for call in pause.call_args_list], [1, 2])
+
+    def test_http_retry_budget_is_bounded_and_permanent_errors_are_not_retried(self):
+        with patch.object(feeds, "build_opener") as opener, patch.object(feeds.time, "sleep"):
+            opener.return_value.open.side_effect = TimeoutError()
+            with self.assertRaises(TimeoutError):
+                feeds.read_http("https://feed.test")
+            self.assertEqual(opener.return_value.open.call_count, 3)
+        for status in (301, 403, 404):
+            with patch.object(feeds, "build_opener") as opener, patch.object(feeds.time, "sleep") as pause:
+                opener.return_value.open.side_effect = HTTPError("https://feed.test", status, "permanent", {}, None)
+                with self.assertRaises(HTTPError):
+                    feeds.read_http("https://feed.test")
+                self.assertEqual(opener.return_value.open.call_count, 1)
+                pause.assert_not_called()
+
+    def test_absent_namespace_and_byte_limit_remain_fail_closed_without_retries(self):
+        with patch.object(feeds, "build_opener") as opener, patch.object(feeds.time, "sleep") as pause:
+            opener.return_value.open.side_effect = HTTPError("https://feed.test", 404, "absent", {}, None)
+            self.assertIsNone(feeds.read_http("https://feed.test", absent_ok=True))
+            pause.assert_not_called()
+        with patch.object(feeds, "build_opener") as opener, patch.object(feeds.time, "sleep") as pause:
+            opener.return_value.open.return_value = io.BytesIO(b"too large")
+            with self.assertRaises(ValueError):
+                feeds.read_http("https://feed.test", maximum=2)
+            pause.assert_not_called()
 
     def test_invalid_prices_duplicate_lanes_foreign_products_and_partial_exports_fail(self):
         original = self.prices["results"][0]
@@ -150,6 +230,18 @@ class MarketPriceFeedTests(unittest.TestCase):
             if path.is_file():
                 self.assertEqual(path.read_bytes(), (destination / feeds.NAMESPACE / path.relative_to(source)).read_bytes())
         self.assertTrue(feeds.restore(destination, fetch=lambda *args, **kwargs: self.fail("Prepared files require no network")))
+
+    def test_publication_rejects_stale_or_future_captures_before_writing_site(self):
+        source, fetch = self.published()
+        self.assertTrue(feeds.restore(self.root / "fresh", fetch=fetch, require_fresh=True,
+                                     now=lambda: "2026-10-29T09:00:00+00:00"))
+        for name, now in [("expired", "2026-10-30T02:00:00+00:00"),
+                          ("future", "2026-10-29T07:59:59+00:00")]:
+            with self.assertRaises(ValueError):
+                feeds.restore(self.root / name, fetch=fetch, require_fresh=True, now=lambda: now)
+            self.assertFalse((self.root / name).exists())
+        # Catalog-only publications must still preserve a valid older namespace.
+        self.assertTrue(feeds.restore(self.root / "preserved", fetch=fetch))
 
     def test_absent_namespace_is_allowed_but_hash_failure_blocks_restore_without_partial_files(self):
         self.assertFalse(feeds.restore(self.root / "absent", fetch=lambda *args, **kwargs: None))

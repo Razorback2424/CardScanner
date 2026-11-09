@@ -2,8 +2,8 @@
 """Prepare scoped daily price feeds, or preserve them during a catalog deploy.
 
 This is a static snapshot publisher, not a query API. Only reviewed product IDs
-and lanes from the app's bundled catalogs are exported. Captured bytes are reused
-for an unchanged upstream build; a failed/mixed capture never replaces the site.
+and lanes from the app's bundled catalogs are exported. Recent captures are
+reused for an unchanged upstream build; a failed/mixed capture never replaces the site.
 """
 from __future__ import annotations
 
@@ -11,17 +11,23 @@ import argparse
 import base64
 from datetime import datetime, timezone
 import hashlib
+from http.client import IncompleteRead
 import json
 import math
 from pathlib import Path
 import re
+import sys
 import time
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 NAMESPACE = "market-prices/v1"
 MAX_FILE_BYTES = 8 * 1024 * 1024
 MAX_SITE_BYTES = 128 * 1024 * 1024
+# Leave two scheduled six-hour opportunities before clients reject a capture.
+# Renewing a receipt always requires an actual upstream product/price fetch.
+CAPTURE_REUSE_SECONDS = 12 * 60 * 60
+MAX_PUBLISH_AGE_SECONDS = 18 * 60 * 60
 ORIGIN = "https://scanstash-catalog-prod.web.app"
 FEED_PATH = re.compile(r"tcgplayer/(2|3|68|71)/[1-9][0-9]*/(products|prices)\Z")
 
@@ -52,16 +58,23 @@ class NoRedirects(HTTPRedirectHandler):
 
 def read_http(url, maximum=MAX_FILE_BYTES, absent_ok=False):
     request = Request(url, headers={"User-Agent": "ScanStashPricePublisher/1.0", "Accept": "application/json,text/plain"})
-    try:
-        with build_opener(NoRedirects()).open(request, timeout=45) as response:
-            raw = response.read(maximum + 1)
-    except HTTPError as error:
-        if absent_ok and error.code == 404:
-            return None
-        raise
-    if len(raw) > maximum:
-        raise ValueError("Response exceeds the byte limit")
-    return raw
+    for attempt in range(3):
+        try:
+            with build_opener(NoRedirects()).open(request, timeout=45) as response:
+                raw = response.read(maximum + 1)
+            if len(raw) > maximum:
+                raise ValueError("Response exceeds the byte limit")
+            return raw
+        except HTTPError as error:
+            if absent_ok and error.code == 404:
+                return None
+            if error.code not in (429, 500, 502, 503, 504) or attempt == 2:
+                raise
+        except (URLError, TimeoutError, ConnectionError, IncompleteRead):
+            if attempt == 2:
+                raise
+        print(f"Retrying price feed read ({attempt + 1}/2): {url}", file=sys.stderr, flush=True)
+        time.sleep(2 ** attempt)
 
 
 def scope_from_repo(repo):
@@ -136,8 +149,8 @@ def validate_response(raw, category, group, resource):
 
 
 def prepare(scope, cache, site, fetch=read_http, now=stamp, pause=time.sleep, yugioh_source=None):
-    # Only the marker is checked on every run. Group bodies are retained once
-    # per daily build; repeated prepares reuse their original capture receipts.
+    # Reuse recent bodies with their original receipts. Aging captures are
+    # fetched again, including when upstream has not published a new build.
     pause(0.1)
     marker = fetch("https://tcgcsv.com/last-updated.txt", 1024).decode().strip()
     if len(marker) > 100 or instant(marker) > instant(now()):
@@ -163,8 +176,17 @@ def prepare(scope, cache, site, fetch=read_http, now=stamp, pause=time.sleep, yu
                 raw = raw_path.read_bytes()
                 if digest(raw) != receipt["sha256"]:
                     raise ValueError("Retained source bytes changed")
-            else:
+                age = (instant(now()) - instant(receipt["capturedAt"])).total_seconds()
+                if age < 0:
+                    raise ValueError("Capture receipt is in the future")
+                if age >= CAPTURE_REUSE_SECONDS:
+                    receipt = None
+            if not receipt:
                 retained = yugioh_source / "tcgcsv" / f"{group}-{resource}.json" if category == 2 and yugioh_source is not None else None
+                if retained is not None:
+                    age = (instant(now()) - datetime.fromtimestamp(retained.stat().st_mtime, timezone.utc)).total_seconds()
+                    if not 0 <= age < CAPTURE_REUSE_SECONDS:
+                        retained = None
                 if retained is not None:
                     raw = retained.read_bytes()
                     captured_at = datetime.fromtimestamp(retained.stat().st_mtime, timezone.utc).replace(microsecond=0).isoformat()
@@ -252,7 +274,7 @@ def validate_site(index, files):
             raise ValueError("Incomplete product/price pair")
 
 
-def restore(site, origin=ORIGIN, fetch=read_http):
+def restore(site, origin=ORIGIN, fetch=read_http, require_fresh=False, now=stamp):
     if origin != ORIGIN:
         raise ValueError("Unexpected production origin")
     namespace = site / NAMESPACE
@@ -276,6 +298,13 @@ def restore(site, origin=ORIGIN, fetch=read_http):
             raise ValueError("Oversize or duplicate price feed index")
         files[path] = (namespace / path).read_bytes() if local.exists() else fetch(origin + "/" + NAMESPACE + "/" + path, size)
     validate_site(index, files)
+    if require_fresh:
+        for path, body in files.items():
+            if path == "last-updated.txt":
+                continue
+            captured = instant(json.loads(body)["sourceFetchedAt"])
+            if not 0 <= (instant(now()) - captured).total_seconds() < MAX_PUBLISH_AGE_SECONDS:
+                raise ValueError("Price publication requires recent upstream captures")
     for path, body in files.items():
         destination = namespace / path
         if destination.exists() and destination.read_bytes() != body:
@@ -300,6 +329,7 @@ def main():
     preserve = commands.add_parser("restore")
     preserve.add_argument("--site-root", type=Path, required=True)
     preserve.add_argument("--origin", default=ORIGIN)
+    preserve.add_argument("--require-fresh", action="store_true")
     args = parser.parse_args()
     if args.command == "prepare":
         result = prepare(scope_from_repo(args.repo), args.cache_dir, args.site_root, yugioh_source=args.yugioh_source)
@@ -307,7 +337,7 @@ def main():
         args.report.write_bytes(packed(result))
         print(json.dumps({key: value for key, value in result.items() if key != "missingProducts"}, sort_keys=True))
     else:
-        print("Price namespace preserved" if restore(args.site_root, args.origin) else "No price namespace is published")
+        print("Price namespace preserved" if restore(args.site_root, args.origin, require_fresh=args.require_fresh) else "No price namespace is published")
 
 
 if __name__ == "__main__":
