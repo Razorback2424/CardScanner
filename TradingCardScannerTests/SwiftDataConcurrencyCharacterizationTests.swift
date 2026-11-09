@@ -94,14 +94,9 @@ final class SwiftDataConcurrencyCharacterizationTests: XCTestCase {
 
         let userInfo = try XCTUnwrap(capture.userInfo)
         let keys = Set(userInfo.keys.map(Self.notificationKeyName))
-        XCTAssertEqual(
-            keys,
-            Set([
-                "inserted",
-                "updated",
-                "deleted"
-            ])
-        )
+        // Framework metadata such as historyTokens can be added without
+        // changing the identifier keys consumed by StoreRevisionMonitor.
+        XCTAssertTrue(Set(["inserted", "updated", "deleted"]).isSubset(of: keys))
         XCTAssertEqual(row.persistentModelID.entityName, "CollectedCard")
         let insertedIdentifiers = try XCTUnwrap(
             userInfo.first { Self.notificationKeyName($0.key) ==
