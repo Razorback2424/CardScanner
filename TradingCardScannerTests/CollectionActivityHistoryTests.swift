@@ -1902,7 +1902,15 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertEqual(try CollectionDisposition.parseSaleTotal("12.34", locale: us)?.tenThousandths, 123_400)
         XCTAssertEqual(try CollectionDisposition.parseSaleTotal("12,34", locale: de)?.tenThousandths, 123_400)
         XCTAssertEqual(try CollectionDisposition.parseSaleTotal(".50", locale: us)?.tenThousandths, 5_000)
-        for text in ["-1", "12abc", "NaN", "12.345", "1,000", ".", "1.2.3", "999999999999999999999"] {
+        for identifier in ["ar_EG", "fa_IR", "bn_BD"] {
+            let locale = Locale(identifier: identifier)
+            let localized = 12.34.formatted(.number.precision(.fractionLength(2)).locale(locale))
+            XCTAssertEqual(try CollectionDisposition.parseSaleTotal(localized, locale: locale)?.tenThousandths, 123_400, identifier)
+            let excessPrecision = 12.345.formatted(.number.precision(.fractionLength(3)).locale(locale))
+            XCTAssertThrowsError(try CollectionDisposition.parseSaleTotal(excessPrecision, locale: locale), identifier)
+        }
+        XCTAssertEqual(try CollectionDisposition.parseSaleTotal("١2.٣4", locale: us)?.tenThousandths, 123_400)
+        for text in ["-1", "12abc", "NaN", "12.345", "1,000", ".", "1.2.3", "999999999999999999999", "²", "Ⅳ", "1e3"] {
             XCTAssertThrowsError(try CollectionDisposition.parseSaleTotal(text, locale: us), text)
         }
     }

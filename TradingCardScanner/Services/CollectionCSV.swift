@@ -151,6 +151,23 @@ struct CollectionCSVEntry: Sendable, Equatable {
     var justTCGAPIVersion: String?
     var certificationNumber: String?
     var marketRegionRaw: String?
+
+    /// Legacy raw keys omitted finish or treatment. Accept those shapes only
+    /// for this printing; an explicit key cannot override the row's identity.
+    var hasCompatibleRawOwnershipKey: Bool {
+        guard itemKind == .rawCard else { return true }
+        let base = game == .pokemon ? providerID : "\(game.rawValue):\(providerID)"
+        let finishKey = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+            base: base, game: game, finish: variant, rawTreatmentIDs: magicTreatmentIDsRaw
+        )
+        let suffix = pokemonPrintRun.map { "@\($0.rawValue)" } ?? ""
+        var allowed = Set([finishKey + suffix, base + suffix])
+        allowed.formUnion(MagicTreatmentKeyCodec.legacyCollectionKeys(for: finishKey + suffix))
+        if game == .pokemon, pokemonPrintRun == .firstEdition, variant == nil {
+            allowed.insert("\(base)#\(PhysicalVariant.firstEdition.id)")
+        }
+        return allowed.contains(collectionKey)
+    }
 }
 
 enum CollectionCSVError: LocalizedError, Sendable {
@@ -762,6 +779,39 @@ enum CollectionCSV {
             && lhs.justTCGAPIVersion == rhs.justTCGAPIVersion && lhs.marketRegionRaw == rhs.marketRegionRaw
     }
 
+    private static func validateNonRawOwner(_ owner: CollectedCard, for entry: CollectionCSVEntry) throws {
+        func agrees(_ stored: String?, _ imported: String?) -> Bool {
+            stored == nil || imported == nil || stored == imported
+        }
+        let samePrinting = (owner.catalogProviderID ?? owner.providerID) == (entry.catalogProviderID ?? entry.providerID)
+        let sameSealedProduct = entry.itemKind == .sealedProduct && owner.justTCGCardID != nil
+            && owner.justTCGCardID == entry.justTCGCardID
+        guard samePrinting || sameSealedProduct,
+              owner.certificationNumber == entry.certificationNumber,
+              owner.pokemonPrintRun == entry.pokemonPrintRun,
+              agrees(owner.variantID, entry.variant?.id),
+              agrees(owner.justTCGCardID, entry.justTCGCardID),
+              agrees(owner.justTCGVariantID, entry.justTCGVariantID),
+              agrees(owner.justTCGAPIVersion, entry.justTCGAPIVersion),
+              agrees(owner.marketRegionRaw, entry.marketRegionRaw) else {
+            throw GameImportValidationError.invalidOwnershipKey
+        }
+        if entry.itemKind == .gradedCard {
+            guard owner.gradingCompany == entry.gradingCompany,
+                  owner.gradeRaw == entry.grade?.value,
+                  owner.gradeLabel == entry.grade?.label,
+                  owner.gradingQualifier == entry.grade?.qualifier else {
+                throw GameImportValidationError.invalidOwnershipKey
+            }
+        }
+        let storedTreatments = Set(MagicTreatmentKeyCodec.canonicalIDs(from: owner.magicTreatmentIDsRaw))
+        let importedTreatments = Set(MagicTreatmentKeyCodec.canonicalIDs(from: entry.magicTreatmentIDsRaw))
+        guard storedTreatments.isEmpty || importedTreatments.isEmpty || storedTreatments == importedTreatments,
+              owner.magicTreatmentQualifiers.allSatisfy({ key, value in
+                  entry.magicTreatmentQualifiers[key].map { $0 == value } ?? true
+              }) else { throw GameImportValidationError.invalidOwnershipKey }
+    }
+
     static func apply(
         _ plan: CollectionCSVImportPlan,
         to context: ModelContext,
@@ -913,19 +963,6 @@ enum CollectionCSV {
                         let localMetadata = try gameImportAdapters.adapter(for: entry.game)?.localMetadata(for: entry)
                         let operationID = plan.operationID(for: entry)
                         let existingOperationEvents = try ledger.events(forOperationID: operationID)
-                        if !existingOperationEvents.isEmpty {
-                            guard existingOperationEvents.allSatisfy({
-                                $0.sourceRaw == CollectionActivitySource.csvImport.rawValue
-                                    && $0.kindRaw == InventoryEventKind.recordExisting.rawValue
-                            }) else {
-                                throw CollectionStoreError.ledgerConflict(
-                                    "CSV import operation already exists with different ownership data"
-                                )
-                            }
-                            alreadyImportedEntries += 1
-                            completedEntries += 1
-                            continue
-                        }
                         guard entry.quantity > 0,
                               entry.quantity <= CollectionQuantityLimits.maximum else {
                             throw CollectionCSVError.quantityOutOfRange(
@@ -992,6 +1029,11 @@ enum CollectionCSV {
                                     "CSV entry matches an ambiguous collection identity"
                                 )
                             }
+                            if let existing {
+                                guard existing.cardGame == entry.game, existing.itemKind == entry.itemKind else {
+                                    throw GameImportValidationError.invalidOwnershipKey
+                                }
+                            }
                             if isCertified(entry) {
                                 let owner = try collectionStore.certifiedGradedCard(for: entry)
                                 guard existing == nil || existing === owner else {
@@ -999,7 +1041,41 @@ enum CollectionCSV {
                                         "CSV collection key belongs to a different certified object"
                                     )
                                 }
+                                if let owner, entry.game == .pokemon,
+                                   owner.pokemonPrintRun != entry.pokemonPrintRun {
+                                    throw GameImportValidationError.invalidOwnershipKey
+                                }
                                 existing = owner
+                            }
+                            if entry.itemKind == .rawCard, let existing {
+                                guard existing.providerID == entry.providerID,
+                                      existing.variant == nil || entry.variant == nil
+                                        || existing.variant?.id == entry.variant?.id,
+                                      existing.pokemonPrintRun == entry.pokemonPrintRun
+                                else { throw GameImportValidationError.invalidOwnershipKey }
+                                let storedTreatments = Set(MagicTreatmentKeyCodec.canonicalIDs(from: existing.magicTreatmentIDsRaw))
+                                let incomingTreatments = Set(MagicTreatmentKeyCodec.canonicalIDs(from: entry.magicTreatmentIDsRaw))
+                                guard storedTreatments.isEmpty || incomingTreatments.isEmpty
+                                        || storedTreatments == incomingTreatments
+                                else { throw GameImportValidationError.invalidOwnershipKey }
+                            }
+                            if entry.itemKind != .rawCard, let existing {
+                                try validateNonRawOwner(existing, for: entry)
+                            }
+                            // A replay marker proves that quantity was already
+                            // applied, not that conflicting identity is valid.
+                            if !existingOperationEvents.isEmpty {
+                                guard existingOperationEvents.allSatisfy({
+                                    $0.sourceRaw == CollectionActivitySource.csvImport.rawValue
+                                        && $0.kindRaw == InventoryEventKind.recordExisting.rawValue
+                                }) else {
+                                    throw CollectionStoreError.ledgerConflict(
+                                        "CSV import operation already exists with different ownership data"
+                                    )
+                                }
+                                alreadyImportedEntries += 1
+                                completedEntries += 1
+                                continue
                             }
                             if let existing {
                                 if !existing.allowsQuantityAggregation || isCertified(entry) {
@@ -1493,6 +1569,16 @@ enum CollectionCSV {
             && (providerID.hasPrefix("graded:") || providerID.hasPrefix("sealed:"))
             ? providerID
             : nil
+        func unboundGradedKey(includeFinish: Bool = true, includePrintRun: Bool = true) -> String {
+            let fragment = gradingCompany.map { "\($0.rawValue)|\(grade?.identityFragment ?? "")" } ?? "unknown"
+            var base = "graded:\(baseKey)#\(fragment)"
+            if includeFinish, let resolvedVariant { base += ":finish:\(resolvedVariant.id)" }
+            if includePrintRun, game == .pokemon, let resolvedPrintRun { base += ":run:\(resolvedPrintRun.rawValue)" }
+            if let resolvedCertificationNumber { base += ":cert:\(resolvedCertificationNumber)" }
+            return game == .magic
+                ? MagicTreatmentKeyCodec.appendCollectionSuffix(to: base, treatments: treatmentModels)
+                : base
+        }
         let key: String
         switch itemKind {
         case .rawCard:
@@ -1522,23 +1608,7 @@ enum CollectionCSV {
                     magicTreatments: treatmentModels
                 )
             } else {
-                let fragment = gradingCompany.map { company in
-                    "\(company.rawValue)|\(grade?.identityFragment ?? "")"
-                } ?? "unknown"
-                var base = "graded:\(baseKey)#\(fragment)"
-                if let resolvedVariant { base += ":finish:\(resolvedVariant.id)" }
-                if game == .pokemon, let resolvedPrintRun {
-                    base += ":run:\(resolvedPrintRun.rawValue)"
-                }
-                if let resolvedCertificationNumber {
-                    base += ":cert:\(resolvedCertificationNumber)"
-                }
-                key = game == .magic
-                    ? MagicTreatmentKeyCodec.appendCollectionSuffix(
-                        to: base,
-                        treatments: treatmentModels
-                    )
-                    : base
+                key = unboundGradedKey()
             }
 
         case .sealedProduct:
@@ -1565,7 +1635,7 @@ enum CollectionCSV {
             }
         }
 
-        return CollectionCSVEntry(
+        var entry = CollectionCSVEntry(
             collectionKey: explicitCollectionKey ?? key,
             game: game,
             providerID: providerID,
@@ -1595,6 +1665,37 @@ enum CollectionCSV {
             certificationNumber: resolvedCertificationNumber,
             marketRegionRaw: marketRegionRaw
         )
+        if itemKind != .rawCard, let explicitCollectionKey {
+            let prefix = itemKind == .gradedCard ? "graded:" : "sealed:"
+            var allowed = Set([key])
+            if providerID.hasPrefix(prefix) { allowed.insert(providerID) }
+            if itemKind == .gradedCard {
+                for includeFinish in [false, true] {
+                    for includePrintRun in [false, true] {
+                        allowed.insert(unboundGradedKey(includeFinish: includeFinish, includePrintRun: includePrintRun))
+                    }
+                }
+                if let gradingCompany, let grade {
+                    allowed.insert(CollectedCard.scannedGradedCollectionKey(game: game,
+                        underlyingPrintingID: catalogProviderID ?? providerID, company: gradingCompany,
+                        grade: grade, certificationNumber: resolvedCertificationNumber,
+                        pokemonPrintRun: resolvedPrintRun, magicTreatments: treatmentModels))
+                }
+            } else {
+                let base = "sealed:\(baseKey)"
+                allowed.insert(game == .magic
+                    ? MagicTreatmentKeyCodec.appendCollectionSuffix(to: base, treatments: treatmentModels) : base)
+            }
+            for candidate in Array(allowed) {
+                allowed.formUnion(MagicTreatmentKeyCodec.legacyCollectionKeys(for: candidate))
+            }
+            // Certificates retain older opaque graded aliases. Their physical
+            // owner is validated separately, including before replay detection.
+            let certifiedAlias = itemKind == .gradedCard && resolvedCertificationNumber != nil
+                && explicitCollectionKey.hasPrefix(prefix)
+            entry.conflictingSourceIdentity = !allowed.contains(explicitCollectionKey) && !certifiedAlias
+        }
+        return entry
     }
 
     private static func importedVariant(id: String?, label: String?) -> PhysicalVariant? {

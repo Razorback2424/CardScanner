@@ -66,13 +66,16 @@ final class CollectorToolsStore: ObservableObject {
         Task { await loadProduct() }
     }
 
-    func reconcile() async {
+    @discardableResult
+    func reconcile() async -> Bool? {
         reconciliation &+= 1
         let revision = reconciliation
         let owned = await client.currentOwnership()
-        guard revision == reconciliation else { return }
+        guard revision == reconciliation else { return nil }
         // An authoritative empty snapshot removes access. Product lookup is independent.
         ownership = owned ? .owned : .unowned
+        if owned { message = nil }
+        return owned
     }
 
     func loadProduct() async {
@@ -90,7 +93,10 @@ final class CollectorToolsStore: ObservableObject {
         guard !isBusy, !isOwned, displayPrice != nil, ownership != .loading else { return }
         isBusy = true
         message = nil
-        defer { isBusy = false }
+        defer {
+            isBusy = false
+            if isOwned { message = nil }
+        }
         do {
             switch try await client.purchase() {
             case .cancelled: message = "Purchase cancelled. Your work is still here."
@@ -109,8 +115,9 @@ final class CollectorToolsStore: ObservableObject {
         defer { isBusy = false }
         do {
             try await client.sync()
-            await reconcile()
-            message = isOwned ? "Collector Tools restored." : "No Collector Tools purchase was found."
+            if let owned = await reconcile() {
+                message = owned ? "Collector Tools restored." : "No Collector Tools purchase was found."
+            }
         } catch {
             message = "Purchases could not be restored. Please try again."
         }

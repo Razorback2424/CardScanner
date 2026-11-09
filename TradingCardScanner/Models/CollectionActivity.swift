@@ -40,9 +40,19 @@ struct CollectionDisposition: Equatable, Sendable {
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return nil }
         let separator = locale.decimalSeparator ?? "."
-        let parts = text.components(separatedBy: separator)
+        func normalizedDigits(_ part: String) -> String? {
+            var digits = ""
+            for scalar in part.unicodeScalars {
+                guard scalar.properties.numericType == .decimal,
+                      let value = scalar.properties.numericValue else { return nil }
+                digits += String(Int(value))
+            }
+            return digits
+        }
+        let rawParts = text.components(separatedBy: separator)
+        let parts = rawParts.compactMap(normalizedDigits)
         guard parts.count <= 2,
-              parts.allSatisfy({ $0.allSatisfy { $0.isASCII && $0.isNumber } }),
+              parts.count == rawParts.count,
               parts.contains(where: { !$0.isEmpty }),
               parts.count == 1 || parts[1].count <= 2,
               let dollars = Int64(parts[0].isEmpty ? "0" : parts[0]) else {

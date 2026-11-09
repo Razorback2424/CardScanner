@@ -751,6 +751,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
                         pokemonPrintRun: candidate.pokemonPrintRun,
                         identityResolution: candidate.identityResolution,
                         resolved: candidate.resolved,
+                        source: .scan,
                         shouldContinue: shouldContinue
                     )
                 case .cardNotTracked, .noGradedListings, .gradeNotTracked,
@@ -787,7 +788,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
                 savesChanges: false,
                 signpostID: persistenceID
             )
-            guard let stored = try store.card(forAnyKey: mutation.collectionKey) else {
+            guard let stored = store.card(forKey: mutation.collectionKey) else {
                 throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
             }
             // Both add and correction use the same staging gate: a lookup with
@@ -2360,7 +2361,12 @@ struct CollectionStore {
         forAnyKey key: String,
         magicTreatmentIDsRaw: [String] = []
     ) throws -> Int? {
-        try card(forAnyKey: key, magicTreatmentIDsRaw: magicTreatmentIDsRaw)?.quantity
+        let canonical = try canonicalKeyForLegacyRow(key) ?? key
+        _ = try validatedTreatmentIDs(for: canonical, suppliedTreatmentIDs: magicTreatmentIDsRaw)
+        let keys = Set([key, canonical] + MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonical))
+        let rows = try keys.flatMap(cards(forKey:))
+        guard !rows.isEmpty else { return nil }
+        return try rows.reduce(0) { try CollectionQuantityLimits.checkedAdd($0, $1.quantity) }
     }
 
     private func cards(forKey key: String) throws -> [CollectedCard] {
@@ -3638,6 +3644,7 @@ struct CollectionStore {
             variant: nil,
             resolution: .userConfirmed
         ),
+        source: CollectionActivitySource = .gradedCatalog,
         shouldContinue: StorageGenerationContinuation? = nil
     ) throws -> CollectionMutation {
         do {
@@ -3742,15 +3749,15 @@ struct CollectionStore {
             try requireAppended(
                 ledger.record(
                     existing,
-                    kind: inventoryKind(for: .gradedCatalog),
-                    source: .gradedCatalog,
+                    kind: inventoryKind(for: source),
+                    source: source,
                     deltaQuantity: 1,
                     operationID: operationID
                 )
             )
             let activity = try appendActivity(
                 existing,
-                source: .gradedCatalog,
+                source: source,
                 kind: .added,
                 deltaQuantity: 1,
                 ledgerOperationIDs: [operationID]
@@ -3806,15 +3813,15 @@ struct CollectionStore {
         try requireAppended(
             ledger.record(
                 row,
-                kind: inventoryKind(for: .gradedCatalog),
-                source: .gradedCatalog,
+                kind: inventoryKind(for: source),
+                source: source,
                 deltaQuantity: 1,
                 operationID: operationID
             )
         )
         let activity = try appendActivity(
             row,
-            source: .gradedCatalog,
+            source: source,
             kind: .added,
             deltaQuantity: 1,
             ledgerOperationIDs: [operationID]
@@ -3924,15 +3931,15 @@ struct CollectionStore {
                 try requireAppended(
                     ledger.record(
                         existing,
-                        kind: inventoryKind(for: .gradedCatalog),
-                        source: .gradedCatalog,
+                        kind: inventoryKind(for: .scan),
+                        source: .scan,
                         deltaQuantity: 1,
                         operationID: operationID
                     )
                 )
                 let activity = try appendActivity(
                     existing,
-                    source: .gradedCatalog,
+                    source: .scan,
                     kind: .added,
                     deltaQuantity: 1,
                     ledgerOperationIDs: [operationID]
@@ -3991,15 +3998,15 @@ struct CollectionStore {
             try requireAppended(
                 ledger.record(
                     row,
-                    kind: inventoryKind(for: .gradedCatalog),
-                    source: .gradedCatalog,
+                    kind: inventoryKind(for: .scan),
+                    source: .scan,
                     deltaQuantity: 1,
                     operationID: operationID
                 )
             )
             let activity = try appendActivity(
                 row,
-                source: .gradedCatalog,
+                source: .scan,
                 kind: .added,
                 deltaQuantity: 1,
                 ledgerOperationIDs: [operationID]
@@ -4282,6 +4289,7 @@ struct CollectionStore {
             storeMarketPrice(
                 product.marketPriceUSD,
                 updatedAt: product.updatedAt,
+                retrievedAt: product.retrievedAt,
                 marketVariantID: product.variantID,
                 for: existing
             )
@@ -4342,6 +4350,7 @@ struct CollectionStore {
         storeMarketPrice(
             product.marketPriceUSD,
             updatedAt: product.updatedAt,
+            retrievedAt: product.retrievedAt,
             marketVariantID: product.variantID,
             for: row
         )
@@ -4480,10 +4489,11 @@ struct CollectionStore {
     private func storeMarketPrice(
         _ amount: Double?,
         updatedAt: Date?,
+        retrievedAt: Date?,
         marketVariantID: String?,
         for card: CollectedCard
     ) {
-        guard let amount else { return }
+        guard let amount, let retrievedAt = retrievedAt ?? updatedAt else { return }
         PriceStore(context: context).store(
             .price(
                 NormalizedPrice(
@@ -4494,7 +4504,7 @@ struct CollectionStore {
                         ?? card.justTCGCardID
                         ?? card.priceStorageID,
                     sourceUpdatedAt: updatedAt,
-                    fetchedAt: .now
+                    fetchedAt: retrievedAt
                 )
             ),
             game: card.cardGame,

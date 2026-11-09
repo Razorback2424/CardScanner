@@ -4,6 +4,160 @@ import XCTest
 
 @MainActor
 final class CSVImportResumeTests: XCTestCase {
+    func testUncertifiedGradeAndSealedKeysCannotOverrideIncomingIdentity() throws {
+        for kind in [CollectionItemKind.gradedCard, .sealedProduct] {
+            let original = try nonRawPlan(kind: kind)
+            let key = try XCTUnwrap(original.entries.first?.collectionKey)
+            let incoming = try nonRawPlan(kind: kind, key: key, quantity: 2,
+                provider: kind == .sealedProduct ? "box-b" : "base1-4", grade: "10")
+            for populated in [false, true] {
+                let container = try makeContainer()
+                if populated {
+                    XCTAssertTrue(try CollectionCSV.apply(original, to: ModelContext(container)).failedRows.isEmpty)
+                }
+                let before = try CollectionStoreDigester.make(in: ModelContext(container), storeID: UUID()).materialSHA256
+                let result = try CollectionCSV.apply(incoming, to: ModelContext(container))
+                XCTAssertEqual(result.failedRows.count, 1, "\(kind), populated=\(populated)")
+                XCTAssertEqual(result.importedQuantity, 0)
+                let after = try CollectionStoreDigester.make(in: ModelContext(container), storeID: UUID()).materialSHA256
+                XCTAssertEqual(after, before)
+                let retry = try CollectionCSV.parse(Data(CollectionCSV.exportFailedEntries(result.failedEntries).text.utf8))
+                XCTAssertEqual(try CollectionCSV.apply(retry, to: ModelContext(container)).failedRows.count, 1)
+            }
+        }
+    }
+
+    func testNonRawOwnerConflictsAreRejectedBeforeMergeAndReplay() throws {
+        for conflict in ["grade", "grader", "label", "qualifier", "printing", "finish", "run", "card", "variant", "version", "certificate", "region"] {
+            let container = try makeContainer()
+            var original = try XCTUnwrap(nonRawPlan(marketCard: "market-card", marketVariant: "market-grade-nine").entries.first)
+            original.marketRegionRaw = "US"
+            let plan = CollectionCSVImportPlan(entries: [original], skippedRows: 0, skippedCSVText: nil)
+            XCTAssertTrue(try CollectionCSV.apply(plan, to: ModelContext(container)).failedRows.isEmpty)
+            let before = try CollectionStoreDigester.make(in: ModelContext(container), storeID: UUID()).materialSHA256
+            var incoming = original
+            switch conflict {
+            case "grade": incoming.grade = CardGrade(value: "10")
+            case "grader": incoming.gradingCompany = .cgc
+            case "label": incoming.grade = CardGrade(value: "9", label: "Mint")
+            case "qualifier": incoming.grade = CardGrade(value: "9", qualifier: "OC")
+            case "printing": incoming.catalogProviderID = "base1-2"
+            case "finish":
+                incoming = try XCTUnwrap(nonRawPlan(key: original.collectionKey, finish: "reverse",
+                    marketCard: "market-card", marketVariant: "market-grade-nine").entries.first)
+            case "run": incoming.pokemonPrintRun = .firstEdition
+            case "card": incoming.justTCGCardID = "other-card"
+            case "variant": incoming.justTCGVariantID = "other-variant"
+            case "version": incoming.justTCGAPIVersion = "v1"
+            case "certificate": incoming.certificationNumber = "different-object"
+            default: incoming.marketRegionRaw = "EU"
+            }
+            for quantity in [1, 2] {
+                incoming.quantity = quantity
+                let result = try CollectionCSV.apply(.init(entries: [incoming], skippedRows: 0, skippedCSVText: nil), to: ModelContext(container))
+                XCTAssertEqual(result.failedRows.count, 1, "\(conflict), quantity=\(quantity)")
+                XCTAssertEqual(result.alreadyImportedEntries, 0, conflict)
+                XCTAssertEqual(try CollectionStoreDigester.make(in: ModelContext(container), storeID: UUID()).materialSHA256, before, conflict)
+            }
+        }
+    }
+
+    func testNonRawLegacyKeysSurviveMarketBindingAndExportRoundTrip() throws {
+        for kind in [CollectionItemKind.gradedCard, .sealedProduct] {
+            let container = try makeContainer()
+            let original = try nonRawPlan(kind: kind)
+            let key = try XCTUnwrap(original.entries.first?.collectionKey)
+            XCTAssertTrue(try CollectionCSV.apply(original, to: ModelContext(container)).failedRows.isEmpty)
+            let bound = try nonRawPlan(kind: kind, key: key, quantity: 2, marketCard: "market-card", marketVariant: "market-variant")
+            let result = try CollectionCSV.apply(bound, to: ModelContext(container))
+            XCTAssertTrue(result.failedRows.isEmpty)
+            let rows = try ModelContext(container).fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(rows.first?.quantity, 3)
+            XCTAssertEqual(rows.first?.justTCGVariantID, "market-variant")
+            let exported = try CollectionCSV.parse(Data(CollectionCSV.export(rows).text.utf8))
+            let fresh = try makeContainer()
+            XCTAssertTrue(try CollectionCSV.apply(exported, to: ModelContext(fresh)).failedRows.isEmpty)
+            XCTAssertEqual(try storedQuantities(in: fresh), [key: 3])
+        }
+    }
+
+    private func nonRawPlan(kind: CollectionItemKind = .gradedCard, key: String? = nil,
+                            quantity: Int = 1, provider: String? = nil, grade: String = "9",
+                            finish: String = "holo", marketCard: String? = nil,
+                            marketVariant: String? = nil) throws -> CollectionCSVImportPlan {
+        let columns = [("game", "pokemon"), ("provider_id", provider ?? (kind == .sealedProduct ? "box-a" : "base1-4")),
+            ("card_name", "Fixture"), ("set_name", "Fixture Set"), ("set_code", "FIX"),
+            ("card_number", kind == .sealedProduct ? "" : "4"), ("quantity", String(quantity)),
+            ("item_kind", kind.rawValue), ("grading_company", kind == .gradedCard ? "psa" : ""),
+            ("grade", kind == .gradedCard ? grade : ""), ("finish", kind == .gradedCard ? finish : ""),
+            ("collection_key", key ?? ""), ("justtcg_card_id", marketCard ?? ""),
+            ("justtcg_variant_id", marketVariant ?? ""),
+            ("justtcg_api_version", marketVariant == nil ? "" : (kind == .gradedCard ? "v2" : "v1"))]
+        func quoted(_ text: String) -> String { "\"" + text.replacingOccurrences(of: "\"", with: "\"\"") + "\"" }
+        let text = columns.map { quoted($0.0) }.joined(separator: ",") + "\n"
+            + columns.map { quoted($0.1) }.joined(separator: ",") + "\n"
+        return try CollectionCSV.parse(Data(text.utf8))
+    }
+
+    func testRawCSVRejectsContradictoryExplicitKeysWithoutWritingOwnership() throws {
+        for row in [
+            "pokemon,base1-4,normal,base1-4#holo",
+            "pokemon,base1-4,holo,base1-2#holo",
+            "pokemon,base1-4,holo,magic:base1-4#holo",
+            "magic,printing,foil,magic:printing#nonfoil",
+            "magic,printing,foil,magic:other#foil"
+        ] {
+            let csv = "game,provider_id,finish,collection_key,card_name,quantity\n\(row),Fixture,2\n"
+            let plan = try CollectionCSV.parse(Data(csv.utf8))
+            let container = try makeContainer()
+            let result = try CollectionCSV.apply(plan, to: ModelContext(container))
+            XCTAssertEqual(result.failedRows.count, 1, row)
+            let context = ModelContext(container)
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectedCard>()), 0, row)
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<InventoryEvent>()), 0, row)
+            XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectionActivity>()), 0, row)
+            let retry = try CollectionCSV.parse(Data(CollectionCSV.exportFailedEntries(result.failedEntries).text.utf8))
+            XCTAssertEqual(try CollectionCSV.apply(retry, to: context).failedRows.count, 1, row)
+        }
+    }
+
+    func testRawCSVCannotMergeIntoAnIncompatibleExistingOwner() throws {
+        for conflict in ["provider", "finish", "game", "kind", "run"] {
+            let container = try makeContainer()
+            let context = ModelContext(container)
+            let owner = CollectedCard(collectionKey: "base1-4#holo", game: conflict == "game" ? .magic : .pokemon,
+                providerID: conflict == "provider" ? "base1-2" : "base1-4", name: "Fixture", setName: "Set",
+                setCode: "SET", cardNumber: "4", rarity: nil, imageURL: nil, thumbnailURL: nil,
+                variant: conflict == "finish" ? .normal : .holo, variantResolution: .imported, quantity: 3)
+            if conflict == "kind" { owner.itemKindRaw = CollectionItemKind.gradedCard.rawValue }
+            if conflict == "run" { owner.pokemonPrintRunRaw = PokemonPrintRun.firstEdition.rawValue }
+            context.insert(owner)
+            try context.save()
+            let csv = "game,provider_id,finish,collection_key,card_name,quantity\npokemon,base1-4,holo,base1-4#holo,Fixture,2\n"
+            let result = try CollectionCSV.apply(CollectionCSV.parse(Data(csv.utf8)), to: ModelContext(container))
+            XCTAssertEqual(result.failedRows.count, 1, conflict)
+            XCTAssertEqual(try storedQuantities(in: container), ["base1-4#holo": 3], conflict)
+            let fresh = ModelContext(container)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 0, conflict)
+            XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 0, conflict)
+        }
+    }
+
+    func testRawLegacyBareKeysStillRoundTripAndRejectContradictoryFinishMerge() throws {
+        for (game, key, finish) in [(CardGame.pokemon, "printing", "holo"), (.magic, "magic:printing", "foil")] {
+            let container = try makeContainer()
+            let csv = "game,provider_id,finish,collection_key,card_name,quantity\n\(game.rawValue),printing,\(finish),\(key),Fixture,2\n"
+            let plan = try CollectionCSV.parse(Data(csv.utf8))
+            XCTAssertTrue(try CollectionCSV.apply(plan, to: ModelContext(container)).failedRows.isEmpty)
+            XCTAssertEqual(try storedQuantities(in: container), [key: 2])
+            let conflicting = csv.replacingOccurrences(of: ",\(finish),", with: game == .pokemon ? ",normal," : ",nonfoil,")
+            let refused = try CollectionCSV.apply(CollectionCSV.parse(Data(conflicting.utf8)), to: ModelContext(container))
+            XCTAssertEqual(refused.failedRows.count, 1)
+            XCTAssertEqual(try storedQuantities(in: container), [key: 2])
+        }
+    }
+
     func testCertifiedImportsShareOneOwnerAcrossBoundAndUnboundKeys() throws {
         for boundFirst in [true, false] {
             let container = try makeContainer()

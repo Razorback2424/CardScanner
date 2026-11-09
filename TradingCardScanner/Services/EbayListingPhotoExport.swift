@@ -558,10 +558,11 @@ enum EbayListingPhotoExport {
             let fullName = side.fullName
             let fullData: Data
             var reducedQuality = false
-            if sourceIsJPEG, sourceIsIdentityOriented, data.count <= maximumByteCount {
-                // This is the only path that preserves the original JPEG
-                // bytes and therefore avoids another generation-loss pass.
-                fullData = data
+            if sourceIsJPEG, sourceIsIdentityOriented, data.count <= maximumByteCount,
+               let sanitized = sanitizedJPEG(source: source), sanitized.count <= maximumByteCount {
+                // Copy the compressed pixels without another generation of
+                // JPEG loss, replacing source metadata before sharing.
+                fullData = sanitized
             } else {
                 let encoded = try encodedJPEG(
                     image: image,
@@ -637,6 +638,21 @@ enum EbayListingPhotoExport {
             throw Error.decodeFailed(side: side.label)
         }
         return image
+    }
+
+    private static func sanitizedJPEG(source: CGImageSource) -> Data? {
+        let data = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(
+            data, UTType.jpeg.identifier as CFString, 1, nil
+        ) else { return nil }
+        let options: CFDictionary = [
+            kCGImageDestinationMetadata: CGImageMetadataCreateMutable(),
+            kCGImageMetadataShouldExcludeGPS: true,
+            kCGImageMetadataShouldExcludeXMP: true
+        ] as CFDictionary
+        // CopyImageSource finalizes the destination itself.
+        guard CGImageDestinationCopyImageSource(destination, source, options, nil) else { return nil }
+        return data as Data
     }
 
     private static func encodedJPEG(

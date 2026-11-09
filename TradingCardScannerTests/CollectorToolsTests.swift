@@ -124,6 +124,82 @@ final class CollectorToolsTests: XCTestCase {
         XCTAssertFalse(relaunched.isOwned)
     }
 
+    func testSupersededRestoreDoesNotPublishAnUnacceptedOwnershipResult() async {
+        for latestOwned in [false, true] {
+            let client = Client()
+            let store = CollectorToolsStore(client: client)
+            await store.reconcile()
+            client.suspendOwnership = true
+            let restore = Task { await store.restore() }
+            while client.ownershipWaits.count < 1 { await Task.yield() }
+            let foreground = Task { await store.reconcile() }
+            while client.ownershipWaits.count < 2 { await Task.yield() }
+            client.ownershipWaits[0].resume(returning: false)
+            await restore.value
+            XCTAssertNil(store.message, "An ignored query cannot report that no purchase exists")
+            XCTAssertFalse(store.isBusy)
+            client.ownershipWaits[1].resume(returning: latestOwned)
+            await foreground.value
+            XCTAssertEqual(store.ownership, latestOwned ? .owned : .unowned)
+            XCTAssertNil(store.message)
+        }
+    }
+
+    func testApprovedPendingPurchaseClearsObsoleteFeedback() async {
+        let client = Client()
+        let store = CollectorToolsStore(client: client)
+        store.start()
+        await store.reconcile()
+        await store.loadProduct()
+        client.result = .pending
+        await store.purchase()
+        XCTAssertEqual(store.message, "Awaiting approval. Your work is still here.")
+        client.owned = true
+        let delivery = CollectorToolsDelivery(id: 19, isVerified: true, isIntendedProduct: true)
+        client.continuation?.yield(delivery)
+        let deadline = Date().addingTimeInterval(2)
+        while !client.finishes.contains(delivery.id), Date() < deadline { await Task.yield() }
+        XCTAssertTrue(store.isOwned)
+        XCTAssertTrue(client.finishes.contains(delivery.id))
+        XCTAssertNil(store.message)
+    }
+
+    func testAcceptedRestoreStillReportsItsResult() async {
+        let client = Client()
+        let store = CollectorToolsStore(client: client)
+        for owned in [false, true] {
+            client.owned = owned
+            await store.restore()
+            XCTAssertEqual(store.message, owned ? "Collector Tools restored." : "No Collector Tools purchase was found.")
+        }
+    }
+
+    func testOwnershipConfirmedBeforePurchaseReturnsKeepsFeedbackCurrent() async {
+        for fails in [false, true] {
+            let client = Client()
+            let store = CollectorToolsStore(client: client)
+            store.start()
+            await store.reconcile()
+            await store.loadProduct()
+            client.suspendPurchase = true
+            client.result = .pending
+            let purchase = Task { await store.purchase() }
+            while client.purchaseWait == nil { await Task.yield() }
+            client.owned = true
+            let delivery = CollectorToolsDelivery(id: 20, isVerified: true, isIntendedProduct: true)
+            client.continuation?.yield(delivery)
+            let deadline = Date().addingTimeInterval(2)
+            while !client.finishes.contains(delivery.id), Date() < deadline { await Task.yield() }
+            XCTAssertTrue(store.isOwned)
+            XCTAssertTrue(client.finishes.contains(delivery.id))
+            client.fail = fails
+            client.purchaseWait?.resume()
+            await purchase.value
+            XCTAssertNil(store.message, "A late pending/error response cannot override confirmed ownership")
+            XCTAssertFalse(store.isBusy)
+        }
+    }
+
     func testOverlappingPurchaseRequestsAreIgnored() async {
         let client = Client()
         client.suspendPurchase = true

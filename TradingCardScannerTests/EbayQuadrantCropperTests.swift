@@ -535,13 +535,48 @@ final class EbayListingPhotoExportTests: XCTestCase {
                 "10-Back-BL.jpg"
             ]
         )
-        XCTAssertEqual(try Data(contentsOf: output.urls[0]), sourceData)
+        let original = try XCTUnwrap(UIImage(data: sourceData)?.cgImage)
+        let exported = try XCTUnwrap(UIImage(data: Data(contentsOf: output.urls[0]))?.cgImage)
+        XCTAssertEqual(original.dataProvider?.data as Data?, exported.dataProvider?.data as Data?)
+        XCTAssertEqual(original.colorSpace, exported.colorSpace)
         XCTAssertEqual(output.pixelDimensions[0].width, 100)
         XCTAssertEqual(output.pixelDimensions[0].height, 140)
         XCTAssertEqual(output.pixelDimensions[1].width, 60)
         XCTAssertEqual(output.pixelDimensions[1].height, 84)
         XCTAssertEqual(output.pixelDimensions[6].width, 63)
         XCTAssertEqual(output.pixelDimensions[6].height, 88)
+    }
+
+    func testListingJPEGRemovesPrivateMetadataWithoutRecompressingUprightPixels() async throws {
+        let image = try XCTUnwrap(sourceFixture().cgImage)
+        for orientation in [CGImagePropertyOrientation.up, .right] {
+            let data = try jpegData(for: image, orientation: orientation, metadata: [
+                kCGImagePropertyGPSDictionary: [kCGImagePropertyGPSLatitude: 40.0,
+                    kCGImagePropertyGPSLatitudeRef: "N", kCGImagePropertyGPSLongitude: 105.0,
+                    kCGImagePropertyGPSLongitudeRef: "W"],
+                kCGImagePropertyTIFFDictionary: [kCGImagePropertyTIFFArtist: "Private photographer"],
+                kCGImagePropertyExifDictionary: [kCGImagePropertyExifUserComment: "Private comment"]
+            ])
+            let source = try XCTUnwrap(CGImageSourceCreateWithData(data as CFData, nil))
+            let properties = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any])
+            XCTAssertNotNil(properties[kCGImagePropertyGPSDictionary])
+            let output = try await EbayListingPhotoExport.makeListingPhotos(frontData: data, backData: data, includePreviews: false)
+            defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: output.contentDirectory) }
+            for url in output.urls {
+                let exported = try XCTUnwrap(CGImageSourceCreateWithURL(url as CFURL, nil))
+                let properties = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(exported, 0, nil) as? [CFString: Any])
+                XCTAssertNil(properties[kCGImagePropertyGPSDictionary], url.lastPathComponent)
+                XCTAssertNil((properties[kCGImagePropertyTIFFDictionary] as? [CFString: Any])?[kCGImagePropertyTIFFArtist])
+                XCTAssertNil((properties[kCGImagePropertyExifDictionary] as? [CFString: Any])?[kCGImagePropertyExifUserComment])
+            }
+            if orientation == .up {
+                let before = try XCTUnwrap(CGImageSourceCreateImageAtIndex(source, 0, nil))
+                let exported = try XCTUnwrap(CGImageSourceCreateWithURL(output.urls[0] as CFURL, nil))
+                let after = try XCTUnwrap(CGImageSourceCreateImageAtIndex(exported, 0, nil))
+                XCTAssertEqual(before.dataProvider?.data as Data?, after.dataProvider?.data as Data?)
+                XCTAssertEqual(before.colorSpace, after.colorSpace)
+            }
+        }
     }
 
     func testFilesOnlyExportMatchesPreviewExportForUprightAndRotatedSources() async throws {
@@ -593,7 +628,7 @@ final class EbayListingPhotoExportTests: XCTestCase {
             XCTAssertEqual(output.urls.map(\.lastPathComponent), names)
             XCTAssertEqual(output.previews.count, 5)
             XCTAssertEqual(output.pixelDimensions.count, 5)
-            XCTAssertEqual(try Data(contentsOf: output.urls[0]), sourceData)
+            try assertSameJPEGPixels(Data(contentsOf: output.urls[0]), sourceData)
             XCTAssertEqual(output.pixelDimensions[1].width, frontOnly ? 60 : 63)
             XCTAssertEqual(output.pixelDimensions[1].height, frontOnly ? 84 : 88)
             let directory = try XCTUnwrap(output.contentDirectory)
@@ -698,7 +733,7 @@ final class EbayListingPhotoExportTests: XCTestCase {
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: partial.path).sorted(), Array(names.prefix(5)))
         let partialBytes = try names.prefix(5).map { try Data(contentsOf: partial.appendingPathComponent($0)) }
         XCTAssertTrue(partialBytes.allSatisfy { !$0.isEmpty })
-        XCTAssertEqual(partialBytes[0], frontData)
+        try assertSameJPEGPixels(partialBytes[0], frontData)
 
         old.cancel()
         // Use the real allocator: fresh UUID container, same listing filenames.
@@ -715,8 +750,8 @@ final class EbayListingPhotoExportTests: XCTestCase {
         XCTAssertTrue(retry.previews.isEmpty)
         let retryBytes = try retry.urls.map { try Data(contentsOf: $0) }
         XCTAssertEqual(retryBytes, earlierBytes)
-        XCTAssertEqual(retryBytes[0], backData)
-        XCTAssertEqual(retryBytes[5], frontData)
+        try assertSameJPEGPixels(retryBytes[0], backData)
+        try assertSameJPEGPixels(retryBytes[5], frontData)
         for (index, data) in retryBytes.enumerated() {
             let source = try XCTUnwrap(CGImageSourceCreateWithData(data as CFData, nil))
             XCTAssertEqual(CGImageSourceGetType(source) as String?, UTType.jpeg.identifier)
@@ -949,6 +984,16 @@ final class EbayListingPhotoExportTests: XCTestCase {
         }
     }
 
+    private func assertSameJPEGPixels(_ lhs: Data, _ rhs: Data,
+                                      file: StaticString = #filePath, line: UInt = #line) throws {
+        let first = try XCTUnwrap(UIImage(data: lhs)?.cgImage, file: file, line: line)
+        let second = try XCTUnwrap(UIImage(data: rhs)?.cgImage, file: file, line: line)
+        XCTAssertEqual(first.width, second.width, file: file, line: line)
+        XCTAssertEqual(first.height, second.height, file: file, line: line)
+        XCTAssertEqual(first.colorSpace, second.colorSpace, file: file, line: line)
+        XCTAssertEqual(first.dataProvider?.data as Data?, second.dataProvider?.data as Data?, file: file, line: line)
+    }
+
     private func jpegData(for image: CGImage) throws -> Data {
         let data = NSMutableData()
         let destination = try XCTUnwrap(
@@ -994,7 +1039,8 @@ final class EbayListingPhotoExportTests: XCTestCase {
 
     private func jpegData(
         for image: CGImage,
-        orientation: CGImagePropertyOrientation
+        orientation: CGImagePropertyOrientation,
+        metadata: [CFString: Any] = [:]
     ) throws -> Data {
         let data = NSMutableData()
         let destination = try XCTUnwrap(
@@ -1005,14 +1051,10 @@ final class EbayListingPhotoExportTests: XCTestCase {
                 nil
             )
         )
-        CGImageDestinationAddImage(
-            destination,
-            image,
-            [
-                kCGImageDestinationLossyCompressionQuality: 0.95,
-                kCGImagePropertyOrientation: orientation.rawValue
-            ] as CFDictionary
-        )
+        var properties = metadata
+        properties[kCGImageDestinationLossyCompressionQuality] = 0.95
+        properties[kCGImagePropertyOrientation] = orientation.rawValue
+        CGImageDestinationAddImage(destination, image, properties as CFDictionary)
         XCTAssertTrue(CGImageDestinationFinalize(destination))
         return data as Data
     }
