@@ -371,9 +371,9 @@ final class ScannerViewModelTests: XCTestCase {
              "setID": "test-set", "setName": "Test Set", "officialCount": 10, "setCode": "TST",
              "variants": variants.map { ["id": $0.id, "label": $0.label] }]
         }
-        // This pre-repair cache has no finishCoverageVerified field.
+        // Current cache format with weaker, unspecified coverage evidence.
         try JSONSerialization.data(withJSONObject: [
-            "appVersion": "scanner-tests", "schemaGeneration": 2, "entries": entries
+            "appVersion": "scanner-tests", "schemaGeneration": 3, "entries": entries
         ]).write(to: root.appendingPathComponent("ResolvedPokemonCards.json"))
         let model = try makeModel(variants: [], catalogMiss: true,
             resolvedDiskCache: ResolvedPokemonCardCache(root: root, appVersion: "scanner-tests"))
@@ -3667,6 +3667,10 @@ final class ScannerViewModelTests: XCTestCase {
         )
         let addCount = await addGate.count()
         XCTAssertEqual(addCount, 2)
+        let candidates = await addGate.captured()
+        XCTAssertEqual(candidates.last?.catalogRetrievedAt, row.pendingCommit?.catalogRetrievedAt,
+            "Retrying persistence must not renew the catalog payload or its quote")
+        XCTAssertEqual(candidates.last?.price, row.pendingCommit?.price)
     }
 
     func testLateSuccessfulRecoveryRetiresOnlyItsRowAndCannotBeRetried() async throws {
@@ -4284,6 +4288,8 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.pendingChoice?.request.encounterID, encounterID)
         model.scenePhaseChanged(isActive: true, isBackgrounded: false)
         XCTAssertEqual(model.pendingChoice?.request.encounterID, encounterID)
+        XCTAssertFalse(model.scanner.wantsRunningForTesting,
+            "A session started without camera capture must keep that policy on foreground return")
         model.choose(.normal)
         let committed = await waitUntil { model.recent.count == 1 }
         XCTAssertTrue(committed, "A preserved choice must still be actionable after returning.")

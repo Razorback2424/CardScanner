@@ -5372,7 +5372,7 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         try FileManager.default.createDirectory(at: cacheRoot, withIntermediateDirectories: true)
         let storedAt = ISO8601DateFormatter().string(from: .now)
         let staleFile = """
-        {"appVersion":"test","schemaGeneration":2,"entries":[
+        {"appVersion":"test","schemaGeneration":3,"entries":[
           {"key":"\(key)","storedAt":"\(storedAt)","cardID":"sv10-085","localID":"085","name":"Stale cache card","image":null,"rarity":null,"setID":"sv10","setName":"Destined Rivals","officialCount":\(definition.officialCount),"setCode":"DRI","variants":[]}
         ]}
         """
@@ -5455,7 +5455,7 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         try FileManager.default.createDirectory(at: cacheRoot, withIntermediateDirectories: true)
         let storedAt = ISO8601DateFormatter().string(from: .now)
         let oldGenerationFile = """
-        {"appVersion":"test","schemaGeneration":1,"entries":[
+        {"appVersion":"test","schemaGeneration":2,"entries":[
           {"key":"\(key)","storedAt":"\(storedAt)","cardID":"sv10-085","localID":"085","name":"Old generation card","image":null,"rarity":null,"setID":"sv10","setName":"Destined Rivals","officialCount":\(definition.officialCount),"setCode":"DRI","variants":[{"id":"normal","label":"Non-Holo"},{"id":"reverse","label":"Reverse Holo"}]}
         ]}
         """
@@ -5526,6 +5526,44 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             Set([.normal, .reverse]),
             "A variant-less response must not evict an existing complete cache entry."
         )
+    }
+
+    func testImageLessScanResolutionDoesNotRequestOptionalArtwork() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let card = try decode(TCGdexCard.self, from: """
+        {"id":"sv10-085","localId":"085","name":"Test Card","image":null,
+         "variants":{"normal":true,"reverse":false,"holo":false,"firstEdition":false,"wPromo":false},
+         "set":{"id":"sv10","name":"Destined Rivals","cardCount":{"total":\(definition.officialCount),"official":\(definition.officialCount)}}}
+        """)
+        let artwork = PokemonCatalogResolvedCardArtwork(
+            thumbnail: "https://assets.tcgdex.net/en/sv/sv10/085/low.png",
+            image: "https://assets.tcgdex.net/en/sv/sv10/085/high.png", source: .tcgdexCDNProbe)
+        let source = CountingPokemonCardSource(primary: .card(card), fallback: .failure(.badResponse),
+            recoveredArtwork: artwork)
+        let catalog = CardCatalog(source: source,
+            offline: PokemonOfflineCatalog(store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)),
+            resolvedDiskCache: ResolvedPokemonCardCache(root: root.appendingPathComponent("resolved"), appVersion: "test"),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0))
+        let result = try await catalog.resolution(for: .pokemon(setCode: "DRI", cardNumber: "085",
+            printedTotal: definition.officialCount, setDefinition: definition), recoverArtwork: false)
+        XCTAssertEqual(result.card.providerID, card.id)
+        XCTAssertEqual(result.path, .network)
+        let recoveries = await source.artworkRecoveryCount()
+        XCTAssertEqual(recoveries, 0, "Missing optional artwork must not gate identity resolution")
+        let presentation = try await catalog.resolution(for: .pokemon(setCode: "DRI", cardNumber: "085",
+            printedTotal: definition.officialCount, setDefinition: definition))
+        XCTAssertEqual(presentation.card.displayImageURL?.absoluteString, artwork.image)
+        let presentationRecoveries = await source.artworkRecoveryCount()
+        XCTAssertEqual(presentationRecoveries, 1, "Read-only presentation retains exact artwork recovery")
+        let cold = CardCatalog(source: source,
+            resolvedDiskCache: ResolvedPokemonCardCache(root: root.appendingPathComponent("resolved"), appVersion: "test"),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0))
+        let cached = try await cold.resolution(for: .pokemon(setCode: "DRI", cardNumber: "085",
+            printedTotal: definition.officialCount, setDefinition: definition))
+        XCTAssertEqual(cached.path, .cacheHit)
+        XCTAssertEqual(cached.card.displayImageURL?.absoluteString, artwork.image)
     }
 
     func testResolvedPokemonIdentitySurvivesAColdCatalogInstance() async throws {
@@ -9258,6 +9296,7 @@ private actor CountingPokemonCardSource: PokemonCardSource {
     private let primaryResponse: PrimaryResponse
     private let fallbackResponse: FallbackResponse
     private let responseDelayNanoseconds: UInt64
+    private let recoveredArtwork: PokemonCatalogResolvedCardArtwork?
     private var primaryRequests = 0
     private var fallbackRequests = 0
     private var artworkRequests = 0
@@ -9265,11 +9304,13 @@ private actor CountingPokemonCardSource: PokemonCardSource {
     init(
         primary: PrimaryResponse,
         fallback: FallbackResponse,
-        responseDelayNanoseconds: UInt64 = 0
+        responseDelayNanoseconds: UInt64 = 0,
+        recoveredArtwork: PokemonCatalogResolvedCardArtwork? = nil
     ) {
         self.primaryResponse = primary
         self.fallbackResponse = fallback
         self.responseDelayNanoseconds = responseDelayNanoseconds
+        self.recoveredArtwork = recoveredArtwork
     }
 
     func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
@@ -9298,7 +9339,9 @@ private actor CountingPokemonCardSource: PokemonCardSource {
 
     func recoveringArtwork(for card: TCGdexCard) async -> TCGdexCard {
         artworkRequests += 1
-        return card
+        var result = card
+        result.recoveredArtwork = recoveredArtwork
+        return result
     }
 
     func artworkRecoveryCount() -> Int { artworkRequests }

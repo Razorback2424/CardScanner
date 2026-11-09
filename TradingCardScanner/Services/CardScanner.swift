@@ -3157,6 +3157,10 @@ final class CardScanner: NSObject, ObservableObject {
         sessionQueue.sync {}
     }
 
+    var wantsRunningForTesting: Bool {
+        sessionQueue.sync { wantsRunning }
+    }
+
     var subjectModeForTesting: ScanSubjectMode {
         visionQueue.sync { subjectMode }
     }

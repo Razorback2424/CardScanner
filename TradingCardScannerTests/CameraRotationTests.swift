@@ -15,6 +15,19 @@ final class CameraRotationTests: XCTestCase {
     /// cannot accidentally produce the right answer.
     private let visionRect = CGRect(x: 0.1, y: 0.2, width: 0.3, height: 0.4)
 
+    func testLevelIndicatorMapsDeviceAxesIntoEveryInterfaceOrientation() {
+        let expected: [(UIInterfaceOrientation, CGSize)] = [
+            (.portrait, CGSize(width: 18, height: -9)),
+            (.landscapeLeft, CGSize(width: -9, height: -18)),
+            (.landscapeRight, CGSize(width: 9, height: 18)),
+            (.portraitUpsideDown, CGSize(width: -18, height: 9))
+        ]
+        for (orientation, offset) in expected {
+            XCTAssertEqual(CameraRotationTracker.levelOffset(gravityX: 0.2, gravityY: 0.1,
+                rotationAngle: CameraRotationTracker.angle(for: orientation)), offset)
+        }
+    }
+
     func testRejectedCaptureClearsPendingStateAndAllowsRetry() async {
         let camera = CenteringCameraController()
         for _ in 0..<2 {

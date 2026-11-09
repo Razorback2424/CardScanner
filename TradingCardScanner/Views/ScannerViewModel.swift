@@ -1762,6 +1762,7 @@ final class ScannerViewModel: ObservableObject {
         let storageGeneration: CollectionStorageGeneration?
     }
     private var pendingSessionStart: PendingSessionStart?
+    private var startsCameraForSession = false
     private var storageGeneration: CollectionStorageGeneration?
     private var storageGenerationToken: StorageGenerationToken?
 #if DEBUG
@@ -2140,6 +2141,7 @@ final class ScannerViewModel: ObservableObject {
         writeCoordinator: DerivedStateWriteCoordinator? = nil,
         storageGeneration: CollectionStorageGeneration? = nil
     ) {
+        startsCameraForSession = startCamera
         self.summaryStore = summaryStore
         self.writeCoordinator = writeCoordinator ?? self.writeCoordinator
         if sessionFinalizationTask != nil {
@@ -2547,7 +2549,7 @@ final class ScannerViewModel: ObservableObject {
             recognitionEligibility.isCameraInterrupted = false
             updateScannerConfirmationContext()
             if recognitionEligibility.isScannerVisible {
-                scanner.start()
+                if startsCameraForSession { scanner.start() }
                 // `start()` restores the capture session, but it deliberately
                 // does not change the recognition pause state. The inactive
                 // transition pauses recognition before returning to the
@@ -3282,7 +3284,8 @@ final class ScannerViewModel: ObservableObject {
                 let resolution: CardCatalog.CatalogResolution
                 if let evidence = pending.evidence,
                    let legacy = pending.candidates.first(where: { $0.providerID == candidate.id }) {
-                    let card = try await self.catalog.card(for: legacy, matching: evidence)
+                    let card = try await self.catalog.card(for: legacy, matching: evidence,
+                        recoverArtwork: request.purpose != .collection)
                     resolution = .init(card)
                 } else {
                     resolution = try await self.catalog.resolvePrintingChoice(candidate, for: request.identifier)
@@ -3642,7 +3645,7 @@ final class ScannerViewModel: ObservableObject {
                 identityResolution: pending.identityResolution,
                 pokemonPrintRun: pending.pokemonPrintRun,
                 options: pending.options,
-                catalogRetrievedAt: .now,
+                catalogRetrievedAt: pending.catalogRetrievedAt,
                 gradedOutcome: pending.gradedOutcome
             )
             let retryCandidate = CollectionCommitCandidate(resolvedScan: resolved)
@@ -3800,7 +3803,7 @@ final class ScannerViewModel: ObservableObject {
                 self.beginIdentification(request.id)
                 defer { self.endIdentification(request.id) }
                 do {
-                    let card = try await self.catalog.card(for: candidate, matching: evidence)
+                    let card = try await self.catalog.card(for: candidate, matching: evidence, recoverArtwork: false)
                     guard !Task.isCancelled, self.isCurrent(request) else {
                         self.endOneCardScan(encounterID: request.encounterID, outcome: "cancelled")
                         return
@@ -4207,7 +4210,8 @@ final class ScannerViewModel: ObservableObject {
                     "encounter=\(request.encounterID.uuidString)"
                 )
             }
-            resolution = try await catalog.resolution(for: request.identifier)
+            resolution = try await catalog.resolution(for: request.identifier,
+                recoverArtwork: request.purpose != .collection)
         } catch let CatalogLookupError.printingChoiceRequired(_, candidates) {
             guard !Task.isCancelled, isCurrent(request) else {
                 endOneCardScan(encounterID: request.encounterID, outcome: "cancelled")

@@ -972,7 +972,7 @@ struct SealedProductDetailView: View {
                         .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(!canSave || pendingMutation != nil || isAdding || isUndoing)
+                .disabled(!canSave || isAdding || isUndoing)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }

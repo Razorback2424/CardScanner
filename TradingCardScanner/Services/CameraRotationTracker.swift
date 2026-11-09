@@ -97,6 +97,19 @@ final class CameraRotationTracker: NSObject, ObservableObject {
         default: return defaultAngle
         }
     }
+
+    /// Core Motion axes stay device-relative when the interface rotates.
+    nonisolated static func levelOffset(gravityX x: Double, gravityY y: Double,
+                                       rotationAngle: CGFloat) -> CGSize {
+        let screen: (Double, Double)
+        switch CardFramingRegion.normalizedRotationAngle(rotationAngle) {
+        case 0: screen = (y, x)
+        case 180: screen = (-y, -x)
+        case 270: screen = (-x, y)
+        default: screen = (x, -y)
+        }
+        return CGSize(width: screen.0 * 90, height: screen.1 * 90)
+    }
 }
 
 extension UIView {
