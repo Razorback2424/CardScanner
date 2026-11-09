@@ -1,3 +1,162 @@
+# 2026-11-08 — Ownership and purchase refinement fixes
+
+Implemented the third review's two High and two Medium findings, preserving all
+60 pre-existing modified files. Non-raw CSV imports reject incompatible explicit
+keys and existing owners before merges or replay recognition, while preserving
+legacy and bound/unbound round trips. Both authenticated pricing clients reject
+redirects before forwarding API keys. Purchase feedback follows accepted
+ownership reconciliation and clears obsolete pending/error feedback, including
+approval arriving before the purchase call returns. Sale totals accept localized
+decimal digits while retaining exact checked cents arithmetic.
+
+Final affected-scope Debug simulator verification: **572 passed, 0 failed,
+2 existing skips** (574 executed). The real loopback redirect test covers both
+clients, five redirect statuses and same/cross-host destinations, with a positive
+control for synthetic-key forwarding. Controlled purchase races, pending
+approval, purchase/restore/refund/photo ZIP, rejected-import store digests,
+failed-row retry, ownership/history and localized digit regressions pass.
+Skips are the opt-in aged-store benchmark and a local StoreKit interruption
+fixture that supplied an entitlement before issue resolution; sandbox
+interrupted-purchase acceptance remains open. Final unsigned ARM64 Release
+simulator compilation passes with zero errors and the same 11 existing production
+warnings. Build data uses the external SSD. Local documentation links and
+`git diff --check` pass; no source changed after final verification.
+
+The opt-in metrics host probe does not justify changing retention or durability.
+Catalog peak-memory and rendered inspection gestures still require representative
+device evidence; no speculative changes were made. No schemas, dependencies or
+purchase access rules changed. Nothing was committed or published. Privacy/support
+URLs remain owner-deferred until launch preparation. Scope, investigation results and
+verification are recorded in the
+[fix plan](app_review_fix_plan.md#ownership-and-purchase-refinement--2026-11-08).
+This does not certify the full suite, physical devices, CloudKit, providers or
+release readiness.
+
+# 2026-11-08 — Additional workflow refinement fixes
+
+Implemented the additional review's two High and five Medium findings on
+`304328e` plus the existing uncommitted refinement/marketplace work. Listing
+JPEGs remove private metadata while preserving compressed pixels, color and
+orientation. CSV imports reject contradictory raw keys and incompatible owner
+merges before replay detection; legacy/treatment aliases and certified round
+trips remain covered. Centering and asking-price inputs require complete,
+localized finite decimals; asking-price comparisons also reject unrepresentable
+percentages. Valid market history survives derived-cache write failures.
+Portfolio economic-day labels use the pinned timezone without changing event
+timestamps or calendar/locale preferences. CSV preparation shows reading state
+and disables repeat selection, with the existing generation/request fences.
+Centering analysis cancels when its model is released.
+
+Final affected-scope simulator verification: **614 passed, 0 failed, 2 skipped**
+(the existing opt-in native-refinement and aged-store benchmarks). The expanded
+selection required correcting two accounting fixtures whose keys contradicted
+their provider IDs; all accounting assertions remain, with explicit import-success
+checks added. Metadata tests now compare identical decoded pixels/color instead
+of retaining private source bytes. Temporary synthetic probes were removed after
+measurement; no permanent diagnostics, dependencies or schema changes were added.
+The native ARM64 Release simulator build passes with zero errors and the same
+11 previously recorded production warnings. Build data is on the external SSD;
+`git diff --check` and local links in these new entries pass.
+
+Simulator measurements do not justify replacing the CSV parser, weakening row
+durability, adding another image cache or rewriting export scheduling. Device
+crop/export latency, large-photo memory pressure, thermal behavior and interactive
+file-picker/travel/accessibility checks remain open. Privacy/support URLs remain
+owner-deferred until final launch preparation. Verification history, measurements,
+acceptance boundaries and the final Release compilation result are tracked in the
+[fix plan](app_review_fix_plan.md#additional-workflow-refinement--2026-11-08).
+No commit, push, archive or release acceptance is implied.
+
+# 2026-11-08 — Production refinement fixes
+
+Graded refresh now commits binding and complete price/ownership history in one
+serialized checkpoint, revalidating the exact owner after network I/O. Removed
+owners retain their history, and rejected quotes roll back the binding. The
+obsolete split patch and price-only enqueue wrapper are removed. Exact price
+keys now select graded owners, avoiding arbitrary matches by shared vendor handle.
+Sealed Add preserves provider retrieval dates through saved Browse pages,
+including the legacy page-envelope date, instead of creating fresh check evidence.
+
+Scanner writes avoid a second repair lookup; quantity reads no longer stage
+history mutations. Magic pages retain confirmed no-USD answers for the existing
+negative-cache period, while newer saved prices supersede older saved gaps.
+Catalog identity folding is locale-independent, while
+price-filter input supports localized decimals/digits and rejects invalid ranges.
+Scanner prices show stale raw quotes and their real source, graded acquisitions
+record scan provenance, and scanner feedback honors Reduce Motion.
+
+The expanded affected simulator selection passes 702 distinct methods without
+failures or skips. The 162-test graded/pricing/surface recheck and the final
+95-test Browse/cache selection also pass without failures or skips. The final
+unsigned ARM64 Release simulator build passes with zero compiler errors;
+existing concurrency/closure warnings remain. Host catalog checks pass 88 tests
+with one opt-in live CDN
+check skipped. Existing marketplace/feed edits are preserved; nothing is committed
+or published. The owner explicitly deferred privacy/support pages and URL
+configuration until final launch preparation, recorded in the
+[release follow-up](docs/plans/release_followups.md#owner-deferred-launch-links--2026-11-08).
+Device performance, visual polish and release acceptance remain separate gates.
+[Implementation and evidence](app_review_fix_plan.md#production-refinement-fixes--2026-11-08).
+
+# 2026-11-07 — Yu-Gi-Oh current pricing verified
+
+Yu-Gi-Oh uses the same daily feed restored during the One Piece repair. Checked
+all 59,965 supported product/edition mappings against the published artifact:
+58,261 have market amounts, 1,704 have no amount, and no product/name/number
+mismatches were found. The public custom-domain feed index matches that artifact.
+
+All 62 focused pricing, catalog, resolution and scanner/import workflow tests
+pass, including real Price Check requests for Unlimited, Limited and 1st Edition,
+two Rescue Cat artwork variants, and a missing First Edition quote that must not
+borrow the Unlimited amount. Two historical/offline tests initially failed
+because they implicitly used the now-active live feed; they now explicitly use
+the bundled source. A temporary-receipt-gated live test retains the provider
+acceptance coverage. No additional app pricing implementation change was needed.
+Existing installations still need the shared endpoint's new build. No physical
+device, CloudKit or release acceptance is claimed.
+[Authority](docs/plans/documentation_audit.md#2026-11-07--yu-gi-oh-daily-price-verification).
+
+# 2026-11-07 — One Piece market feed restored
+
+One Piece Price Check was blocked by an empty shared feed URL and an unpublished
+price namespace, despite correct scan/catalog identity. Configured the app's
+reviewed daily feed endpoint, published the prepared production feed with owner
+approval, and enabled `MARKET_PRICE_FEEDS_ACTIVE` for daily publication. The new
+daily artifact validates all 2,367 existing One Piece mappings with exact product,
+number, finish and USD prices. The other 123 verified catalog printings still
+lack reviewed mappings; this repair does not invent those associations.
+The publication workflow completed successfully, including complete feed readback.
+
+Focused simulator verification passes 158 tests with two opt-in live checks
+skipped. A separate live Price Check test passes against the production custom
+domain for OP01-120, OP05-119, ST01-012 and EB01-001. The initial shared build
+directory was locked; isolated SSD verification then exposed an old purchase-link
+fixture without its required market mapping, corrected before the clean rerun.
+All 16 publisher/hosting-preservation Python tests and the hosting configuration
+check pass. Installed apps need a new build to receive the endpoint setting.
+This is simulator/provider evidence, not physical-device or release acceptance.
+[Authority and publication](docs/plans/documentation_audit.md#2026-11-07--one-piece-price-feed-activation).
+
+# 2026-11-07 — Exact TCGplayer product links
+
+The shared marketplace action now opens only an exact TCGplayer product URL.
+Reviewed One Piece, Lorcana, and Yu-Gi-Oh product mappings reach resolved card
+details and newly collected rows; existing Magic and Pokémon exact links remain
+available. Detail, Price Check, scan review, and collection surfaces omit the
+action when product identity is unresolved, including loading and failure
+states. No search URL is offered. Focused simulator link, variant, and detail
+rendering tests passed 69/69; the final link and adapter mapping rerun passed
+20/20. These are simulator checks, not live marketplace or device acceptance.
+
+The edge-case follow-up rejects malformed product IDs and non-product provider
+URLs, uses conflict-aware Pokémon product extraction, and prevents incomplete
+finish mappings from selecting a product. Withdrawn/replaced catalog mappings
+now clear or replace stale stored product IDs through both metadata paths.
+Magic detail backfill uses its selected finish, including separate etched IDs.
+The broader simulator selection passed 116/116; after the final metadata and
+backfill changes, 29/29 link, normalization, and structural refresh tests passed.
+Saved-only identities require a catalog refresh to reconcile withdrawn mappings.
+
 # 2026-11-07 — Squirtle bottom edge retained for review
 
 Reviewed native source pixels and found that the earlier frozen bottom path

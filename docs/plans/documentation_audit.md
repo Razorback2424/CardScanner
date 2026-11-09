@@ -2283,3 +2283,82 @@ foreign marketplace discovery items are not admissions. Existing provider rows
 with translated names are not necessarily English releases: known French-only
 DP54/55 remain an explicit unresolved filtering requirement alongside proposed
 exact-card exclusion support, rather than a completed English-only gate.
+
+## 2026-11-07 — Marketplace search link superseded
+
+The 2026-11-02 [TCGplayer visual checklist](../../references/tcgplayer_link_success_checklist.md)
+and [Pokémon retail audit](../audits/pokemon-retail-repairs-2026-11-02.md)
+describe a search fallback that was current for those snapshots. The current
+link builder offers a product action only for an exact product identity, and
+reviewed cross-game market mappings now supply that identity to resolved cards.
+The earlier visual evidence remains historical; this change has focused
+simulator tests but no new screenshot or live marketplace acceptance.
+
+The follow-up edge review rejects zero/non-ASCII product IDs, provider search
+pages, credential-bearing URLs, nonstandard ports, and unrelated subdomains.
+Pokémon destinations use the same conflict-aware product extraction as pricing;
+unselected finishes require complete agreement. Current catalog metadata clears
+withdrawn product handles during refresh. Magic backfill resolves the selected
+finish instead of copying an unqualified purchase URI. Saved links still depend
+on their stored identity until a catalog refresh reconciles them; simulator
+tests cannot establish that a marketplace product remains available online.
+
+## 2026-11-07 — One Piece price feed activation
+
+The prior mapping coverage evidence did not establish that the app's feed was
+configured or published. This investigation found `TCGCSV_PRICE_BASE_URL` empty
+in the shared build configuration and both production price origins returning
+404. The daily ingestion job succeeded while its publication job was skipped.
+This explains pricing failure even for the 2,367 reviewed One Piece mappings.
+
+The [shared configuration](../../Config/PokemonCatalogProduction.xcconfig) now
+points at the published daily feed. With explicit owner approval, the existing
+[production workflow run](https://github.com/Razorback2424/CardScanner/actions/runs/42432145390)
+published the preserved hosting site and the repository variable
+`MARKET_PRICE_FEEDS_ACTIVE` was enabled for scheduled publication. The new
+2026-11-07 upstream build has exact identity and USD prices for all 2,367 reviewed
+One Piece mappings. Custom-domain OP01 products and prices match the prepared
+artifact byte for byte. The remaining 123 verified printings without mappings
+remain coverage gaps, separate from this configuration/publication defect.
+Both workflow jobs completed successfully, including hash/size readback of the
+complete published price namespace from the production origin.
+
+[One Piece regressions](../../TradingCardScannerTests/OnePieceIntegrationTests.swift)
+now check the built endpoint and include a temporary-receipt-gated live Price
+Check acceptance test. The focused One Piece/shared-feed selection passes 158
+tests with two live checks skipped; the separate production-feed Price Check
+test passes for OP01-120, OP05-119, ST01-012 and EB01-001. Sixteen Python tests
+and the hosting configuration check pass. An initial build-directory lock was
+avoided with isolated SSD derived data; a stale purchase-link fixture was given
+its required reviewed mapping before the clean rerun. Existing apps require a
+new build for this build-time setting. No physical-device, CloudKit, archive or
+release acceptance is inferred from these simulator/provider checks.
+
+## 2026-11-07 — Yu-Gi-Oh daily price verification
+
+The shared feed activation above also restores Yu-Gi-Oh current Price Check.
+Earlier snapshot-only/no-live-refresh descriptions are historical for this
+pricing path: `YuGiOhDailyPriceSource` reads the published daily feed, and Price
+Check forbids historical fallback. Offline initial valuation can still use the
+bundled snapshot with its original capture date.
+
+Checked the 2026-11-07 upstream artifact against all 59,965 supported product and
+edition mappings: 58,261 have market amounts, 1,704 lack amounts, and none have
+product, product-name or printed-number mismatches. The public custom-domain
+index matches the deployed artifact. These counts concern supported editions,
+not distinct cards or complete physical catalog coverage.
+
+All 62 focused [Yu-Gi-Oh tests](../../TradingCardScannerTests/YuGiOhIntegrationTests.swift)
+pass across pricing, catalog, resolution and scanner/import workflows. The
+live Price Check test checks current amounts, product/edition handles, mapping
+identity and capture freshness for Unlimited Blue-Eyes, Limited Gemini Elf,
+1st Edition Synchro World and two Quarter Century Secret Rare Rescue Cat art
+variants. It also verifies the missing First Edition Blue-Eyes quote cannot
+borrow Unlimited pricing. Normal regression runs skip this live test unless
+given an expiring local receipt, removed after this run.
+
+Two older historical/offline tests initially failed by calling the now-live
+default source. Explicit bundled-source injection restores their intended
+offline assertions; no additional app pricing code change was required. The
+shared build-time endpoint still requires a new app build for existing installs.
+Simulator/provider results do not establish physical-device or release readiness.

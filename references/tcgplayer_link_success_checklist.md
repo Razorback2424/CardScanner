@@ -1,5 +1,9 @@
 # TCGplayer detail link visual acceptance
 
+**Historical — 2026-11-02.** The search behavior below was replaced on
+2026-11-07. Current detail actions open a verified product URL, or are absent
+when no exact product is known. See [progress](../progress.md#2026-11-07--exact-tcgplayer-product-links).
+
 Target: shared marketplace link on collection and catalog card details; also
 present in Price Check, printing comparison, and saved unresolved scan details.
 Routes: `OwnedPriceReview` (catalog and collection states).

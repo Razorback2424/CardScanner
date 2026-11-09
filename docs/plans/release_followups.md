@@ -26,6 +26,15 @@ the residual runtime, device, provider, and scale evidence.
 
 ## Release validation
 
+### Owner-deferred launch links — 2026-11-08
+
+Privacy and support pages do not exist yet. The owner explicitly deferred
+publishing them and setting `CARD_SCANNER_PRIVACY_URL` / `CARD_SCANNER_SUPPORT_URL`
+until the final launch preparation. Keep these values empty until approved HTTPS
+pages are published; do not invent destinations or treat this as an unfinished
+engineering fix. Before launch, configure `/privacy` and `/support`, inspect the
+built Release Info.plist, and open both links from the installed app.
+
 The [hang inspection protocol](hang-inspection-plan.md) defines the repeatable
 capture, source-attribution and fix-verification workflow for responsiveness
 work, including RF-1/RF-2. It does not close these gates; current device evidence

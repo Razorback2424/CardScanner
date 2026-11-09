@@ -1,5 +1,238 @@
 # CardScanner App Review Fix Plan
 
+## Ownership and purchase refinement — 2026-11-08
+
+Owner-authorized fixes for the third review's two High and two Medium findings.
+Preserve all 60 pre-existing modified files and the prior refinement work.
+Baseline: `304328e` plus the reviewed working tree; no commit, schema change,
+publication or release acceptance is authorized by this task.
+
+| Slice | Acceptance / verification | Status |
+| --- | --- | --- |
+| Non-raw CSV ownership | Refuse contradictory uncertified-grade and sealed identities before quantity, pricing, history or replay changes; retain legitimate legacy and bound/unbound round trips. Import/resume and ownership tests. | Implemented; focused and expanded checks pass |
+| Authenticated redirects | Reject redirects before forwarding either pricing client's API-key header. Keep injected sessions and normal success, cancellation, pacing and quota behavior. Local redirect and transport regressions. | Implemented; real-loopback and expanded transport checks pass |
+| Purchase feedback | Restore messages follow accepted reconciliation; confirmed ownership clears obsolete pending/error feedback. Preserve verified ownership and revocation rules. Controlled races plus existing StoreKit tests. | Implemented; controlled, pending-approval and purchase/restore/refund checks pass; interrupted-purchase sandbox gate remains |
+| Localized sale digits | Normalize localized decimal digits before the existing checked cents arithmetic; preserve blank, precision, sign and overflow rules. Locale and disposition regressions. | Implemented; locale and expanded disposition checks pass |
+
+The review reproduced both non-raw merge errors, Arabic sale rejection, two
+purchase-message inconsistencies and cross-host synthetic-key forwarding.
+Those scratch probes are baseline evidence, not regression verification for
+these fixes. Rollback is limited to the focused source/test changes in each
+slice and this tracking entry; preserve the earlier diffs.
+
+Further investigation covers catalog activation memory, opt-in logging cost
+and inspection gestures. They are measurement candidates rather than confirmed
+Medium defects; no architectural, retention, durability or gesture change is
+justified without additional evidence. Privacy/support links remain
+owner-deferred until final launch preparation.
+
+The CSV slice changes `CollectionCSV.swift`; the redirect guard is shared by
+`JustTCGTransport.swift` and `ProductPriceService.swift`; purchase feedback stays
+in `CollectorToolsStore.swift`; sale parsing stays in `CollectionActivity.swift`.
+Tests cover unchanged material store digests on rejected merges/replays,
+failed-row retry, bound/unbound export round trips, controlled reconciliation
+ordering, approved pending purchases and Arabic/Persian/Bengali decimal digits.
+No persistence schema, entitlement, purchase access rule or dependency changes.
+
+Initial verification exposed two test-harness problems: URLProtocol's synthetic
+redirect callback crashed the async URLSession test, and a first real-server
+fixture retained cached permanent redirects. The fixture now uses a real
+loopback-only Network server and disables URLSession caching. Three existing
+local StoreKit tests could not load their product through the connector's
+packaged test-products run. Direct scheme testing passes the complete
+purchase/reconstruction/restore/refund/photo-ZIP method; the expanded run uses
+that same scheme path. No StoreKit assertions or skip conditions were changed.
+
+Final affected-scope Debug simulator selection: **572 passed, 0 failed,
+2 skipped**, reconciled against distinct console method records (574 executed).
+It covers import/resume, ownership kinds/keys/ledger, portfolio reconciliation,
+Magic treatment aliases/migration, disposition/activity, pricing transport and
+fallbacks, and Collector Tools. Both clients reject 301/302/303/307/308 for
+same-host and cross-host redirects before any destination request. An
+unprotected positive control first proves the loopback fixture follows redirects
+and forwards the synthetic key. Pending approval and the full purchase/restore/
+refund/photo-ZIP workflow pass. Existing skips are the opt-in aged-store
+benchmark and local StoreKit interrupted-purchase case, which reported a
+verified entitlement before issue resolution. That interruption scenario still
+requires sandbox acceptance; it is not counted as passed. The final unsigned
+ARM64 Release simulator build passes with zero errors and the same 11 existing
+production warnings. Build data is on the external SSD. Local documentation
+links and `git diff --check` pass. This is not a new full-suite,
+physical-device, CloudKit, provider, archive or release-readiness claim.
+
+A final controlled ordering test also reproduced pending/error feedback
+overwriting already-confirmed ownership when the original purchase call returns
+after an approval update. Purchase completion now clears that obsolete feedback
+when ownership is confirmed, without bypassing verified-delivery handling or
+transaction finishing. Its two pre-fix assertions failed as expected; the final
+expanded selection and repeated Release compilation pass with that regression
+and final completion change included. No source changed after those checks.
+
+A host probe of the actual opt-in metrics actor measured mean counter-write
+costs of 0.91/4.63/36.64 ms at 0/20/200 sessions of 50 encounters each, with
+473/186,793/1,863,673-byte payloads. Loading took 3.61/7.98/70.45 ms. These are
+synthetic host/external-SSD diagnostics, not device responsiveness budgets.
+Logging is off the main actor and opt-in; this evidence does not justify a
+retention, durability or batching change. Catalog peak-memory and rendered
+inspection-gesture behavior still need representative device evidence; neither
+is established as a Medium-or-higher defect. Do not change either speculatively.
+
+## Additional workflow refinement — 2026-11-08
+
+Owner-authorized implementation of the additional review's two High and five
+Medium findings. Preserve all 40 pre-existing modified files, including the
+earlier refinement and marketplace/feed work. No commits, publication, schema
+changes or release acceptance are part of this work.
+
+| Slice | Acceptance / verification | Status |
+| --- | --- | --- |
+| Listing photo metadata | Strip sensitive image metadata from full JPEG output without resampling/recompressing the JPEG fast path; preserve orientation, color and size limits. Tagged-image and existing export/ZIP tests. | Implemented; expanded checks pass |
+| Raw CSV identity | Reject contradictory explicit Pokémon/Magic raw keys and incompatible merges; preserve known legacy/treatment aliases and non-raw round trips. Validate ownership before replay detection. | Implemented; expanded import/ledger checks pass |
+| Centering precision input | Require a complete localized finite number; preserve signed values, native editing boundaries and untouched precision. Parser and native editor tests. | Implemented; expanded native editor checks pass |
+| Asking-price input | Accept a single localized positive amount, including intended currency/grouping formatting and decimal digits; reject ranges and malformed text. Share parser/render tests. | Implemented; parser/render checks pass |
+| History cache failure | Return verified provider points when derived cache persistence fails; retain authority/cancellation checks. Fixture transport and unwritable-cache regression. | Implemented; history/transport checks pass |
+| Portfolio dates | Format economic-day labels in the pinned portfolio timezone; preserve calendar/locale preferences, event timestamps and accounting. Travel/DST and presentation tests. | Implemented; expanded portfolio checks pass |
+| CSV preparation feedback | Expose reading state and prevent duplicate selections; clear state on current success/failure while preserving request/generation fencing. Build and applicable settings/surface checks. | Implemented; compiled and settings construction checks pass |
+| Abandoned centering analysis | Cancel the already-owned analysis task when its model is released. Keep temporary presentation/sheet behavior unchanged. | Implemented; expanded centering checks pass |
+
+Baseline: source/host probes established GPS passthrough, malformed numeric
+acceptance and timezone drift; the CSV and cache-failure findings are traced
+across callers and guards. Prior 702/162/95-test results and the Release build
+belong to the preceding refinement, not this new diff. Current verification is
+recorded here as it completes. Rollback is limited to this section's focused
+source/test changes, preserving every earlier change.
+
+Further investigation covers centering task cancellation/export overlap, cold
+native-detail crop latency and representative CSV parsing/import cost. Do not
+alter detector accuracy, photo resolution, durability boundaries or add caches
+without measured evidence. Physical camera/thermal/quality and release gates
+remain separate. Privacy/support URLs remain owner-deferred until launch.
+
+The first new selection built after correcting a String/CardGame comparison,
+then reported 248 passes and 10 failed assertions. It exposed replay validation
+ordering, a decimal formatter accepting exponent notation, and five assertions
+that expected source JPEG metadata bytes. Ownership now validates before replay
+detection, decimal fields reject exponent notation, and JPEG assertions verify
+identical decoded pixels/color rather than private metadata. All 41 focused
+follow-up tests pass, including two temporary timing probes (removed afterward).
+
+The expanded selection initially passed 612 tests, skipped two opt-in benchmarks,
+and failed two accounting tests whose synthetic ownership keys contradicted
+their provider IDs. Corrected those fixtures to use canonical keys and added
+explicit import-success assertions; all accounting assertions remain. The final
+selection reports **614 passed, 0 failures, 2 skipped** across sharing/rendering,
+CSV/resume, metadata/crops/ZIP/cancellation, provider/history contracts,
+portfolio accounting/reconciliation, raw/graded/sealed identity, Magic legacy
+treatments, native centering editing/export, ownership durability and view
+construction. Skips are the existing experimental native-refinement benchmark
+and opt-in aged-store baseline. This is affected-scope verification, not a new
+full-suite or release certification. The native ARM64 **Release simulator build
+passes** with zero errors and the same 11 previously recorded production
+warnings; build data is on the external SSD. `git diff --check` and local links
+in the new documentation entries pass. Interactive device file-picker/loading
+and travel/accessibility smoke checks remain appropriate alongside the existing
+release gates. No archive, physical-device, provider or CloudKit acceptance is
+claimed.
+
+Synthetic Debug simulator probes on this host: CSV parsing took 9.8/67.7/331.9 ms
+for 100/1,000/5,000 rows; in-memory imports took 362.9/3,759.7 ms for 100/1,000
+rows. A 3,024 × 4,032 JPEG took 710.8 ms to analyze; ten cold 200 × 200 native
+crops took 3.9–6.7 ms each, and 100 cache hits took 0.11 ms total. The ordinary
+900 × 1,200 working-canvas PNG export took 122.6 ms, below its existing 180 ms
+edit debounce. These are diagnostic samples, not device budgets or comparative
+benchmarks. No parser rewrite, batching/durability change, extra image cache,
+crop threading refactor or export scheduling rewrite is justified by this
+evidence. Analysis teardown cancellation is a two-line lifetime fix; physical
+device crop/export latency, large-photo memory pressure and thermal behavior
+remain measurement items. No permanent benchmark or diagnostic hooks were added.
+
+## Production refinement fixes — 2026-11-08
+
+Owner-authorized implementation of the major/high/medium, high-confidence
+findings from the production review, based on `304328e` plus the existing dirty
+marketplace-link/feed changes. Those changes are preserved. No commit, push,
+publication, persistence schema change, or release acceptance is implied.
+This section supersedes earlier dates only for the findings below.
+
+| Slice | Smallest remedy and acceptance boundary | Status |
+| --- | --- | --- |
+| Graded refresh/history integrity | Commit the owner binding, price identity, observations, check-day coverage and inventory references in one existing serialized checkpoint. Revalidate exact ownership after network I/O; removed/corrected owners retain their history. A rejected quote rolls back the binding. Remove the obsolete split patch, handle-only owner index and unused price-only enqueue wrapper. | Implemented; expanded suite and final recheck pass |
+| Sealed cache freshness | Carry the original retrieval date into Add. Recover missing legacy dates from the saved page envelope; never turn reopening a cache into a new successful price check. | Implemented; expanded suite and final recheck pass |
+| Repeated collection work | Return the already-written scanner row directly. Quantity reads sum the same exact/legacy/duplicate rows without staging history repairs. | Implemented; expanded suite passes |
+| Magic confirmed price gaps | Persist an explicit provider-confirmed no-USD answer and reuse it for the existing six-hour negative-cache period. Legacy nil amounts remain unknown and retry remains available. A newer saved price supersedes an older saved gap. | Implemented; final 95-test Browse/cache selection passes |
+| Catalog identity normalization | Use POSIX folding for catalog identity and membership matching, independent of the device's language/region. Display and numeric input remain localized. | Implemented; app normalization and host package checks pass |
+| Scanner price trust | Label old raw quotes “Last known,” including accessibility; identify the actual source and provider/retrieval date. Keep graded quote lifecycle rules separate from raw daily staleness. | Implemented; scanner and surface checks pass |
+| Price range input | Accept localized decimal separators/digits; refuse invalid or reversed ranges instead of silently dropping a bound. Preserve fractional precision when reopening the form. | Implemented; decimal regression passes |
+| Graded scan provenance | New scanner acquisitions write scan activity/ledger provenance; explicit graded Browse additions retain graded-catalog provenance. No historical rewriting. | Implemented; scanner, history and provenance checks pass |
+| Reduce Motion | Suppress scanner chrome animations, receipt bounce and rail pulse/scale when enabled; retain ordinary behavior otherwise. The standalone slab prompt uses an opacity transition. | Implemented; scanner and surface checks pass; visual/device QA remains |
+
+The first affected selection passes 231 tests. The initial expanded selection
+exposed three assertions in one new rollback test: its fixture had no lifecycle
+evidence and therefore exercised accepted quote retention, not quote rejection.
+The fixture now supplies a newer exact lifecycle receipt, preserving the
+rollback assertions. All other checks in that selection pass, including all 136
+scanner view-model methods. The corrected expanded selection passes **702
+distinct methods, zero failures/skips**, confirmed against individual console
+records. Final tracing also removed the handle-only owner lookup: rows sharing
+a vendor handle can have different finish price keys, so exact price identity
+must select the owner. The **162-test recheck passes without failures or
+skips**, including that new regression, rollback/removal, pricing, refresh
+snapshots/races, disk price-gap replay, sealed surfaces and scanner overlays.
+Extending disk replay to a later successful retry reproduced another cache
+ordering problem: the old gap hid the newer saved price. Comparing check dates
+fixes that precedence without adding a cache layer. The unchanged regression
+then passes with the full **95-test Browse/cache selection, zero failures/skips**.
+The earlier universal Release build was deliberately interrupted for this fix;
+it is not counted as verification. Final unsigned **ARM64 Release simulator
+compilation passes** (`CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES`),
+with zero compiler errors. Existing Swift concurrency/closure warnings remain;
+this is not Swift 6 migration certification. No source changed after the final
+95-test recheck. All 349 local documentation-link targets and whitespace checks
+pass.
+The host `PokemonCatalogCore` run passes 88 tests, with one opt-in live CDN
+check skipped. Its first attempt could not open the default compiler cache;
+the successful run explicitly uses the external SSD cache. Build data uses
+`/Volumes/T7/ScanStash_Refinement_20261108`.
+
+Rollback is limited to each slice's local source/test changes; preserve the
+pre-existing marketplace/feed changes. Highest regression risk is ownership
+lineage and alias quantity behavior, covered by history, treatment, refresh,
+ledger and scanner tests. Cache additions decode older payloads without schema
+migration. The checkpoint consolidation reduces complexity; freshness/input/
+accessibility fixes add small pieces of state or validation with concrete uses.
+
+### Investigated boundaries and remaining measurements
+
+- Ordinary `card(forAnyKey:)` repair also validates and repairs activity,
+  removal snapshots and ledger aliases. It cannot safely be replaced wholesale
+  with a plain fetch. The redundant second scanner repair and read-side
+  mutation are removed; further history-path optimization needs aged-store
+  signpost evidence, not an unproven migration bypass.
+- The 1,500-card opening/projection path, long-session recent-scan indexing and
+  main-thread session-summary history work need Release latency/allocation
+  measurements before adding caches or moving work. Use the existing
+  [hang inspection protocol](docs/plans/hang-inspection-plan.md).
+- The resolved Magic cache is capped at 512 entries and writes ordered snapshots
+  off the scan path. Measure sustained scan write backlog and I/O before adding
+  coalescing. Image decode/coalescing, foil rendering and motion energy also need
+  trace evidence. Core Motion already stops with no eligible consumers and
+  under Reduce Motion; inactive-scene energy remains a device measurement.
+- Camera resolution/cadence/thermal behavior and large centering/photo-export
+  memory peaks require representative physical devices. No camera or centering
+  tuning is justified by simulator compilation/tests alone.
+- Conditional cross-container snapshot coalescing and CloudKit behavior are
+  not reproduced release defects; CloudKit remains intentionally disabled for
+  1.0. Do not change persistence policy to address a hypothetical future mode.
+- Privacy/support pages and URL configuration are explicitly owner-deferred
+  until final launch preparation. The
+  [release follow-up](docs/plans/release_followups.md#owner-deferred-launch-links--2026-11-08)
+  owns that decision; keep the values empty until approved pages exist.
+
+No physical-device, live-provider, CloudKit, archive, full-suite or release
+certification follows from these focused checks. Rendered layout, Dynamic Type,
+VoiceOver wording and Reduce Motion should receive the ordinary device polish
+pass; the current source/runtime assertions do not establish pixel-level QA.
+
 ## Repository review follow-up — 2026-11-06
 
 Owner-authorized high-confidence fixes on `main@11ff208`, preserving the
