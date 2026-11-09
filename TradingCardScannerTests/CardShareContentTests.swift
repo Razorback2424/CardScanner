@@ -141,6 +141,16 @@ final class CardShareContentTests: XCTestCase {
         XCTAssertNil(CardShareAsk.parse("", locale: locale))
         XCTAssertNil(CardShareAsk.parse("0", locale: locale))
         XCTAssertNil(CardShareAsk.parse("1.2.3", locale: locale))
+        for invalid in ["50–60", "50-60", "-25", "1e3", "12oops", "1,2", "€50", "NaN", "Infinity"] {
+            XCTAssertNil(CardShareAsk.parse(invalid, locale: locale), invalid)
+        }
+        let arabic = Locale(identifier: "ar_EG")
+        XCTAssertEqual(CardShareAsk.parse(55.25.formatted(.number.locale(arabic)), locale: arabic), 55.25)
+        let german = Locale(identifier: "de_DE")
+        let euros = 1234.5.formatted(.currency(code: "EUR").locale(german))
+        XCTAssertEqual(CardShareAsk.parse(euros, locale: german, currencyCode: "EUR"), 1234.5)
+        XCTAssertNil(CardShareAsk(text: "55", market: .infinity, locale: locale))
+        XCTAssertNil(CardShareAsk(text: "55", market: .leastNonzeroMagnitude, locale: locale))
     }
 
     // MARK: - Plain-text summary

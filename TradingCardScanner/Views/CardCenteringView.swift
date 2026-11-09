@@ -122,6 +122,8 @@ final class CardCenteringViewModel: ObservableObject {
     private var analysisGeneration = 0
     private var analysisTask: Task<Void, Never>?
 
+    deinit { analysisTask?.cancel() }
+
 #if DEBUG
     private var isSyntheticDebugFixture = false
     private var debugInputSHA256: String?
@@ -2207,9 +2209,7 @@ struct CardCenteringPrecisionNumberField: View {
     @StateObject private var editor = CardCenteringPrecisionEditor()
 
     static func parsedValue(_ text: String, locale: Locale) -> Double? {
-        guard let value = try? FloatingPointFormatStyle<Double>.number.locale(locale).parseStrategy.parse(text),
-              value.isFinite else { return nil }
-        return value
+        LocalizedNumberInput.parse(text, locale: locale)
     }
 
     var body: some View {

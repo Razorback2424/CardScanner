@@ -1291,6 +1291,7 @@ struct ScanReceipt: Identifiable, Equatable {
     let thumbnailURL: URL?
     let price: PriceLookup
     let isGradedPricePending: Bool
+    let isGraded: Bool
     let resolution: VariantResolution?
 
     init(
@@ -1303,6 +1304,7 @@ struct ScanReceipt: Identifiable, Equatable {
         thumbnailURL: URL?,
         price: PriceLookup = .unavailable(nil),
         isGradedPricePending: Bool = false,
+        isGraded: Bool = false,
         resolution: VariantResolution? = nil
     ) {
         self.id = id
@@ -1314,6 +1316,7 @@ struct ScanReceipt: Identifiable, Equatable {
         self.thumbnailURL = thumbnailURL
         self.price = price
         self.isGradedPricePending = isGradedPricePending
+        self.isGraded = isGraded
         self.resolution = resolution
     }
 
@@ -1328,6 +1331,7 @@ struct ScanReceipt: Identifiable, Equatable {
             thumbnailURL: thumbnailURL,
             price: price,
             isGradedPricePending: false,
+            isGraded: isGraded,
             resolution: resolution
         )
     }
@@ -1349,6 +1353,7 @@ struct ScanReceipt: Identifiable, Equatable {
             thumbnailURL: scan.thumbnailURL,
             price: scan.price,
             isGradedPricePending: scan.isGradedPricePending,
+            isGraded: scan.subject.slab != nil,
             resolution: scan.resolved.resolution
         )
     }
@@ -5222,6 +5227,7 @@ final class ScannerViewModel: ObservableObject {
                 thumbnailURL: scan.thumbnailURL,
                 price: candidate.price,
                 isGradedPricePending: candidate.isGradedPricePending,
+                isGraded: candidate.subject.slab != nil,
                 resolution: candidate.resolved.resolution
             )
         )

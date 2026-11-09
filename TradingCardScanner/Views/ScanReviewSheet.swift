@@ -54,8 +54,10 @@ struct ScanReviewSheet: View {
                         variantSection
                     }
                     scanPrice
-                    CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.destination(
-                        for: scan.card, variant: variant, pokemonPrintRun: scan.pokemonPrintRun))
+                    if let destination = TCGplayerLinkBuilder.destination(
+                        for: scan.card, variant: variant, pokemonPrintRun: scan.pokemonPrintRun) {
+                        CardDetailMarketplaceButton(destination: destination)
+                    }
 
                     if let correctionFailure {
                         Label(correctionFailure, systemImage: "exclamationmark.triangle.fill")
@@ -203,17 +205,17 @@ struct ScanReviewSheet: View {
                 Label("Unit price", systemImage: "tag")
                     .font(.headline)
                 Spacer(minLength: 12)
-                ScanPriceValue(lookup: currentPrice, style: .review)
+                ScanPriceValue(lookup: currentPrice, style: .review, isGraded: scan.subject.slab != nil)
             }
 
             switch currentPrice {
             case let .price(price):
                 if let sourceUpdatedAt = price.sourceUpdatedAt {
-                    Text("Catalog price · current as of \(sourceUpdatedAt.formatted(date: .abbreviated, time: .shortened))")
+                    Text("\(price.source.label) · price data as of \(sourceUpdatedAt.formatted(date: .abbreviated, time: .shortened))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
-                    Text("Catalog unit price")
+                    Text("\(price.source.label) · received \(price.fetchedAt.formatted(date: .abbreviated, time: .shortened))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -341,7 +343,7 @@ private struct SessionScanRow: View {
             }
 
             Spacer(minLength: 8)
-            ScanPriceValue(lookup: scan.price, style: .review)
+            ScanPriceValue(lookup: scan.price, style: .review, isGraded: scan.subject.slab != nil)
                 .scaleEffect(0.72, anchor: .trailing)
                 .fixedSize(horizontal: true, vertical: false)
         }

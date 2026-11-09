@@ -909,9 +909,6 @@ struct PrintingChoiceDetails: View {
                             if requiresEnglishConfirmation { onChooseEnglish?(selected) } else { onChoose(selected) }
                         })
                         .disabled(requiresEnglishConfirmation && !englishBinding.wrappedValue)
-                    CardDetailMarketplaceButton(destination: TCGplayerLinkBuilder.search(
-                        game: candidate.game, name: candidate.name, setName: candidate.releaseLabel ?? "",
-                        number: candidate.printedIdentifier))
                 }
             }
             .onAppear {
@@ -1106,6 +1103,7 @@ struct ScanPriceValue: View {
     let lookup: PriceLookup
     var style: Style = .receipt
     var isGradedPricePending: Bool = false
+    var isGraded: Bool = false
 
     var body: some View {
         if isGradedPricePending {
@@ -1122,11 +1120,16 @@ struct ScanPriceValue: View {
             switch lookup {
             case let .price(price):
                 let formatted = price.unitMarketPriceUSD.formatted(.currency(code: price.currencyCode))
-                Text(formatted)
+                let stale = !isGraded && price.isStale()
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(formatted)
+                    if stale { Text("Last known").font(.caption2) }
+                }
                     .font(style.font)
                     .monospacedDigit()
                     .foregroundStyle(style == .receipt ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
-                    .accessibilityLabel("Unit price \(formatted)")
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Unit price \(formatted)\(stale ? ", last known price" : "")")
             case .unavailable:
                 Text("Price unavailable")
                     .font(style == .review ? .subheadline.weight(.semibold) : .caption.weight(.semibold))
@@ -1148,6 +1151,7 @@ struct ScanPriceValue: View {
 /// already be resolving while this is still on screen. Undo is insurance, not a
 /// step in the workflow.
 struct ScanReceiptCard: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let receipt: ScanReceipt
     let onUndo: () -> Void
     let onOpen: () -> Void
@@ -1166,7 +1170,8 @@ struct ScanReceiptCard: View {
                         }
                         ScanPriceValue(
                             lookup: receipt.price,
-                            isGradedPricePending: receipt.isGradedPricePending
+                            isGradedPricePending: receipt.isGradedPricePending,
+                            isGraded: receipt.isGraded
                         )
                         Text("\(receipt.identifier) · \(receipt.variantLabel)")
                             .font(.caption.monospacedDigit())
@@ -1209,7 +1214,8 @@ struct ScanReceiptCard: View {
                         // character per line.
                         ScanPriceValue(
                             lookup: receipt.price,
-                            isGradedPricePending: receipt.isGradedPricePending
+                            isGradedPricePending: receipt.isGradedPricePending,
+                            isGraded: receipt.isGraded
                         )
                             .lineLimit(1)
                             .fixedSize(horizontal: true, vertical: false)
@@ -1256,9 +1262,13 @@ struct ScanReceiptCard: View {
 
     /// Bounces once per new receipt: the "got it" beat while scanning a stack.
     /// Keyed to the receipt, so a graded price refresh never replays it.
-    private var addedBadge: some View {
-        ScannerStatusBadge(tone: .added, systemName: "checkmark")
-            .symbolEffect(.bounce, value: receipt.id)
+    @ViewBuilder private var addedBadge: some View {
+        if reduceMotion {
+            ScannerStatusBadge(tone: .added, systemName: "checkmark")
+        } else {
+            ScannerStatusBadge(tone: .added, systemName: "checkmark")
+                .symbolEffect(.bounce, value: receipt.id)
+        }
     }
 
     /// Insurance, not a warning: a quiet round control rather than a red one,
@@ -1283,6 +1293,7 @@ struct ScanReceiptCard: View {
 /// Inspectable history. It asks for nothing; it is simply there to glance at,
 /// and it is the way back into any single record without leaving the session.
 struct RecentScanRail: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let scans: [RecentScan]
     var gradedPriceUpdatedScanID: RecentScan.ID? = nil
     let onSelect: (RecentScan) -> Void
@@ -1304,7 +1315,7 @@ struct RecentScanRail: View {
                                     Image(systemName: "sparkles")
                                         .font(.system(size: 12, weight: .bold))
                                         .foregroundStyle(.white, .cyan)
-                                        .symbolEffect(.pulse, options: .repeating)
+                                        .symbolEffect(.pulse, options: .repeating, isActive: !reduceMotion)
                                         .offset(x: 4, y: -4)
                                         .accessibilityHidden(true)
                                 }
@@ -1317,7 +1328,7 @@ struct RecentScanRail: View {
                         }
                     }
                     .accessibilityLabel("\(scan.card.name), \(scan.card.finishAndTreatmentDisplayLabel(for: scan.resolved.variant)). Open to correct.")
-                    .transition(.scale(scale: 0.6).combined(with: .opacity))
+                    .transition(reduceMotion ? .opacity : .scale(scale: 0.6).combined(with: .opacity))
                 }
             }
             .padding(.horizontal, 2)
@@ -1376,6 +1387,7 @@ struct ScanNoteView: View {
 /// App-scoped departure feedback. It observes only the summary store, so a live
 /// scanner write never invalidates the destination tab's entire hierarchy.
 struct ScanSessionSummaryBanner: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @EnvironmentObject private var summaryStore: ScanSessionSummaryStore
 
     var body: some View {
@@ -1405,6 +1417,6 @@ struct ScanSessionSummaryBanner: View {
                 .accessibilityLabel("Scan complete. \(summary.message)")
             }
         }
-        .animation(.spring(response: 0.34, dampingFraction: 0.86), value: summaryStore.summary)
+        .animation(reduceMotion ? nil : .spring(response: 0.34, dampingFraction: 0.86), value: summaryStore.summary)
     }
 }

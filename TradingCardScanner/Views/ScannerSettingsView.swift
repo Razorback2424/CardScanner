@@ -31,6 +31,7 @@ private struct SettingsContentView: View {
     @State private var csvExportFilename = "ScanStash Collection"
     @State private var pendingCSVImport: CollectionCSVImportPlan?
     @State private var csvImportPreparationID = UUID()
+    @State private var isPreparingCSVImport = false
     @State private var pendingCSVAlreadyImportedEntryCount = 0
     @State private var portfolioCloseCount = 0
     @State private var collectionCardCount = 0
@@ -236,7 +237,15 @@ private struct SettingsContentView: View {
             Button("Import CSV", systemImage: "square.and.arrow.down") {
                 isShowingCSVImporter = true
             }
-            .disabled(writeCoordinator.activeExclusiveOperation != nil)
+            .disabled(isPreparingCSVImport || writeCoordinator.activeExclusiveOperation != nil)
+
+            if isPreparingCSVImport {
+                HStack {
+                    ProgressView()
+                    Text("Reading CSV…")
+                }
+                .accessibilityElement(children: .combine)
+            }
 
             Button("Export CSV", systemImage: "square.and.arrow.up") {
                 prepareCSVExport(.collection, filename: "ScanStash Collection")
@@ -496,6 +505,10 @@ private struct SettingsContentView: View {
         guard let storageToken = storageGeneration.currentToken() else { return }
         let preparationID = UUID()
         csvImportPreparationID = preparationID
+        isPreparingCSVImport = true
+        defer {
+            if csvImportPreparationID == preparationID { isPreparingCSVImport = false }
+        }
         pendingCSVImport = nil
         do {
             let container = modelContext.container

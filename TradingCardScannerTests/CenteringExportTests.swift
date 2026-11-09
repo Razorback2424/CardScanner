@@ -1567,9 +1567,12 @@ final class CenteringNativePrecisionTests: XCTestCase {
             XCTAssertEqual(try XCTUnwrap(value.precisionInnerLine(.left)).position, 50.1, accuracy: 1e-8)
             XCTAssertEqual(try XCTUnwrap(value.precisionInnerLine(.top)).angle, -0.25, accuracy: 1e-8)
         }
-        for invalid in ["", "-", "NaN", "Infinity", "inf", "not a number"] {
+        for invalid in ["", "-", "NaN", "Infinity", "inf", "not a number", "12oops", "1.2.3", "1,2", "50–60"] {
             XCTAssertNil(CardCenteringPrecisionNumberField.parsedValue(invalid, locale: Locale(identifier: "en_US")))
         }
+        XCTAssertEqual(CardCenteringPrecisionNumberField.parsedValue("1,000.01", locale: Locale(identifier: "en_US")), 1000.01)
+        let arabic = Locale(identifier: "ar_EG")
+        XCTAssertEqual(CardCenteringPrecisionNumberField.parsedValue(50.25.formatted(.number.locale(arabic)), locale: arabic), 50.25)
     }
 
     func testNativeV2bDevelopmentPerformanceUsesUnchangedBudget() throws {

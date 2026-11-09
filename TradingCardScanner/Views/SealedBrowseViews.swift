@@ -177,7 +177,7 @@ final class SealedBrowseModel: ObservableObject {
             )
             var lane = Lane(isLoading: isConfigured)
             if let saved = await cache.sealedProductPage(for: key) {
-                lane.products = deduplicated(saved.value.items)
+                lane.products = deduplicated(Self.dated(saved.value.items, at: saved.storedAt))
                 lane.nextOffset = Int(saved.value.nextCursor ?? "")
                 if saved.isFresh || !isConfigured {
                     lane.isLoading = false
@@ -280,7 +280,7 @@ final class SealedBrowseModel: ObservableObject {
            saved.isFresh || !isConfigured {
             guard token == searchGeneration, !Task.isCancelled,
                   var lane = searchLanes[game] else { return }
-            lane.products = deduplicated(lane.products + saved.value.items)
+            lane.products = deduplicated(lane.products + Self.dated(saved.value.items, at: saved.storedAt))
             lane.nextOffset = Int(saved.value.nextCursor ?? "")
             lane.error = nil
             searchLanes[game] = lane
@@ -425,7 +425,7 @@ final class SealedBrowseModel: ObservableObject {
         }
         if let saved = await cache.sealedProductPage(for: cacheKey) {
             guard requestID == productsRequestID, !Task.isCancelled else { return }
-            apply(saved.value, replacing: true)
+            apply(CatalogPage(items: Self.dated(saved.value.items, at: saved.storedAt), nextCursor: saved.value.nextCursor), replacing: true)
             if saved.isFresh || !isConfigured {
                 errorMessage = nil
                 return
@@ -478,7 +478,7 @@ final class SealedBrowseModel: ObservableObject {
         if let saved = await cache.sealedProductPage(for: cacheKey) {
             if saved.isFresh || !isConfigured {
                 guard requestID == productsRequestID, !Task.isCancelled else { return }
-                apply(saved.value, replacing: false)
+                apply(CatalogPage(items: Self.dated(saved.value.items, at: saved.storedAt), nextCursor: saved.value.nextCursor), replacing: false)
                 errorMessage = nil
                 return
             }
@@ -509,6 +509,14 @@ final class SealedBrowseModel: ObservableObject {
 
     private func updateLoadingState() {
         isLoading = isLoadingSets || isLoadingProducts
+    }
+
+    private static func dated(_ products: [SealedProductSummary], at date: Date) -> [SealedProductSummary] {
+        products.map { product in
+            var product = product
+            if product.retrievedAt == nil { product.retrievedAt = date }
+            return product
+        }
     }
 
     private func deduplicated(_ products: [SealedProductSummary]) -> [SealedProductSummary] {

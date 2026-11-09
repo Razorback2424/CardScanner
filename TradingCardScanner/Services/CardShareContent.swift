@@ -357,10 +357,13 @@ struct CardShareAsk: Equatable, Sendable {
     let amount: Double
     let comparison: Comparison
 
-    init?(text: String, market: Double, locale: Locale = .current) {
-        guard let amount = Self.parse(text, locale: locale), market > 0 else { return nil }
+    init?(text: String, market: Double, locale: Locale = .current, currencyCode: String = "USD") {
+        guard let amount = Self.parse(text, locale: locale, currencyCode: currencyCode),
+              market.isFinite, market > 0 else { return nil }
+        let percentage = (abs(market - amount) / market * 100).rounded()
+        guard percentage.isFinite, percentage < Double(Int.max) else { return nil }
         self.amount = amount
-        let percent = Int((abs(market - amount) / market * 100).rounded())
+        let percent = Int(percentage)
         if percent == 0 {
             comparison = .atMarket
         } else {
@@ -370,16 +373,9 @@ struct CardShareAsk: Equatable, Sendable {
 
     /// Accepts what a decimal pad produces in the user's locale, plus pasted
     /// currency symbols and grouping separators.
-    static func parse(_ text: String, locale: Locale = .current) -> Double? {
-        let decimal = locale.decimalSeparator ?? "."
-        let grouping = locale.groupingSeparator ?? ","
-        var cleaned = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        if grouping != decimal {
-            cleaned = cleaned.replacingOccurrences(of: grouping, with: "")
-        }
-        cleaned = cleaned.replacingOccurrences(of: decimal, with: ".")
-        cleaned = String(cleaned.filter { $0.isASCII && ($0.isNumber || $0 == ".") })
-        guard !cleaned.isEmpty, let value = Double(cleaned), value.isFinite,
+    static func parse(_ text: String, locale: Locale = .current, currencyCode: String = "USD") -> Double? {
+        guard let value = LocalizedNumberInput.parse(text, locale: locale)
+                ?? LocalizedNumberInput.parse(text, locale: locale, currencyCode: currencyCode),
               value > 0, value < 10_000_000 else { return nil }
         return value
     }

@@ -362,6 +362,7 @@ private struct ScannerChrome: View {
     let openUnresolved: () -> Void
     let openSessionReview: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Namespace private var glassNamespace
     @State private var isSessionExpanded = false
 
@@ -408,6 +409,12 @@ private struct ScannerChrome: View {
         .animation(.easeOut(duration: 0.18), value: model.sessionScans.count)
         .animation(.easeOut(duration: 0.18), value: model.note)
         .animation(.easeOut(duration: 0.18), value: isScanChoicePending)
+        .transaction { transaction in
+            if reduceMotion {
+                transaction.animation = nil
+                transaction.disablesAnimations = true
+            }
+        }
         .onChange(of: model.receipt?.id) { _, id in
             // The receipt is visual; say the same thing for someone scanning
             // by ear. Only collection adds produce a receipt.
@@ -415,6 +422,7 @@ private struct ScannerChrome: View {
             var message = "Added \(receipt.name)"
             if case let .price(price) = receipt.price, !receipt.isGradedPricePending {
                 message += ", \(price.unitMarketPriceUSD.formatted(.currency(code: price.currencyCode)))"
+                if !receipt.isGraded, price.isStale() { message += ", last known price" }
             }
             AccessibilityNotification.Announcement(message).post()
         }
@@ -636,7 +644,7 @@ private struct ScannerChrome: View {
     private var sessionPills: some View {
         if showsSessionTray {
             Button {
-                withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
+                withAnimation(reduceMotion ? nil : .spring(response: 0.32, dampingFraction: 0.86)) {
                     isSessionExpanded.toggle()
                 }
             } label: {
@@ -778,6 +786,7 @@ private struct ScannerStatusView: View {
 }
 
 private struct ScannerSlabPromptView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ObservedObject var state: CardScannerUIState
     let switchToRaw: () -> Void
 
@@ -785,7 +794,7 @@ private struct ScannerSlabPromptView: View {
         Group {
             if let prompt = state.slabLabelReadPrompt {
                 SlabLabelReadingOfferView(prompt: prompt, onSwitchToRaw: switchToRaw)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
             }
         }
         .animation(.easeOut(duration: 0.18), value: state.slabLabelReadPrompt)

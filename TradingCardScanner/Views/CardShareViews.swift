@@ -998,7 +998,9 @@ struct BuyCheckShareSheet: View {
         RenderKey(ask: ask, trend: trend, artworkRevision: artwork.revision)
     }
 
-    private var ask: CardShareAsk? { CardShareAsk(text: askText, market: price.amount) }
+    private var ask: CardShareAsk? {
+        CardShareAsk(text: askText, market: price.amount, currencyCode: price.currencyCode)
+    }
 
     private var image: BuyCheckShareImage {
         BuyCheckShareImage(identity: identity, price: price, ask: ask, trend: trend, artwork: artwork.artwork, now: now)
