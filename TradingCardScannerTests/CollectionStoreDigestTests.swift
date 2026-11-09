@@ -208,7 +208,9 @@ final class CollectionStoreDigestTests: XCTestCase {
         try XCTUnwrap(records.first).unitMarketPriceUSD = nil
         try context.save()
 
-        let unpriced = try await CollectionCSV.exportIsolated(from: container, kind: .unpriced)
+        let timing = CSVExportTiming(kind: "unpriced")
+        let unpriced = try await CollectionCSV.exportIsolated(from: container, kind: .unpriced, timing: timing)
+        XCTAssertEqual(unpriced.exportTiming?.operationID, timing.operationID)
         XCTAssertEqual(unpriced.text, CollectionCSV.exportUnpriced(cards, priceRecords: records).text)
         let artwork = try await CollectionCSV.exportIsolated(from: container, kind: .missingArtwork)
         XCTAssertEqual(artwork.text, CollectionCSV.exportMissingArtwork(

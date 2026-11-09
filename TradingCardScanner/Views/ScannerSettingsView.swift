@@ -27,6 +27,8 @@ private struct SettingsContentView: View {
     @State private var isPreparingDiagnosticsExport = false
     @State private var isShowingDiagnosticsExporter = false
     @State private var csvExportDocument: CollectionCSVDocument?
+    @State private var csvExportTiming: CSVExportTiming?
+    @State private var csvExportPickerSpan: CSVExportTiming.Span?
     @State private var diagnosticsDocument: JSONExportDocument?
     @State private var csvExportFilename = "ScanStash Collection"
     @State private var pendingCSVImport: CollectionCSVImportPlan?
@@ -82,7 +84,7 @@ private struct SettingsContentView: View {
                             CollectionStorageStatusSection()
                         }
                     } label: {
-                        Label("Collection Storage", systemImage: "externaldrive.icloud")
+                        Label("Collection Storage", systemImage: "externaldrive")
                     }
 
                     NavigationLink {
@@ -141,11 +143,20 @@ private struct SettingsContentView: View {
                 case let .failure(error): writeCoordinator.csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
                 }
             }
-            .fileExporter(isPresented: $isShowingCSVExporter, document: csvExportDocument, contentType: .commaSeparatedText, defaultFilename: csvExportFilename) { result in
-                csvExportDocument = nil
+            .fileExporter(isPresented: $isShowingCSVExporter, document: csvExportDocument,
+                          contentTypes: [.commaSeparatedText], defaultFilename: csvExportFilename, onCompletion: { result in
+                switch result {
+                case .success: finishCSVExport(outcome: "saved")
+                case .failure: finishCSVExport(outcome: "failed")
+                }
                 if case let .failure(error) = result {
                     writeCoordinator.csvMessage = CSVMessage(title: "Export Failed", message: error.localizedDescription, skippedCSVText: nil)
                 }
+            }, onCancellation: {
+                finishCSVExport(outcome: "cancelled")
+            })
+            .onChange(of: isShowingCSVExporter) { _, presented in
+                csvExportTiming?.event("CSVExport.presentationBinding", "requested=\(presented)")
             }
             // Two `fileExporter` modifiers on the same view silently collapse
             // into one: only the last one applied ever presents, so stacking
@@ -432,16 +443,30 @@ private struct SettingsContentView: View {
         guard !isPreparingCSVExport,
               let token = storageGeneration.currentToken() else { return }
         let container = modelContext.container
+        let timing = CSVExportTiming(kind: String(describing: kind))
+        timing.event("CSVExport.requested")
+        let preparation = timing.begin("CSVExport.tapToReady")
         isPreparingCSVExport = true
         Task { @MainActor in
             defer { isPreparingCSVExport = false }
             do {
-                let document = try await CollectionCSV.exportIsolated(from: container, kind: kind)
-                guard storageGeneration.isCurrent(token) else { return }
+                let document = try await CollectionCSV.exportIsolated(from: container, kind: kind, timing: timing)
+                timing.end(preparation, "outcome=ready")
+                guard storageGeneration.isCurrent(token) else {
+                    timing.event("CSVExport.discarded", "reason=obsoleteStorage")
+                    return
+                }
+                timing.event("CSVExport.uiResumed")
+                csvExportTiming = timing
                 csvExportDocument = document
                 csvExportFilename = filename
+                // This spans the system picker and the user's selection time;
+                // it is a lifecycle boundary, not a main-thread stall duration.
+                csvExportPickerSpan = timing.begin("CSVExport.pickerLifecycle")
+                timing.event("CSVExport.presentationRequested")
                 isShowingCSVExporter = true
             } catch {
+                timing.end(preparation, "outcome=failed")
                 guard storageGeneration.isCurrent(token) else { return }
                 writeCoordinator.csvMessage = CSVMessage(
                     title: "Export Failed",
@@ -450,6 +475,16 @@ private struct SettingsContentView: View {
                 )
             }
         }
+    }
+
+    private func finishCSVExport(outcome: String) {
+        csvExportTiming?.event("CSVExport.completed", "outcome=\(outcome)")
+        if let span = csvExportPickerSpan { csvExportTiming?.end(span, "outcome=\(outcome)") }
+        csvExportPickerSpan = nil
+        let release = csvExportTiming?.begin("CSVExport.releaseDocument")
+        csvExportDocument = nil
+        if let release { csvExportTiming?.end(release) }
+        csvExportTiming = nil
     }
 
     private func exportSyncDiagnostics() {

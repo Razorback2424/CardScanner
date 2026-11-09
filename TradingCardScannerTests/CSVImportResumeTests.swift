@@ -4,6 +4,21 @@ import XCTest
 
 @MainActor
 final class CSVImportResumeTests: XCTestCase {
+    func testReplayDiscardsReadThroughIdentityRepairsWithoutChangingStoredOwnership() throws {
+        let container = try makeContainer()
+        let plan = try nonRawPlan(kind: .sealedProduct)
+        XCTAssertTrue(try CollectionCSV.apply(plan, to: ModelContext(container)).failedRows.isEmpty)
+        let storeID = UUID()
+        let before = try CollectionStoreDigester.make(in: ModelContext(container), storeID: storeID).materialSHA256
+        let context = ModelContext(container)
+        let replay = try CollectionCSV.apply(plan, to: context)
+        XCTAssertEqual(replay.importedQuantity, 0)
+        XCTAssertEqual(replay.alreadyImportedEntries, 1)
+        XCTAssertTrue(replay.failedRows.isEmpty)
+        XCTAssertFalse(context.hasChanges, "An isolated replay must return with no staged ownership writes")
+        XCTAssertEqual(try CollectionStoreDigester.make(in: ModelContext(container), storeID: storeID).materialSHA256, before)
+    }
+
     func testUncertifiedGradeAndSealedKeysCannotOverrideIncomingIdentity() throws {
         for kind in [CollectionItemKind.gradedCard, .sealedProduct] {
             let original = try nonRawPlan(kind: kind)

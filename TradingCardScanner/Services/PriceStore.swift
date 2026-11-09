@@ -17,6 +17,9 @@ enum PerformanceSignpost {
         signposter.makeSignpostID()
     }
 
+    /// Synchronous diagnostic query, also usable from async instrumentation.
+    static var currentThreadIsMain: Bool { Thread.isMainThread }
+
     @discardableResult
     static func beginInterval(
         _ name: StaticString,

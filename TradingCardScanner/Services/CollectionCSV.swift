@@ -1,16 +1,58 @@
 import CryptoKit
 import Foundation
+import OSLog
 import SwiftData
 import SwiftUI
 import UniformTypeIdentifiers
+
+/// One export's privacy-safe timing trail, shared by preparation and the Files
+/// handoff. Never attach names, keys, destination paths, or error descriptions.
+struct CSVExportTiming: Sendable {
+    let operationID = UUID().uuidString
+    let kind: String
+    private static let logger = Logger(subsystem: "TradingCardScanner", category: "CSVExport")
+
+    struct Span {
+        let phase: StaticString
+        let startedAt: TimeInterval
+        let signpost: OSSignpostIntervalState
+    }
+
+    func begin(_ phase: StaticString) -> Span {
+        let metadata = "id=\(operationID) kind=\(kind) main=\(Thread.isMainThread)"
+        Self.logger.notice("id=\(operationID, privacy: .public) kind=\(kind, privacy: .public) phase=\(String(describing: phase), privacy: .public) event=begin main=\(Thread.isMainThread, privacy: .public)")
+        return Span(phase: phase, startedAt: ProcessInfo.processInfo.systemUptime,
+                    signpost: PerformanceSignpost.beginInterval(phase, id: PerformanceSignpost.makeID(), metadata))
+    }
+
+    func end(_ span: Span, _ metadata: String = "") {
+        let milliseconds = (ProcessInfo.processInfo.systemUptime - span.startedAt) * 1_000
+        PerformanceSignpost.endInterval(span.phase, span.signpost,
+                                       "id=\(operationID) \(metadata)")
+        Self.logger.notice("id=\(operationID, privacy: .public) kind=\(kind, privacy: .public) phase=\(String(describing: span.phase), privacy: .public) event=end elapsed_ms=\(milliseconds, privacy: .public) main=\(Thread.isMainThread, privacy: .public) \(metadata, privacy: .public)")
+    }
+
+    func measure<T>(_ phase: StaticString, _ body: () throws -> T) rethrows -> T {
+        let span = begin(phase)
+        defer { end(span) }
+        return try body()
+    }
+
+    func event(_ name: StaticString, _ metadata: String = "") {
+        PerformanceSignpost.emitEvent(name, "id=\(operationID) kind=\(kind) main=\(Thread.isMainThread) \(metadata)")
+        Self.logger.notice("id=\(operationID, privacy: .public) kind=\(kind, privacy: .public) phase=\(String(describing: name), privacy: .public) main=\(Thread.isMainThread, privacy: .public) \(metadata, privacy: .public)")
+    }
+}
 
 struct CollectionCSVDocument: FileDocument {
     static var readableContentTypes: [UTType] { [.commaSeparatedText] }
 
     let text: String
+    let exportTiming: CSVExportTiming?
 
-    init(text: String) {
+    init(text: String, exportTiming: CSVExportTiming? = nil) {
         self.text = text
+        self.exportTiming = exportTiming
     }
 
     init(configuration: ReadConfiguration) throws {
@@ -19,10 +61,18 @@ struct CollectionCSVDocument: FileDocument {
             throw CollectionCSVError.unreadableFile
         }
         self.text = text
+        self.exportTiming = nil
     }
 
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        FileWrapper(regularFileWithContents: Data(text.utf8))
+        let data = exportTiming.map { timing in
+            timing.measure("CSVExport.encodeUTF8") { Data(text.utf8) }
+        } ?? Data(text.utf8)
+        let wrapper = exportTiming.map { timing in
+            timing.measure("CSVExport.fileWrapper") { FileWrapper(regularFileWithContents: data) }
+        } ?? FileWrapper(regularFileWithContents: data)
+        exportTiming?.event("CSVExport.serialized", "bytes=\(data.count)")
+        return wrapper
     }
 }
 
@@ -275,10 +325,21 @@ enum CollectionCSV {
 
     static func exportIsolated(
         from container: ModelContainer,
-        kind: ExportKind = .collection
+        kind: ExportKind = .collection,
+        timing: CSVExportTiming? = nil
     ) async throws -> CollectionCSVDocument {
+        let timing = timing ?? CSVExportTiming(kind: String(describing: kind))
+        let preparation = timing.begin("CSVExport.prepare")
+        var outcome = "failed"
+        defer { timing.end(preparation, "outcome=\(outcome)") }
+        let creation = timing.begin("CSVExport.createWorker")
         let exporter = await CollectionCSVExportActor.makeBackground(modelContainer: container)
-        return CollectionCSVDocument(text: try await exporter.text(kind: kind))
+        timing.end(creation)
+        let work = timing.begin("CSVExport.workerRoundTrip")
+        defer { timing.end(work) }
+        let text = try await exporter.text(kind: kind, timing: timing)
+        outcome = "ready"
+        return CollectionCSVDocument(text: text, exportTiming: timing)
     }
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
@@ -475,16 +536,23 @@ enum CollectionCSV {
     /// than making someone infer the failure from a blank dollar column.
     static func exportUnpriced(
         _ cards: [CollectedCard],
-        priceRecords: [PriceRecord]
+        priceRecords: [PriceRecord],
+        timing: CSVExportTiming? = nil
     ) -> CollectionCSVDocument {
+        let indexSpan = timing?.begin("CSVExport.filterIndex")
         let recordsByKey = Dictionary(grouping: priceRecords, by: \.key)
             .compactMapValues(PriceStore.authoritativeRecord(in:))
+        if let indexSpan { timing?.end(indexSpan, "records=\(priceRecords.count)") }
+        let filterSpan = timing?.begin("CSVExport.filterUnpriced")
+        let excluded = cards.filter { card in
+            PokemonReviewedPhysicalObjects.requiresReview(card)
+                || PriceStore.record(for: card, in: recordsByKey)?.effectiveUnitMarketPriceUSD == nil
+        }
+        if let filterSpan { timing?.end(filterSpan, "cards=\(cards.count) excluded=\(excluded.count)") }
         return diagnosticExport(
-            cards.filter { card in
-                PokemonReviewedPhysicalObjects.requiresReview(card)
-                    || PriceStore.record(for: card, in: recordsByKey)?.effectiveUnitMarketPriceUSD == nil
-            },
+            excluded,
             priceRecords: priceRecords,
+            timing: timing,
             diagnostic: { card, record in
                 PricingDiagnostics.unpricedReason(for: card, record: record).rawValue
             }
@@ -516,11 +584,14 @@ enum CollectionCSV {
     private static func diagnosticExport(
         _ cards: [CollectedCard],
         priceRecords: [PriceRecord],
+        timing: CSVExportTiming? = nil,
         diagnostic: (CollectedCard, PriceRecord?) -> String
     ) -> CollectionCSVDocument {
         let formatter = ISO8601DateFormatter()
+        let indexSpan = timing?.begin("CSVExport.rowIndex")
         let recordsByKey = Dictionary(grouping: priceRecords, by: \.key)
             .compactMapValues(PriceStore.authoritativeRecord(in:))
+        if let indexSpan { timing?.end(indexSpan) }
         let headers = [
             "game", "local_provider_id", "catalog_provider_id", "card_name",
             "set_name", "set_code", "card_number", "finish", "finish_name",
@@ -533,7 +604,11 @@ enum CollectionCSV {
             "latest_attempt_reason", "prior_graded_coverage", "tcgplayer_product_id", "justtcg_card_id",
             "selected_price_key"
         ]
-        let rows = cards.sorted(by: diagnosticSort).map { card -> [String] in
+        let sortSpan = timing?.begin("CSVExport.sort")
+        let sortedCards = cards.sorted(by: diagnosticSort)
+        if let sortSpan { timing?.end(sortSpan, "rows=\(cards.count)") }
+        let rowsSpan = timing?.begin("CSVExport.formatRows")
+        let rows = sortedCards.map { card -> [String] in
             let record = PriceStore.record(for: card, in: recordsByKey)
             return [
                 card.game,
@@ -572,9 +647,12 @@ enum CollectionCSV {
                 record?.key ?? card.priceKey
             ]
         }
+        if let rowsSpan { timing?.end(rowsSpan, "rows=\(rows.count)") }
+        let assembleSpan = timing?.begin("CSVExport.assembleCSV")
         let text = ([headers] + rows)
             .map { $0.map(escape).joined(separator: ",") }
             .joined(separator: "\n") + "\n"
+        if let assembleSpan { timing?.end(assembleSpan, "bytes=\(text.utf8.count)") }
         return CollectionCSVDocument(text: text)
     }
 
@@ -1075,6 +1153,10 @@ enum CollectionCSV {
                                 }
                                 alreadyImportedEntries += 1
                                 completedEntries += 1
+                                // Identity validation can stage read-through
+                                // repairs. A replay has no acquisition to save.
+                                context.rollback()
+                                LocalArtworkOverrideRekeyer.discardPendingFilesAfterRollback(in: context)
                                 continue
                             }
                             if let existing {
@@ -2099,7 +2181,8 @@ actor CollectionCSVExportActor: BackgroundModelActor {
         self.modelExecutor = modelExecutor
     }
 
-    func text(kind: CollectionCSV.ExportKind) throws -> String {
+    func text(kind: CollectionCSV.ExportKind, timing: CSVExportTiming? = nil) throws -> String {
+        timing?.event("CSVExport.workerStarted")
         switch kind {
         case .collection:
             return CollectionCSV.export(try modelContext.fetch(FetchDescriptor<CollectedCard>())).text
@@ -2108,9 +2191,20 @@ actor CollectionCSVExportActor: BackgroundModelActor {
                 try modelContext.fetch(FetchDescriptor<PortfolioDailyClose>())
             ).text
         case .unpriced:
+            let cardSpan = timing?.begin("CSVExport.fetchCards")
+            let cards: [CollectedCard]
+            do {
+                defer { if let cardSpan { timing?.end(cardSpan) } }
+                cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
+            }
+            let priceSpan = timing?.begin("CSVExport.fetchPrices")
+            let prices: [PriceRecord]
+            do {
+                defer { if let priceSpan { timing?.end(priceSpan) } }
+                prices = try modelContext.fetch(FetchDescriptor<PriceRecord>())
+            }
             return CollectionCSV.exportUnpriced(
-                try modelContext.fetch(FetchDescriptor<CollectedCard>()),
-                priceRecords: try modelContext.fetch(FetchDescriptor<PriceRecord>())
+                cards, priceRecords: prices, timing: timing
             ).text
         case .priceEvidence:
             return CollectionCSV.exportPriceEvidence(
