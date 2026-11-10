@@ -1,10 +1,17 @@
 # Shared Pricing Cache — Implementation Plan
 
-**Commercial reconciliation — 2026-10-20:** free-only/no-StoreKit launch wording
-below is superseded commercial guidance; the
-[canonical proposed batch-photo offer](CARDSCANNER_LAUNCH_MONETIZATION.md) awaits
-owner approval of price and entitlement boundary. This does not authorize a
-shared backend or close any provider/licensing gate in this plan.
+**Launch reconciliation — updated 2026-11-10:** the
+[launch contract](../release/launch-contract.md#pricing-service-for-launch-mandatory-product-and-licensing-prerequisite)
+requires an app-funded commercial pricing API for launch. The owner selected paid
+JustTCG on 2026-11-10; exact tier and active subscription are not yet evidenced.
+Promised history, graded and sealed pricing must work without a customer
+provider account or API key. Licensing/export review, cost/quota approval
+and production integration remain open prerequisites; BYOK describes the current
+implementation, not an accepted launch model. The approved
+[Collector Tools offer](CARDSCANNER_LAUNCH_MONETIZATION.md) supersedes older
+free-only/no-StoreKit wording. This JustTCG/Firebase cache design remains a
+proposal with Gates A–C open; the launch requirement does not select Firebase or
+authorize resource creation.
 
 **CardScanner · Pricing Infrastructure**
 Status: Draft validated, three gates open, warming scope added · Date: 06 September 2026 · Repository reconciliation: 14 September 2026 · Verdict: Proceed after Gate A
@@ -21,9 +28,9 @@ shared-pricing-backend project: it means commercial, licensing, provider-data,
 and cache-contract gates. It does not replace the active app Phase 0, which is
 the frozen Collection Integrity retention experiment in
 [`../experiments/collection-integrity-v1-retention-contract.md`](../experiments/collection-integrity-v1-retention-contract.md).
-Free 1.0 remains device-local and contains no StoreKit or shared backend. Do
-not create Firebase resources or treat this plan as launch evidence until its
-own Gates A–C are resolved.
+Collection storage remains on-device; the launch contract governs the commercial
+pricing service and approved StoreKit offer. Do not create Firebase resources or
+treat this plan as launch evidence until its own Gates A–C are resolved.
 
 A server-side price and market-history cache so one CardScanner user's provider lookup can serve
 the next, without moving card identity, the collection, or the portfolio ledger off the device.
@@ -171,14 +178,22 @@ make now than after a Firestore database exists in the wrong region under the wr
 
 ### Gate A — Buy a JustTCG plan and decide the key model  *(blocking)*
 
+Paid JustTCG is the selected launch provider as of 2026-11-10. The following tier
+discussion is a planning estimate, not an owner-approved purchase or demonstrated
+traffic budget. Operator-managed paid access without a customer key is required
+by the launch contract. Published paid-tier terms were checked on 2026-11-10;
+see the contract for storage/export limits and outstanding evidence.
+
 Pick a tier and subscribe under CardScanner's own account. Starter's 1,000/day is the floor worth
 considering; Professional's 5,000/day and 100/min is the realistic starting point once sealed and
 graded traffic is included, and its 100-item batch is what makes the draft's 100-request endpoint
 cap coherent.
 
-Then decide what happens to the user-supplied key. The recommendation is to keep accepting it
-during migration as the *only* path for users on old builds, and remove the field entirely at
-Phase 9 — but that decision changes the migration's user-visible story, so make it explicitly.
+Any temporary user-key compatibility is limited to migration/development. The
+launch candidate must pass the supported pricing journeys without a user key;
+retaining the Settings field or deferring Phase 9 cannot substitute for that
+acceptance. Record the migration/removal behavior when implementing the selected
+provider.
 
 - **Cost owner:** a recurring monthly bill that scales with adoption, against today's zero.
 - **Ceiling check:** at Professional, 5,000 upstream requests/day × 100 items = 500,000 variant

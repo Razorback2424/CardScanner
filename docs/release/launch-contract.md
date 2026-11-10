@@ -1,6 +1,9 @@
 # Card Scanner launch contract
 
 **Status:** current release finish line — adopted 2026-11-09 at owner request.
+**Pricing amendment:** 2026-11-09 — owner requires an appropriate commercial
+pricing API for launch. **Provider selected 2026-11-10:** paid JustTCG; exact
+tier, active subscription and operator-managed integration remain unverified.
 **Source:** owner-supplied *Card Scanner Launch Contract — Scanstash 1.0 system
 definitions and release acceptance* (prepared 2026-11-09, repository baseline
 `df6d4c0`). This Markdown is the repository authority; the .docx is not
@@ -58,11 +61,55 @@ capability and card family.
 | --- | --- |
 | Free | Scanning, collection access and corrections, basic inventory import/export, single-card listing-photo output — all usable without Collector Tools. |
 | Paid | Approved $9.99 US base-price non-consumable Collector Tools: batch listing photos and guided centering. Show the localized StoreKit price. No subscription or scan credits. |
+| Pricing service | Launch uses app-funded paid JustTCG, selected by the owner on 2026-11-10. Supported price-history charts, graded prices and sealed prices work without customers obtaining or entering a provider API key. Active tier, coverage and production acceptance remain open. |
 | Storage | On-device continuity required. Live iCloud sync deferred. Do not promise collection restoration after app deletion because a purchase can be restored. |
 | Platforms | iOS/iPadOS 18.0+, iPhone and iPad. Phone portrait and all four iPad orientations tested as applicable; the archive must confirm the declarations. |
 | Card support | Freeze game, language, era/set/product families, raw/graded/sealed capabilities, physical variants and acquisition routes. Record price and artwork coverage separately from identity/ownership coverage. |
 | Offline | Saved holdings, cached identities, existing evidence and local editing stay usable. An unseen card or remote quote may need connectivity; the app says so and keeps recoverable work. |
 | Excluded | New games, binder-page recognition, social features, automatic marketplace listing, professional grading, a new sync system or a major redesign. |
+
+### Pricing service for launch (mandatory product and licensing prerequisite)
+
+Card Scanner will utilize paid JustTCG at launch, selected by the owner on
+2026-11-10. Selection does not certify an active subscription, coverage or
+integration. The app operator funds and manages provider access. Customers must
+not need a separate provider account, subscription or pasted API key to use the
+pricing capabilities promised in the support manifest. This does not change the
+approved Collector Tools entitlement or price.
+
+**Current implementation gap:** JustTCG access is bring-your-own-key (BYOK).
+`PriceVendorCredentials` stores the customer's key in Keychain,
+`JustTCGTransport` rejects unauthenticated requests, and Settings says the key is
+required for market history, graded listings and provider-backed sealed prices.
+Saved prices and cached history remain available. This implementation does not
+meet the launch access requirement. It is an open product, licensing and
+integration prerequisite, not a newly observed runtime bug or an accepted launch
+limitation.
+
+Before G07 can pass:
+
+- Record the selected provider and active app-owned paid plan, recurring cost
+  owner and expected launch traffic/quota budget. Confirm actual endpoint and
+  exact game, printing/finish, raw/graded/sealed and history coverage in the
+  support manifest; naming a provider does not establish coverage.
+- Retain dated commercial-use terms and any required written authorization for
+  end-user display, caching, history retention and permitted exports. JustTCG's
+  [terms](https://justtcg.com/terms) and
+  [commercial-use guidance](https://justtcg.com/docs/commercial-use), checked
+  2026-11-10 (terms updated 2026-11-04), permit end-user display and server-side
+  caching on an active paid subscription; standalone data redistribution is
+  prohibited, and stored-data use rights end with the subscription. Review
+  exports against those limits. A free-tier or customer-key workaround cannot
+  close this gate.
+- Integrate operator-managed access without exposing shared provider secrets in
+  the shipped app. Validate a fresh distribution install with no customer key:
+  supported charts, graded prices, sealed prices and refreshes work, while
+  missing coverage, quota exhaustion, outages and expired credentials produce
+  honest, recoverable outcomes. Settings, support and privacy copy match.
+
+The [shared-pricing-cache plan](../plans/shared_pricing_cache_plan.md) is a gated
+implementation proposal. Its Firebase architecture remains undecided; the
+commercial API and no-customer-key requirements above are mandatory for launch.
 
 ### Support manifest (mandatory release artifact)
 
@@ -263,8 +310,9 @@ currency, and report refresh results honestly.
 | S09.04 | Late, invalidated or cancelled responses cannot replace newer evidence or restore a deleted holding. | Not verified |
 | S09.05 | No quote, mapping gap, stale quote, transport failure and identity review have distinct outcomes; unknown price is not zero. | Not verified |
 | S09.06 | Manual refresh, cancellation, edits during refresh and independent provider failures end in accurate progress and recoverable state. | Not verified |
+| S09.07 | An active, app-funded commercial pricing service supplies the promised history, graded and sealed capabilities without a customer provider account or API key; coverage, rights, quotas and safe failures meet §2. | Not verified — paid JustTCG selected 2026-11-10; current access is BYOK, active-tier and production integration evidence open |
 
-*Verification:* `PricingTests`, `PriceRefreshLifecycleTests`, `QuoteCacheTests`, `RefreshStructuralWriteTests`, per-game pricing tests; exact live-provider readback.
+*Verification:* `PricingTests`, `PriceRefreshLifecycleTests`, `QuoteCacheTests`, `RefreshStructuralWriteTests`, per-game pricing tests; commercial entitlement evidence, exact live-provider readback and a fresh distribution install without a customer key.
 
 ### S10 Portfolio and history
 
@@ -404,7 +452,7 @@ release documentation.
 | S17.02 | Install the actual TestFlight/distribution candidate, confirm features and endpoints, and verify no owner bypass or debug route certifies a production promise. | Not verified |
 | S17.03 | Privacy/support URLs published, configured in the built app and opened from the installed UI; metadata and privacy declarations match behavior. | **Fail** — `CARD_SCANNER_PRIVACY_URL` and `CARD_SCANNER_SUPPORT_URL` empty (deliberately deferred launch prerequisite, not a code defect) |
 | S17.04 | Non-consumable, agreements and submission details ready; production availability validated at release without treating sandbox as production. | Not verified |
-| S17.05 | Every provider/content dependency has observed working behavior and an outage path; diagnostics identify version and failure stage without unnecessary private material. | Not verified |
+| S17.05 | Every provider/content dependency has appropriate usage rights, observed working behavior and an outage path; diagnostics identify version and failure stage without unnecessary private material. | Not verified |
 
 *Verification:* archive/TestFlight install evidence; built-config inspection; live link/provider checks; purchase configuration; App Review completeness.
 
@@ -421,7 +469,7 @@ Record exact results, counts and output. All start **NOT VERIFIED**.
 | J03 | Ambiguous/unavailable scan → Needs Attention → interruption/relaunch → retry/choice → one correct addition. | Not verified |
 | J04 | Browse/search → exact printing/finish → add two copies → Undo latest → reopen; one earlier copy remains. | Not verified |
 | J05 | Correct identity/finish/quantity → all surfaces and activity update → portfolio reconciles → relaunch keeps it. | Not verified |
-| J06 | Owned card across Browse/detail/Collection/Portfolio → refresh with newer, older and failed evidence; amounts, dates, exclusions and total reconcile. | Not verified |
+| J06 | Fresh install with no customer provider key → supported price-history charts, graded and sealed prices → owned card across Browse/detail/Collection/Portfolio → refresh with newer, older and failed evidence; amounts, dates, exclusions and total reconcile. | Not verified |
 | J07 | Export mixed inventory → open the file → import into an isolated fixture → compare fields; interrupt/resume and replay without duplicates. | Not verified |
 | J08 | Centering photo → correct guides → localized numeric edit → Done → confirm → actual output; final edit and delivered geometry agree. | Not verified |
 | J09 | One free pair → ten images; two paid pairs → twenty files in a readable ZIP; check order, orientation, names and pixels. | Not verified |
@@ -443,6 +491,7 @@ failure transition, using deliberate combinations rather than every permutation.
 | Lifecycle and concurrency | Cold/repeat launch, upgrade, background/resume, force quit around writes, rapid repeats, cancellation, switching card/screen mid-work. |
 | Accessibility and input | Normal and maximum text, VoiceOver, Reduce Motion, light/dark, iPad orientations, English and decimal-comma entry. |
 | Purchases | None, owned, unavailable product, cancel, pending, interrupted, verified/unverified, restore, revoked, duplicate and late updates. |
+| Commercial pricing access | Fresh install without a customer provider key; active operator plan, missing/expired operator credentials, exhausted quota and outage; supported history, graded and sealed coverage. |
 
 ### Recognition acceptance
 
@@ -521,6 +570,7 @@ bug census.
 | Centering | Some failures concern default guide usefulness/accuracy, some DEBUG research. Disposition each against shipped behavior; neither six proven customer bugs nor all research. |
 | Production vs local | One Piece production rollout/writes disabled. The `ReleaseLocal` configuration defines `LOCAL_COLLECTOR_TOOLS` (with `LOCAL_ONLY_SIGNING`), which marks the user owned; `Release` does not. Both need real release-configuration acceptance. |
 | Owned prices | Code and simulator evidence address owned-price selection and stale evidence but do not certify the physical Mega Gengar case or live coverage. Reproduce on the candidate. |
+| Commercial pricing | JustTCG history, graded listings and provider-backed sealed prices currently require a customer's Settings key. Paid JustTCG was selected 2026-11-10; active plan, rights/exports review, quota/cost budget and no-key production integration remain open launch prerequisites (S09.07/G07). |
 | Runtime and providers | Physical camera, omitted-artwork intake/enrichment, delayed-price Browse, sealed-add Undo, device performance and native export/purchase checks remain evidence work. |
 | Privacy and support | URLs empty by deliberate deferral to final launch preparation; must be real, configured and usable before submission. |
 | Documentation | The old framework's free/no-StoreKit body is archived; this contract is the single authority. |
@@ -539,7 +589,7 @@ no averaging a broken paid tool against unrelated passes.
 | G04 Every critical journey passes | J01–J12 complete and reconcile on the actual candidate, including recovery and delivered output. | Not verified |
 | G05 Recognition is useful and safe | Frozen corpora meet error, completion and friction criteria; no deterministic failure hidden in aggregates. | Not verified — corpus not assembled |
 | G06 The experience is polished | Screen states, accessibility, layouts, responsiveness and sustained use pass; external users finish uncoached. | Not verified |
-| G07 Paid and external services work | Configured product, restoration, providers, catalog/feed activation and public links have environment-appropriate evidence. | Not verified |
+| G07 Paid and external services work | Configured product, restoration, licensed app-funded pricing API, catalog/feed activation and public links have environment-appropriate evidence. Pricing passes §2 and S09.07 without a customer provider account or API key. | Not verified — commercial pricing selection, entitlement and no-key integration acceptance open |
 | G08 The candidate is traceable | Automated checks, exclusions and device receipts reconcile to the tested source and distributed build; skips never pass as passes. | Not verified |
 | G09 The submission is complete | Archive/signing, privacy metadata, screenshots, descriptions, links, review notes and in-app purchase submission complete and truthful. | Not verified |
 
@@ -566,8 +616,8 @@ Every concrete reference in the contract was checked against the working tree.
 
 | Check | Result |
 | --- | --- |
-| Requirement count | 85 requirements across S01–S17 (4+4+5×6+6+5+5+6+5×5). |
-| Named source files (76) | All exist. |
+| Requirement count | 86 requirements across S01–S17 (4+4+5×6+7+5+5+6+5×5), including the owner-directed commercial pricing amendment S09.07. |
+| Adoption source files (76) | All exist; additional commercial-pricing references are checked below. |
 | Named test suites (36) | All exist in `TradingCardScannerTests`. |
 | Platforms | `IPHONEOS_DEPLOYMENT_TARGET = 18.0`, `TARGETED_DEVICE_FAMILY = 1,2`; phone portrait only; four iPad orientations in `Info.plist`. |
 | Broad rerun 3,174 / 2 / 21 and six centering gates | Match `progress.md` and the centering ledger. |
@@ -575,6 +625,7 @@ Every concrete reference in the contract was checked against the working tree.
 | Local purchase bypass | `LOCAL_COLLECTOR_TOOLS` is defined only in `ReleaseLocal`, alongside `LOCAL_ONLY_SIGNING`; `Release` does not define it. |
 | Privacy/support URLs empty | Confirmed in `Config/PokemonCatalogProduction.xcconfig`. |
 | Price-feed URL configured | Confirmed (`TCGCSV_PRICE_BASE_URL`). Three documents still describe it as empty and are stale on that point: [feature-completeness review](../audits/feature-completeness-review-2026-10-29.md), [catalog pricing cases](../audits/catalog-pricing-cases-2026-11-01.md) and a dated [documentation audit](../plans/documentation_audit.md) entry. |
+| Current JustTCG access | `PriceVendorCredentials.swift`, `JustTCGTransport.swift` and `ScannerSettingsView.swift` confirm customer-key storage, missing-credential rejection and the history/graded/sealed requirement. This source check does not close S09.07 or G07. |
 | Photo drafts not restored after process death | Matches [monetization plan](../plans/CARDSCANNER_LAUNCH_MONETIZATION.md). |
 | ~1,500-card workload | Matches [release follow-ups](../plans/release_followups.md). |
 | Old framework contradicts paid tools | Confirmed (body said "No StoreKit implementation exists"); archived. |
@@ -600,4 +651,5 @@ Every concrete reference in the contract was checked against the working tree.
 | S14 Portfolio replay and accounting | `TradingCardScanner/Services/PortfolioReplay.swift`, `PortfolioEngine.swift` |
 | S16 Platform, build and compilation | `TradingCardScanner.xcodeproj/project.pbxproj` |
 | S17 Orientation, permissions, runtime keys | `TradingCardScanner/Info.plist` |
+| S18 Commercial pricing access and proposal | `TradingCardScanner/Services/PriceVendorCredentials.swift`, `JustTCGTransport.swift`, `TradingCardScanner/Views/ScannerSettingsView.swift`; [shared-pricing-cache plan](../plans/shared_pricing_cache_plan.md) |
 | A1–A3 | Apple App Review Guidelines; StoreKit testing environments; configuring in-app purchases for review. |
