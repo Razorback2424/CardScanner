@@ -16,7 +16,7 @@ Never automatically save a guessed base finish. That would introduce the study's
 headline failure mode: a silently inaccurate collection. This work is separate
 from the [Collection Integrity strategy](../vision/CardScanner%20Collection%20Integrity%20Strategy%20%E2%80%94%20Start-to-Finish%20Implementation%20Plan.md)
 and its retention experiment. Bulk intake evidence informs differentiation;
-the [release go/no-go framework §6](../release/card-scanner-1.0-go-no-go-framework.md#6-competitor-benchmarking-is-intelligence-not-a-launch-gate)
+the [release go/no-go framework §6](../legacy/card-scanner-1.0-go-no-go-framework.md#6-competitor-benchmarking-is-intelligence-not-a-launch-gate)
 explicitly excludes competitor benchmarking from launch arithmetic. This study
 does not demonstrate repeat Verify retention, willingness to pay or release
 readiness. Follow the existing

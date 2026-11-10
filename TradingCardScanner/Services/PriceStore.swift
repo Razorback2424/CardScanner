@@ -8,6 +8,27 @@ import SwiftData
 /// real device with a store that has aged, and an instrument you have to add
 /// before you can measure is an instrument nobody adds.
 enum PerformanceSignpost {
+    private static let launchLogger = Logger(subsystem: "TradingCardScanner", category: "Startup")
+
+    /// Console-visible timing for synchronous startup work, including optimized
+    /// device builds. A main=true interval measures work without an async hop;
+    /// its duration can be correlated with the device's detected hang.
+    static func measureLaunch<T>(_ name: StaticString, _ operation: () throws -> T) rethrows -> T {
+        let id = makeID()
+        let interval = beginInterval(name, id: id, "main=\(currentThreadIsMain)")
+        let start = ContinuousClock.now
+        let main = currentThreadIsMain
+        let stage = String(describing: name)
+        launchLogger.notice("phase=begin stage=\(stage, privacy: .public) main=\(main)")
+        defer {
+            let elapsed = start.duration(to: ContinuousClock.now).components
+            let milliseconds = Double(elapsed.seconds) * 1_000 + Double(elapsed.attoseconds) / 1e15
+            endInterval(name, interval, "elapsed_ms=\(milliseconds) main=\(main)")
+            launchLogger.notice("phase=end stage=\(stage, privacy: .public) elapsed_ms=\(milliseconds) main=\(main)")
+        }
+        return try operation()
+    }
+
     static let signposter = OSSignposter(
         subsystem: "TradingCardScanner",
         category: "Performance"

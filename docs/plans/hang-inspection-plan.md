@@ -90,6 +90,65 @@ timing was observed in the test console with `main=false`; serialization and
 picker markers are installed but still need an ordinary Xcode/device export
 reproduction. No incident hang duration is inferred from these checks.
 
+## On-device 804 ms startup follow-up — 2026-11-09
+
+The owner reports a further **804 ms** startup hang from on-device hang
+detection in **ProfileLocal**, with optional pricing fallback **enabled**. The
+supplied console excerpt contains no stalled main-thread stack.
+It records a roughly 20 ms persisted Pokémon catalog load and a later HTTP 404
+from the catalog refresh. Those lines do not attribute the detected hang.
+
+Source review at `df6d4c0` first identified eager Keychain preparation in the
+entitled storage dependency factories. **ProfileLocal excludes that path via
+`LOCAL_ONLY_SIGNING`**, so it cannot explain this incident; the exploratory
+Keychain patch was removed.
+
+A second Keychain path **is present in ProfileLocal**: `ContentView` calls
+`PriceRefreshController.updateFallbackAvailability` shortly after portfolio
+startup. With fallback pricing enabled and pending targets, the main actor read
+`PriceVendorCredentials.hasKey`; its first uncached access synchronously called
+`SecItemCopyMatching`. Apple's
+[Keychain performance guidance](https://developer.apple.com/documentation/security/secitemcopymatching%28_%3A_%3A%29)
+identifies this API as a possible UI blocker. That credential-presence read now
+runs in a detached utility task, with a revision/cancellation/preference fence
+before publishing either credentials or budget results. Starting a price-refresh
+queue invalidates an earlier availability check. Disabled fallback and empty
+queues still skip the read. Credential contents are neither changed nor logged.
+
+Console-visible synchronous timing now uses subsystem `TradingCardScanner`,
+category `Startup`, including optimized ProfileLocal builds. Filter for
+`stage=Launch.`. Each stage has `phase=begin` and `phase=end`; completion includes
+`elapsed_ms` and `main`. The stages cover initial catalog-task scheduling, storage
+dependency creation, background-task registration and scheduling, capture-session
+and video-output construction, Vision configuration, complete scanner-core and
+scanner-view-model construction, `ContentView` initialization, and vendor
+credential presence (`Launch.vendorCredentialPresence`, now off-main). These intervals
+contain no asynchronous suspension. Nested intervals overlap and must not be
+summed. `contentViewInit` measures construction, **not a rendered frame**, and
+can appear again when its parent re-evaluates. The existing Performance signposts
+remain available alongside these timings. Only fixed stage names, thread flags
+and elapsed times are logged.
+
+This removes a source-confirmed main-thread Keychain path, conditional on enabled
+fallback and pending work; it does not attribute the reported 804 ms incident.
+Repeat on-device hang detection with the rebuilt ProfileLocal app and retain the Startup lines. A long
+`main=true` interval narrows attribution; a stalled main-thread stack or a
+Hangs/Time Profiler trace is still the strongest evidence. If no timed stage
+accounts for the stall, investigate first rendering, later publication and system
+framework work in that trace. The catalog HTTP 404 remains a separate refresh
+failure; this change does not alter its origin, signature checks, or persisted
+catalog fallback.
+
+**Focused simulator verification:** DebugRemoteLocal, arm64, iOS 27.0:
+**37 passed, zero failed** (29 pricing lifecycle cases and eight launch worker
+cases). Four new lifecycle cases cover a deliberately blocked credential read
+leaving the main thread, a newer empty availability check, a refresh that completes
+before the old read, cancellation, and disabled-fallback avoidance. These use an
+injected presence check, not live Keychain or provider credentials. The logs
+confirm `Launch.vendorCredentialPresence main=false`. Result:
+`/Volumes/T7/CodexBuild/HangInspection/20261109-profile-startup-tests.xcresult`.
+These are correctness/executor results, not device performance measurements.
+
 ## What we are measuring
 
 A hang is a period when the main run loop cannot respond. A slow catalog request

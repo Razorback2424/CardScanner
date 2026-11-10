@@ -7,7 +7,9 @@ struct TradingCardScannerApp: App {
     @State private var runtimes: CardGameRuntimeContainer?
     @StateObject private var scanSummaryStore = ScanSessionSummaryStore()
     @StateObject private var cardFinishMotion = CardFinishMotionSource()
-    @StateObject private var storageBootstrap = CollectionStorageBootstrap()
+    @StateObject private var storageBootstrap = PerformanceSignpost.measureLaunch("Launch.storageDependencies") {
+        CollectionStorageBootstrap()
+    }
     @StateObject private var opening = AppOpeningModel()
     @StateObject private var collectorTools = CollectorToolsStore.shared
     @Environment(\.scenePhase) private var scenePhase
@@ -17,7 +19,9 @@ struct TradingCardScannerApp: App {
             ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil
         // Catalog registration is the slower half of launch preparation; start
         // it now rather than when the first frame schedules the launch task.
-        CardGameRuntimeContainer.startPreparingAppDefaults()
+        PerformanceSignpost.measureLaunch("Launch.startCatalogPreparation") {
+            CardGameRuntimeContainer.startPreparingAppDefaults()
+        }
     }
 
     // Compatibility name for existing portfolio/status call sites. The
@@ -116,7 +120,9 @@ private struct CollectionSessionContent: View {
                         CatalogRecoveryBanner(names: unavailableNames(services.runtimes),
                             scanner: services.scanner, preparing: preparing, recoveryReady: recoveryReady) { attempt += 1 }
                     }
-                    ContentView(runtimes: services.runtimes)
+                    PerformanceSignpost.measureLaunch("Launch.contentViewInit") {
+                        ContentView(runtimes: services.runtimes)
+                    }
                         .environmentObject(services.scanner)
                         .id(services.id)
                         .disabled(preparing)

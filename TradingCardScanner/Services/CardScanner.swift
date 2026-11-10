@@ -796,7 +796,7 @@ struct SlabLabelReadPrompt: Equatable, Identifiable, Sendable {
 }
 
 final class CardScanner: NSObject, ObservableObject {
-    let session = AVCaptureSession()
+    let session = PerformanceSignpost.measureLaunch("Launch.captureSession") { AVCaptureSession() }
 
 #if DEBUG
     let debugVisionOverlay: ScannerDebugVisionOverlay
@@ -868,7 +868,7 @@ final class CardScanner: NSObject, ObservableObject {
         label: "cards.camera.profile",
         qos: .userInitiated
     )
-    private let videoOutput = AVCaptureVideoDataOutput()
+    private let videoOutput = PerformanceSignpost.measureLaunch("Launch.videoOutput") { AVCaptureVideoDataOutput() }
     private var footerRequest = VNRecognizeTextRequest()
     private var fullCardTextRequest = VNRecognizeTextRequest()
     private var supplementalTextRequest = VNRecognizeTextRequest()
@@ -1060,7 +1060,7 @@ final class CardScanner: NSObject, ObservableObject {
             labelInterval: 0.5
         )
         super.init()
-        configureTextRequest()
+        PerformanceSignpost.measureLaunch("Launch.configureVision") { configureTextRequest() }
 
         interruptionObserver = NotificationCenter.default.addObserver(
             forName: AVCaptureSession.wasInterruptedNotification,
