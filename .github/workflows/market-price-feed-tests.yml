@@ -22,7 +22,7 @@ permissions:
   contents: read
 jobs:
   validate:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_market_price_feeds.py'

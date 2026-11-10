@@ -52,7 +52,7 @@ permissions:
 
 jobs:
   validate:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: Validate hosting cache rules and namespace restoration
@@ -78,7 +78,7 @@ jobs:
   sign-reviewed-artifact:
     needs: validate
     if: github.event_name == 'workflow_dispatch' && inputs.sign == true && github.ref == 'refs/heads/main'
-    runs-on: macos-14
+    runs-on: macos-15
     environment: one-piece-catalog-signing
     env:
       KEY_ID: ${{ vars.ONE_PIECE_CATALOG_KEY_ID }}

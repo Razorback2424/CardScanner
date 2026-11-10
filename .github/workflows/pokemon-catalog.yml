@@ -42,6 +42,10 @@ on:
         required: true
         default: false
         type: boolean
+      bootstrap:
+        description: "Allow initial publication when no production pointer exists"
+        default: false
+        type: boolean
 permissions:
   contents: read
 
@@ -51,7 +55,7 @@ env:
 jobs:
   validate:
     name: Validate core and recorded fixture
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: Validate Firebase Hosting production configuration
@@ -82,7 +86,7 @@ jobs:
     concurrency:
       group: scanstash-catalog-production-hosting
       cancel-in-progress: false
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: Read the active production pointer
@@ -100,7 +104,11 @@ jobs:
               echo "Active production release downloaded to $active_path"
               ;;
             404)
-              echo "No active production release is available; preparing initial publication"
+              if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.bootstrap }}" != "true" ]; then
+                echo "::error::Production pointer v1/current.json is missing; refusing implicit re-baseline. Restore the last verified release, or dispatch with bootstrap=true." >&2
+                exit 1
+              fi
+              echo "Explicit bootstrap: preparing initial publication"
               rm -f "$active_path"
               ;;
             *)
@@ -202,7 +210,7 @@ jobs:
     concurrency:
       group: scanstash-catalog-production-hosting
       cancel-in-progress: false
-    runs-on: macos-14
+    runs-on: macos-15
     environment:
       name: ${{ needs.prepare-production.outputs.publish_environment }}
     env:
@@ -249,7 +257,11 @@ jobs:
               echo "Active production release downloaded to $active_path"
               ;;
             404)
-              echo "No active production release is available; treating this as initial publication"
+              if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.bootstrap }}" != "true" ]; then
+                echo "::error::Production pointer v1/current.json is missing; refusing implicit re-baseline. Restore the last verified release, or dispatch with bootstrap=true." >&2
+                exit 1
+              fi
+              echo "Explicit bootstrap: preparing initial publication"
               rm -f "$active_path"
               ;;
             *)

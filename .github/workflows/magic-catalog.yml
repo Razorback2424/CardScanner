@@ -43,7 +43,7 @@ env:
 jobs:
   validate:
     name: Validate Magic core and recorded fixture
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: Validate Firebase Hosting production configuration
@@ -75,7 +75,7 @@ jobs:
     if: >-
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && inputs.publish == true)
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: Read the active Magic production pointer
@@ -204,7 +204,7 @@ jobs:
     concurrency:
       group: scanstash-catalog-production-hosting
       cancel-in-progress: false
-    runs-on: macos-14
+    runs-on: macos-15
     environment:
       name: ${{ needs.prepare-production.outputs.publish_environment }}
     env:
