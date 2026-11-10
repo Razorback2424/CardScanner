@@ -34,6 +34,48 @@ final class GradedLabelParserTests: XCTestCase {
         XCTAssertEqual(evidence.labelCardText, ["1999 POKEMON GAME", "4 CHARIZARD-HOLO"])
     }
 
+    func testContradictoryGradeWordsAndNumbersAreRejected() {
+        for text in [
+            "PSA GEM MT 1", "PSA GEM MT 9", "PSA MINT 10", "PSA MINT 9.5",
+            "PSA NM-MT 3", "PSA NM-MT+ 8", "PSA EX 9", "PSA GOOD 8", "PSA PR 10",
+            "BGS 9 GEM MINT", "BGS 1 BLACK LABEL", "BGS 8 NM",
+            "CGC GEM MINT 1", "CGC PRISTINE 9.5", "CGC MINT+ 9",
+            "SGC 1 GEM", "SGC 10 MT", "BCCG 9 MINT", "BCCG 10 NEAR MINT", "BVG 1 PRISTINE",
+            "TAG 1 PRISTINE 123456"
+        ] {
+            XCTAssertNil(GradedLabelParser.parse([RecognizedLine(text: text)]), text)
+        }
+    }
+
+    func testConsistentGradesRetainHalfGradesAndLegacyCGCLabels() throws {
+        for (text, value, label) in [
+            ("PSA GEM MT 10", "10", "Gem Mint"),
+            ("PSA MINT 9", "9", "Mint"),
+            ("PSA NM-MT 8.5", "8.5", "NM-MT"),
+            ("PSA NM-MT+ 8.5", "8.5", "NM-MT"),
+            ("PSA EX+ 5.5 OC", "5.5", "EX"),
+            ("PSA EX 5.5 OC", "5.5", "EX"),
+            ("BGS 9.5 GEM MINT", "9.5", "Gem Mint"),
+            ("BGS 8.5 NM-MT", "8.5", "NM-MT"),
+            ("BGS 8.5 NM-MT+", "8.5", "NM-MT"),
+            ("BGS 7.5 NM", "7.5", "NM"),
+            ("CGC GEM MINT 9.5", "9.5", "Gem Mint"),
+            ("CGC GEM MINT 10", "10", "Gem Mint"),
+            ("CGC MINT+ 9.5", "9.5", "Mint+"),
+            ("CGC NM/MINT+ 8.5", "8.5", "NM/Mint"),
+            ("SGC 9.5 MT+", "9.5", "MT+"),
+            ("SGC 10 GEM", "10", "Gem"),
+            ("BCCG 10 MINT", "10", "Mint"),
+            ("BCCG 9 NEAR MINT OR BETTER", "9", "NM"),
+            ("BVG 9.5 GEM MINT", "9.5", "Gem Mint"),
+            ("TAG 10 PRISTINE 123456", "10", "Pristine")
+        ] {
+            let evidence = try XCTUnwrap(GradedLabelParser.parse([RecognizedLine(text: text)]), text)
+            XCTAssertEqual(evidence.grade.value, value, text)
+            XCTAssertEqual(evidence.grade.label, label, text)
+        }
+    }
+
     func testPSARequiresAnEightOrNineDigitCertificate() throws {
         let nineDigit = try XCTUnwrap(GradedLabelParser.parse([
             RecognizedLine(text: "PSA GEM MT 10"),
@@ -625,14 +667,14 @@ final class GradedLabelParserTests: XCTestCase {
         ]))
 
         let psa = try XCTUnwrap(GradedLabelParser.parse([
-            RecognizedLine(text: "PSA EX 9 12345678")
+            RecognizedLine(text: "PSA EX 5 12345678")
         ]))
-        XCTAssertEqual(psa.grade, CardGrade(value: "9", label: "EX"))
+        XCTAssertEqual(psa.grade, CardGrade(value: "5", label: "EX"))
 
         let bgs = try XCTUnwrap(GradedLabelParser.parse([
-            RecognizedLine(text: "BGS 8 NM 1234567890")
+            RecognizedLine(text: "BGS 7 NM 1234567890")
         ]))
-        XCTAssertEqual(bgs.grade, CardGrade(value: "8", label: "NM"))
+        XCTAssertEqual(bgs.grade, CardGrade(value: "7", label: "NM"))
     }
 
     func testNonTAGBareNumberNearCompanyIsNotAGrade() {

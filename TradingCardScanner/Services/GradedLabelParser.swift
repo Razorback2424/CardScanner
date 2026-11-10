@@ -66,10 +66,12 @@ enum GradingNumberPosition: Sendable {
 private struct GradedGradeWord: Sendable {
     let tokens: [String]
     let label: String
+    let numericRange: ClosedRange<Double>?
 
-    init(_ tokens: [String], label: String) {
+    init(_ tokens: [String], label: String, grades: ClosedRange<Double>? = nil) {
         self.tokens = tokens
         self.label = label
+        self.numericRange = grades
     }
 }
 
@@ -158,16 +160,16 @@ enum GradedLabelParser {
             companyTokens: [["PSA"], ["PROFESSIONAL", "SPORTS", "AUTHENTICATOR"]],
             gradeWords: [
                 GradedGradeWord(["AUTHENTIC"], label: "Authentic"),
-                GradedGradeWord(["GEM", "MT"], label: "Gem Mint"),
-                GradedGradeWord(["NM", "MT"], label: "NM-MT"),
-                GradedGradeWord(["EX", "MT"], label: "EX-MT"),
-                GradedGradeWord(["VG", "EX"], label: "VG-EX"),
-                GradedGradeWord(["MINT"], label: "Mint"),
-                GradedGradeWord(["GOOD"], label: "Good"),
-                GradedGradeWord(["NM"], label: "NM"),
-                GradedGradeWord(["EX"], label: "EX"),
-                GradedGradeWord(["VG"], label: "VG"),
-                GradedGradeWord(["PR"], label: "PR")
+                GradedGradeWord(["GEM", "MT"], label: "Gem Mint", grades: 10...10),
+                GradedGradeWord(["NM", "MT"], label: "NM-MT", grades: 8...8.5),
+                GradedGradeWord(["EX", "MT"], label: "EX-MT", grades: 6...6.5),
+                GradedGradeWord(["VG", "EX"], label: "VG-EX", grades: 4...4.5),
+                GradedGradeWord(["MINT"], label: "Mint", grades: 9...9),
+                GradedGradeWord(["GOOD"], label: "Good", grades: 2...2.5),
+                GradedGradeWord(["NM"], label: "NM", grades: 7...7.5),
+                GradedGradeWord(["EX"], label: "EX", grades: 5...5.5),
+                GradedGradeWord(["VG"], label: "VG", grades: 3...3.5),
+                GradedGradeWord(["PR"], label: "PR", grades: 1...1)
             ],
             requiresGradeWord: true,
             numberPosition: .afterWord,
@@ -178,17 +180,17 @@ enum GradedLabelParser {
             company: .bgs,
             companyTokens: [["BGS"], ["BECKETT"]],
             gradeWords: [
-                GradedGradeWord(["BLACK", "LABEL"], label: "Black Label"),
-                GradedGradeWord(["GEM", "MINT"], label: "Gem Mint"),
-                GradedGradeWord(["GEM", "MT"], label: "Gem Mint"),
-                GradedGradeWord(["PRISTINE"], label: "Pristine"),
-                GradedGradeWord(["NM", "MT"], label: "NM-MT"),
-                GradedGradeWord(["EX", "MT"], label: "EX-MT"),
-                GradedGradeWord(["VG", "EX"], label: "VG-EX"),
-                GradedGradeWord(["MINT"], label: "Mint"),
-                GradedGradeWord(["NM"], label: "NM"),
-                GradedGradeWord(["EX"], label: "EX"),
-                GradedGradeWord(["VG"], label: "VG")
+                GradedGradeWord(["BLACK", "LABEL"], label: "Black Label", grades: 10...10),
+                GradedGradeWord(["GEM", "MINT"], label: "Gem Mint", grades: 9.5...9.5),
+                GradedGradeWord(["GEM", "MT"], label: "Gem Mint", grades: 9.5...9.5),
+                GradedGradeWord(["PRISTINE"], label: "Pristine", grades: 10...10),
+                GradedGradeWord(["NM", "MT"], label: "NM-MT", grades: 8...8.5),
+                GradedGradeWord(["EX", "MT"], label: "EX-MT", grades: 6...6.5),
+                GradedGradeWord(["VG", "EX"], label: "VG-EX", grades: 4...4.5),
+                GradedGradeWord(["MINT"], label: "Mint", grades: 9...9),
+                GradedGradeWord(["NM"], label: "NM", grades: 7...7.5),
+                GradedGradeWord(["EX"], label: "EX", grades: 5...5.5),
+                GradedGradeWord(["VG"], label: "VG", grades: 3...3.5)
             ],
             requiresGradeWord: true,
             numberPosition: .beforeWord,
@@ -199,12 +201,13 @@ enum GradedLabelParser {
             company: .cgc,
             companyTokens: [["CGC"], ["CERTIFIED", "GUARANTY", "COMPANY"]],
             gradeWords: [
-                GradedGradeWord(["PRISTINE"], label: "Pristine"),
-                GradedGradeWord(["GEM", "MINT"], label: "Gem Mint"),
-                GradedGradeWord(["NM", "MINT"], label: "NM/Mint"),
-                GradedGradeWord(["MINT+"], label: "Mint+"),
-                GradedGradeWord(["MINT"], label: "Mint"),
-                GradedGradeWord(["NM"], label: "NM")
+                GradedGradeWord(["PRISTINE"], label: "Pristine", grades: 10...10),
+                // Both the older blue 9.5 and current 10 say Gem Mint.
+                GradedGradeWord(["GEM", "MINT"], label: "Gem Mint", grades: 9.5...10),
+                GradedGradeWord(["NM", "MINT"], label: "NM/Mint", grades: 8...8.5),
+                GradedGradeWord(["MINT+"], label: "Mint+", grades: 9.5...9.5),
+                GradedGradeWord(["MINT"], label: "Mint", grades: 9...9),
+                GradedGradeWord(["NM"], label: "NM", grades: 7...7.5)
             ],
             requiresGradeWord: true,
             numberPosition: .afterWord,
@@ -215,11 +218,11 @@ enum GradedLabelParser {
             company: .sgc,
             companyTokens: [["SGC"], ["SPORTSCARD", "GUARANTY"]],
             gradeWords: [
-                GradedGradeWord(["PRISTINE"], label: "Pristine"),
-                GradedGradeWord(["GEM"], label: "Gem"),
-                GradedGradeWord(["MT+"], label: "MT+"),
-                GradedGradeWord(["MT"], label: "MT"),
-                GradedGradeWord(["MINT"], label: "Mint")
+                GradedGradeWord(["PRISTINE"], label: "Pristine", grades: 10...10),
+                GradedGradeWord(["GEM"], label: "Gem", grades: 10...10),
+                GradedGradeWord(["MT+"], label: "MT+", grades: 9.5...9.5),
+                GradedGradeWord(["MT"], label: "MT", grades: 9...9),
+                GradedGradeWord(["MINT"], label: "Mint", grades: 9...9.5)
             ],
             requiresGradeWord: true,
             numberPosition: .beforeWord,
@@ -230,9 +233,10 @@ enum GradedLabelParser {
             company: .bccg,
             companyTokens: [["BCCG"]],
             gradeWords: [
-                GradedGradeWord(["MINT"], label: "Mint"),
-                GradedGradeWord(["NM", "MT"], label: "NM-MT"),
-                GradedGradeWord(["NM"], label: "NM")
+                GradedGradeWord(["NEAR", "MINT"], label: "NM", grades: 9...9),
+                GradedGradeWord(["MINT"], label: "Mint", grades: 10...10),
+                GradedGradeWord(["NM", "MT"], label: "NM-MT", grades: 9...9),
+                GradedGradeWord(["NM"], label: "NM", grades: 9...9)
             ],
             requiresGradeWord: true,
             numberPosition: .beforeWord,
@@ -243,11 +247,11 @@ enum GradedLabelParser {
             company: .bvg,
             companyTokens: [["BVG"]],
             gradeWords: [
-                GradedGradeWord(["PRISTINE"], label: "Pristine"),
-                GradedGradeWord(["GEM", "MINT"], label: "Gem Mint"),
-                GradedGradeWord(["MINT"], label: "Mint"),
-                GradedGradeWord(["NM", "MT"], label: "NM-MT"),
-                GradedGradeWord(["NM"], label: "NM")
+                GradedGradeWord(["PRISTINE"], label: "Pristine", grades: 10...10),
+                GradedGradeWord(["GEM", "MINT"], label: "Gem Mint", grades: 9.5...9.5),
+                GradedGradeWord(["MINT"], label: "Mint", grades: 9...9),
+                GradedGradeWord(["NM", "MT"], label: "NM-MT", grades: 8...8.5),
+                GradedGradeWord(["NM"], label: "NM", grades: 7...7.5)
             ],
             requiresGradeWord: true,
             numberPosition: .beforeWord,
@@ -258,7 +262,7 @@ enum GradedLabelParser {
             company: .tag,
             companyTokens: [["TAG"]],
             gradeWords: [
-                GradedGradeWord(["PRISTINE"], label: "Pristine")
+                GradedGradeWord(["PRISTINE"], label: "Pristine", grades: 10...10)
             ],
             requiresGradeWord: false,
             numberPosition: .beforeWord,
@@ -331,7 +335,18 @@ enum GradedLabelParser {
             return nil
         }
 
-        let wordMatches = spec.gradeWords.enumerated().flatMap { wordIndex, word in
+        // OCR may drop a printed plus. Keep valid half grades with the base
+        // word, but an explicit plus must agree with the upper half-step.
+        let gradeWords = spec.gradeWords.flatMap { word -> [GradedGradeWord] in
+            guard let range = word.numericRange,
+                  range.lowerBound.rounded() == range.lowerBound,
+                  range.upperBound == range.lowerBound + 0.5 else { return [word] }
+            var plusTokens = word.tokens
+            plusTokens[plusTokens.count - 1] += "+"
+            return [word, GradedGradeWord(plusTokens, label: word.label,
+                                         grades: range.upperBound...range.upperBound)]
+        }
+        let wordMatches = gradeWords.enumerated().flatMap { wordIndex, word in
             phraseMatches([word.tokens], in: parsedLines).map {
                 (wordIndex: wordIndex, word: word, location: $0)
             }
@@ -421,6 +436,12 @@ enum GradedLabelParser {
         // words need their printed number before they can identify or price a
         // slab; glare over that number must not save an incomplete grade.
         guard selectedNumber != nil || selectedWord?.word.label == "Authentic" else { return nil }
+        // Reject contradictory evidence after selection. Filtering numbers by
+        // the word first could silently substitute a collector/subgrade value.
+        if let range = selectedWord?.word.numericRange,
+           let selectedNumber, !range.contains(selectedNumber.2) {
+            return nil
+        }
 
         let qualifiers = locatedTokens(in: parsedLines)
             .filter { located in
