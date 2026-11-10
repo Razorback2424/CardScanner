@@ -49,6 +49,114 @@ private extension CollectionDetailWriter {
 final class CollectionActivityHistoryTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testIdentityOnlyReaddPreservesKnownMarketplaceProduct() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let priced = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"svp-1","localId":"1","name":"Test","set":{"id":"svp","name":"Set","cardCount":{"total":2,"official":2}},"variants":{"firstEdition":false,"holo":true,"normal":false,"reverse":false},"pricing":{"tcgplayer":{"holofoil":{"marketPrice":12.5,"productId":123456}}}}"#.utf8))
+        let resolved = ResolvedVariant(variant: .holo, resolution: .userConfirmed)
+        let mutation = try store.add(.pokemon(priced, setCode: "SVP"), resolved: resolved)
+        let original = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+        XCTAssertEqual(original.tcgplayerProductID, "123456")
+        let originalURL = original.tcgplayerURL
+        let identityOnly = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"svp-1","localId":"1","name":"Test","set":{"id":"svp","name":"Set","cardCount":{"total":2,"official":2}},"variants":{"firstEdition":false,"holo":true,"normal":false,"reverse":false}}"#.utf8))
+        _ = try store.add(.pokemon(identityOnly, setCode: "SVP"), resolved: resolved)
+        let updated = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+        XCTAssertEqual(updated.quantity, 2)
+        XCTAssertEqual(updated.tcgplayerProductID, "123456")
+        XCTAssertEqual(updated.tcgplayerURL, originalURL)
+        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: updated)?.url.path, "/product/123456")
+    }
+
+    func testHistoryReloadBuildsACompleteSnapshotFor1500OwnedCards() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let context = try makeContext(storeURL: directory.appendingPathComponent("activity-reload.sqlite"))
+        for index in 0..<1500 {
+            let card = makeCollectedCard()
+            card.providerID = "activity-\(index)"
+            card.collectionKey = "activity-\(index)#normal"
+            context.insert(card)
+            context.insert(CollectionActivity(card: card, source: .scan))
+            context.insert(InventoryEvent(operationID: UUID(), leg: nil, kind: .recordExisting,
+                source: .scan, collectionKey: card.collectionKey, priceStorageKey: card.priceKey,
+                deltaQuantity: 1, occurredAt: .now, valuation: .unpriced))
+        }
+        try context.save()
+        let reader = ModelContext(try XCTUnwrap(container))
+        var state = CollectionActivityLogReadState()
+        for pass in 0..<3 {
+            let start = ContinuousClock.now
+            state.reload(context: reader, kind: nil, limit: 200)
+            let elapsed = start.duration(to: .now)
+            print("Activity reload 1500 cards / 1500 events / pass \(pass): \(elapsed)")
+            XCTAssertNil(state.errorMessage)
+            XCTAssertEqual(state.snapshot?.activities.count, 200)
+            XCTAssertEqual(state.snapshot?.index.quantitiesByCollectionKey.count, 200)
+            XCTAssertEqual(state.snapshot?.index.eventsByCollectionKey.count, 200)
+            XCTAssertTrue(state.snapshot?.hasMoreActivities ?? false)
+        }
+    }
+
+    func testActivityReadScopeRetainsCrossPositionCorrectionLegsAndReversals() throws {
+        let context = try makeContext()
+        let visible = makeCollectedCard()
+        let unrelated = makeCollectedCard()
+        unrelated.collectionKey = "unrelated#normal"
+        context.insert(visible)
+        context.insert(unrelated)
+        let operationID = UUID()
+        let activity = CollectionActivity(card: visible, source: .scan)
+        activity.ledgerOperationIDs = [operationID]
+        let incoming = InventoryEvent(operationID: operationID, leg: .to, kind: .correction,
+            source: .correction, collectionKey: visible.collectionKey, priceStorageKey: visible.priceKey,
+            deltaQuantity: 1, occurredAt: .now, valuation: .unpriced)
+        let outgoing = InventoryEvent(operationID: operationID, leg: .from, kind: .correction,
+            source: .correction, collectionKey: "other-position", priceStorageKey: "other-price",
+            deltaQuantity: -1, occurredAt: .now, valuation: .unpriced)
+        let reversal = InventoryEvent(operationID: UUID(), leg: nil, kind: .correction,
+            source: .correction, collectionKey: "other-position", priceStorageKey: "other-price",
+            deltaQuantity: 1, occurredAt: .now, valuation: .unpriced, reversesEventID: outgoing.eventID)
+        let reacquisition = InventoryEvent(operationID: UUID(), leg: nil, kind: .acquire,
+            source: .scan, collectionKey: visible.collectionKey, priceStorageKey: visible.priceKey,
+            deltaQuantity: 1, occurredAt: .now, valuation: .unpriced)
+        let irrelevant = InventoryEvent(operationID: UUID(), leg: nil, kind: .acquire,
+            source: .scan, collectionKey: unrelated.collectionKey, priceStorageKey: unrelated.priceKey,
+            deltaQuantity: 1, occurredAt: .now, valuation: .unpriced)
+        for event in [incoming, outgoing, reversal, reacquisition, irrelevant] { context.insert(event) }
+        try context.save()
+        let scope = CollectionActivityReadScope(activities: [activity])
+        XCTAssertEqual(try scope.cards(in: context).map(\.collectionKey), [visible.collectionKey])
+        let events = try scope.events(in: context)
+        XCTAssertEqual(Set(events.map(\.eventID)), [incoming.eventID, outgoing.eventID, reversal.eventID, reacquisition.eventID])
+        XCTAssertTrue(CollectionStore.LineageIndex(events: events).reversedEventIDs.contains(outgoing.eventID),
+            "An off-page reversal must still disable the original claim")
+        XCTAssertTrue(try CollectionActivityReadScope(activities: []).cards(in: context).isEmpty)
+        XCTAssertTrue(try CollectionActivityReadScope(activities: []).events(in: context).isEmpty)
+    }
+
+    func testRawDetailFinishCorrectionSelectsLatestOutstandingAcquisitionOnly() throws {
+        let context = try makeContext()
+        let card = makeCollectedCard(quantity: 3)
+        let start = Date(timeIntervalSince1970: 1_800_000_000)
+        let older = CollectionActivity(card: card, source: .scan, quantity: 2, occurredAt: start)
+        let latest = CollectionActivity(card: card, source: .scan, quantity: 1,
+            occurredAt: start.addingTimeInterval(1))
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        let graded = CollectionActivity(card: card, source: .scan, occurredAt: start.addingTimeInterval(2))
+        card.itemKindRaw = CollectionItemKind.rawCard.rawValue
+        for activity in [older, latest, graded] { context.insert(activity) }
+        try context.save()
+        let descriptor = CollectionCardDetailView.rawAcquisitionDescriptor(for: card.collectionKey)
+        XCTAssertEqual(try context.fetch(descriptor).map(\.id), [latest.id])
+        latest.resolvedQuantity = latest.claimedQuantity
+        try context.save()
+        XCTAssertEqual(try context.fetch(descriptor).map(\.id), [older.id])
+        older.resolvedQuantity = older.claimedQuantity
+        try context.save()
+        XCTAssertTrue(try context.fetch(descriptor).isEmpty)
+    }
+
     func testHistoryMissingStorageTokenClearsLoading() async {
         let generation = CollectionStorageGeneration()
         XCTAssertNil(generation.currentToken())

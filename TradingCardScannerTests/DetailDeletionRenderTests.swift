@@ -89,6 +89,10 @@ final class DetailDeletionRenderTests: XCTestCase {
 
         XCTAssertEqual(MarketHistoryPresentation(model: empty, hasHistory: false, isLoading: true, error: nil), .loading)
         XCTAssertEqual(MarketHistoryPresentation(model: empty, hasHistory: false, isLoading: false, error: nil), .unavailable)
+        XCTAssertEqual(MarketHistoryPresentation(model: empty, hasHistory: false, isLoading: false,
+            error: "missing credentials", requiresAPIKey: true), .configurationRequired)
+        XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: false,
+            error: nil, requiresAPIKey: true), .chart, "Removing a key keeps saved history usable")
         XCTAssertEqual(MarketHistoryPresentation(model: empty, hasHistory: false, isLoading: false, error: "offline"), .failed)
         XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: true, error: nil), .chart)
         XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: false, error: "offline"), .chart)

@@ -151,6 +151,7 @@ struct PortfolioView: View {
     @ObservedObject var history: PortfolioHistoryStore
     let onRefresh: @MainActor () async -> Void
     let onOpenCollectionSortedByPrice: @MainActor () -> Void
+    var onOpenScanner: @MainActor () -> Void = {}
     @State private var isShowingSettings = false
     @State private var contributorContext: PortfolioContributorContext?
     @State private var detailsDestination: PortfolioDetailsDestination?
@@ -173,6 +174,14 @@ struct PortfolioView: View {
     /// ready, avoiding an empty frame or old totals under a new period label.
     private var activeHistoryResult: PortfolioHistoryResult? {
         history.result
+    }
+
+    private var isStartingCollection: Bool {
+        guard let summary = portfolio.summary, summary.isAuthoritative,
+              summary.copyCount == 0 else { return false }
+        // Wait for history to load before calling an empty collection new.
+        // The history engine retains an anchor even outside the chosen range.
+        return history.result?.isEmpty == true
     }
 
     /// Scrub values are resolved from the result for the active range. This
@@ -227,15 +236,28 @@ struct PortfolioView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 24) {
-                        portfolioHero
+                        if isStartingCollection {
+                            ContentUnavailableView {
+                                Label("Start your collection", systemImage: "rectangle.stack.badge.plus")
+                            } description: {
+                                Text("Scan your first card to track your collection and its market value.")
+                            } actions: {
+                                Button("Scan your first card", systemImage: "camera", action: onOpenScanner)
+                                    .buttonStyle(.borderedProminent)
+                            }
+                            .frame(minHeight: 320)
                             .padding(.horizontal, 16)
+                        } else {
+                            portfolioHero
+                                .padding(.horizontal, 16)
+                        }
                         if let summary = portfolio.summary {
                             if !summary.defects.isEmpty {
                                 integrityWarning(summary.defects)
                                     .padding(.horizontal, 16)
                             }
 
-                            if summary.isAuthoritative {
+                            if summary.isAuthoritative, !isStartingCollection {
                                 VStack(alignment: .leading, spacing: 14) {
                                     PortfolioHistoryView(
                                         history: history,

@@ -117,7 +117,8 @@ struct ContentView: View {
                 onOpenCollectionSortedByPrice: {
                     collectionSort = .priceHighToLow
                     selectedTab = .collection
-                }
+                },
+                onOpenScanner: { selectedTab = .scan }
             )
                 .tabItem {
                     Label("Portfolio", systemImage: "chart.line.uptrend.xyaxis")
@@ -195,7 +196,13 @@ struct ContentView: View {
                 .onAppear { markSettingsReviewReady() }
             }
             if debugRoute == "StorageSettingsReview" {
-                NavigationStack { PrivacyAndSupportSettingsView() }
+                Group {
+                    if ProcessInfo.processInfo.arguments.contains("settings") {
+                        SettingsView()
+                    } else {
+                        NavigationStack { PrivacyAndSupportSettingsView() }
+                    }
+                }
                     .environment(\.dynamicTypeSize, ProcessInfo.processInfo.arguments.contains("large-text") ? .accessibility2 : .large)
                     .onAppear { markSettingsReviewReady() }
             }

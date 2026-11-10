@@ -86,6 +86,7 @@ struct PortfolioHistoryView: View {
                 Text("History is being recorded.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .padding(.horizontal, 16)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

@@ -119,6 +119,10 @@ struct CollectionCardDetailView: View {
         CollectionCardDetailContent.gradedAcquisitionDescriptor(for: key)
     }
 
+    static func rawAcquisitionDescriptor(for key: String) -> FetchDescriptor<CollectionActivity> {
+        CollectionCardDetailContent.gradedAcquisitionDescriptor(for: key, itemKind: .rawCard)
+    }
+
     static func ungradedReferenceDescriptor(for card: CollectedCard) -> FetchDescriptor<PriceRecord> {
         CollectionCardDetailContent.ungradedReferenceDescriptor(for: card)
     }
@@ -203,6 +207,7 @@ private struct CollectionCardDetailContent: View {
     @State private var selectedPriceDate: Date?
     @State private var marketHistory: [JustTCGHistoryPoint] = []
     @State private var marketHistoryError: String?
+    @State private var marketHistoryRequiresKey = false
     @State private var isLoadingMarketHistory = true
     @State private var marketHistoryIdentity: [String]?
     @State private var marketHistoryRetry = 0
@@ -238,10 +243,11 @@ private struct CollectionCardDetailContent: View {
         let resolvedCollectionKey = card.collectionKey
         if card.itemKind == .gradedCard {
             self._collectionActivities = Query(Self.gradedAcquisitionDescriptor(for: resolvedCollectionKey))
+        } else if card.itemKind == .rawCard {
+            self._collectionActivities = Query(Self.gradedAcquisitionDescriptor(
+                for: resolvedCollectionKey, itemKind: .rawCard))
         } else {
-            // Raw and sealed rows never read acquisition history. Keep their
-            // query empty so unrelated activity writes cannot re-fetch a full
-            // history just to evaluate an unused graded-only block.
+            // Sealed products have no finish to correct.
             var descriptor = FetchDescriptor<CollectionActivity>(
                 predicate: #Predicate<CollectionActivity> {
                     $0.itemKindRaw == "__graded_detail_query_disabled__"
@@ -607,6 +613,23 @@ private struct CollectionCardDetailContent: View {
 
             if card.itemKind == .gradedCard {
                 gradedVariantCorrectionBlock
+            } else if card.itemKind == .rawCard, let activity = collectionActivities.first {
+                NavigationLink {
+                    CollectionActivityEditor(activity: activity, onCorrected: { dismiss() })
+                } label: {
+                    Label("Fix finish", systemImage: "pencil")
+                        .frame(minHeight: 44)
+                }
+                .font(.subheadline.weight(.semibold))
+                .accessibilityLabel("Fix card finish")
+                .disabled(isOwnershipWritePending)
+                if card.variantResolution == .uniqueInCatalog {
+                    Text("Finish selected from the catalog. Compare your card’s stamp and foil pattern; special printings may need a correction.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .frame(maxWidth: .infinity)
@@ -844,8 +867,9 @@ private struct CollectionCardDetailContent: View {
         }
     }
 
-    static func gradedAcquisitionDescriptor(for collectionKey: String) -> FetchDescriptor<CollectionActivity> {
-        let gradedKind = CollectionItemKind.gradedCard.rawValue
+    static func gradedAcquisitionDescriptor(for collectionKey: String,
+                                            itemKind: CollectionItemKind = .gradedCard) -> FetchDescriptor<CollectionActivity> {
+        let gradedKind = itemKind.rawValue
         let addedKind = CollectionActivityKind.added.rawValue
         let restoredKind = CollectionActivityKind.restored.rawValue
         var descriptor = FetchDescriptor<CollectionActivity>(
@@ -1164,6 +1188,7 @@ private struct CollectionCardDetailContent: View {
         if let index = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(index + 1) {
             let state = arguments[index + 1]
             if state.hasPrefix("price-chart") {
+                marketHistoryRequiresKey = state == "price-chart-keyless"
                 switch state {
                 case "price-chart", "price-chart-refreshing", "price-chart-saved-error":
                     marketHistory = CardMarketHistoryFixture.points
@@ -1183,6 +1208,8 @@ private struct CollectionCardDetailContent: View {
             }
         }
 #endif
+        marketHistoryRequiresKey = !PriceVendorCredentials.hasKey
+        guard !marketHistoryRequiresKey else { return }
         do {
             let points = try await CardMarketHistoryService.shared.history(for: request, runtimes: runtimes)
             try Task.checkCancellation()
@@ -1192,6 +1219,10 @@ private struct CollectionCardDetailContent: View {
             marketHistory = points
         } catch is CancellationError { return }
         catch CardMarketHistoryService.HistoryError.noListing { return }
+        catch JustTCGTransport.TransportError.missingCredentials {
+            guard !Task.isCancelled, request == marketHistoryRequest else { return }
+            marketHistoryRequiresKey = true
+        }
         catch {
             guard !Task.isCancelled, request == marketHistoryRequest else { return }
             marketHistoryError = error.localizedDescription
@@ -1224,7 +1255,8 @@ private struct CollectionCardDetailContent: View {
             MarketHistoryChartContent(model: model, hasHistory: !marketHistory.isEmpty,
                                       isLoading: isLoadingMarketHistory, error: marketHistoryError,
                                       direction: movement.direction, range: $history.range,
-                                      selection: $selectedPriceDate, retry: { marketHistoryRetry += 1 })
+                                      selection: $selectedPriceDate, requiresAPIKey: marketHistoryRequiresKey,
+                                      retry: { marketHistoryRetry += 1 })
                 .accessibilityIdentifier("price-history-\(priceHistoryInstrumentKey)")
 
             DisclosureGroup {
@@ -1902,6 +1934,7 @@ private struct CardDetailMovementPill: View {
 }
 
 private struct CardDetailRangeSelector: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let selection: PortfolioHistoryRange
     let direction: CardDetailMovementDisplay.Direction
     let onSelect: (PortfolioHistoryRange) -> Void
@@ -1915,29 +1948,39 @@ private struct CardDetailRangeSelector: View {
     }
 
     var body: some View {
-        HStack(spacing: 0) {
-            ForEach(PortfolioHistoryRange.allCases, id: \.self) { range in
-                Button {
-                    onSelect(range)
-                } label: {
-                    Text(range.rawValue)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(selection == range ? selectedTint : .secondary)
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .background(
-                            selection == range ? selectedTint.opacity(0.16) : .clear,
-                            in: Capsule()
-                        )
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                    rangeButtons
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(range.accessibilityName)
-                .accessibilityAddTraits(selection == range ? .isSelected : [])
+            } else {
+                HStack(spacing: 0) { rangeButtons }
             }
         }
         .padding(.horizontal, 8)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Price history range")
         .accessibilityHint("Choose how much per-card price history to show.")
+    }
+
+    private var rangeButtons: some View {
+        ForEach(PortfolioHistoryRange.allCases, id: \.self) { range in
+            Button {
+                onSelect(range)
+            } label: {
+                Text(range.rawValue)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(selection == range ? selectedTint : .secondary)
+                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .background(
+                        selection == range ? selectedTint.opacity(0.16) : .clear,
+                        in: Capsule()
+                    )
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(range.accessibilityName)
+            .accessibilityAddTraits(selection == range ? .isSelected : [])
+        }
     }
 }
 
@@ -2655,6 +2698,7 @@ struct CardMarketHistoryPanel: View {
     @State private var range: PortfolioHistoryRange = .threeMonths
     @State private var selection: Date?
     @State private var error: String?
+    @State private var requiresAPIKey = false
     @State private var isLoading = true
     @State private var loadedIdentity: [String]?
     @State private var retryID = 0
@@ -2676,7 +2720,8 @@ struct CardMarketHistoryPanel: View {
             }
             MarketHistoryChartContent(model: model, hasHistory: !points.isEmpty, isLoading: isLoading,
                                       error: error, direction: direction, range: $range,
-                                      selection: $selection, retry: { retryID += 1 })
+                                      selection: $selection, requiresAPIKey: requiresAPIKey,
+                                      retry: { retryID += 1 })
             DisclosureGroup {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(model.currentPrice?.detailAttribution ?? [], id: \.self) { Text($0) }
@@ -2711,7 +2756,8 @@ struct CardMarketHistoryPanel: View {
 #if DEBUG && LOCAL_ONLY_SIGNING
         if let state = YuGiOhHistoryDebugView.state, request.game == .yuGiOh {
             points = state == "chart" ? CardMarketHistoryFixture.points : []
-            error = state == "missing-key" ? JustTCGTransport.TransportError.missingCredentials.localizedDescription : nil
+            requiresAPIKey = state == "missing-key"
+            error = nil
             isLoading = false
             CardMarketHistoryFixture.markReady()
             return
@@ -2729,6 +2775,8 @@ struct CardMarketHistoryPanel: View {
         guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
         if !cached.isEmpty { points = cached }
         defer { if !Task.isCancelled { isLoading = false } }
+        requiresAPIKey = !PriceVendorCredentials.hasKey
+        guard !requiresAPIKey else { return }
         do {
             let result = try await CardMarketHistoryService.shared.history(for: request, runtimes: runtimes)
             try Task.checkCancellation()
@@ -2736,6 +2784,10 @@ struct CardMarketHistoryPanel: View {
             points = result
         } catch is CancellationError { return }
         catch CardMarketHistoryService.HistoryError.noListing { return }
+        catch JustTCGTransport.TransportError.missingCredentials {
+            guard !Task.isCancelled else { return }
+            requiresAPIKey = true
+        }
         catch {
             guard !Task.isCancelled else { return }
             self.error = error.localizedDescription
@@ -2794,11 +2846,13 @@ struct YuGiOhHistoryDebugView: View {
 /// Loading, empty and filtered-out history are distinct states. Existing
 /// samples always remain usable while a refresh runs or fails.
 enum MarketHistoryPresentation: Equatable {
-    case chart, outsideRange, loading, unavailable, failed
+    case chart, outsideRange, loading, unavailable, failed, configurationRequired
 
-    init(model: PriceHistoryChartModel, hasHistory: Bool, isLoading: Bool, error: String?) {
+    init(model: PriceHistoryChartModel, hasHistory: Bool, isLoading: Bool, error: String?,
+         requiresAPIKey: Bool = false) {
         if !model.samples.isEmpty { self = .chart }
         else if hasHistory { self = .outsideRange }
+        else if requiresAPIKey { self = .configurationRequired }
         else if isLoading { self = .loading }
         else if error != nil { self = .failed }
         else { self = .unavailable }
@@ -2813,11 +2867,13 @@ struct MarketHistoryChartContent: View {
     let direction: CardDetailMovementDisplay.Direction
     @Binding var range: PortfolioHistoryRange
     @Binding var selection: Date?
+    var requiresAPIKey: Bool = false
     let retry: () -> Void
 
     var body: some View {
         let presentation = MarketHistoryPresentation(model: model, hasHistory: hasHistory,
-                                                     isLoading: isLoading, error: error)
+                                                     isLoading: isLoading, error: error,
+                                                     requiresAPIKey: requiresAPIKey)
         VStack(alignment: .leading, spacing: 8) {
             switch presentation {
             case .chart:
@@ -2841,6 +2897,10 @@ struct MarketHistoryChartContent: View {
                 Text("Price history isn’t available yet.")
                     .font(.subheadline)
                     .frame(maxWidth: .infinity, minHeight: 64)
+            case .configurationRequired:
+                historyKeyExplanation
+                    .frame(maxWidth: .infinity, minHeight: 64)
+                    .padding(.horizontal, 16)
             case .failed:
                 VStack(spacing: 4) {
                     Text("Couldn’t load price history").font(.subheadline)
@@ -2864,7 +2924,10 @@ struct MarketHistoryChartContent: View {
                     }
                 }
                 .font(.caption).padding(.horizontal, 16)
-                if !isLoading, error != nil {
+                if requiresAPIKey {
+                    historyKeyExplanation
+                        .padding(.horizontal, 16)
+                } else if !isLoading, error != nil {
                     HStack {
                         Text("Showing saved prices. Couldn’t update history.").font(.caption)
                         Button("Retry", action: retry).font(.subheadline).foregroundStyle(.tint).frame(minHeight: 44)
@@ -2880,6 +2943,12 @@ struct MarketHistoryChartContent: View {
     func showAllHistory() {
         selection = nil
         range = .all
+    }
+
+    private var historyKeyExplanation: some View {
+        Text("Market history is optional. Add your own JustTCG API key in Settings → Pricing to load it. Saved prices and history remain available.")
+            .font(.caption)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -3173,6 +3242,7 @@ private struct CardDetailSinglePricePoint: View {
             Text(sample.priceCaption)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             if let annotationLabel = sample.annotationLabel {
                 Text(annotationLabel)
                     .font(.caption.weight(.semibold))
@@ -3188,6 +3258,7 @@ private struct CardDetailSinglePricePoint: View {
             }
         }
         .frame(maxWidth: .infinity, minHeight: 174)
+        .padding(.horizontal, 16)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("One recorded unit price")

@@ -37,6 +37,17 @@ struct CollectionActivityLogReadState {
         errorMessage = error.localizedDescription
     }
 
+    mutating func reload(context: ModelContext, kind: CollectionActivityKind?, limit: Int) {
+        do {
+            let activities = try context.fetch(CollectionActivityLogView.activityDescriptor(kind: kind, limit: limit + 1))
+            let scope = CollectionActivityReadScope(activities: Array(activities.prefix(limit)))
+            reload(activities: { activities }, cards: { try scope.cards(in: context) },
+                inventoryEvents: { try scope.events(in: context) }, kind: kind, limit: limit)
+        } catch {
+            recordFailure(error)
+        }
+    }
+
     mutating func reload(
         activities: () throws -> [CollectionActivity],
         cards: () throws -> [CollectedCard],
@@ -258,13 +269,7 @@ struct CollectionActivityLogView: View {
     }
 
     private func reloadSnapshot() {
-        let descriptor = Self.activityDescriptor(kind: selectedKind, limit: activityLimit + 1)
-        readState.reload(
-            activities: { try modelContext.fetch(descriptor) },
-            cards: { try modelContext.fetch(FetchDescriptor<CollectedCard>()) },
-            inventoryEvents: { try modelContext.fetch(FetchDescriptor<InventoryEvent>()) },
-            kind: selectedKind, limit: activityLimit
-        )
+        readState.reload(context: modelContext, kind: selectedKind, limit: activityLimit)
         if !readState.permitsActions { pendingRemovalID = nil }
     }
 
@@ -611,14 +616,17 @@ struct CollectionActivityEditor: View {
     @Environment(\.cardGameRuntimes) private var gameRuntimes
     @Environment(\.dismiss) private var dismiss
     @Bindable var activity: CollectionActivity
+    private let onCorrected: () -> Void
 
     @State private var variantID: String?
     @State private var errorMessage: String?
     @State private var fallbackQuoteTask: Task<Void, Never>?
     @State private var isSaving = false
+    @State private var didSaveCorrection = false
 
-    init(activity: CollectionActivity) {
+    init(activity: CollectionActivity, onCorrected: @escaping () -> Void = {}) {
         self.activity = activity
+        self.onCorrected = onCorrected
         _variantID = State(initialValue: activity.variantID)
     }
 
@@ -706,6 +714,9 @@ struct CollectionActivityEditor: View {
         } message: {
             Text(errorMessage ?? "Please try again.")
         }
+        .onDisappear {
+            if didSaveCorrection { onCorrected() }
+        }
     }
 
     private var canSave: Bool {
@@ -790,6 +801,7 @@ struct CollectionActivityEditor: View {
                     return
                 }
                 queueFallbackPrice(input: input, priceKey: priceKey, game: game, shouldContinue: shouldContinue)
+                didSaveCorrection = true
                 dismiss()
             } catch is CancellationError {
             } catch {

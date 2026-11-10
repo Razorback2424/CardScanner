@@ -2,6 +2,7 @@ import Combine
 import SwiftData
 import SwiftUI
 import UIKit
+import Vision
 import XCTest
 @testable import TradingCardScanner
 
@@ -47,6 +48,70 @@ private actor HistoryCalculationProbe {
 }
 
 final class PortfolioHistoryEngineTests: XCTestCase {
+    @MainActor
+    func testEmptyHoldingsKeepRecordedHistoryAndOnlyNewCollectionsShowOnboarding() async throws {
+        let previousRange = UserDefaults.standard.object(forKey: "portfolioHistoryRange")
+        defer { UserDefaults.standard.set(previousRange, forKey: "portfolioHistoryRange") }
+        for hasHistory in [false, true] {
+            let schema = Schema([CollectedCard.self, PriceRecord.self, ProductIdentity.self,
+                CollectionActivity.self, InventoryEvent.self, ReferenceQuote.self,
+                PriceObservation.self, PriceCheckDay.self, PortfolioDailyClose.self, LocalArtworkOverride.self])
+            let container = try ModelContainer(for: schema,
+                configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+            let portfolio = PortfolioEngine(computationProvider: { _, _, through, zone in
+                .init(valuation: PortfolioEngine.CurrentValuation(), defects: [], isAuthoritative: true,
+                    replay: PortfolioReplayEngine.replay(.init(events: [], observations: [],
+                        epoch: through, through: through, timeZoneIdentifier: zone)),
+                    coverage: PortfolioCoverageIndex(), holdings: [])
+            })
+            await portfolio.recomputeAndWait(context: container.mainContext, now: date(30, hour: 12))
+            let summary = try XCTUnwrap(portfolio.summary)
+            XCTAssertTrue(summary.isAuthoritative)
+            XCTAssertEqual(summary.copyCount, 0)
+            if hasHistory {
+                // The only prior close predates the selected one-day range.
+                container.mainContext.insert(PortfolioDailyClose(
+                    date: date(1), revision: 1, timeZoneIdentifier: "UTC",
+                    closeValue: money(8), market: .zero, flow: .zero, corrections: .zero,
+                    pricingAdjustment: .zero, carriedForwardValue: .zero, coverage: .complete,
+                    refreshedInstrumentCount: 1, carriedForwardInstrumentCount: 0,
+                    pricedPositionCount: 1, excludedCount: 0, inputsFingerprint: "emptied-collection",
+                    revisionReason: nil))
+                try container.mainContext.save()
+            }
+            let history = PortfolioHistoryStore()
+            history.range = .oneDay
+            history.recompute(context: container.mainContext, summary: summary, factors: .init(),
+                contributions: .init(), now: date(30, hour: 12))
+            await history.waitForPendingComputation()
+            XCTAssertEqual(history.result?.isEmpty, !hasHistory)
+            let screen = PortfolioView(portfolio: portfolio, refresh: PriceRefreshController(),
+                history: history, onRefresh: {}, onOpenCollectionSortedByPrice: {})
+                .modelContainer(container)
+            let controller = UIHostingController(rootView: screen)
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 430, height: 1300))
+            window.rootViewController = controller
+            window.makeKeyAndVisible()
+            defer { window.isHidden = true; window.rootViewController = nil }
+            controller.view.frame = window.bounds
+            controller.view.setNeedsLayout()
+            controller.view.layoutIfNeeded()
+            let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
+                controller.view.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+            }
+            let request = VNRecognizeTextRequest()
+            request.recognitionLevel = .accurate
+            try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+            let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+            XCTAssertEqual(text.contains("Scan your first card"), !hasHistory, text)
+            if hasHistory { XCTAssertTrue(text.contains("ALL"), "History range controls must remain visible: \(text)") }
+            let attachment = XCTAttachment(image: image)
+            attachment.name = "empty-portfolio-\(hasHistory ? "recorded-history" : "first-launch")"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+    }
+
     func testOpenAdditionBreakdownReceivesFirstPriceLearnedAfterNavigation() throws {
         let acquisition = event(quantity: 1, at: date(2, hour: 9))
         let captured = PortfolioHistoryEngine.calculate(input: input(
