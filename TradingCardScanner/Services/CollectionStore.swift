@@ -1785,12 +1785,13 @@ actor CollectionActivityWriter: BackgroundModelActor {
 
     func correct(
         collectionKey: String, treatments: [String], activityID: UUID, quantity: Int,
-        variant: PhysicalVariant, shouldContinue: StorageGenerationContinuation
+        variant: PhysicalVariant, catalogCard: IdentifiedCard,
+        shouldContinue: StorageGenerationContinuation
     ) throws -> (PriceFallbackCardInput, String, CardGame)? {
         try perform(shouldContinue: shouldContinue) { store in
             guard let mutation = try store.recordVariantCorrection(forCollectionKey: collectionKey,
                 magicTreatmentIDsRaw: treatments, to: .init(variant: variant, resolution: .userConfirmed),
-                activityID: activityID, quantity: quantity),
+                activityID: activityID, quantity: quantity, catalogCard: catalogCard),
                 let card = store.card(forKey: mutation.collectionKey) else { return nil }
             return (PriceFallbackCardInput(card: card, variant: card.variant, pokemonPrintRun: card.pokemonPrintRun),
                 card.priceKey, card.cardGame)
@@ -5860,13 +5861,23 @@ struct CollectionStore {
         to corrected: ResolvedVariant,
         activityID: UUID,
         quantity: Int,
-        source: CollectionActivitySource = .correction
+        source: CollectionActivitySource = .correction,
+        catalogCard: IdentifiedCard? = nil
     ) throws -> CollectionMutation? {
         guard let card = try self.card(
             forAnyKey: collectionKey,
             magicTreatmentIDsRaw: magicTreatmentIDsRaw
         ) else {
             throw CollectionStoreError.missingDestinationRow(collectionKey)
+        }
+        if let catalogCard {
+            guard catalogCard.game == card.cardGame,
+                  catalogCard.providerID == (card.catalogProviderID ?? card.providerID),
+                  let policy = gameRegistry.variantPolicy(for: card.cardGame),
+                  policy.correctionOptions(for: catalogCard.variantEvidence)
+                    .contains(where: { $0.id == corrected.variant?.id }) else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
         }
         return try recordVariantCorrection(
             for: card,

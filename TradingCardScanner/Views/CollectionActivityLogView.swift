@@ -614,18 +614,26 @@ struct CollectionActivityLogView: View {
 struct CollectionActivityEditor: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.cardGameRuntimes) private var gameRuntimes
+    @Environment(\.sharedBrowseCatalog) private var sharedBrowseCatalog
     @Environment(\.dismiss) private var dismiss
     @Bindable var activity: CollectionActivity
     private let onCorrected: () -> Void
+    private let catalogOverride: (any BrowseCatalogProviding)?
 
     @State private var variantID: String?
     @State private var errorMessage: String?
     @State private var fallbackQuoteTask: Task<Void, Never>?
     @State private var isSaving = false
     @State private var didSaveCorrection = false
+    @State private var catalogCard: IdentifiedCard?
+    @State private var isLoadingFinishes = false
+    @State private var finishLoadFailed = false
+    @State private var finishLoadGeneration = 0
 
-    init(activity: CollectionActivity, onCorrected: @escaping () -> Void = {}) {
+    init(activity: CollectionActivity, catalog: (any BrowseCatalogProviding)? = nil,
+         onCorrected: @escaping () -> Void = {}) {
         self.activity = activity
+        self.catalogOverride = catalog
         self.onCorrected = onCorrected
         _variantID = State(initialValue: activity.variantID)
     }
@@ -685,6 +693,14 @@ struct CollectionActivityEditor: View {
                             .tag(variant.id as String?)
                         }
                     }
+                    .disabled(isLoadingFinishes || catalogCard == nil)
+                    if isLoadingFinishes {
+                        ProgressView("Loading card finishes…")
+                    } else if finishLoadFailed {
+                        Text("Couldn’t load this card’s finishes.")
+                            .foregroundStyle(.secondary)
+                        Button("Retry") { Task { await loadFinishes() } }
+                    }
                 } header: {
                     Text("Correct Finish")
                 } footer: {
@@ -717,10 +733,13 @@ struct CollectionActivityEditor: View {
         .onDisappear {
             if didSaveCorrection { onCorrected() }
         }
+        .task(id: correctionSummary) { await loadFinishes() }
     }
 
     private var canSave: Bool {
         canCorrect
+            && catalogCard != nil
+            && !isLoadingFinishes
             && variantID != activity.variantID
             && correctionOptions.contains(where: { $0.id == variantID })
     }
@@ -741,18 +760,69 @@ struct CollectionActivityEditor: View {
     private var gameRegistry: CardGameRegistry { gameRuntimes?.registry ?? .standard }
 
     private var correctionOptions: [PhysicalVariant] {
-        let options: [PhysicalVariant]
-        if let card = collectionCard, card.cardGame == .pokemon,
-           let reviewed = PokemonVariantRules.reviewedVariants(cardID: card.catalogProviderID ?? card.providerID) {
-            // Retain the current value for review; selecting a replacement is
-            // an explicit physical-card confirmation, never an automatic remap.
-            options = reviewed + [card.variant].compactMap { variant in
-                variant.flatMap { reviewed.contains($0) ? nil : $0 }
-            }
-        } else {
-            options = gameRegistry.variantPolicy(for: activity.game)?.selectableVariants ?? []
+        guard let card = collectionCard else { return [] }
+        return Self.correctionOptions(for: card, catalogCard: catalogCard, registry: gameRegistry)
+    }
+
+    static func correctionOptions(for card: CollectedCard, catalogCard: IdentifiedCard?,
+                                  registry: CardGameRegistry = .standard) -> [PhysicalVariant] {
+        var options: [PhysicalVariant] = []
+        if let catalogCard, catalogCard.game == card.cardGame,
+           catalogCard.providerID == (card.catalogProviderID ?? card.providerID) {
+            options = registry.variantPolicy(for: card.cardGame)?
+                .correctionOptions(for: catalogCard.variantEvidence) ?? []
         }
-        return options.filter { activity.game != .pokemon || $0.id != PhysicalVariant.firstEdition.id }
+        // A legacy/unsupported current value remains visible, but can never
+        // authorize that finish for another printing or a later save.
+        if let current = card.variant, !options.contains(where: { $0.id == current.id }) {
+            options.append(current)
+        }
+        return options
+    }
+
+    private var correctionSummary: CatalogCardSummary? {
+        guard activity.itemKind == .rawCard, let card = collectionCard else { return nil }
+        return Self.correctionSummary(for: card,
+            catalogGeneration: gameRuntimes?.runtime(for: card.cardGame)?.browse?.generation)
+    }
+
+    static func correctionSummary(for card: CollectedCard, catalogGeneration: String? = nil) -> CatalogCardSummary {
+        let printingID = card.catalogProviderID ?? card.providerID
+        let setID = card.cardGame == .pokemon
+            ? printingID.lastIndex(of: "-").map { String(printingID[..<$0]) } ?? printingID
+            : card.setCode.lowercased()
+        return CatalogCardSummary(game: card.cardGame, providerID: printingID,
+            setID: .init(game: card.cardGame, providerID: setID, pokemonPrintRun: card.pokemonPrintRun),
+            setName: card.setName, setCode: card.setCode, name: card.name,
+            collectorNumber: card.cardNumber, thumbnailURL: nil, imageURL: nil,
+            catalogGeneration: catalogGeneration)
+    }
+
+    private func loadFinishes() async {
+        finishLoadGeneration += 1
+        let generation = finishLoadGeneration
+        catalogCard = nil
+        finishLoadFailed = false
+        isLoadingFinishes = false
+        guard let summary = correctionSummary else { return }
+        isLoadingFinishes = true
+        defer {
+            if !Task.isCancelled, generation == finishLoadGeneration { isLoadingFinishes = false }
+        }
+        let catalog: any BrowseCatalogProviding = catalogOverride
+            ?? sharedBrowseCatalog ?? gameRuntimes?.makeBrowseCatalog() ?? BrowseCatalog()
+        do {
+            let details = try await catalog.details(for: summary)
+            guard !Task.isCancelled, generation == finishLoadGeneration, summary == correctionSummary else { return }
+            guard details.card.game == summary.game, details.card.providerID == summary.providerID,
+                  details.collectionWriteUnavailableReason == nil else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+            catalogCard = details.card
+        } catch {
+            guard !Task.isCancelled, generation == finishLoadGeneration, summary == correctionSummary else { return }
+            finishLoadFailed = true
+        }
     }
 
     private var errorBinding: Binding<Bool> {
@@ -773,11 +843,11 @@ struct CollectionActivityEditor: View {
 
     private func save() {
         guard !isSaving, canSave else { return }
-        guard let variantID else {
+        guard let catalogCard,
+              let variant = correctionOptions.first(where: { $0.id == variantID }) else {
             errorMessage = "The collection entry is no longer available."
             return
         }
-        let variant = PhysicalVariant.resolving(variantID)
         let collectionKey = activity.collectionKey
         let treatmentIDs = activity.magicTreatmentIDsRaw
         let activityID = activity.id
@@ -793,7 +863,8 @@ struct CollectionActivityEditor: View {
                 let writer = await CollectionActivityWriter.makeBackground(modelContainer: container)
                 let result = try await CollectionExclusiveWrites.retryingIfRequired {
                     try await writer.correct(collectionKey: collectionKey, treatments: treatmentIDs,
-                        activityID: activityID, quantity: quantity, variant: variant, shouldContinue: shouldContinue)
+                        activityID: activityID, quantity: quantity, variant: variant,
+                        catalogCard: catalogCard, shouldContinue: shouldContinue)
                 }
                 guard generation.isCurrent(token) else { return }
                 guard let (input, priceKey, game) = result else {

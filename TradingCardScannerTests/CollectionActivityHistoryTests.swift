@@ -1202,7 +1202,8 @@ final class CollectionActivityHistoryTests: XCTestCase {
                 try await writer.restore(activityID: XCTUnwrap(removalID), shouldContinue: { true })
             default:
                 let result = try await writer.correct(collectionKey: mutation.collectionKey, treatments: [],
-                    activityID: acquisitionID, quantity: 1, variant: .reverse, shouldContinue: { true })
+                    activityID: acquisitionID, quantity: 1, variant: .reverse,
+                    catalogCard: identifiedCard(), shouldContinue: { true })
                 let receipt = try XCTUnwrap(result)
                 XCTAssertEqual(receipt.0.variant, .reverse)
                 XCTAssertEqual(receipt.0.printingID, receipt.0.catalogID)
@@ -1257,12 +1258,12 @@ final class CollectionActivityHistoryTests: XCTestCase {
         let restoredClaim = try XCTUnwrap(restored.fetch(FetchDescriptor<CollectionActivity>()).first { $0.kind == .restored })
         let key = restoredClaim.collectionKey
         let corrected = try await writer.correct(collectionKey: key, treatments: [], activityID: restoredClaim.id,
-            quantity: 1, variant: .reverse, shouldContinue: { true })
+            quantity: 1, variant: .reverse, catalogCard: identifiedCard(), shouldContinue: { true })
         XCTAssertNotNil(corrected)
         let before = try ModelContext(context.container).fetchCount(FetchDescriptor<InventoryEvent>())
         do {
             _ = try await writer.correct(collectionKey: key, treatments: [], activityID: restoredClaim.id,
-                quantity: 1, variant: .reverse, shouldContinue: { true })
+                quantity: 1, variant: .reverse, catalogCard: identifiedCard(), shouldContinue: { true })
         } catch { /* Stale source identity is an honest failure, never another correction. */ }
         XCTAssertEqual(try ModelContext(context.container).fetchCount(FetchDescriptor<InventoryEvent>()), before)
     }
@@ -1281,7 +1282,8 @@ final class CollectionActivityHistoryTests: XCTestCase {
                 case "restore": try await writer.restore(activityID: id, shouldContinue: { false })
                 default:
                     _ = try await writer.correct(collectionKey: mutation.collectionKey, treatments: [],
-                        activityID: id, quantity: 1, variant: .reverse, shouldContinue: { false })
+                        activityID: id, quantity: 1, variant: .reverse,
+                        catalogCard: identifiedCard(), shouldContinue: { false })
                 }
                 XCTFail("Retired storage must reject \(action)")
             } catch is CancellationError { }
@@ -2289,6 +2291,71 @@ final class CollectionActivityHistoryTests: XCTestCase {
             XCTAssertEqual(activities.count, 1)
             XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
         }
+    }
+
+    func testNormalReverseCardCannotBeCorrectedToMasterBall() async throws {
+        let context = try makeContext()
+        let catalogCard = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
+            {"id":"sv02-007","localId":"007","name":"Tropius",
+             "set":{"id":"sv02","name":"Paldea Evolved","cardCount":{"total":279,"official":193}},
+             "variants":{"normal":true,"holo":false,"reverse":true,"firstEdition":false}}
+            """#.utf8)), setCode: "PAL")
+        let store = CollectionStore(context: context)
+        let added = try store.add(catalogCard, resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let activityID = try XCTUnwrap(added.activityID)
+        let row = try XCTUnwrap(store.card(forKey: added.collectionKey))
+        XCTAssertEqual(Set(CollectionActivityEditor.correctionOptions(for: row, catalogCard: catalogCard)), Set([.normal, .reverse]))
+        XCTAssertEqual(CollectionActivityEditor.correctionOptions(for: row, catalogCard: nil), [.normal])
+        XCTAssertEqual(CollectionActivityEditor.correctionOptions(for: row, catalogCard: try identifiedCard()), [.normal])
+
+        let writer = await CollectionActivityWriter.makeBackground(modelContainer: context.container)
+        for evidence in [catalogCard, try identifiedCard()] {
+            do {
+                _ = try await writer.correct(collectionKey: added.collectionKey, treatments: [],
+                    activityID: activityID, quantity: 1, variant: .masterBall,
+                    catalogCard: evidence, shouldContinue: { true })
+                XCTFail("An unsupported finish or another printing's evidence must not authorize a correction")
+            } catch CatalogLookupError.invalidPrintingChoice {
+            } catch {
+                XCTFail("Unexpected correction error: \(error)")
+            }
+        }
+        let fresh = ModelContext(context.container)
+        let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(saved.collectionKey, added.collectionKey)
+        XCTAssertEqual(saved.variant, .normal)
+        XCTAssertEqual(saved.quantity, 1)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectedCard>()), 1)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), 1)
+
+        let corrected = try await writer.correct(collectionKey: added.collectionKey, treatments: [],
+            activityID: activityID, quantity: 1, variant: .reverse,
+            catalogCard: catalogCard, shouldContinue: { true })
+        XCTAssertEqual(corrected?.0.variant, .reverse)
+
+        // Existing bad/legacy data remains visible so the user can repair it.
+        let legacy = makeCollectedCard()
+        legacy.providerID = catalogCard.providerID
+        legacy.variantID = PhysicalVariant.masterBall.id
+        legacy.variantLabel = PhysicalVariant.masterBall.label
+        XCTAssertEqual(Set(CollectionActivityEditor.correctionOptions(for: legacy, catalogCard: catalogCard)),
+                       Set([.normal, .reverse, .masterBall]))
+    }
+
+    func testFinishCorrectionSummaryRetainsHyphenatedSetsAndImportedCatalogIdentity() {
+        let row = makeCollectedCard()
+        row.providerID = "30th-c-001"
+        var summary = CollectionActivityEditor.correctionSummary(for: row)
+        XCTAssertEqual(summary.setID.providerID, "30th-c")
+        XCTAssertEqual(summary.providerID, "30th-c-001")
+
+        row.providerID = "csv:legacy-import"
+        row.catalogProviderID = "30th-c-001"
+        summary = CollectionActivityEditor.correctionSummary(for: row, catalogGeneration: "test-generation")
+        XCTAssertEqual(summary.setID.providerID, "30th-c")
+        XCTAssertEqual(summary.providerID, "30th-c-001")
+        XCTAssertEqual(summary.catalogGeneration, "test-generation")
     }
 
     func testCorrectionMergeKeepsIndependentlyBoundDestination() throws {
