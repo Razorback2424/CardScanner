@@ -251,6 +251,20 @@ final class CollectorToolsTests: XCTestCase {
     }
 
     /// Real local StoreKit, with no App Store Connect or live purchase involved.
+    /// Wait for the new session to replace any product lookup the host app
+    /// started before the local fixture was installed. The tests still exercise
+    /// production's first product load and purchase without retrying that code.
+    private func waitForLocalStoreKitConfiguration() async throws {
+        for _ in 0..<50 {
+            if try await Product.products(for: [CollectorToolsStore.productID])
+                .contains(where: { $0.id == CollectorToolsStore.productID && $0.type == .nonConsumable }) {
+                return
+            }
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        XCTFail("Local StoreKit configuration did not become available within five seconds")
+    }
+
     func testLocalStoreKitPurchaseStoreReconstructionRestoreRefundAndPhotoZIP() async throws {
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "CollectorTools", withExtension: "storekit"))
         let session = try SKTestSession(contentsOf: url)
@@ -258,6 +272,7 @@ final class CollectorToolsTests: XCTestCase {
         session.disableDialogs = true
         session.clearTransactions()
         defer { session.clearTransactions() }
+        try await waitForLocalStoreKitConfiguration()
         let store = CollectorToolsStore()
         await store.reconcile()
         await store.loadProduct()
@@ -315,6 +330,7 @@ final class CollectorToolsTests: XCTestCase {
         session.clearTransactions()
         defer { session.clearTransactions(); session.resetToDefaultState() }
         session.askToBuyEnabled = true
+        try await waitForLocalStoreKitConfiguration()
         let store = CollectorToolsStore()
         await store.reconcile()
         await store.loadProduct()
@@ -360,6 +376,7 @@ final class CollectorToolsTests: XCTestCase {
         session.clearTransactions()
         defer { session.clearTransactions(); session.resetToDefaultState() }
         session.interruptedPurchasesEnabled = true
+        try await waitForLocalStoreKitConfiguration()
         let store = CollectorToolsStore()
         await store.reconcile()
         await store.loadProduct()

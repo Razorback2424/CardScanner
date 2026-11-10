@@ -96,12 +96,16 @@ private struct SettingsContentView: View {
 
                 Section("Advanced") {
                     NavigationLink {
-                        SettingsCategoryView("Developer & Diagnostics") {
-                            developerSection
+                        SettingsCategoryView("Collection Diagnostics") {
+                            diagnosticsSection
                         }
                     } label: {
-                        Label("Developer & Diagnostics", systemImage: "wrench.and.screwdriver")
+                        Label("Collection Diagnostics", systemImage: "waveform.path.ecg")
                     }
+                }
+                Section("About") {
+                    LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—")
+                    LabeledContent("Build", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—")
                 }
             }
             .navigationTitle("Settings")
@@ -353,9 +357,9 @@ private struct SettingsContentView: View {
         )) ?? 0
     }
 
-    private var developerSection: some View {
+    private var diagnosticsSection: some View {
         Section {
-            DisclosureGroup("Developer") {
+            DisclosureGroup("Collection Exports & Price Coverage") {
                 Button("Export Cards Excluded from USD Value", systemImage: "dollarsign.circle") {
                     prepareCSVExport(.unpriced, filename: "ScanStash Unpriced Cards")
                 }
@@ -384,6 +388,7 @@ private struct SettingsContentView: View {
                 .disabled(collectionCardCount == 0)
 #endif
 
+#if !NO_CLOUDKIT
                 Button("Export Sync Diagnostics", systemImage: "waveform.path.ecg") {
                     exportSyncDiagnostics()
                 }
@@ -391,6 +396,7 @@ private struct SettingsContentView: View {
                 Text("Redacted diagnostic data for support. It does not include card names, collection contents, credentials, or images.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+#endif
 
                 DisclosureGroup {
                     if priceCoverageGaps.isEmpty {
