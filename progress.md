@@ -1,3 +1,22 @@
+# 2026-11-09 — ProfileLocal startup credential read
+
+- The owner reports another 804 ms on-device startup hang in ProfileLocal with
+  optional pricing fallback enabled. The console excerpt has no stalled stack;
+  its persisted catalog load and HTTP 404 do not attribute that hang.
+- Moved the startup pricing-availability credential-presence read off the main
+  actor. Newer availability checks and price-refresh queues supersede old work;
+  cancellation and disabled fallback prevent stale publication. No credential
+  content is changed or logged.
+- Added synchronous `Startup` console timings for startup service construction
+  and the credential read, including optimized builds. The
+  [hang inspection plan](docs/plans/hang-inspection-plan.md#on-device-804-ms-startup-follow-up--2026-11-09)
+  records stages, interpretation and the separate catalog-refresh failure.
+- Focused DebugRemoteLocal simulator verification: **37 passed, zero failed**,
+  including four new credential/lifecycle regressions and all eight launch worker
+  cases. The injected blocked read runs with `main=false`. Device rerun and
+  incident attribution remain open; no physical-device performance or release
+  acceptance is claimed.
+
 # 2026-11-09 — Startup database blockers and export timing
 
 - Moved production storage opening and legacy probing off-main while retaining

@@ -2835,6 +2835,7 @@ final class PriceRefreshController: ObservableObject {
 
     @Published private(set) var status: Status = .idle
     @Published private(set) var fallbackStatus: FallbackStatus = .idle
+    private var fallbackAvailabilityRevision: UInt = 0
 
     // The budget service is also used to restore fallback availability while no
     // refresh is running. The actor owns its own provider and persistence
@@ -3238,6 +3239,7 @@ final class PriceRefreshController: ObservableObject {
         // The active task represents the whole queue, not just the first pass.
         // A caller that joins after the first pass has completed must remain
         // suspended until its trailing targets have been processed too.
+        fallbackAvailabilityRevision &+= 1
         let queueID = UUID()
         activeRefreshOwner = owner
         activeRefreshQueueID = queueID
@@ -4250,8 +4252,13 @@ final class PriceRefreshController: ObservableObject {
     /// Restores persisted budget/backoff state when the app becomes active,
     /// before the user spends a request discovering that today's allowance is
     /// gone.
-    func updateFallbackAvailability(pending: Int) async {
-        guard !isRefreshing else { return }
+    func updateFallbackAvailability(
+        pending: Int,
+        credentialPresence: @escaping @Sendable () -> Bool = { PriceVendorCredentials.hasKey }
+    ) async {
+        fallbackAvailabilityRevision &+= 1
+        let revision = fallbackAvailabilityRevision
+        guard !Task.isCancelled, !isRefreshing else { return }
         guard pending > 0 else {
             fallbackStatus = .idle
             return
@@ -4260,12 +4267,21 @@ final class PriceRefreshController: ObservableObject {
             fallbackStatus = .disabled(pending: pending)
             return
         }
-        guard PriceVendorCredentials.hasKey else {
+        // On first access hasKey synchronously reads the Keychain. This check
+        // runs shortly after portfolio startup, including in ProfileLocal.
+        let hasCredentials = await Task.detached(priority: .utility) {
+            PerformanceSignpost.measureLaunch("Launch.vendorCredentialPresence", credentialPresence)
+        }.value
+        guard !Task.isCancelled, revision == fallbackAvailabilityRevision,
+              !isRefreshing, usesPriceFallback else { return }
+        guard hasCredentials else {
             fallbackStatus = .unconfigured(pending: pending)
             return
         }
 
         let budget = await fallbackService.budgetSnapshot()
+        guard !Task.isCancelled, revision == fallbackAvailabilityRevision,
+              !isRefreshing, usesPriceFallback else { return }
         if let retryAt = budget.retryAt {
             fallbackStatus = .rateLimited(pending: pending, retryAt: retryAt)
         } else if budget.remainingToday == 0 {

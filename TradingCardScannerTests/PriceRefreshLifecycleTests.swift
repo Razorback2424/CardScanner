@@ -49,6 +49,92 @@ private actor PriceRefreshAttemptCounter {
 
 @MainActor
 final class PriceRefreshLifecycleTests: XCTestCase {
+    func testStartupCredentialCheckLeavesMainThreadAndCannotReplaceNewerAvailability() async {
+        let defaults = UserDefaults.standard
+        let original = defaults.object(forKey: "usesPriceFallback")
+        defer { defaults.set(original, forKey: "usesPriceFallback") }
+        defaults.set(true, forKey: "usesPriceFallback")
+        let controller = PriceRefreshController()
+        let entered = expectation(description: "Credential read started")
+        let release = DispatchSemaphore(value: 0)
+        let check = Task {
+            await controller.updateFallbackAvailability(pending: 3, credentialPresence: {
+                XCTAssertFalse(Thread.isMainThread, "A cold Keychain read must not block startup")
+                entered.fulfill()
+                _ = release.wait(timeout: .now() + 2)
+                return false
+            })
+        }
+        await fulfillment(of: [entered], timeout: 3)
+        await controller.updateFallbackAvailability(pending: 0, credentialPresence: {
+            XCTFail("An empty queue must not read credentials")
+            return false
+        })
+        release.signal()
+        await check.value
+        XCTAssertEqual(controller.fallbackStatus, .idle, "An older credential result must not overwrite the empty queue")
+    }
+
+    func testDisabledFallbackDoesNotReadCredentials() async {
+        let defaults = UserDefaults.standard
+        let original = defaults.object(forKey: "usesPriceFallback")
+        defer { defaults.set(original, forKey: "usesPriceFallback") }
+        defaults.set(false, forKey: "usesPriceFallback")
+        let controller = PriceRefreshController()
+        await controller.updateFallbackAvailability(pending: 3, credentialPresence: {
+            XCTFail("Opted-out startup must not read credentials")
+            return false
+        })
+        XCTAssertEqual(controller.fallbackStatus, .disabled(pending: 3))
+    }
+
+    func testCompletedRefreshSupersedesPendingStartupCredentialCheck() async throws {
+        let defaults = UserDefaults.standard
+        let original = defaults.object(forKey: "usesPriceFallback")
+        defer { defaults.set(original, forKey: "usesPriceFallback") }
+        defaults.set(true, forKey: "usesPriceFallback")
+        let controller = PriceRefreshController()
+        let container = try makeContainer(withCard: false)
+        let entered = expectation(description: "Credential read started")
+        let release = DispatchSemaphore(value: 0)
+        let check = Task {
+            await controller.updateFallbackAvailability(pending: 3, credentialPresence: {
+                entered.fulfill()
+                _ = release.wait(timeout: .now() + 3)
+                return false
+            })
+        }
+        await fulfillment(of: [entered], timeout: 3)
+        _ = await controller.refresh(Self.request, container: container)
+        let statusAfterRefresh = controller.fallbackStatus
+        release.signal()
+        await check.value
+        XCTAssertEqual(controller.fallbackStatus, statusAfterRefresh,
+                       "A completed refresh must retain its status after an older credential read returns")
+    }
+
+    func testCancelledStartupCredentialCheckDoesNotPublishAvailability() async {
+        let defaults = UserDefaults.standard
+        let original = defaults.object(forKey: "usesPriceFallback")
+        defer { defaults.set(original, forKey: "usesPriceFallback") }
+        defaults.set(true, forKey: "usesPriceFallback")
+        let controller = PriceRefreshController()
+        let entered = expectation(description: "Credential read started")
+        let release = DispatchSemaphore(value: 0)
+        let check = Task {
+            await controller.updateFallbackAvailability(pending: 3, credentialPresence: {
+                entered.fulfill()
+                _ = release.wait(timeout: .now() + 2)
+                return false
+            })
+        }
+        await fulfillment(of: [entered], timeout: 3)
+        check.cancel()
+        release.signal()
+        await check.value
+        XCTAssertEqual(controller.fallbackStatus, .idle)
+    }
+
     func testUnboundCertlessScanPreflightPreservesActiveRefreshAndOwnership() async throws {
         try await assertCertlessPreflightPreservesRefresh(convertingRaw: false)
     }

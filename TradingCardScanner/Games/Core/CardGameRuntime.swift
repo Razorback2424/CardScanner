@@ -435,7 +435,7 @@ struct CardGameRuntimeContainer: Sendable {
     func makeScannerModel() -> ScannerViewModel {
         let interval = PerformanceSignpost.beginInterval("Launch.scannerModel", id: PerformanceSignpost.makeID(), "")
         defer { PerformanceSignpost.endInterval("Launch.scannerModel", interval, "") }
-        let scanner = CardScanner()
+        let scanner = PerformanceSignpost.measureLaunch("Launch.scannerCore") { CardScanner() }
         scanner.useAdditionalRecognitionAdapters(recognitionAdapters)
         var reviewRecovery: UnresolvedScanStore?
 #if DEBUG && LOCAL_ONLY_SIGNING
@@ -446,16 +446,18 @@ struct CardGameRuntimeContainer: Sendable {
                 .appendingPathComponent(directory).appendingPathComponent("Scanner/unresolved-scans.json"))
         }
 #endif
-        let model = ScannerViewModel(
-            scanner: scanner,
-            gameRegistry: registry,
-            priceQuoteService: makePriceQuoteService(),
-            catalog: makeCardCatalog(),
-            gradedResolver: ScannedGradedResolver(gameRegistry: registry),
-            catalogCoordinator: legacyBindings.pokemon,
-            magicCatalogCoordinator: legacyBindings.magic,
-            unresolvedScanStore: reviewRecovery ?? .shared
-        )
+        let model = PerformanceSignpost.measureLaunch("Launch.scannerViewModel") {
+            ScannerViewModel(
+                scanner: scanner,
+                gameRegistry: registry,
+                priceQuoteService: makePriceQuoteService(),
+                catalog: makeCardCatalog(),
+                gradedResolver: ScannedGradedResolver(gameRegistry: registry),
+                catalogCoordinator: legacyBindings.pokemon,
+                magicCatalogCoordinator: legacyBindings.magic,
+                unresolvedScanStore: reviewRecovery ?? .shared
+            )
+        }
         model.observeCatalogActivations(runtimes.values
             .filter { $0.descriptor.capabilities.contains(.scan) }.compactMap(\.activationSource))
         return model

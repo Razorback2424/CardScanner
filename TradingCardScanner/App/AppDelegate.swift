@@ -5,8 +5,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        BackgroundPriceRefresh.register()
-        BackgroundPriceRefresh.schedule()
+        PerformanceSignpost.measureLaunch("Launch.backgroundTaskRegistration") {
+            BackgroundPriceRefresh.register()
+        }
+        PerformanceSignpost.measureLaunch("Launch.backgroundTaskScheduling") {
+            BackgroundPriceRefresh.schedule()
+        }
         return true
     }
 }
