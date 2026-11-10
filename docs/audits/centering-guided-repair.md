@@ -1,5 +1,30 @@
 # Guided centering repair
 
+## Release reachability disposition — 2026-11-10
+
+Source review on `aad6bd6` plus the dirty working tree distinguishes the six
+failures below from the shipping route. In
+[`CardCenteringView.swift`](../../TradingCardScanner/Views/CardCenteringView.swift),
+the view-model reference fields/initializer, injected-reference analysis branch,
+and view wiring are guarded by `DEBUG`. Release constructs
+`GuidedCardCenteringView()` and invokes the ordinary analyzer without those
+injected references.
+
+The supplied-layout probe, both foil Gengar gates, Prismatic right-edge gate
+and assisted-reference timing therefore remain failing research checks outside
+the current Release workflow's acceptance scope. This is a reachability
+disposition, not passing test evidence: retain the tests, annotations, timing
+budgets and tolerances unchanged, and do not report a green complete target.
+Promoting print-reference assistance into Release would reopen these gates.
+
+Untouched initial guides exercise shipped behavior and remain an open accuracy
+gate for the four retained photos below. No owner acceptance of those errors is
+recorded. The existing visible review/uncertainty and
+[`canReportRatios`](../../TradingCardScanner/Models/CardCenteringMeasurement.swift)
+requirements remain: valid geometry, an available reference definition and user
+confirmation before reportable ratios. This does not establish initial-guide
+accuracy or close physical-device centering acceptance.
+
 ## Six remaining failures: focused investigation — 2026-11-09
 
 Investigated the six persistent failures from the

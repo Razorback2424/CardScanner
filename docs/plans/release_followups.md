@@ -1,6 +1,61 @@
 # Release follow-ups
 
-**Status:** current validation, measurement, and catalog-hardening backlog — reconciled 2026-10-02.
+**Status:** current validation, measurement, and catalog-hardening backlog — latest review reconciliation 2026-11-10.
+
+## Follow-up review remediation — 2026-11-10
+
+Source: `aad6bd6bd967b734f7b7df24ea7d5eb1769d3d7a` plus the dirty working tree.
+Existing uncommitted work is preserved. These are local implementation and
+selected-suite simulator results; the launch contract's distribution, device
+and provider gates remain open.
+
+| Work package | Current disposition |
+| --- | --- |
+| WP1 operator-funded pricing | Owner selected paid JustTCG. The [contract](../release/launch-contract.md#pricing-service-for-launch-mandatory-product-and-licensing-prerequisite) records the published paid-tier terms checked today. Exact tier, active subscription, quota/cost budget, server-held credentials, authenticated proxy and no-key customer journeys remain open. The current app is still BYOK; no backend was implemented or deployed in this slice. |
+| WP2 content delivery | Public `https://catalog.scan-stash.com/v1/current.json` returned HTTP 404 on 2026-11-10. Signed baseline publication, a real update round trip and candidate-freeze seed regeneration remain open. No catalog publication or live resource regeneration was performed. |
+| WP3 flag separation | `NO_CLOUDKIT` controls entitlement-free foreground/headless storage. Release resolves to that flag alone, using local entitlements; `LOCAL_ONLY_SIGNING` remains restricted to the existing development/profile configurations. Final Release simulator readback has no `ownerRuntime`, owner-preference/file markers or owner resource directory. Debug is a positive control and retains all four. This supersedes the F8 Release compiler-flag choice recorded below. |
+| WP4 scan-price states | Receipt and review use the existing lookup provenance: no provider answer says “Couldn’t check price”; a sourced missing quote says “Price unavailable.” Pending review explains that the card is saved and checking continues. The live review regression now covers priced, failed and provider-confirmed missing responses. No persistence or pricing observation semantics changed. |
+| WP5 camera affordances | Scanner permission denial offers Open Settings. The maximum-text layout keeps the button visible and scrolls the message as needed. iPad multitasking interruptions show full-screen recovery guidance and clear it when the interruption ends, preserving independent failures. Notification tests pass; actual iPad Split View/camera recovery and permission changes still need a device. |
+| WP6 Settings | Normal Settings shows version/build and Collection Diagnostics. The sync-diagnostics action is compiled out for entitlement-free storage. Existing collection exports remain. The collection-deletion/export flow was not changed. |
+| WP7 centering disposition | [Reachability evidence](../audits/centering-guided-repair.md#release-reachability-disposition--2026-11-10) separates five DEBUG-reference research gates from the Release workflow. Their tests remain failing research checks; no skip or tolerance was changed. Shipped initial-guide accuracy remains open, with no owner acceptance recorded. |
+| WP8 special printings | No new second-source sampling was performed. Unverified singleton zero-tap behavior and catalog authority remain unchanged; the audit/owner decision is still open. |
+
+Final Debug verification on iPhone 17 Pro Simulator, iOS 27.0, destination
+`EC25844D-59BF-40D5-8D04-7C6A8FCBD049`: **309 executed, 303 passed, six skipped,
+zero failures**. Selected classes:
+
+- `ScannerViewModelTests` (142 passed), `CardLatchTests` (80 passed).
+- `CollectionStorageBootstrapTests` (31 passed, one Simulator data-protection
+  skip), `CollectionStoreModeTransitionTests` (two passed, five CloudKit-mode
+  skips in the entitlement-free configuration).
+- `OnePieceCatalogActivationTests` (14 passed), `OnePieceAvailabilityTests`
+  (one passed), `CardGameForwardCompatibilityTests` (31 passed),
+  `ViewConstructionSmokeTests` (two passed).
+
+Earlier focused/split selections overlap this final run and are not additive.
+The initial build caught and corrected a DEBUG screenshot-hook scope error;
+no tests ran in that attempt. The first Release MCP call exceeded its tool wait,
+but its retained build log reports success. A separate final-source Release
+simulator build exits zero and reports `BUILD SUCCEEDED`; resolved flags and
+binary/resource checks pass. This is not an archive or distribution receipt.
+
+Inspected synthetic price-review images, normal/maximum-text permission recovery,
+the scrolled maximum-text instructions, multitasking guidance, normal Settings,
+expanded diagnostics and maximum-text version/build rows. The first maximum-text
+camera capture clipped the action; the final bounded scrolling layout fixes it.
+The failed iteration is retained as `before-scroll-fix.png`. Early cold-launch
+opening states are not counted as UI acceptance. Open Settings opens iOS Settings
+on Simulator. HIG gate: **PASS for these inspected changes** across native
+patterns, clarity, scalable text, accessible layout and interaction cost; no
+additional prompt or navigation layer was added. Physical VoiceOver/iPad and
+live permission/camera acceptance remain open.
+
+Artifacts: `/Volumes/T7/CodexBuilds/LaunchReview-20261110/`, including
+`local-fixes-final.xcresult`, `final-test-summary.json`, `release-final.xcresult`,
+`release-final.log`, `release-readback.json`, `verified-source-sha256.json`,
+the `ui-*` folders and `ui-checklist.md`. All 410 retained source/build-setting
+fingerprints match between final tests and Release readback. Screenshots, logs
+and collection data are not committed. No launch gate is closed by this slice.
 
 This document is the aggregation point for gates that source inspection or the
 ordinary simulator suite cannot retire. Completed implementation plans are
@@ -34,6 +89,127 @@ until the final launch preparation. Keep these values empty until approved HTTPS
 pages are published; do not invent destinations or treat this as an unfinished
 engineering fix. Before launch, configure `/privacy` and `/support`, inspect the
 built Release Info.plist, and open both links from the installed app.
+
+### Launch-review remediation — 2026-11-09
+
+Implemented on `main`, based on `aad6bd6` plus the uncommitted working tree.
+The supplied partial review was checked against source; its open BYOK decision
+is superseded by the [commercial pricing launch prerequisite](../release/launch-contract.md#pricing-service-for-launch-mandatory-product-and-licensing-prerequisite).
+This work does not certify the complete target or change the five-game boundary.
+
+| Finding | Implementation and verification boundary |
+| --- | --- |
+| F2: offline scan prices | Successful raw commits can refresh through the existing game pricing adapter without a customer key. Receipts/review show `Checking price…` only while the task is active. Successful quotes update the same receipt; failure ends the pending state without manufacturing a provider miss; Undo and storage/session checks remain in force. New deterministic scanner regressions pass. Physical-camera and live-provider receipt acceptance remain open. |
+| F3: owned marketplace links | Add/catalog metadata use the same exact-product resolver as Browse, with the row's independent print run. Normal price refresh now publishes guarded marketplace-only patches as well as the existing imported metadata patches. Shadowless/unsupported First Edition and conflicting products remain unbound. Refresh never changes ownership or substitutes source artwork. Existing fresh-price rows are backfilled when their next provider refresh runs. |
+| F1: keyless history | Cached history/current prices remain usable; missing credentials produce a configuration explanation without an error/Retry loop. This is an interim improvement to the existing BYOK implementation, not completion of the required app-funded commercial service. Graded/sealed configuration gates remain intact. |
+| F4: finish correction | Raw detail exposes the existing claim-aware history editor. Successful correction returns to Collection instead of the outgoing row's removed placeholder. Catalog-selected finishes carry a physical-card comparison caveat. Singleton auto-resolution and its provenance are unchanged; this does not close S03.01 or establish exhaustive physical coverage. |
+| F6: first launch | Empty authoritative Portfolio shows a native explanation and a working scan action. Empty history has horizontal padding. Detail range controls use two columns at accessibility text sizes; single-price captions can wrap. |
+| F7: Activity reads | A retained 1,500-card/1,500-event SQLite fixture measured the previous reload at 94–100 ms. Reads now cover the visible activity page's positions and lineage, including cross-position correction legs and their reversals. The same simulator case measures 20–24 ms. This is simulator evidence, not a physical-device latency certification. |
+| F8: release configuration | Release uses the existing empty local entitlements and `LOCAL_ONLY_SIGNING`; background price fetch/processing remain, and `remote-notification` is removed. Resolved Release build settings confirm this selection. The local StoreKit display name is `ScanStash Collector Tools`. Privacy/support settings stay empty, reaffirmed by the owner in this session. Signed archive and App Store Connect metadata are separate gates. |
+
+Verification (Debug, iOS 27.0 simulator, dedicated pricing-test destination):
+
+- Combined selection: **624 executed, 622 passed, two skipped, zero failures**.
+  Selection: `ScannerViewModelTests`, `TCGplayerLinkTests`,
+  `RefreshStructuralWriteTests`, `DetailDeletionRenderTests`,
+  `CollectionActivityHistoryTests`, `PricingTests`, `PriceRefreshLifecycleTests`,
+  `VariantResolverTests`, `OwnershipLedgerCompletenessTests`,
+  `CardGameForwardCompatibilityTests`, `CollectionKeyTests`,
+  `PortfolioTrustPassTests`, `PortfolioHistoryEngineTests`,
+  `PrivacyAndSupportSurfaceTests`, `CollectionStorageBootstrapTests`,
+  `CloudKitSchemaCompatibilityTests`, `CollectorToolsTests`.
+- Subsequent correction-navigation change: **104/104 passed** in
+  `CollectionActivityHistoryTests` and `DetailDeletionRenderTests`.
+  Subsequent accessibility layout change: **10/10 passed** in
+  `DetailDeletionRenderTests`. These selections overlap; do not add the counts.
+- The two skips are simulator data protection and local StoreKit's invalid
+  interrupted-purchase fixture. Local purchase/restore/refund and pending
+  approval now pass in the combined run after explicitly waiting for the local
+  test configuration's product to become available. No production entitlement
+  rule or interrupted-purchase acceptance assertion was weakened.
+- Results initially written to scratch after Xcode stalled collecting failure
+  diagnostics; passing runs use `-collect-test-diagnostics never`. Derived data
+  remains on the external SSD. Final bundles/logs and synthetic UI artifacts are
+  retained under `/Volumes/Keller Family Photos/TradingCardScannerDerivedData/launch-review-fixes-20261109/verified/`.
+  No screenshots, credentials, collection exports or raw logs are committed.
+- Rendered routes: `FirstLaunch`, `TrustScanReceipt/price-pending`,
+  `CardDetail/price-chart-keyless`, `TrustCardDetail/uniqueInCatalog` on a separate
+  iPhone 17 Pro simulator. Inspected the empty scan action, pending price,
+  keyless explanation, finish correction and completed navigation. Large-text
+  inspection includes accessibility sizes; physical VoiceOver/iPad acceptance
+  is not claimed.
+
+UI gate: **RISK** pending device/accessibility and commercial-service acceptance.
+Platform patterns, clarity and interaction cost pass the inspected scenarios:
+native controls/navigation, an obvious first action, nonblocking pricing and
+optional correction. Typography uses scalable fonts, wrapping and adaptive
+range layout. Accessibility labels and standard tap targets are present;
+VoiceOver and iPad remain unverified. App Review readiness remains open because
+the commercial pricing service, live legal/support destinations, production
+One Piece activation, centering gates and signed distribution evidence are not
+completed by these fixes. Provider timestamps and the 24-hour stale policy (F5)
+are unchanged; source time is not replaced with retrieval time to hide staleness.
+
+### Four uncommitted-review regressions — 2026-11-09
+
+Corrected on `main` at `aad6bd6` plus the dirty working tree:
+
+- Existing ownership rows keep their verified marketplace URL/product when
+  another copy is added from an identity-only offline snapshot. Catalog metadata
+  refresh remains responsible for authoritative mapping withdrawal.
+- Post-commit pricing tries the configured independent fallback after a catalog
+  transport failure or `.unavailable(nil)` result. Cancellation, capability,
+  identity and mapping guards remain in place; failed transport is not recorded
+  as a provider-confirmed missing price.
+- An already-open scan review reads the current quote and pending flags together,
+  so success and failure both end the checking state without reopening the sheet.
+- First-card guidance requires an authoritative zero-copy summary and a loaded,
+  empty history result. Historical chart/range controls remain available after
+  the final holding is removed, including an anchor outside the selected range.
+  This reuses existing history state rather than adding persistence or another
+  history read.
+
+Five retained regression methods and all marketplace-link tests pass in the
+focused rerun: **29 passed, zero failures or skips**, Debug on the dedicated
+pricing-test iOS 27.0 simulator (`0A8D5FA0-9FAD-4F60-855C-9DAF31BCCDC9`).
+The initial run had one screenshot-test casing assertion failure; its rendered
+unavailable state was correct, and the final assertion matches the user-facing
+text. Final source and tests were rebuilt for the passing rerun.
+
+Inspected final hosted-render PNGs for a completed and failed scan price, zero
+holdings with recorded history, and a new collection with no history. HIG gate:
+**PASS for these scoped states** (native patterns, clear feedback, preserved
+typography and controls, no new prompt). Physical-device VoiceOver, iPad, live
+provider and distribution acceptance remain separate. The existing broader UI
+and commercial-service gates above remain open.
+
+Artifacts are outside the repository under
+`/Volumes/Keller Family Photos/TradingCardScannerDerivedData/launch-review-fixes-20261109/`:
+`four-regression-fixes-focused-final.xcresult`, its adjacent log and
+`four-fixes-ui-final/` (including the inspected screenshot checklist).
+
+Final neighboring verification completed in two disjoint selections:
+
+- `four-fixes-scanner-final.xcresult`: all **142/142** `ScannerViewModelTests`.
+- `four-fixes-neighbors-final.xcresult`: **372/372** across
+  `CollectionActivityHistoryTests`, `TCGplayerLinkTests`,
+  `PortfolioHistoryEngineTests`, `OwnershipLedgerCompletenessTests`,
+  `OwnershipConcurrencyStressTests`, `CollectionStoreContinuityTests`,
+  `RefreshStructuralWriteTests`, `PriceRefreshLifecycleTests`,
+  `DetailDeletionRenderTests`, `VariantResolverTests`, `CardLatchTests` and
+  `PortfolioTrustPassTests`.
+
+Together these are **514 passed, zero failures or skips**. The 29 focused cases
+overlap them and must not be added. Configuration, source identity and simulator
+are as above; adjacent logs retain the exact selections.
+
+The earlier `four-regression-fixes-expanded.xcresult` ended after 378 passes
+with test-host SIGKILL during
+`testLateAdditionalCopyCompletionCannotReviveOldSessionPrompt` and a failed
+host relaunch; no assertion failure was recorded. The interrupted test passes
+alone in `four-fixes-interrupted-test.xcresult`, then the same selected coverage
+passes in the two complete split runs above. The termination cause is not
+attributed. These results are not complete-target evidence.
 
 ### Full-checkout regression status — 2026-11-09
 

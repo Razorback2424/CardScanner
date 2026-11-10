@@ -1,24 +1,61 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-11-09
+**Audit date:** 2026-10-02; review evidence updated 2026-11-10
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-11-09
+## Current authority boundary — updated 2026-11-10
+
+**Review follow-up local fixes — 2026-11-10.** The
+[dated remediation record](release_followups.md#follow-up-review-remediation--2026-11-10)
+owns WP3–WP6 implementation evidence: separated entitlement-free storage flags,
+honest scan-price outcomes, recoverable camera states and Settings metadata.
+Final selected Debug verification passes 303 tests with six expected skips and
+no failures; final Release simulator build and owner-route absence checks pass.
+These do not certify the complete target, device workflows or distribution.
+The Pokémon production pointer still returns 404. The
+[centering reachability disposition](../audits/centering-guided-repair.md#release-reachability-disposition--2026-11-10)
+qualifies five DEBUG-reference failures without changing their tests or accepting
+the shipped initial-guide errors. No release gate closes.
+
+**Paid JustTCG selected — 2026-11-10.** The owner selected paid JustTCG for
+operator-funded launch pricing. This supersedes the unselected-provider wording
+in the historical 2026-11-09 amendment below. The
+[launch contract](../release/launch-contract.md#pricing-service-for-launch-mandatory-product-and-licensing-prerequisite)
+and [shared-cache proposal](shared_pricing_cache_plan.md) now reflect that choice.
+An active tier, quota/cost budget, backend implementation and no-key distribution
+acceptance remain open. No subscription purchase or infrastructure deployment is
+claimed. Published terms allow paid-tier consumer display and server-side caching
+while subscribed; export and termination behavior still need implementation review.
 
 **Launch contract adopted — 2026-11-09.** The owner-supplied launch contract was
 validated against source and recorded evidence and is now the single finish-line
 authority at [`../release/launch-contract.md`](../release/launch-contract.md),
-including all 85 requirements. The go/no-go framework's free-only/no-StoreKit
-body contradicted the approved Collector Tools purchase; it moved to
+including all 86 requirements after the pricing amendment below. The go/no-go
+framework's free-only/no-StoreKit body contradicted the approved Collector Tools
+purchase; it moved to
 [`../legacy/card-scanner-1.0-go-no-go-framework.md`](../legacy/card-scanner-1.0-go-no-go-framework.md)
 with a pointer at its old path. `TCGCSV_PRICE_BASE_URL` is configured in
 production; statements that it is empty in the
 [feature-completeness review](../audits/feature-completeness-review-2026-10-29.md),
 [catalog pricing cases](../audits/catalog-pricing-cases-2026-11-01.md) and an
 earlier entry below are historical. No gate is closed.
+
+**Commercial pricing launch amendment — 2026-11-09.** The owner requires an
+appropriate app-funded commercial pricing API at launch, likely paid JustTCG or
+Scrydex. The [contract's pricing prerequisite](../release/launch-contract.md#pricing-service-for-launch-mandatory-product-and-licensing-prerequisite),
+S09.07, J06 and G07 now require promised history, graded and sealed pricing to
+work without a customer provider account or API key. Current Settings and
+`JustTCGTransport` confirm BYOK; no production API integration is claimed.
+JustTCG's [published terms](https://justtcg.com/terms), checked 2026-11-09,
+restrict the free tier to personal, non-commercial use. Provider selection,
+paid entitlement/rights, cost/quota budget and candidate acceptance remain open
+product/licensing prerequisites, not newly observed runtime bugs. The
+[shared-cache plan](shared_pricing_cache_plan.md) retains its gated backend
+proposal; older device-local/BYOK/future-backend wording cannot defer this launch
+requirement. No provider or Firebase architecture is selected and no gate closes.
 
 **Centering follow-up — 2026-11-09.** The
 [focused six-failure investigation](../audits/centering-guided-repair.md#six-remaining-failures-focused-investigation--2026-11-09)
@@ -1895,6 +1932,7 @@ the required warning, not a reason to rewrite history.
 | C-19 | [`browse_screen_spec.md`](browse_screen_spec.md) § 8 specified the set tile footer as `3 of 207` — a distinct-collector-number numerator over `set.cardCount` with the unit `cards` — while the set screen showed master-set **variation** slots owned over the built checklist length. | The current source now treats an all-zero provider variation breakdown as unpublished, carries standard/expanded checklist slot counts in the manifest, and uses `CatalogSetCompletionIndex` for both the tile and set screen. The spec subsection was reconciled on 2026-09-15. | **Resolved in source, contract, deterministic evidence, and authorized visual evidence.** Focused Browse selectors pass 133/133 with 0 failures, and the external-SSD snapshot check confirms denominator parity for all 157 entries. Pokémon uses the checklist-backed `variations` unit, with the bounded overflow explicitly labeled `cards`; Magic retains provider card totals. A8/B6 visual confirmation is recorded in [`pokemon_browse_checklist.md`](../../artifacts/pokemon_browse_checklist.md); C7/RF-9 remains open. |
 | C-20 | The archived scanner workflow review and broad release notes could be read as the complete current scanner review, with only lifecycle fixes and generic camera/thermal/8 Hz measurement work remaining. | The current scanner module review covers `CardScanner`, `CardLatch`, OCR/ROI and slab framing, camera capability selection, `CameraPreview`, and scanner callback paths. It records five confirmed findings (historical OCR retry exhaustion, debug ROI mapping, scan-band ROI mismatch, bad-frame accounting, and macro-lens focus-distance probing) plus three concerns requiring measurement. | **Superseded.** [`audits/scanner_module_review.md`](../audits/scanner_module_review.md) is the current authority for this module scope and its findings. The archived F1–F5 lifecycle status remains valid only for that narrower historical scope; RF-2/RF-5 remain open measurement gates and must include the new review's OCR/tracking and session-length evidence where applicable. |
 | C-21 | [`review/README.md`](../../review/README.md), the card-centering row above, and the current card-centering pointer below named the Opus plan as the single active centering contract, while [`docs/README.md`](../README.md) assigns guided repair to [`audits/centering-guided-repair.md`](../audits/centering-guided-repair.md) and retains automatic/held-out acceptance in the Opus plan. | The Opus plan's 2026-11-05 owner-directed priority links its current accuracy receipt to the guided-repair audit, and the 2026-11-09 six-failure investigation is recorded there. | **Resolved 2026-11-09** at the document level: all three locations now name both authorities by context. Older dated rows that mention only the Opus plan (for example the Pro tab row) remain accurate for automatic/held-out scope. No centering gate changes. |
+| C-22 | The launch contract omitted commercial pricing access, while the shared-cache plan described customer-supplied JustTCG keys and a future backend. | Current Settings and transport confirm BYOK for history, graded listings and provider-backed sealed prices; the owner now requires an appropriate commercial API for launch, likely paid JustTCG or Scrydex. | **Resolved 2026-11-09 for the product contract; implementation and provider acceptance open.** §2/S09.07/G07 require licensed app-funded access without customer keys. The Firebase proposal remains gated; its future status does not defer the launch prerequisite. |
 
 ## Update plan
 

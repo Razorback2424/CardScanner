@@ -1,3 +1,111 @@
+# 2026-11-10 — Follow-up launch review local fixes verified
+
+Separated entitlement-free storage (`NO_CLOUDKIT`) from local owner/review
+configuration. Final Release simulator flags contain only `NO_CLOUDKIT`; its
+binary/resource readback excludes the One Piece owner bootstrap, preference/file
+markers and resource directory, with Debug as a positive control.
+
+Scan receipts/review now distinguish a failed/unperformed price check from a
+provider-confirmed missing quote. Pending review preserves the saved-card state.
+The scanner offers Open Settings and explains multitasking interruption recovery.
+Maximum Dynamic Type initially clipped the new action; the final layout scrolls
+the message while keeping its button visible. Settings shows version/build,
+renames Collection Diagnostics and hides sync diagnostics in the local build.
+
+Final selected Debug simulator run: **303 passed, six expected storage/CloudKit
+skips, zero failures** across eight classes. A separate final-source Release
+simulator build succeeds. All 410 source/build-setting fingerprints match across
+the final tests/readback. Inspected price success/failure/no-quote screenshots,
+normal and maximum-text camera recovery, multitasking guidance and Settings.
+HIG gate passes this inspected scope; device/VoiceOver acceptance remains open.
+The initial DEBUG-hook compile error was corrected before testing; the first
+Release tool timed out waiting, while its retained log records a passing build.
+
+Recorded the owner's paid JustTCG selection and checked published paid-tier
+terms. Exact tier, active subscription, backend/quota setup and no-customer-key
+integration remain open. Rechecked the production Pokémon pointer: HTTP 404.
+Documented the five DEBUG-only centering research gates separately from the
+unaccepted shipped initial-guide accuracy gate; tests/tolerances are unchanged.
+No singleton audit, device session, purchase acceptance or publication was claimed.
+
+Existing user changes are preserved. Evidence remains on the external SSD under
+`/Volumes/T7/CodexBuilds/LaunchReview-20261110/`; see the
+[complete scope and verification receipt](docs/plans/release_followups.md#follow-up-review-remediation--2026-11-10).
+No commit, push or launch-gate closure was performed.
+
+# 2026-11-09 — Four uncommitted-review regressions corrected
+
+- An offline identity-only add preserves the existing exact marketplace handle;
+  authoritative metadata refresh can still replace or withdraw a mapping.
+- Post-commit pricing can use the configured fallback after catalog transport
+  failure or an empty pricing payload. Cancellation, unsupported pricing,
+  identity failure and missing approved mappings remain terminal.
+- An open scan review reads its quote and pending flags from the same current
+  session item. Empty holdings retain recorded portfolio history and range
+  controls; first-card guidance waits for a loaded, empty history result.
+- Five new regression methods cover these paths, including successful/failed
+  rendered review completion and empty-portfolio states. Focused verification:
+  **29/29 passed**, Debug, dedicated iOS 27.0 simulator, `aad6bd6` plus the dirty
+  working tree. The initial screenshot assertion had an incorrect text-case
+  expectation; it was corrected before the passing rerun.
+- Inspected final synthetic PNG attachments: `$12.50` and unavailable review
+  states, zero holdings with recorded history, and true first launch. HIG gate
+  passes this inspected scope: native controls, clear states, preserved layout
+  and no extra interaction. No physical-device or provider acceptance claimed.
+  Results and screenshots stay on the external SSD.
+- Final split regression selections pass **514/514**, zero failures or skips:
+  all 142 `ScannerViewModelTests` plus 372 neighboring cases across 12 suites.
+  The 29 focused cases overlap this selection. An earlier combined run ended
+  with test-host SIGKILL and a failed relaunch; the interrupted test passed in
+  isolation, followed by both complete split reruns. This is selected-suite
+  simulator evidence, not a complete-target or release certification. Details:
+  [release follow-up](docs/plans/release_followups.md#four-uncommitted-review-regressions--2026-11-09).
+
+# 2026-11-09 — Launch-review fixes and verification
+
+Implemented post-commit pricing for offline scan matches, explicit pending-price
+presentation, exact owned marketplace handles and guarded refresh backfill,
+keyless history explanation, raw-detail finish correction, first-launch guidance
+and local-storage Release configuration. Privacy/support URLs remain blank at
+the owner's explicit request. Commercial provider integration remains a launch
+prerequisite; singleton auto-resolution is unchanged and is not certified as
+exhaustive physical evidence.
+
+Scoped Activity reads preserve cross-position correction/reversal lineage.
+The retained 1,500-card SQLite case improves from 94–100 ms to 20–24 ms on the
+simulator. Combined regression: 624 executed, 622 passed, two existing skips,
+zero failures. Navigation follow-up passes 104/104; accessible detail-layout
+follow-up passes 10/10. These overlap and are not a complete-target run.
+
+UI loop targets `FirstLaunch`, `TrustScanReceipt/price-pending`,
+`CardDetail/price-chart-keyless` and `TrustCardDetail/uniqueInCatalog`.
+Inspected clear next actions, pending/configuration states, text wrapping,
+accessible range controls and correction navigation; the scan action reaches
+the scanner and its permission handling. Initial opening-screen captures are
+not final-state evidence. Build products and verified artifacts are kept off
+the repository on the external SSD. See the [dated verification and remaining
+gates](docs/plans/release_followups.md#launch-review-remediation--2026-11-09).
+
+# 2026-11-09 — Commercial pricing launch prerequisite (documentation only)
+
+- Amended the [launch contract](docs/release/launch-contract.md) to require an
+  appropriate app-funded commercial pricing API for launch, likely paid JustTCG
+  or Scrydex. Promised history charts, graded prices and sealed prices must work
+  without a customer provider account, subscription or API key.
+- Added S09.07 (86 total requirements) and tied the prerequisite to J06/G07:
+  provider/coverage selection, active paid entitlement and usage rights,
+  recurring cost/quota budget, protected credentials and no-key distribution
+  acceptance. These remain open product/licensing prerequisites, not a newly
+  observed runtime bug or a completed integration.
+- Verified current BYOK against `PriceVendorCredentials`, `JustTCGTransport`
+  and Settings; checked the published JustTCG commercial-use terms and Scrydex
+  terms on 2026-11-09. Reconciled the shared-cache proposal, documentation map
+  and audit. No app code changed, provider selected, subscription purchased or
+  infrastructure created; no release gate closed.
+- Markdown file links and anchors validate across the five changed documents;
+  the contract has 86 unique requirements, 12 journeys and nine gates.
+  `git diff --check` passes. No app tests run for this documentation-only change.
+
 # 2026-11-09 — Launch contract adopted (documentation only)
 
 - Validated the owner-supplied launch contract against `df6d4c0` and the
