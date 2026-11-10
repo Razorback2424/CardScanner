@@ -1,3 +1,17 @@
+# 2026-11-10 — Detailed reproduction for launch-review items 2 and 4
+
+Added the [reproduction supplement](docs/audits/launch-review-items-2-and-4-reproduction-2026-11-10.md)
+with exact Release readback, HTTP and selected-test instructions, expected
+results, safety controls and closure criteria. Re-read retained passing test
+receipts; no new build/app-test run is claimed. Fresh HTTPS checks reproduce
+catalog-pointer 404 and sampled price-feed 200. The resolver's unverified
+singleton can become catalogCertain / “Only variant printed.”
+Corrected the earlier cross-printing Tropius comparison: Pitch Black 001 is not
+30th-005; current code already overrides the reviewed 30th upstream flag.
+That comparison is withdrawn from the audit and handoff. Existing app/test/
+catalog/project source remains unchanged; no real wrong physical assignment is
+claimed.
+
 # 2026-11-10 — Independent launch review and implementation handoff
 
 Completed a risk-weighted whole-app review against `2527c9b` plus the existing

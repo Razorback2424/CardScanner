@@ -5,6 +5,8 @@
 
 The [launch contract](../release/launch-contract.md) remains the product authority. This is a dated assessment of the current candidate, with an [ordered implementation handoff](../plans/launch-review-handoff-2026-11-10.md). It supersedes the interrupted progress messages as evidence for the checks actually repeated here; it does not certify an archive or physical device.
 
+The [items 2 and 4 reproduction supplement](launch-review-items-2-and-4-reproduction-2026-11-10.md) expands LR02/LR04/LR06 with exact commands and controls. It corrects the withdrawn comparison between two different Tropius printings.
+
 ## Assessment
 
 The collection and accounting foundations are substantially stronger than an unfinished-app impression suggests. Executed ownership, CSV, pricing, scanner, marketplace-link, purchase and recovery tests passed. Persisted Browse add/Undo, quantity editing, removal/Undo and activity history also worked in the phone simulator. The recent grade/finish and portfolio/detail changes should be preserved.

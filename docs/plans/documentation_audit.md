@@ -8,6 +8,16 @@ history.
 
 ## Current authority boundary — updated 2026-11-10
 
+**Detailed reproduction supplement — 2026-11-10.** The [items 2 and 4 report](../audits/launch-review-items-2-and-4-reproduction-2026-11-10.md)
+expands production One Piece gating, the Pokémon update endpoint and singleton
+finish certainty. Fresh HTTP checks still show 404 for the configured catalog
+pointer and 200 for the sampled price-feed pair. The previous comparison of the
+saved Pitch Black 001 Tropius editor with 30th-005's price lane is withdrawn:
+they are different printings, and current code already corrects the reviewed
+30th mapping. LR06 remains supported independently by the resolver's incomplete
+singleton becoming catalogCertain / “Only variant printed.” No physical wrong
+assignment is established. No app code or test expectations were changed.
+
 **Independent launch review — 2026-11-10.** The [dated review](../audits/launch-review-2026-11-10.md)
 and [implementation handoff](launch-review-handoff-2026-11-10.md) record fresh
 verification against `2527c9b` plus the preserved dirty tree: broad filtered
