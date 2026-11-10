@@ -363,7 +363,7 @@ struct CollectionStorageBootstrapDependencies {
             }.value
         }
 
-#if LOCAL_ONLY_SIGNING
+#if NO_CLOUDKIT
         // This build has no CloudKit entitlement, so account and anchor
         // providers are intentionally inert. This branch does not authorize
         // or deny reopening the shared store on-device.
@@ -485,8 +485,8 @@ struct CollectionStorageBootstrapDependencies {
             throw CollectionStorageBootstrapError.storageLocationUnavailable
         }
         let collectionConfiguration: ModelConfiguration
-#if LOCAL_ONLY_SIGNING
-        // LOCAL_ONLY_SIGNING is an entitlement constraint: this build cannot
+#if NO_CLOUDKIT
+        // NO_CLOUDKIT is an entitlement constraint: this build cannot
         // construct a CloudKit-backed configuration. It does not speak to the
         // safety of reopening the shared store on-device.
         guard mode == .onDevice else {
@@ -577,7 +577,7 @@ struct CollectionStorageHeadlessPreflightDependencies {
             directoryURL: paths.collectionStorageDirectoryURL,
             isUsable: paths.isStable
         )
-#if LOCAL_ONLY_SIGNING
+#if NO_CLOUDKIT
         // A no-entitlement build cannot create the CloudKit-backed background
         // container; it may still reuse a proven local replica.
         let accountAvailability: @MainActor () async -> CloudAccountAvailability = { .noAccount }

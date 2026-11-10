@@ -289,7 +289,7 @@ final class CollectionStorageBootstrapTests: XCTestCase {
 #endif
     }
 
-#if LOCAL_ONLY_SIGNING
+#if NO_CLOUDKIT
     func testLocalOnlyBuildRejectsCloudKitConfigurationForEntitlementReason() async throws {
         let dependencies = CollectionStorageBootstrapDependencies.production()
         do {
@@ -304,7 +304,7 @@ final class CollectionStorageBootstrapTests: XCTestCase {
     }
     #endif
 
-#if !LOCAL_ONLY_SIGNING
+#if !NO_CLOUDKIT
     func testProductionDependencyGraphRequiresExplicitEntitledIntegrationOptIn() throws {
         try XCTSkipUnless(
             ProcessInfo.processInfo.environment["TCS_ENTITLED_INTEGRATION"] == "1",

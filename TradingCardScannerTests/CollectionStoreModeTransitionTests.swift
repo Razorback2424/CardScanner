@@ -280,13 +280,13 @@ final class CollectionStoreModeTransitionTests: XCTestCase {
 
         if let error = privateOpenError(store) {
             print("A4 S0: .private ModelContainer threw: \(error)")
-#if !LOCAL_ONLY_SIGNING
+#if !NO_CLOUDKIT
             XCTFail("DebugProduction must construct the .private ModelContainer: \(error)")
 #endif
         } else {
             print("A4 S0: .private ModelContainer succeeded without an iCloud account")
-#if LOCAL_ONLY_SIGNING
-            XCTFail("LOCAL_ONLY_SIGNING must not construct a CloudKit-backed ModelContainer")
+#if NO_CLOUDKIT
+            XCTFail("NO_CLOUDKIT must not construct a CloudKit-backed ModelContainer")
 #endif
         }
     }
