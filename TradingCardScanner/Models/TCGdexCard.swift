@@ -21,10 +21,6 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     var supplementalTCGCSV: PokemonTCGCSVSnapshot? = nil
     /// Validated CDN evidence, kept out of the raw provider fingerprint.
     var recoveredArtwork: PokemonCatalogResolvedCardArtwork? = nil
-    /// Checklist/cache membership is weaker than a primary-provider coverage
-    /// contract. Nil retains the existing live-provider policy; offline records
-    /// explicitly carry false, including across cache persistence.
-    var finishCoverageVerified: Bool? = nil
     /// Installed by the catalog adapter from its verified registry, never
     /// decoded from a provider response or trusted from a disk cache.
     var reviewedAdditionalVariants: [PokemonCatalogAdditionalVariant] = []
@@ -111,13 +107,18 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         return url.pathExtension.isEmpty ? URL(string: image + "/low.png") : url
     }
 
+    var catalogVariants: [PhysicalVariant] {
+        if let certified = PokemonFinishCoverage.variants(cardID: id) { return certified }
+        return catalogVariantsWithoutCertification
+    }
+
     /// What TCGdex says this printing physically exists as, drawn from both
     /// places it says it: the `variants` booleans and the `variants_detailed`
     /// entries. Both are the catalog speaking, so both belong here.
     ///
     /// The supplemental rules layer may still widen this for sets whose parallel
     /// patterns TCGdex does not model at all; no *rule* is applied here.
-    var catalogVariants: [PhysicalVariant] {
+    var catalogVariantsWithoutCertification: [PhysicalVariant] {
         if let reviewed = PokemonVariantRules.reviewedVariants(cardID: id) { return addingReviewedVariants(to: reviewed) }
         // Reviewed exact products in both 30th sets are Holofoil. The upstream
         // generated Normal flag is incorrect; unrelated/unknown cards keep it.
@@ -178,10 +179,6 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
 
     var signedNormalNeedsReview: Bool {
         authorizedAdditionalVariants.contains { $0.normalNeedsReview == true }
-    }
-
-    var hasSignedFinishMinimum: Bool {
-        authorizedAdditionalVariants.contains { $0.addsMembership && ["normal", "holo", "reverse"].contains($0.variantID) }
     }
 
     var jumboDetailedVariants: [TCGdexDetailedVariant] {

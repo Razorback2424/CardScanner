@@ -102,6 +102,8 @@ This contradicts the adopted paid-JustTCG launch requirement. It does not mean e
 
 [OnePieceCatalogProduction.xcconfig](../../Config/OnePieceCatalogProduction.xcconfig) and the built Release plist both specify disabled rollout and NO collection writes. [CardGameRuntime](../../TradingCardScanner/Games/Core/CardGameRuntime.swift) has separate local owner/review routes, explaining why One Piece appears in Debug without proving distribution readiness.
 
+The 2026-11-10 follow-up moved the dedicated signing workflow to `macos-15`. A fresh Release simulator build reports `disabled`, an empty origin, empty pins and writes `NO`. Production signing, signed seed packaging, hosted readback and activation are gated by the [owner setup](../release/one-piece-production-setup-2026-10-23.md).
+
 **Verify:** install the actual Release candidate and exercise One Piece scan/Browse/explicit printing → save → reopen → price → Undo/CSV. Supply the approved signed production catalog and dedicated trust configuration, enable only the approved capability scope and verify stale/held selections still fail closed. Do not copy local owner bypasses into Release or silently remove One Piece from the promised launch.
 
 ### LR03 — Production centering proposals fail the frozen initial-guide criterion
@@ -124,9 +126,15 @@ Five other failed methods concern supplied-layout, foil Gengar, Prismatic right-
 
 [Production configuration](../../Config/PokemonCatalogProduction.xcconfig) selects remote-authority at catalog.scan-stash.com. The configured /v1/current.json endpoint returned HTTP 404 during this review. [PokemonCatalogCoordinator](../../TradingCardScanner/Services/PokemonCatalogCoordinator.swift#L90) retains a persisted or bundled registry, so this was not a demonstrated launch crash or wholesale Browse outage. It does prevent a working production update round trip.
 
-**Verify:** publish/read back the approved baseline, activate revision N+1, cold-launch offline on the saved generation, and reject a bad signature, incompatible schema and rollback without losing the last approved catalog. Keep generation checks coherent across recognition, Browse, write authority and prices. Disabling update code is not equivalent to fulfilling the current delivery contract.
+#### Revision 22 recovery follow-up — 2026-11-10
 
-The exact supported Pokémon 30th feed paths /market-prices/v1/tcgplayer/3/24722/products and /prices returned HTTP 200 with matching capture metadata. Initial 404 probes for other groups and an assumed market-pointer path do not establish a shared-feed outage and are not adopted as defects.
+GitHub Actions completed the revision 22 Firebase release at **2026-11-05 14:47:10 UTC**. At **2026-11-08 01:11:32 UTC**, the Yu-Gi-Oh! price job read `v1` as absent before its own deploy. The intervening Actions history contains no completed catalog or price deploy. This brackets the loss outside the observed CI deployments. The Firebase Hosting release history is needed to identify the replacement release and actor. [Pokémon publication run](https://github.com/Razorback2424/CardScanner/actions/runs/42047496404), [Yu-Gi-Oh! price run](https://github.com/Razorback2424/CardScanner/actions/runs/42432145390).
+
+Fresh GETs at **2026-11-10 22:28:03 UTC** returned 404 for `/v1/current.json` on both the configured domain and the Firebase origin. `/v1/releases/22/catalog-release.json` also returned 404 on the configured domain. The two `/market-prices/v1/tcgplayer/3/24722/` feed paths (`products` and `prices`) returned 200 with matching source metadata. Responses are retained on the SSD in `CodexBuilds/launch-findings-2026-11-10/endpoint-checks/`. The revision 22 candidate was downloaded to `CodexBuilds/launch-review-2026-11-10-pokemon-rev22/` on the same SSD and all four manifest hashes passed.
+
+The catalog and price-feed workflows now use `macos-15` after the `macos-14` runner cancellations. The Pokémon workflow fails on a 404 at both pointer reads. Initial publication requires a manual dispatch with `bootstrap=true`. A post-merge dispatch with `publish=false` checks the hosted runner and fixture validation job. [Pokémon workflow](../../.github/workflows/pokemon-catalog.yml).
+
+The owner selected restoration of the November 5 signed revision 22. Record the replacement release and actor, restore that version from Hosting history, then verify `/v1/current.json` and the signature against `pokemon-catalog-production-2026-09-18-01`. Dispatch the Yu-Gi-Oh! workflow with `publish_prices=true` to refresh the shared feeds and recheck revision 22 and both feed URLs. After the runner change merges, dispatch Pokémon with `publish=true` and `bootstrap=false`. Accept no catalog change or a signed revision 23 continuing the same lineage. Verify offline startup on the saved generation and rejection of signature, schema and rollback failures. [Price publication workflow](../../.github/workflows/yugioh-catalog.yml).
 
 ### LR05 — Privacy and support links remain empty in the built app
 
@@ -136,19 +144,23 @@ The exact supported Pokémon 30th feed paths /market-prices/v1/tcgplayer/3/24722
 
 This remains the owner's deliberately deferred publication task, not a newly introduced code bug. Publish the approved pages, configure the actual candidate, open both in the installed app and reconcile privacy text/manifest/store disclosures after operator-managed pricing is implemented. [Apple 5.1.1](https://developer.apple.com/app-store/review/guidelines/#privacy) requires the in-app and store privacy-policy links. No account-deletion feature is required merely because the app stores an on-device collection.
 
-### LR06 — Unverified Pokémon singleton resolution needs an explicit authority decision
+### LR06 — Pokémon singleton certainty requires certified coverage
 
-**P1 / Major · Demonstrated behavior with unresolved correctness risk/product decision · App Store: Advisory · Confidence: High for behavior; physical error not demonstrated here.**
+**P1 / Major · Demonstrated behavior · App Store: Advisory · Coverage certification open.**
 
-[VariantResolver](../../TradingCardScanner/Services/VariantResolver.swift#L180) can automatically return uniqueInCatalog for a Pokémon singleton even when physicalCoverageVerified is false, provided explicit membership exists. [Current tests](../../TradingCardScannerTests/VariantResolverTests.swift#L973) deliberately assert this behavior. [Legacy evidence construction](../../TradingCardScanner/Games/Core/LegacyResolvedCard.swift#L181) and the bounded finish-minimum table make it reachable; a passing test proves the policy, not that every provider enumerates all physical variants.
+[VariantResolver](../../TradingCardScanner/Services/VariantResolver.swift#L227) can automatically return `uniqueInCatalog` for a Pokémon singleton with explicit membership and `physicalCoverageVerified` false. The existing regression asserts this behavior. [Acquisition test](../../TradingCardScannerTests/VariantResolverTests.swift#L1034).
 
-The launch contract says incomplete singleton catalogs must not manufacture certainty, while the retained source/tests protect zero-tap supported singleton acquisition. This needs explicit reconciliation. It is not evidence to add a confirmation tap to every normal scan.
+The owner chose to certify complete finish lists in the shipped data and preserve zero-tap acquisition for certified singletons. The app now derives Pokémon coverage from the bundled exact lists and honors any open signed Normal review. Live and cached provider records supply membership. The set report compares numbered checklist slots and known minimums with the corresponding TCGplayer products and subtypes. Certification requires matching exact finishes or a cited resolution for each discrepancy and closure of each Normal review. Market listings establish the reported membership evidence. Physical or retail records resolve conflicts. [Coverage resource](../../TradingCardScanner/PokemonChecklistSnapshot/finish-coverage.json), [certification tool](../../scripts/certify_pokemon_finish_coverage.py).
+
+Obsidian Flames uses group `23228`. Run `python3 scripts/certify_pokemon_finish_coverage.py report sv03 --group 23228` to generate its report. Record cited resolutions in the report before running `python3 scripts/certify_pokemon_finish_coverage.py certify sv03`. [Pokémon TCGplayer group directory](https://tcgcsv.com/tcgplayer/3/groups).
+
+The first pass compared 4,433 cards across 24 bundled Mega Evolution and Scarlet & Violet sets. It flagged 618 conflicts, with at least one in every set. Pitch Black review found 12 additional listings across 10 card numbers outside its main group, including non-holo deck exclusives and retail stamps. Four cited resolutions are recorded in the draft. Six Pitch Black rows still need an exact list before the set can be certified. The draft reports and provider captures are on the SSD in `CodexBuilds/launch-findings-2026-11-10/FinishCoverageReview/` and `TCGCSV/`. [Pokémon retail stamp announcement](https://press.pokemon.com/en/MEDIA-ALERT-Mega-Darkrai-ex-and-Mega-Zeraora-ex-Debut-in-Pokemon-TCG-M), [Miraidon deck-exclusive listing](https://www.tcgplayer.com/product/707026/pokemon-deck-exclusives-miraidon-028-084-non-holo).
 
 **Correction after detailed reproduction:** the saved Tropius shown in the review capture is Pitch Black 001, not 30th-005. Comparing that editor with product 716439 / 30th-005 was invalid and is withdrawn. The current TCGdexCard projection explicitly supplies Holo for the reviewed 30th mapping despite the upstream Normal flag. This sample does not establish an app finish-mapping defect. The resolver policy finding above stands independently.
 
 The result's metadata is stronger than membership alone: `uniqueInCatalog` maps to `catalogCertain`, with the label “Only variant printed” and quiet receipt prominence. See the [detailed reproduction supplement](launch-review-items-2-and-4-reproduction-2026-11-10.md) for the exact input, control cases and evidence boundaries; it also expands LR02/LR04.
 
-**Verify:** independently sample the declared special-printing scope using physical/product evidence: booster parallels, stamps, editions, jumbo, historical promos, Magic treatments, Lorcana premium/oversized and Yu-Gi-Oh! edition/rarity families. Record whether evidence establishes membership or completeness. Resolve the automation policy for incomplete coverage with the owner; constrain any fix to demonstrated families and preserve printing/treatment/price-key separation and stored user choices.
+The certificate currently contains zero of the 146 distinct bundled sets. Complete each set's review and regenerate any changed slots before removing the incomplete-Pokémon singleton exception. The final launch check requires certification for every manifest entry, matching raw Browse slots and no duplicate minimums. Verify certified zero-tap acquisition and the explicit choice for an uncertified printing on a disposable store.
 
 ### LR07 — Collection search clips accessibility text
 

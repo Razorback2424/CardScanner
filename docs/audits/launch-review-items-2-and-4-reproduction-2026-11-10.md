@@ -124,7 +124,7 @@ The same check returned **200** for both of these independently scoped market-fe
 
 Their metadata matched: sourceBuild 2026-11-09T20:06:00+0000; sourceFetchedAt 2026-11-10T15:50:42+00:00. This rules out declaring the whole host or sampled price feed unavailable.
 
-The HTTP symptom is established. The underlying deployment cause is not: an unpublished baseline, hosting namespace loss or wrong deployment/configuration requires operator evidence to distinguish.
+The [revision 22 follow-up](launch-review-2026-11-10.md#revision-22-recovery-follow-up--2026-11-10) records the intervening CI history, repeated GET results and owner recovery steps. Firebase Hosting release history is needed to identify the release that dropped the namespace and its actor.
 
 ### Steps to reproduce
 
@@ -153,7 +153,7 @@ Publish the approved signed baseline through established publication controls an
 
 ### Exact deterministic reproduction
 
-No camera, live provider or real card is needed. The existing [test](../../TradingCardScannerTests/VariantResolverTests.swift#L973), testUnverifiedPokemonSingletonAutoResolvesWithoutBypassingAcquisitionGates, constructs this input for each of Normal, Holo and Reverse:
+No camera, live provider or real card is needed. The existing [test](../../TradingCardScannerTests/VariantResolverTests.swift#L1034), testUnverifiedPokemonSingletonAutoResolvesWithoutBypassingAcquisitionGates, constructs this input for each of Normal, Holo and Reverse:
 
     VariantEvidence(
         game: .pokemon,
@@ -187,10 +187,10 @@ The demonstrated semantic mismatch is **explicitly unverified coverage → exhau
 
 ### Cause and reachability
 
-1. [VariantEvidence](../../TradingCardScanner/Services/VariantResolver.swift#L72) separates membership from coverage. Bounded finish-minimum entries expressly provide additive membership, force coverage false and permit explicit membership.
+1. [VariantEvidence](../../TradingCardScanner/Services/VariantResolver.swift#L125) separates membership from coverage. Bounded finish-minimum entries expressly provide additive membership, force coverage false and permit explicit membership.
 2. [LegacyResolvedCard.variantEvidence](../../TradingCardScanner/Games/Core/LegacyResolvedCard.swift#L181) can construct that combination for Pokémon; it is not an impossible fixture-only state.
 3. resolveAcquisition's gate permits Pokémon membership without verified coverage when there is no observed printed edition.
-4. [resolve](../../TradingCardScanner/Services/VariantResolver.swift#L180) repeats that Pokémon exception. After set rules/stamps, a single possible variant returns uniqueInCatalog (or deterministicSetRule when narrowed) before the later finish-lock/printed-finish branches.
+4. [resolve](../../TradingCardScanner/Services/VariantResolver.swift#L227) repeats that Pokémon exception. After set rules/stamps, a single possible variant returns uniqueInCatalog (or deterministicSetRule when narrowed) before the later finish-lock/printed-finish branches.
 5. [ScannerViewModel](../../TradingCardScanner/Views/ScannerViewModel.swift#L4473) routes a resolved result onward rather than presenting pendingChoice. This step alone is not proof of an incorrect durable write for a real card; the policy is on the acquisition path.
 6. [VariantProvenancePresentation](../../TradingCardScanner/Views/ScanSessionOverlays.swift#L205) can render the resolution label alongside a finish; quiet prominence reduces routine receipt attention. This is source-level presentation reachability, not a newly captured screenshot showing that label for a real misidentified card.
 

@@ -20,6 +20,7 @@ BASELINE = '4a9d70b12d941877e2752fe9cfb5fd1508ce0520'
 SHA256 = '51e71a2a68815bd4170f4cb2ae432b577d1a456d175becfdb7a2cf3e7292672c'
 LEDGER = ROOT / 'TestFixtures/TradingCards/PokemonFinishEvidence/confirmed_repairs.csv'
 TABLE = ROOT / 'TradingCardScanner/PokemonChecklistSnapshot/finish-minimums.json'
+COVERAGE = TABLE.with_name('finish-coverage.json')
 WORKBOOK = LEDGER.with_name('pokemon_support_repairs_v2.xlsx')
 V2_LEDGER = LEDGER.with_name('confirmed_repairs_v2.csv')
 V2_SHA256 = 'd32090f2b276949cb77cdd263cd878cc95b7bc67b444897d7c1fe769226dd951'
@@ -171,6 +172,13 @@ def install_generated(directory, rows):
     assert sum(v['slots'] for v in report.values()) == 1015
 
 
+def minimum_table(rows, certified_ids):
+    return {r['provider_id']: dict(setID=r['set_id'], number=r['collector_number'],
+            minimum=[f.strip() for f in r['required_minimum_finishes'].split(';')],
+            normalNeedsReview=bool(r['extra_observed_finishes_requiring_review'])) for r in rows
+            if r['provider_id'] not in certified_ids}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--ref', action='append', default=[])
@@ -180,13 +188,13 @@ def main():
     parser.add_argument('--check-table', action='store_true')
     args = parser.parse_args()
     rows = ledger(args.extract_v2)
-    table = {r['provider_id']: dict(setID=r['set_id'], number=r['collector_number'],
-             minimum=[f.strip() for f in r['required_minimum_finishes'].split(';')],
-             normalNeedsReview=bool(r['extra_observed_finishes_requiring_review'])) for r in rows}
-    if args.write_table:
-        TABLE.write_text(json.dumps(table, indent=2, ensure_ascii=False) + '\n')
-    if args.check_table:
-        assert json.loads(TABLE.read_text()) == table
+    if args.write_table or args.check_table:
+        coverage = json.loads(COVERAGE.read_text())
+        table = minimum_table(rows, {card_id for item in coverage['sets'].values() for card_id in item['cards']})
+        if args.write_table:
+            TABLE.write_text(json.dumps(table, indent=2, ensure_ascii=False) + '\n')
+        if args.check_table:
+            assert json.loads(TABLE.read_text()) == table
     if args.install_generated:
         install_generated(args.install_generated, rows)
     print(json.dumps({ref: audit(ref, rows) for ref in args.ref or [BASELINE, 'HEAD', 'WORKTREE']}, indent=2))

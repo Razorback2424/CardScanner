@@ -201,9 +201,11 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         let rows = try ledger()
         let entries = (rows.compactMap { $0["provider_id"] } + ["fixture-1"]).map { id -> [String: Any] in
             let parts = id.split(separator: "-").map(String.init)
-            return ["key": id, "storedAt": date, "cardID": id, "localID": parts[1], "name": "Cached",
-                    "setID": parts[0], "setName": "Cached Set", "officialCount": 20, "setCode": "FIX",
-                    "variants": [["id": "normal", "label": "Normal"]]]
+            var entry: [String: Any] = ["key": id, "storedAt": date, "cardID": id, "localID": parts[1], "name": "Cached",
+                "setID": parts[0], "setName": "Cached Set", "officialCount": 20, "setCode": "FIX",
+                "variants": [["id": "normal", "label": "Normal"]]]
+            if id == "fixture-1" { entry["finishCoverageVerified"] = true }
+            return entry
         }
         try JSONSerialization.data(withJSONObject: ["appVersion": "fixture", "schemaGeneration": 3, "entries": entries])
             .write(to: root.appendingPathComponent("ResolvedPokemonCards.json"))
@@ -726,16 +728,16 @@ final class VariantResolverTests: XCTestCase {
         VariantEvidence(game: .pokemon, setID: setID, cardNumber: number, catalogVariants: variants)
     }
 
-    private func identifiedPokemon(_ variants: [PhysicalVariant]) -> IdentifiedCard {
+    private func identifiedPokemon(_ variants: [PhysicalVariant], number: String = "1") -> IdentifiedCard {
         let card = TCGdexCard(
-            id: "sv03-053",
-            localId: "053",
-            name: "Pikachu ex",
+            id: "finish-fixture-\(number)",
+            localId: number,
+            name: "Fixture Card",
             image: nil,
             rarity: nil,
             set: TCGdexSetBrief(
-                id: "sv03",
-                name: "Obsidian Flames",
+                id: "finish-fixture",
+                name: "Fixture Set",
                 cardCount: TCGdexCardCount(total: 152, official: 152)
             ),
             variants: TCGdexVariants(
@@ -748,7 +750,65 @@ final class VariantResolverTests: XCTestCase {
             pricing: nil,
             variantsDetailed: nil
         )
-        return .pokemon(card, setCode: "OBF")
+        return PokemonFinishCoverage.$certifiedForTesting.withValue([card.id: variants]) {
+            .pokemon(card, setCode: "FIX")
+        }
+    }
+
+    func testCertifiedFinishCoverageIsCompleteAndConsistent() throws {
+        let bundle = try XCTUnwrap(Bundle.main.url(forResource: "PokemonChecklistSnapshot", withExtension: nil))
+        let data = try Data(contentsOf: bundle.appendingPathComponent("finish-coverage.json"))
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let sourceSets = try XCTUnwrap(json["sets"] as? [String: Any])
+        XCTAssertEqual(json["schemaVersion"] as? Int, 1)
+        XCTAssertEqual(Set(sourceSets.keys), Set(PokemonFinishCoverage.sets.keys))
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let manifest = try decoder.decode(PokemonChecklistSnapshotManifest.self,
+            from: Data(contentsOf: bundle.appendingPathComponent("manifest.json")))
+        let minimums = try decoder.decode([String: PokemonFinishMinimumCatalog.Entry].self,
+            from: Data(contentsOf: bundle.appendingPathComponent("finish-minimums.json")))
+        let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        for (setID, certificate) in PokemonFinishCoverage.sets {
+            XCTAssertTrue(FileManager.default.fileExists(atPath: repo.appendingPathComponent(certificate.evidence).path),
+                certificate.evidence)
+            let entries = manifest.entries.filter { $0.providerID == setID }
+            XCTAssertFalse(entries.isEmpty, setID)
+            var seen = Set<String>()
+            for entry in entries {
+                // Read the bundled slots before read-time projections can mask drift.
+                let cards = try decoder.decode([CatalogCardSummary].self,
+                    from: Data(contentsOf: bundle.appendingPathComponent(entry.resource)))
+                for (cardID, slots) in Dictionary(grouping: cards, by: \.providerID) {
+                    seen.insert(cardID)
+                    let expected = Set(try XCTUnwrap(certificate.cards[cardID], cardID))
+                    XCTAssertEqual(Set(slots.compactMap { $0.masterSetVariant?.id }), expected, cardID)
+                    XCTAssertTrue(slots.allSatisfy { $0.masterSetVariant != nil }, cardID)
+                    XCTAssertNil(minimums[cardID], cardID)
+                    XCTAssertEqual(Set(try XCTUnwrap(PokemonFinishCoverage.certified[cardID]).map(\.id)), expected, cardID)
+                }
+            }
+            XCTAssertEqual(seen, Set(certificate.cards.keys), setID)
+        }
+    }
+
+    func testDecodedPokemonCardUsesOnlyCertifiedFinishesForCoverage() throws {
+        let json = #"{"id":"sv08.5-074","localId":"074","name":"Eevee","set":{"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":180,"official":131}},"variants":{"normal":true,"holo":true,"reverse":false,"firstEdition":false}}"#
+        let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
+        PokemonFinishCoverage.$certifiedForTesting.withValue([:]) {
+            XCTAssertEqual(card.catalogVariants, [.normal, .holo])
+            XCTAssertFalse(IdentifiedCard.pokemon(card, setCode: "PRE").variantEvidence.physicalCoverageVerified)
+        }
+
+        PokemonFinishCoverage.$certifiedForTesting.withValue([card.id: [.reverse]]) {
+            let identified = IdentifiedCard.pokemon(card, setCode: "PRE")
+            XCTAssertEqual(card.catalogVariants, [.reverse])
+            XCTAssertTrue(identified.variantEvidence.physicalCoverageVerified)
+            XCTAssertEqual(PokemonMasterSetDefinition.requiredVariants(for: card).map(\.variant), [.reverse])
+            XCTAssertEqual(VariantResolver.resolveAcquisition(identified.variantEvidence, printedEdition: .absent),
+                .resolved(.init(variant: .reverse, resolution: .uniqueInCatalog)))
+        }
     }
 
     func testResolutionCertaintyDoesNotReuseAutomaticRevisitSemantics() {
@@ -773,7 +833,7 @@ final class VariantResolverTests: XCTestCase {
             ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)
         )
 
-        let normalOnly = identifiedPokemon([.normal])
+        let normalOnly = identifiedPokemon([.normal], number: "2")
         XCTAssertEqual(
             PokemonFinishReconciliation.repair(
                 storedVariantID: nil,
@@ -828,7 +888,7 @@ final class VariantResolverTests: XCTestCase {
                 storedResolution: .uniqueInCatalog,
                 itemKind: .rawCard,
                 printRun: nil,
-                card: identifiedPokemon([.normal, .reverse])
+                card: identifiedPokemon([.normal, .reverse], number: "3")
             ),
             "Multiple possible finishes must remain unresolved"
         )
@@ -838,7 +898,7 @@ final class VariantResolverTests: XCTestCase {
                 storedResolution: .uniqueInCatalog,
                 itemKind: .rawCard,
                 printRun: nil,
-                card: identifiedPokemon([.normal])
+                card: normalOnly
             ),
             "A finish that remains valid is not a repair"
         )

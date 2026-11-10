@@ -33,6 +33,56 @@ struct VariantLock: Equatable, Hashable, Sendable, Identifiable {
 /// treatment qualification and lock applicability are unchanged.
 typealias MagicFinishLock = VariantLock
 
+/// Reviewed exact Pokémon finish lists bundled with the checklist snapshot.
+enum PokemonFinishCoverage {
+    struct CertifiedSet: Decodable {
+        let tcgplayerGroupID: Int
+        let reviewedAt: String
+        let evidence: String
+        let cards: [String: [String]]
+    }
+
+    private struct Table: Decodable {
+        let schemaVersion: Int
+        let sets: [String: CertifiedSet]
+    }
+
+    static let sets: [String: CertifiedSet] = {
+        guard let url = Bundle.main.url(forResource: "finish-coverage", withExtension: "json", subdirectory: "PokemonChecklistSnapshot"),
+              let data = try? Data(contentsOf: url),
+              let table = try? JSONDecoder().decode(Table.self, from: data), table.schemaVersion == 1 else { return [:] }
+        return table.sets.filter { setID, set in
+            !setID.isEmpty && set.tcgplayerGroupID > 0 && !set.reviewedAt.isEmpty && !set.evidence.isEmpty
+                && !set.cards.isEmpty && set.cards.allSatisfy { cardID, variants in
+                    !cardID.isEmpty && !variants.isEmpty && !variants.contains("")
+                        && Set(variants).count == variants.count
+                }
+        }
+    }()
+
+    static let certified: [String: [PhysicalVariant]] = {
+        var result: [String: [PhysicalVariant]] = [:]
+        for set in sets.values {
+            for (cardID, variants) in set.cards {
+                guard result[cardID] == nil else { return [:] }
+                result[cardID] = variants.map(PhysicalVariant.resolving)
+            }
+        }
+        return result
+    }()
+
+    #if DEBUG
+    @TaskLocal static var certifiedForTesting: [String: [PhysicalVariant]]?
+    #endif
+
+    static func variants(cardID: String) -> [PhysicalVariant]? {
+        #if DEBUG
+        if let certifiedForTesting { return certifiedForTesting[cardID] }
+        #endif
+        return certified[cardID]
+    }
+}
+
 /// Exact, additive minimums from the retained 457-row source ledger. These are
 /// membership evidence, never a claim of exhaustive product coverage or prices.
 /// Regenerate with scripts/audit_pokemon_finish_repairs.py --write-table.
@@ -565,7 +615,8 @@ enum PokemonVariantRules {
     }
 
     static func apply(to evidence: VariantEvidence, rules: [PokemonVariantRule] = all) -> Result {
-        guard evidence.game == .pokemon else {
+        guard evidence.game == .pokemon,
+              PokemonFinishCoverage.variants(cardID: evidence.setID + "-" + evidence.cardNumber) == nil else {
             return Result(variants: evidence.catalogVariants, wasNarrowedByRule: false)
         }
 

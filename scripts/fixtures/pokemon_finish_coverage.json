@@ -1,0 +1,33 @@
+{
+  "snapshot": [
+    {"providerID":"sample-001","collectorNumber":"001","name":"Example One","setID":{"providerID":"sample"},"masterSetVariant":{"id":"normal"}},
+    {"providerID":"sample-001","collectorNumber":"001","name":"Example One","setID":{"providerID":"sample"},"masterSetVariant":{"id":"reverse"}},
+    {"providerID":"sample-002","collectorNumber":"002","name":"Example Two","setID":{"providerID":"sample"},"masterSetVariant":{"id":"normal"}},
+    {"providerID":"sample-002","collectorNumber":"002","name":"Example Two","setID":{"providerID":"sample"},"masterSetVariant":{"id":"holo"}},
+    {"providerID":"sample-003","collectorNumber":"003","name":"Example Three","setID":{"providerID":"sample"},"masterSetVariant":{"id":"holo"}},
+    {"providerID":"tcgplayer:14","collectorNumber":"004","name":"Example Four","setID":{"providerID":"sample"},"masterSetVariant":{"id":"pokeBall"}}
+  ],
+  "products": {
+    "success": true,
+    "errors": [],
+    "results": [
+      {"productId":11,"categoryId":3,"groupId":55,"name":"Example One - 1/4","extendedData":[{"name":"Number","value":"1/4"}]},
+      {"productId":12,"categoryId":3,"groupId":55,"name":"Example Two","extendedData":[{"name":"Number","value":"002/004"}]},
+      {"productId":14,"categoryId":3,"groupId":55,"name":"Example Four (Poké Ball Pattern)","extendedData":[{"name":"Number","value":"004/004"}]},
+      {"productId":15,"categoryId":3,"groupId":55,"name":"An Unmatched Number","extendedData":[{"name":"Number","value":"099/004"}]},
+      {"productId":16,"categoryId":3,"groupId":55,"name":"Booster Box","extendedData":[]}
+    ]
+  },
+  "prices": {
+    "success": true,
+    "errors": [],
+    "results": [
+      {"productId":11,"subTypeName":"Normal","marketPrice":0.5},
+      {"productId":11,"subTypeName":"Reverse Holofoil","marketPrice":1.0},
+      {"productId":12,"subTypeName":"Holofoil","marketPrice":null},
+      {"productId":14,"subTypeName":"Holofoil","marketPrice":1.5},
+      {"productId":15,"subTypeName":"Holofoil","marketPrice":1.7},
+      {"productId":16,"subTypeName":"Normal","marketPrice":12.0}
+    ]
+  }
+}

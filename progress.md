@@ -1,3 +1,26 @@
+# 2026-11-10 — Catalog recovery guard and Pokémon finish review
+
+Moved four workflows to `macos-15` and made both Pokémon pointer reads require
+explicit bootstrap on HTTP 404. Backed up and hash-checked the revision 22
+candidate on the SSD. Fresh GETs confirmed 404 for the pointer and immutable
+revision object and 200 for both sampled price feeds. CI evidence brackets the
+namespace loss between the November 5 deploy and November 8 price publication.
+The owner restore and signature readback remain open.
+
+Added the bundled exact-finish coverage reader and the set reporting and
+certification tool. Comparison of 24 recent bundled sets flagged 618 conflicts.
+The Pitch Black draft includes four cited resolutions and evidence for six
+outstanding rows. Zero bundled sets are certified. The full data review gates
+removal of the existing incomplete-singleton resolver exception.
+
+Verification against `680e868` plus this working tree includes 516 passing
+signed Debug tests on the dedicated iOS 27.0 review simulator, an ordinary
+Release simulator build and processed One Piece plist readback. The One Piece
+keys read `disabled`, empty origin, empty pins and `NO`. The seven certification
+tool tests, 23 feed and hosting tests and 12 pointer-guard scenarios passed.
+The [launch review](docs/audits/launch-review-2026-11-10.md) records the gates
+and SSD evidence paths.
+
 # 2026-11-10 — Detailed reproduction for launch-review items 2 and 4
 
 Added the [reproduction supplement](docs/audits/launch-review-items-2-and-4-reproduction-2026-11-10.md)

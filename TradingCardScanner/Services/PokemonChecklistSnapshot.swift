@@ -43,14 +43,18 @@ enum PokemonChecklistReviewedProjection {
 
     static let setIDs: Set<String> = Set(["me02.5", "sma", "xya", "me05", "me03", "sv04.5", "swsh10.5", "sv03.5"])
         .union(PokemonFinishMinimumCatalog.setIDs)
+        .union(PokemonFinishCoverage.sets.keys)
 
     static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
         var emitted = Set<String>()
         let reviewed = cards.flatMap { base -> [CatalogCardSummary] in
-            guard base.game == .pokemon, setIDs.contains(base.setID.providerID),
-                  base.pokemonPrintRun == nil else { return [base] }
+            guard base.game == .pokemon, setIDs.contains(base.setID.providerID) else { return [base] }
             let variants: [PhysicalVariant]
-            if let reviewed = PokemonVariantRules.reviewedVariants(cardID: base.providerID) {
+            if let certified = PokemonFinishCoverage.variants(cardID: base.providerID) {
+                variants = certified
+            } else if base.pokemonPrintRun != nil {
+                return [base]
+            } else if let reviewed = PokemonVariantRules.reviewedVariants(cardID: base.providerID) {
                 variants = reviewed
             } else if let parallel = PokemonReviewedParallelCatalog.entry(cardID: base.providerID),
                       parallel.matches(name: base.name, setID: base.setID.providerID, number: base.collectorNumber) {

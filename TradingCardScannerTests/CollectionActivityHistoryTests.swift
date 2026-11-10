@@ -2428,7 +2428,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
             )
         }
         let staleRow = try XCTUnwrap(store.card(forKey: staleCard.collectionKey(variant: .normal)))
-        let freshCard = celebrationCard(variant: .holo, withPrice: true)
+        let freshCard = celebrationCard(variant: .holo, withPrice: true, certified: true)
         let repair = try catalogRepair(for: staleRow, card: freshCard, in: context)
         let modelContainer = try XCTUnwrap(container)
 
@@ -2511,7 +2511,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
         let context = try makeContext()
         let store = CollectionStore(context: context)
         let staleCard = celebrationCard(variant: .normal)
-        let freshCard = celebrationCard(variant: .holo, withPrice: true)
+        let freshCard = celebrationCard(variant: .holo, withPrice: true, certified: true)
         _ = try store.add(
             staleCard,
             resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
@@ -2549,7 +2549,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
         let context = try makeContext()
         let store = CollectionStore(context: context)
         let unknownCard = celebrationCard(variant: .normal)
-        let freshCard = celebrationCard(variant: .holo)
+        let freshCard = celebrationCard(variant: .holo, certified: true)
         let unresolved = ResolvedVariant(variant: nil, resolution: .catalogSilent)
         for _ in 0..<2 {
             _ = try store.add(unknownCard, resolved: unresolved, source: .scan)
@@ -2656,7 +2656,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
             includeImported: true
         )
         let target = try XCTUnwrap(targets.first { $0.id == row.priceKey })
-        let freshCard = celebrationCard(variant: .holo, id: "finish-confirmation-001")
+        let freshCard = celebrationCard(variant: .holo, id: "finish-confirmation-001", certified: true)
         let firstRefresh = UUID()
         let firstSeenAt = Date(timeIntervalSince1970: 1_700_000_000)
 
@@ -2703,12 +2703,8 @@ final class CollectionActivityHistoryTests: XCTestCase {
                          ResolvedVariant(variant: .reverse, resolution: .uniqueInCatalog)] {
             _ = try store.add(stored, resolved: resolved, source: .scan)
         }
-        guard case let .pokemon(raw, code) = celebrationCard(variant: .holo, id: stored.providerID).legacyIdentity else {
-            return XCTFail("Expected Pokémon evidence")
-        }
-        var incomplete = raw
-        incomplete.finishCoverageVerified = false
-        let freshCard = IdentifiedCard.pokemon(incomplete, setCode: code)
+        let freshCard = celebrationCard(variant: .holo, id: stored.providerID)
+        XCTAssertFalse(freshCard.variantEvidence.physicalCoverageVerified)
         XCTAssertEqual(VariantResolver.resolveAcquisition(freshCard.variantEvidence, printedEdition: .absent),
             .resolved(.init(variant: .holo, resolution: .uniqueInCatalog)))
 
@@ -2804,7 +2800,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
         let context = try makeContext()
         let store = CollectionStore(context: context)
         let staleCard = celebrationCard(variant: .reverse)
-        let freshCard = celebrationCard(variant: .holo, withPrice: true)
+        let freshCard = celebrationCard(variant: .holo, withPrice: true, certified: true)
         _ = try store.add(
             staleCard,
             resolved: ResolvedVariant(variant: .reverse, resolution: .uniqueInCatalog),
@@ -3682,7 +3678,8 @@ final class CollectionActivityHistoryTests: XCTestCase {
     private func celebrationCard(
         variant: PhysicalVariant,
         withPrice: Bool = false,
-        id: String = "30th-053"
+        id: String = "30th-053",
+        certified: Bool = false
     ) -> IdentifiedCard {
         let pricing = withPrice
             ? TCGdexPricing(
@@ -3718,6 +3715,11 @@ final class CollectionActivityHistoryTests: XCTestCase {
             pricing: pricing,
             variantsDetailed: nil
         )
+        if certified {
+            return PokemonFinishCoverage.$certifiedForTesting.withValue([id: [variant]]) {
+                .pokemon(card, setCode: "30TH")
+            }
+        }
         return .pokemon(card, setCode: "30TH")
     }
 
