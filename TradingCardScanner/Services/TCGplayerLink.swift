@@ -37,6 +37,15 @@ enum TCGplayerLinkBuilder {
         return nil
     }
 
+    /// Persist the same exact product Browse can open, including its ambiguity
+    /// and physical-review guards. A product handle never comes from a search.
+    static func productID(for card: IdentifiedCard, variant: PhysicalVariant?,
+                          pokemonPrintRun: PokemonPrintRun? = nil) -> String? {
+        guard let url = url(for: card, variant: variant, pokemonPrintRun: pokemonPrintRun),
+              isProductPage(url) else { return nil }
+        return url.pathComponents[2]
+    }
+
     private static func isProductPage(_ url: URL) -> Bool {
         let parts = url.pathComponents
         return parts.count > 2 && parts[1] == "product" && validProductID(parts[2])

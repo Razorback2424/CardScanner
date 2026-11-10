@@ -337,11 +337,15 @@ final class CollectedCard {
         setReleaseOrder = card.setReleaseOrder
         imageURL = card.storedImageURL
         thumbnailURL = card.catalogMetadataThumbnailURL
-        if card.updatesProviderPurchaseURL { tcgplayerURL = card.providerPurchaseURL(for: variant) }
-        if card.legacyIdentity == nil {
-            // Current catalog authority also withdraws obsolete stored handles.
-            tcgplayerProductID = variantID.flatMap { card.marketProductIDsByVariant[$0] }
-        }
+        applyMarketplaceMetadata(from: card)
+    }
+
+    /// Metadata repair must use this row's independent print run, rather than
+    /// borrowing an Unlimited product for a Shadowless or First Edition copy.
+    func applyMarketplaceMetadata(from card: IdentifiedCard) {
+        tcgplayerURL = card.providerPurchaseURL(for: variant, pokemonPrintRun: pokemonPrintRun)
+        tcgplayerProductID = TCGplayerLinkBuilder.productID(for: card, variant: variant,
+            pokemonPrintRun: pokemonPrintRun)
     }
 
     func applyCatalogMetadata(
@@ -406,7 +410,7 @@ final class CollectedCard {
         )
         magicTreatmentQualifiers = card.magicTreatmentQualifiers(for: resolved.variant)
         magicContentKindRaw = card.magicContentKind.rawValue
-        tcgplayerURL = card.providerPurchaseURL(for: resolved.variant)
+        applyMarketplaceMetadata(from: card)
     }
 
     var cardGame: CardGame {

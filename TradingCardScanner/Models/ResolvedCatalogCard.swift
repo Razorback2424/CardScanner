@@ -109,12 +109,11 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
 
     var marketPrices: [CardMarketPrice] { CardPricing.publishedPrices(for: self) }
     var providerPurchaseURL: String? { legacyIdentity?.providerPurchaseURL }
-    func providerPurchaseURL(for variant: PhysicalVariant?) -> String? {
-        if case .pokemon = legacyIdentity { return providerPurchaseURL }
-        return TCGplayerLinkBuilder.url(for: self, variant: variant)?.absoluteString
+    func providerPurchaseURL(for variant: PhysicalVariant?, pokemonPrintRun: PokemonPrintRun? = nil) -> String? {
+        TCGplayerLinkBuilder.url(for: self, variant: variant, pokemonPrintRun: pokemonPrintRun)?.absoluteString
     }
     var updatesProviderPurchaseURL: Bool {
-        legacyIdentity?.updatesProviderPurchaseURL ?? true
+        true
     }
     var catalogMetadataThumbnailURL: String? {
         legacyIdentity?.catalogMetadataThumbnailURL ?? thumbnailImageURL?.absoluteString

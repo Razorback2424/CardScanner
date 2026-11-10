@@ -216,6 +216,7 @@ private struct RefreshRowIdentity: Sendable {
     let variantID: String?
     let marketVariantID: String?
     let itemKind: CollectionItemKind
+    let pokemonPrintRun: PokemonPrintRun?
     let imageURLIsMissing: Bool
 }
 
@@ -241,6 +242,7 @@ struct PendingCatalogFinishState: Equatable, Sendable {
 struct RefreshRowPatch: Sendable {
     enum Change: Sendable {
         case catalogMetadata(ImportedCatalogMetadata, checkedAt: Date)
+        case marketplaceMetadata(ImportedCatalogMetadata)
         case sealedArtwork(url: String?, checkedAt: Date)
         case vendorBinding(productID: String?, sku: String?, exactProductID: String?, cardID: String?, variantID: String?)
         case pendingCatalogFinish(
@@ -258,14 +260,16 @@ struct RefreshRowPatch: Sendable {
     fileprivate static func catalogMetadata(
         from card: IdentifiedCard,
         row: RefreshRowIdentity,
-        checkedAt: Date
+        checkedAt: Date,
+        marketplaceOnly: Bool = false
     ) -> Self {
         let imageURL: String?
         let thumbnailURL: String?
         let tcgplayerURL: String?
         imageURL = card.storedImageURL
         thumbnailURL = card.catalogMetadataThumbnailURL
-        tcgplayerURL = card.providerPurchaseURL(for: row.variantID.map(PhysicalVariant.resolving))
+        let variant = row.variantID.map(PhysicalVariant.resolving)
+        tcgplayerURL = card.providerPurchaseURL(for: variant, pokemonPrintRun: row.pokemonPrintRun)
         let metadata = ImportedCatalogMetadata(
             providerID: card.providerID,
             setCode: card.setCode,
@@ -274,15 +278,16 @@ struct RefreshRowPatch: Sendable {
             thumbnailURL: thumbnailURL,
             tcgplayerURL: tcgplayerURL,
             setReleaseOrder: card.setReleaseOrder,
-            tcgplayerProductID: row.variantID.flatMap { card.marketProductIDsByVariant[$0] },
-            updatesMarketplaceProductID: card.legacyIdentity == nil
+            tcgplayerProductID: TCGplayerLinkBuilder.productID(for: card, variant: variant,
+                pokemonPrintRun: row.pokemonPrintRun),
+            updatesMarketplaceProductID: true
         )
         return Self(
             collectionKey: row.collectionKey,
             expectedPriceKey: row.priceKey,
             expectedVariantID: row.variantID,
             expectedMarketVariantID: row.marketVariantID,
-            change: .catalogMetadata(metadata, checkedAt: checkedAt)
+            change: marketplaceOnly ? .marketplaceMetadata(metadata) : .catalogMetadata(metadata, checkedAt: checkedAt)
         )
     }
 }
@@ -848,6 +853,13 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                         }
                         let targetsForPrinting = byPrinting[printing] ?? []
                         for target in targetsForPrinting {
+                            if target.itemKind == .rawCard, target.importedIdentity == nil {
+                                for row in rowIdentitiesByPriceKey[target.id] ?? [] {
+                                    pendingRowPatches.append(.catalogMetadata(from: card,
+                                        row: row, checkedAt: now, marketplaceOnly: true))
+                                    stage(true, key: row.priceKey)
+                                }
+                            }
                             var assessment = PokemonFinishReconciliation.Assessment(
                                 repairs: [],
                                 changedPendingRows: 0
@@ -1175,6 +1187,9 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                                 continue
                             }
                             switch patch.change {
+                            case let .marketplaceMetadata(metadata):
+                                row.tcgplayerProductID = metadata.tcgplayerProductID
+                                row.tcgplayerURL = metadata.tcgplayerURL
                             case let .catalogMetadata(metadata, checkedAt):
                                 let savedArtwork = (row.imageURL, row.thumbnailURL)
                                 row.applyCatalogMetadata(metadata)
@@ -3916,6 +3931,7 @@ final class PriceRefreshController: ObservableObject {
                 variantID: $0.variantID,
                 marketVariantID: $0.justTCGVariantID,
                 itemKind: $0.itemKind,
+                pokemonPrintRun: $0.pokemonPrintRun,
                 imageURLIsMissing: $0.imageURL == nil
             )
         }

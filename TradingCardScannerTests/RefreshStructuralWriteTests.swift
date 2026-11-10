@@ -30,6 +30,40 @@ private actor RefreshTestBarrier {
 final class RefreshStructuralWriteTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testPokemonRefreshBackfillsOnlyTheExactProductForEachOwnedPrintRun() async throws {
+        let container = try makeContainer()
+        let pokemon = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"svp-1","localId":"1","name":"Test","set":{"id":"svp","name":"Set","cardCount":{"total":2,"official":2}},"variants":{"firstEdition":false,"holo":true,"normal":false,"reverse":false},"pricing":{"tcgplayer":{"holofoil":{"marketPrice":12.5,"productId":123456}}}}"#.utf8))
+        let card = IdentifiedCard.pokemon(pokemon, setCode: "SVP")
+        try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            for run: PokemonPrintRun? in [nil, .shadowless, .firstEdition] {
+                let added = try CollectionStore(context: context).add(card,
+                    resolved: .init(variant: .holo, resolution: .userConfirmed), pokemonPrintRun: run)
+                let row = try XCTUnwrap(CollectionStore(context: context).card(forKey: added.collectionKey))
+                if run == nil { XCTAssertEqual(row.tcgplayerProductID, "123456") }
+                else { XCTAssertNil(row.tcgplayerProductID) }
+                row.tcgplayerProductID = nil
+                row.tcgplayerURL = nil
+            }
+            // Exercise the provider refresh, rather than the fresh-price skip.
+            for price in try context.fetch(FetchDescriptor<PriceRecord>()) { context.delete(price) }
+            try context.save()
+        }
+        let worker = PriceRefreshModelActor(modelContainer: container)
+        await worker.setPokemonFetchOverrideForTesting { _ in card }
+        _ = await worker.run(PriceRefreshRequest(usesPriceFallback: false, includeImported: true,
+            forceUnsupportedRetry: true, sortOldestFirst: false, maximumTargetCount: nil,
+            markRecentlyCheckedIfEmpty: false), progress: { _ in }, shouldContinue: nil)
+        let context = ModelContext(container)
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 3)
+        for row in rows {
+            XCTAssertEqual(row.quantity, 1)
+            XCTAssertEqual(row.tcgplayerProductID, row.pokemonPrintRun == nil ? "123456" : nil)
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: row)?.url.path,
+                row.pokemonPrintRun == nil ? "/product/123456" : nil)
+        }
+    }
+
     override func tearDown() {
         container = nil
         super.tearDown()

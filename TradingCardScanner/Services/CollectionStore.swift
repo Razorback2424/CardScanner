@@ -1591,6 +1591,43 @@ actor CollectionDetailQuantityReader: BackgroundModelActor {
     }
 }
 
+/// Read only the positions and ledger lineage used by the visible activity
+/// page. Both correction legs and reversals can live on another position, so
+/// collection-key filtering alone cannot safely authorize history actions.
+struct CollectionActivityReadScope {
+    private let collectionKeys: [String]
+    private let operationIDs: [UUID]
+
+    init(activities: [CollectionActivity]) {
+        collectionKeys = Array(Set(activities.map(\.collectionKey)))
+        operationIDs = Array(Set(activities.flatMap(\.ledgerOperationIDs)))
+    }
+
+    func cards(in context: ModelContext) throws -> [CollectedCard] {
+        guard !collectionKeys.isEmpty else { return [] }
+        let keys = collectionKeys
+        return try context.fetch(FetchDescriptor<CollectedCard>(
+            predicate: #Predicate { keys.contains($0.collectionKey) }))
+    }
+
+    func events(in context: ModelContext) throws -> [InventoryEvent] {
+        guard !collectionKeys.isEmpty || !operationIDs.isEmpty else { return [] }
+        let keys = collectionKeys
+        let operations = operationIDs
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>(predicate: #Predicate {
+            keys.contains($0.collectionKey) || operations.contains($0.operationID)
+        }))
+        guard !events.isEmpty else { return [] }
+        let eventIDs = events.map(\.eventID)
+        let reversedIDs = eventIDs.map { Optional($0) }
+        let reversals = try context.fetch(FetchDescriptor<InventoryEvent>(predicate: #Predicate {
+            reversedIDs.contains($0.reversesEventID)
+        }))
+        let included = Set(eventIDs)
+        return events + reversals.filter { !included.contains($0.eventID) }
+    }
+}
+
 /// Detail actions use the same fresh-context ownership transaction as scanner
 /// writes, on a dedicated executor. Only immutable inputs and receipts cross it.
 @ModelActor
@@ -4624,6 +4661,13 @@ struct CollectionStore {
                 stored = inserted
             }
 
+            // Adding a copy may use an identity-only offline snapshot. It can
+            // supply an exact product, but cannot revoke a previously saved
+            // one; authoritative catalog refresh owns mapping withdrawals.
+            if mutation.didInsert || TCGplayerLinkBuilder.destination(for: card,
+                variant: stored.variant, pokemonPrintRun: stored.pokemonPrintRun) != nil {
+                stored.applyMarketplaceMetadata(from: card)
+            }
             markLiveMagicTreatmentMigrationComplete(for: card, on: stored)
 
             if let stamped = PokemonStampedReleaseCatalog.entry(

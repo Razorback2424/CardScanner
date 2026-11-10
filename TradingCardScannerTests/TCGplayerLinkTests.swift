@@ -5,6 +5,39 @@ import XCTest
 /// A link that occasionally opens the wrong reprint would defeat that entirely,
 /// so most of these tests are about what the builder refuses to do.
 final class TCGplayerLinkTests: XCTestCase {
+    func testOwnedPokemonRetainsTheSameExactPricedProductAsBrowse() throws {
+        let identified = try pricedPokemon()
+        let row = CollectedCard(card: identified, resolved: .init(variant: .holo, resolution: .userConfirmed))
+        XCTAssertEqual(row.tcgplayerProductID, "123456")
+        XCTAssertEqual(TCGplayerLinkBuilder.destination(for: row),
+                       TCGplayerLinkBuilder.destination(for: identified, variant: .holo))
+        row.tcgplayerProductID = nil
+        row.tcgplayerURL = nil
+        row.applyCatalogMetadata(from: identified)
+        XCTAssertEqual(row.tcgplayerProductID, "123456", "Metadata refresh backfills existing holdings")
+        row.pokemonPrintRunRaw = PokemonPrintRun.shadowless.rawValue
+        row.applyCatalogMetadata(from: identified)
+        XCTAssertNil(row.tcgplayerProductID)
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: row))
+        row.pokemonPrintRunRaw = PokemonPrintRun.firstEdition.rawValue
+        row.applyCatalogMetadata(from: identified)
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: row), "Unlimited product cannot price another print run")
+    }
+
+    func testAmbiguousPokemonMetadataWithdrawsAnOwnedProduct() throws {
+        let identified = try pricedPokemon()
+        let row = CollectedCard(card: identified, resolved: .init(variant: .holo, resolution: .userConfirmed))
+        let conflicting = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"svp-1","localId":"1","name":"Test","set":{"id":"svp","name":"Set","cardCount":{"total":2,"official":2}},"variants_detailed":[{"type":"holo","languages":["en"],"thirdParty":{"tcgplayer":100}},{"type":"holo","languages":["en"],"thirdParty":{"tcgplayer":200}}]}"#.utf8))
+        row.applyCatalogMetadata(from: .pokemon(conflicting, setCode: "SVP"))
+        XCTAssertNil(row.tcgplayerProductID)
+        XCTAssertNil(row.tcgplayerURL)
+    }
+
+    private func pricedPokemon() throws -> IdentifiedCard {
+        let pokemon = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"svp-1","localId":"1","name":"Test","set":{"id":"svp","name":"Set","cardCount":{"total":2,"official":2}},"variants":{"firstEdition":false,"holo":true,"normal":false,"reverse":false},"pricing":{"tcgplayer":{"holofoil":{"marketPrice":12.5,"productId":123456}}}}"#.utf8))
+        return .pokemon(pokemon, setCode: "SVP")
+    }
+
     func testMissingMarketplaceIdentityDoesNotOfferSearch() {
         for game: CardGame in [.pokemon, .magic, .yuGiOh, .lorcana, .onePiece, .init(rawValue: "future-game")] {
             let row = card(game: game, name: "Farfetch’d & Friends / \"Rare\"", variant: .jumbo)
