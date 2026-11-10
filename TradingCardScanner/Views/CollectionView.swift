@@ -40,9 +40,7 @@ enum CollectionRefreshStatusResolver {
     static func presentation(
         for outcome: CollectionRefreshOutcome
     ) -> CollectionRefreshStatusPresentation? {
-        let fallbackWarning = hasUnresolvedFallbackWork(outcome.fallbackStatus)
-            ? warning("Some prices couldn’t be refreshed")
-            : nil
+        let fallbackPresentation = fallbackPresentation(outcome.fallbackStatus)
         func finishUpdates(for summary: PriceRefreshController.Summary) -> String {
             finishUpdateText(
                 repaired: summary.repairedFinishes,
@@ -63,7 +61,7 @@ enum CollectionRefreshStatusResolver {
                 isTransient: false
             )
         case .recentlyChecked:
-            return fallbackWarning ?? transient("No prices due for refresh")
+            return fallbackPresentation ?? transient("No prices due for refresh")
         case let .finished(summary):
             let updates = finishUpdates(for: summary)
             if summary.wasCancelled {
@@ -78,8 +76,8 @@ enum CollectionRefreshStatusResolver {
             if summary.persistenceFailed {
                 return warningWithFinishUpdates("Some updates couldn’t be saved", updates)
             }
-            if let fallbackWarning {
-                return warningWithFinishUpdates(fallbackWarning.message, updates)
+            if let fallbackPresentation, fallbackPresentation.isWarning {
+                return warningWithFinishUpdates(fallbackPresentation.message, updates)
             }
             if summary.gradedUnresolvedIdentities > 0 {
                 return warningWithFinishUpdates("Some graded identities couldn’t be resolved", updates)
@@ -93,6 +91,10 @@ enum CollectionRefreshStatusResolver {
                 || summary.reconciledDuplicateRecords > 0 {
                 return warningWithFinishUpdates("Prices updated with some issues", updates)
             }
+            if let fallbackPresentation {
+                return transient(updates.isEmpty ? fallbackPresentation.message
+                    : "\(fallbackPresentation.message) · \(updates)")
+            }
             if summary.missingMappings > 0 {
                 return transient("Price mappings pending for \(summary.missingMappings) items")
             }
@@ -105,7 +107,7 @@ enum CollectionRefreshStatusResolver {
             return transient(summary.priced > 0 ? "Prices checked — already current" : "Price check complete")
         }
 
-        return fallbackWarning
+        return fallbackPresentation
     }
 
     private static func transient(_ message: String) -> CollectionRefreshStatusPresentation {
@@ -124,16 +126,18 @@ enum CollectionRefreshStatusResolver {
         )
     }
 
-    private static func hasUnresolvedFallbackWork(
+    private static func fallbackPresentation(
         _ status: PriceRefreshController.FallbackStatus
-    ) -> Bool {
+    ) -> CollectionRefreshStatusPresentation? {
         switch status {
-        case let .disabled(pending), let .unconfigured(pending):
-            return pending > 0
+        case let .disabled(pending):
+            return pending > 0 ? transient("No price available for some cards") : nil
+        case let .unconfigured(pending):
+            return pending > 0 ? warning("Additional price checks need setup") : nil
         case let .budgetReached(pending, _), let .rateLimited(pending, _):
-            return pending > 0
+            return pending > 0 ? warning("Some prices couldn’t be refreshed") : nil
         case .idle, .available, .running, .finished:
-            return false
+            return nil
         }
     }
 
@@ -1761,7 +1765,7 @@ struct CollectionCardTile: View {
 
     @ViewBuilder
     private var quietLine: some View {
-        if dynamicTypeSize.isAccessibilitySize {
+        if dynamicTypeSize.isAccessibilitySize || priceReplacementCaveat != nil {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
                     tilePriceAndQuantity
@@ -1789,7 +1793,7 @@ struct CollectionCardTile: View {
             Text(caveat)
                 .font(dynamicTypeSize.isAccessibilitySize ? .subheadline.weight(.semibold) : .system(size: 15, weight: .semibold))
                 .foregroundStyle(.orange)
-                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
                 .truncationMode(.tail)
         } else {

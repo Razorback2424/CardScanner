@@ -460,13 +460,16 @@ struct PortfolioHistoryResult: Equatable, Sendable {
     }
 
     func cardMovement(for collectionKey: String) -> PortfolioCardMovementState {
+        // A single anchor close plus live updates can already prove movement
+        // (especially for 1D). Do not hide an attributed portfolio contribution
+        // merely because the range contains fewer than two published closes.
+        if let detail = movement(for: collectionKey), !detail.totalImpact.isZero {
+            return .recorded(detail)
+        }
         guard hasTwoPublishedPoints, accountingInterval != nil else {
             return .historyRecording
         }
-        guard let detail = movement(for: collectionKey), !detail.totalImpact.isZero else {
-            return .noRecordedMarketMovement
-        }
-        return .recorded(detail)
+        return .noRecordedMarketMovement
     }
 }
 

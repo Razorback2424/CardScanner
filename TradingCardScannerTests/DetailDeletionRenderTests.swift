@@ -5,8 +5,195 @@ import Vision
 import XCTest
 @testable import TradingCardScanner
 
+private actor FinishCorrectionRenderCatalog: BrowseCatalogProviding {
+    let card: IdentifiedCard
+    let fails: Bool
+    let didLoad: XCTestExpectation
+
+    init(card: IdentifiedCard, fails: Bool, didLoad: XCTestExpectation) {
+        self.card = card; self.fails = fails; self.didLoad = didLoad
+    }
+
+    func sets(for game: CardGame) async throws -> [CatalogSet] { [] }
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [], nextCursor: nil)
+    }
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>,
+                     cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [], nextCursor: nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        defer { didLoad.fulfill() }
+        if fails { throw URLError(.notConnectedToInternet) }
+        let set = CatalogSet(catalogID: summary.setID, name: card.setName, code: card.setCode,
+            logoURL: nil, symbolURL: nil, cardCount: 193, releaseDate: nil, sortRank: 0)
+        return CatalogCardDetails(card: card, set: set)
+    }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { $0.finish() }
+    }
+}
+
 @MainActor
 final class DetailDeletionRenderTests: XCTestCase {
+    func testFinishEditorRendersRetainedLegacyValueAndLoadFailureAtAccessibleSizes() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let card = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
+            {"id":"sv02-007","localId":"007","name":"Tropius",
+             "set":{"id":"sv02","name":"Paldea Evolved","cardCount":{"total":279,"official":193}},
+             "variants":{"normal":true,"holo":false,"reverse":true,"firstEdition":false}}
+            """#.utf8)), setCode: "PAL")
+        let mutation = try CollectionStore(context: container.mainContext).add(card,
+            resolved: .init(variant: .masterBall, resolution: .userConfirmed))
+        let activity = try XCTUnwrap(container.mainContext.fetch(FetchDescriptor<CollectionActivity>())
+            .first { $0.id == mutation.activityID })
+        for fails in [false, true] {
+            for size in [DynamicTypeSize.large, .accessibility5] {
+                let loaded = expectation(description: "Exact finish load \(fails) \(size)")
+                let catalog = FinishCorrectionRenderCatalog(card: card, fails: fails, didLoad: loaded)
+                let controller = UIHostingController(rootView: NavigationStack {
+                    CollectionActivityEditor(activity: activity, catalog: catalog)
+                }.modelContainer(container)
+                    .environment(\.cardGameRuntimes, nil).environment(\.dynamicTypeSize, size)
+                    .preferredColorScheme(.dark))
+                let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+                window.rootViewController = controller
+                window.makeKeyAndVisible()
+                defer { window.isHidden = true; window.rootViewController = nil }
+                await fulfillment(of: [loaded], timeout: 5)
+                await Task.yield()
+                controller.view.frame = window.bounds
+                controller.view.setNeedsLayout()
+                controller.view.layoutIfNeeded()
+                var form: UICollectionView?
+                for _ in 0..<100 {
+                    controller.view.layoutIfNeeded()
+                    var pendingViews = [controller.view!]
+                    while let view = pendingViews.popLast() {
+                        if let collection = view as? UICollectionView { form = collection; break }
+                        pendingViews.append(contentsOf: view.subviews)
+                    }
+                    if let form, form.numberOfSections >= 2 { break }
+                    try await Task.sleep(for: .milliseconds(10))
+                }
+                let collection = try XCTUnwrap(form)
+                let section = collection.numberOfSections - 1
+                if section >= 0, collection.numberOfItems(inSection: section) > 0 {
+                    collection.scrollToItem(at: IndexPath(item: 0, section: section), at: .top, animated: false)
+                }
+                controller.view.layoutIfNeeded()
+                let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
+                    controller.view.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+                }
+                let request = VNRecognizeTextRequest()
+                request.recognitionLevel = .accurate
+                try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+                let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+                XCTAssertTrue(text.localizedCaseInsensitiveContains("Master Ball"), text)
+                if fails {
+                    XCTAssertTrue(text.localizedCaseInsensitiveContains("Retry"), text)
+                    XCTAssertTrue(text.localizedCaseInsensitiveContains("finishes"), text)
+                }
+                let attachment = XCTAttachment(image: image)
+                attachment.name = "finish-editor-\(fails ? "failed" : "loaded")-\(size)"
+                attachment.lifetime = .keepAlways
+                add(attachment)
+            }
+        }
+    }
+
+    func testPortfolioImpactRemainsVisibleAboveFlatOrUnavailableMarketHistory() throws {
+        let now = Date.now
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
+        let quote = PriceDisplay(amount: 1.65, source: .scryfall, fetchedAt: now)
+        let impact = PortfolioContributionDetail(totalImpact: try XCTUnwrap(Money(rounding: 0.49)),
+            cumulativeUnitMovement: try XCTUnwrap(Money(rounding: 0.49)), affectedQuantities: [1])
+        for hasHistory in [true, false] {
+            let model = PriceHistoryChartModel.market(
+                points: hasHistory ? [.init(p: 1.65, t: yesterday.timeIntervalSince1970)] : [],
+                range: .oneDay, currentPrice: quote, now: now)
+            for size in [DynamicTypeSize.large, .accessibility5] {
+                let content = VStack(spacing: 16) {
+                    CardDetailPortfolioImpactView(state: .recorded(impact), range: .oneDay)
+                    MarketHistoryChartContent(model: model, hasHistory: hasHistory, isLoading: false,
+                        error: nil, direction: model.direction, range: .constant(.oneDay),
+                        selection: .constant(nil), retry: {})
+                }
+                .padding(16).frame(width: 350).background(Color.black)
+                .environment(\.colorScheme, .dark).environment(\.dynamicTypeSize, size)
+                let renderer = ImageRenderer(content: content)
+                renderer.scale = 2
+                let image = try XCTUnwrap(renderer.uiImage)
+                let request = VNRecognizeTextRequest()
+                request.recognitionLevel = .accurate
+                try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+                let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+                XCTAssertTrue(text.localizedCaseInsensitiveContains("Portfolio impact"), text)
+                XCTAssertTrue(text.localizedCaseInsensitiveContains("past day"), text)
+                XCTAssertTrue(text.contains("0.49"), text)
+                XCTAssertTrue(text.localizedCaseInsensitiveContains("per card"), text)
+                XCTAssertFalse(text.localizedCaseInsensitiveContains("No net movement"), text)
+                let attachment = XCTAttachment(image: image)
+                attachment.name = "portfolio-impact-\(hasHistory ? "flat-history" : "unavailable-history")-\(size)"
+                attachment.lifetime = .keepAlways
+                add(attachment)
+            }
+        }
+    }
+
+    func testMissingFinishPriceRemainsReadableOnNarrowAndAccessibleTiles() throws {
+        let row = CollectionRow(id: "missing-price-tropius", game: .pokemon, name: "Tropius",
+            setCode: "PAL", setName: "Paldea Evolved", setReleaseOrder: 1, cardNumber: "007",
+            variantID: PhysicalVariant.normal.id, variantLabel: PhysicalVariant.normal.label,
+            quantity: 2, dateAdded: .now, price: .unknown)
+        for (size, width) in [(DynamicTypeSize.large, CGFloat(165)), (.accessibility5, CGFloat(350))] {
+            let content = CollectionCardTile(row: row, unpricedReason: .noExactVariantPrice,
+                artworkReason: nil).padding(12).frame(width: width + 24)
+                .background(Color.black).environment(\.colorScheme, .dark)
+                .environment(\.dynamicTypeSize, size)
+            let renderer = ImageRenderer(content: content)
+            renderer.scale = 2
+            let image = try XCTUnwrap(renderer.uiImage)
+            let request = VNRecognizeTextRequest()
+            request.recognitionLevel = .accurate
+            try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+            let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+            // Vision can interleave the adjacent quantity between wrapped lines.
+            XCTAssertTrue(text.localizedCaseInsensitiveContains("No price for"), text)
+            XCTAssertTrue(text.localizedCaseInsensitiveContains("this finish"), text)
+            let attachment = XCTAttachment(image: image)
+            attachment.name = "missing-price-tile-\(size)"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+    }
+
+    func testCurrentQuoteDoesNotRenderADuplicatePriceOrOnePointChart() throws {
+        let now = Date.now
+        let quote = PriceDisplay(amount: 651.85, source: .tcgplayer, fetchedAt: now)
+        let model = PriceHistoryChartModel.market(points: [], range: .oneWeek, currentPrice: quote, now: now)
+        for size in [DynamicTypeSize.large, .accessibility5] {
+            let content = MarketHistoryChartContent(model: model, hasHistory: false, isLoading: false,
+                error: nil, direction: .flat, range: .constant(.oneWeek), selection: .constant(nil), retry: {})
+                .padding(16).frame(width: 350).background(Color.black)
+                .environment(\.colorScheme, .dark).environment(\.dynamicTypeSize, size)
+            let renderer = ImageRenderer(content: content)
+            renderer.scale = 2
+            let image = try XCTUnwrap(renderer.uiImage)
+            let request = VNRecognizeTextRequest()
+            request.recognitionLevel = .accurate
+            try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+            let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+            XCTAssertTrue(text.localizedCaseInsensitiveContains("Price history"), text)
+            XCTAssertFalse(text.contains("651.85"), "Today's quote already has its own price block: \(text)")
+            let attachment = XCTAttachment(image: image)
+            attachment.name = "current-only-history-\(size)"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+    }
+
     func testMarketplaceLinkLabelsRemainReadableAtAccessibleSizes() throws {
         let exact = TCGplayerLinkBuilder.Destination(url: try XCTUnwrap(URL(string: "https://www.tcgplayer.com/product/641615")),
             isExactProduct: true)
@@ -92,10 +279,10 @@ final class DetailDeletionRenderTests: XCTestCase {
         XCTAssertEqual(MarketHistoryPresentation(model: empty, hasHistory: false, isLoading: false,
             error: "missing credentials", requiresAPIKey: true), .configurationRequired)
         XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: false,
-            error: nil, requiresAPIKey: true), .chart, "Removing a key keeps saved history usable")
+            error: nil, requiresAPIKey: true), .singlePrice, "Removing a key keeps saved history usable")
         XCTAssertEqual(MarketHistoryPresentation(model: empty, hasHistory: false, isLoading: false, error: "offline"), .failed)
-        XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: true, error: nil), .chart)
-        XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: false, error: "offline"), .chart)
+        XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: true, error: nil), .singlePrice)
+        XCTAssertEqual(MarketHistoryPresentation(model: all, hasHistory: true, isLoading: false, error: "offline"), .singlePrice)
         XCTAssertEqual(MarketHistoryPresentation(model: week, hasHistory: true, isLoading: true, error: nil), .outsideRange)
         XCTAssertEqual(MarketHistoryPresentation(model: week, hasHistory: true, isLoading: false, error: "offline"), .outsideRange)
         XCTAssertFalse(all.samples.isEmpty, "Switching to all history must recover the saved samples")

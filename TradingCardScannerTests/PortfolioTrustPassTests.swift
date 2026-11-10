@@ -65,6 +65,15 @@ final class PortfolioTrustPassTests: XCTestCase {
         }
     }
 
+    func testRecordedImpactKeepsItsSignAndHistoricalQuantity() {
+        var daily = result(range: .oneDay)
+        let changedQuantity = PortfolioContributionDetail(totalImpact: Money(tenThousandths: -9_800),
+            cumulativeUnitMovement: Money(tenThousandths: -4_900), affectedQuantities: [1, 3])
+        daily.movementDetails = ["card": changedQuantity]
+        XCTAssertEqual(daily.cardMovement(for: "card"), .recorded(changedQuantity))
+        XCTAssertEqual(daily.cardMovement(for: "other-card"), .historyRecording)
+    }
+
     // MARK: - Unresolved failures outlive transient feedback
 
     private func summary(failed: Int, unreachable: Bool) -> PriceRefreshController.Summary {

@@ -19,6 +19,7 @@ struct CatalogCardDetailView: View {
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
     @Environment(\.catalogCardSelection) private var catalogCardSelection
     @Environment(\.cardGameRuntimes) private var runtimes
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let summary: CatalogCardSummary
     let catalog: any BrowseCatalogProviding
 
@@ -103,7 +104,7 @@ struct CatalogCardDetailView: View {
                 )
             }
         }
-        .safeAreaInset(edge: .bottom) {
+        .safeAreaInset(edge: .top) {
             if let mutation = pendingMutation {
                 addedBanner(mutation).contentWidthLimit(.standard)
             }
@@ -630,16 +631,22 @@ struct CatalogCardDetailView: View {
     }
 
     private func addedBanner(_ mutation: CollectionMutation) -> some View {
-        HStack {
-            Label("Added to Collection", systemImage: "checkmark.circle.fill")
-            Spacer()
-            if isWritePending { ProgressView().accessibilityLabel("Saving collection change") }
-            Button("Undo") {
-                undoCatalogMutation(mutation)
+        VStack(alignment: .leading, spacing: 8) {
+            if dynamicTypeSize.isAccessibilitySize {
+                Label("Added to Collection", systemImage: "checkmark.circle.fill")
+                    .font(.subheadline)
+                    .fixedSize(horizontal: false, vertical: true)
+                HStack {
+                    Spacer(minLength: 0)
+                    undoButton(mutation)
+                }
+            } else {
+                HStack {
+                    Label("Added to Collection", systemImage: "checkmark.circle.fill")
+                    Spacer()
+                    undoButton(mutation)
+                }
             }
-            .fontWeight(.semibold)
-            .frame(minHeight: 44)
-            .disabled(isWritePending)
         }
         .padding(.leading, 16)
         .padding(.trailing, 10)
@@ -647,6 +654,17 @@ struct CatalogCardDetailView: View {
         .shadow(color: .black.opacity(0.14), radius: 10, y: 4)
         .padding(.horizontal, 12)
         .padding(.bottom, 8)
+    }
+
+    private func undoButton(_ mutation: CollectionMutation) -> some View {
+        HStack {
+            if isWritePending { ProgressView().accessibilityLabel("Saving collection change") }
+            Button("Undo") { undoCatalogMutation(mutation) }
+                .fontWeight(.semibold)
+                .frame(minHeight: 44)
+                .fixedSize(horizontal: true, vertical: false)
+                .disabled(isWritePending)
+        }
     }
 
     private func undoCatalogMutation(_ mutation: CollectionMutation) {

@@ -3416,7 +3416,11 @@ final class PriceHistoryChartModelTests: XCTestCase {
             XCTAssertEqual(model.samples.count, 1)
             XCTAssertEqual(model.sample(at: now)?.amount, Money(rounding: amount))
             XCTAssertEqual(model.observationCount, 0)
-            XCTAssertEqual(MarketHistoryPresentation(model: model, hasHistory: false, isLoading: false, error: "offline"), .chart)
+            XCTAssertEqual(MarketHistoryPresentation(model: model, hasHistory: false, isLoading: false, error: "offline"), .failed)
+            XCTAssertEqual(MarketHistoryPresentation(model: model, hasHistory: false, isLoading: false, error: nil), .unavailable)
+            XCTAssertEqual(MarketHistoryPresentation(model: model, hasHistory: false, isLoading: true, error: nil), .loading)
+            XCTAssertEqual(MarketHistoryPresentation(model: model, hasHistory: false, isLoading: false,
+                error: nil, requiresAPIKey: true), .configurationRequired)
         }
     }
 

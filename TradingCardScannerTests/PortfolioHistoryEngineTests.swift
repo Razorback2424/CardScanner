@@ -48,6 +48,48 @@ private actor HistoryCalculationProbe {
 }
 
 final class PortfolioHistoryEngineTests: XCTestCase {
+    func testDailyCardMovementMatchesPortfolioEvenWhenProviderHistoryIsFlat() throws {
+        let oldPrice = try XCTUnwrap(Money(rounding: 1.16))
+        let currentPrice = try XCTUnwrap(Money(rounding: 1.65))
+        let unitMovement = try XCTUnwrap(Money(rounding: 0.49))
+        let now = date(2, hour: 12)
+        let providerPoints = [JustTCGHistoryPoint(p: 1.65, t: date(1, hour: 12).timeIntervalSince1970)]
+        let chart = PriceHistoryChartModel.market(points: providerPoints, range: .oneDay,
+            currentPrice: PriceDisplay(amount: 1.65, source: .scryfall, fetchedAt: now),
+            now: now, timeZone: calendar.timeZone)
+        XCTAssertEqual(chart.direction, .flat)
+
+        for quantity in [1, 2, 16] {
+            let acquisition = event(quantity: quantity, at: date(1, hour: 1))
+            let replay = PortfolioReplayEngine.replay(.init(events: [acquisition], observations: [
+                ObservationEntry(id: UUID(), instrumentKey: "card", kind: .marketUpdate,
+                    amount: oldPrice, receivedAt: date(1)),
+                ObservationEntry(id: UUID(), instrumentKey: "card", kind: .marketUpdate,
+                    amount: currentPrice, receivedAt: date(2, hour: 10))
+            ], epoch: date(1), through: now, timeZoneIdentifier: "UTC"))
+            var anchor = close(1, value: 0)
+            anchor.closeValue = oldPrice * quantity
+            let impact = unitMovement * quantity
+            let result = PortfolioHistoryEngine.calculate(input: PortfolioHistoryInput(
+                closes: [anchor],
+                summary: PortfolioSummary(currentValue: currentPrice * quantity, attribution: .init(market: impact)),
+                epoch: date(1), timeZoneIdentifier: "UTC", now: now,
+                contributions: replay.contributionIndex
+            ), range: .oneDay)
+
+            XCTAssertFalse(result.hasTwoPublishedPoints, "One anchor and the live day still prove a price change")
+            XCTAssertEqual(result.accounting?.market, impact)
+            XCTAssertEqual(result.contributions[acquisition.collectionKey], impact)
+            guard case let .recorded(detail) = result.cardMovement(for: acquisition.collectionKey) else {
+                XCTFail("The card detail must show the same movement as the portfolio row")
+                continue
+            }
+            XCTAssertEqual(detail.totalImpact, impact)
+            XCTAssertEqual(detail.cumulativeUnitMovement, unitMovement)
+            XCTAssertEqual(detail.affectedQuantities, [quantity])
+        }
+    }
+
     @MainActor
     func testEmptyHoldingsKeepRecordedHistoryAndOnlyNewCollectionsShowOnboarding() async throws {
         let previousRange = UserDefaults.standard.object(forKey: "portfolioHistoryRange")

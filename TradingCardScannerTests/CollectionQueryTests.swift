@@ -264,6 +264,24 @@ final class CollectionQueryTests: XCTestCase {
             .init(status: .recentlyChecked, fallbackStatus: .idle))?.message, "No prices due for refresh")
     }
 
+    func testMissingPriceWithFallbackDisabledIsInformationalAndDoesNotHideFailures() throws {
+        var summary = PriceRefreshController.Summary(checkedAt: .now, priced: 0, failed: 0,
+            latestSourceUpdate: nil, checkedUnstampedProvider: false, changedPrices: false,
+            foundNothingNewer: true)
+        let missing = try XCTUnwrap(CollectionRefreshStatusResolver.presentation(for:
+            .init(status: .finished(summary), fallbackStatus: .disabled(pending: 1))))
+        XCTAssertEqual(missing.message, "No price available for some cards")
+        XCTAssertFalse(missing.isWarning)
+
+        summary = .init(checkedAt: .now, priced: 0, failed: 1,
+            latestSourceUpdate: nil, checkedUnstampedProvider: false, changedPrices: false,
+            foundNothingNewer: true)
+        let failed = try XCTUnwrap(CollectionRefreshStatusResolver.presentation(for:
+            .init(status: .finished(summary), fallbackStatus: .disabled(pending: 1))))
+        XCTAssertEqual(failed.message, "Prices updated with some issues")
+        XCTAssertTrue(failed.isWarning)
+    }
+
     // MARK: - Collector numbers are not integers
 
     func testCardNumberSortIsNumericNotLexical() {
