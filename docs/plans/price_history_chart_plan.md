@@ -4,6 +4,29 @@
 verification is recorded in the root [progress log](../../progress.md); live-provider,
 physical-device and release acceptance are separate checks.
 
+**Portfolio movement correction — 2026-11-10:** owned card detail now shows
+the selected period's portfolio impact from the same replay contribution as
+Portfolio's movers, with the historical affected quantity. A single anchor
+close plus live updates can already prove that impact. Market history remains
+an independently labeled JustTCG series and no longer supplies the owned
+card's movement summary. Verified against `2527c9b` plus the dirty working tree
+in Debug on an arm64 iPhone 17 Pro / iOS 27.0 simulator: nine focused tests
+passed; the related selection passed 249 tests with zero failures and one
+opt-in aged-store performance baseline skipped (`PERF_BASELINE=1`).
+
+The related selection covers `PortfolioHistoryEngineTests`,
+`PortfolioReplayEngineTests`, `PortfolioCloseTests`, `PortfolioLedgerTests`,
+`PortfolioReconciliationTests`, `PortfolioTrustPassTests`,
+`PriceHistoryChartModelTests` and `DetailDeletionRenderTests`. The synthetic
+$1.16 → $1.65 / +$0.49 case, quantities 1/2/16, one close plus live-day
+movement, and flat/unavailable provider history pass. Standard and maximum
+accessibility text renders were inspected, including the full production
+`CardDetail / price-chart-portfolio` route and a final recapture. The artifacts
+are on T7 at `CodexBuilds/PortfolioMovement-20261110/`: `Focused.xcresult`,
+`Related.xcresult`, their summaries, `FocusedAttachments/`, `UIStandard/`,
+`UIAccessibility/` and `UIFinal/`. This is filtered simulator evidence;
+physical-device, live-provider and release acceptance remain separate.
+
 **Current-quote correction — 2026-11-05:** the owner requires Portfolio,
 Collection, card detail and today's chart value to use one selected quote.
 The shared endpoint and regression coverage are implemented and verified by
@@ -27,8 +50,11 @@ No physical-device, live-provider or release acceptance is inferred.
 Collection and catalog card details show earlier JustTCG historical prices for
 the exact printing and finish, or the selected graded listing. History does
 not start at acquisition and is not limited to days the app checked a price.
-The movement badge compares the first and last displayed prices in the selected
-range. Catalog details allow finish selection when multiple finishes exist.
+The owned card's portfolio impact uses the selected range's recorded price
+changes while owned, with the same total and quantity breakdown as Portfolio.
+It remains available when provider history is flat, missing or failed. A range
+whose portfolio result is still calculating does not borrow an older result.
+Catalog details allow finish selection when multiple finishes exist.
 
 The collection detail's default headline uses the same current quote as its
 holding value and collection total, with that quote's source and timestamp.
@@ -94,7 +120,10 @@ exclude historical payloads and share the existing quota/pacing infrastructure.
 
 Neither `PriceObservation`, `PriceCheckDay`, inventory events nor published
 portfolio closes are backfilled. The individual-card market chart and the
-owned-collection performance ledger answer different questions.
+owned-collection performance ledger answer different questions. The owned
+detail labels those sources explicitly and uses portfolio attribution for its
+movement summary, so an unrelated flat market series cannot claim no portfolio
+change.
 
 ## Historical decision
 

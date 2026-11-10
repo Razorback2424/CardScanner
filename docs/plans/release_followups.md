@@ -2,6 +2,87 @@
 
 **Status:** current validation, measurement, and catalog-hardening backlog — latest review reconciliation 2026-11-10.
 
+## Grade and finish review — 2026-11-10
+
+Source: `2527c9b4163a4b9694e509ca245b9ca96d8ba38c` plus the combined dirty
+working tree. Concurrent portfolio/detail work is preserved. Local fixes and
+selected simulator verification are complete. This receipt does not close
+device, provider or release gates.
+
+| Finding | Validated behavior and focused change |
+| --- | --- |
+| F16, now demonstrated with synthetic OCR text | The baseline accepted all 18 original contradiction probes, including `PSA GEM MT 1`. [The parser](../../TradingCardScanner/Services/GradedLabelParser.swift) now checks the selected number against its grader-specific word range after layout-based selection, without substituting another number. The final table tests add explicit-plus and BCCG contradictions, preserve valid half grades and older CGC Gem Mint 9.5, and retain numeric-only TAG behavior. Existing misleading `EX 9` / `NM 8` positive fixtures now use valid grades; their contradictory forms have explicit negative coverage. |
+| H1, exact finish correction | [The editor](../../TradingCardScanner/Views/CollectionActivityLogView.swift) loads the exact catalog printing instead of offering the game-wide finish list. It retains the current unsupported value for review, explains load failures, and drops stale/cancelled loads. Routing preserves hyphenated set IDs and imported catalog aliases; saving retains the catalog's variant label. The serialized history writer requires the catalog snapshot and checks matching game, printing and supported finish before moving ownership. The Tropius Normal/Reverse regression rejects Master Ball and another printing's evidence without changing quantities, ledger or activity; an allowed Reverse correction succeeds. Existing edition, lineage, storage and transaction guards remain. |
+| H2, missing-price feedback | [Collection](../../TradingCardScanner/Views/CollectionView.swift) treats disabled optional fallback coverage as an informational missing-price state. Real failures still produce warnings. Unpriced tile text wraps separately from the finish label. No price amount, timestamp or observation meaning changed. |
+| WP9 detail polish | [Detail](../../TradingCardScanner/Views/CollectionCardDetailView.swift) shows a text summary for one historical price, and no chart or repeated current-price block when only today's quote exists. A single-copy holding omits the duplicate total; multi-copy holdings retain it. [Catalog Undo](../../TradingCardScanner/Views/CatalogCardDetailView.swift) reserves the top safe area. The first maximum-text capture fragmented the message beside Undo; accessibility sizes now stack the message and action. History panels also reserve their full vertical text height after a maximum-text capture exposed overlapping explanations. |
+
+The numeric policy was checked against [PSA's standards](https://www.psacard.com/gradingstandards),
+[Beckett's published scale](https://beckett.com/grading),
+[CGC's scale](https://www.cgccards.com/card-grading/grading-scale/) and
+[legacy-label explanation](https://www.cgccards.com/about/help-center-faqs/about-cgc-cards/cgc-cards-merger/),
+and [TAG's rubric](https://taggrading.com/pages/rubric). This is consistency
+checking for supported label words, not expanded recognition of every historical
+label or verification against a certification database. Real slab photos with
+glare/dropped digits still need physical-device acceptance.
+
+Verification on iPhone 17 Pro Simulator / iOS 27.0, Debug arm64, destination
+`EC25844D-59BF-40D5-8D04-7C6A8FCBD049`:
+
+- Broad selected run: 643 executed, 641 passed, two failed during Keychain setup
+  in an unsigned host (`storeFailed(-34018)`). No pricing assertion ran in those
+  two failed methods. All other selected classes passed.
+- Signed rerun: all 142 `ScannerViewModelTests` passed, together with 89
+  portfolio-history/replay/trust and background-refresh cases: 231/231 passed.
+  Result-tree reconciliation gives 732 distinct passing app methods across
+  these two runs; overlapping reruns are not additive.
+- Final affected-suite verification: 270/270 passed, zero failures or skips,
+  including 35 parser, 22 graded resolver, 97 activity/correction, 49 collection
+  query, 15 chart-model, 14 detail-render, 36 Browse/collection and two
+  view-construction cases. The exact final source builds for testing and
+  `test-without-building -collect-test-diagnostics never` exits zero with a
+  valid result bundle. Reconciliation with the broader/signed runs gives
+  **734 distinct passing app methods**; no superseded failure remains unresolved.
+- A 38-case banner follow-up and 31-case history-layout follow-up also completed
+  their cases. An early failed render run and two later direct test drivers
+  lingered during SDK metadata/result finalization and were stopped after their
+  selected cases completed. Those stopped runs are not clean command receipts.
+  The separate build-for-testing/test-without-building final run above resolves
+  the runner issue without changing tests or product behavior.
+- Fresh package runs: Pokémon 88 passed and one opt-in live CDN check skipped;
+  Magic 18 passed; One Piece 46 passed. No package source changed.
+
+The boundary audit was invoked through `bash` (the script is not executable).
+It remains nonzero on existing legacy game branches. All five files it audits
+are byte-identical to `HEAD`, so this change adds no boundary-audit hits.
+
+The initial compile/harness attempts and the failed maximum-text banner image
+are retained with the passing evidence. Screenshots use synthetic/in-memory
+fixtures or preserve-data installs. The existing review simulator entry was not
+corrected or deleted. No full-target, live-camera, centering, sandbox purchase,
+iPad, physical VoiceOver, CSV-through-Files or performance acceptance is claimed.
+
+Inspected final standard/maximum-text missing-price tiles, retained legacy
+finish and failed-load editor states, the current-only detail screen, the
+two-copy total, and standard/maximum-text Add/Undo. The synthetic quantity was
+returned to one; Add/Undo was exercised only in an in-memory catalog fixture.
+The final maximum-text capture shows the banner and Add button separately,
+and the scrolled history explanations no longer overlap. Cold-start opening
+screens are retained but are not UI acceptance evidence.
+
+HIG verdict: **PASS for the inspected changes**. Native Form/Picker/button
+patterns, clear missing/loading/failure states, full-size wrapping, existing
+tap targets and the interaction path pass this scoped gate. The top issues
+were unsupported finish choices, fragmented banner text and compressed history
+explanations; the minimal fixes are recorded above. Physical VoiceOver and iPad
+acceptance remain open.
+
+Artifacts: `/Volumes/T7/CodexBuilds/GradeFinishReview-20261110/`, including
+`parser-baseline.xcresult`, `final-regression.xcresult`,
+`signed-scanner-and-neighbors.xcresult`, `final-results.xcresult`,
+source fingerprints, reconciled test inventories, package logs, render
+attachments and `ui-checklist.md`. Build products and dependency caches remain
+on the external SSD. No commit, push, publication or collection reset occurred.
+
 ## Follow-up review remediation — 2026-11-10
 
 Source: `aad6bd6bd967b734f7b7df24ea7d5eb1769d3d7a` plus the dirty working tree.
@@ -18,7 +99,8 @@ and provider gates remain open.
 | WP5 camera affordances | Scanner permission denial offers Open Settings. The maximum-text layout keeps the button visible and scrolls the message as needed. iPad multitasking interruptions show full-screen recovery guidance and clear it when the interruption ends, preserving independent failures. Notification tests pass; actual iPad Split View/camera recovery and permission changes still need a device. |
 | WP6 Settings | Normal Settings shows version/build and Collection Diagnostics. The sync-diagnostics action is compiled out for entitlement-free storage. Existing collection exports remain. The collection-deletion/export flow was not changed. |
 | WP7 centering disposition | [Reachability evidence](../audits/centering-guided-repair.md#release-reachability-disposition--2026-11-10) separates five DEBUG-reference research gates from the Release workflow. Their tests remain failing research checks; no skip or tolerance was changed. Shipped initial-guide accuracy remains open, with no owner acceptance recorded. |
-| WP8 special printings | No new second-source sampling was performed. Unverified singleton zero-tap behavior and catalog authority remain unchanged; the audit/owner decision is still open. |
+| WP8 special printings | F16's contradictory slab word/number risk is reproduced and locally fixed; see the [grade/finish receipt](#grade-and-finish-review--2026-11-10). No new second-source printing sampling was performed. Unverified singleton zero-tap behavior and catalog authority remain unchanged; the audit/owner decision is still open. |
+| WP9 finish correction and detail polish | Exact catalog/current finish choices and a serialized save guard replace the global finish picker. Missing-price feedback, tile wrapping, sparse history, duplicate single-copy totals and Undo placement are addressed in the [grade/finish receipt](#grade-and-finish-review--2026-11-10). |
 
 Final Debug verification on iPhone 17 Pro Simulator, iOS 27.0, destination
 `EC25844D-59BF-40D5-8D04-7C6A8FCBD049`: **309 executed, 303 passed, six skipped,

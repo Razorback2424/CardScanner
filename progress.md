@@ -1,3 +1,70 @@
+# 2026-11-10 — Independent launch review and implementation handoff
+
+Completed a risk-weighted whole-app review against `2527c9b` plus the existing
+dirty tree, without changing app, test, catalog, script or project source.
+Fresh broad filtered Debug verification: 3,202 passed, two failed, 21 skipped;
+four selected centering research checks also fail. The six distinct failures
+separate one shipped initial-guide gate from five DEBUG research gates. Catalog
+packages: 152 passed, one skipped. Debug/test and Release simulator builds pass.
+Offline price-feed/hosting scripts: 23 passed; hosting configuration check passes.
+Persisted collection/Undo/history, native CSV export/readback and import
+preflight/cancel, real-photo centering reference/Done/export, listing JPEG/ZIP
+output, iPad selection/rotation and large-text rendering were inspected.
+Two accessibility layout defects and remaining launch prerequisites are in the
+[review](docs/audits/launch-review-2026-11-10.md), with a bounded
+[implementation handoff](docs/plans/launch-review-handoff-2026-11-10.md).
+Artifacts/build data remain on T7 under `CodexBuilds/LaunchReview-20261110-Codex/`.
+Existing phone review holdings and user source changes are preserved. No
+physical-device, live paid-provider, archive or release acceptance is claimed.
+
+# 2026-11-10 — Portfolio/detail daily movement consistency verified
+
+Owned card detail now reads the selected period's portfolio contribution for
+its impact summary and historical copy breakdown. The independently labeled
+JustTCG chart retains its provider values and shared current quote. A single
+anchor close plus live updates no longer hides proven movement. Regression
+coverage exercises the reported $1.16 → $1.65 / +$0.49 scenario, multiple copy
+counts and flat/unavailable chart rendering at standard/accessibility text.
+Target route: `CardDetail / price-chart-portfolio` on an isolated simulator.
+Done criteria: matching impact, explicit chart provenance, no conflicting flat
+movement claim, readable text and passing focused/neighboring regressions.
+Verified against `2527c9b` plus the dirty working tree, Debug arm64 on an isolated
+iPhone 17 Pro / iOS 27.0 simulator. Nine focused tests passed. The related
+selection passed 249 tests with zero failures and one opt-in aged-store
+performance baseline skipped (`PERF_BASELINE=1`). Selected classes and artifact
+details are in [the chart authority](docs/plans/price_history_chart_plan.md).
+Inspected flat/unavailable-history render attachments at standard/maximum
+accessibility text, full-route captures and the final recapture: matching
+impact and historical quantity, explicit provider provenance, readable summary,
+and no conflicting flat-movement claim. Artifacts remain on the external T7 in
+`CodexBuilds/PortfolioMovement-20261110/`. Documentation links and
+`git diff --check` pass. No device, provider or release gate is closed.
+
+# 2026-11-10 — Grade and finish review verified
+
+Reproduced F16 with a focused baseline: all 18 contradictory word/number probes
+were accepted, including `PSA GEM MT 1`. Added grader-specific numeric bounds.
+H1 now loads exact card finishes and validates their membership inside the
+serialized history correction. H2 keeps missing prices informational, wraps tile
+diagnostics, omits current-only charts and duplicate single-copy totals, and
+places catalog Undo above the content. Final checks also preserve hyphenated
+set IDs/imported catalog aliases and catalog-supplied finish labels.
+
+Final affected run: 270/270 passed, Debug arm64 on iPhone 17 Pro / iOS 27.0.
+Reconciliation with the broader and signed-neighbor runs gives 734 distinct
+passing app methods. Two unsigned-host Keychain setup failures pass in the
+signed 142-test scanner rerun. Direct UI runners that lingered after case
+completion were stopped; separate build-for-testing/test-without-building
+with verbose diagnostics disabled exits zero and produces the final receipt.
+Fresh catalog packages: 152 passed, one opt-in live CDN check skipped.
+
+Inspected normal/maximum-text tiles and editor success/failure states, one-copy
+and two-copy detail, and Add/Undo. Failed banner wrapping and compressed history
+text found in the screenshot loop are fixed and recaptured. HIG passes this
+inspected scope. Existing review data and concurrent portfolio changes are
+preserved; no commit, push, physical-device or release acceptance is claimed.
+Evidence and remaining gates: [grade/finish receipt](docs/plans/release_followups.md#grade-and-finish-review--2026-11-10).
+
 # 2026-11-10 — Follow-up launch review local fixes verified
 
 Separated entitlement-free storage (`NO_CLOUDKIT`) from local owner/review

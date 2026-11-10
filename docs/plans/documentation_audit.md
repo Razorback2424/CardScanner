@@ -8,6 +8,35 @@ history.
 
 ## Current authority boundary — updated 2026-11-10
 
+**Independent launch review — 2026-11-10.** The [dated review](../audits/launch-review-2026-11-10.md)
+and [implementation handoff](launch-review-handoff-2026-11-10.md) record fresh
+verification against `2527c9b` plus the preserved dirty tree: broad filtered
+Debug verification has 3,202 passed, two failed and 21 skipped methods; four
+separately selected centering research methods still fail. One of the six
+distinct failures exercises shipped initial guides; five are DEBUG research.
+The three catalog packages have 152 passed and one skipped. Debug and Release
+simulator compilation pass; 23 offline feed/hosting script tests and the hosting
+configuration check pass. Persisted add/edit/remove/Undo/history, native CSV
+save/readback and import preflight/cancel, real-photo centering Done/export,
+listing output and iPad selection/all four rotations were inspected within the
+report's stated limits. Two largest-text layout defects are demonstrated.
+The older S15.05 version/build-discoverability finding is addressed in current
+source/UI; operator-funded pricing, One Piece activation, signed delivery,
+centering accuracy, public links and candidate device/distribution gates remain
+open. The launch contract remains the product authority; no release gate closes.
+
+**Owned card daily movement consistency — 2026-11-10.** The owner-reported
+portfolio/detail mismatch supersedes the older first-to-last provider-price
+badge described by the [chart authority](price_history_chart_plan.md). Owned
+detail now derives portfolio impact from the same selected-range replay
+contribution as Portfolio, including historical quantities and single-close
+plus live-day evidence. Provider history stays separate and labeled; it never
+rewrites the ledger. The chart authority records Debug simulator evidence
+against `2527c9b` plus the dirty working tree: nine focused checks pass;
+249 related tests pass with one opt-in performance baseline skipped and zero
+failures. Standard and maximum accessibility renders were inspected. No
+physical-device, live-provider or release gate closes.
+
 **Review follow-up local fixes — 2026-11-10.** The
 [dated remediation record](release_followups.md#follow-up-review-remediation--2026-11-10)
 owns WP3–WP6 implementation evidence: separated entitlement-free storage flags,
