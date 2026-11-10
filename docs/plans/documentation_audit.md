@@ -8,6 +8,18 @@ history.
 
 ## Current authority boundary — updated 2026-11-09
 
+**Launch contract adopted — 2026-11-09.** The owner-supplied launch contract was
+validated against source and recorded evidence and is now the single finish-line
+authority at [`../release/launch-contract.md`](../release/launch-contract.md),
+including all 85 requirements. The go/no-go framework's free-only/no-StoreKit
+body contradicted the approved Collector Tools purchase; it moved to
+[`../legacy/card-scanner-1.0-go-no-go-framework.md`](../legacy/card-scanner-1.0-go-no-go-framework.md)
+with a pointer at its old path. `TCGCSV_PRICE_BASE_URL` is configured in
+production; statements that it is empty in the
+[feature-completeness review](../audits/feature-completeness-review-2026-10-29.md),
+[catalog pricing cases](../audits/catalog-pricing-cases-2026-11-01.md) and an
+earlier entry below are historical. No gate is closed.
+
 **Centering follow-up — 2026-11-09.** The
 [focused six-failure investigation](../audits/centering-guided-repair.md#six-remaining-failures-focused-investigation--2026-11-09)
 records a small DEBUG-only registration reuse, exact native-path equivalence,
@@ -1235,7 +1247,7 @@ default-off scanner log passes 118/118 focused simulator tests (4 metrics,
 device baseline. Stage 1 and later behavior changes remain pending. This study
 informs differentiation within the Collection Integrity strategy and is separate
 from its frozen 42-day retention experiment. The
-[release go/no-go framework §6](../release/card-scanner-1.0-go-no-go-framework.md#6-competitor-benchmarking-is-intelligence-not-a-launch-gate)
+[release go/no-go framework §6](../legacy/card-scanner-1.0-go-no-go-framework.md#6-competitor-benchmarking-is-intelligence-not-a-launch-gate)
 keeps competitor benchmarking outside launch arithmetic. No participant study starts until
 the bulk intake protocol freezes supported decks, app order and thresholds.
 Simulator instrumentation tests do not certify device speed or silent-error rates.

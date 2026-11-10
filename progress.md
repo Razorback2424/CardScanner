@@ -1,3 +1,19 @@
+# 2026-11-09 — Launch contract adopted (documentation only)
+
+- Validated the owner-supplied launch contract against `df6d4c0` and the
+  current working tree: all 76 named source files and 36 named test suites exist;
+  platform declarations, test counts, six open centering gates, disabled One Piece
+  production rollout/writes, `ReleaseLocal`-only purchase bypass, empty
+  privacy/support URLs and photo-draft retention scope match the repository.
+- Adopted it as [`docs/release/launch-contract.md`](docs/release/launch-contract.md)
+  with all 85 requirements (S01–S17), J01–J12 and G01–G09. Archived the
+  contradictory free-only go/no-go framework to `docs/legacy/` with a pointer at
+  its old path.
+- Recorded known failures: S04.01 (One Piece), S12.05 (centering acceptance),
+  S15.05 (version/build only inside the diagnostics export, found during
+  validation) and S17.03 (unpublished links). No code changed; no gate closed.
+- Markdown links in changed documents validate; `git diff --check` passes.
+
 # 2026-11-09 — ProfileLocal startup credential read
 
 - The owner reports another 804 ms on-device startup hang in ProfileLocal with
