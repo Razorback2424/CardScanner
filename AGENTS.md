@@ -12,12 +12,28 @@ Keep this file durable and repo-wide. User and developer instructions take prece
 - App and test targets are `TradingCardScanner` and `TradingCardScannerTests` in `TradingCardScanner.xcodeproj`.
 - Use [`README.md`](README.md), [`docs/README.md`](docs/README.md), and the current audit/plan documents for product and release status. Source, tests, builds, and current evidence outrank stale plans.
 
+## Where to start
+
+Read the guide for the directory you are changing; when a change crosses a boundary, read both sides.
+
+| Area | Guide |
+| --- | --- |
+| App-wide rules (storage session, ownership writes, concurrency) | [`TradingCardScanner/AGENTS.md`](TradingCardScanner/AGENTS.md) |
+| Ownership, pricing, storage, history, scanner pipeline | [`TradingCardScanner/Services/AGENTS.md`](TradingCardScanner/Services/AGENTS.md) |
+| Persisted identity, schema compatibility, money, provenance | [`TradingCardScanner/Models/AGENTS.md`](TradingCardScanner/Models/AGENTS.md) |
+| UI lifecycle, navigation, async results, centering interaction | [`TradingCardScanner/Views/AGENTS.md`](TradingCardScanner/Views/AGENTS.md) |
+| Game adapters, capabilities, recognition, activation | [`TradingCardScanner/Games/AGENTS.md`](TradingCardScanner/Games/AGENTS.md) |
+| Choosing and interpreting app tests | [`TradingCardScannerTests/AGENTS.md`](TradingCardScannerTests/AGENTS.md) |
+| Catalog generators, capture, replay, hosting scripts | [`scripts/AGENTS.md`](scripts/AGENTS.md) |
+| Centering research, evidence, ground truth | [`review/AGENTS.md`](review/AGENTS.md) |
+| Documentation | [`docs/AGENTS.md`](docs/AGENTS.md) |
+
 ## Working rules
 
 - Inspect `git status --short` and relevant diffs before editing; preserve existing user changes and untracked files.
 - Make the smallest focused change. Use `apply_patch`; do not rewrite unrelated files.
 - Use an external SSD as the preferred/default location for build artifacts, derived data, dependency caches, compiler caches, and similar temporary or generated build data whenever one is available; use internal storage only as a fallback when no external SSD is available.
-- Run the narrowest relevant `xcodebuild` build/test for code changes, then expand verification when risk warrants it. Report failures accurately.
+- Run the narrowest verification that exercises the changed behavior, then expand when risk warrants it: app code → `xcodebuild` with `-only-testing` for the affected classes; a catalog package → `swift test --package-path <Package>`; scripts → the focused `python3 -m unittest discover -s scripts/tests -p <test_file>.py`. A change that crosses one of those boundaries verifies both sides. Report failures accurately.
 - For documentation-only changes, validate links and run `git diff --check`.
 - Do not claim physical-device, provider, CloudKit, archive, or release readiness from source inspection or simulator-only evidence.
 - Do not commit, push, reset, broadly clean, or delete user work unless explicitly requested.

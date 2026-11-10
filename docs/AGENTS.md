@@ -1,22 +1,20 @@
 # Documentation Contribution Guide
 
-**Status:** current documentation guidance — 2026-09-14
+**Status:** current documentation guidance — 2026-11-09
 
 This file applies to documentation under `docs/`. Start with the [documentation
 map](README.md) and the [repository documentation audit](plans/documentation_audit.md).
 
-## Current state
+## Where status lives
 
 - Source code, tests, build settings, and evidence from the current checkout
   outrank plans and chronological notes.
-- Current release status is **not certified**. The latest recorded full
-  simulator run at `a4375df` executed 1,277 tests with 6 skipped and 40
-  failures. A 2026-09-16 PBX resource-ID fix made the committed centering
-  corpus reachable; the focused follow-up reported 28 passed, 9 test cases
-  failed on centering assertions, and 1 canceled profile-dump test, so it is
-  not a full suite baseline. Browse has focused 133/133 evidence and its A8/B6
-  capture; physical-device, provider, CloudKit/ownership, centering,
-  archive/TestFlight, and App Store gates remain open.
+- This guide deliberately records no test counts or gate inventory. For the
+  current test baseline and open release gates, read the "Current authority
+  boundary" section of the [documentation audit](plans/documentation_audit.md)
+  and [release follow-ups](plans/release_followups.md). Before repeating any
+  count or status, confirm the exact source version (SHA), configuration, and
+  evidence it was recorded against.
 - `docs/legacy/` contains preserved completed, superseded, or snapshot-specific
   documents. `review/legacy/` serves the same purpose for repository reviews.
   Their branches, SHAs, test counts, checkboxes, and “current” wording are
