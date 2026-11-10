@@ -467,17 +467,20 @@ enum CameraIssue: Equatable {
     case unavailable
     case configurationFailed
     case recognitionFailed
+    case multitaskingUnavailable
 
     var message: String {
         switch self {
         case .permissionDenied:
-            return "Camera access is required. Enable Camera access in Settings, then reopen the scanner."
+            return "Camera access is required. Enable Camera access in Settings, then return to the scanner."
         case .unavailable:
             return "The back camera is unavailable on this device."
         case .configurationFailed:
             return "The camera could not be started. Try closing and reopening the scanner."
         case .recognitionFailed:
             return "Card reading stopped. Close and reopen the scanner to try again."
+        case .multitaskingUnavailable:
+            return "The camera is paused in Split View or Slide Over. Open ScanStash full screen to resume scanning."
         }
     }
 }
@@ -1084,6 +1087,9 @@ final class CardScanner: NSObject, ObservableObject {
                 return
             }
             guard reason != .videoDeviceNotAvailableInBackground else { return }
+            if reason == .videoDeviceNotAvailableWithMultipleForegroundApps {
+                self?.setCameraIssue(.multitaskingUnavailable)
+            }
             notify()
         }
         interruptionEndedObserver = NotificationCenter.default.addObserver(
@@ -1092,6 +1098,9 @@ final class CardScanner: NSObject, ObservableObject {
             queue: nil
         ) { [weak self] _ in
             DispatchQueue.main.async { [weak self] in
+                if self?.uiState.cameraIssue == .multitaskingUnavailable {
+                    self?.uiState.setCameraIssue(nil)
+                }
                 self?.onCameraInterruptionEnded?()
             }
         }

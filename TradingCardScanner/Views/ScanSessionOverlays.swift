@@ -1103,11 +1103,12 @@ struct ScanPriceValue: View {
     let lookup: PriceLookup
     var style: Style = .receipt
     var isGradedPricePending: Bool = false
+    var isPricePending: Bool = false
     var isGraded: Bool = false
 
     var body: some View {
-        if isGradedPricePending {
-            Text("Checking graded price…")
+        if isGradedPricePending || isPricePending {
+            Text(isGradedPricePending ? "Checking graded price…" : "Checking price…")
                 .font(style == .review ? .subheadline.weight(.semibold) : .caption.weight(.semibold))
                 .multilineTextAlignment(.trailing)
                 .foregroundStyle(
@@ -1115,7 +1116,7 @@ struct ScanPriceValue: View {
                         ? AnyShapeStyle(.secondary)
                         : AnyShapeStyle(.white.opacity(0.78))
                 )
-                .accessibilityLabel("Checking graded price")
+                .accessibilityLabel(isGradedPricePending ? "Checking graded price" : "Checking price")
         } else {
             switch lookup {
             case let .price(price):
@@ -1130,8 +1131,8 @@ struct ScanPriceValue: View {
                     .foregroundStyle(style == .receipt ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("Unit price \(formatted)\(stale ? ", last known price" : "")")
-            case .unavailable:
-                Text("Price unavailable")
+            case let .unavailable(source):
+                Text(source == nil ? "Couldn’t check price" : "Price unavailable")
                     .font(style == .review ? .subheadline.weight(.semibold) : .caption.weight(.semibold))
                     .multilineTextAlignment(.trailing)
                     .foregroundStyle(
@@ -1139,7 +1140,7 @@ struct ScanPriceValue: View {
                             ? AnyShapeStyle(.secondary)
                             : AnyShapeStyle(.white.opacity(0.78))
                     )
-                    .accessibilityLabel("Price unavailable")
+                    .accessibilityLabel(source == nil ? "Couldn’t check price" : "Price unavailable")
             }
         }
     }
@@ -1171,6 +1172,7 @@ struct ScanReceiptCard: View {
                         ScanPriceValue(
                             lookup: receipt.price,
                             isGradedPricePending: receipt.isGradedPricePending,
+                            isPricePending: receipt.isPricePending,
                             isGraded: receipt.isGraded
                         )
                         Text("\(receipt.identifier) · \(receipt.variantLabel)")
@@ -1215,6 +1217,7 @@ struct ScanReceiptCard: View {
                         ScanPriceValue(
                             lookup: receipt.price,
                             isGradedPricePending: receipt.isGradedPricePending,
+                            isPricePending: receipt.isPricePending,
                             isGraded: receipt.isGraded
                         )
                             .lineLimit(1)

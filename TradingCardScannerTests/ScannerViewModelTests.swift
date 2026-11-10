@@ -1,6 +1,9 @@
 import Combine
 import Foundation
 import SwiftData
+import SwiftUI
+import UIKit
+import Vision
 import XCTest
 @testable import TradingCardScanner
 
@@ -318,6 +321,199 @@ private struct ScannerPrintingCatalogFixture: GameCatalogAdapter {
 
 @MainActor
 final class ScannerViewModelTests: XCTestCase {
+    func testOfflineScanUsesConfiguredFallbackAfterCatalogFailureOrEmptyPricing() async throws {
+        let previousKey = PriceVendorCredentials.key
+        let previousFallback = UserDefaults.standard.object(forKey: "usesPriceFallback")
+        defer {
+            try? PriceVendorCredentials.store(previousKey ?? "")
+            UserDefaults.standard.set(previousFallback, forKey: "usesPriceFallback")
+        }
+        try PriceVendorCredentials.store("scanner-fallback-test-key")
+        UserDefaults.standard.set(true, forKey: "usesPriceFallback")
+        let quote = PriceLookup.price(.init(unitMarketPriceUSD: 12.50, currencyCode: "USD",
+            source: .justTCG, sourceVariantID: "normal", sourceUpdatedAt: .now, fetchedAt: .now))
+        for fails in [true, false] {
+            let gate = ScannerFetchGate()
+            var fallbackCalls = 0
+            let model = try makeModel(variants: [.normal],
+                priceQuoteService: .init(catalogRefreshOverride: { _, _, _ in
+                    if fails { throw URLError(.cannotConnectToHost) }
+                    return .unavailable(nil)
+                }), fallbackQuoteOverride: { card, variant, run in
+                    XCTAssertEqual(card.providerID, "test-set-001")
+                    XCTAssertEqual(variant, .normal)
+                    XCTAssertNil(run)
+                    fallbackCalls += 1
+                    await gate.hold()
+                    return .lookup(quote)
+                })
+            defer { model.viewDisappeared() }
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await assertEventually { fallbackCalls == 1 }
+            XCTAssertTrue(model.receipt?.isPricePending == true)
+            await gate.release()
+            await assertEventually { model.recent.first?.price == quote }
+            XCTAssertFalse(model.recent.first?.isPricePending ?? true)
+            XCTAssertFalse(model.receipt?.isPricePending ?? true)
+            let row = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(row.quantity, 1)
+            XCTAssertEqual(PriceStore(context: context()).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD, 12.50)
+        }
+    }
+
+    func testOfflineScanDoesNotFallbackAfterCancellationOrTerminalIdentityFailure() async throws {
+        let previousKey = PriceVendorCredentials.key
+        defer { try? PriceVendorCredentials.store(previousKey ?? "") }
+        try PriceVendorCredentials.store("scanner-fallback-test-key")
+        let failures: [Error] = [CancellationError(), URLError(.cancelled),
+            PriceQuoteError.pricingUnsupported, PriceQuoteError.identityMismatch, PriceQuoteError.mappingUnavailable]
+        for failure in failures {
+            var fallbackCalls = 0
+            let model = try makeModel(variants: [.normal],
+                priceQuoteService: .init(catalogRefreshOverride: { _, _, _ in throw failure }),
+                fallbackQuoteOverride: { _, _, _ in
+                    fallbackCalls += 1
+                    return .lookup(.unavailable(.justTCG))
+                })
+            defer { model.viewDisappeared() }
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await assertEventually { model.recent.first?.isPricePending == false }
+            XCTAssertEqual(fallbackCalls, 0)
+            XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+            XCTAssertTrue(try context().fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        }
+    }
+
+    func testOpenReviewClearsPricePendingAfterSuccessAndFailure() async throws {
+        let quote = PriceLookup.price(.init(unitMarketPriceUSD: 12.50, currencyCode: "USD",
+            source: .tcgplayer, sourceVariantID: "normal", sourceUpdatedAt: .now, fetchedAt: .now))
+        for outcome in ["priced", "failed", "unavailable"] {
+            let gate = ScannerFetchGate()
+            let model = try makeModel(variants: [.normal], priceQuoteService: .init(catalogRefreshOverride: { _, _, _ in
+                await gate.hold()
+                if outcome == "failed" { throw URLError(.notConnectedToInternet) }
+                return outcome == "unavailable" ? .unavailable(.tcgplayer) : quote
+            }), fallbackQuoteOverride: { _, _, _ in .failed(.requestFailed) })
+            defer { model.viewDisappeared() }
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await gate.waitUntilStarted()
+            let scan = try XCTUnwrap(model.sessionScans.first)
+            XCTAssertTrue(scan.isPricePending)
+            let screen = ScanReviewSheet(scan: scan, onCorrect: { _ in .saved }, onDelete: { true })
+                .environmentObject(model)
+            let controller = UIHostingController(rootView: screen)
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 430, height: 1300))
+            window.rootViewController = controller
+            window.makeKeyAndVisible()
+            defer { window.isHidden = true; window.rootViewController = nil }
+            controller.view.frame = window.bounds
+            await settle()
+            await gate.release()
+            await assertEventually { model.sessionScans.first?.isPricePending == false }
+            await settle()
+            controller.view.setNeedsLayout()
+            controller.view.layoutIfNeeded()
+            let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
+                controller.view.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+            }
+            let request = VNRecognizeTextRequest()
+            request.recognitionLevel = .accurate
+            try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+            let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+            XCTAssertTrue(text.contains("Unit price"), text)
+            XCTAssertFalse(text.contains("Checking price"), text)
+            switch outcome {
+            case "failed":
+                XCTAssertTrue(text.contains("check price"), text)
+                XCTAssertTrue(text.contains("could not be completed"), text)
+                XCTAssertFalse(text.contains("No price was returned"), text)
+                XCTAssertEqual(model.receipt?.price, .unavailable(nil))
+            case "unavailable":
+                XCTAssertTrue(text.localizedCaseInsensitiveContains("Price unavailable"), text)
+                XCTAssertTrue(text.contains("No price was returned"), text)
+                XCTAssertFalse(text.contains("could not be completed"), text)
+                XCTAssertEqual(model.receipt?.price, .unavailable(.tcgplayer))
+            default:
+                XCTAssertTrue(text.contains("12.50"), text)
+            }
+            let attachment = XCTAttachment(image: image)
+            attachment.name = "scan-review-price-\(outcome)"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+    }
+
+    func testOfflinePokemonPriceArrivesAfterCommitWithoutBlockingScanning() async throws {
+        let gate = ScannerFetchGate()
+        let quote = PriceLookup.price(.init(unitMarketPriceUSD: 12.50, currencyCode: "USD",
+            source: .tcgplayer, sourceVariantID: "normal", sourceUpdatedAt: .now, fetchedAt: .now))
+        let service = PriceQuoteService(catalogRefreshOverride: { _, variant, run in
+            XCTAssertEqual(variant, .normal)
+            XCTAssertNil(run)
+            await gate.hold()
+            return quote
+        })
+        let model = try makeModel(variants: [.normal], priceQuoteService: service)
+        defer { model.viewDisappeared() }
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await gate.waitUntilStarted()
+        let scan = try XCTUnwrap(model.recent.first)
+        let receiptID = try XCTUnwrap(model.receipt?.id)
+        XCTAssertEqual(scan.price, .unavailable(nil), "Offline identity carries no provider quote")
+        XCTAssertTrue(scan.isPricePending)
+        XCTAssertTrue(model.receipt?.isPricePending == true)
+        XCTAssertEqual(model.successCount, 1, "Ownership commits before pricing responds")
+        XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+        await gate.release()
+        await assertEventually { model.recent.first?.price == quote }
+        XCTAssertEqual(model.receipt?.id, receiptID)
+        XCTAssertEqual(model.receipt?.price, quote)
+        XCTAssertFalse(model.receipt?.isPricePending ?? true)
+        let row = try XCTUnwrap(CollectionStore(context: context()).card(forKey: scan.mutation.collectionKey))
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(PriceStore(context: context()).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD, 12.50)
+    }
+
+    func testFailedOfflinePokemonPriceStopsCheckingAndKeepsOwnership() async throws {
+        let gate = ScannerFetchGate()
+        let model = try makeModel(variants: [.normal], priceQuoteService: .init(catalogRefreshOverride: { _, _, _ in
+            await gate.hold()
+            throw URLError(.notConnectedToInternet)
+        }))
+        defer { model.viewDisappeared() }
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await gate.waitUntilStarted()
+        XCTAssertTrue(model.receipt?.isPricePending == true)
+        await gate.release()
+        await assertEventually { model.recent.first?.isPricePending == false }
+        XCTAssertEqual(model.recent.first?.price, .unavailable(nil))
+        XCTAssertFalse(model.receipt?.isPricePending ?? true)
+        XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<PriceRecord>()).isEmpty,
+            "A transport failure is not a provider-confirmed absence or a zero price")
+    }
+
+    func testOfflinePokemonPriceCannotRecreateAnUndoneScan() async throws {
+        let gate = ScannerFetchGate()
+        let model = try makeModel(variants: [.normal], priceQuoteService: .init(catalogRefreshOverride: { _, _, _ in
+            await gate.hold()
+            return .price(.init(unitMarketPriceUSD: 19, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "normal", sourceUpdatedAt: .now, fetchedAt: .now))
+        }))
+        defer { model.viewDisappeared() }
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await gate.waitUntilStarted()
+        let scan = try XCTUnwrap(model.recent.first)
+        let undone = await model.undoScan(scanID: scan.id)
+        XCTAssertTrue(undone)
+        await gate.release()
+        await settle()
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertTrue(model.sessionScans.isEmpty)
+        XCTAssertNil(model.receipt)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+    }
+
     func testAutoModeAddsSoleBundledPokemonVariantWithoutPausing() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
@@ -4727,7 +4923,9 @@ final class ScannerViewModelTests: XCTestCase {
         resolvedDiskCache: ResolvedPokemonCardCache? = nil,
         printingCatalog: (any GameCatalogAdapter)? = nil,
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
-        magicCatalogCoordinator: MagicCatalogCoordinator? = nil
+        magicCatalogCoordinator: MagicCatalogCoordinator? = nil,
+        priceQuoteService: PriceQuoteService = .init(catalogRefreshOverride: { _, _, _ in .unavailable(nil) }),
+        fallbackQuoteOverride: ((IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async -> PriceFallbackQuoteResolution)? = nil
     ) throws -> ScannerViewModel {
         let context = try makeContext()
         let root = FileManager.default.temporaryDirectory
@@ -4773,6 +4971,8 @@ final class ScannerViewModelTests: XCTestCase {
         )
         let model = ScannerViewModel(
             scanner: CardScanner(),
+            priceQuoteService: priceQuoteService,
+            fallbackQuoteOverride: fallbackQuoteOverride,
             catalog: catalog,
             feedback: ScanFeedback(),
             gradedResolver: gradedOutcome.map {

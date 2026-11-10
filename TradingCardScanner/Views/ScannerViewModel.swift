@@ -640,6 +640,8 @@ struct RecentScan: Identifiable, Equatable {
     let price: PriceLookup
     let mutation: CollectionMutation
     let isGradedPricePending: Bool
+    /// True only while the post-commit raw-price task is active.
+    let isPricePending: Bool
 
     var identifier: ScanIdentifier { subject.identifier }
 
@@ -660,7 +662,8 @@ struct RecentScan: Identifiable, Equatable {
         options: [PhysicalVariant],
         mutation: CollectionMutation,
         price: PriceLookup = .unavailable(nil),
-        isGradedPricePending: Bool = false
+        isGradedPricePending: Bool = false,
+        isPricePending: Bool = false
     ) {
         self.id = id
         self.subject = subject
@@ -672,9 +675,10 @@ struct RecentScan: Identifiable, Equatable {
         self.price = price
         self.mutation = mutation
         self.isGradedPricePending = isGradedPricePending
+        self.isPricePending = isPricePending
     }
 
-    func updating(price: PriceLookup) -> RecentScan {
+    func updating(price: PriceLookup, isPricePending: Bool = false) -> RecentScan {
         RecentScan(
             id: id,
             subject: subject,
@@ -685,7 +689,8 @@ struct RecentScan: Identifiable, Equatable {
             options: options,
             mutation: mutation,
             price: price,
-            isGradedPricePending: false
+            isGradedPricePending: false,
+            isPricePending: isPricePending
         )
     }
 
@@ -715,7 +720,8 @@ struct RecentScan: Identifiable, Equatable {
             options: options,
             mutation: mutation,
             price: price,
-            isGradedPricePending: isGradedPricePending
+            isGradedPricePending: isGradedPricePending,
+            isPricePending: isPricePending
         )
     }
 
@@ -767,6 +773,7 @@ struct RecentScan: Identifiable, Equatable {
             && lhs.resolved == rhs.resolved
             && lhs.price == rhs.price
             && lhs.isGradedPricePending == rhs.isGradedPricePending
+            && lhs.isPricePending == rhs.isPricePending
             && lhs.mutation == rhs.mutation
     }
 }
@@ -1291,6 +1298,7 @@ struct ScanReceipt: Identifiable, Equatable {
     let thumbnailURL: URL?
     let price: PriceLookup
     let isGradedPricePending: Bool
+    let isPricePending: Bool
     let isGraded: Bool
     let resolution: VariantResolution?
 
@@ -1304,6 +1312,7 @@ struct ScanReceipt: Identifiable, Equatable {
         thumbnailURL: URL?,
         price: PriceLookup = .unavailable(nil),
         isGradedPricePending: Bool = false,
+        isPricePending: Bool = false,
         isGraded: Bool = false,
         resolution: VariantResolution? = nil
     ) {
@@ -1316,11 +1325,12 @@ struct ScanReceipt: Identifiable, Equatable {
         self.thumbnailURL = thumbnailURL
         self.price = price
         self.isGradedPricePending = isGradedPricePending
+        self.isPricePending = isPricePending
         self.isGraded = isGraded
         self.resolution = resolution
     }
 
-    func updating(price: PriceLookup) -> ScanReceipt {
+    func updating(price: PriceLookup, isPricePending: Bool = false) -> ScanReceipt {
         ScanReceipt(
             id: id,
             scanID: scanID,
@@ -1331,6 +1341,7 @@ struct ScanReceipt: Identifiable, Equatable {
             thumbnailURL: thumbnailURL,
             price: price,
             isGradedPricePending: false,
+            isPricePending: isPricePending,
             isGraded: isGraded,
             resolution: resolution
         )
@@ -1353,6 +1364,7 @@ struct ScanReceipt: Identifiable, Equatable {
             thumbnailURL: scan.thumbnailURL,
             price: scan.price,
             isGradedPricePending: scan.isGradedPricePending,
+            isPricePending: scan.isPricePending,
             isGraded: scan.subject.slab != nil,
             resolution: scan.resolved.resolution
         )
@@ -1602,6 +1614,7 @@ final class ScannerViewModel: ObservableObject {
     private var priceCheckCoordinator: PriceCheckCoordinator?
     private let priceCheckRefreshProvider: (any PriceCheckRefreshProvider)?
     private let priceQuoteService: PriceQuoteService
+    private let fallbackQuoteOverride: ((IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async -> PriceFallbackQuoteResolution)?
     private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
     /// One fallback response may serve copies in more than one scanner session
     /// while a departure is still draining. Keep the session fence beside the
@@ -1782,6 +1795,7 @@ final class ScannerViewModel: ObservableObject {
         scanner: CardScanner? = nil,
         gameRegistry: CardGameRegistry = .standard,
         priceQuoteService: PriceQuoteService = PriceQuoteService(),
+        fallbackQuoteOverride: ((IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async -> PriceFallbackQuoteResolution)? = nil,
         catalog: CardCatalog = CardCatalog(),
         feedback: ScanFeedback? = nil,
         gradedResolver: ScannedGradedResolving = ScannedGradedResolver(),
@@ -1801,6 +1815,7 @@ final class ScannerViewModel: ObservableObject {
         self.scanner = scanner
         self.gameRegistry = gameRegistry
         self.priceQuoteService = priceQuoteService
+        self.fallbackQuoteOverride = fallbackQuoteOverride
         self.catalog = catalog
         self.unresolvedScanStore = unresolvedScanStore
         self.sessionMetricsLog = sessionMetricsLog
@@ -4967,7 +4982,7 @@ final class ScannerViewModel: ObservableObject {
         case .unavailable:
             message = PriceVendorCredentials.hasKey
                 ? "\(slab.grade.display(company: slab.company)) added — price pending"
-                : "\(slab.grade.display(company: slab.company)) added — graded price lookup isn't configured"
+                : "\(slab.grade.display(company: slab.company)) added — add a JustTCG key in Pricing Settings for graded prices"
         }
         if let message { show(ScanNote(text: message, tone: .info)) }
     }
@@ -5772,8 +5787,8 @@ final class ScannerViewModel: ObservableObject {
     }
 
     /// Price metadata is secondary to a successful collection mutation. This
-    /// keeps the scanner responsive while still giving a newly added card a
-    /// JustTCG quote as soon as the catalog provider is unavailable.
+    /// keeps the scanner responsive while fetching a quote for offline catalog
+    /// matches and using the optional fallback for missing provider prices.
     private func queueFallbackPrice(
         for card: IdentifiedCard,
         variant: PhysicalVariant?,
@@ -5787,7 +5802,7 @@ final class ScannerViewModel: ObservableObject {
               ),
               let modelContainer,
               let collectionWriter,
-              (priceQuoteService.supportsStoredPrintingRefresh(for: card.game)
+              (priceQuoteService.supportsPricing(for: card.game)
                   || PokemonTCGCSVMapping.byCardID[card.providerID] != nil
                   || PriceVendorCredentials.hasKey) else { return }
 
@@ -5820,6 +5835,8 @@ final class ScannerViewModel: ObservableObject {
                 .filter { fallbackPriceKey(for: $0) == key }
                 .map(\.id)
         )
+        applyFallbackQuote(nil, priceKey: key,
+            scanIDsBySession: [sessionID: interestedScanIDs], isPricePending: true)
         if fallbackQuoteTasks[key] != nil {
             fallbackQuoteScanIDs[key, default: [:]][sessionID, default: []]
                 .formUnion(interestedScanIDs)
@@ -5832,22 +5849,54 @@ final class ScannerViewModel: ObservableObject {
         // retained while the paced vendor request is in flight.
         let fallbackContext = ModelContext(modelContainer)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
+        let fallbackQuoteOverride = self.fallbackQuoteOverride
+        let resolveFallback = { @MainActor in
+            if let fallbackQuoteOverride {
+                return await fallbackQuoteOverride(card, variant, pokemonPrintRun)
+            }
+            return await resolver.resolve(card: card, variant: variant, pokemonPrintRun: pokemonPrintRun)
+        }
         let shouldContinue = writerContinuation
         let task = Task { @MainActor [weak self] in
             defer {
+                if let self {
+                    self.applyFallbackQuote(nil, priceKey: key,
+                        scanIDsBySession: self.fallbackQuoteScanIDs[key] ?? [:])
+                }
                 self?.fallbackQuoteTasks[key] = nil
                 self?.fallbackQuoteScanIDs[key] = nil
             }
             guard let self, !Task.isCancelled, self.isStorageGenerationCurrent else { return }
 
             let result: PriceFallbackQuoteResolution
-            if self.priceQuoteService.supportsStoredPrintingRefresh(for: card.game) {
+            if self.priceQuoteService.supportsStoredPrintingRefresh(for: card.game)
+                || catalogLookup == .unavailable(nil) {
                 do {
-                    result = .lookup(try await self.priceQuoteService.refresh(
-                        card: card, variant: variant, pokemonPrintRun: pokemonPrintRun))
-                } catch { return }
+                    let quote = try await self.priceQuoteService.refresh(
+                        card: card, variant: variant, pokemonPrintRun: pokemonPrintRun)
+                    guard !Task.isCancelled, self.isStorageGenerationCurrent else { return }
+                    if PriceFallbackQuoteResolver.needsFallback(quote, identifiedCatalogCard: true),
+                       self.priceQuoteService.allowsProviderFallback(for: card.game),
+                       PriceVendorCredentials.hasKey {
+                        let fallback = await resolveFallback()
+                        if case .lookup = fallback { result = fallback }
+                        else { result = .lookup(quote) }
+                    } else {
+                        result = .lookup(quote)
+                    }
+                } catch is CancellationError { return }
+                catch let error as URLError where error.code == .cancelled { return }
+                catch PriceQuoteError.pricingUnsupported { return }
+                catch PriceQuoteError.identityMismatch { return }
+                catch PriceQuoteError.mappingUnavailable { return }
+                catch {
+                    guard !Task.isCancelled, self.isStorageGenerationCurrent,
+                          self.priceQuoteService.allowsProviderFallback(for: card.game),
+                          PriceVendorCredentials.hasKey else { return }
+                    result = await resolveFallback()
+                }
             } else {
-                result = await resolver.resolve(card: card, variant: variant, pokemonPrintRun: pokemonPrintRun)
+                result = await resolveFallback()
             }
             switch result {
             case let .lookup(quote):
@@ -5905,9 +5954,10 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func applyFallbackQuote(
-        _ quote: PriceLookup,
+        _ quote: PriceLookup?,
         priceKey: String,
-        scanIDsBySession: [UUID: Set<UUID>]
+        scanIDsBySession: [UUID: Set<UUID>],
+        isPricePending: Bool = false
     ) {
         guard isStorageGenerationCurrent else { return }
         let scanIDs = scanIDsBySession[scannerSessionID] ?? []
@@ -5937,7 +5987,7 @@ final class ScannerViewModel: ObservableObject {
                   scan.subject.slab == nil,
                   fallbackPriceKey(for: scan) == priceKey else { continue }
 
-            let replacement = scan.updating(price: quote)
+            let replacement = scan.updating(price: quote ?? scan.price, isPricePending: isPricePending)
             sessionScans[index] = replacement
             if let recentIndex = recent.firstIndex(where: { $0.id == scan.id }) {
                 recent[recentIndex] = replacement
@@ -5950,7 +6000,7 @@ final class ScannerViewModel: ObservableObject {
         // scan that was undone while the request was in flight.
         if let currentReceipt = receipt,
            updatedScanIDs.contains(currentReceipt.scanID) {
-            receipt = currentReceipt.updating(price: quote)
+            receipt = currentReceipt.updating(price: quote ?? currentReceipt.price, isPricePending: isPricePending)
         }
     }
 
@@ -6512,6 +6562,7 @@ final class ScannerViewModel: ObservableObject {
         usesInMemoryScreenshotFixtures = true
         defer { seedLongSessionFixtureForScreenshot() }
         let isTrustReceipt = ProcessInfo.processInfo.arguments.contains("TrustScanReceipt")
+        let isPricePending = ProcessInfo.processInfo.arguments.contains("price-pending")
         let resolution = isTrustReceipt ? PortfolioDebugFixtures.debugResolution() : nil
         let variantLabel: String
         switch resolution {
@@ -6535,7 +6586,7 @@ final class ScannerViewModel: ObservableObject {
             variantLabel: variantLabel,
             treatmentDiagnostics: [],
             thumbnailURL: nil,
-            price: .price(
+            price: isPricePending ? .unavailable(nil) : .price(
                 NormalizedPrice(
                     unitMarketPriceUSD: 62.47,
                     currencyCode: "USD",
@@ -6545,6 +6596,7 @@ final class ScannerViewModel: ObservableObject {
                     fetchedAt: .now
                 )
             ),
+            isPricePending: isPricePending,
             resolution: resolution
         )
     }

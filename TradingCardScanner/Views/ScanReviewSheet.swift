@@ -102,8 +102,8 @@ struct ScanReviewSheet: View {
         }
     }
 
-    private var currentPrice: PriceLookup {
-        model.sessionScans.first(where: { $0.id == scan.id })?.price ?? scan.price
+    private var currentScan: RecentScan {
+        model.sessionScans.first(where: { $0.id == scan.id }) ?? scan
     }
 
     private var identity: some View {
@@ -200,29 +200,40 @@ struct ScanReviewSheet: View {
     }
 
     private var scanPrice: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let latest = currentScan
+        return VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline) {
                 Label("Unit price", systemImage: "tag")
                     .font(.headline)
                 Spacer(minLength: 12)
-                ScanPriceValue(lookup: currentPrice, style: .review, isGraded: scan.subject.slab != nil)
+                ScanPriceValue(lookup: latest.price, style: .review,
+                    isGradedPricePending: latest.isGradedPricePending,
+                    isPricePending: latest.isPricePending, isGraded: latest.subject.slab != nil)
             }
 
-            switch currentPrice {
-            case let .price(price):
-                if let sourceUpdatedAt = price.sourceUpdatedAt {
-                    Text("\(price.source.label) · price data as of \(sourceUpdatedAt.formatted(date: .abbreviated, time: .shortened))")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("\(price.source.label) · received \(price.fetchedAt.formatted(date: .abbreviated, time: .shortened))")
+            if latest.isGradedPricePending || latest.isPricePending {
+                Text("Your card is saved. The price check is still in progress.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                switch latest.price {
+                case let .price(price):
+                    if let sourceUpdatedAt = price.sourceUpdatedAt {
+                        Text("\(price.source.label) · price data as of \(sourceUpdatedAt.formatted(date: .abbreviated, time: .shortened))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("\(price.source.label) · received \(price.fetchedAt.formatted(date: .abbreviated, time: .shortened))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                case let .unavailable(source):
+                    Text(source == nil
+                        ? "Your card is saved. A price check could not be completed."
+                        : "No price was returned for this printing and finish.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-            case .unavailable:
-                Text("No price was returned for this printing and finish.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
         }
         .padding(14)
@@ -343,7 +354,9 @@ private struct SessionScanRow: View {
             }
 
             Spacer(minLength: 8)
-            ScanPriceValue(lookup: scan.price, style: .review, isGraded: scan.subject.slab != nil)
+            ScanPriceValue(lookup: scan.price, style: .review,
+                isGradedPricePending: scan.isGradedPricePending,
+                isPricePending: scan.isPricePending, isGraded: scan.subject.slab != nil)
                 .scaleEffect(0.72, anchor: .trailing)
                 .fixedSize(horizontal: true, vertical: false)
         }

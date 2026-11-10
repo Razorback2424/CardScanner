@@ -232,7 +232,13 @@ struct ScannerView: View {
                 model.setPurpose(.priceCheck)
             }
             if scannerScreenshotRoute == "WholeCardScanner" || scannerScreenshotRoute == "TrustScanReceipt" {
-                model.seedReceiptFixtureForScreenshot()
+                if ProcessInfo.processInfo.arguments.contains("permission-denied") {
+                    model.scanner.uiState.setCameraIssue(.permissionDenied)
+                } else if ProcessInfo.processInfo.arguments.contains("multitasking-unavailable") {
+                    model.scanner.uiState.setCameraIssue(.multitaskingUnavailable)
+                } else {
+                    model.seedReceiptFixtureForScreenshot()
+                }
                 if ProcessInfo.processInfo.arguments.contains("recovery-saving") { isShowingUnresolved = true }
             }
             if scannerScreenshotRoute == "ScanChoiceCancellation" {
@@ -803,17 +809,30 @@ private struct ScannerSlabPromptView: View {
 
 private struct ScannerCameraIssueOverlay: View {
     @ObservedObject var state: CardScannerUIState
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         Group {
             if let issue = state.cameraIssue {
                 VStack(spacing: 14) {
-                    ScannerStatusBadge(tone: .neutral, systemName: "camera.fill", size: 56)
-                    Text(issue.message)
-                        .font(.callout.weight(.medium))
-                        .foregroundStyle(.white)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
+                    ViewThatFits(in: .vertical) {
+                        message(issue)
+                        ScrollView { message(issue) }
+                            .scrollBounceBehavior(.basedOnSize)
+                    }
+                    if issue == .permissionDenied {
+                        Button {
+                            guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                            openURL(url)
+                        } label: {
+                            Text("Open Settings")
+                                .multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .layoutPriority(1)
+                    }
                 }
                 .padding(.horizontal, 24)
                 .padding(.vertical, 22)
@@ -821,6 +840,17 @@ private struct ScannerCameraIssueOverlay: View {
                 .appGlass(cornerRadius: 28)
                 .padding(30)
             }
+        }
+    }
+
+    private func message(_ issue: CameraIssue) -> some View {
+        VStack(spacing: 14) {
+            ScannerStatusBadge(tone: .neutral, systemName: "camera.fill", size: 56)
+            Text(issue.message)
+                .font(.callout.weight(.medium))
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

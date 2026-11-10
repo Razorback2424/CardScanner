@@ -164,6 +164,48 @@ final class CardLatchTests: XCTestCase {
         XCTAssertEqual(state.cameraIssue, .recognitionFailed)
     }
 
+    func testMultitaskingInterruptionShowsRecoveryAndClearsWhenEnded() async {
+        let scanner = CardScanner()
+        var events: [String] = []
+        scanner.onCameraInterruption = { events.append("interrupted") }
+        scanner.onCameraInterruptionEnded = { events.append("recovered") }
+        NotificationCenter.default.post(
+            name: AVCaptureSession.wasInterruptedNotification, object: scanner.session,
+            userInfo: [AVCaptureSessionInterruptionReasonKey: NSNumber(value:
+                AVCaptureSession.InterruptionReason.videoDeviceNotAvailableWithMultipleForegroundApps.rawValue)]
+        )
+        await flushCameraCallbacks(scanner)
+        XCTAssertEqual(scanner.cameraIssue, .multitaskingUnavailable)
+        XCTAssertEqual(events, ["interrupted"])
+
+        NotificationCenter.default.post(name: AVCaptureSession.interruptionEndedNotification, object: scanner.session)
+        await flushCameraCallbacks(scanner)
+        XCTAssertNil(scanner.cameraIssue)
+        XCTAssertEqual(events, ["interrupted", "recovered"])
+    }
+
+    func testInterruptionEndPreservesIndependentCameraFailure() async {
+        let scanner = CardScanner()
+        scanner.uiState.setCameraIssue(.configurationFailed)
+        NotificationCenter.default.post(name: AVCaptureSession.interruptionEndedNotification, object: scanner.session)
+        await flushCameraCallbacks(scanner)
+        XCTAssertEqual(scanner.cameraIssue, .configurationFailed)
+    }
+
+    func testBackgroundInterruptionDoesNotShowAFaultOrInterruptRecognition() async {
+        let scanner = CardScanner()
+        var interruptions = 0
+        scanner.onCameraInterruption = { interruptions += 1 }
+        NotificationCenter.default.post(
+            name: AVCaptureSession.wasInterruptedNotification, object: scanner.session,
+            userInfo: [AVCaptureSessionInterruptionReasonKey: NSNumber(value:
+                AVCaptureSession.InterruptionReason.videoDeviceNotAvailableInBackground.rawValue)]
+        )
+        await flushCameraCallbacks(scanner)
+        XCTAssertNil(scanner.cameraIssue)
+        XCTAssertEqual(interruptions, 0)
+    }
+
     func testMediaServicesResetRestartsOnlyAnActiveCameraAndResumesAfterRecovery() async {
         for wantsRunning in [false, true] {
             let scanner = CardScanner()
