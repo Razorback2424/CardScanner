@@ -2,6 +2,6 @@
 // signed release are approved. No Pokémon/Magic key is inherited here.
 ONE_PIECE_CATALOG_ROLLOUT_MODE = disabled
 ONE_PIECE_CATALOG_BASE_URL =
-ONE_PIECE_CATALOG_PINNED_KEYS =
+ONE_PIECE_CATALOG_PINNED_KEYS = one-piece-production-2026-10-23-01:DS0obpkWKBur/m9zFvZxRz6hdZFXGTsAqtAUI780hbA=
 // Enable only after retiring all older private installs and recording sync acceptance.
 ONE_PIECE_COLLECTION_WRITES = NO
