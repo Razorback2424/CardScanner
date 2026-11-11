@@ -20,6 +20,9 @@ struct ScannerView: View {
     @State private var isShowingUnresolved = false
     @State private var pendingUnresolvedResolution: PendingUnresolvedResolution?
     @State private var footerGuideFrame: CGRect?
+#if DEBUG && targetEnvironment(simulator)
+    @State private var didSeedCameraOptionsFixture = false
+#endif
 #if DEBUG && LOCAL_ONLY_SIGNING
     @Environment(\.cardGameRuntimes) private var runtimes
     @State private var acceptanceNumber = OnePieceCatalogBootstrap.acceptanceNumber()
@@ -241,6 +244,17 @@ struct ScannerView: View {
                 }
                 if ProcessInfo.processInfo.arguments.contains("recovery-saving") { isShowingUnresolved = true }
             }
+#if targetEnvironment(simulator)
+            if scannerScreenshotRoute == "WholeCardScanner", !didSeedCameraOptionsFixture {
+                let arguments = ProcessInfo.processInfo.arguments
+                let longSummary = arguments.contains("camera-options-long")
+                if longSummary || arguments.contains("camera-options") {
+                    model.scanner.simulateLensAttachmentsForTesting()
+                    if longSummary { model.seedLongScannerToolbarForScreenshot() }
+                    didSeedCameraOptionsFixture = true
+                }
+            }
+#endif
             if scannerScreenshotRoute == "ScanChoiceCancellation" {
                 model.seedVariantChoiceCancellationFixtureForScreenshot()
             }
@@ -371,6 +385,8 @@ private struct ScannerChrome: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Namespace private var glassNamespace
     @State private var isSessionExpanded = false
+    @State private var lens: CameraLens = .standard
+    @State private var availableLenses: [CameraLens] = []
 
     var body: some View {
         GeometryReader { geometry in
@@ -438,16 +454,22 @@ private struct ScannerChrome: View {
         ScannerTopBar(
             purpose: model.purpose,
             subjectMode: model.subjectMode,
+            lens: lens,
+            availableLenses: availableLenses,
             finishLocks: model.finishLocks,
             variantLockMenu: model.gameRegistry.variantLockMenu,
             isSlowIdentifying: model.isSlowIdentifying,
             setPurpose: model.setPurpose,
             setSubjectMode: model.setSubjectMode,
+            setLens: scanner.setLens,
             setFinishLock: model.setFinishLock,
             clearFinishLocks: model.clearFinishLocks,
             openSettings: openSettings
         )
         .equatable()
+        // Observe the confirmed camera values without observing per-frame scanner state.
+        .onReceive(scanner.uiState.$lens) { if lens != $0 { lens = $0 } }
+        .onReceive(scanner.uiState.$availableLenses) { if availableLenses != $0 { availableLenses = $0 } }
     }
 
     private var topStack: some View {
@@ -858,11 +880,14 @@ private struct ScannerCameraIssueOverlay: View {
 private struct ScannerTopBar: View, Equatable {
     let purpose: ScanPurpose
     let subjectMode: ScanSubjectMode
+    let lens: CameraLens
+    let availableLenses: [CameraLens]
     let finishLocks: [CardGame: VariantLock]
     let variantLockMenu: [GameVariantLockOptions]
     let isSlowIdentifying: Bool
     let setPurpose: (ScanPurpose) -> Void
     let setSubjectMode: (ScanSubjectMode) -> Void
+    let setLens: (CameraLens) -> Void
     let setFinishLock: (VariantLock?, CardGame) -> Void
     let clearFinishLocks: () -> Void
     let openSettings: () -> Void
@@ -873,6 +898,8 @@ private struct ScannerTopBar: View, Equatable {
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.purpose == rhs.purpose
             && lhs.subjectMode == rhs.subjectMode
+            && lhs.lens == rhs.lens
+            && lhs.availableLenses == rhs.availableLenses
             && lhs.finishLocks == rhs.finishLocks
             && lhs.variantLockMenu == rhs.variantLockMenu
             && lhs.isSlowIdentifying == rhs.isSlowIdentifying
@@ -946,12 +973,16 @@ private struct ScannerTopBar: View, Equatable {
     /// Almost nothing. There is no game picker because the printed identifier
     /// already says which game the card is, and asking the user to pre-declare it
     /// was asking for information the card carries.
-    private var finishLockControl: some View {
+    private func finishLockControl(wrapsSummary: Bool) -> some View {
         FinishLockControl(
             subjectMode: subjectMode,
+            lens: lens,
+            availableLenses: availableLenses,
             locks: finishLocks,
             variantLockMenu: variantLockMenu,
+            wrapsSummary: wrapsSummary,
             setSubjectMode: setSubjectMode,
+            setLens: setLens,
             setLock: setFinishLock,
             clearLocks: clearFinishLocks,
             glassNamespace: glassNamespace
@@ -959,37 +990,53 @@ private struct ScannerTopBar: View, Equatable {
         .equatable()
     }
 
-    @ViewBuilder
     private var topBar: some View {
-      Group {
-        if dynamicTypeSize.isAccessibilitySize {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    purposeControl
-                    Spacer(minLength: 4)
-                    settingsButton
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                stackedTopBar
+            } else {
+                ViewThatFits(in: .horizontal) {
+                    inlineTopBar
+                    stackedTopBar
                 }
-                finishLockControl
             }
-        } else {
-          HStack(spacing: 8) {
-            purposeControl
-            finishLockControl
-
-            if isSlowIdentifying {
-                ProgressView()
-                    .tint(.white)
-                    .controlSize(.small)
-                    .transition(.opacity)
-            }
-
-            Spacer(minLength: 0)
-
-            settingsButton
-          }
         }
-      }
         .animation(.easeOut(duration: 0.2), value: isSlowIdentifying)
+    }
+
+    private var inlineTopBar: some View {
+        HStack(spacing: 8) {
+            purposeControl.fixedSize(horizontal: true, vertical: false)
+            finishLockControl(wrapsSummary: false).fixedSize(horizontal: true, vertical: false)
+            identificationSpinner
+            Spacer(minLength: 0)
+            settingsButton
+        }
+    }
+
+    private var stackedTopBar: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                purposeControl
+                Spacer(minLength: 0)
+                settingsButton
+            }
+            HStack(spacing: 8) {
+                finishLockControl(wrapsSummary: true)
+                identificationSpinner
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var identificationSpinner: some View {
+        if isSlowIdentifying {
+            ProgressView()
+                .tint(.white)
+                .controlSize(.small)
+                .transition(.opacity)
+                .accessibilityLabel("Identifying card")
+        }
     }
 
     private var settingsButton: some View {
@@ -1021,9 +1068,13 @@ private struct ScannerTopBar: View, Equatable {
 
 private struct FinishLockControl: View, Equatable {
     let subjectMode: ScanSubjectMode
+    let lens: CameraLens
+    let availableLenses: [CameraLens]
     let locks: [CardGame: VariantLock]
     let variantLockMenu: [GameVariantLockOptions]
+    let wrapsSummary: Bool
     let setSubjectMode: (ScanSubjectMode) -> Void
+    let setLens: (CameraLens) -> Void
     let setLock: (VariantLock?, CardGame) -> Void
     let clearLocks: () -> Void
     let glassNamespace: Namespace.ID
@@ -1031,7 +1082,10 @@ private struct FinishLockControl: View, Equatable {
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.subjectMode == rhs.subjectMode && lhs.locks == rhs.locks
+            && lhs.lens == rhs.lens
+            && lhs.availableLenses == rhs.availableLenses
             && lhs.variantLockMenu == rhs.variantLockMenu
+            && lhs.wrapsSummary == rhs.wrapsSummary
     }
 
     private var activeLocks: [(game: CardGame, displayName: String, lock: VariantLock)] {
@@ -1044,6 +1098,12 @@ private struct FinishLockControl: View, Equatable {
         return activeLocks.isEmpty
             ? "Auto"
             : activeLocks.map { "\($0.displayName) \($0.lock.label)" }.joined(separator: " · ")
+    }
+
+    private var visibleSummary: String {
+        guard dynamicTypeSize.isAccessibilitySize, !activeLocks.isEmpty else { return summary }
+        if activeLocks.count == 1, let lock = activeLocks.first?.lock { return lock.label }
+        return String(localized: "\(activeLocks.count) locks")
     }
 
     var body: some View {
@@ -1059,6 +1119,22 @@ private struct FinishLockControl: View, Equatable {
                     }
                 }
                 .pickerStyle(.inline)
+            }
+
+            if availableLenses.count > 1 {
+                Section {
+                    Text("Camera")
+                        .font(.caption)
+                        .accessibilityAddTraits(.isHeader)
+
+                    Picker("Camera", selection: Binding(get: { lens }, set: setLens)) {
+                        ForEach(availableLenses.reversed()) { option in
+                            Text(option == .macro ? "Macro, close-up" : "Standard")
+                                .tag(option)
+                        }
+                    }
+                    .pickerStyle(.inline)
+                }
             }
 
             Divider()
@@ -1119,9 +1195,9 @@ private struct FinishLockControl: View, Equatable {
                     HStack(spacing: 6) {
                         Image(systemName: locks.isEmpty ? "lock.open" : "lock.fill")
                             .font(.system(size: 13, weight: .semibold))
-                        Text(summary)
+                        Text(visibleSummary)
                             .font(.subheadline.weight(.semibold))
-                            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                            .lineLimit(wrapsSummary ? nil : 1)
                             .fixedSize(horizontal: false, vertical: true)
                         Image(systemName: "chevron.down")
                             .font(.system(size: 10, weight: .bold))
@@ -1140,6 +1216,7 @@ private struct FinishLockControl: View, Equatable {
         }
         .menuStyle(.button)
         .buttonStyle(.plain)
+        .accessibilityIdentifier("scanner-options")
         .accessibilityLabel(subjectMode == .slab
             ? "Scanning mode: graded slabs"
             : "Raw cards. Finish lock: \(summary)")

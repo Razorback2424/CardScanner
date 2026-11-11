@@ -86,6 +86,25 @@ final class CardLatchTests: XCTestCase {
         XCTAssertNotNil(scanner.trackingRequestForTesting)
     }
 
+    func testFailedLensSwitchRestoresLastConfirmedLensAndKeepsRecognitionPaused() {
+        struct AttachmentFailure: Error {}
+        let scanner = CardScanner()
+        var attempts: [CameraLens] = []
+        scanner.simulateLensAttachmentsForTesting { lens in
+            attempts.append(lens)
+            if lens == .standard { throw AttachmentFailure() }
+        }
+        scanner.pauseRecognition()
+
+        scanner.setLens(.standard)
+        scanner.drainSessionQueueForTesting()
+        scanner.drainVisionQueueForTesting()
+
+        XCTAssertEqual(attempts, [.standard, .macro])
+        XCTAssertEqual(scanner.uiState.lens, .macro)
+        XCTAssertTrue(scanner.isRecognitionPausedForTesting)
+    }
+
     func testRepeatedVisionFailuresRebuildOnceWithoutForgettingConsumedCard() async {
         let scanner = CardScanner()
         let card = subject(pokemon(1))

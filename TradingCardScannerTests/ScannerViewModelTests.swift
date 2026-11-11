@@ -2028,6 +2028,42 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(cards.first?.quantity, 1)
     }
 
+    func testLensChangeKeepsCardHeldInViewFromAddingAgain() async throws {
+        let model = try makeModel(variants: [.normal])
+        let scanner = model.scanner
+        scanner.simulateLensAttachmentsForTesting()
+        scanner.drainProfileQueuesForTesting()
+
+        let held = ScanSubject(identifier: scannerIdentifier())
+        let now = CFAbsoluteTimeGetCurrent()
+        scanner.receiveFooterOutcomeForTesting(.identified(held), at: now)
+        scanner.receiveFooterOutcomeForTesting(.identified(held), at: now + 0.25)
+        await assertEventually { model.successCount == 1 }
+        let encounterID = try XCTUnwrap(scanner.latchEncounterIDForTesting)
+        scanner.beginTrackingPresentationForTesting(held)
+        XCTAssertNotNil(scanner.trackingRequestForTesting)
+
+        scanner.setLens(.standard)
+        scanner.drainSessionQueueForTesting()
+        scanner.drainVisionQueueForTesting()
+        await assertEventually { scanner.uiState.lens == .standard }
+        XCTAssertNil(scanner.trackingRequestForTesting)
+
+        scanner.receiveFooterOutcomeForTesting(.identified(held), at: now + 0.5)
+        scanner.receiveFooterOutcomeForTesting(.identified(held), at: now + 0.75)
+        XCTAssertEqual(scanner.latchEncounterIDForTesting, encounterID)
+        XCTAssertNil(model.pendingDuplicateConfirmation)
+
+        let next = ScanSubject(identifier: scannerIdentifier(cardNumber: "002"))
+        scanner.receiveFooterOutcomeForTesting(.identified(next), at: now + 1)
+        scanner.receiveFooterOutcomeForTesting(.identified(next), at: now + 1.25)
+        await assertEventually { model.successCount == 2 }
+
+        let cards = try context().fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(cards.map(\.quantity).sorted(), [1, 1])
+        XCTAssertNil(model.pendingDuplicateConfirmation)
+    }
+
     func testHeldRepeatWithStaleAuthorizationClearsAcknowledgementWithoutWriting() async throws {
         let model = try makeModel(variants: [.normal])
         let encounterID = UUID()

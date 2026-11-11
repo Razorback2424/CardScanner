@@ -6554,6 +6554,13 @@ final class ScannerViewModel: ObservableObject {
 #if DEBUG
     private var usesInMemoryScreenshotFixtures = false
 
+    func seedLongScannerToolbarForScreenshot() {
+        for entry in gameRegistry.variantLockMenu {
+            finishLocks[entry.game] = entry.options.max { $0.label.count < $1.label.count }
+        }
+        isSlowIdentifying = true
+    }
+
     /// Seeds the deterministic `WholeCardScanner` route with a receipt so the
     /// bottom card can be captured without a camera. The values are the layout's
     /// hard case on purpose: a long name, a full identifier line, and a priced

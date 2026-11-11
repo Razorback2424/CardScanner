@@ -485,6 +485,23 @@ enum CameraIssue: Equatable {
     }
 }
 
+#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
+enum MacroLightCheckLevel: Float, Sendable {
+    case off = 0
+    case low = 0.15
+    case medium = 0.30
+}
+
+struct MacroLightCheckReading: Equatable, Sendable {
+    let message: String
+    var canTurnOn = false
+    var commandFailed = false
+
+    static let waiting = Self(message: "Waiting for the Macro camera…")
+    static let noMacro = Self(message: "This device has no supported Macro camera.")
+}
+#endif
+
 private enum CameraScannerError: Error {
     case cameraUnavailable
     case cannotAddInput
@@ -904,6 +921,7 @@ final class CardScanner: NSObject, ObservableObject {
     private var runtimeErrorObserver: NSObjectProtocol?
 #if DEBUG
     private var runtimeRestartOverrideForTesting: (() -> Bool)?
+    private var lensAttachmentOverrideForTesting: ((CameraLens) throws -> Void)?
 #endif
     /// Written on `sessionQueue`; `uiState.lens` is the main-thread mirror for
     /// the UI.
@@ -1282,12 +1300,90 @@ final class CardScanner: NSObject, ObservableObject {
             self.clearActiveSlab(cause: .lifecycle)
         }
         sessionQueue.async { [weak self] in
-            guard let self else { return }
-            self.wantsRunning = false
-            self.startRequestID = UUID()
-            if self.session.isRunning { self.session.stopRunning() }
+            self?.stopCaptureOnSessionQueue()
         }
     }
+
+    private func stopCaptureOnSessionQueue() {
+        wantsRunning = false
+        startRequestID = UUID()
+        if session.isRunning { session.stopRunning() }
+    }
+
+#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
+    /// The manual gate checks the same physical input and configuration used by Scan.
+    func checkMacroLight() async -> MacroLightCheckReading {
+        await withCheckedContinuation { continuation in
+            sessionQueue.async { [self] in
+                continuation.resume(returning: macroLightReadingOnSessionQueue(level: nil))
+            }
+        }
+    }
+
+    func setMacroLightCheckLevel(
+        _ level: MacroLightCheckLevel,
+        onChange: (@MainActor (MacroLightCheckReading) -> Void)? = nil
+    ) {
+        sessionQueue.async { [self] in
+            let reading = macroLightReadingOnSessionQueue(level: level)
+            if let onChange { DispatchQueue.main.async { onChange(reading) } }
+        }
+    }
+
+    private func macroLightReadingOnSessionQueue(level: MacroLightCheckLevel?) -> MacroLightCheckReading {
+        guard currentLens == .macro else { return .noMacro }
+        guard let device = videoInput?.device,
+              device.deviceType == CameraLens.macro.deviceType else { return .waiting }
+        guard device.hasTorch else {
+            return .init(message: "The Macro camera has no usable torch.")
+        }
+
+        // Off is also safe while the session is interrupted or shutting down.
+        var commandFailed = false
+        if level == .off {
+            commandFailed = !applyMacroLightCheckLevel(.off, to: device)
+        }
+        guard device.isTorchModeSupported(.on) else {
+            return .init(message: "The Macro camera has no usable torch.", commandFailed: commandFailed)
+        }
+        guard wantsRunning, session.isRunning, !session.isInterrupted else { return .waiting }
+        if let level, level != .off {
+            commandFailed = !applyMacroLightCheckLevel(level, to: device)
+        }
+        guard device.isTorchAvailable else {
+            return .init(message: "The Macro torch is temporarily unavailable.", commandFailed: commandFailed)
+        }
+        let light = device.isTorchActive ? "On (\(Int((device.torchLevel * 100).rounded()))%)" : "Off"
+        return .init(message: "Macro torch supported · \(light)", canTurnOn: true, commandFailed: commandFailed)
+    }
+
+    private func applyMacroLightCheckLevel(_ level: MacroLightCheckLevel, to device: AVCaptureDevice) -> Bool {
+        do {
+            try device.lockForConfiguration()
+            defer { device.unlockForConfiguration() }
+            if level == .off {
+                guard device.isTorchModeSupported(.off) else { return false }
+                device.torchMode = .off
+            } else {
+                guard device.isTorchAvailable, device.isTorchModeSupported(.on) else { return false }
+                try device.setTorchModeOn(level: level.rawValue)
+            }
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    func stopMacroLightCheck(onStopped: (@MainActor () -> Void)? = nil) {
+        sessionQueue.async { [self] in
+            if currentLens == .macro, let device = videoInput?.device, device.hasTorch {
+                _ = applyMacroLightCheckLevel(.off, to: device)
+            }
+            stopCaptureOnSessionQueue()
+            if let onStopped { DispatchQueue.main.async { onStopped() } }
+        }
+    }
+#endif
 
     /// Updates the lifecycle fence used by the confirmation callback. This is
     /// intentionally queued with Vision work so the token belongs to the same
@@ -1339,10 +1435,7 @@ final class CardScanner: NSObject, ObservableObject {
             self.resetObservationState()
         }
         sessionQueue.async { [weak self] in
-            guard let self else { return }
-            self.wantsRunning = false
-            self.startRequestID = UUID()
-            if self.session.isRunning { self.session.stopRunning() }
+            self?.stopCaptureOnSessionQueue()
         }
     }
 
@@ -1829,8 +1922,16 @@ final class CardScanner: NSObject, ObservableObject {
     func setLens(_ newLens: CameraLens) {
         sessionQueue.async { [weak self] in
             guard let self, self.isConfigured, newLens != self.currentLens else { return }
-            guard CardScanner.device(for: newLens) != nil else { return }
+#if DEBUG
+            let simulatesAttachment = self.lensAttachmentOverrideForTesting != nil
+#else
+            let simulatesAttachment = false
+#endif
+            guard simulatesAttachment || Self.device(for: newLens) != nil else { return }
 
+            // The new camera's framing cannot prove the held card left. Queue
+            // tracker loss before changing inputs and keep the consumed record.
+            self.invalidateSpatialContinuity()
             let previousLens = self.currentLens
             do {
                 try self.attachInput(for: newLens)
@@ -1841,10 +1942,8 @@ final class CardScanner: NSObject, ObservableObject {
                 return
             }
 
-            self.visionQueue.async {
-                self.markTrackerContinuityLost()
-                self.resetObservationState()
-            }
+            self.currentLens = newLens
+            self.updateUI { $0.setLens(newLens) }
         }
     }
 
@@ -1879,6 +1978,12 @@ final class CardScanner: NSObject, ObservableObject {
     /// `beginConfiguration` nests, so this works both inside `configureSession`'s
     /// batch and as a standalone switch on a running session.
     private func attachInput(for lens: CameraLens) throws {
+#if DEBUG
+        if let attach = lensAttachmentOverrideForTesting {
+            try attach(lens)
+            return
+        }
+#endif
         guard let device = CardScanner.device(for: lens) else {
             throw CameraScannerError.cameraUnavailable
         }
@@ -1898,9 +2003,6 @@ final class CardScanner: NSObject, ObservableObject {
 
         applyBestPreset()
         try configureCamera(device)
-
-        currentLens = lens
-        updateUI { $0.setLens(lens) }
     }
 
     /// Picks the highest preset the *current* input can satisfy.
@@ -3160,6 +3262,21 @@ final class CardScanner: NSObject, ObservableObject {
             self.wantsRunning = wantsRunning
             runtimeRestartOverrideForTesting = restart
         }
+    }
+
+    /// Run the real lens switch and publication path without a capture device.
+    @MainActor
+    func simulateLensAttachmentsForTesting(
+        startingOn lens: CameraLens = .macro,
+        attach: @escaping (CameraLens) throws -> Void = { _ in }
+    ) {
+        sessionQueue.sync {
+            currentLens = lens
+            isConfigured = true
+            lensAttachmentOverrideForTesting = attach
+        }
+        uiState.setLens(lens)
+        uiState.setAvailableLenses([.standard, .macro])
     }
 
     func drainSessionQueueForTesting() {

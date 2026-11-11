@@ -474,3 +474,112 @@ final class PreviewView: UIView {
     }
 #endif
 }
+
+#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
+@MainActor
+struct MacroLightCheckView: View {
+    let onDone: () -> Void
+    @Environment(\.scenePhase) private var scenePhase
+    @StateObject private var scanner = CardScanner()
+    @State private var reading = MacroLightCheckReading.waiting
+    @State private var cameraIssue: CameraIssue?
+    @State private var commandFailed = false
+    @State private var lightRequestID: UUID?
+    @State private var isClosing = false
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Text("Macro light check")
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+                .padding(12)
+                .background(.regularMaterial)
+                .accessibilityAddTraits(.isHeader)
+
+            CameraPreview(scanner: scanner, successCount: 0)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
+
+            controls
+        }
+        .background(Color.black.ignoresSafeArea())
+        .preferredColorScheme(.dark)
+        .onReceive(scanner.uiState.$cameraIssue) { cameraIssue = $0 }
+        .task(id: scenePhase) {
+            guard scenePhase == .active, !isClosing else { return }
+            guard scanner.uiState.lens == .macro else {
+                reading = .noMacro
+                return
+            }
+            scanner.onCameraInterruption = { [weak scanner] in
+                scanner?.setMacroLightCheckLevel(.off)
+            }
+            scanner.pauseRecognition()
+            scanner.start()
+            scanner.setMacroLightCheckLevel(.off)
+            while !Task.isCancelled, !isClosing {
+                let current = await scanner.checkMacroLight()
+                if !Task.isCancelled, !isClosing, reading != current { reading = current }
+                try? await Task.sleep(for: .milliseconds(500))
+            }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active {
+                scanner.stopMacroLightCheck()
+                reading = .waiting
+                commandFailed = false
+                lightRequestID = nil
+            }
+        }
+        .onDisappear { scanner.stopMacroLightCheck() }
+    }
+
+    private var controls: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(cameraIssue?.message ?? reading.message)
+                .font(.headline)
+            if commandFailed {
+                Text("Couldn’t set that light level.")
+                    .font(.subheadline)
+            }
+            ViewThatFits(in: .horizontal) {
+                HStack { lightButtons }
+                VStack(alignment: .leading) { lightButtons }
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .disabled(lightRequestID != nil || isClosing || scenePhase != .active)
+
+            Button("Done") {
+                isClosing = true
+                scanner.stopMacroLightCheck(onStopped: onDone)
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(isClosing)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.regularMaterial)
+    }
+
+    @ViewBuilder
+    private var lightButtons: some View {
+        Button("Off") { setLight(.off) }
+        Button("Low") { setLight(.low) }
+            .disabled(!reading.canTurnOn)
+        Button("Medium") { setLight(.medium) }
+            .disabled(!reading.canTurnOn)
+    }
+
+    private func setLight(_ level: MacroLightCheckLevel) {
+        let requestID = UUID()
+        lightRequestID = requestID
+        scanner.setMacroLightCheckLevel(level) { result in
+            guard lightRequestID == requestID, !isClosing else { return }
+            reading = result
+            commandFailed = result.commandFailed
+            lightRequestID = nil
+        }
+    }
+}
+#endif
