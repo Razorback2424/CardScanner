@@ -1331,11 +1331,16 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     private func macroLightReadingOnSessionQueue(level: MacroLightCheckLevel?) -> MacroLightCheckReading {
-        guard currentLens == .macro else { return .noMacro }
+        let turningOn = level != nil && level != .off
+        guard currentLens == .macro else {
+            return .init(message: MacroLightCheckReading.noMacro.message, commandFailed: turningOn)
+        }
         guard let device = videoInput?.device,
-              device.deviceType == CameraLens.macro.deviceType else { return .waiting }
+              device.deviceType == CameraLens.macro.deviceType else {
+            return .init(message: MacroLightCheckReading.waiting.message, commandFailed: turningOn)
+        }
         guard device.hasTorch else {
-            return .init(message: "The Macro camera has no usable torch.")
+            return .init(message: "The Macro camera has no usable torch.", commandFailed: turningOn)
         }
 
         // Off is also safe while the session is interrupted or shutting down.
@@ -1344,10 +1349,12 @@ final class CardScanner: NSObject, ObservableObject {
             commandFailed = !applyMacroLightCheckLevel(.off, to: device)
         }
         guard device.isTorchModeSupported(.on) else {
-            return .init(message: "The Macro camera has no usable torch.", commandFailed: commandFailed)
+            return .init(message: "The Macro camera has no usable torch.", commandFailed: commandFailed || turningOn)
         }
-        guard wantsRunning, session.isRunning, !session.isInterrupted else { return .waiting }
-        if let level, level != .off {
+        guard wantsRunning, session.isRunning, !session.isInterrupted else {
+            return .init(message: MacroLightCheckReading.waiting.message, commandFailed: commandFailed || turningOn)
+        }
+        if let level, turningOn {
             commandFailed = !applyMacroLightCheckLevel(level, to: device)
         }
         guard device.isTorchAvailable else {

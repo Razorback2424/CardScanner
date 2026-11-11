@@ -105,6 +105,24 @@ final class CardLatchTests: XCTestCase {
         XCTAssertTrue(scanner.isRecognitionPausedForTesting)
     }
 
+#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
+    func testMacroLightReportsFailedOnCommandsWhileWaitingForCamera() async {
+        let scanner = CardScanner()
+        scanner.simulateLensAttachmentsForTesting()
+        let passive = await scanner.checkMacroLight()
+        XCTAssertEqual(passive, .waiting)
+
+        for level in [MacroLightCheckLevel.low, .medium, .off] {
+            let reading = await withCheckedContinuation { continuation in
+                scanner.setMacroLightCheckLevel(level) { continuation.resume(returning: $0) }
+            }
+            XCTAssertEqual(reading.message, passive.message)
+            XCTAssertFalse(reading.canTurnOn)
+            XCTAssertEqual(reading.commandFailed, level != .off)
+        }
+    }
+#endif
+
     func testRepeatedVisionFailuresRebuildOnceWithoutForgettingConsumedCard() async {
         let scanner = CardScanner()
         let card = subject(pokemon(1))

@@ -483,7 +483,7 @@ struct MacroLightCheckView: View {
     @StateObject private var scanner = CardScanner()
     @State private var reading = MacroLightCheckReading.waiting
     @State private var cameraIssue: CameraIssue?
-    @State private var commandFailed = false
+    @State private var failedLightRequestID: UUID?
     @State private var lightRequestID: UUID?
     @State private var isClosing = false
 
@@ -519,15 +519,20 @@ struct MacroLightCheckView: View {
             scanner.setMacroLightCheckLevel(.off)
             while !Task.isCancelled, !isClosing {
                 let current = await scanner.checkMacroLight()
-                if !Task.isCancelled, !isClosing, reading != current { reading = current }
+                if !Task.isCancelled, !isClosing, lightRequestID == nil, reading != current { reading = current }
                 try? await Task.sleep(for: .milliseconds(500))
             }
+        }
+        .task(id: failedLightRequestID) {
+            guard let requestID = failedLightRequestID else { return }
+            try? await Task.sleep(for: .seconds(3))
+            if !Task.isCancelled, failedLightRequestID == requestID { failedLightRequestID = nil }
         }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active {
                 scanner.stopMacroLightCheck()
                 reading = .waiting
-                commandFailed = false
+                failedLightRequestID = nil
                 lightRequestID = nil
             }
         }
@@ -538,7 +543,7 @@ struct MacroLightCheckView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text(cameraIssue?.message ?? reading.message)
                 .font(.headline)
-            if commandFailed {
+            if failedLightRequestID != nil {
                 Text("Couldn’t set that light level.")
                     .font(.subheadline)
             }
@@ -573,11 +578,12 @@ struct MacroLightCheckView: View {
 
     private func setLight(_ level: MacroLightCheckLevel) {
         let requestID = UUID()
+        failedLightRequestID = nil
         lightRequestID = requestID
         scanner.setMacroLightCheckLevel(level) { result in
             guard lightRequestID == requestID, !isClosing else { return }
             reading = result
-            commandFailed = result.commandFailed
+            failedLightRequestID = result.commandFailed ? requestID : nil
             lightRequestID = nil
         }
     }
