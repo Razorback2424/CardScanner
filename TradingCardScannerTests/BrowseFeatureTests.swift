@@ -4864,12 +4864,15 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             await gate.release()
             throw error
         }
-        let next = Task { try await fixture.catalog.resolution(for: fixture.identifier) }
         await gate.release()
 
         let first = try await inFlight.value
-        let current = try await next.value
+        XCTAssertEqual(first.path, .offlineFallback)
         XCTAssertEqual(first.card.variantEvidence.catalogVariants, [.normal])
+        let stale = await fixture.catalog.cachedCard(for: fixture.identifier)
+        XCTAssertNil(stale)
+
+        let current = try await fixture.catalog.resolution(for: fixture.identifier)
         XCTAssertEqual(current.card.variantEvidence.catalogVariants, [.holo])
         let cached = await fixture.catalog.cachedCard(for: fixture.identifier)
         XCTAssertEqual(cached?.variantEvidence.catalogVariants, [.holo])
