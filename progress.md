@@ -1,3 +1,21 @@
+# 2026-11-11 — Follow-up to the seven-commit review
+
+Pokémon finish certification now rejects signed names that disagree with the
+checklist for the same card ID. The derivation replays from the bundled source
+when the reviewed hashes match and accepts the original checklist directory
+through `--aggregate-baseline`. The retained captures reproduced all 4,104 card
+rows and 36 resource hashes byte for byte. All 29 focused Python tests passed.
+[Replay instructions](docs/audits/catalog-follow-up-2026-11-10.md#replaying-the-data).
+
+Provisional scans share pending lookups and reuse the projected checklist. The
+Macro check reports failed light commands for three seconds. The chart clears
+scrub selection when its date range changes. The working tree based on
+`501f14b` passed 251 selected tests with zero failures or skips in
+`TradingCardScanner-ProfileLocal`, using DebugRemoteLocal with collector tools
+enabled on an iOS 27.0 iPhone 17 Pro simulator. The result bundle is
+`CodexBuilds/ScanStashReviewFixes-20261111.YyU1jM/Focused.xcresult` on the T7.
+Physical Macro torch output still needs verification.
+
 # 2026-11-11 — Pokémon checklist provenance and finish certification
 
 The scanner rechecks provisional offline results on the next lookup, including

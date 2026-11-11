@@ -91,6 +91,11 @@ Inspected the final iPhone and iPad Collection placeholders and the iPhone one-m
 
 Evidence, logs, and simulator results are retained on the external SSD under `CodexBuilds/CatalogReviewFollowup-20261111-Codex`. Original Pokémon comparison reports and prices are retained under `launch-findings-2026-11-10`; the Yu-Gi-Oh! capture is under `YuGiOhSourceCache/2026-10-21`. Use separate replay output paths.
 
+Derivation can replay from a shallow checkout while the bundle matches the
+reviewed `aggregateChecklistSources` hashes in `legacy-finish-evidence.json`.
+If the bundle has changed, point `--aggregate-baseline` to the original
+checklist directory.
+
 ```sh
 run="${CATALOG_REVIEW_ROOT:?Set this to an external SSD output directory}"
 prior="${CATALOG_SOURCE_ROOT:?Set this to the external SSD containing retained captures}/launch-findings-2026-11-10"
