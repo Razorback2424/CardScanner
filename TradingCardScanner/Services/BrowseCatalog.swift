@@ -977,7 +977,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         cursor: String?
     ) async throws -> CatalogPage<CatalogCardSummary> {
         installMemoryWarningObserverIfNeeded()
-        let normalized = CardNameSearch.normalize(query)
+        let providerQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalized = CardNameSearch.normalize(providerQuery)
         guard normalized.count >= 2 else { return CatalogPage(items: [], nextCursor: nil) }
 
         await synchronizeGameBrowseAuthority(for: game)
@@ -1002,7 +1003,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 }
                 return CatalogPage(items: deduplicated(results), nextCursor: nil)
             }
-            return try await searchPokemon(query: normalized, cursor: cursor)
+            return try await searchPokemon(query: providerQuery, cursor: cursor)
 
         case .magic:
             let selected = setIDs.filter { $0.game == .magic }.map(\.providerID).sorted()
@@ -1010,7 +1011,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 ? ""
                 : " (\(selected.map { "e:\($0)" }.joined(separator: " or ")))"
             return try await magicCards(
-                query: "name:\"\(escapedScryfall(query))\" lang:en game:paper\(setClause)",
+                query: "name:\"\(escapedScryfall(providerQuery))\" lang:en game:paper\(setClause)",
                 cursor: cursor
             ).page
         default: throw CardGameSupportError.unsupportedGame(game)

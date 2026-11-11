@@ -1477,10 +1477,10 @@ final class BrowseFeatureTests: XCTestCase {
     }
 
     func testPokemonSearchURLCarriesNameAndPagination() throws {
-        let url = try XCTUnwrap(BrowseRequestBuilder.pokemonSearchURL(query: "ho oh", page: 3))
+        let url = try XCTUnwrap(BrowseRequestBuilder.pokemonSearchURL(query: "Ho-Oh", page: 3))
         let items = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
         let values = Dictionary(uniqueKeysWithValues: items.map { ($0.name, $0.value ?? "") })
-        XCTAssertEqual(values["name"], "ho oh")
+        XCTAssertEqual(values["name"], "Ho-Oh")
         XCTAssertEqual(values["pagination:page"], "3")
         XCTAssertEqual(values["pagination:itemsPerPage"], "60")
     }
@@ -3293,6 +3293,25 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertNil(model.lanes[.pokemon]?.error)
         let requestedCursors = await catalog.requestedCursors()
         XCTAssertEqual(requestedCursors, [nil, "next"])
+    }
+
+    @MainActor
+    func testBrowseSearchCanContinueAnEmptyPageAndPreservesProviderPunctuation() async throws {
+        let card = browseDisplaySummary(providerID: "farfetchd", name: "Farfetch'd", number: "001")
+        let catalog = PagingBrowseCatalog(first: nil, second: card)
+        let model = BrowseViewModel(catalog: catalog, initialGame: .pokemon, includesSealedProducts: false)
+        model.searchText = "  Farfetch'd "
+
+        let canContinue = await waitUntil { model.searchState == .canContinue(hasFailures: false) }
+        XCTAssertTrue(canContinue)
+        XCTAssertTrue(model.searchResults.isEmpty)
+
+        await model.continueSearch()
+
+        XCTAssertEqual(model.searchResults, [.card(card)])
+        XCTAssertNil(model.lanes[.pokemon]?.cursor)
+        let queries = await catalog.requestedQueries()
+        XCTAssertEqual(queries, ["Farfetch'd", "Farfetch'd"])
     }
 
     @MainActor
@@ -6334,11 +6353,11 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         // These are the app's cataloged English scopes, not claims of exhaustive
         // Grand Master promo coverage. See the researched collector contract.
         let examples: [(String, Int, Int)] = [
-            // GO's 163 raw rows already lose ten gold/rainbow aliases under
-            // the existing checklist rule; the distinct Ditto adds one slot.
-            ("sv03.5", 360, 379), ("sv08.5", 447, 472), ("swsh10.5", 149, 154),
+            // GO removes Pikachu 027's aggregate Holo, in addition to the
+            // existing gold/rainbow aliases and distinct Ditto adjustment.
+            ("sv03.5", 360, 379), ("sv08.5", 447, 472), ("swsh10.5", 148, 153),
             ("cel25", 25, 25), ("cel25cc", 25, 25),
-            ("sv10", 415, 436), ("swsh9", 310, 315)
+            ("sv10", 414, 435), ("swsh9", 310, 315)
         ]
         for (id, masterCount, grandCount) in examples {
             let entry = try XCTUnwrap(entries.first { $0.providerID == id })
@@ -6371,6 +6390,9 @@ final class PokemonChecklistBrowseTests: XCTestCase {
                               "The UPC metal Mew is distinct from the pack Mew")
             }
             if id == "swsh10.5" {
+                let pikachu = cards.filter { $0.providerID == "swsh10.5-027" }
+                XCTAssertFalse(pikachu.contains { $0.masterSetVariant == .holo })
+                XCTAssertTrue(pikachu.contains { $0.masterSetVariant?.id == "cosmos" && $0.isExpandedMasterSetVariant })
                 let bidoof = master.filter { $0.providerID == "swsh10.5-059" }
                 XCTAssertEqual(Set(bidoof.compactMap(\.masterSetVariant)), [.normal,
                     PokemonReviewedPhysicalObjects.plainReverse, PokemonReviewedPhysicalObjects.peelableDitto])
@@ -6378,6 +6400,11 @@ final class PokemonChecklistBrowseTests: XCTestCase {
                     XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(finish))
                     XCTAssertFalse(PokemonMasterSetDefinition.isPackVariant(finish, setProviderID: "sv03.5"))
                 }
+            }
+            if id == "sv10" {
+                let rellor = cards.filter { $0.providerID == "sv10-024" }
+                XCTAssertFalse(rellor.contains { $0.masterSetVariant == .holo })
+                XCTAssertTrue(rellor.contains { $0.masterSetVariant?.id == "cosmos" && $0.isExpandedMasterSetVariant })
             }
         }
         let again = await store.mergedEntries()
@@ -8947,6 +8974,33 @@ final class BrowsePaginationRenderTests: XCTestCase {
         XCTAssertEqual(requests, ["search:start", "search:1", "search:2", "search:start", "search:1", "search:2"])
     }
 
+    func testGameSearchKeepsPagesWhenAnotherSetPublishes() async throws {
+        let matching = fixtureSet("matching")
+        let later = fixtureSet("later")
+        let directory = [matching, later]
+        let catalog = RenderPagingCatalog(sets: directory)
+        let window = try host(CatalogGameCardsView(
+            game: .magic, sets: directory, catalog: catalog, isActive: true, search: .constant("fixture")
+        ))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(3, catalog: catalog)
+        await catalog.publish(sets: directory, providerSetID: later.providerID)
+        for _ in 0..<30 {
+            if await catalog.directoryRequests > 0 { break }
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        let directoryRequests = await catalog.directoryRequests
+        XCTAssertEqual(directoryRequests, 1)
+        try await Task.sleep(for: .milliseconds(480))
+        let preserved = await catalog.requests
+        XCTAssertEqual(preserved, ["search:start", "search:1", "search:2"])
+
+        await catalog.publish(sets: directory, providerSetID: matching.providerID)
+        try await waitForRequests(6, catalog: catalog)
+        let refreshed = await catalog.requests
+        XCTAssertEqual(refreshed, preserved + preserved)
+    }
+
     private func fixtureSet(_ id: String, rank: Int = 0) -> CatalogSet {
         CatalogSet(catalogID: .init(game: .magic, providerID: id), name: id, code: id,
                    logoURL: nil, symbolURL: nil, cardCount: 3, releaseDate: nil, sortRank: rank)
@@ -9040,6 +9094,7 @@ private struct CatalogNavigationRenderHarness: View {
 private actor RenderPagingCatalog: BrowseCatalogProviding {
     private var directory: [CatalogSet]
     private(set) var requests: [String] = []
+    private(set) var directoryRequests = 0
     private var holdsFirstPage: Bool
     private let cardsPerPage: Int
     private let pageCount: Int
@@ -9062,15 +9117,18 @@ private actor RenderPagingCatalog: BrowseCatalogProviding {
         updateContinuation = stream.continuation
         return stream.stream
     }
-    func publish(sets: [CatalogSet]) {
+    func publish(sets: [CatalogSet], providerSetID: String? = nil) {
         directory = sets
-        updateContinuation?.yield(.init(game: .magic, revision: 1, providerSetID: nil))
+        updateContinuation?.yield(.init(game: .magic, revision: 1, providerSetID: providerSetID))
     }
     func releaseFirstPage() {
         firstPageGate?.resume()
         firstPageGate = nil
     }
-    func sets(for game: CardGame) async throws -> [CatalogSet] { directory }
+    func sets(for game: CardGame) async throws -> [CatalogSet] {
+        directoryRequests += 1
+        return directory
+    }
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         try await page(route: set.providerID, set: set, cursor: cursor)
     }
@@ -9107,11 +9165,12 @@ private actor RenderPagingCatalog: BrowseCatalogProviding {
 }
 
 private actor PagingBrowseCatalog: BrowseCatalogProviding {
-    private let first: CatalogCardSummary
+    private let first: CatalogCardSummary?
     private let second: CatalogCardSummary
     private var cursors: [String?] = []
+    private var queries: [String] = []
 
-    init(first: CatalogCardSummary, second: CatalogCardSummary) {
+    init(first: CatalogCardSummary?, second: CatalogCardSummary) {
         self.first = first
         self.second = second
     }
@@ -9129,8 +9188,9 @@ private actor PagingBrowseCatalog: BrowseCatalogProviding {
         cursor: String?
     ) async throws -> CatalogPage<CatalogCardSummary> {
         cursors.append(cursor)
+        queries.append(query)
         if cursor == nil {
-            return CatalogPage(items: [first], nextCursor: "next")
+            return CatalogPage(items: first.map { [$0] } ?? [], nextCursor: "next")
         }
         return CatalogPage(items: [second], nextCursor: nil)
     }
@@ -9145,6 +9205,7 @@ private actor PagingBrowseCatalog: BrowseCatalogProviding {
     func prepareCatalog() async {}
 
     func requestedCursors() -> [String?] { cursors }
+    func requestedQueries() -> [String] { queries }
 }
 
 private actor SavedSortTCGCSVSource: PokemonTCGCSVPriceSource {

@@ -645,13 +645,15 @@ enum CatalogSearchState: Equatable, Sendable {
     case idle
     case loading
     case results(hasFailures: Bool)
+    case canContinue(hasFailures: Bool)
     case failed
     case empty(needsSealedSetup: Bool)
 
     static func reduce(
         resultCount: Int,
         lanes: [CatalogSearchLaneStatus],
-        sealedWasSkippedForMissingCredentials: Bool
+        sealedWasSkippedForMissingCredentials: Bool,
+        hasContinuation: Bool = false
     ) -> CatalogSearchState {
         if resultCount > 0 {
             return .results(hasFailures: lanes.contains { $0.isRequested && $0.error != nil })
@@ -661,7 +663,11 @@ enum CatalogSearchState: Equatable, Sendable {
         if requested.contains(where: \.isLoading) {
             return .loading
         }
-        if requested.contains(where: { $0.error != nil }) {
+        let hasFailures = requested.contains { $0.error != nil }
+        if hasContinuation {
+            return .canContinue(hasFailures: hasFailures)
+        }
+        if hasFailures {
             return .failed
         }
         return .empty(needsSealedSetup: sealedWasSkippedForMissingCredentials)

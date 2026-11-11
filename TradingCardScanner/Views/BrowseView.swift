@@ -70,6 +70,7 @@ final class BrowseViewModel: ObservableObject {
     }
 
     var normalizedQuery: String { CardNameSearch.normalize(searchText) }
+    private var providerQuery: String { searchText.trimmingCharacters(in: .whitespacesAndNewlines) }
     var isSearching: Bool { !normalizedQuery.isEmpty }
 
     var searchGames: [CardGame] {
@@ -145,7 +146,8 @@ final class BrowseViewModel: ObservableObject {
         return CatalogSearchState.reduce(
             resultCount: searchResults.count,
             lanes: statuses,
-            sealedWasSkippedForMissingCredentials: sealedWasSkipped
+            sealedWasSkippedForMissingCredentials: sealedWasSkipped,
+            hasContinuation: hasSearchPagination
         )
     }
 
@@ -190,8 +192,8 @@ final class BrowseViewModel: ObservableObject {
         searchIsSuspended = false
         guard needsSearchOnResume else { return }
         needsSearchOnResume = false
-        let query = normalizedQuery
-        guard query.count >= 2 else { return }
+        guard normalizedQuery.count >= 2 else { return }
+        let query = providerQuery
         let token = generation
         let cardGames = (cardGamesToResume ?? cardSearchGames).filter { cardSearchGames.contains($0) }
         cardGamesToResume = nil
@@ -243,6 +245,7 @@ final class BrowseViewModel: ObservableObject {
             guard !Task.isCancelled else { return }
             let affectedGames = gameRegistry.games(supporting: .browse).filter { update.affects(game: $0) }
             guard !affectedGames.isEmpty else { continue }
+            let previousDirectories = sets
             await loadSetDirectories(affectedGames)
             guard !Task.isCancelled else { return }
             catalogRevision += 1
@@ -250,7 +253,10 @@ final class BrowseViewModel: ObservableObject {
             let retainedSelection = selectedSets.intersection(available)
             if retainedSelection != selectedSets {
                 selectedSets = retainedSelection
-            } else if normalizedQuery.count >= 2 && searchGames.contains(where: { affectedGames.contains($0) }) {
+            } else if normalizedQuery.count >= 2 && cardSearchGames.contains(where: { game in
+                affectedGames.contains(game) && shouldRestartSearch(for: update, game: game,
+                    previousDirectory: previousDirectories[game] ?? [])
+            }) {
                 // Invalidate previous-generation rows/cursors even when the query
                 // and selected sets did not change. Existing debounce coalesces
                 // successive checklist/catalog publications.
@@ -261,15 +267,29 @@ final class BrowseViewModel: ObservableObject {
         }
     }
 
+    private func shouldRestartSearch(
+        for update: BrowseCatalogUpdate, game: CardGame, previousDirectory: [CatalogSet]
+    ) -> Bool {
+        guard update.providerSetID != nil else { return true }
+        let selected = effectiveSetIDs(for: game)
+        if !selected.isEmpty {
+            return selected.contains { update.affects(game: game, providerSetID: $0.providerID) }
+        }
+        let previousIDs = Set(previousDirectory.map(\.catalogID))
+        let currentIDs = Set((sets[game] ?? []).map(\.catalogID))
+        return previousIDs != currentIDs || lanes[game]?.isLoading == true
+            || lanes[game]?.cards.contains { update.affects(game: game, providerSetID: $0.setID.providerID) } == true
+    }
+
     func retrySets(_ game: CardGame) async {
         await loadSetDirectories([game])
     }
 
     func loadMore(_ game: CardGame) async {
-        let requestedQuery = normalizedQuery
+        let requestedQuery = providerQuery
         let requestedGeneration = generation
         let requestedSetIDs = effectiveSetIDs(for: game)
-        guard !Task.isCancelled, !searchIsSuspended, requestedQuery.count >= 2,
+        guard !Task.isCancelled, !searchIsSuspended, normalizedQuery.count >= 2,
               cardSearchGames.contains(game),
               var lane = lanes[game],
               let cursor = lane.cursor,
@@ -294,7 +314,7 @@ final class BrowseViewModel: ObservableObject {
                 cursor: cursor
             )
             guard !Task.isCancelled, generation == requestedGeneration,
-                  CardNameSearch.normalize(searchText) == requestedQuery,
+                  providerQuery == requestedQuery,
                   var currentLane = lanes[game],
                   currentLane.cursor == cursor else { return }
             currentLane.cards = deduplicated(currentLane.cards + page.items)
@@ -304,7 +324,7 @@ final class BrowseViewModel: ObservableObject {
             recomputeSearchResults()
         } catch {
             guard generation == requestedGeneration,
-                  CardNameSearch.normalize(searchText) == requestedQuery,
+                  providerQuery == requestedQuery,
                   var currentLane = lanes[game],
                   currentLane.cursor == cursor else { return }
             if Task.isCancelled || error is CancellationError || (error as? URLError)?.code == .cancelled {
@@ -327,6 +347,16 @@ final class BrowseViewModel: ObservableObject {
         scheduleSearch()
     }
 
+    func continueSearch() async {
+        let token = generation
+        for game in searchGames {
+            guard !Task.isCancelled, generation == token else { return }
+            await loadMore(game)
+            guard !Task.isCancelled, generation == token else { return }
+            await loadMoreSealed(game)
+        }
+    }
+
     private func scheduleSearch() {
         searchTask?.cancel()
         searchTask = nil
@@ -334,14 +364,8 @@ final class BrowseViewModel: ObservableObject {
         needsSearchOnResume = false
         generation = UUID()
         let token = generation
-        let query = normalizedQuery
-        guard !query.isEmpty else {
-            lanes = [:]
-            sealedModel.clearSearch()
-            recomputeSearchResults()
-            return
-        }
-        guard query.count >= 2 else {
+        let query = providerQuery
+        guard normalizedQuery.count >= 2 else {
             lanes = [:]
             sealedModel.clearSearch()
             recomputeSearchResults()
@@ -376,7 +400,8 @@ final class BrowseViewModel: ObservableObject {
         let cardSearch = Task { await searchCardLanes(games: games, query: query, token: token) }
         await withTaskCancellationHandler {
             if includesSealedProducts {
-                await sealedModel.search(query: query, games: selectedGames.filter { gameRegistry.supports($0, .sealed) })
+                await sealedModel.search(query: CardNameSearch.normalize(query),
+                                         games: selectedGames.filter { gameRegistry.supports($0, .sealed) })
             }
             await cardSearch.value
         } onCancel: {
@@ -920,6 +945,11 @@ struct BrowseView: View {
                 .frame(maxWidth: .infinity, minHeight: 120)
             case .idle:
                 EmptyView()
+            case let .canContinue(hasFailures):
+                if hasFailures { searchPartialFailureBanner }
+                Button("Continue search") { Task { await model.continueSearch() } }
+                    .buttonStyle(.borderedProminent)
+                    .frame(maxWidth: .infinity)
             case .failed:
                 ContentUnavailableView(
                     "Search failed",
@@ -1494,10 +1524,20 @@ struct CatalogGameCardsView: View {
         CardNameSearch.normalize(search)
     }
 
+    private var providerSearch: String {
+        search.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private var hasSearchText: Bool { !normalizedSearch.isEmpty }
     private var isSearchQuery: Bool { normalizedSearch.count >= 2 }
     private var hasMoreSets: Bool {
         activeSet != nil || nextSetIndex < orderedSets.count
+    }
+
+    private var indexAfterFailedSet: Int? {
+        guard !directoryNeedsReload, error != nil else { return nil }
+        let index = nextSetIndex + (activeSet == nil ? 1 : 0)
+        return index < orderedSets.count ? index : nil
     }
 
     private var defaultPaginationKey: String {
@@ -1527,14 +1567,19 @@ struct CatalogGameCardsView: View {
             searchRequestKey = nil
             searchIsLoading = false
         }
-        .onChange(of: sets) { _, newSets in
+        .onChange(of: sets) { oldSets, newSets in
             guard newSets != refreshedSets else { return }
+            let previous = refreshedSets ?? oldSets
             refreshedSets = nil
-            directoryNeedsReload = false
-            resetContent()
+            if directoryNeedsReload {
+                directoryNeedsReload = false
+                resetContent()
+            } else {
+                updateVisibleContent(from: previous, to: newSets, publication: nil)
+            }
         }
         .task { await observeCatalogUpdates() }
-        .task(id: "\(isActive)-\(normalizedSearch)-\(searchRevision)") {
+        .task(id: "\(isActive)-\(providerSearch)-\(searchRevision)") {
             guard CatalogGameCardSearchPolicy.shouldRequest(
                 isActive: isActive,
                 normalizedQuery: normalizedSearch
@@ -1546,7 +1591,8 @@ struct CatalogGameCardsView: View {
                 searchRequestKey = nil
                 return
             }
-            let requestKey = "\(normalizedSearch)-\(searchRevision)"
+            let query = providerSearch
+            let requestKey = "\(query)-\(searchRevision)"
             searchRequestKey = requestKey
             searchCards = []
             searchCursor = nil
@@ -1554,7 +1600,7 @@ struct CatalogGameCardsView: View {
             searchIsLoading = true
             try? await Task.sleep(for: .milliseconds(400))
             guard !Task.isCancelled else { return }
-            await loadSearch(query: normalizedSearch, requestKey: requestKey)
+            await loadSearch(query: query, requestKey: requestKey)
         }
         .onChange(of: cards) { _, newCards in
             cardGroups = CatalogCardDisplayGrouping.groups(for: newCards)
@@ -1583,6 +1629,7 @@ struct CatalogGameCardsView: View {
             )
             Button("Retry") { Task { await retryDefault() } }
                 .buttonStyle(.borderedProminent)
+            skipFailedSetButton
         } else {
             if let error, !cards.isEmpty {
                 Label(error, systemImage: "wifi.exclamationmark")
@@ -1608,9 +1655,26 @@ struct CatalogGameCardsView: View {
             if error != nil, !cards.isEmpty {
                 Button("Retry") { Task { await loadDefaultMore() } }
                     .buttonStyle(.bordered)
+                skipFailedSetButton
             } else if hasMoreSets, nextSetIndex > 0 || !cards.isEmpty {
                 CatalogPaginationFooter(requestID: defaultPaginationKey, viewport: viewport) { await loadDefaultMore() }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var skipFailedSetButton: some View {
+        if indexAfterFailedSet != nil {
+            Button("Skip this set") {
+                Task {
+                    guard let index = indexAfterFailedSet else { return }
+                    nextSetIndex = index
+                    activeSet = nil
+                    cursor = nil
+                    await loadDefaultMore()
+                }
+            }
+            .buttonStyle(.bordered)
         }
     }
 
@@ -1635,7 +1699,16 @@ struct CatalogGameCardsView: View {
                 systemImage: "wifi.exclamationmark",
                 description: Text(searchError)
             )
-            Button("Retry") { searchRevision += 1 }
+            Button("Retry") {
+                if searchCursor != nil {
+                    Task { await loadMoreSearch(query: providerSearch) }
+                } else {
+                    searchRevision += 1
+                }
+            }
+                .buttonStyle(.borderedProminent)
+        } else if searchCards.isEmpty, searchCursor != nil {
+            Button("Continue search") { Task { await loadMoreSearch(query: providerSearch) } }
                 .buttonStyle(.borderedProminent)
         } else if searchCards.isEmpty {
             ContentUnavailableView(
@@ -1653,12 +1726,12 @@ struct CatalogGameCardsView: View {
                 .contentWidthLimit(.wide)
             if let searchError {
                 Text(searchError).font(.footnote).foregroundStyle(.secondary)
-                Button("Retry") { Task { await loadMoreSearch(query: normalizedSearch) } }
+                Button("Retry") { Task { await loadMoreSearch(query: providerSearch) } }
                     .buttonStyle(.bordered)
             } else if searchCursor != nil {
                 CatalogPaginationFooter(
                     requestID: "\(searchRequestKey ?? "")-\(searchCursor ?? "")", viewport: viewport
-                ) { await loadMoreSearch(query: normalizedSearch) }
+                ) { await loadMoreSearch(query: providerSearch) }
             }
         }
     }
@@ -1686,6 +1759,11 @@ struct CatalogGameCardsView: View {
     }
 
     private func resetContent() {
+        resetDefaultContent()
+        resetSearchContent()
+    }
+
+    private func resetDefaultContent() {
         contentRevision += 1
         cards = []
         cardGroups = []
@@ -1694,6 +1772,9 @@ struct CatalogGameCardsView: View {
         cursor = nil
         isLoading = false
         error = nil
+    }
+
+    private func resetSearchContent() {
         searchRequestKey = nil
         searchCards = []
         searchCardGroups = []
@@ -1701,6 +1782,30 @@ struct CatalogGameCardsView: View {
         searchError = nil
         searchIsLoading = false
         searchRevision += 1
+    }
+
+    private func updateVisibleContent(
+        from oldDirectory: [CatalogSet], to newDirectory: [CatalogSet], publication: BrowseCatalogUpdate?
+    ) {
+        let oldOrder = CatalogSetOrdering.newestFirst(oldDirectory)
+        let newOrder = CatalogSetOrdering.newestFirst(newDirectory)
+        // Include a pending request or failed set in the prefix whose indices
+        // must remain stable for the existing default cursor to be usable.
+        let pending = activeSet == nil && (isLoading || error != nil) ? 1 : 0
+        let prefixCount = nextSetIndex + pending
+        let prefix = oldOrder.prefix(prefixCount)
+        if !prefix.elementsEqual(newOrder.prefix(prefixCount))
+            || (oldOrder.isEmpty && !newOrder.isEmpty)
+            || prefix.contains(where: { publication?.affects(game: game, providerSetID: $0.providerID) == true }) {
+            resetDefaultContent()
+        }
+
+        let oldIDs = Set(oldDirectory.map(\.catalogID))
+        let newIDs = Set(newDirectory.map(\.catalogID))
+        if oldIDs != newIDs || (publication != nil && searchIsLoading)
+            || searchCards.contains(where: { publication?.affects(game: game, providerSetID: $0.setID.providerID) == true }) {
+            resetSearchContent()
+        }
     }
 
     private func invalidateDefaultRequest() {
@@ -1713,6 +1818,14 @@ struct CatalogGameCardsView: View {
         for await update in updates {
             guard !Task.isCancelled else { return }
             guard update.affects(game: game) else { continue }
+            if update.providerSetID != nil, !directoryNeedsReload {
+                let directory = try? await catalog.sets(for: game)
+                guard !Task.isCancelled else { return }
+                let previous = orderedSets
+                if let directory { refreshedSets = directory }
+                updateVisibleContent(from: previous, to: directory ?? previous, publication: update)
+                continue
+            }
             // Clear old-generation rows before awaiting the new directory.
             refreshedSets = []
             directoryNeedsReload = true
@@ -1755,14 +1868,14 @@ struct CatalogGameCardsView: View {
                 cursor: nil
             )
             guard !Task.isCancelled,
-                  normalizedSearch == query,
+                  providerSearch == query,
                   searchRequestKey == requestKey else { return }
             searchCards = deduplicated(page.items)
             searchCardGroups = CatalogCardDisplayGrouping.groups(for: searchCards)
             searchCursor = page.nextCursor
         } catch {
             guard !Task.isCancelled,
-                  normalizedSearch == query,
+                  providerSearch == query,
                   searchRequestKey == requestKey else { return }
             searchError = error.localizedDescription
         }
@@ -1772,9 +1885,10 @@ struct CatalogGameCardsView: View {
         guard isActive,
               !searchIsLoading,
               isSearchQuery,
-              normalizedSearch == query,
+              providerSearch == query,
               let cursor = searchCursor else { return }
-        guard let requestKey = searchRequestKey else { return }
+        let requestKey = "\(query)-\(searchRevision)"
+        guard searchRequestKey == requestKey else { return }
         searchIsLoading = true
         searchError = nil
         defer {
@@ -1790,14 +1904,14 @@ struct CatalogGameCardsView: View {
                 cursor: cursor
             )
             guard !Task.isCancelled,
-                  normalizedSearch == query,
+                  providerSearch == query,
                   searchRequestKey == requestKey else { return }
             searchCards = deduplicated(searchCards + page.items)
             searchCardGroups = CatalogCardDisplayGrouping.groups(for: searchCards)
             searchCursor = page.nextCursor
         } catch {
             guard !Task.isCancelled,
-                  normalizedSearch == query,
+                  providerSearch == query,
                   searchRequestKey == requestKey else { return }
             searchError = error.localizedDescription
         }
