@@ -1,6 +1,7 @@
 import copy
 import json
 import pathlib
+import tempfile
 import unittest
 import build_yugioh_catalog as builder
 
@@ -49,3 +50,37 @@ class PrintingFamilyTests(unittest.TestCase):
         seed = self.build()
         self.assertEqual(seed['autoEligibleCodes'], [])
         self.assertEqual(seed['printings'][0]['e'], [])
+
+    def test_konami_inventory_keeps_embedded_apostrophe_in_exact_name(self):
+        html = b"""<meta content="en"> ULTIMATE TOURNAMENT PACK 2 Total of 1 Card(s)
+        <div class="t_row c_normal">
+        <input type="hidden" class="cnm" value='Gravekeeper's Watcher'>
+        <input class="cid" value="5514">
+        <div class="lr_icon rid rid_1"><span>Common</span></div>
+        <img id="card_image_5514_1">
+        </div><!-- .t_row c_normal -->"""
+        profile = {"releaseName": "ULTIMATE TOURNAMENT PACK 2", "count": 1, "url": "https://example.com"}
+        self.assertEqual(builder.extract_inventory(html, profile)["rows"][0]["name"], "Gravekeeper's Watcher")
+
+    def test_disjoint_market_receipts_keep_each_groups_source_date(self):
+        with tempfile.TemporaryDirectory() as folder:
+            first = pathlib.Path(folder) / "first.json"
+            second = pathlib.Path(folder) / "second.json"
+            for path, group, stamp in [(first, 1, "2026-10-20T20:00:00Z"), (second, 2, "2026-11-10T20:00:00Z")]:
+                path.write_text(json.dumps({"snapshot_start": stamp, "snapshot_end": stamp, "snapshot_stable": True,
+                    "groups": [{"group": group, "sha256": str(group)}]}))
+            self.assertEqual(builder.read_price_receipts([first, second]), {
+                1: ("2026-10-20T20:00:00Z", "1"), 2: ("2026-11-10T20:00:00Z", "2"),
+            })
+            with self.assertRaisesRegex(AssertionError, "multiple price receipts"):
+                builder.read_price_receipts([first, first])
+
+    def test_detects_newly_populated_released_group_without_flagging_another_editions_release(self):
+        seed = {"capturedAt": "2026-11-10T18:00:00Z",
+                "sets": [{"g": 1, "a": "UP02", "d": "", "created": "2026-11-04T00:00:00"},
+                         {"g": 2, "a": "MAMS", "d": "", "created": "2026-11-13T00:00:00"},
+                         {"g": 3, "a": "UP01", "d": "2026-07-08", "created": None}],
+                "printings": [{"g": 1}, {"g": 1}, {"g": 2}, {"g": 3}]}
+        self.assertEqual(builder.populated_released_groups(seed, {"printings": [{"g": 3}]}), [
+            {"groupID": 1, "code": "UP02", "providerDate": "2026-11-04", "candidatePrintings": 2},
+        ])

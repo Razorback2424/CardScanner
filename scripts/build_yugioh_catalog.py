@@ -10,6 +10,7 @@ import datetime
 import hashlib
 import json
 import math
+import os
 import pathlib
 import re
 import time
@@ -257,6 +258,39 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     stats["quotePairs"] = sum(m["q"] is not None for x in rows for m in x["m"])
     return seed, stats, exceptions, incomplete
 
+def read_price_receipts(paths):
+    groups = {}
+    for path in paths:
+        receipt = json.loads(path.read_text())
+        marker = receipt["snapshot_start"]
+        assert marker and receipt["snapshot_stable"] and marker == receipt["snapshot_end"], "unstable price receipt"
+        for row in receipt["groups"]:
+            group = row["group"]
+            assert group not in groups, f"multiple price receipts for group {group}"
+            groups[group] = (marker, row["sha256"])
+    return groups
+
+
+def populated_released_groups(seed, previous):
+    prior_ids = {row["g"] for row in previous["printings"]}
+    new_counts = collections.Counter(row["g"] for row in seed["printings"] if row["g"] not in prior_ids)
+    captured_day = datetime.datetime.fromisoformat(seed["capturedAt"]).date()
+    released = []
+    for group in seed["sets"]:
+        count = new_counts[group["g"]]
+        raw_date = group["d"] or group["created"]
+        if not count or not raw_date:
+            continue
+        try:
+            release_day = datetime.date.fromisoformat(raw_date[:10])
+        except ValueError:
+            continue
+        if release_day <= captured_day:
+            released.append({"groupID": group["g"], "code": group["a"], "providerDate": str(release_day),
+                             "candidatePrintings": count})
+    return released
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cache-dir", type=pathlib.Path)
@@ -265,7 +299,8 @@ def main():
     parser.add_argument("--offline", action="store_true")
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--previous-seed", type=pathlib.Path)
-    parser.add_argument("--price-receipt", type=pathlib.Path, help="Offline census receipt; binds provider snapshot time to exact raw hashes")
+    parser.add_argument("--price-receipt", action="append", type=pathlib.Path, default=[],
+                        help="Offline price receipt binding a capture to raw hashes; repeat for disjoint group scopes")
     parser.add_argument("--official-inventory-html", type=pathlib.Path, action='append', help="Captured full Konami release inventory; repeat for each reviewed release")
     parser.add_argument("--hosting-root", type=pathlib.Path, help="Stage an immutable candidate under the existing Firebase site; never deploy")
     parser.add_argument("--publication-revision", type=int, default=1, help="Candidate publication sequence, independent of provider capture time")
@@ -305,20 +340,21 @@ def main():
     categories = fetch(base + "/categories", "tcgcsv/categories.json")
     assert [x["name"] for x in categories if x["categoryId"] == 2] == ["YuGiOh"]
     groups = fetch(base + "/2/groups", "tcgcsv/groups.json")
-    receipt = json.loads(args.price_receipt.read_text()) if args.price_receipt else None
-    if receipt:
-        assert receipt['snapshot_stable'] and receipt['snapshot_start'] == receipt['snapshot_end']
-    receipt_groups = {x['group']: x for x in receipt['groups']} if receipt else {}
+    receipt_groups = read_price_receipts(args.price_receipt)
     products, prices, price_provenance, product_hashes = {}, {}, {}, {}
     for index, group in enumerate(groups):
         gid = group["groupId"]
         products[gid] = fetch(f"{base}/2/{gid}/products", f"tcgcsv/{gid}-products.json")
         product_hashes[gid] = provenance[-1]['sha256']
         prices[gid] = fetch(f"{base}/2/{gid}/prices", f"tcgcsv/{gid}-prices.json")
+        source = provenance[-1]
         if gid in receipt_groups:
-            assert provenance[-1]['sha256'] == receipt_groups[gid]['sha256'], f"snapshot hash mismatch {gid}"
-        price_provenance[gid] = {"h": provenance[-1]["sha256"], "s": receipt['snapshot_start'] if gid in receipt_groups else provenance[-1]['sourceUpdatedAt'] or provenance[-1]['cachedAt'],
-                                 "st": "providerSnapshot" if gid in receipt_groups or provenance[-1]['sourceUpdatedAt'] else "capturedAt"}
+            marker, expected_hash = receipt_groups[gid]
+            assert source["sha256"] == expected_hash, f"snapshot hash mismatch {gid}"
+        else:
+            marker = source["sourceUpdatedAt"]
+        price_provenance[gid] = {"h": source["sha256"], "s": marker or source["cachedAt"],
+                                 "st": "providerSnapshot" if marker else "capturedAt"}
         if index % 25 == 0: print(f"Fetched {index + 1}/{len(groups)} groups", flush=True)
     cards = fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php?misc=yes", "ygoprodeck/cardinfo.json", False)
     timestamp = max(x["cachedAt"] for x in provenance)
@@ -345,6 +381,8 @@ def main():
         stats['excludedProductsInReviewedReleases'] = sum(p['g'] in {i['groupID'] for i in inventories} and not p.get('pf') for p in seed['printings'])
     stats['correspondenceRuleVersion'] = CORRESPONDENCE_RULES['version']
     stats['taxonomyScopeDriftGroups'] = sorted({r['groupID'] for r in CORRESPONDENCE_RULES['rules']} - taxonomy_scopes)
+    if previous:
+        stats["populatedReleasedGroupsMissingFromParent"] = populated_released_groups(seed, previous)
     retained = {p['p'] for p in seed['printings']}
     excluded = []
     for gid in sorted(products):
@@ -378,6 +416,12 @@ def main():
         temporary.replace(path)
     if args.hosting_root:
         stage_hosting(seed, args.hosting_root, args.publication_revision)
+    if stats.get("populatedReleasedGroupsMissingFromParent"):
+        ids = ", ".join(str(row["groupID"]) for row in stats["populatedReleasedGroupsMissingFromParent"])
+        message = f"Provider-dated Yu-Gi-Oh! groups with candidate printings absent from the parent: {ids}"
+        if os.environ.get("GITHUB_ACTIONS") == "true":
+            message = "::warning title=Yu-Gi-Oh! catalog publication lag::" + message
+        print(message)
     print(json.dumps(stats, indent=2))
 
 def validate_output(seed, strict=False):

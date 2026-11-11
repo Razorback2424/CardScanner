@@ -200,8 +200,8 @@ final class YuGiOhCandidateDeliveryTests: XCTestCase {
         let key = Curve25519.Signing.PrivateKey()
         let candidate = try envelope(object, revision: 1, key: key)
         let (manifest, snapshot) = try YuGiOhCandidateVerifier.verify(candidate, keys: ["yugioh-fixture":key.publicKey], now: .now)
-        XCTAssertEqual(snapshot.catalog.printingByID.count, 46_542)
-        XCTAssertEqual(snapshot.catalog.printingByID.values.filter(\.explicitSelectionSupported).count, 46_303)
+        XCTAssertEqual(snapshot.catalog.printingByID.count, 46_592)
+        XCTAssertEqual(snapshot.catalog.printingByID.values.filter(\.explicitSelectionSupported).count, 46_352)
         XCTAssertEqual(manifest.generation, snapshot.catalog.generation)
     }
 
@@ -2159,15 +2159,16 @@ final class YuGiOhCatalogTests: XCTestCase {
     func testFullSeedPartitionAndIndependentFactsThroughRealLoader() throws {
         let catalog = try YuGiOhCatalog.bundled.get()
         let rows = Array(catalog.printingByID.values)
-        XCTAssertEqual(rows.count, 46_542)
-        XCTAssertEqual(rows.filter(\.explicitSelectionSupported).count, 46_303)
-        XCTAssertEqual(rows.filter { !$0.explicitSelectionSupported }.count, 239)
-        XCTAssertEqual(catalog.autoEligibleCodes.count, 260)
+        XCTAssertEqual(rows.count, 46_592)
+        XCTAssertEqual(rows.filter(\.explicitSelectionSupported).count, 46_352)
+        XCTAssertEqual(rows.filter { !$0.explicitSelectionSupported }.count, 240)
+        XCTAssertEqual(catalog.autoEligibleCodes.count, 262)
         XCTAssertTrue(catalog.autoEligibleCodes.contains("MP24-EN372"))
+        XCTAssertTrue(["DUNE-EN080", "PSV-013"].allSatisfy(catalog.autoEligibleCodes.contains))
         XCTAssertTrue(rows.allSatisfy { !$0.coverageVerified })
-        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.count }, 59_965)
-        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.filter { $0.q != nil }.count }, 58_264)
-        XCTAssertEqual(rows.flatMap(\.membership).filter { $0.t == "providerListing" }.count, 1_701)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.count }, 60_014)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.filter { $0.q != nil }.count }, 58_308)
+        XCTAssertEqual(rows.flatMap(\.membership).filter { $0.t == "providerListing" }.count, 1_706)
         XCTAssertTrue(catalog.printingByID.values.contains { $0.code == "IOC-SE1" && $0.editions == [.limited] })
         let blueEyes = rows.filter { [476160,486054].contains($0.productID) }
         XCTAssertEqual(Set(blueEyes.map(\.id)).count, 2)
@@ -2452,6 +2453,29 @@ final class YuGiOhRecognitionTests: XCTestCase {
 
 @MainActor
 final class YuGiOhResolutionTests: XCTestCase {
+    func testReleasedTournamentPackSupportsExplicitLimitedEditionAndKeepsMissingLaneDiscoverable() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let adapter = YuGiOhCatalogAdapter(catalog: catalog)
+        let printing = try XCTUnwrap(catalog.printingsByCode["UP02-EN001"]?.first)
+        XCTAssertEqual(printing.productID, 731109)
+        XCTAssertEqual(printing.editions, [.limited])
+        XCTAssertFalse(printing.coverageVerified)
+        let identifier = try YuGiOhRecognitionAdapter.identifier(code: printing.code, generation: catalog.generation)
+        guard case let .needsPrintingChoice(_, candidates) = try await adapter.lookup(identifier) else {
+            return XCTFail("The released printing requires explicit selection")
+        }
+        let candidate = try XCTUnwrap(candidates.first)
+        let resolved = try await adapter.resolve(candidate, for: identifier)
+        XCTAssertEqual(VariantResolver.gate(resolved.card.variantEvidence, printedEdition: .absent),
+            .needsChoice(options: [.yugiohLimited], lockDidNotApply: nil))
+
+        let unquoted = try XCTUnwrap(catalog.printingsByCode["UP02-EN002"]?.first)
+        XCTAssertEqual(unquoted.canonicalLinkStatus, "linked")
+        XCTAssertTrue(unquoted.editions.isEmpty)
+        XCTAssertFalse(unquoted.explicitSelectionSupported)
+        XCTAssertThrowsError(try adapter.resolution(forPrintingID: unquoted.id))
+    }
+
     func testEveryBundledSupportedCodeFamilyReachesSharedCatalog() async throws {
         let catalog = try YuGiOhCatalog.bundled.get()
         let adapter = YuGiOhCatalogAdapter(catalog: catalog)

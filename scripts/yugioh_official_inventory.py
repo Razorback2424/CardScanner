@@ -15,7 +15,7 @@ def extract(data, profile):
     rows = []
     for block in source.split('<!-- .t_row c_normal -->')[:-1]:
         block = block[block.rfind('<div class="t_row c_normal'):]
-        name = re.search(r"class=\"cnm\" value='(.*?)'", block)
+        name = re.search(r"class=\"cnm\" value='([^<>]*)'\s*/?>", block)
         cid = re.search(r'class="cid" value="(\d+)"', block)
         rarities = re.findall(r'<div class="lr_icon rid rid_\d+".*?<span[^>]*>\s*(.*?)\s*</span>', block, re.S)
         artwork = re.findall(r'id="card_image_\d+_(\d+)"', block)

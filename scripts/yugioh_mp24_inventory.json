@@ -443,7 +443,7 @@
       "artwork": 2
     },
     {
-      "name": "Harpie",
+      "name": "Harpie's Feather Duster",
       "cid": 4678,
       "rarities": [
         "Prismatic Secret Rare"
@@ -491,7 +491,7 @@
       "artwork": 1
     },
     {
-      "name": "Gravekeeper",
+      "name": "Gravekeeper's Inscription",
       "cid": 17727,
       "rarities": [
         "Prismatic Secret Rare"
@@ -979,7 +979,7 @@
       "artwork": 1
     },
     {
-      "name": "King",
+      "name": "King's Sarcophagus",
       "cid": 19200,
       "rarities": [
         "Prismatic Secret Rare"
@@ -1227,7 +1227,7 @@
       "artwork": 1
     },
     {
-      "name": "Emperor Tanuki",
+      "name": "Emperor Tanuki's Critter Count",
       "cid": 17439,
       "rarities": [
         "Ultra Rare"
@@ -1779,7 +1779,7 @@
       "artwork": 1
     },
     {
-      "name": "You",
+      "name": "You're Finished",
       "cid": 18867,
       "rarities": [
         "Ultra Rare"
@@ -1899,7 +1899,7 @@
       "artwork": 1
     },
     {
-      "name": "Angelica",
+      "name": "Angelica's Angelic Ring",
       "cid": 19207,
       "rarities": [
         "Ultra Rare"
