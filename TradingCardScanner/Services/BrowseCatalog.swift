@@ -3143,7 +3143,7 @@ enum PokemonMasterSetDefinition {
         }
         // Preserve retained memberships that still need product review in the
         // checklist. The resolver separately exposes supported choices only.
-        let retained = PokemonFinishMinimumCatalog.entries[card.id] == nil ? variants
+        let retained = PokemonFinishMinimumCatalog.minimum(cardID: card.id) == nil ? variants
             : PokemonFinishMinimumCatalog.retainingMinimum(cardID: card.id, variants: card.catalogVariants)
         return requiredSlots(for: retained, setProviderID: card.set.id)
     }
@@ -3210,11 +3210,6 @@ enum PokemonMasterSetDefinition {
             if variant == .reverse, siblings.contains(where: {
                 $0.masterSetVariant.map { isPackReversePattern($0, setProviderID: original.setID.providerID) } == true
             }) { return nil }
-            // Reviewed provider booleans duplicate the product-only Cosmos
-            // printing as a plain holo on these two common/uncommon cards.
-            if ["sv03.5-004", "sv03.5-005"].contains(original.providerID), variant == .holo {
-                return nil
-            }
             if rarityFinishAliasesHolo(variant.id, cardID: original.providerID),
                siblings.contains(where: { $0.masterSetVariant == .holo }) { return nil }
             var card = original
