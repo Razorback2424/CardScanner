@@ -1100,19 +1100,22 @@ actor PokemonChecklistStore {
             .first { $0.set.id == setID }
     }
 
-    /// One tier's checklist, served from the LRU when it is already decoded.
-    /// A successful decode populates that tier's cache; a failure never does,
-    /// so the caller still sees why it failed.
+    /// One tier's checklist, cached after applying the bundle's finish rules.
+    /// A failed read remains retryable.
     private func cachedChecklist(
         for entry: PokemonChecklistSnapshotEntry,
         in directory: URL,
         source: ChecklistSource
     ) -> ChecklistLoadOutcome {
+        #if DEBUG
+        // A task-local certificate must neither reuse nor populate the LRU.
+        if PokemonFinishCoverage.certifiedForTesting != nil {
+            return loadChecklist(for: entry, in: directory, source: source)
+        }
+        #endif
         let key = entry.set.id
         let cached = source == .downloaded ? downloadedChecklistCache[key] : bundledChecklistCache[key]
-        if let cached {
-            return .loaded(PokemonChecklistReviewedProjection.cards(cached))
-        }
+        if let cached { return .loaded(cached) }
 
         let outcome = loadChecklist(for: entry, in: directory, source: source)
         if case let .loaded(cards) = outcome {
@@ -1121,7 +1124,6 @@ actor PokemonChecklistStore {
             } else {
                 bundledChecklistCache[key] = cards
             }
-            return .loaded(PokemonChecklistReviewedProjection.cards(cards))
         }
         return outcome
     }
@@ -1572,10 +1574,8 @@ actor PokemonChecklistStore {
         didLoadDownloadedManifest = true
         downloadedValidEntriesCache = nil
         for entry in snapshot.manifest.entries {
-            if let cards = snapshot.checklists[entry.set.id] {
-                downloadedChecklistCache[entry.set.id] = cards
-                unreadableChecklistIDs.remove(entry.set.id)
-            }
+            downloadedChecklistCache[entry.set.id] = nil
+            unreadableChecklistIDs.remove(entry.set.id)
         }
     }
 
@@ -1606,7 +1606,7 @@ actor PokemonChecklistStore {
         var validEntries: [PokemonChecklistSnapshotEntry] = []
         var checklists: [String: [CatalogCardSummary]] = [:]
         for entry in manifest.entries {
-            guard case let .loaded(rawCards) = loadChecklist(
+            guard case let .loaded(cards) = loadChecklist(
                 for: entry,
                 in: directory,
                 source: source,
@@ -1616,7 +1616,6 @@ actor PokemonChecklistStore {
                 // an otherwise useful offline catalog.
                 continue
             }
-            let cards = PokemonChecklistReviewedProjection.cards(rawCards)
             validEntries.append(PokemonChecklistReviewedProjection.entry(entry, cards: cards))
             checklists[entry.set.id] = cards
         }
@@ -1717,12 +1716,12 @@ actor PokemonChecklistStore {
             return .unreadable
         }
         do {
-            let cards = try decoder.decode([CatalogCardSummary].self, from: data)
+            var cards = try decoder.decode([CatalogCardSummary].self, from: data)
             if source == .bundled {
-                return .loaded(PokemonChecklistReviewedProjection.removingBundledAggregates(
-                    from: cards, resource: entry.resource, bytes: data))
+                cards = PokemonChecklistReviewedProjection.removingBundledAggregates(
+                    from: cards, resource: entry.resource, bytes: data)
             }
-            return .loaded(cards)
+            return .loaded(PokemonChecklistReviewedProjection.cards(cards))
         } catch {
             return .undecodable
         }
