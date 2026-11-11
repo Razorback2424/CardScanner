@@ -8,6 +8,20 @@ history.
 
 ## Current authority boundary — updated 2026-11-10
 
+**Catalog and accessibility follow-up — 2026-11-10 local time.** The catalog follow-up
+records the working-tree fixes for historical and Delta Reign finish placeholders,
+duplicate foil flags, Browse search and recovery, Pokémon cache authority, the
+Yu-Gi-Oh! bundle refresh, and the two earlier Dynamic Type defects. Verified
+production remains Pokémon revision 22. Unsigned revision 23 completed live
+validation and requires protected publication review. [Catalog follow-up](../audits/catalog-follow-up-2026-11-10.md).
+
+**Pokémon Hosting recovery — 2026-11-10 local time.** The signed revision 22
+pointer and immutable release are live and verify against the production pin.
+The recovery retained every live file. The price index and two sampled feeds
+matched their pre-release bytes. The [launch review](../audits/launch-review-2026-11-10.md#revision-22-recovery-follow-up--2026-11-10)
+records the dated Hosting history, production readback, and remaining CI and
+app acceptance. The 404 checks below describe the earlier outage.
+
 **Detailed reproduction supplement — 2026-11-10.** The [items 2 and 4 report](../audits/launch-review-items-2-and-4-reproduction-2026-11-10.md)
 expands production One Piece gating, the Pokémon update endpoint and singleton
 finish certainty. Fresh HTTP checks still show 404 for the configured catalog

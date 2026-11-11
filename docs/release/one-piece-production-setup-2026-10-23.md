@@ -1,7 +1,7 @@
 # One Piece production setup for owner approval
 
 **Date:** 2026-10-23. **Source:** `c4e1198` plus the launch-readiness working tree.
-**Status:** unsigned candidate prepared and validated. No production key created
+**Status at preparation:** unsigned candidate prepared and validated. No production key created
 or provisioned; no signing, workflow dispatch, deployment or activation performed.
 Production configuration remains disabled, with empty pins and writes `NO`.
 
@@ -9,6 +9,30 @@ The owner explicitly requested preparation using the existing catalog host and
 dedicated One Piece workflow, with approval before key creation/provisioning or
 publication. This document is the concrete proposal for that approval. Source
 rights and physical-device acceptance remain separate launch gates.
+
+**2026-11-10 follow-up after publication clearance.** The exact unsigned revision 1 bytes
+are staged locally at `publisher/one-piece/production/revision-1/candidate.json`.
+The validation-only workflow passed on `main`. The GitHub signing environment
+requires owner approval and permits only `main`. The owner enabled self-review
+for solo signing and confirmed administrator bypass is disabled. GitHub API
+readback verified the reviewer and branch rules. The environment has the key ID
+variable and signing secret. The owner supplied the public pin, which is now
+in the local production configuration. Draft PR #21 contains both files at
+`7a6223c`. A fresh unsigned rebuild matches the approved bytes. All 46 package
+tests and both pin-exporter tests pass locally. After review and merge, the
+owner can start the signing run and then approve the waiting job. The job
+verifies the resulting envelope against the configured pin.
+[Signing preparation PR](https://github.com/Razorback2424/CardScanner/pull/21).
+[Validation run](https://github.com/Razorback2424/CardScanner/actions/runs/42928865589).
+
+The broader PR iOS job subsequently failed with seven assertions across four
+test methods on `7a6223c`. The catalog follow-up distinguishes that committed
+state from the newer working-tree verification. The affected four suites now
+pass locally with 90 passed tests and one live-price skip. Those corrections
+and a successful PR validation are still required before merge. Local `main`
+advanced to `676503a` during verification, while GitHub `main` remained
+`f73d2e0` at readback.
+[Current verification](../audits/catalog-follow-up-2026-11-10.md#verification).
 
 ## Exact unsigned candidate
 
@@ -69,32 +93,22 @@ matches the reviewed SHA, independently verifies its output and does not deploy.
 | Setting | Required configuration |
 | --- | --- |
 | GitHub environment | `one-piece-catalog-signing` |
-| Protection | Required owner/release reviewer; prevent self-review; restrict deployment to `main`; disable administrator bypass where available. Verify effective protection before supplying a key. |
+| Protection | Require owner approval and restrict deployment to `main`. The owner permits self-review for solo signing and confirmed administrator bypass is disabled. |
 | Environment variable | `ONE_PIECE_CATALOG_KEY_ID=one-piece-production-2026-10-23-01` |
 | Environment secret | `ONE_PIECE_CATALOG_SIGNING_KEY`: a fresh dedicated Ed25519 32-byte seed, base64 encoded. Environment scope only; do not create a repository/global fallback of that name. |
 | Public trust | Independently verify the derived public key, then add only `key-id:public-key` to `Config/OnePieceCatalogProduction.xcconfig`; keep mode disabled and writes off. |
 | Secret handling | Provision through an authenticated secret API or secure secret-entry flow without printing the seed, shell arguments, logs or artifacts. Keep production private material out of repository files and test fixtures. |
 | Key isolation | Compare the public bytes against all owner/review, Pokémon and Magic pins; reject any reuse. No review key is an acceptable substitute. |
 
-Read-only GitHub API requests for the environment metadata and secret names
-returned HTTP 404. That may mean absence or insufficient access; existing
-protection/secret configuration is **unverified**, not assumed safe. No setting
-was changed and no secret value was requested. The intended settings above must
-be inspected/configured using owner-authorized access after approval.
+At initial preparation, read-only requests for environment metadata and secret
+names returned HTTP 404. The dated follow-up records the subsequent checks
+and the owner's approval policy.
 
-GitHub's [environment guidance](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments)
-explains plan/visibility limits on reviewer protection. Its
-[deployment review guidance](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments)
-also makes self-review prevention consequential: the workflow initiator cannot
-approve it. Use an independent reviewer for that policy. If only the owner can
-review, obtain an explicit owner-approved protection policy instead of silently
-claiming independent approval or configuring an unusable gate.
-
-After approval, retain the same candidate bytes at a reviewed repository path
-such as `publisher/one-piece/production/revision-1/candidate.json` before using
-the existing workflow, which only accepts repository-file inputs. This transfer
-requires the source/publication-rights gate; it is not performed here. Dispatch
-with `sign=true`, `bootstrap=true`, empty `previous`, and the exact receipt SHA.
+After PR #21 merges, start the workflow on `main` with
+`publisher/one-piece/production/revision-1/candidate.json` as the candidate,
+`sign=true`, `bootstrap=true`, empty `previous`, and the exact receipt SHA.
+Once the signing job is waiting, approve the `one-piece-catalog-signing`
+environment in the run. [GitHub approval steps](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments).
 Do not regenerate metadata at dispatch: that changes the reviewed hash.
 
 The resulting `release-envelope.json` and independently verified manifest will

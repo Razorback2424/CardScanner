@@ -1,3 +1,107 @@
+# 2026-11-10 — Corrected the remaining finish-certification test fixtures
+
+PR #21's broad iOS check on `7a6223c` failed with seven assertions across four
+methods. The newer local tree already contained the pricing fixture corrections.
+Updated the missing-variants expectation to require a finish choice, and gave
+the structural refresh fixture certified Normal coverage. All four affected
+suites passed locally with 90 tests passed, one live-price skip and zero
+failures, including the cache-reopen regression. Results are retained on the
+External SSD result bundle: `CodexBuilds/CatalogGateFollowup/Focused.xcresult`.
+Local `main` advanced to `676503a` during verification. GitHub `main` remains
+`f73d2e0`; the fixture corrections and passing CI still need delivery.
+[Verification details](docs/audits/catalog-follow-up-2026-11-10.md#verification).
+
+# 2026-11-10 — Validated and repaired the catalog findings
+
+Corrected 3,831 historical Pokémon finish records, corroborated all 141 Delta
+Reign cards, and held the remaining 72 historical identities. Fixed the Cosmos and Ascended
+Heroes aggregate flags, scoped Browse refreshes and recovery, and stale
+Pokémon cache reads. Refreshed the bundled Yu-Gi-Oh! tournament pack with 50
+printings. Inspected the Collection and Portfolio Dynamic Type repairs.
+
+The broad simulator selection passed 909 tests with three opt-in live checks
+skipped. The unsigned device Release build contains the exact replayed data.
+Production still serves verified Pokémon revision 22. Unsigned revision 23
+is staged for protected review with the updated app finish evidence.
+[Catalog follow-up](docs/audits/catalog-follow-up-2026-11-10.md).
+
+# 2026-11-10 — Verified the One Piece solo signing approval policy
+
+The owner enabled self-review for the One Piece signing environment. GitHub
+readback confirms the owner is still required to approve the job and `main`
+is the only allowed branch. After PR #21 merges, the owner can start the run
+and separately approve the waiting signing job.
+[Production setup](docs/release/one-piece-production-setup-2026-10-23.md).
+
+# 2026-11-10 — Opened draft One Piece signing preparation PR
+
+With explicit owner authorization, committed and pushed only the public
+production pin and exact unsigned revision 1 candidate from an isolated SSD
+checkout. Draft PR #21 is at `7a6223c`. Rebuilding from the retained inputs
+reproduced the approved payload hash. All 46 package tests and both pin-exporter
+tests passed locally. The public key differs from the configured production,
+staging and owner review keys. GitHub One Piece, Pokémon, Magic and offline
+ingestion validation passed. The iOS catalog job subsequently failed with
+seven assertions across four methods on the earlier committed source.
+The catalog follow-up records the newer working-tree verification separately.
+Review, merge and protected signing remain pending.
+[Draft PR](https://github.com/Razorback2424/CardScanner/pull/21).
+
+# 2026-11-10 — Require a product and price pair for shared hosting
+
+Feed validation rejects a marker-only index before staging files. The
+regression reproduces the failure with a hosted feed and a staged replacement.
+Two consumer fixtures now supply certified finish evidence for automatic repair
+and exercise refusal when coverage is uncertified.
+
+Verified against `f73d2e0` plus the working tree. All 28 offline feed and
+hosting tests and the hosting configuration check passed. On the dedicated
+iOS 27.0 simulator, 54 consumer tests passed and one live test skipped.
+Results are on T7 at `CodexBuilds/PriceFeed-RequirePair-20261110/PriceConsumerFinal.xcresult`.
+
+# 2026-11-10 — Prepared protected One Piece signing environment
+
+After publication clearance, staged the exact unsigned revision 1 candidate
+locally and rechecked its approval hash. The validation-only workflow passed.
+GitHub readback confirmed required owner review, prevention of self-review,
+the `main` branch restriction, and the public key ID variable. The owner
+confirmed administrator bypass is disabled and supplied the public pin. GitHub
+lists the signing secret, and the pin is in the local production configuration.
+The candidate and pin are ready to merge for protected signing.
+[Production setup](docs/release/one-piece-production-setup-2026-10-23.md).
+
+# 2026-11-10 — Restored signed Pokémon revision 22
+
+Restored the November 5 catalog namespace at 00:02 UTC on November 11. The
+Firebase release retained 89 historical catalog files and all 1,338 files
+from the active version. The origin and custom domain served the same verified
+revision 22 envelope. The price index and both sampled feeds matched the live
+bytes captured before release. The [launch review](docs/audits/launch-review-2026-11-10.md#revision-22-recovery-follow-up--2026-11-10)
+records the release history and SSD receipts. The next routine publication and
+app acceptance remain open.
+
+Replayed the retained Pitch Black capture into a receipt-bound draft and
+resolved Marshadow `040/084` with the reviewed Cosmos Holo blister printing.
+Five rows still block certification. The unsigned One Piece revision 1
+candidate hash matches its approval receipt.
+
+# 2026-11-10 — Catalog certification and shared hosting review fixes
+
+Bound finish reports to separate capture receipts so omitted market rows and
+edited classifications block certification. The certifier and the app use the
+same standard Pokémon finish vocabulary. A certified standard list preserves
+the signed Jumbo acquisition option for Obsidian Flames Charizard ex while
+Browse retains the standard Holo slot. Magic and price publication require the
+existing Pokémon pointer, and shared restoration validates the active immutable
+release and the published or replacement price feed.
+
+Verified against `f73d2e0` plus the working tree on the dedicated iOS 27.0
+review simulator. All 518 selected signed Debug tests, 38 offline script tests,
+and 11 mocked workflow scenarios passed. The SSD result bundle is
+`CodexBuilds/launch-review-followup-f73d2e0/Focused.xcresult`. The
+[launch review](docs/audits/launch-review-2026-11-10.md) retains the owner
+restore, One Piece activation, and finish data review gates.
+
 # 2026-11-10 — Catalog recovery guard and Pokémon finish review
 
 Moved four workflows to `macos-15` and made both Pokémon pointer reads require
@@ -1968,7 +2072,7 @@ were rechecked. All 16 inspected artifact/cache paths resolve onto T7 or Keller
 Family Photos, both reported as external solid-state volumes. Compatibility
 symlinks retain tool paths; DerivedData, compiler module caches and SourcePackages
 remain external. The relocation report is outside the repository at
-`/Volumes/Keller Family Photos/CodexBuilds/TradingCardScannerMVP_fixed_v4/InternalBuildStorage-20261029/relocation-report.json`.
+`CodexBuilds/TradingCardScannerMVP_fixed_v4/InternalBuildStorage-20261029/relocation-report.json` on the external SSD.
 Updated generated-path ignore rules so external links cannot be staged as source.
 Source files and concurrent Browse changes were preserved. Apple-managed simulator
 runtime installation is separate from these build/cache locations.
@@ -2236,7 +2340,7 @@ bounded selection, with serial execution and a 120-second per-test limit;
 exit 0. No incomplete run is counted as passing evidence.
 
 External SSD evidence:
-`/Volumes/Keller Family Photos/CodexBuildArtifacts/TradingCardScannerM01/M07-first-slice/`.
+`CodexBuildArtifacts/TradingCardScannerM01/M07-first-slice/` on the external SSD.
 `resumed-focused.log` contains the exact invocation and per-case results;
 `resumed-focused.xcresult`, `resumed-summary.json` and `final-tested.patch` retain
 the accepted evidence. The same root's earlier `focused` and `final-focused`
@@ -2302,14 +2406,14 @@ the final complete selection passed again (exit 0). These were related fixture
 corrections only; all three invocations reused the same SSD build and selection.
 
 External SSD evidence root:
-`/Volumes/Keller Family Photos/CodexBuildArtifacts/TradingCardScannerM01/PR5-20261027/`.
+`CodexBuildArtifacts/TradingCardScannerM01/PR5-20261027/` on the external SSD.
 `accepted-focused.xcresult`, `accepted-focused.log`, `accepted-summary.json`,
 `accepted-tested.patch`, its SHA-256 file and `verification-command.sh` preserve
 the final evidence; earlier logs/results/patches are retained separately.
 The exact test invocation in that script was:
 
 ```sh
-pr5_root='/Volumes/Keller Family Photos/CodexBuildArtifacts/TradingCardScannerM01'
+pr5_root="${EXTERNAL_SSD_ROOT:?Set to the external SSD root}/CodexBuildArtifacts/TradingCardScannerM01"
 pr5_run="$pr5_root/PR5-20261027"
 TMPDIR="$pr5_run/tmp" xcodebuild test \
   -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -configuration Debug \
@@ -5471,7 +5575,7 @@ Original prompt: Implement Browse Sets and Cards across Pokémon/TCGdex and Magi
 - Production defect audit pass 2 (2026-09-14): reviewed the repository against `a4375df` for real and highly probable defects; no application code, tests, schemas, or build settings were changed. The findings are recorded in `docs/audits/defect_review_pass_2.md`: six findings, five confirmed and one suspected. F01 — the shipped `UnprovenCloudRestorationReadinessSource` default makes every `openCloud`/`adoptRemoteCollection` decision terminate in `.restoringFromCloud(.failed)` without installing a session, so a clean install on an iCloud-signed-in device reaches a state whose only affordance reproduces itself; the failed attempt has already written `attachmentState = .attached`. F02 — `CollectionStorageHeadlessPreflightDependencies.production` selects `backgroundMode` from the entitlement alone, so the background refresh builds a CloudKit-mirrored container for exactly the `.neverAttached`/`.suspended` stores it then reports as `.onDevice`. F03 (suspected) — `beginPendingResolution` returns without running its operation after the caller has already cleared the pending choice. F04 — `PortfolioEpoch.establishIfNeeded` writes `initialBalance` events with no matching `CollectionActivity`, which `CollectionActivity.integrityDefects` rejects; production is masked only by a `try?`-swallowed `backfillExistingCollectionIfNeeded` running first. F05 — `InventoryLedger.quantities(from:)` retains negative nets and has no production callers. F06 — 36 of the 40 suite failures are absent-fixture failures that `XCTUnwrap` rather than skip, so the exit status cannot carry gate evidence. Build passes; the full simulator run executed 1,277 with 6 skipped and 40 failures, triaged per suite rather than in aggregate, with the three substantive failures reproduced in isolation. The documentation map, repository audit (C-09/C-10/C-11), release framework §14, ownership-ledger audit, and release follow-ups (RF-6, RF-7) were updated to point at the new audit. No physical device, entitled CloudKit container, live provider, second device, or real camera was exercised.
 - Per-card price history chart plan (2026-09-14): traced why the card detail chart renders as isolated dots and recorded the plan in `docs/plans/price_history_chart_plan.md`. No code changed; nothing in the plan is implemented. Cause is coverage, not a chart bug: `allDaysChecked` joins two samples only when every calendar day between them has a `PriceCheckDay` row, those rows exist only for days a refresh actually succeeded for that instrument, and `BackgroundPriceRefresh.appRefreshTargetLimit` prices three cards per `BGAppRefresh` launch. Slice A adds a derived carried-forward bridge between adjacent segments, rendered dashed and step-end, so the chart reads as a line while keeping measured spans visually distinct from last-known ones; it introduces no sample, date, or amount, and leaves `samples`/`segments`/`hasGaps` unchanged. Slice B replaces the background count cap with an elapsed-time budget and is blocked on pass-2 F02 plus the new RF-8 device measurement. Provider history backfill was investigated and rejected for this plan: `PriceObservation`/`PriceCheckDay` are the portfolio valuation ledger, so backfilled rows would rewrite published closes; JustTCG does publish a per-day `priceHistory` array and the `include_price_history` parameter is already plumbed with every caller passing `false`, while Scryfall publishes current prices only and TCGdex exposes rolling `avg7`/`avg30`/`trend` aggregates. The documentation map, repository audit, and release follow-ups were updated to point at the plan.
 - Follow-up reference wiring (2026-09-15): bound the open pass-2 findings and the per-card chart plan into the active launch plan so they cannot be orphaned when Phase 0/1 execution resumes. The launch plan gains §0.1.1 (a finding→task table: F01/F02 bind Task 4 and Task 8, F04/F05 bind Task 12, F06 binds Task 1 and Task 11, F03 has no owning task and is triaged before RC) and §0.1.2 (current plans outside launch scope, recording that chart Slice B is blocked on F02). Its §0.1 locator was corrected from `0b4ac34` to `a4375df`, §1.5 no longer repeats the "48 unrelated failures" characterisation that documentation audit C-11 marked partially incorrect, and §7 execution discipline now requires re-reading both new sections before a task is started. Back-references were added from the pass-2 audit, the chart plan, and the documentation-audit roadmap row so either document leads to the other. Documentation only; no code, tests, or build settings changed.
-- Pro tab and eBay listing photos plan (2026-09-15): recorded `docs/plans/pro_tab_ebay_listing_photos_plan.md` after reading the separate `/Users/seankeller/Documents/eBay Photos` Flask tool and the current Pro/centering source. No code changed; nothing in the plan is implemented. The plan replaces the Centering tab with a Pro tab hosting card centering plus a new card-independent eBay listing-photo module, and ports only the tool's live path: its worker always calls `process_scans(..., use_full_frame=True)`, so contour detection, perspective warp, OCR, and Pokémon-TCG auto-naming are dead code and are not ported; the ported geometry is `create_quadrant_crops`' four overlapping corner crops at `int(dimension * ratio)` truncation, ratio 0.60 front and 0.63 back. Five deliberate divergences are recorded: the ratio throws outside `0.5...0.9` instead of being silently clamped, JPEG quality matches OpenCV's default 95, EXIF orientation is applied during the single decode (the original ignores it and would crop a rotated photo at the wrong physical corners), exports are numbered `01-Front.jpg`…`10-Back-BL.jpg` because eBay uploads in arrival order, and multi-pair batching is scheduled as Slice C rather than dropped. Outputs are native-resolution slices with no resampling: one decoded side is held at a time, `CGImage.cropping(to:)` is relied on as a non-copying view, orientation is baked by decoding through ImageIO with `kCGImageSourceThumbnailMaxPixelSize` set to the image's own longest edge, and file-size pressure is answered by stepping JPEG quality rather than dimensions. Two source facts drive required changes: `CardCenteringView` owns its own `NavigationStack` and must give it up to be pushed, and `CenteringCameraView` sets no `maxPhotoDimensions` and prefers the ultra-wide macro lens, so the capture path would silently produce ~12 MP while the library path produces 48 MP. An earlier draft's claim that `CenteringCameraView` is too coupled to reuse is corrected in the plan; it already exposes `onCapture: (Data) -> Void`. The plan is sequenced after the release candidate is certified.
+- Pro tab and eBay listing photos plan (2026-09-15): recorded `docs/plans/pro_tab_ebay_listing_photos_plan.md` after reading a separate local eBay Photos Flask tool and the current Pro/centering source. No code changed; nothing in the plan is implemented. The plan replaces the Centering tab with a Pro tab hosting card centering plus a new card-independent eBay listing-photo module, and ports only the tool's live path: its worker always calls `process_scans(..., use_full_frame=True)`, so contour detection, perspective warp, OCR, and Pokémon-TCG auto-naming are dead code and are not ported; the ported geometry is `create_quadrant_crops`' four overlapping corner crops at `int(dimension * ratio)` truncation, ratio 0.60 front and 0.63 back. Five deliberate divergences are recorded: the ratio throws outside `0.5...0.9` instead of being silently clamped, JPEG quality matches OpenCV's default 95, EXIF orientation is applied during the single decode (the original ignores it and would crop a rotated photo at the wrong physical corners), exports are numbered `01-Front.jpg`…`10-Back-BL.jpg` because eBay uploads in arrival order, and multi-pair batching is scheduled as Slice C rather than dropped. Outputs are native-resolution slices with no resampling: one decoded side is held at a time, `CGImage.cropping(to:)` is relied on as a non-copying view, orientation is baked by decoding through ImageIO with `kCGImageSourceThumbnailMaxPixelSize` set to the image's own longest edge, and file-size pressure is answered by stepping JPEG quality rather than dimensions. Two source facts drive required changes: `CardCenteringView` owns its own `NavigationStack` and must give it up to be pushed, and `CenteringCameraView` sets no `maxPhotoDimensions` and prefers the ultra-wide macro lens, so the capture path would silently produce ~12 MP while the library path produces 48 MP. An earlier draft's claim that `CenteringCameraView` is too coupled to reuse is corrected in the plan; it already exposes `onCapture: (Data) -> Void`. The plan is sequenced after the release candidate is certified.
 - Documentation reconciliation (2026-09-15): synchronized the current documentation set with the new Pro tab plan without changing any status claim. The documentation map and repository audit gained Pro tab rows; the active launch plan's §0.1.2 open-plans table now carries the plan with a "must not begin before Task 18" constraint drawn from its own §7 evidence-invalidation rule; `review/opus-card-centering-implementation-plan.md` gained a presentation-scope note stating that the plan may move where centering is presented and add a camera configuration parameter defaulting to today's macro/`.near` capture, but may not loosen, renumber, or waive any centering requirement; and `browse_screen_spec.md`'s "do not change Centering tab structure" constraint and the audit's C-01 evidence line now name the planned rename as proposed and not implemented. Markdown links in the touched files were validated and `git diff --check` is clean.
 - Pro tab and eBay listing photos implementation (2026-09-15, isolated `pro-implementation` worktree based at `523f3e2`): implemented Slices A–C from `docs/plans/pro_tab_ebay_listing_photos_plan.md`. The fourth tab is now a Pro module list; centering is pushed without a nested navigation container; the shared camera keeps its centering default while listing-photo capture selects the main wide lens and active format's maximum still dimensions; the eBay workflow captures or picks front/back data, decodes one side at a time with ImageIO orientation, preserves eligible JPEG bytes, emits native-resolution numbered full/corner JPEGs with eBay's 12 MB byte ceiling and quality step-down, and builds sequentially packaged batch folders/archives without SwiftData persistence. Added cropper/export tests plus view-construction coverage and registered all new files in the Xcode project. Focused simulator verification passes 27/27 (17 centering export, 9 cropper, 1 listing-export), and the compile-only simulator build succeeds. Screenshots were intentionally skipped at the user's request; manual, physical-device, provider, archive, and release-readiness gates remain open, and the implementation is not merged back into `main`.
 - eBay listing-photo review remediation (2026-09-15, isolated `pro-implementation` worktree): applied F1–F7 from `review/ebay-listing-photos-review-plan.md`. Batch moves and archive creation now run off the main actor; export quality steps continue through `0.45`; camera max dimensions are applied after session commit and read back from the photo output; in-flight batch controls are disabled and batch start is re-entrancy-safe; EXIF orientation transcode coverage was added; both feature temp roots are swept on entry; and the dead `CenteringCameraView` configuration property was removed. The focused remediation selectors pass 14/14 and the Debug simulator build/run succeeds. F3 hardware capture, manual, archive, provider, and release-readiness gates remain open; the implementation is not merged back into `main`.
@@ -6768,8 +6872,8 @@ historical.
   text and native list scrolling were visually inspected; no export algorithm
   changes or new implementation-mirroring tests. See the
   [current checklist](references/listing_photos_success_checklist.md).
-- Used Keller Family Photos for remaining captures after T7 reached about
-  3.6 GiB free: `/Volumes/Keller Family Photos/CodexBuild/ListingPhotoStyles-20261029/`.
+- Used an external SSD for remaining captures after T7 reached about
+  3.6 GiB free: `CodexBuild/ListingPhotoStyles-20261029/`.
 
 ### 2026-10-29 — High-confidence production refinement fixes
 
@@ -6790,8 +6894,8 @@ historical.
   and supported detail actions, maximum text/dark appearance, and dummy-key
   save/remove. Standard Simulator appearance/text size restored afterward.
   See the [implementation and confidence ledger](docs/audits/production-refinement-master-review-2026-10-26.md#2026-10-29-high-confidence-refinement-fixes).
-  Evidence is on Keller Family Photos under
-  `/Volumes/Keller Family Photos/CodexBuilds/CardScannerRefinement-20261029/`.
+  Evidence is on the external SSD under
+  `CodexBuilds/CardScannerRefinement-20261029/`.
 - Measurements, published endpoints, catalog expansion and owner-controlled
   release gates remain separate. No full-suite or device/release-readiness claim.
 - Centering's deterministic image/controls also render with the existing
@@ -6827,7 +6931,7 @@ historical.
   were inspected. Native controls, clarity, legibility, accessibility,
   one-tap decrement and navigation consistency pass the HIG design gate.
   Evidence and generated build data are under
-  `/Volumes/Keller Family Photos/CodexBuilds/CardTransactions-20261029/`.
+  `CodexBuilds/CardTransactions-20261029/` on the external SSD.
   Physical-device, live CloudKit migration/sync and release acceptance remain
   unverified; these are personal records, with no shared transaction backend.
 
@@ -6867,7 +6971,7 @@ historical.
   the 20.9 MiB owner catalog, while Debug retains it.
 - See the [dated implementation and stop-gate ledger](docs/audits/production-refinement-master-review-2026-10-26.md#2026-10-30-refinement-implementation-and-s6-stop-gate).
   Evidence is external under
-  `/Volumes/Keller Family Photos/CodexBuilds/refinement-review-2026-10-30/`.
+  `CodexBuilds/refinement-review-2026-10-30/` on the external SSD.
   The temporary seeder was removed; no logs, screenshots, stores or results were
   committed. Device lock-wait, mature launch and quantity-edit checks remain
   owner-run. No device/provider/CloudKit/archive/release readiness claim.

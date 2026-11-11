@@ -153,7 +153,7 @@ Publish the approved signed baseline through established publication controls an
 
 ### Exact deterministic reproduction
 
-No camera, live provider or real card is needed. The existing [test](../../TradingCardScannerTests/VariantResolverTests.swift#L1034), testUnverifiedPokemonSingletonAutoResolvesWithoutBypassingAcquisitionGates, constructs this input for each of Normal, Holo and Reverse:
+No camera, live provider or real card is needed. The existing [test](../../TradingCardScannerTests/VariantResolverTests.swift#L1070), testUnverifiedPokemonSingletonAutoResolvesWithoutBypassingAcquisitionGates, constructs this input for each of Normal, Holo and Reverse:
 
     VariantEvidence(
         game: .pokemon,
@@ -187,10 +187,10 @@ The demonstrated semantic mismatch is **explicitly unverified coverage → exhau
 
 ### Cause and reachability
 
-1. [VariantEvidence](../../TradingCardScanner/Services/VariantResolver.swift#L125) separates membership from coverage. Bounded finish-minimum entries expressly provide additive membership, force coverage false and permit explicit membership.
+1. [VariantEvidence](../../TradingCardScanner/Services/VariantResolver.swift#L138) separates membership from coverage. Bounded finish-minimum entries expressly provide additive membership, force coverage false and permit explicit membership.
 2. [LegacyResolvedCard.variantEvidence](../../TradingCardScanner/Games/Core/LegacyResolvedCard.swift#L181) can construct that combination for Pokémon; it is not an impossible fixture-only state.
 3. resolveAcquisition's gate permits Pokémon membership without verified coverage when there is no observed printed edition.
-4. [resolve](../../TradingCardScanner/Services/VariantResolver.swift#L227) repeats that Pokémon exception. After set rules/stamps, a single possible variant returns uniqueInCatalog (or deterministicSetRule when narrowed) before the later finish-lock/printed-finish branches.
+4. [resolve](../../TradingCardScanner/Services/VariantResolver.swift#L240) repeats that Pokémon exception. After set rules/stamps, a single possible variant returns uniqueInCatalog (or deterministicSetRule when narrowed) before the later finish-lock/printed-finish branches.
 5. [ScannerViewModel](../../TradingCardScanner/Views/ScannerViewModel.swift#L4473) routes a resolved result onward rather than presenting pendingChoice. This step alone is not proof of an incorrect durable write for a real card; the policy is on the acquisition path.
 6. [VariantProvenancePresentation](../../TradingCardScanner/Views/ScanSessionOverlays.swift#L205) can render the resolution label alongside a finish; quiet prominence reduces routine receipt attention. This is source-level presentation reachability, not a newly captured screenshot showing that label for a real misidentified card.
 
