@@ -2973,7 +2973,6 @@ struct MarketHistoryChartContent: View {
 
             if hasHistory || model.samples.count > 1 {
                 CardDetailRangeSelector(selection: range, direction: direction) {
-                    selection.clear()
                     range = $0
                 }
                 HStack(spacing: 8) {
@@ -3005,7 +3004,6 @@ struct MarketHistoryChartContent: View {
     }
 
     func showAllHistory() {
-        selection.clear()
         range = .all
     }
 

@@ -267,7 +267,7 @@ final class DetailDeletionRenderTests: XCTestCase {
         }
     }
 
-    func testHistoryLoadingAndFailuresKeepSavedDataAndDistinguishEmptyPeriods() {
+    func testHistoryLoadingAndFailuresKeepSavedDataAndDistinguishEmptyPeriods() async throws {
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         let points = [JustTCGHistoryPoint(p: 20, t: now.addingTimeInterval(-30 * 86_400).timeIntervalSince1970)]
         let all = PriceHistoryChartModel.market(points: points, range: .all, now: now)
@@ -293,8 +293,20 @@ final class DetailDeletionRenderTests: XCTestCase {
         let content = MarketHistoryChartContent(model: week, hasHistory: true, isLoading: false,
             error: nil, direction: .flat,
             range: Binding(get: { range }, set: { range = $0 }), selection: selection, retry: {})
+        let controller = UIHostingController(rootView: content)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 400))
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        controller.view.layoutIfNeeded()
+
         content.showAllHistory()
         XCTAssertEqual(range, .all, "The recovery action must select all history")
+        controller.rootView = content
+        for _ in 0..<40 where selection.date != nil {
+            controller.view.layoutIfNeeded()
+            try await Task.sleep(for: .milliseconds(25))
+        }
         XCTAssertNil(selection.date, "The current quote must not retain an out-of-range scrub selection")
         XCTAssertNil(selection.sample)
         XCTAssertEqual(PriceHistoryChartModel.market(points: points, range: range, now: now).samples.count, 1)
