@@ -46,6 +46,19 @@ on:
         description: "Explicit first publication at revision one"
         type: boolean
         default: false
+      publish:
+        description: "Publish an already signed revision 1 artifact"
+        type: boolean
+        default: false
+      signed_run_id:
+        description: "Run ID that signed and verified the reviewed artifact"
+        type: string
+      reviewed_envelope_sha256:
+        description: "SHA-256 of the reviewed signed envelope"
+        type: string
+      reviewed_manifest_sha256:
+        description: "SHA-256 of the reviewed verified manifest"
+        type: string
 
 permissions:
   contents: read
@@ -54,6 +67,11 @@ jobs:
   validate:
     runs-on: macos-15
     steps:
+      - name: Reject a combined sign and publish request
+        if: github.event_name == 'workflow_dispatch' && inputs.sign && inputs.publish
+        run: |
+          echo "::error::Publish an artifact from a completed signing run."
+          exit 1
       - uses: actions/checkout@v4
       - name: Validate hosting cache rules and namespace restoration
         run: |
@@ -133,3 +151,140 @@ jobs:
           path: ${{ runner.temp }}/one-piece-signed-artifact/
           if-no-files-found: error
           retention-days: 30
+
+  publish-reviewed-artifact:
+    needs: validate
+    if: github.event_name == 'workflow_dispatch' && inputs.publish == true && github.ref == 'refs/heads/main'
+    runs-on: macos-15
+    environment: one-piece-catalog-production
+    concurrency:
+      group: scanstash-catalog-production-hosting
+      cancel-in-progress: false
+    permissions:
+      actions: read
+      contents: read
+    env:
+      HOSTING_ORIGIN: https://scanstash-catalog-prod.web.app
+      SIGNED_RUN_ID: ${{ inputs.signed_run_id }}
+      REVIEWED_SHA256: ${{ inputs.reviewed_sha256 }}
+      REVIEWED_ENVELOPE_SHA256: ${{ inputs.reviewed_envelope_sha256 }}
+      REVIEWED_MANIFEST_SHA256: ${{ inputs.reviewed_manifest_sha256 }}
+      BOOTSTRAP: ${{ inputs.bootstrap }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the reviewed signing run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$BOOTSTRAP" = true
+          [[ "$SIGNED_RUN_ID" =~ ^[0-9]+$ ]]
+          for digest in "$REVIEWED_SHA256" "$REVIEWED_ENVELOPE_SHA256" "$REVIEWED_MANIFEST_SHA256"; do
+            [[ "$digest" =~ ^[0-9a-f]{64}$ ]]
+          done
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$SIGNED_RUN_ID" | jq -e '
+            .path == ".github/workflows/one-piece-catalog.yml" and
+            .head_branch == "main" and .event == "workflow_dispatch" and .conclusion == "success"
+          '
+      - uses: actions/download-artifact@v4
+        with:
+          name: one-piece-signed-artifact-${{ inputs.signed_run_id }}
+          path: ${{ runner.temp }}/one-piece-reviewed-artifact
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.signed_run_id }}
+      - name: Verify the exact signed revision 1 artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          artifact="$RUNNER_TEMP/one-piece-reviewed-artifact"
+          printf '%s  %s\n' \
+            "$REVIEWED_ENVELOPE_SHA256" "$artifact/release-envelope.json" \
+            "$REVIEWED_MANIFEST_SHA256" "$artifact/verified-manifest.json" | shasum -a 256 -c -
+          trusted_keys="$RUNNER_TEMP/one-piece-app-pinned-keys.json"
+          python3 scripts/one_piece_pinned_keys.py Config/OnePieceCatalogProduction.xcconfig "$trusted_keys"
+          swift run --package-path OnePieceCatalogCore one-piece-catalog-publisher verify \
+            --input "$artifact/release-envelope.json" --trusted-keys "$trusted_keys" \
+            --reviewed-payload-sha256 "$REVIEWED_SHA256" --bootstrap-registry yes \
+            --manifest "$RUNNER_TEMP/one-piece-verified-manifest.json"
+          cmp "$RUNNER_TEMP/one-piece-verified-manifest.json" "$artifact/verified-manifest.json"
+      - name: Preserve the active site and stage the One Piece bootstrap
+        shell: bash
+        run: |
+          set -euo pipefail
+          envelope="$RUNNER_TEMP/one-piece-reviewed-artifact/release-envelope.json"
+          python3 - "$RUNNER_TEMP" "$envelope" <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from market_price_feeds import ORIGIN, read_http
+
+          root = Path(sys.argv[1])
+          approved = Path(sys.argv[2]).read_bytes()
+          limit = 68 * 1024 * 1024
+          pointer = read_http(f'{ORIGIN}/one-piece/v1/current.json', limit, absent_ok=True)
+          if pointer is not None:
+              sys.exit('::error::A One Piece production pointer already exists. The revision 1 bootstrap requires an absent pointer.')
+          immutable = read_http(f'{ORIGIN}/one-piece/v1/releases/1/catalog-release.json', limit, absent_ok=True)
+          if immutable is not None and immutable != approved:
+              sys.exit('::error::The existing immutable One Piece revision 1 has different bytes.')
+          for name, path in [('pokemon', 'v1/current.json'), ('magic', 'magic/v1/current.json')]:
+              data = read_http(f'{ORIGIN}/{path}', limit, absent_ok=name == 'magic')
+              if data is not None:
+                  (root / f'{name}-production-current.json').write_bytes(data)
+          PY
+          bash scripts/restore_catalog_hosting_site.sh \
+            "$RUNNER_TEMP/pokemon-production-current.json" "$RUNNER_TEMP/magic-production-current.json" \
+            publisher/site "$HOSTING_ORIGIN"
+          test ! -f publisher/site/one-piece/v1/current.json
+          destination=publisher/site/one-piece/v1
+          mkdir -p "$destination/releases/1"
+          if [ -f "$destination/releases/1/catalog-release.json" ]; then
+            cmp "$envelope" "$destination/releases/1/catalog-release.json"
+          fi
+          cp "$envelope" "$destination/releases/1/catalog-release.json"
+          cp "$envelope" "$destination/current.json"
+          bash scripts/verify_pokemon_catalog_hosting_config.sh
+      - name: Install Firebase CLI
+        run: npm install --global firebase-tools@13.35.1
+      - name: Deploy the preserved site to Firebase Hosting
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$FIREBASE_SERVICE_ACCOUNT"
+          test "$FIREBASE_PROJECT_ID" = scanstash-catalog-prod
+          test "$FIREBASE_HOSTING_SITE_ID" = scanstash-catalog-prod
+          service_account_file="$(mktemp "$RUNNER_TEMP/firebase-one-piece-service-account.XXXXXX")"
+          trap 'rm -f "$service_account_file"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$service_account_file"
+          export GOOGLE_APPLICATION_CREDENTIALS="$service_account_file"
+          firebase target:apply hosting production "$FIREBASE_HOSTING_SITE_ID" --project "$FIREBASE_PROJECT_ID"
+          firebase deploy --only hosting:production --project "$FIREBASE_PROJECT_ID" --non-interactive
+      - name: Verify live catalog bytes and cache headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          readback="$RUNNER_TEMP/one-piece-hosting-readback"
+          headers="$RUNNER_TEMP/one-piece-hosting-headers"
+          for origin in "$HOSTING_ORIGIN" https://catalog.scan-stash.com; do
+            for path in one-piece/v1/current.json one-piece/v1/releases/1/catalog-release.json \
+              v1/current.json magic/v1/current.json yugioh/v1/current.json market-prices/v1/index.json; do
+              expected="publisher/site/$path"
+              if [ ! -f "$expected" ]; then continue; fi
+              curl --fail --silent --show-error --retry 3 --max-time 60 \
+                --dump-header "$headers" --output "$readback" \
+                "$origin/$path?publication_check=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+              cmp "$expected" "$readback"
+              case "$path" in
+                one-piece/v1/current.json) grep -qi '^cache-control:.*no-cache' "$headers" ;;
+                one-piece/v1/releases/*)
+                  grep -qi '^cache-control:.*max-age=31536000' "$headers"
+                  grep -qi '^cache-control:.*immutable' "$headers" ;;
+              esac
+              printf 'Verified %s/%s\n' "$origin" "$path"
+            done
+          done
