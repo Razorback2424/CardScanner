@@ -118,7 +118,7 @@ final class DetailDeletionRenderTests: XCTestCase {
                     CardDetailPortfolioImpactView(state: .recorded(impact), range: .oneDay)
                     MarketHistoryChartContent(model: model, hasHistory: hasHistory, isLoading: false,
                         error: nil, direction: model.direction, range: .constant(.oneDay),
-                        selection: .constant(nil), retry: {})
+                        selection: PriceHistorySelection(), retry: {})
                 }
                 .padding(16).frame(width: 350).background(Color.black)
                 .environment(\.colorScheme, .dark).environment(\.dynamicTypeSize, size)
@@ -175,7 +175,7 @@ final class DetailDeletionRenderTests: XCTestCase {
         let model = PriceHistoryChartModel.market(points: [], range: .oneWeek, currentPrice: quote, now: now)
         for size in [DynamicTypeSize.large, .accessibility5] {
             let content = MarketHistoryChartContent(model: model, hasHistory: false, isLoading: false,
-                error: nil, direction: .flat, range: .constant(.oneWeek), selection: .constant(nil), retry: {})
+                error: nil, direction: .flat, range: .constant(.oneWeek), selection: PriceHistorySelection(), retry: {})
                 .padding(16).frame(width: 350).background(Color.black)
                 .environment(\.colorScheme, .dark).environment(\.dynamicTypeSize, size)
             let renderer = ImageRenderer(content: content)
@@ -288,14 +288,15 @@ final class DetailDeletionRenderTests: XCTestCase {
         XCTAssertFalse(all.samples.isEmpty, "Switching to all history must recover the saved samples")
 
         var range = PortfolioHistoryRange.oneWeek
-        var selection: Date? = now
+        let selection = PriceHistorySelection()
+        selection.select(at: all.plotRangeStart, in: all)
         let content = MarketHistoryChartContent(model: week, hasHistory: true, isLoading: false,
             error: nil, direction: .flat,
-            range: Binding(get: { range }, set: { range = $0 }),
-            selection: Binding(get: { selection }, set: { selection = $0 }), retry: {})
+            range: Binding(get: { range }, set: { range = $0 }), selection: selection, retry: {})
         content.showAllHistory()
         XCTAssertEqual(range, .all, "The recovery action must select all history")
-        XCTAssertNil(selection, "The current quote must not retain an out-of-range scrub selection")
+        XCTAssertNil(selection.date, "The current quote must not retain an out-of-range scrub selection")
+        XCTAssertNil(selection.sample)
         XCTAssertEqual(PriceHistoryChartModel.market(points: points, range: range, now: now).samples.count, 1)
     }
 
@@ -303,7 +304,7 @@ final class DetailDeletionRenderTests: XCTestCase {
         let model = PriceHistoryChartModel.market(points: [], range: .oneWeek)
         for size in [DynamicTypeSize.large, .accessibility3] {
             let content = MarketHistoryChartContent(model: model, hasHistory: false, isLoading: true,
-                error: nil, direction: .flat, range: .constant(.oneWeek), selection: .constant(nil), retry: {})
+                error: nil, direction: .flat, range: .constant(.oneWeek), selection: PriceHistorySelection(), retry: {})
                 .environment(\.dynamicTypeSize, size)
             let controller = UIHostingController(rootView: content)
             let measured = controller.sizeThatFits(in: CGSize(width: 350, height: 1000))
@@ -319,7 +320,7 @@ final class DetailDeletionRenderTests: XCTestCase {
         let model = PriceHistoryChartModel.market(points: history, range: .oneWeek, currentPrice: price, now: now)
         for size in [DynamicTypeSize.large, .accessibility3] {
             let content = PriceHistoryChartView(model: model, currencyCode: "USD", direction: .flat,
-                selectedDate: .constant(now))
+                selection: PriceHistorySelection())
                 .padding(16).frame(width: 350).background(Color.black)
                 .environment(\.colorScheme, .dark).environment(\.dynamicTypeSize, size)
             let renderer = ImageRenderer(content: content)
@@ -350,7 +351,7 @@ final class DetailDeletionRenderTests: XCTestCase {
         for _ in 0..<3 {
             let start = CACurrentMediaTime()
             let chart = PriceHistoryChartView(model: model, currencyCode: "USD", direction: .flat,
-                selectedDate: .constant(nil)).frame(width: 360, height: 240)
+                selection: PriceHistorySelection()).frame(width: 360, height: 240)
             let controller = UIHostingController(rootView: chart)
             let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 400))
             window.rootViewController = controller

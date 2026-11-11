@@ -3492,6 +3492,27 @@ final class PriceHistoryChartModelTests: XCTestCase {
         XCTAssertEqual(week.samples.map(\.amount), [Money(rounding: 15)!])
     }
 
+    func testScrubbingUsesEarlierPriceAtMidpointAndFirstPriceAtADuplicateTimestamp() {
+        let first = date(day: 1)
+        let last = date(day: 3)
+        let points = [
+            JustTCGHistoryPoint(p: 15, t: last.timeIntervalSince1970),
+            JustTCGHistoryPoint(p: 10, t: first.timeIntervalSince1970),
+            JustTCGHistoryPoint(p: 12, t: first.timeIntervalSince1970)
+        ]
+        let now = date(day: 5, hour: 18)
+        let quote = PriceDisplay(amount: 20, source: .tcgplayer, fetchedAt: now)
+        let model = PriceHistoryChartModel.market(points: points, range: .all,
+            currentPrice: quote, now: now, timeZone: timeZone)
+
+        XCTAssertNil(model.sample(at: first.addingTimeInterval(-1)))
+        XCTAssertEqual(model.sample(at: first)?.amount, Money(rounding: 10))
+        XCTAssertEqual(model.sample(at: date(day: 2))?.amount, Money(rounding: 10))
+        XCTAssertEqual(model.sample(at: date(day: 2).addingTimeInterval(1))?.amount, Money(rounding: 15))
+        XCTAssertEqual(model.sample(at: date(day: 4))?.amount, Money(rounding: 15))
+        XCTAssertEqual(model.sample(at: date(day: 5))?.amount, Money(rounding: 20))
+    }
+
     private let timeZone = TimeZone(secondsFromGMT: 0)!
 
     private var calendar: Calendar {
