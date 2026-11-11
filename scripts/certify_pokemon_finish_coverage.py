@@ -102,9 +102,9 @@ def write_json(path, value):
             temp.unlink(missing_ok=True)
 
 
-def checklist(root, set_id, *, read_bytes=Path.read_bytes, aggregate_evidence=None, snapshot=None):
+def checklist(root, set_id, *, aggregate_evidence=None, snapshot=None):
     snapshot = snapshot or root / SNAPSHOT
-    manifest = json.loads(read_bytes(snapshot / "manifest.json"))
+    manifest = read_json(snapshot / "manifest.json")
     entries = [entry for entry in manifest["entries"] if entry["providerID"] == set_id]
     if not entries:
         raise ValueError(f"Set {set_id} is absent from the bundled manifest")
@@ -113,7 +113,7 @@ def checklist(root, set_id, *, read_bytes=Path.read_bytes, aggregate_evidence=No
         resource = entry["resource"]
         if Path(resource).is_absolute() or ".." in Path(resource).parts or resource == "manifest.json":
             raise ValueError(f"Unsafe checklist resource {resource}")
-        raw = read_bytes(snapshot / resource)
+        raw = (snapshot / resource).read_bytes()
         slots = json.loads(raw)
         if not slots or len(slots) != entry.get("expandedSlotCount", len(slots)):
             raise ValueError(f"Incomplete checklist resource {resource}")
@@ -177,8 +177,13 @@ def signed_finish_evidence(root, set_id, cards):
             continue
         for variant in item.get("additionalVariants", []):
             card_id = variant["providerCardID"]
-            if (card := cards.get(card_id)) and catalog_name(variant["canonicalName"]) == catalog_name(card["name"]):
-                matched[card_id].append(variant)
+            if card_id not in cards:
+                continue
+            signed_name = variant["canonicalName"]
+            checklist_name = cards[card_id]["name"]
+            if catalog_name(signed_name) != catalog_name(checklist_name):
+                raise ValueError(f"Signed name {signed_name!r} differs from checklist name {checklist_name!r} for {card_id}")
+            matched[card_id].append(variant)
     return dict(matched)
 
 

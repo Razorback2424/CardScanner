@@ -216,7 +216,7 @@ class PokemonFinishCoverageTests(unittest.TestCase):
         self.assertEqual(coverage.read_json(self.snapshot / "finish-coverage.json")["sets"], {})
 
     def test_signed_standard_membership_must_be_in_the_certificate(self):
-        self.set_signed("sample-003", variantID="cosmos")
+        self.set_signed("sample-003", canonicalName="Éxample-Three", variantID="cosmos")
         evidence = self.reviewed()
         self.assertEqual(evidence["cards"]["sample-003"]["signedStandardFinishes"], ["cosmos"])
         coverage.write_json(self.evidence, evidence)
@@ -228,6 +228,20 @@ class PokemonFinishCoverageTests(unittest.TestCase):
         self.assertEqual(coverage.certify(self.root, "sample"), 4)
         result = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]
         self.assertEqual(result["cards"]["sample-003"], ["cosmos", "holo"])
+
+    def test_mismatched_signed_name_blocks_capture_and_certification(self):
+        mismatch = "Signed name 'Different Card' differs from checklist name 'Example Three' for sample-003"
+        self.set_signed("sample-003", canonicalName="Different Card", normalNeedsReview=True)
+        with self.assertRaisesRegex(ValueError, mismatch):
+            self.report()
+        self.assertFalse(self.capture.exists())
+
+        self.set_signed("sample-003", variantID="cosmos")
+        coverage.write_json(self.evidence, self.reviewed())
+        self.set_signed("sample-003", canonicalName="Different Card", variantID="cosmos")
+        with self.assertRaisesRegex(ValueError, mismatch):
+            coverage.certify(self.root, "sample")
+        self.assertEqual(coverage.read_json(self.snapshot / "finish-coverage.json")["sets"], {})
 
     def test_refuses_report_for_changed_snapshot(self):
         coverage.write_json(self.evidence, self.reviewed())

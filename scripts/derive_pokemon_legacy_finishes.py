@@ -2,9 +2,11 @@
 """Derive minimum finish evidence for bundled Normal-only Pokémon sets.
 
 Inputs are retained English TCGdex set responses, a pinned Pokémon TCG Data
-card list, and one TCGCSV product/price capture. The sources establish exact
-card identity and positive market membership. A missing lane is a review
-question. This output never certifies exhaustive finish coverage.
+card list, and one TCGCSV product/price capture. Aggregate repairs also need
+the original checklist snapshot used to review the Holo and Reverse slots.
+The sources establish exact card identity and positive market membership.
+A missing lane is a review question. This output never certifies exhaustive
+finish coverage.
 """
 from __future__ import annotations
 
@@ -13,7 +15,6 @@ from collections import defaultdict
 import json
 from pathlib import Path
 import re
-import subprocess
 
 from certify_pokemon_finish_coverage import (
     ROOT, SNAPSHOT, checklist, compare, local_number, name_key, numbered_products,
@@ -22,7 +23,6 @@ from certify_pokemon_finish_coverage import (
 from market_price_feeds import digest
 
 REVIEWED_SETS = {"sma", "xya"}  # Already covered by dedicated physical evidence.
-AGGREGATE_BASELINE = "d1d7fb8aa3073a5fa639f8764467ec7ecf88fcfd"
 STANDARD = {"normal", "holo", "reverse"}
 TRAIT_NAMES = {"Ω": "Omega", "α": "Alpha", "Δ": "Delta"}
 ASCENDED_REVERSE_PATTERNS = {
@@ -188,10 +188,10 @@ def derive_aggregates(evidence, by_set, patterns_for_card):
     return aggregates, receipt
 
 
-def ascended_market_evidence(repo, evidence, read_baseline):
+def ascended_market_evidence(repo, evidence, aggregate_baseline):
     report = read_json(evidence / "market-report.json")
     group = report["tcgplayerGroupID"]
-    cards, sources, _ = checklist(repo, "me02.5", read_bytes=read_baseline)
+    cards, sources, _ = checklist(repo, "me02.5", snapshot=aggregate_baseline)
     if report["setID"] != "me02.5" or report["checklistSources"] != sources:
         raise ValueError("Ascended Heroes market report differs from the checklist")
     raw = {kind: (evidence / f"market-{kind}.json").read_bytes() for kind in ("products", "prices")}
@@ -249,22 +249,22 @@ def released_normal_scope(evidence, candidate):
     }
 
 
-def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=None, candidate=None):
-    def read_baseline(path):
-        return subprocess.check_output(
-            ["git", "-C", str(repo), "show", f"{AGGREGATE_BASELINE}:{path.relative_to(repo).as_posix()}"]
-        )
-
-    baseline = json.loads(read_baseline(repo / SNAPSHOT / "manifest.json"))
+def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=None, candidate=None,
+           *, aggregate_baseline=None):
+    snapshot = repo / SNAPSHOT
+    baseline_root = aggregate_baseline or snapshot
+    baseline = read_json(baseline_root / "manifest.json")
     legacy_sets, legacy_resources = defaultdict(list), {}
     for entry in baseline["entries"]:
         resource = entry["resource"]
-        raw = read_baseline(repo / SNAPSHOT / resource)
+        if Path(resource).is_absolute() or ".." in Path(resource).parts or resource == "manifest.json":
+            raise ValueError(f"Unsafe checklist resource {resource}")
+        raw = (baseline_root / resource).read_bytes()
         slots = json.loads(raw)
         legacy_sets[entry["providerID"]].extend(slots)
         legacy_resources[resource] = (digest(raw), {slot["providerID"] for slot in slots})
     holo_aggregates, foil_receipt = derive_aggregates(foil_evidence, legacy_sets, cosmos_holo_aggregate)
-    market, reverse_market_sources = ascended_market_evidence(repo, reverse_evidence, read_baseline)
+    market, reverse_market_sources = ascended_market_evidence(repo, reverse_evidence, baseline_root)
     reverse_aggregates, reverse_receipt = derive_aggregates(
         reverse_evidence, {"me02.5": legacy_sets["me02.5"]},
         lambda card, variants: ascended_reverse_aggregate(card, variants, market.get(card["id"], set())),
@@ -274,11 +274,20 @@ def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=No
         resource: sha256 for resource, (sha256, ids) in sorted(legacy_resources.items())
         if repaired_cards & ids
     }
+    if aggregate_baseline is None:
+        # Replay from a shallow checkout only while the bundled bytes still
+        # reproduce the reviewed bindings.
+        previous = snapshot / "legacy-finish-evidence.json"
+        if not previous.is_file() or read_json(previous).get("aggregateChecklistSources") != aggregate_sources:
+            raise ValueError(
+                "Supply the checklist directory used for the review with --aggregate-baseline. "
+                f"If the review used the current bundle, run from the repository root with --aggregate-baseline {SNAPSHOT}."
+            )
 
-    manifest = read_json(repo / SNAPSHOT / "manifest.json")
+    manifest = read_json(snapshot / "manifest.json")
     by_set = defaultdict(list)
     for entry in manifest["entries"]:
-        by_set[entry["providerID"]].extend(read_json(repo / SNAPSHOT / entry["resource"]))
+        by_set[entry["providerID"]].extend(read_json(snapshot / entry["resource"]))
     scope = {}
     for set_id, rows in sorted(by_set.items()):
         if set_id not in REVIEWED_SETS and rows and all(
@@ -369,6 +378,8 @@ def main():
     parser.add_argument("--evidence", required=True, type=Path)
     parser.add_argument("--foil-evidence", required=True, type=Path)
     parser.add_argument("--reverse-evidence", required=True, type=Path)
+    parser.add_argument("--aggregate-baseline", type=Path,
+                        help="Original checklist directory. Defaults to the bundle when its reviewed hashes match.")
     parser.add_argument("--released-evidence", type=Path)
     parser.add_argument("--candidate", type=Path)
     parser.add_argument("--output", required=True, type=Path)
@@ -377,7 +388,7 @@ def main():
     if (args.released_evidence is None) != (args.candidate is None):
         parser.error("--released-evidence and --candidate are required together")
     output, report = derive(ROOT, args.evidence, args.foil_evidence, args.reverse_evidence,
-                            args.released_evidence, args.candidate)
+                            args.released_evidence, args.candidate, aggregate_baseline=args.aggregate_baseline)
     write_json(args.output, output)
     write_json(args.report, report)
     count = sum(bool(row["minimum"]) for row in output["cards"].values())
