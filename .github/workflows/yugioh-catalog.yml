@@ -144,15 +144,24 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          from urllib.error import HTTPError
           import os, sys
           sys.path.insert(0, 'scripts')
           from market_price_feeds import read_http, ORIGIN
           root = Path(os.environ['RUNNER_TEMP']) / 'price-catalog-pointers'
           root.mkdir(parents=True, exist_ok=True)
           for name, namespace in [('pokemon', 'v1'), ('magic', 'magic/v1')]:
-              raw = read_http(ORIGIN + '/' + namespace + '/current.json', 68 * 1024 * 1024, absent_ok=True)
-              if raw is not None:
-                  (root / (name + '-current.json')).write_bytes(raw)
+              path = root / (name + '-current.json')
+              try:
+                  raw = read_http(ORIGIN + '/' + namespace + '/current.json', 68 * 1024 * 1024, absent_ok=name == 'magic')
+              except HTTPError as error:
+                  if name == 'pokemon' and error.code == 404:
+                      sys.exit('::error::Production pointer v1/current.json is missing; restore the last verified Pokémon release before deploying the shared site.')
+                  raise
+              if raw is None:
+                  path.unlink(missing_ok=True)
+              else:
+                  path.write_bytes(raw)
           PY
           bash scripts/restore_catalog_hosting_site.sh \
             "$RUNNER_TEMP/price-catalog-pointers/pokemon-current.json" \

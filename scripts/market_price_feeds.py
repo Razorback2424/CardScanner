@@ -268,19 +268,24 @@ def validate_site(index, files):
                 raise ValueError("Mixed price build or invalid receipt")
     if total > MAX_SITE_BYTES or "last-updated.txt" not in paths or files["last-updated.txt"].decode().strip() != index["sourceBuild"]:
         raise ValueError("Invalid price site size/build marker")
-    for path in paths - {"last-updated.txt"}:
+    feed_paths = paths - {"last-updated.txt"}
+    if not feed_paths:
+        raise ValueError("Price feed must contain at least one product/price pair")
+    for path in feed_paths:
         peer = path.rsplit("/", 1)[0] + ("/prices" if path.endswith("/products") else "/products")
         if peer not in paths:
             raise ValueError("Incomplete product/price pair")
 
 
-def restore(site, origin=ORIGIN, fetch=read_http, require_fresh=False, now=stamp):
+def restore(site, origin=ORIGIN, fetch=read_http, require_fresh=False, now=stamp, require_present=False):
     if origin != ORIGIN:
         raise ValueError("Unexpected production origin")
     namespace = site / NAMESPACE
     local = namespace / "index.json"
     raw = local.read_bytes() if local.exists() else fetch(origin + "/" + NAMESPACE + "/index.json", 1024 * 1024, absent_ok=True)
     if raw is None:
+        if require_present:
+            raise ValueError("Published market-prices/v1/index.json is missing; restore the last feed or stage a validated replacement.")
         return False
     index = json.loads(raw)
     # Preflight paths and declared budgets before network/file reads.
@@ -330,6 +335,7 @@ def main():
     preserve.add_argument("--site-root", type=Path, required=True)
     preserve.add_argument("--origin", default=ORIGIN)
     preserve.add_argument("--require-fresh", action="store_true")
+    preserve.add_argument("--require-present", action="store_true")
     args = parser.parse_args()
     if args.command == "prepare":
         result = prepare(scope_from_repo(args.repo), args.cache_dir, args.site_root, yugioh_source=args.yugioh_source)
@@ -337,7 +343,9 @@ def main():
         args.report.write_bytes(packed(result))
         print(json.dumps({key: value for key, value in result.items() if key != "missingProducts"}, sort_keys=True))
     else:
-        print("Price namespace preserved" if restore(args.site_root, args.origin, require_fresh=args.require_fresh) else "No price namespace is published")
+        restored = restore(args.site_root, args.origin, require_fresh=args.require_fresh,
+                           require_present=args.require_present)
+        print("Price namespace preserved" if restored else "No price namespace is published")
 
 
 if __name__ == "__main__":

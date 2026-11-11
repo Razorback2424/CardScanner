@@ -28,21 +28,29 @@ class CatalogHostingRestoreTests(unittest.TestCase):
         (self.root / "bin").mkdir()
         self.environment = os.environ | {"PATH": str(self.root / "bin") + os.pathsep + os.environ["PATH"],
                                          "RUNNER_TEMP": str(self.root), "POINTER_STATUS": "200"}
+        self.pokemon_pointer = self.root / "pokemon-current.json"
+        self.pokemon_pointer.write_text("2")
         self.tool("curl", """#!/usr/bin/env python3
 import os, pathlib, sys
 a=sys.argv[1:]; url=a[-1]; output=pathlib.Path(a[a.index('--output')+1])
 status=os.environ.get('POINTER_STATUS','200') if url.endswith('current.json') else '200'
 if '/yugioh/' in url: status=os.environ.get('YUGIOH_POINTER_STATUS','404') if url.endswith('current.json') else '200'
+if url.endswith('web.app/v1/releases/2/catalog-release.json'): status=os.environ.get('POKEMON_RELEASE_STATUS','200')
 output.write_text('2' if url.endswith('current.json') or '/2/' in url else '1')
 print(status,end='')
 """)
         self.tool("swift", """#!/usr/bin/env python3
 import os, pathlib, sys
 a=sys.argv[1:]
-assert 'one-piece-catalog-publisher' in a and 'verify-hosted-release' in a
-assert '--trusted-keys' in a
-if os.environ.get('VERIFY_FAIL'): sys.exit(1)
-revision=pathlib.Path(a[a.index('--input')+1]).read_text()
+if 'one-piece-catalog-publisher' in a:
+    assert 'verify-hosted-release' in a and '--trusted-keys' in a
+    if os.environ.get('VERIFY_FAIL'): sys.exit(1)
+    path_flag='--input'
+else:
+    assert ('pokemon-catalog-publisher' in a or 'magic-catalog-publisher' in a) and 'verify-release' in a
+    assert '--trusted-keys-file' in a
+    path_flag='--path'
+revision=pathlib.Path(a[a.index(path_flag)+1]).read_text()
 if '--expected-revision' in a: assert a[a.index('--expected-revision')+1] == revision
 print(revision)
 """)
@@ -62,6 +70,7 @@ print(revision)
         self.tool("python3", f"""#!{sys.executable}
 import os, pathlib, subprocess, sys
 if len(sys.argv)>1 and sys.argv[1].endswith('market_price_feeds.py'):
+    assert '--require-present' in sys.argv
     pathlib.Path(os.environ['RUNNER_TEMP'], 'price-restore-called').write_text('called')
     sys.exit(1 if os.environ.get('PRICE_RESTORE_FAIL') else 0)
 sys.exit(subprocess.call([{sys.executable!r}] + sys.argv[1:]))
@@ -75,10 +84,34 @@ sys.exit(subprocess.call([{sys.executable!r}] + sys.argv[1:]))
         path.write_text(body)
         path.chmod(0o755)
 
-    def restore(self):
-        return subprocess.run(["bash", "scripts/restore_catalog_hosting_site.sh", "", "", "publisher/site",
-                               "https://scanstash-catalog-prod.web.app"], cwd=self.root,
+    def restore(self, *, bootstrap=False):
+        options = ["--bootstrap-pokemon"] if bootstrap else []
+        return subprocess.run(["bash", "scripts/restore_catalog_hosting_site.sh", *options,
+                               str(self.pokemon_pointer), "", "publisher/site", "https://scanstash-catalog-prod.web.app"], cwd=self.root,
                               env=self.environment, capture_output=True, text=True)
+
+    def test_missing_published_pokemon_pointer_blocks_shared_site_deploy(self):
+        self.pokemon_pointer.unlink()
+        result = self.restore()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Production pointer v1/current.json is missing", result.stderr)
+        self.assertFalse((self.root / "publisher/site").exists())
+        self.assertFalse((self.root / "price-restore-called").exists())
+
+    def test_explicit_pokemon_bootstrap_preserves_other_namespaces(self):
+        self.pokemon_pointer.unlink()
+        result = self.restore(bootstrap=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse((self.root / "publisher/site/v1").exists())
+        self.assertEqual((self.root / "publisher/site/one-piece/v1/current.json").read_text(), "2")
+        self.assertTrue((self.root / "price-restore-called").exists())
+
+    def test_missing_active_immutable_pokemon_revision_blocks_deployment(self):
+        self.environment["POKEMON_RELEASE_STATUS"] = "404"
+        result = self.restore()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing verified immutable v1 revision 2", result.stderr)
+        self.assertFalse((self.root / "publisher/site/v1/current.json").exists())
 
     def test_existing_callers_restore_one_piece_and_keep_other_namespaces(self):
         prior = self.root / "publisher/site/magic/v1/current.json"
@@ -121,12 +154,14 @@ sys.exit(subprocess.call([{sys.executable!r}] + sys.argv[1:]))
 
     def test_existing_callers_preserve_yugioh_and_all_unrelated_namespaces(self):
         self.environment["YUGIOH_POINTER_STATUS"] = "200"
-        unrelated = self.root / "publisher/site/v1/current.json"
+        unrelated = self.root / "publisher/site/index.html"
         unrelated.parent.mkdir(parents=True)
-        unrelated.write_text("existing pokemon")
+        unrelated.write_text("existing site content")
         result = self.restore()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(unrelated.read_text(), "existing pokemon")
+        self.assertEqual(unrelated.read_text(), "existing site content")
+        self.assertEqual((self.root / "publisher/site/v1/current.json").read_text(), "2")
+        self.assertEqual((self.root / "publisher/site/v1/releases/2/catalog-release.json").read_text(), "2")
         self.assertEqual((self.root / "publisher/site/one-piece/v1/current.json").read_text(), "2")
         for revision in (1, 2):
             for file in ("catalog.json", "catalog-release.json"):

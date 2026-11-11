@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+bootstrap_pokemon=false
+if [ "${1:-}" = "--bootstrap-pokemon" ]; then
+  bootstrap_pokemon=true
+  shift
+fi
+
 if [ "$#" -lt 4 ]; then
-  echo "usage: $0 POKEMON_POINTER_PATH MAGIC_POINTER_PATH SITE_ROOT ORIGIN [POKEMON_PACKAGE] [POKEMON_KEYS] [MAGIC_PACKAGE] [MAGIC_KEYS] [ONE_PIECE_POINTER_PATH] [ONE_PIECE_PACKAGE] [ONE_PIECE_KEYS]" >&2
+  echo "usage: $0 [--bootstrap-pokemon] POKEMON_POINTER_PATH MAGIC_POINTER_PATH SITE_ROOT ORIGIN [POKEMON_PACKAGE] [POKEMON_KEYS] [MAGIC_PACKAGE] [MAGIC_KEYS] [ONE_PIECE_POINTER_PATH] [ONE_PIECE_PACKAGE] [ONE_PIECE_KEYS]" >&2
   exit 2
 fi
 
@@ -32,6 +38,13 @@ fi
 if [ "$site_root" != "$expected_site_root" ]; then
   echo "site root $site_root is not the production catalog site root" >&2
   exit 2
+fi
+
+# Pokémon has an established production lineage on this site. The Pokémon
+# publish workflow can explicitly authorize its initial publication instead.
+if [ ! -f "$pokemon_active_path" ] && [ "$bootstrap_pokemon" != true ]; then
+  echo "Production pointer v1/current.json is missing; restore the last verified Pokémon release before deploying the shared site." >&2
+  exit 1
 fi
 
 verify_release() {
@@ -121,6 +134,10 @@ restore_namespace() {
       exit 1
     fi
     if [ "$status" = "404" ]; then
+      if [ "$revision" = "$current_revision" ]; then
+        echo "Missing verified immutable $namespace revision $revision; restore it before deploying the shared site." >&2
+        exit 1
+      fi
       rm -rf "$temporary_release"
       continue
     fi
@@ -171,12 +188,10 @@ restore_namespace() {
     restored=$((restored + 1))
   done
 
-  if [ "$namespace" = "one-piece/v1" ] || [ "$namespace" = "yugioh/v1" ]; then
-    cmp "$active_path" "$site_root/$namespace/releases/$current_revision/catalog-release.json" >/dev/null || {
-      echo "$namespace pointer must match its verified immutable revision" >&2
-      exit 1
-    }
-  fi
+  cmp "$active_path" "$site_root/$namespace/releases/$current_revision/catalog-release.json" >/dev/null || {
+    echo "$namespace pointer must match its verified immutable revision" >&2
+    exit 1
+  }
 
   mkdir -p "$site_root/$namespace"
   cp -f "$active_path" "$site_root/$namespace/current.json"
@@ -240,4 +255,4 @@ fi
 
 # Hosting deploys replace the complete site. Preserve independently published
 # daily prices too; an unreadable/corrupt existing namespace blocks preparation.
-python3 scripts/market_price_feeds.py restore --site-root "$site_root" --origin "$origin"
+python3 scripts/market_price_feeds.py restore --site-root "$site_root" --origin "$origin" --require-present

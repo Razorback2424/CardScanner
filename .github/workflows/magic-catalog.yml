@@ -264,7 +264,10 @@ jobs:
           fi
           case "$status" in
             200) ;;
-            404) rm -f "$active_path" ;;
+            404)
+              echo "::error::Production pointer v1/current.json is missing; restore the last verified Pokémon release before deploying the shared site." >&2
+              exit 1
+              ;;
             *) echo "Unexpected HTTP $status while reading the active Pokémon production pointer" >&2; exit 1 ;;
           esac
       - name: Restore the shared production hosting tree

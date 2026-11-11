@@ -293,16 +293,15 @@ jobs:
               ;;
           esac
       - name: Restore previously published production revision objects
-        run: >-
-          bash scripts/restore_catalog_hosting_site.sh
-          "${RUNNER_TEMP}/pokemon-catalog-production-current.json"
-          "${RUNNER_TEMP}/magic-catalog-production-current.json"
-          publisher/site
-          "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}"
-          PokemonCatalogCore
-          Config/PokemonCatalogProduction.xcconfig
-          MagicCatalogCore
-          Config/MagicCatalogProduction.xcconfig
+        run: |
+          restore_args=()
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.bootstrap }}" = "true" ]; then
+            restore_args+=(--bootstrap-pokemon)
+          fi
+          bash scripts/restore_catalog_hosting_site.sh "${restore_args[@]}" \
+            "${RUNNER_TEMP}/pokemon-catalog-production-current.json" \
+            "${RUNNER_TEMP}/magic-catalog-production-current.json" \
+            publisher/site "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}"
       - name: Publish the immutable production revision and current pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"

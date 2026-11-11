@@ -251,6 +251,28 @@ class MarketPriceFeedTests(unittest.TestCase):
             feeds.restore(self.root / "corrupt", fetch=fetch)
         self.assertFalse((self.root / "corrupt").exists())
 
+    def test_required_published_feed_can_use_a_validated_replacement(self):
+        with self.assertRaisesRegex(ValueError, "Published market-prices/v1/index.json is missing"):
+            feeds.restore(self.root / "absent", fetch=lambda *args, **kwargs: None, require_present=True)
+        source, _ = self.published()
+        self.assertTrue(feeds.restore(source.parent.parent, require_present=True,
+                                     fetch=lambda *args, **kwargs: self.fail("Prepared files require no network")))
+
+    def test_marker_only_feed_cannot_satisfy_publication_checks(self):
+        source, fetch = self.published()
+        index_path = source / "index.json"
+        index = json.loads(index_path.read_bytes())
+        index["files"] = [entry for entry in index["files"] if entry["path"] == "last-updated.txt"]
+        index_path.write_bytes(feeds.packed(index))
+
+        destination = self.root / "restored"
+        for site in (destination, source.parent.parent):
+            with self.subTest(site=site.name):
+                with self.assertRaisesRegex(ValueError, "at least one product/price pair"):
+                    feeds.restore(site, fetch=fetch, require_present=True, require_fresh=True,
+                                  now=lambda: "2026-10-29T09:00:00+00:00")
+        self.assertFalse(destination.exists())
+
     def test_restore_rejects_path_escape_duplicate_budget_and_missing_pair_before_publication(self):
         source, fetch = self.published()
         original = json.loads((source / "index.json").read_bytes())
