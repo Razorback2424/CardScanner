@@ -4,11 +4,25 @@ import XCTest
 
 private final class MembershipBoundaryURLProtocol: URLProtocol {
     nonisolated(unsafe) static var responses: [String: Data] = [:]
+    nonisolated(unsafe) static var transientFailures: [String: Int] = [:]
+    private static let failureLock = NSLock()
 
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
     override func startLoading() {
+        if let url = request.url {
+            let shouldFail = Self.failureLock.withLock {
+                guard let remaining = Self.transientFailures[url.path], remaining > 0 else { return false }
+                Self.transientFailures[url.path] = remaining - 1
+                return true
+            }
+            if shouldFail, let response = HTTPURLResponse(url: url, statusCode: 503, httpVersion: nil, headerFields: nil) {
+                client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+                client?.urlProtocolDidFinishLoading(self)
+                return
+            }
+        }
         guard let url = request.url,
               let data = Self.responses[url.path],
               let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil,
@@ -26,6 +40,28 @@ private final class MembershipBoundaryURLProtocol: URLProtocol {
 
 final class ProductionMembershipBoundaryTests: XCTestCase {
     private let generatedAt = Date(timeIntervalSince1970: 1_792_368_000)
+
+    func testLiveMetadataRecoversFromTransientProvider503() async throws {
+        let set = PokemonCatalogProviderSet(id: "fixture", name: "Fixture", cards: [], releaseDate: "2026-11-06")
+        let path = "/v2/en/sets/fixture"
+        MembershipBoundaryURLProtocol.responses = [path: try JSONEncoder().encode(set)]
+        MembershipBoundaryURLProtocol.transientFailures = [path: 1]
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [MembershipBoundaryURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        defer {
+            session.invalidateAndCancel()
+            MembershipBoundaryURLProtocol.responses = [:]
+            MembershipBoundaryURLProtocol.transientFailures = [:]
+        }
+        let client = PokemonCatalogTCGdexProviderClient(
+            session: session,
+            baseURL: try XCTUnwrap(URL(string: "https://publisher-fixture.invalid/v2/en"))
+        )
+        let sets = try await client.fetchSetMetadata(for: [.init(id: set.id, name: set.name)])
+        XCTAssertEqual(sets, [set])
+        XCTAssertEqual(MembershipBoundaryURLProtocol.transientFailures[path], 0)
+    }
 
     func testProductionInputBuildsOrdinaryCandidateWithoutAdmittingPartialCelebrationsMembership() async throws {
         let inputs = try load(PokemonCatalogHumanInputFile.self, path: "publisher/catalog-input.json")

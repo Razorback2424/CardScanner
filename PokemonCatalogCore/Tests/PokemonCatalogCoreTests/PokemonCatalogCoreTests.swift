@@ -6,6 +6,24 @@ import XCTest
 final class PokemonCatalogCoreTests: XCTestCase {
     private let generatedAt = Date(timeIntervalSince1970: 1_768_000_000)
 
+    func testPublicationLagReportsReleasedUnsignedSetsPastTheDiscoveryWindow() {
+        let day: TimeInterval = 24 * 60 * 60
+        let boundary = generatedAt.addingTimeInterval(-30 * day)
+        let policy = PokemonCatalogDiscoveryPolicy(automaticDiscoveryStartDate: "2025-11-10",
+            ignoredHistoricalProviderSetIDs: ["INTENTIONAL-HOLD"])
+        let dates = [
+            "me06": generatedAt.addingTimeInterval(-4 * day),
+            "exactly-due": generatedAt.addingTimeInterval(-2 * day),
+            "recent": generatedAt.addingTimeInterval(-2 * day + 1),
+            "future": generatedAt.addingTimeInterval(day),
+            "served": generatedAt.addingTimeInterval(-6 * day),
+            "intentional-hold": generatedAt.addingTimeInterval(-8 * day),
+            "historical": boundary.addingTimeInterval(-1),
+        ]
+        XCTAssertEqual(policy.overduePublicationIDs(releaseDates: dates, publishedProviderSetIDs: ["SERVED"],
+            discoveryBoundary: boundary, checkedAt: generatedAt), ["exactly-due", "me06"])
+    }
+
     func testTCGdexPathComponentsEncodePercentExactlyOnce() throws {
         let base = try XCTUnwrap(URL(string: "https://api.tcgdex.net/v2/en"))
 

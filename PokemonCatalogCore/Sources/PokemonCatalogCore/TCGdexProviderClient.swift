@@ -273,24 +273,34 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
         var request = URLRequest(url: url)
         request.timeoutInterval = 20
         do {
-            let (data, response) = try await session.data(for: request)
-            guard let http = response as? HTTPURLResponse else {
-                throw PokemonCatalogProviderFetchError.badResponse(path: path, statusCode: 0)
+            var retriesRemaining = 2
+            while true {
+                try Task.checkCancellation()
+                let (data, response) = try await session.data(for: request)
+                guard let http = response as? HTTPURLResponse else {
+                    throw PokemonCatalogProviderFetchError.badResponse(path: path, statusCode: 0)
+                }
+                if (200..<300).contains(http.statusCode) {
+                    do {
+                        return try JSONDecoder().decode(T.self, from: data)
+                    } catch {
+                        throw PokemonCatalogProviderFetchError.network(path: path, message: "decode: \(error)")
+                    }
+                }
+                guard retriesRemaining > 0, [429, 502, 503, 504].contains(http.statusCode) else {
+                    throw PokemonCatalogProviderFetchError.badResponse(path: path, statusCode: http.statusCode)
+                }
+                // Retry only transient responses to this idempotent GET.
+                // A persistent failure still stops the complete candidate.
+                let retryAfter = http.value(forHTTPHeaderField: "Retry-After").flatMap(Int.init)
+                let delay = min(15, max(1, retryAfter ?? (3 - retriesRemaining)))
+                retriesRemaining -= 1
+                try await Task.sleep(for: .seconds(delay))
             }
-            guard (200..<300).contains(http.statusCode) else {
-                throw PokemonCatalogProviderFetchError.badResponse(
-                    path: path,
-                    statusCode: http.statusCode
-                )
-            }
-            do {
-                return try JSONDecoder().decode(T.self, from: data)
-            } catch {
-                throw PokemonCatalogProviderFetchError.network(
-                    path: path,
-                    message: "decode: \(error)"
-                )
-            }
+        } catch is CancellationError {
+            throw CancellationError()
+        } catch let error as URLError where error.code == .cancelled {
+            throw CancellationError()
         } catch let error as PokemonCatalogProviderFetchError {
             throw error
         } catch {

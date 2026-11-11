@@ -166,31 +166,34 @@ struct PokemonCatalogPublisherMain {
                     "discovery policy has an invalid automaticDiscoveryStartDate"
                 )
             }
-            let unknownRows = directory.filter { row in
+            let unpublishedRows = directory.filter { row in
                 let key = row.id.lowercased()
                 return !row.isUnsupportedProduct
                     && !activeIDs.contains(key)
-                    && !overrideIDs.contains(key)
+                    && (activeRelease != nil || !overrideIDs.contains(key))
                     && !policy.ignoredHistoricalIDs.contains(key)
             }
-            let metadata = try await client.fetchSetMetadata(for: unknownRows)
+            let metadata = try await client.fetchSetMetadata(for: unpublishedRows)
             var directoryDates: [String: String] = [:]
-            for row in unknownRows {
+            for row in unpublishedRows {
                 if let releaseDate = row.releaseDate {
                     directoryDates[row.id.lowercased()] = releaseDate
                 }
             }
+            let configuredDates = humanInput.sets.reduce(into: [String: String]()) { dates, input in
+                dates[input.providerSetID.lowercased()] = input.releaseDate
+            }
+            var releaseDates: [String: Date] = [:]
             var dueIDs = Set<String>()
             var historicalIDs: [String] = []
             var pendingIDs: [String] = []
             var invalidMetadataIDs: [String] = []
             for providerSet in metadata {
                 let key = providerSet.id.lowercased()
-                guard let rawDate = providerSet.releaseDate ?? directoryDates[key] else {
-                    invalidMetadataIDs.append(key)
-                    continue
-                }
-                guard let releaseDate = catalogDate(rawDate) else {
+                let rawDate = providerSet.releaseDate ?? directoryDates[key] ?? configuredDates[key]
+                if let rawDate, let releaseDate = catalogDate(rawDate) { releaseDates[key] = releaseDate }
+                guard !overrideIDs.contains(key) else { continue }
+                guard let releaseDate = releaseDates[key] else {
                     invalidMetadataIDs.append(key)
                     continue
                 }
@@ -201,6 +204,13 @@ struct PokemonCatalogPublisherMain {
                 } else {
                     dueIDs.insert(key)
                 }
+            }
+            if let activeRelease {
+                let overdue = policy.overduePublicationIDs(
+                    releaseDates: releaseDates, publishedProviderSetIDs: activeIDs,
+                    discoveryBoundary: boundary, checkedAt: generatedAt
+                )
+                reportPublicationLag(overdue, activeRevision: activeRelease.revision)
             }
             if !historicalIDs.isEmpty {
                 print(
@@ -288,7 +298,7 @@ struct PokemonCatalogPublisherMain {
         } else {
             revision = (activeRelease?.revision ?? 0) + 1
         }
-        return try PokemonCatalogBuilder().build(
+        let result = try PokemonCatalogBuilder().build(
             PokemonCatalogBuildRequest(
                 fixture: fixtureForBuild,
                 activeRelease: activeRelease,
@@ -297,6 +307,8 @@ struct PokemonCatalogPublisherMain {
                 generatedAt: generatedAt
             )
         )
+        reportUniformNormalSets(result.report, fixture: fixtureForBuild)
+        return result
     }
 
     /// Recorded fixtures contain artwork URLs that were accepted during the
@@ -628,6 +640,46 @@ struct PokemonCatalogPublisherMain {
             .sorted()
         guard !admitted.isEmpty else { return }
         print("discovery admitted as not-scannable: \(admitted.joined(separator: ", "))")
+    }
+
+    private static func reportPublicationLag(_ ids: [String], activeRevision: Int) {
+        guard !ids.isEmpty else { return }
+        let setIDs = ids.map { id in
+            id.filter { $0.isASCII && ($0.isLetter || $0.isNumber || $0 == "-" || $0 == ".") }
+        }.joined(separator: ", ")
+        let message = "Pokémon sets released at least 48 hours ago are absent from verified revision \(activeRevision): \(setIDs)"
+        printWarning(title: "Pokémon catalog publication lag", message: message)
+    }
+
+    private static func reportUniformNormalSets(
+        _ report: PokemonCatalogReviewReport, fixture: PokemonCatalogProviderFixture
+    ) {
+        let addedExpansions = Set(report.sets.filter { $0.status == "added" && $0.recognitionKind == .expansion }
+            .map(\.providerSetID))
+        guard !addedExpansions.isEmpty else { return }
+        let details = Dictionary(fixture.cards.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        for set in fixture.sets where addedExpansions.contains(set.id) && !set.cards.isEmpty {
+            let uniform = set.cards.allSatisfy { card in
+                guard let detail = details[card.id], let flags = detail.variants,
+                      flags.normal, !flags.holo, !flags.reverse, !flags.firstEdition, flags.wPromo != true else { return false }
+                return (detail.variantsDetailed ?? []).allSatisfy {
+                    $0.type == "normal" && $0.foil == nil && ($0.stamp ?? []).isEmpty
+                }
+            }
+            if uniform {
+                let id = set.id.filter { $0.isASCII && ($0.isLetter || $0.isNumber || $0 == "-" || $0 == ".") }
+                printWarning(title: "Pokémon finish evidence",
+                    message: "Every card in new set \(id) reports only Normal (\(set.cards.count) cards). Verify finish membership before activation.")
+            }
+        }
+    }
+
+    private static func printWarning(title: String, message: String) {
+        if ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == "true" {
+            print("::warning title=\(title)::\(message)")
+        } else {
+            print(message)
+        }
     }
 
     private static let usage = """
