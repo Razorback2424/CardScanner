@@ -499,6 +499,10 @@ struct CatalogCardDetailView: View {
         switch VariantResolver.resolve(evidence) {
         case let .resolved(resolved): commit(resolved)
         case let .needsChoice(options, _):
+            guard !options.isEmpty else {
+                addFailure = "Scan Stash couldn't verify the finish for this card."
+                return
+            }
             finishOptions = options
             showsFinishChoice = true
         }

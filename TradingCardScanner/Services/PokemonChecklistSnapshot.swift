@@ -46,9 +46,14 @@ enum PokemonChecklistReviewedProjection {
         .union(PokemonFinishCoverage.sets.keys)
 
     static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
+        guard cards.contains(where: needsProjection) else {
+            return PokemonMasterSetDefinition.checklist(cards)
+        }
+        let cardsByProviderID = Dictionary(grouping: cards, by: \.providerID)
         var emitted = Set<String>()
         let reviewed = cards.flatMap { base -> [CatalogCardSummary] in
-            guard base.game == .pokemon, setIDs.contains(base.setID.providerID) else { return [base] }
+            guard needsProjection(base) else { return [base] }
+            let cardSlots = cardsByProviderID[base.providerID, default: []].filter { $0.setID == base.setID }
             let variants: [PhysicalVariant]
             if let certified = PokemonFinishCoverage.variants(cardID: base.providerID) {
                 variants = certified
@@ -58,19 +63,29 @@ enum PokemonChecklistReviewedProjection {
                 variants = reviewed
             } else if let parallel = PokemonReviewedParallelCatalog.entry(cardID: base.providerID),
                       parallel.matches(name: base.name, setID: base.setID.providerID, number: base.collectorNumber) {
-                variants = ScanText.unique(cards.filter { $0.providerID == base.providerID && $0.setID == base.setID }
-                    .compactMap(\.masterSetVariant) + [PokemonReviewedParallelCatalog.variant])
-            } else if PokemonFinishMinimumCatalog.entries[base.providerID] != nil {
+                variants = ScanText.unique(cardSlots.compactMap(\.masterSetVariant) + [PokemonReviewedParallelCatalog.variant])
+            } else if PokemonFinishMinimumCatalog.legacyEntries[base.providerID] != nil {
+                variants = PokemonFinishMinimumCatalog.projectingLegacy(cardID: base.providerID,
+                    variants: cardSlots.compactMap(\.masterSetVariant))
+            } else if PokemonFinishMinimumCatalog.minimum(cardID: base.providerID) != nil {
                 variants = PokemonFinishMinimumCatalog.retainingMinimum(cardID: base.providerID,
-                    variants: cards.filter { $0.providerID == base.providerID && $0.setID == base.setID }
-                        .compactMap(\.masterSetVariant))
+                    variants: cardSlots.compactMap(\.masterSetVariant))
+            } else if PokemonFinishMinimumCatalog.holoAggregates[base.providerID] != nil
+                        || PokemonFinishMinimumCatalog.reverseAggregates[base.providerID] != nil {
+                let holo = PokemonFinishMinimumCatalog.removingAggregate(.holo, cardID: base.providerID,
+                    variants: cardSlots.compactMap(\.masterSetVariant))
+                variants = PokemonFinishMinimumCatalog.removingAggregate(.reverse, cardID: base.providerID, variants: holo)
             } else { return [base] }
             guard emitted.insert(base.providerID).inserted else { return [] }
+            if variants.isEmpty {
+                var identity = base
+                identity.masterSetVariant = nil
+                identity.isExpandedMasterSetVariant = false
+                identity.isSoleSlotForCard = false
+                return [identity]
+            }
             return PokemonMasterSetDefinition.requiredSlots(for: variants, setProviderID: base.setID.providerID).map { slot in
-                var value = cards.first {
-                    $0.providerID == base.providerID && $0.setID == base.setID
-                        && $0.masterSetVariant == slot.variant
-                } ?? base
+                var value = cardSlots.first { $0.masterSetVariant == slot.variant } ?? base
                 value.masterSetVariant = slot.variant
                 value.isExpandedMasterSetVariant = slot.isExpanded
                 value.isSoleSlotForCard = slot.isSole
@@ -78,6 +93,11 @@ enum PokemonChecklistReviewedProjection {
             }
         }
         return PokemonMasterSetDefinition.checklist(reviewed)
+    }
+
+    private static func needsProjection(_ card: CatalogCardSummary) -> Bool {
+        card.game == .pokemon && (setIDs.contains(card.setID.providerID)
+            || PokemonFinishMinimumCatalog.holoAggregates[card.providerID] != nil)
     }
 
     static func entry(_ entry: PokemonChecklistSnapshotEntry, cards: [CatalogCardSummary]) -> PokemonChecklistSnapshotEntry {
@@ -989,13 +1009,24 @@ actor PokemonChecklistStore {
     /// reader wants the best data available — deciding whether the *overlay*
     /// needs repairing is `hasMergedChecklist(for:)`'s job, not this one's.
     func mergedChecklist(for setID: CatalogSetID) -> [CatalogCardSummary]? {
+        mergedChecklist(for: setID, providerFingerprint: nil, requiresExactFingerprint: false)
+    }
+
+    func mergedChecklist(
+        for setID: CatalogSetID, providerFingerprint: String?, requiresExactFingerprint: Bool
+    ) -> [CatalogCardSummary]? {
         installMemoryWarningObserverIfNeeded()
         let key = setID.id
         guard !unreadableChecklistIDs.contains(key) else { return nil }
         var encounteredUndecodableResource = false
         var encounteredUnreadableResource = false
 
-        if let entry = downloadedEntry(for: key) {
+        func matches(_ entry: PokemonChecklistSnapshotEntry) -> Bool {
+            providerFingerprint == nil || entry.providerFingerprint == providerFingerprint
+                || (!requiresExactFingerprint && entry.providerFingerprint == nil)
+        }
+
+        if let entry = downloadedEntry(for: key), matches(entry) {
             switch cachedChecklist(for: entry, in: root, isDownloaded: true) {
             case let .loaded(cards):
                 unreadableChecklistIDs.remove(key)
@@ -1007,7 +1038,9 @@ actor PokemonChecklistStore {
             }
         }
 
-        if let bundledRoot, let entry = bundledEntry(for: key) {
+        // An installed snapshot is the cold-start fallback. A cache entry
+        // already bound to a different signed revision requires exact parity.
+        if let bundledRoot, let entry = bundledEntry(for: key), !requiresExactFingerprint || matches(entry) {
             switch cachedChecklist(for: entry, in: bundledRoot, isDownloaded: false) {
             case let .loaded(cards):
                 unreadableChecklistIDs.remove(key)
@@ -1021,7 +1054,7 @@ actor PokemonChecklistStore {
 
         // Only a deterministic decode failure, with no transient I/O error
         // anywhere in the lookup, is safe to remember as permanently bad.
-        if encounteredUndecodableResource, !encounteredUnreadableResource {
+        if providerFingerprint == nil, encounteredUndecodableResource, !encounteredUnreadableResource {
             unreadableChecklistIDs.insert(key)
         }
         return nil

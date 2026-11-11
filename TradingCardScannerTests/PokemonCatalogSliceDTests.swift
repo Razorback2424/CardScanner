@@ -481,6 +481,34 @@ final class PokemonCatalogSliceDTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(setRequestCount, 1)
     }
 
+    func testSignedPromoReconcilesWhenAbsentFromBundleAndDirectory() async throws {
+        let root = SliceDFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = try SliceDFixture.provider()
+        let card = try SliceDFixture.card()
+        let fingerprint = try XCTUnwrap(PokemonMasterSetChecklistBuilder.canonicalFingerprint(
+            of: provider, cardDetails: [card.id: card]))
+        let descriptor = PokemonCatalogSetDescriptor(providerSetID: provider.id, displayName: "Test Promos",
+            releaseDate: "2026-01-01", releaseOrder: 7, recognitionKind: .promo, printedCode: nil,
+            officialCount: nil, printedPrefix: "TSP", catalogLocalIDPrefix: "", localIDPadWidth: 3,
+            scanEnabled: true, logoURL: nil, symbolURL: nil, providerFingerprint: fingerprint)
+        let coordinator = try await SliceDFixture.coordinator(root: root.appendingPathComponent("releases"),
+            descriptors: [descriptor])
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil)
+        let transport = SliceDTransport(rows: [], sets: [provider.id: provider], cards: [card.id: card])
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport, checklistStore: store, catalogCoordinator: coordinator)
+
+        await catalog.refreshCatalogNow()
+
+        let sets = try await catalog.sets(for: .pokemon)
+        let set = try XCTUnwrap(sets.first { $0.providerID == provider.id })
+        let page = try await catalog.cards(in: set, cursor: nil)
+        XCTAssertEqual(page.items.map(\.providerID), [card.id])
+        let merged = await store.mergedEntries()
+        XCTAssertEqual(merged.first?.providerFingerprint, fingerprint)
+    }
+
     func testReconciliationQueuePreservesIndependentFullSweepTimestamp() async throws {
         let root = SliceDFixture.tempRoot()
         defer { try? FileManager.default.removeItem(at: root) }

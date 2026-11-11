@@ -397,13 +397,16 @@ actor PokemonOfflineCatalog {
     func card(
         providerSetID: String,
         localID: String,
-        expectedOfficialCount: Int?
+        expectedOfficialCount: Int?,
+        requiresExactChecklistFingerprint: Bool = false
     ) async -> TCGdexCard? {
         await loadIfNeeded()
         for entry in entries where
             entry.providerID.caseInsensitiveCompare(providerSetID) == .orderedSame
             && entry.set.pokemonPrintRun == nil {
-            guard let cards = await store.mergedChecklist(for: entry.set.catalogID) else { continue }
+            let fingerprint = registry.descriptor(forProviderSetID: entry.providerID)?.providerFingerprint
+            guard let cards = await store.mergedChecklist(for: entry.set.catalogID,
+                providerFingerprint: fingerprint, requiresExactFingerprint: requiresExactChecklistFingerprint) else { continue }
             let snapshot = snapshot(entry: entry, cards: cards)
             if let card = PokemonOfflineCardFactory.card(
                 in: snapshot,
@@ -650,10 +653,8 @@ struct LivePokemonCardSource: PokemonCardSource, Sendable {
     }
 }
 
-/// Identity-only disk cache for cards that are outside the bundled modern
-/// checklist. Prices and finish claims are deliberately excluded; a cache hit
-/// is enough to route the card into the existing finish/price flows, not to make
-/// a stale market-data claim.
+/// Disk cache for exact Pokémon identity and provider finish membership.
+/// Price quotes and signed supplements are resolved separately.
 actor ResolvedPokemonCardCache {
     private static let writeQueue = DispatchQueue(
         label: "TradingCardScanner.ResolvedPokemonCardCache",
@@ -666,7 +667,7 @@ actor ResolvedPokemonCardCache {
         let cardID: String
         let localID: String
         let name: String
-        let image: String?
+        var image: String?
         let rarity: String?
         let setID: String
         let setName: String
@@ -676,10 +677,11 @@ actor ResolvedPokemonCardCache {
         /// catalog. An empty list cannot answer the finish question and is
         /// therefore never served as a cache hit.
         let variants: [PhysicalVariant]
+        let catalogFingerprint: String?
 
         enum CodingKeys: String, CodingKey {
             case key, storedAt, cardID, localID, name, image, rarity
-            case setID, setName, officialCount, setCode, variants
+            case setID, setName, officialCount, setCode, variants, catalogFingerprint
         }
 
         init(
@@ -694,7 +696,8 @@ actor ResolvedPokemonCardCache {
             setName: String,
             officialCount: Int,
             setCode: String,
-            variants: [PhysicalVariant]
+            variants: [PhysicalVariant],
+            catalogFingerprint: String?
         ) {
             self.key = key
             self.storedAt = storedAt
@@ -708,6 +711,7 @@ actor ResolvedPokemonCardCache {
             self.officialCount = officialCount
             self.setCode = setCode
             self.variants = variants
+            self.catalogFingerprint = catalogFingerprint
         }
 
         init(from decoder: Decoder) throws {
@@ -724,6 +728,7 @@ actor ResolvedPokemonCardCache {
             officialCount = try container.decode(Int.self, forKey: .officialCount)
             setCode = try container.decode(String.self, forKey: .setCode)
             variants = try container.decodeIfPresent([PhysicalVariant].self, forKey: .variants) ?? []
+            catalogFingerprint = try container.decodeIfPresent(String.self, forKey: .catalogFingerprint)
         }
     }
 
@@ -754,6 +759,7 @@ actor ResolvedPokemonCardCache {
         let card: TCGdexCard
         let setCode: String
         let storedAt: Date
+        let catalogFingerprint: String?
     }
 
     init(root: URL? = nil, appVersion: String? = nil) {
@@ -820,14 +826,16 @@ actor ResolvedPokemonCardCache {
                     )
                 }
         )
-        return CachedCard(card: card, setCode: entry.setCode, storedAt: entry.storedAt)
+        return CachedCard(card: card, setCode: entry.setCode, storedAt: entry.storedAt,
+            catalogFingerprint: entry.catalogFingerprint)
     }
 
     func store(
         card: TCGdexCard,
         setCode: String,
         key: String,
-        officialCount: Int? = nil
+        officialCount: Int? = nil,
+        catalogFingerprint: String? = nil
     ) async {
         await loadIfNeeded()
         var providerCard = card
@@ -852,7 +860,8 @@ actor ResolvedPokemonCardCache {
             setName: card.set.name,
             officialCount: officialCount ?? card.set.cardCount.official,
             setCode: setCode,
-            variants: variants
+            variants: variants,
+            catalogFingerprint: catalogFingerprint
         )
         if entries.count > Self.maxEntries {
             let oldest = entries.values
@@ -860,6 +869,15 @@ actor ResolvedPokemonCardCache {
                 .prefix(entries.count - Self.maxEntries)
             for entry in oldest { entries[entry.key] = nil }
         }
+        persist()
+    }
+
+    func addArtwork(_ image: String, cardID: String, key: String, catalogFingerprint: String?) async {
+        await loadIfNeeded()
+        guard var entry = entries[key], entry.cardID == cardID, entry.image == nil,
+              entry.catalogFingerprint == catalogFingerprint else { return }
+        entry.image = image
+        entries[key] = entry
         persist()
     }
 

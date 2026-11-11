@@ -47,18 +47,31 @@ enum PokemonFinishCoverage {
         let sets: [String: CertifiedSet]
     }
 
+    static let standardVariantIDs: Set<String> = {
+        guard let url = Bundle.main.url(forResource: "finish-coverage-variants", withExtension: "json", subdirectory: "PokemonChecklistSnapshot"),
+              let data = try? Data(contentsOf: url),
+              let ids = try? JSONDecoder().decode([String].self, from: data),
+              !ids.contains(PhysicalVariant.jumbo.id), !ids.contains(PhysicalVariant.firstEdition.id) else { return [] }
+        return Set(ids)
+    }()
+
     static let sets: [String: CertifiedSet] = {
         guard let url = Bundle.main.url(forResource: "finish-coverage", withExtension: "json", subdirectory: "PokemonChecklistSnapshot"),
-              let data = try? Data(contentsOf: url),
-              let table = try? JSONDecoder().decode(Table.self, from: data), table.schemaVersion == 1 else { return [:] }
+              let data = try? Data(contentsOf: url) else { return [:] }
+        return decodeSets(from: data)
+    }()
+
+    static func decodeSets(from data: Data) -> [String: CertifiedSet] {
+        guard let table = try? JSONDecoder().decode(Table.self, from: data), table.schemaVersion == 1 else { return [:] }
         return table.sets.filter { setID, set in
             !setID.isEmpty && set.tcgplayerGroupID > 0 && !set.reviewedAt.isEmpty && !set.evidence.isEmpty
                 && !set.cards.isEmpty && set.cards.allSatisfy { cardID, variants in
-                    !cardID.isEmpty && !variants.isEmpty && !variants.contains("")
-                        && Set(variants).count == variants.count
+                    let ids = Set(variants)
+                    return !cardID.isEmpty && !ids.isEmpty && ids.count == variants.count
+                        && ids.isSubset(of: standardVariantIDs)
                 }
         }
-    }()
+    }
 
     static let certified: [String: [PhysicalVariant]] = {
         var result: [String: [PhysicalVariant]] = [:]
@@ -98,23 +111,84 @@ enum PokemonFinishMinimumCatalog {
         }
     }
 
-    static let entries: [String: Entry] = {
-        guard let url = Bundle.main.url(forResource: "finish-minimums", withExtension: "json", subdirectory: "PokemonChecklistSnapshot"),
+    private struct ProjectionTable: Decodable {
+        let schemaVersion: Int
+        let cards: [String: Entry]
+        let holoAggregates: [String: Set<String>]
+        let reverseAggregates: [String: Set<String>]
+    }
+
+    private static let projection: ProjectionTable? = {
+        guard let url = Bundle.main.url(forResource: "legacy-finish-evidence", withExtension: "json",
+                                        subdirectory: "PokemonChecklistSnapshot"),
               let data = try? Data(contentsOf: url),
-              let entries = try? JSONDecoder().decode([String: Entry].self, from: data) else { return [:] }
-        return entries.filter { id, entry in id == entry.setID + "-" + entry.number }
+              let table = try? JSONDecoder().decode(ProjectionTable.self, from: data),
+              table.schemaVersion == 1 else { return nil }
+        return table
     }()
 
-    static let setIDs = Set(entries.values.map(\.setID))
+    static let legacyEntries: [String: Entry] = {
+        (projection?.cards ?? [:]).filter { id, entry in
+            id == entry.setID + "-" + entry.number && entry.variants.count == entry.minimum.count
+        }
+    }()
+
+    static let holoAggregates = projection?.holoAggregates ?? [:]
+    static let reverseAggregates = projection?.reverseAggregates ?? [:]
+    static let ascendedHeroesReversePatterns: Set<String> = [
+        "pokeBall", "duskBall", "friendBall", "quickBall", "loveBall", "team-rocket", "energy"
+    ]
+
+    static let entries: [String: Entry] = {
+        let url = Bundle.main.url(forResource: "finish-minimums", withExtension: "json",
+                                  subdirectory: "PokemonChecklistSnapshot")
+        let data = url.flatMap { try? Data(contentsOf: $0) }
+        let retained = data.flatMap { try? JSONDecoder().decode([String: Entry].self, from: $0) } ?? [:]
+        return retained.filter { id, entry in id == entry.setID + "-" + entry.number }
+    }()
+
+    static let setIDs = Set(entries.values.map(\.setID)).union(legacyEntries.values.map(\.setID))
+
+    static func minimum(cardID: String) -> Entry? {
+        guard PokemonFinishCoverage.variants(cardID: cardID) == nil else { return nil }
+        return entries[cardID]
+    }
 
     static func retainingMinimum(cardID: String, variants: [PhysicalVariant]) -> [PhysicalVariant] {
-        ScanText.unique(variants + (entries[cardID]?.variants ?? []))
+        ScanText.unique(variants + (minimum(cardID: cardID)?.variants ?? []))
     }
 
     static func supported(cardID: String, variants: [PhysicalVariant]) -> [PhysicalVariant] {
         retainingMinimum(cardID: cardID, variants: variants).filter {
-            !($0 == .normal && entries[cardID]?.normalNeedsReview == true)
+            !($0 == .normal && minimum(cardID: cardID)?.normalNeedsReview == true)
         }
+    }
+
+    /// These checklists were populated with the same Normal placeholder for
+    /// every card in the set. Retain positive finish evidence and withhold that
+    /// placeholder unless the exact card has a corroborated Normal product.
+    static func projectingLegacy(cardID: String, variants: [PhysicalVariant]) -> [PhysicalVariant] {
+        guard let evidence = legacyEntries[cardID],
+              PokemonFinishCoverage.variants(cardID: cardID) == nil else { return variants }
+        let supported = variants.filter { $0 != .normal || !evidence.normalNeedsReview }
+        return ScanText.unique(supported + evidence.variants)
+    }
+
+    static func normalNeedsReview(cardID: String) -> Bool {
+        if PokemonFinishCoverage.variants(cardID: cardID)?.contains(.normal) == true { return false }
+        return legacyEntries[cardID]?.normalNeedsReview == true || entries[cardID]?.normalNeedsReview == true
+    }
+
+    static func removingAggregate(_ finish: PhysicalVariant, cardID: String, variants: [PhysicalVariant]) -> [PhysicalVariant] {
+        if finish == .holo, let patterns = holoAggregates[cardID],
+           variants.contains(where: { patterns.contains($0.id) }) {
+            return variants.filter { $0 != .holo }
+        }
+        if finish == .reverse, let patterns = reverseAggregates[cardID],
+           patterns.isSubset(of: Set(variants.map(\.id))) {
+            return variants.filter { $0 != .reverse }
+        }
+        return variants
     }
 }
 
@@ -150,7 +224,7 @@ struct VariantEvidence: Equatable, Sendable {
         self.game = game
         self.setID = setID
         self.cardNumber = cardNumber
-        let minimum = game == .pokemon ? PokemonFinishMinimumCatalog.entries[setID + "-" + cardNumber] : nil
+        let minimum = game == .pokemon ? PokemonFinishMinimumCatalog.minimum(cardID: setID + "-" + cardNumber) : nil
         self.catalogVariants = minimum == nil ? catalogVariants
             : PokemonFinishMinimumCatalog.supported(cardID: setID + "-" + cardNumber, variants: catalogVariants)
         self.magicTreatments = magicTreatments
@@ -259,7 +333,9 @@ enum VariantResolver {
         // Checklist/cache membership can supply a sole supported Pokémon
         // finish without certifying exhaustive physical coverage. That still
         // needs no tap; background reconciliation checks coverage separately.
-        if possible.count == 1 {
+        let legacyNeedsFinishChoice = evidence.game == .pokemon && !evidence.physicalCoverageVerified
+            && PokemonFinishMinimumCatalog.legacyEntries[evidence.setID + "-" + evidence.cardNumber] != nil
+        if possible.count == 1 && !legacyNeedsFinishChoice {
             return .resolved(
                 ResolvedVariant(
                     variant: possible[0],
@@ -514,7 +590,7 @@ enum PokemonVariantRules {
     }
 
     static func requiresPhysicalReview(cardID: String, variant: PhysicalVariant) -> Bool {
-        (variant == .normal && PokemonFinishMinimumCatalog.entries[cardID]?.normalNeedsReview == true)
+        (variant == .normal && PokemonFinishMinimumCatalog.normalNeedsReview(cardID: cardID))
             || (reviewedVariants(cardID: cardID).map { !$0.contains(variant) } ?? false)
     }
 
@@ -522,7 +598,7 @@ enum PokemonVariantRules {
     /// holding the card can replace it; no automatic path may rekey it.
     static func requiresPhysicalReview(cardID: String, variantID: String?) -> Bool {
         guard let variantID else { return false }
-        if variantID == "normal", PokemonFinishMinimumCatalog.entries[cardID]?.normalNeedsReview == true { return true }
+        if variantID == "normal", PokemonFinishMinimumCatalog.normalNeedsReview(cardID: cardID) { return true }
         return reviewedVariants(cardID: cardID).map { reviewed in
             !reviewed.contains { $0.id == variantID }
         } ?? false

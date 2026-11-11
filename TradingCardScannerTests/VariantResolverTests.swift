@@ -157,6 +157,106 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         XCTAssertFalse(PokemonVariantRules.requiresPhysicalReview(cardID: "xy12-80", variant: .normal))
     }
 
+    func testLegacyPlaceholderProjectionReachesBrowseOfflineScanAndCertifiedOverride() async throws {
+        let snapshot = try await snapshot()
+        let snivy = try card("bw1-1", in: snapshot)
+        XCTAssertEqual(Set(snivy.catalogVariants), [.normal, .reverse])
+        let snivyEvidence = IdentifiedCard.pokemon(snivy, setCode: "BW").variantEvidence
+        XCTAssertFalse(snivyEvidence.physicalCoverageVerified)
+        XCTAssertEqual(Set(VariantResolver.options(for: snivyEvidence)), [.normal, .reverse])
+
+        let venusaur = try card("xy1-1", in: snapshot)
+        let evidence = IdentifiedCard.pokemon(venusaur, setCode: "XY").variantEvidence
+        XCTAssertEqual(venusaur.catalogVariants, [.holo])
+        XCTAssertEqual(VariantResolver.resolve(evidence), .needsChoice(options: [.holo], lockDidNotApply: nil))
+        XCTAssertTrue(PokemonVariantRules.requiresPhysicalReview(cardID: venusaur.id, variant: .normal))
+        let entry = try XCTUnwrap(snapshot.entry(forProviderID: "xy1"))
+        let slots = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
+        XCTAssertEqual(slots.filter { $0.providerID == venusaur.id }.compactMap(\.masterSetVariant), [.holo])
+
+        let unresolved = try card("ex5.5-1", in: snapshot)
+        XCTAssertTrue(unresolved.catalogVariants.isEmpty)
+        XCTAssertEqual(VariantResolver.resolveAcquisition(
+            IdentifiedCard.pokemon(unresolved, setCode: "PBP").variantEvidence,
+            printedEdition: .absent, finishLock: .init(finish: .normal)
+        ), .needsChoice(options: [], lockDidNotApply: nil))
+
+        PokemonFinishCoverage.$certifiedForTesting.withValue([venusaur.id: [.normal]]) {
+            let certified = IdentifiedCard.pokemon(venusaur, setCode: "XY").variantEvidence
+            XCTAssertTrue(certified.physicalCoverageVerified)
+            XCTAssertEqual(VariantResolver.resolve(certified),
+                .resolved(.init(variant: .normal, resolution: .uniqueInCatalog)))
+            XCTAssertEqual(PokemonMasterSetDefinition.requiredVariants(for: venusaur).map(\.variant), [.normal])
+            XCTAssertFalse(PokemonVariantRules.requiresPhysicalReview(cardID: venusaur.id, variant: .normal))
+        }
+    }
+
+    func testCosmosAggregateKeepsPlainHoloWithIndependentPositiveEvidence() async throws {
+        func providerCard(details: String, pricing: String = "null") throws -> TCGdexCard {
+            try JSONDecoder().decode(TCGdexCard.self, from: Data("""
+            {"id":"fixture-1","localId":"1","name":"Fixture",
+             "set":{"id":"fixture","name":"Fixture","cardCount":{"total":1,"official":1}},
+             "variants":{"holo":true,"normal":true,"reverse":false,"firstEdition":false},
+             "variants_detailed":\(details),"pricing":\(pricing)}
+            """.utf8))
+        }
+        let cosmos = PhysicalVariant.pokemonFoilPattern("cosmos")
+        let named = #"{"type":"holo","foil":"cosmos","size":"standard","languages":["en"]}"#
+        let plain = #"{"type":"holo","size":"standard","languages":["en"]}"#
+        let japanese = #"{"type":"holo","size":"standard","languages":["ja"]}"#
+        XCTAssertEqual(Set(try providerCard(details: "[\(named),\(japanese)]").catalogVariants), [.normal, cosmos])
+        XCTAssertEqual(Set(try providerCard(details: "[\(named),\(plain)]").catalogVariants), [.normal, .holo, cosmos])
+        XCTAssertEqual(Set(try providerCard(details: "[\(named)]",
+            pricing: #"{"tcgplayer":{"holofoil":{"productId":456,"marketPrice":3}}}"#).catalogVariants),
+            [.normal, .holo, cosmos])
+
+        let bundled = try await snapshot()
+        let ralts = try card("me01-058", in: bundled)
+        XCTAssertTrue(ralts.catalogVariants.contains(cosmos))
+        XCTAssertFalse(ralts.catalogVariants.contains(.holo))
+        XCTAssertTrue(try card("sv06-060", in: bundled).catalogVariants.contains(.holo))
+    }
+
+    func testAscendedHeroesAggregateReverseRetainsNamedPatternsAndTruePlainControls() async throws {
+        let bundled = try await snapshot()
+        let oddish = try card("me02.5-001", in: bundled)
+        XCTAssertTrue(oddish.catalogVariants.contains(.pokeBall))
+        XCTAssertTrue(oddish.catalogVariants.contains(.pokemonFoilPattern("energy")))
+        XCTAssertFalse(oddish.catalogVariants.contains(.reverse))
+        XCTAssertTrue(try card("me02.5-183", in: bundled).catalogVariants.contains(.reverse))
+        XCTAssertTrue(try card("me02.5-185", in: bundled).catalogVariants.contains(.reverse))
+
+        let live = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
+        {"id":"me02.5-999","localId":"999","name":"Fixture",
+         "set":{"id":"me02.5","name":"Ascended Heroes","cardCount":{"total":295,"official":217}},
+         "variants":{"holo":false,"normal":true,"reverse":true,"firstEdition":false},
+         "variants_detailed":[{"type":"reverse","foil":"energy"},{"type":"reverse","foil":"pokeball"}]}
+        """#.utf8))
+        XCTAssertEqual(Set(live.catalogVariants), [.normal, .pokeBall, .pokemonFoilPattern("energy")])
+    }
+
+    func testReleasedDeltaReignPlaceholderUsesExactProductMinimums() throws {
+        func card(number: String, name: String) -> TCGdexCard {
+            TCGdexCard(id: "me06-" + number, localId: number, name: name, image: nil, rarity: nil,
+                set: .init(id: "me06", name: "Delta Reign", cardCount: .init(total: 141, official: 103)),
+                variants: .init(firstEdition: false, holo: false, normal: true, reverse: false, wPromo: false),
+                pricing: nil, variantsDetailed: nil)
+        }
+        let heracross = card(number: "001", name: "Heracross")
+        XCTAssertEqual(Set(heracross.catalogVariants), [.normal, .reverse])
+        let holo = card(number: "011", name: "Mega Golisopod ex")
+        let evidence = IdentifiedCard.pokemon(holo, setCode: "DLR").variantEvidence
+        XCTAssertEqual(evidence.catalogVariants, [.holo])
+        XCTAssertEqual(VariantResolver.resolve(evidence), .needsChoice(options: [.holo], lockDidNotApply: nil))
+        XCTAssertEqual(PokemonMasterSetDefinition.requiredVariants(for: heracross).map(\.variant), [.normal, .reverse])
+        let left = card(number: "094", name: "Legendary Pyroduct")
+        let right = card(number: "095", name: "Legendary Pyroduct")
+        XCTAssertNotEqual(left.id, right.id)
+        XCTAssertEqual(left.catalogVariants, [.normal])
+        XCTAssertEqual(right.catalogVariants, [.normal])
+        XCTAssertEqual(card(number: "132", name: "Bubbly Water Energy").catalogVariants, [.holo])
+    }
+
     func testOldDownloadRefreshAndReopenPreserveMinimumAndUnrelatedData() async throws {
         let bundled = try await snapshot()
         let affected = Set(try ledger().compactMap { $0["provider_id"] })
@@ -393,6 +493,27 @@ final class RetailVariantTests: XCTestCase {
         XCTAssertFalse(PokemonMasterSetDefinition.requiredVariants(for: card).contains { $0.variant == .jumbo })
     }
 
+    func testCertifiedStandardFinishesPreserveSignedJumboAcquisition() throws {
+        let json = #"""
+        {"id":"sv03-125","localId":"125","name":"Charizard ex",
+         "set":{"id":"sv03","name":"Obsidian Flames","cardCount":{"total":230,"official":197}},
+         "variants":{"normal":true,"holo":false,"reverse":false,"firstEdition":false}}
+        """#
+        let raw = try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
+        let card = raw.applyingAdditionalVariants(from: try registryWithOBF())
+
+        PokemonFinishCoverage.$certifiedForTesting.withValue([card.id: [.holo]]) {
+            let identified = IdentifiedCard.pokemon(card, setCode: "OBF")
+            XCTAssertTrue(identified.variantEvidence.physicalCoverageVerified)
+            XCTAssertEqual(card.catalogVariants, [.holo, .jumbo])
+            XCTAssertEqual(VariantResolver.resolveAcquisition(identified.variantEvidence, printedEdition: .absent),
+                .needsChoice(options: [.holo, .jumbo], lockDidNotApply: nil))
+            XCTAssertEqual(PokemonMasterSetDefinition.requiredVariants(for: card).map(\.variant), [.holo])
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .jumbo, printRun: nil), 581987)
+            XCTAssertEqual(raw.catalogVariants, [.holo])
+        }
+    }
+
     func testJumboRejectsForeignConflictingAmbiguousAndStandardProductEvidence() throws {
         for jumbo in [
             #"{"type":"lenticular","size":"jumbo","languages":["ja"],"thirdParty":{"tcgplayer":641615}}"#,
@@ -423,6 +544,69 @@ final class RetailVariantTests: XCTestCase {
         let removed = await adapter.updating(try self.registry(includeSupplements: false))
         guard case let .resolved(result) = try await removed.lookup(identifier) else { return XCTFail("Expected exact printing") }
         XCTAssertEqual(result.card.variantEvidence.catalogVariants, [.holo])
+    }
+
+    func testChangedSetFingerprintRejectsResolvedCacheAndOlderOfflineChecklist() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let oldFingerprint = String(repeating: "a", count: 64)
+        let newFingerprint = String(repeating: "b", count: 64)
+        func registry(revision: Int, fingerprint: String) -> PokemonCatalogRegistry {
+            .init(release: .init(revision: revision, generatedAt: .now, sets: [
+                .init(providerSetID: "fixture", displayName: "Fixture", releaseDate: "2026-01-01", releaseOrder: 1,
+                    recognitionKind: .expansion, printedCode: "TST", officialCount: 100, printedPrefix: nil,
+                    catalogLocalIDPrefix: nil, localIDPadWidth: nil, scanEnabled: true, logoURL: nil, symbolURL: nil,
+                    providerFingerprint: fingerprint)
+            ]))
+        }
+        let old = registry(revision: 1, fingerprint: oldFingerprint)
+        let current = registry(revision: 2, fingerprint: newFingerprint)
+        let setID = CatalogSetID(game: .pokemon, providerID: "fixture")
+        let set = CatalogSet(catalogID: setID, name: "Fixture", code: "TST", logoURL: nil, symbolURL: nil,
+            cardCount: 1, releaseDate: nil, sortRank: 0)
+        var summary = CatalogCardSummary(game: .pokemon, providerID: "fixture-001", setID: setID, setName: set.name,
+            setCode: set.code, name: "Fixture Card", collectorNumber: "001", thumbnailURL: nil, imageURL: nil)
+        summary.masterSetVariant = .normal
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil)
+        let provider = TCGdexCard(id: summary.providerID, localId: summary.collectorNumber, name: summary.name,
+            image: nil, rarity: nil, set: .init(id: set.providerID, name: set.name, cardCount: .init(total: 100, official: 100)),
+            variants: .init(firstEdition: false, holo: true, normal: false, reverse: false, wPromo: nil),
+            pricing: nil, variantsDetailed: nil)
+        let oldProvider = TCGdexCard(id: provider.id, localId: provider.localId, name: provider.name, image: nil,
+            rarity: nil, set: provider.set,
+            variants: .init(firstEdition: false, holo: false, normal: true, reverse: false, wPromo: nil),
+            pricing: nil, variantsDetailed: nil)
+        let diskRoot = root.appendingPathComponent("resolved")
+        let original = PokemonCatalogAdapter(source: RetailVariantSource(cards: [provider.id: oldProvider]),
+            offline: PokemonOfflineCatalog(store: store, registry: old), resolvedDiskCache: .init(root: diskRoot), registry: old)
+        let identifier = try XCTUnwrap(PokemonScanProfile(registry: old).parse("TST EN 001/100"))
+        guard case let .resolved(before) = try await original.lookup(identifier) else { return XCTFail("Expected old provider result") }
+        XCTAssertEqual(before.path, .network)
+        XCTAssertEqual(before.card.variantEvidence.catalogVariants, [.normal])
+        try await store.publish(.from(builtSets: [
+            .init(set: set, cards: [summary], providerFingerprint: oldFingerprint,
+                providerProbeFingerprint: "old-probe", officialCount: 100, standardSlotCount: 1, expandedSlotCount: 1)
+        ]))
+
+        let adapter = PokemonCatalogAdapter(source: RetailVariantSource(cards: [provider.id: provider]),
+            offline: PokemonOfflineCatalog(store: store, registry: old), resolvedDiskCache: .init(root: diskRoot), registry: old)
+        let updated = await adapter.updating(current)
+        guard case let .resolved(after) = try await updated.lookup(identifier) else { return XCTFail("Expected refreshed result") }
+        XCTAssertEqual(after.path, .network)
+        XCTAssertEqual(after.card.variantEvidence.catalogVariants, [.holo])
+
+        let reopened = PokemonCatalogAdapter(source: RetailVariantSource(cards: [:]),
+            offline: PokemonOfflineCatalog(store: store, registry: current), resolvedDiskCache: .init(root: diskRoot), registry: current)
+        guard case let .resolved(cached) = try await reopened.lookup(identifier) else { return XCTFail("Expected bound cache hit") }
+        XCTAssertEqual(cached.path, .cacheHit)
+        XCTAssertEqual(cached.card.variantEvidence.catalogVariants, [.holo])
+
+        let cold = PokemonCatalogAdapter(source: RetailVariantSource(cards: [provider.id: provider]),
+            offline: PokemonOfflineCatalog(store: store, registry: current),
+            resolvedDiskCache: .init(root: root.appendingPathComponent("cold")), registry: current)
+        guard case let .resolved(refreshed) = try await cold.lookup(identifier) else { return XCTFail("Expected current provider result") }
+        XCTAssertEqual(refreshed.path, .network)
+        XCTAssertEqual(refreshed.card.variantEvidence.catalogVariants, [.holo])
     }
 
     func testEeveeChecklistProjectionIsAdditiveIdempotentAndLimitedToGrandMaster() throws {
@@ -809,6 +993,21 @@ final class VariantResolverTests: XCTestCase {
             XCTAssertEqual(VariantResolver.resolveAcquisition(identified.variantEvidence, printedEdition: .absent),
                 .resolved(.init(variant: .reverse, resolution: .uniqueInCatalog)))
         }
+    }
+
+    func testCoverageDecoderRejectsUnsupportedIDsAndAcceptsReviewedExtensions() throws {
+        let accepted = ["holo", "cosmos", "pokemonStamp|holo|set-logo|", "pokemonObject|reverse||peelable-ditto"]
+        let rejected = ["holoo", "jumbo", "firstEdition", "foil", "pokemonStamp|holo|set-loog|"]
+        var cases = Dictionary(uniqueKeysWithValues: rejected.map { ($0, ["holo", $0]) })
+        cases["accepted"] = accepted
+        let sets = cases.mapValues { finishes -> [String: Any] in
+            ["tcgplayerGroupID": 1, "reviewedAt": "2026-11-10", "evidence": "fixture.json", "cards": ["fixture-1": finishes]]
+        }
+        let data = try JSONSerialization.data(withJSONObject: ["schemaVersion": 1, "sets": sets])
+        let decoded = PokemonFinishCoverage.decodeSets(from: data)
+        XCTAssertEqual(Set(decoded.keys), ["accepted"])
+        XCTAssertEqual(decoded["accepted"]?.cards["fixture-1"], accepted)
+        XCTAssertTrue(PokemonFinishCoverage.standardVariantIDs.allSatisfy { PhysicalVariant.resolving($0).id == $0 })
     }
 
     func testResolutionCertaintyDoesNotReuseAutomaticRevisitSemantics() {

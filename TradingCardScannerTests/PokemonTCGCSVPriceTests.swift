@@ -965,7 +965,17 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
     }
 
     func testReviewedFinishRepairPreservesUserConfirmedChoices() throws {
-        let card = IdentifiedCard.pokemon(try Self.card("30th-c-014"), setCode: "30C")
+        let raw = try Self.card("30th-c-014")
+        let uncertified = PokemonFinishCoverage.$certifiedForTesting.withValue([:]) {
+            IdentifiedCard.pokemon(raw, setCode: "30C")
+        }
+        XCTAssertNil(PokemonFinishReconciliation.repair(
+            storedVariantID: "normal", storedResolution: .uniqueInCatalog,
+            itemKind: .rawCard, printRun: nil, card: uncertified
+        ))
+        let card = PokemonFinishCoverage.$certifiedForTesting.withValue([raw.id: [.holo]]) {
+            IdentifiedCard.pokemon(raw, setCode: "30C")
+        }
         XCTAssertEqual(PokemonFinishReconciliation.repair(
             storedVariantID: "normal", storedResolution: .uniqueInCatalog,
             itemKind: .rawCard, printRun: nil, card: card
@@ -1479,12 +1489,14 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             let actor = PriceRefreshModelActor(modelContainer: container)
             await actor.setPokemonFetchOverrideForTesting { _ in throw URLError(.notConnectedToInternet) }
             await actor.setTCGCSVSourceForTesting(RecordedTCGCSV(snapshot: try snapshot("30th-c")))
-            let result = await actor.run(PriceRefreshRequest(
-                usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: false,
-                sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false
-            ), progress: { _ in }, shouldContinue: nil)
+            let result = await PokemonFinishCoverage.$certifiedForTesting.withValue(["30th-c-014": [.holo]]) {
+                await actor.run(PriceRefreshRequest(
+                    usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: false,
+                    sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false
+                ), progress: { _ in }, shouldContinue: nil)
+            }
             guard case let .completed(report) = result else { return XCTFail("Expected completed refresh") }
-            // Unlisted Normal needs physical review; a reviewed mapping can
+            // Unlisted Normal needs physical review; a certified mapping can
             // still repair another automatically inferred finish and price it.
             let expectsRepair = storedVariant == .reverse
             XCTAssertEqual(report.repairedFinishes, expectsRepair ? 1 : 0)

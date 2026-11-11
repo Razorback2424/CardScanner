@@ -95,9 +95,7 @@ struct PokemonCatalogAdapter: GameCatalogAdapter {
         let card = await engine.recoveringArtworkIfNeeded(for: resolution.card)
         let enriched = CardCatalog.CatalogResolution(card, isPersistable: resolution.isPersistable,
             retrievedAt: resolution.retrievedAt, path: resolution.path)
-        if card.storedImageURL != nil {
-            await engine.persistResolution(enriched, for: identifier)
-        }
+        await engine.persistRecoveredArtwork(enriched, for: identifier)
         return enriched
     }
     func card(for candidate: PokemonCatalogCardIdentity, matching evidence: PokemonHistoricalScanEvidence,
@@ -231,8 +229,9 @@ actor PokemonCatalogEngine {
         return enriched
     }
 
-    func persistResolution(_ enriched: CatalogResolution, for identifier: ScanIdentifier) async {
-        if enriched.isPersistable, case let .pokemon(pokemonCard, setCode) = enriched.card.legacyIdentity,
+    private func persistResolution(_ enriched: CatalogResolution, for identifier: ScanIdentifier) async {
+        if identifier.catalogGeneration == catalogGeneration, enriched.isPersistable,
+           case let .pokemon(pokemonCard, setCode) = enriched.card.legacyIdentity,
            let key = Self.persistentKey(for: identifier) {
             let count: Int?
             switch identifier.legacyIdentity {
@@ -240,8 +239,18 @@ actor PokemonCatalogEngine {
             case let .pokemonHistorical(evidence): count = evidence.number.denominator
             default: count = nil
             }
-            await resolvedDiskCache.store(card: pokemonCard, setCode: setCode, key: key, officialCount: count)
+            let fingerprint = catalogRegistry.descriptor(forProviderSetID: pokemonCard.set.id)?.providerFingerprint
+            await resolvedDiskCache.store(card: pokemonCard, setCode: setCode, key: key,
+                officialCount: count, catalogFingerprint: fingerprint)
         }
+    }
+
+    func persistRecoveredArtwork(_ enriched: CatalogResolution, for identifier: ScanIdentifier) async {
+        guard identifier.catalogGeneration == catalogGeneration, enriched.isPersistable,
+              case let .pokemon(card, _) = enriched.card.legacyIdentity,
+              let image = card.storedArtworkURL, let key = Self.persistentKey(for: identifier) else { return }
+        let fingerprint = catalogRegistry.descriptor(forProviderSetID: card.set.id)?.providerFingerprint
+        await resolvedDiskCache.addArtwork(image, cardID: card.id, key: key, catalogFingerprint: fingerprint)
     }
 
     func currentRegistry() -> PokemonCatalogRegistry { catalogRegistry }
@@ -260,37 +269,19 @@ actor PokemonCatalogEngine {
                let card = PokemonReviewedEnergyCatalog.card(setID: definition.tcgdexSetID, localID: number) {
                 return CatalogResolution(.pokemon(card, setCode: code), path: .cacheHit)
             }
-            if let diskKey,
-               let cached = await resolvedDiskCache.card(for: diskKey) {
-                let historicalCacheIsStale: Bool
-                if case let .pokemonHistorical(evidence) = identifier.legacyIdentity {
-                    let membership = PokemonHistoricalIdentityResolver.membershipIdentities(
-                        for: evidence,
-                        in: registry
-                    )
-                    historicalCacheIsStale = registry.isScanDisabled(
-                        forProviderSetID: cached.card.set.id
-                    ) || membership.contains {
-                        $0.providerID.caseInsensitiveCompare(cached.card.id) != .orderedSame
-                    }
-                } else {
-                    historicalCacheIsStale = false
-                }
-                if historicalCacheIsStale {
-                    // A historical card can be served by an older persistent
-                    // cache entry even after its set is withdrawn or a newer
-                    // membership reveals an ambiguous reprint. Remove it and
-                    // continue through the registry-gated paths below;
-                    // already-dispatched modern identifiers remain valid because
-                    // their captured definition is part of the identifier.
-                    await resolvedDiskCache.invalidateEntry(for: diskKey)
-                } else {
+            var requiresExactChecklistFingerprint = false
+            if let diskKey, let cached = await resolvedDiskCache.card(for: diskKey) {
+                let fingerprint = registry.descriptor(forProviderSetID: cached.card.set.id)?.providerFingerprint
+                if cached.catalogFingerprint == fingerprint {
                     return CatalogResolution(
                         .pokemon(cached.card, setCode: cached.setCode),
                         retrievedAt: cached.storedAt,
                         path: .cacheHit
                     )
                 }
+                // Once a resolved set changes, an older offline checklist
+                // must not refill the same cache entry under the new authority.
+                requiresExactChecklistFingerprint = cached.catalogFingerprint != nil
             }
 
             switch identifier.legacyIdentity {
@@ -300,7 +291,8 @@ actor PokemonCatalogEngine {
                 if let card = await offline.card(
                     providerSetID: setDefinition.tcgdexSetID,
                     localID: cardNumber,
-                    expectedOfficialCount: printedTotal
+                    expectedOfficialCount: printedTotal,
+                    requiresExactChecklistFingerprint: requiresExactChecklistFingerprint
                 ) {
                     return CatalogResolution(.pokemon(card, setCode: setCode), path: .cacheHit)
                 }
@@ -314,7 +306,8 @@ actor PokemonCatalogEngine {
 
             case let .pokemonEnergy(code, localID, definition):
                 if let card = await offline.card(providerSetID: definition.tcgdexSetID,
-                    localID: localID, expectedOfficialCount: nil) {
+                    localID: localID, expectedOfficialCount: nil,
+                    requiresExactChecklistFingerprint: requiresExactChecklistFingerprint) {
                     return CatalogResolution(.pokemon(card, setCode: code), path: .cacheHit)
                 }
                 // Existing 001–008 use the same exact set/local-ID transport
@@ -328,7 +321,8 @@ actor PokemonCatalogEngine {
                 if let card = await offline.card(
                     providerSetID: setDefinition.tcgdexSetID,
                     localID: localID,
-                    expectedOfficialCount: nil
+                    expectedOfficialCount: nil,
+                    requiresExactChecklistFingerprint: requiresExactChecklistFingerprint
                 ) {
                     return CatalogResolution(.pokemon(card, setCode: prefix), path: .cacheHit)
                 }

@@ -108,13 +108,14 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     }
 
     var catalogVariants: [PhysicalVariant] {
-        if let certified = PokemonFinishCoverage.variants(cardID: id) { return certified }
-        return catalogVariantsWithoutCertification
+        if let certified = PokemonFinishCoverage.variants(cardID: id) {
+            return addingReviewedVariants(to: certified)
+        }
+        return PokemonFinishMinimumCatalog.projectingLegacy(cardID: id, variants: catalogVariantsWithoutCertification)
     }
 
-    /// What TCGdex says this printing physically exists as, drawn from both
-    /// places it says it: the `variants` booleans and the `variants_detailed`
-    /// entries. Both are the catalog speaking, so both belong here.
+    /// Merge the provider's broad flags with its individual objects. A broad
+    /// flag can summarize a detailed foil pattern already in the result.
     ///
     /// The supplemental rules layer may still widen this for sets whose parallel
     /// patterns TCGdex does not model at all; no *rule* is applied here.
@@ -152,7 +153,35 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
            !result.contains(PokemonReviewedParallelCatalog.variant) {
             result.append(PokemonReviewedParallelCatalog.variant)
         }
-        return addingReviewedVariants(to: PokemonFinishMinimumCatalog.retainingMinimum(cardID: id, variants: result))
+        let prices = pricing?.tcgplayer
+        if variants?.holo == true, prices?.holo == nil, prices?.holofoil == nil {
+            let holoDetails = standardEnglishDetails(type: "holo")
+            if holoDetails.isEmpty {
+                result = PokemonFinishMinimumCatalog.removingAggregate(.holo, cardID: id, variants: result)
+            } else if holoDetails.allSatisfy({ $0.foil?.lowercased() == "cosmos" }) {
+                result.removeAll { $0 == .holo }
+            }
+        }
+        if set.id == "me02.5", variants?.reverse == true, prices?.reverse == nil, prices?.reverseHolofoil == nil {
+            let reverseDetails = standardEnglishDetails(type: "reverse")
+            if reverseDetails.isEmpty {
+                result = PokemonFinishMinimumCatalog.removingAggregate(.reverse, cardID: id, variants: result)
+            } else {
+                let patterns = Set(reverseDetails.map { $0.physicalVariant?.id ?? "" })
+                if patterns.count == 2, patterns.contains("energy"),
+                   patterns.isSubset(of: PokemonFinishMinimumCatalog.ascendedHeroesReversePatterns) {
+                    result.removeAll { $0 == .reverse }
+                }
+            }
+        }
+        let retained = PokemonFinishMinimumCatalog.retainingMinimum(cardID: id, variants: result)
+        return addingReviewedVariants(to: retained)
+    }
+
+    private func standardEnglishDetails(type: String) -> [TCGdexDetailedVariant] {
+        (variantsDetailed ?? []).filter {
+            $0.type == type && $0.isStandardEnglish && ($0.size ?? "standard").lowercased() == "standard"
+        }
     }
 
     var authorizedJumbo: PokemonCatalogAdditionalVariant? {
