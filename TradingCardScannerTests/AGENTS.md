@@ -34,10 +34,10 @@ Example for a precision-editor change: `-only-testing:TradingCardScannerTests/Ce
 
 ## Running
 
-Use the shape the workflows use (`.github/workflows/catalog-coverage-tests.yml`), with derived data and the result bundle on the external SSD per the root guide:
+Use the ProfileLocal scheme for local tests, with derived data and the result bundle on the external SSD per the root guide.
 
 ```bash
-xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -configuration Debug -destination "platform=iOS Simulator,id=<SIMULATOR_ID>" -derivedDataPath "<SSD>/TradingCardScannerDerivedData/<run>" -resultBundlePath "<SSD>/TradingCardScannerDerivedData/<run>.xcresult" -only-testing:TradingCardScannerTests/<Class>
+xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner-ProfileLocal -destination "platform=iOS Simulator,id=<SIMULATOR_ID>" -derivedDataPath "<SSD>/TradingCardScannerDerivedData/<run>" -resultBundlePath "<SSD>/TradingCardScannerDerivedData/<run>.xcresult" -only-testing:TradingCardScannerTests/<Class>
 ```
 
 Select classes (or `<Class>/<testMethod>`) by changed behavior; widen to neighboring suites when the change crosses a boundary named in the source guides.

@@ -33,6 +33,7 @@ Read the guide for the directory you are changing; when a change crosses a bound
 - Inspect `git status --short` and relevant diffs before editing; preserve existing user changes and untracked files.
 - Make the smallest focused change. Use `apply_patch`; do not rewrite unrelated files.
 - Use an external SSD as the preferred/default location for build artifacts, derived data, dependency caches, compiler caches, and similar temporary or generated build data whenever one is available; use internal storage only as a fallback when no external SSD is available.
+- Use the existing `TradingCardScanner-ProfileLocal` scheme for local builds and tests.
 - Run the narrowest verification that exercises the changed behavior, then expand when risk warrants it: app code → `xcodebuild` with `-only-testing` for the affected classes; a catalog package → `swift test --package-path <Package>`; scripts → the focused `python3 -m unittest discover -s scripts/tests -p <test_file>.py`. A change that crosses one of those boundaries verifies both sides. Report failures accurately.
 - For documentation-only changes, validate links and run `git diff --check`.
 - Do not claim physical-device, provider, CloudKit, archive, or release readiness from source inspection or simulator-only evidence.

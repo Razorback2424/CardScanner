@@ -2,6 +2,36 @@
 
 **Status:** current validation, measurement, and catalog-hardening backlog — latest review reconciliation 2026-11-10.
 
+## Catalog publication automation — 2026-11-11
+
+Pokémon and Magic already have scheduled discovery and publication workflows.
+Yu-Gi-Oh! schedules catalog candidates and publishes daily prices. One Piece
+uses a reviewed signed artifact, and the Lorcana acquisition catalog ships in
+the app. Each game has its own authority and source evidence, while the hosted
+publishers share the same Firebase site.
+
+After verifying the first One Piece publication, align the hosted workflows
+around one sequence. Build a candidate from retained provider evidence,
+compare it to the signed live revision, validate stable IDs and finish rules,
+sign the exact validated bytes, preserve the live namespaces under the shared
+Hosting lock, then verify the published bytes from the origin and custom domain.
+Keep the candidate and readback receipts tied to the same run.
+
+Run verified price, artwork and other content refreshes automatically. Allow
+additive new sets when they pass the game’s identity and finish checks. Hold
+changes that remove or remap existing printings, change acquisition authority,
+or lack evidence for physical variants. A new-set label alone cannot determine
+eligibility. The staged Pokémon revision 23 report includes Delta Reign and
+authority changes to five existing sets.
+[Pokémon candidate context](../audits/catalog-follow-up-2026-11-10.md#pokémon-signed-scope-cache-and-delivery).
+
+Start with the common Hosting publish and readback path and enforce the review
+decision in GitHub. The Pokémon production environment currently has no
+required reviewer, and the workflow's `requires_approval` output records intent
+without enforcing a pause. Keep routine runs unattended once their validation
+passes and route authority changes to a protected environment.
+[Pokémon workflow](../../.github/workflows/pokemon-catalog.yml).
+
 ## Grade and finish review — 2026-11-10
 
 Source: `2527c9b4163a4b9694e509ca245b9ca96d8ba38c` plus the combined dirty

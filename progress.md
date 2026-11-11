@@ -1,3 +1,78 @@
+# 2026-11-11 — Pokémon checklist provenance and finish certification
+
+The scanner rechecks provisional offline results on the next lookup, including
+when the matching checklist installs during the first lookup. Finish review
+now retains each capture revision and binds it to the audited minimums,
+historical ledger, signed evidence, and vocabulary. The Cosmos Holo and
+Ascended Heroes Reverse repairs verify the bundled resource path and bytes.
+
+The Debug iOS 27.0 simulator run on the local `d1d7fb8` working tree passed
+162 tests with zero failures or skips. The selection covered
+`PokemonChecklistBrowseTests`, `PokemonFinishEvidenceTests`, `RetailVariantTests`,
+`PokemonCatalogInvalidationTests`, and `CardGameForwardCompatibilityTests`.
+The Launch Review simulator result is `PokemonProvenance-20261111/Catalog-Final.xcresult`
+on the external build volume. The nine focused regressions also passed under
+`TradingCardScanner-ProfileLocal` with DebugRemoteLocal on the same simulator.
+That result is `PokemonProvenance-20261111/ProfileLocal.xcresult`.
+
+Separately, 26 focused Python tests and the audited minimums check passed.
+The retained Ascended Heroes comparison replayed for all 295 card rows, and
+the retained generator reproduced the bundled evidence file byte for byte.
+[Certification workflow](docs/audits/launch-review-2026-11-10.md#lr06--pokémon-singleton-certainty-requires-certified-coverage).
+
+# 2026-11-11 — Macro hardware check in ProfileLocal
+
+ProfileLocal exposes the Macro light check under Pro. The check uses Scan’s
+Macro camera setup, pauses recognition and compares Off, Low and Medium. The
+optimized `ReleaseLocal` simulator build from the working tree at `d1d7fb8`
+opened the check and returned to Pro with Done on an iPhone 13 mini simulator.
+The arm64 iPhone build passed with signing disabled after unattended signing
+stalled. The paired iPhone was disconnected. Torch output and card readability
+still need the physical check. [Manual checklist](docs/plans/scanner-low-light-plan.md#run-the-manual-check).
+
+# 2026-11-11 — Camera lens shortcut in Scan
+
+Added Macro and Standard to the existing scan-options menu on devices with
+both lenses. The checkmark follows the confirmed input, and switching lenses
+invalidates tracking while preserving duplicate protection. The toolbar keeps
+its spinner in the second row when needed and summarizes multiple finish locks
+at accessibility text sizes. The focused Debug run passed 234 tests. Rendered
+iPhone and iPad fixtures confirmed the menu and the Settings selection. Scan
+light awaits the Macro hardware check. The paired phone could launch over
+Wi-Fi, but the debugger did not return the torch capability.
+[Plan and verification](docs/plans/scanner-low-light-plan.md).
+
+# 2026-11-11 — Rehearsed One Piece Hosting publication
+
+Prepared the opt-in revision 1 publication job with a dedicated environment
+and the existing shared Hosting concurrency group. The exact signed artifact
+passed verification and the tampered hash probe failed. The read-only staging
+rehearsal preserved every live catalog and price path and added the two One
+Piece paths. Firebase supplies its reserved SDK initialization paths. All 12
+restoration and pin-export tests passed. The isolated workflow change awaits
+PR delivery and the protected One Piece Hosting environment.
+[Publication instructions](docs/release/one-piece-production-setup-2026-10-23.md#protected-firebase-publication).
+[Automation follow-up](docs/plans/release_followups.md#catalog-publication-automation--2026-11-11).
+
+# 2026-11-11 — Verified and bundled signed One Piece revision 1
+
+Run `42964299916` signed revision 1 after owner approval. The local verifier
+matched the signed payload to the reviewed hash and app pin, and reproduced
+the workflow manifest. Added the exact signed envelope to the app bundle. An
+unsigned Release simulator build reproduced the envelope hash and read back
+the production origin and pin with rollout disabled and writes off. All five
+selected launch-review tests passed. Both live One Piece pointer checks
+returned 404. Hosted publication and installed Release acceptance remain open.
+[Artifact and verification](docs/release/one-piece-production-setup-2026-10-23.md).
+
+# 2026-11-10 — Started protected One Piece revision 1 signing
+
+Verified PR #21 is merged and GitHub `main` at `d1d7fb8` contains the exact
+reviewed candidate, the production public pin and the test fixture corrections.
+Started the One Piece signing workflow with the approved payload hash.
+Validation passed. The owner subsequently approved the signing job.
+[Signing run](https://github.com/Razorback2424/CardScanner/actions/runs/42964299916).
+
 # 2026-11-10 — Corrected the remaining finish-certification test fixtures
 
 PR #21's broad iOS check on `7a6223c` failed with seven assertions across four
@@ -7,8 +82,8 @@ the structural refresh fixture certified Normal coverage. All four affected
 suites passed locally with 90 tests passed, one live-price skip and zero
 failures, including the cache-reopen regression. Results are retained on the
 External SSD result bundle: `CodexBuilds/CatalogGateFollowup/Focused.xcresult`.
-Local `main` advanced to `676503a` during verification. GitHub `main` remains
-`f73d2e0`; the fixture corrections and passing CI still need delivery.
+Local `main` advanced to `676503a` during verification. GitHub `main` was
+`f73d2e0` at that readback.
 [Verification details](docs/audits/catalog-follow-up-2026-11-10.md#verification).
 
 # 2026-11-10 — Validated and repaired the catalog findings

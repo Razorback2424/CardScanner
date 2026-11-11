@@ -10,29 +10,45 @@ dedicated One Piece workflow, with approval before key creation/provisioning or
 publication. This document is the concrete proposal for that approval. Source
 rights and physical-device acceptance remain separate launch gates.
 
-**2026-11-10 follow-up after publication clearance.** The exact unsigned revision 1 bytes
-are staged locally at `publisher/one-piece/production/revision-1/candidate.json`.
-The validation-only workflow passed on `main`. The GitHub signing environment
-requires owner approval and permits only `main`. The owner enabled self-review
-for solo signing and confirmed administrator bypass is disabled. GitHub API
-readback verified the reviewer and branch rules. The environment has the key ID
-variable and signing secret. The owner supplied the public pin, which is now
-in the local production configuration. Draft PR #21 contains both files at
-`7a6223c`. A fresh unsigned rebuild matches the approved bytes. All 46 package
-tests and both pin-exporter tests pass locally. After review and merge, the
-owner can start the signing run and then approve the waiting job. The job
-verifies the resulting envelope against the configured pin.
+**2026-11-10 signing follow-up.** PR #21 is merged, and GitHub `main` at
+`d1d7fb8` contains the owner-supplied public pin, the exact reviewed candidate
+and the fixture corrections for the earlier PR iOS failures. All four affected
+suites passed locally with 90 passed tests and one live-price skip.
 [Signing preparation PR](https://github.com/Razorback2424/CardScanner/pull/21).
-[Validation run](https://github.com/Razorback2424/CardScanner/actions/runs/42928865589).
-
-The broader PR iOS job subsequently failed with seven assertions across four
-test methods on `7a6223c`. The catalog follow-up distinguishes that committed
-state from the newer working-tree verification. The affected four suites now
-pass locally with 90 passed tests and one live-price skip. Those corrections
-and a successful PR validation are still required before merge. Local `main`
-advanced to `676503a` during verification, while GitHub `main` remained
-`f73d2e0` at readback.
 [Current verification](../audits/catalog-follow-up-2026-11-10.md#verification).
+
+Signing run `42964299916` started on `d1d7fb8` with the reviewed revision 1
+payload hash. The signing environment requires owner approval and permits only
+`main`. The owner enabled self-review for solo signing and confirmed
+administrator bypass is disabled. GitHub readback verified the reviewer and
+branch rules and the presence of the dedicated key ID variable and signing
+secret. Validation passed, and the owner approved the signing job.
+[Signing run](https://github.com/Razorback2424/CardScanner/actions/runs/42964299916).
+
+**2026-11-11 signing result.** Run `42964299916` signed production revision 1.
+The downloaded archive matched GitHub's artifact digest. The publisher verified
+the envelope locally against the app pin and the reviewed payload hash. The
+locally verified manifest matched both workflow manifests byte for byte.
+[Signed artifact](https://github.com/Razorback2424/CardScanner/actions/runs/42964299916/artifacts/13854385009).
+
+| Signed artifact identity | Value |
+| --- | --- |
+| Production key ID | `one-piece-production-2026-10-23-01` |
+| Envelope SHA-256 | `0e73474b578de859fe59da5cd7f1ad96d3215c08679115af04fa84712247be24` |
+| Verified manifest SHA-256 | `3b22cbef55ed973447d8d1905c321cc91318d425a837b4bf4ef9c1bf89a4d7b7` |
+| Reviewed payload SHA-256 | `251165ad79ebe34e9b2d8a37919f711d8affb2d550386eac7a71bd27d8323c0b` |
+
+Both the Firebase origin and custom domain returned HTTP 404 for the One Piece
+pointer on November 11. This is the starting state for publication review.
+
+The working tree based on `d1d7fb8` packages the signed file at the app bundle
+root. The ordinary unsigned Release simulator build succeeded. Its packaged
+envelope matched the verified artifact byte for byte. The processed plist
+reported the production origin, the dedicated pin, rollout `disabled` and
+writes `NO`. All five selected launch-review tests passed on the dedicated
+iOS 27.0 simulator. The archive, manifests, build log and test result bundle
+are retained on the external SSD under
+`CodexBuilds/OnePieceSigned-42964299916.yOGqXyAd/`.
 
 ## Exact unsigned candidate
 
@@ -53,8 +69,8 @@ External SSD artifact directory:
 `CardScannerBuilds/OnePieceProductionPreparation-20261023/Candidate/`.
 It contains `candidate.json`, `candidate-receipt.json`, the unchanged
 `reviewed-source-r3.json`, and extracted `registry.json`, `observations.json` and
-`inventories.json`. No signing material is present. The large payload remains
-outside the repository pending publication/redistribution approval.
+`inventories.json`. The preparation directory contains the unsigned inputs.
+PR #21 brought the exact approved candidate into `main`.
 
 The retained reviewed revision-3 payload matches the
 [earlier receipt](../research/catalog-variant-coverage-2026-10-15/one-piece-candidate.json)
@@ -115,22 +131,36 @@ The resulting `release-envelope.json` and independently verified manifest will
 have new hashes that cannot exist until production signing. Record both hashes
 and verify the payload digest above before requesting publication approval.
 
-## Deployment changes for a later, separate approval
+## Protected Firebase publication
 
-The current One Piece workflow is sign-only. Publication needs a manual,
-default-off job with these concrete changes; none is active in this preparation:
+The publication job is prepared locally in the One Piece workflow. It requires
+a reviewed merge to `main` and the protected `one-piece-catalog-production`
+environment. Dispatch with `publish=true`, `bootstrap=true`, `sign=false`,
+`signed_run_id=42964299916`, and the three hashes from the signing result.
+Use `reviewed_sha256` for the payload hash, `reviewed_envelope_sha256` for the
+envelope hash, and `reviewed_manifest_sha256` for the verified manifest hash.
+
+The November 11 rehearsal used the signed artifact and read-only production
+responses. It restored Pokémon through revision 22 and verified all 1,337
+indexed price-feed objects. Comparing the staged paths with the live Hosting
+inventory showed exactly two added One Piece paths. Firebase supplies the two
+reserved SDK initialization paths at deploy time. All 12 hosting-restoration
+and pin-export tests passed. The artifact check rejected a wrong hash, and the
+bootstrap probes rejected an existing pointer, a conflicting immutable file,
+and a missing Pokémon pointer.
+[Firebase reserved URLs](https://firebase.google.com/docs/hosting/reserved-urls).
 
 1. Consume the exact verified signing artifact, pinned by run identity and
    manifest/envelope/payload hashes. Verify again against checked-in production
    pins; never rebuild/re-sign from live provider responses in the deploy job.
-2. Use a separately protected environment `one-piece-catalog-production`,
-   required owner approval, main-only deployment and the same no-self-review
-   policy. Scope hosting credentials here, not in the signing environment:
+2. Configure required owner approval and main-only deployment on
+   `one-piece-catalog-production`. Supply these Hosting secrets in that
+   environment:
    `FIREBASE_SERVICE_ACCOUNT`, `FIREBASE_PROJECT_ID=scanstash-catalog-prod`,
    `FIREBASE_HOSTING_SITE_ID=scanstash-catalog-prod`. Use the existing hosting
    service account with the minimum required hosting permissions; its actual
-   permissions have not been inspected here. Never duplicate another catalog's
-   signing secret into this job.
+   permissions have not been inspected here. The publication job receives only
+   the Hosting credentials.
 3. Serialize the **entire read/restore/stage/deploy operation** with the existing
    concurrency group `scanstash-catalog-production-hosting`,
    `cancel-in-progress: false`, shared by Pokémon and Magic. Read the current
@@ -154,7 +184,7 @@ default-off job with these concrete changes; none is active in this preparation:
    `https://catalog.scan-stash.com`. A failed upload/readback is not activation
    evidence; retain the previous verified site/pointer for operational recovery.
 
-## App packaging and activation remain a later gate
+## App packaging and activation
 
 After production signing, place the verified envelope at
 `TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json` and add

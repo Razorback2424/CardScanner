@@ -14,7 +14,7 @@ The most serious confirmed defect was Pokémon's Normal-only data. It could feed
 | Magic | Production `legacy-live` rollout, Scryfall printing and name lookup, signed-only child routing, historical fallback, and the treatment catalog | The known ordinary finish list is per-printing provider evidence. Special treatments and historical identity keep their existing admission requirements. |
 | Disney Lorcana | Production bootstrap and bundled discovery and physical catalogs. Discovery has 3,582 card rows. The reviewed catalog has 1,749 physical printings across sets 1–8. | Sets 9–14 contribute 1,460 discovery card rows and remain Browse-only under the current production policy. |
 | Yu-Gi-Oh! | Bundled seed and exact source replay, TCGCSV candidate workflow, Konami and YGOPRODeck inventory, signed candidate verification, acquisition and edition rules | Bundled Ultimate Tournament Pack 2 is refreshed. The approved remote channel still requires production configuration. |
-| One Piece | Production configuration, public pointer and current local candidate path, runtime capability admission | Production rollout is disabled and collection writes are off. The unsigned candidate, production signing, deployment, and installed Release acceptance are tracked separately. [Production setup](../release/one-piece-production-setup-2026-10-23.md). |
+| One Piece | Production configuration, signed revision 1, public pointer and runtime capability admission | The verified signed seed is in the local Release build. Production rollout is disabled and collection writes are off. Hosted publication and installed Release acceptance remain open. [Production setup](../release/one-piece-production-setup-2026-10-23.md). |
 
 ## Findings and repairs
 
@@ -137,9 +137,9 @@ Release build in `delta-titles-release.log` succeeded.
 The separate One Piece PR #21 at `7a6223c` ran its broader iOS selection on the
 earlier committed source and reported 1,815 tests, four skips and seven failed
 assertions across four methods. The failures concern missing finish evidence,
-two pricing repair fixtures and a structural refresh fixture. That PR requires
-the fixture corrections and successful validation before merge. The working-tree
-results above describe a different source state.
+two pricing repair fixtures and a structural refresh fixture. This run preceded
+the fixture corrections now on GitHub `main`. The focused rerun below covers
+those corrections.
 [PR validation](https://github.com/Razorback2424/CardScanner/actions/runs/42937316752).
 
 The subsequent focused rerun on local `676503a` plus the two test corrections
@@ -152,8 +152,8 @@ pending finish. The pricing fixtures already had their certification
 corrections. The result is retained at
 The focused result bundle is retained on the external SSD under
 `CodexBuilds/CatalogGateFollowup/Focused.xcresult`.
-GitHub `main` was still `f73d2e0` at readback, so this local result does not
-describe the source currently in PR #21.
+GitHub `main` was still `f73d2e0` during this rerun. The fixture corrections
+subsequently reached GitHub `main` in `d1d7fb8`.
 
 The device Release build compiled unsigned. Both packaged resource hashes match the verified replay outputs. Its minimum iOS version is 18.0. One Piece rollout is disabled with collection writes off, Magic is configured for legacy live delivery, and the Yu-Gi-Oh! rollout setting is absent. The privacy and support URLs are empty.
 
