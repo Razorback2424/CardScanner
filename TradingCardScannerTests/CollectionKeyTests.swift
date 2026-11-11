@@ -56,13 +56,13 @@ final class CollectionKeyTests: XCTestCase {
 
     /// A record that omits variants is a catalog with nothing to say about
     /// finish, not a failed identification.
-    func testMissingVariantsBlockDecodesToSilenceRatherThanThrowing() throws {
+    func testMissingVariantsBlockDecodesAndRequiresFinishChoice() throws {
         let card = try decodePokemon(variantsJSON: nil)
 
         XCTAssertTrue(card.catalogVariants.isEmpty)
         XCTAssertEqual(
             VariantResolver.resolve(IdentifiedCard.pokemon(card, setCode: "PRE").variantEvidence),
-            .resolved(ResolvedVariant(variant: nil, resolution: .catalogSilent))
+            .needsChoice(options: [], lockDidNotApply: nil)
         )
     }
 

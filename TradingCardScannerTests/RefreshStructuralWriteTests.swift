@@ -119,7 +119,9 @@ final class RefreshStructuralWriteTests: XCTestCase {
         let worker = PriceRefreshModelActor(modelContainer: container)
         await worker.setPokemonFetchOverrideForTesting { printing in
             if printing.printingID == blockedID { await barrier.pause() }
-            return .pokemon(Self.card(id: printing.printingID), setCode: "STR")
+            return PokemonFinishCoverage.$certifiedForTesting.withValue([printing.printingID: [.normal]]) {
+                .pokemon(Self.card(id: printing.printingID), setCode: "STR")
+            }
         }
 
         let pass = Task {
