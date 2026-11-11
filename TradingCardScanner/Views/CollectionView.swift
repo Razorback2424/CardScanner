@@ -694,7 +694,7 @@ struct CollectionView: View {
                     isCollectionRequestInFlight: collectionRefreshRequestInFlight,
                     feedback: collectionRefreshFeedback
                 )
-                .frame(height: 18, alignment: .leading)
+                .frame(height: dynamicTypeSize.isAccessibilitySize ? nil : 18, alignment: .leading)
             }
 
             collectionControls
@@ -881,8 +881,9 @@ struct CollectionView: View {
                 .accessibilityLabel("Search collection")
         }
         .padding(.horizontal, 10)
+        .padding(.vertical, 7)
         .frame(maxWidth: .infinity)
-        .frame(height: 36)
+        .frame(minHeight: 36)
         .background(
             collectionControlFill,
             in: RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -1515,6 +1516,7 @@ private struct CollectionRefreshButton: View {
 }
 
 private struct CollectionRefreshStatusLine: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ObservedObject var refresh: PriceRefreshController
     let isCollectionRequestInFlight: Bool
     let feedback: CollectionRefreshFeedback?
@@ -1561,13 +1563,15 @@ private struct CollectionRefreshStatusLine: View {
                             ? PortfolioPalette.attention
                             : PortfolioPalette.money
                     )
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                    .minimumScaleFactor(dynamicTypeSize.isAccessibilitySize ? 1 : 0.8)
+                    .fixedSize(horizontal: false, vertical: dynamicTypeSize.isAccessibilitySize)
                     .transition(.opacity)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(presentation.message)
             } else {
                 Color.clear
+                    .frame(height: 18)
                     .accessibilityHidden(true)
             }
         }

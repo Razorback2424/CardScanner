@@ -140,6 +140,7 @@ private struct PortfolioDetailsDestination: Identifiable, Hashable {
 /// produced by `PortfolioEngine`; it never recomputes or replays history itself.
 struct PortfolioView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .subheadline) private var periodMinimumWidth: CGFloat = 44
     @ObservedObject var portfolio: PortfolioEngine
     /// Deliberately unobserved. A running refresh publishes progress on a
@@ -688,24 +689,35 @@ struct PortfolioView: View {
             let periodDescription = active.range == .all
                 ? "all time"
                 : "the \(active.range.pastPeriodPhrase)"
+            let heading = Text("What changed over \(periodDescription)")
+                .font(.title3.weight(.bold))
+                .accessibilityAddTraits(.isHeader)
+            let explanation = PortfolioInfoButton(label: "About market movers") {
+                PortfolioMoversInfoPopover(result: active, onOpenDetails: onOpenDetails)
+            }
+            .imageScale(.small)
+            let seeAll = Button("See all") {
+                contributorContext = historicalContext(from: active)
+            }
+            .font(.subheadline.weight(.semibold))
             VStack(alignment: .leading, spacing: 12) {
-                HStack(alignment: .firstTextBaseline) {
-                    HStack(spacing: 6) {
-                        Text("What changed over \(periodDescription)")
-                            .font(.title3.weight(.bold))
-                        PortfolioInfoButton(label: "About market movers") {
-                            PortfolioMoversInfoPopover(
-                                result: active,
-                                onOpenDetails: onOpenDetails
-                            )
+                if dynamicTypeSize.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 8) {
+                        heading.fixedSize(horizontal: false, vertical: true)
+                        HStack(spacing: 16) {
+                            explanation
+                            seeAll
                         }
-                        .imageScale(.small)
                     }
-                    Spacer(minLength: 8)
-                    Button("See all") {
-                        contributorContext = historicalContext(from: active)
+                } else {
+                    HStack(alignment: .firstTextBaseline) {
+                        HStack(spacing: 6) {
+                            heading
+                            explanation
+                        }
+                        Spacer(minLength: 8)
+                        seeAll
                     }
-                    .font(.subheadline.weight(.semibold))
                 }
 
                 Text(PortfolioHistoryDisplay.signedCurrency(total))
@@ -775,6 +787,9 @@ struct PortfolioView: View {
                                 )
                             }
                             .buttonStyle(.plain)
+                            .containerRelativeFrame(.horizontal, alignment: .leading) { width, _ in
+                                dynamicTypeSize.isAccessibilitySize ? width : 136
+                            }
                         }
                     }
                 }
@@ -1382,6 +1397,7 @@ private struct PortfolioContributionRow: View {
 }
 
 private struct PortfolioBestCardTile: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let holding: PortfolioHoldingSnapshot
     /// Per-copy market movement for the active period, when known. Omitted
     /// (not zero-filled) when there's nothing to say — never fabricate a
@@ -1395,7 +1411,7 @@ private struct PortfolioBestCardTile: View {
                 Text(holding.name)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
-                    .lineLimit(1)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
                 HStack(alignment: .firstTextBaseline, spacing: 5) {
                     if let value = holding.holdingValue {
                         Text(value.formatted())
@@ -1415,7 +1431,7 @@ private struct PortfolioBestCardTile: View {
                 }
             }
         }
-        .frame(width: 136, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(
             [
