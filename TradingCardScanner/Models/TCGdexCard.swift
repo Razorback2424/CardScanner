@@ -17,6 +17,9 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// is the only representation that can tell two parallels of one printing
     /// apart. Optional because older responses and many sets omit it.
     let variantsDetailed: [TCGdexDetailedVariant]?
+    /// Physical slots reconstructed from a checklist or resolved cache.
+    /// Provider responses derive their slots from the original detail and prices.
+    let projectedCatalogVariants: [PhysicalVariant]?
     /// Device-local supplemental pricing; never decoded as TCGdex evidence.
     var supplementalTCGCSV: PokemonTCGCSVSnapshot? = nil
     /// Validated CDN evidence, kept out of the raw provider fingerprint.
@@ -58,6 +61,7 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
             [TCGdexDetailedVariant].self,
             forKey: .variantsDetailed
         )
+        projectedCatalogVariants = nil
 
         if let stringValue = try? container.decode(String.self, forKey: .localId) {
             localId = stringValue
@@ -80,7 +84,8 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         set: TCGdexSetBrief,
         variants: TCGdexVariants?,
         pricing: TCGdexPricing?,
-        variantsDetailed: [TCGdexDetailedVariant]?
+        variantsDetailed: [TCGdexDetailedVariant]?,
+        projectedCatalogVariants: [PhysicalVariant]? = nil
     ) {
         self.id = id
         self.localId = localId
@@ -91,6 +96,7 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         self.variants = variants
         self.pricing = pricing
         self.variantsDetailed = variantsDetailed
+        self.projectedCatalogVariants = projectedCatalogVariants
     }
 
     var highImageURL: URL? {
@@ -124,6 +130,10 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         // Reviewed exact products in both 30th sets are Holofoil. The upstream
         // generated Normal flag is incorrect; unrelated/unknown cards keep it.
         if PokemonTCGCSVMapping.byCardID[id]?.setID == set.id { return addingReviewedVariants(to: [.holo]) }
+        if let projectedCatalogVariants {
+            return addingReviewedVariants(to: PokemonFinishMinimumCatalog.retainingMinimum(
+                cardID: id, variants: projectedCatalogVariants))
+        }
         var result: [PhysicalVariant] = []
         if let variants {
             if variants.normal { result.append(.normal) }
@@ -156,22 +166,15 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         let prices = pricing?.tcgplayer
         if variants?.holo == true, prices?.holo == nil, prices?.holofoil == nil {
             let holoDetails = standardEnglishDetails(type: "holo")
-            if holoDetails.isEmpty {
-                result = PokemonFinishMinimumCatalog.removingAggregate(.holo, cardID: id, variants: result)
-            } else if holoDetails.allSatisfy({ $0.foil?.lowercased() == "cosmos" }) {
+            if !holoDetails.isEmpty, holoDetails.allSatisfy({ $0.foil?.lowercased() == "cosmos" }) {
                 result.removeAll { $0 == .holo }
             }
         }
         if set.id == "me02.5", variants?.reverse == true, prices?.reverse == nil, prices?.reverseHolofoil == nil {
-            let reverseDetails = standardEnglishDetails(type: "reverse")
-            if reverseDetails.isEmpty {
-                result = PokemonFinishMinimumCatalog.removingAggregate(.reverse, cardID: id, variants: result)
-            } else {
-                let patterns = Set(reverseDetails.map { $0.physicalVariant?.id ?? "" })
-                if patterns.count == 2, patterns.contains("energy"),
-                   patterns.isSubset(of: PokemonFinishMinimumCatalog.ascendedHeroesReversePatterns) {
-                    result.removeAll { $0 == .reverse }
-                }
+            let patterns = Set(standardEnglishDetails(type: "reverse").map { $0.physicalVariant?.id ?? "" })
+            if patterns.count == 2, patterns.contains("energy"),
+               patterns.isSubset(of: PokemonFinishMinimumCatalog.ascendedHeroesReversePatterns) {
+                result.removeAll { $0 == .reverse }
             }
         }
         let retained = PokemonFinishMinimumCatalog.retainingMinimum(cardID: id, variants: result)

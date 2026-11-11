@@ -1,4 +1,20 @@
 {
+  "certificate": {
+    "schemaVersion": 1,
+    "sets": {
+      "sample": {
+        "tcgplayerGroupID": 55,
+        "evidence": "docs/research/pokemon-finish-coverage/captures/sample/initial/report.json",
+        "reviewedAt": "2026-11-10",
+        "cards": {
+          "sample-001": ["holo", "normal", "reverse"],
+          "sample-002": ["holo"],
+          "sample-003": ["cosmos", "holo"],
+          "tcgplayer:14": ["pokeBall"]
+        }
+      }
+    }
+  },
   "snapshot": [
     {"providerID":"sample-001","collectorNumber":"001","name":"Example One","setID":{"providerID":"sample"},"masterSetVariant":{"id":"normal"}},
     {"providerID":"sample-001","collectorNumber":"001","name":"Example One","setID":{"providerID":"sample"},"masterSetVariant":{"id":"reverse"}},

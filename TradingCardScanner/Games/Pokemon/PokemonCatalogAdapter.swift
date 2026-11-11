@@ -230,7 +230,7 @@ actor PokemonCatalogEngine {
     }
 
     private func persistResolution(_ enriched: CatalogResolution, for identifier: ScanIdentifier) async {
-        if identifier.catalogGeneration == catalogGeneration, enriched.isPersistable,
+        if identifier.catalogGeneration == catalogGeneration, enriched.isPersistable, enriched.path == .network,
            case let .pokemon(pokemonCard, setCode) = enriched.card.legacyIdentity,
            let key = Self.persistentKey(for: identifier) {
             let count: Int?
@@ -246,7 +246,7 @@ actor PokemonCatalogEngine {
     }
 
     func persistRecoveredArtwork(_ enriched: CatalogResolution, for identifier: ScanIdentifier) async {
-        guard identifier.catalogGeneration == catalogGeneration, enriched.isPersistable,
+        guard identifier.catalogGeneration == catalogGeneration, enriched.isPersistable, enriched.path == .network,
               case let .pokemon(card, _) = enriched.card.legacyIdentity,
               let image = card.storedArtworkURL, let key = Self.persistentKey(for: identifier) else { return }
         let fingerprint = catalogRegistry.descriptor(forProviderSetID: card.set.id)?.providerFingerprint
@@ -284,17 +284,26 @@ actor PokemonCatalogEngine {
                 requiresExactChecklistFingerprint = cached.catalogFingerprint != nil
             }
 
+            func checklistResolution(
+                providerSetID: String, localID: String, officialCount: Int?, setCode: String
+            ) async -> CatalogResolution? {
+                let fingerprint = registry.descriptor(forProviderSetID: providerSetID)?.providerFingerprint
+                guard let match = await offline.cardWithSource(
+                    providerSetID: providerSetID, localID: localID, expectedOfficialCount: officialCount,
+                    providerFingerprint: fingerprint, requiresExactFingerprint: requiresExactChecklistFingerprint
+                ) else { return nil }
+                let provisional = fingerprint != nil && match.providerFingerprint != fingerprint
+                return CatalogResolution(.pokemon(match.card, setCode: setCode),
+                    path: provisional ? .offlineFallback : .cacheHit)
+            }
+
             switch identifier.legacyIdentity {
             case .opaque:
                 throw CardGameSupportError.unsupportedGame(identifier.game)
             case let .pokemon(setCode, cardNumber, printedTotal, setDefinition):
-                if let card = await offline.card(
-                    providerSetID: setDefinition.tcgdexSetID,
-                    localID: cardNumber,
-                    expectedOfficialCount: printedTotal,
-                    requiresExactChecklistFingerprint: requiresExactChecklistFingerprint
-                ) {
-                    return CatalogResolution(.pokemon(card, setCode: setCode), path: .cacheHit)
+                if let resolution = await checklistResolution(providerSetID: setDefinition.tcgdexSetID,
+                    localID: cardNumber, officialCount: printedTotal, setCode: setCode) {
+                    return resolution
                 }
                 return try await Self.resolveModernPokemon(
                     setCode: setCode,
@@ -305,10 +314,9 @@ actor PokemonCatalogEngine {
                 )
 
             case let .pokemonEnergy(code, localID, definition):
-                if let card = await offline.card(providerSetID: definition.tcgdexSetID,
-                    localID: localID, expectedOfficialCount: nil,
-                    requiresExactChecklistFingerprint: requiresExactChecklistFingerprint) {
-                    return CatalogResolution(.pokemon(card, setCode: code), path: .cacheHit)
+                if let resolution = await checklistResolution(providerSetID: definition.tcgdexSetID,
+                    localID: localID, officialCount: nil, setCode: code) {
+                    return resolution
                 }
                 // Existing 001–008 use the same exact set/local-ID transport
                 // contract as promos, without acquiring a promo identity.
@@ -318,13 +326,9 @@ actor PokemonCatalogEngine {
                     source: pokemonSource, breaker: tcgdexBreaker)
 
             case let .pokemonPromo(prefix, localID, setDefinition):
-                if let card = await offline.card(
-                    providerSetID: setDefinition.tcgdexSetID,
-                    localID: localID,
-                    expectedOfficialCount: nil,
-                    requiresExactChecklistFingerprint: requiresExactChecklistFingerprint
-                ) {
-                    return CatalogResolution(.pokemon(card, setCode: prefix), path: .cacheHit)
+                if let resolution = await checklistResolution(providerSetID: setDefinition.tcgdexSetID,
+                    localID: localID, officialCount: nil, setCode: prefix) {
+                    return resolution
                 }
                 return try await Self.resolvePromoPokemon(
                     prefix: prefix,
@@ -581,7 +585,8 @@ actor PokemonCatalogEngine {
             set: card.set,
             variants: card.variants,
             pricing: card.pricing,
-            variantsDetailed: card.variantsDetailed
+            variantsDetailed: card.variantsDetailed,
+            projectedCatalogVariants: card.projectedCatalogVariants
         )
         signedCard.reviewedAdditionalVariants = card.reviewedAdditionalVariants
         return .pokemon(signedCard, setCode: setCode)

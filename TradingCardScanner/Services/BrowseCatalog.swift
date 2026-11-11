@@ -3207,17 +3207,18 @@ enum PokemonMasterSetDefinition {
         return cards.compactMap { original in
             guard original.game == .pokemon, let variant = original.masterSetVariant else { return original }
             let siblings = groups[original.providerID] ?? []
-            if variant == .reverse, siblings.contains(where: {
+            let certified = PokemonFinishCoverage.variants(cardID: original.providerID) != nil
+            if !certified, variant == .reverse, siblings.contains(where: {
                 $0.masterSetVariant.map { isPackReversePattern($0, setProviderID: original.setID.providerID) } == true
             }) { return nil }
-            if rarityFinishAliasesHolo(variant.id, cardID: original.providerID),
+            if !certified, rarityFinishAliasesHolo(variant.id, cardID: original.providerID),
                siblings.contains(where: { $0.masterSetVariant == .holo }) { return nil }
             var card = original
             card.isExpandedMasterSetVariant = !(isPackVariant(variant, setProviderID: card.setID.providerID)
                 || rarityFinishAliasesHolo(variant.id, cardID: card.providerID))
             // This non-holo Lugia is a stamped product printing, not a pack ex.
             if card.providerID == "sv08.5-082", variant == .normal { card.isExpandedMasterSetVariant = true }
-            let retained = siblings.filter {
+            let retained = certified ? siblings : siblings.filter {
                 let rarityAlias = rarityFinishAliasesHolo($0.masterSetVariant?.id, cardID: original.providerID)
                     && siblings.contains(where: { $0.masterSetVariant == .holo })
                 let reverseAlias = $0.masterSetVariant == .reverse && siblings.contains(where: {

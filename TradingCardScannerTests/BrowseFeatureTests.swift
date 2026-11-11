@@ -4790,6 +4790,91 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
     }
 
+    func testProvisionalBundledScanRechecksSameCatalogAfterExactChecklistInstalls() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let fixture = try await ChecklistScanFixture(root: root)
+
+        let fallback = try await fixture.catalog.resolution(for: fixture.identifier)
+        XCTAssertEqual(fallback.path, .offlineFallback)
+        XCTAssertEqual(fallback.card.variantEvidence.catalogVariants, [.normal])
+        let sessionCard = await fixture.catalog.cachedCard(for: fixture.identifier)
+        XCTAssertNil(sessionCard)
+
+        let adapters = await fixture.catalog.registeredGameCatalogAdapters
+        let adapter = try XCTUnwrap(adapters.pokemonCatalog)
+        let enriched = await adapter.recoveringArtwork(for: fallback,
+            identifier: try adapter.prepareLookupIdentifier(fixture.identifier))
+        XCTAssertNotNil(enriched.card.storedImageURL)
+        XCTAssertEqual(enriched.path, .offlineFallback)
+        let coldDisk = ResolvedPokemonCardCache(root: fixture.diskRoot, appVersion: "test")
+        let cachedFallback = await coldDisk.card(for: fixture.key)
+        XCTAssertNil(cachedFallback)
+
+        try await fixture.store.publish(fixture.snapshot(.holo, fingerprint: fixture.currentFingerprint))
+        let current = try await fixture.catalog.resolution(for: fixture.identifier)
+        XCTAssertEqual(current.path, .cacheHit)
+        XCTAssertEqual(current.card.variantEvidence.catalogVariants, [.holo])
+        let counts = await fixture.source.requestCounts()
+        XCTAssertEqual(counts.primary + counts.fallback, 0)
+    }
+
+    func testExactBundledChecklistBeatsUnknownDownloadedChecklistAndDiskFingerprint() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let fixture = try await ChecklistScanFixture(root: root, exactBundle: true)
+        try await fixture.store.publish(fixture.snapshot(.normal, fingerprint: nil))
+        let old = try XCTUnwrap(PokemonOfflineCardFactory.card(in: fixture.snapshot(.normal, fingerprint: nil),
+            providerSetID: fixture.set.providerID, localID: "001", expectedOfficialCount: 100))
+        await fixture.disk.store(card: old, setCode: fixture.set.code, key: fixture.key)
+
+        let selected = await PokemonOfflineCatalog(store: fixture.store).cardWithSource(
+            providerSetID: fixture.set.providerID, localID: "001", expectedOfficialCount: 100,
+            providerFingerprint: fixture.currentFingerprint, requiresExactFingerprint: false)
+        XCTAssertEqual(selected?.source, .bundled)
+        XCTAssertEqual(selected?.providerFingerprint, fixture.currentFingerprint)
+        let current = try await fixture.catalog.resolution(for: fixture.identifier)
+        XCTAssertEqual(current.path, .cacheHit)
+        XCTAssertEqual(current.card.variantEvidence.catalogVariants, [.holo])
+        let counts = await fixture.source.requestCounts()
+        XCTAssertEqual(counts.primary + counts.fallback, 0)
+        let reopened = ResolvedPokemonCardCache(root: fixture.diskRoot, appVersion: "test")
+        let legacy = await reopened.card(for: fixture.key)
+        XCTAssertNil(legacy?.catalogFingerprint)
+        XCTAssertEqual(legacy?.card.catalogVariants, [.normal])
+    }
+
+    func testExactChecklistPublicationDuringProvisionalScanCannotLeaveStaleSessionHit() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let fixture = try await ChecklistScanFixture(root: root)
+        let started = expectation(description: "The scan read the bundled checklist")
+        let gate = ChecklistScanGate(started: started)
+        let inFlight = Task {
+            try await PokemonOfflineCatalog.$didReadChecklistForTesting.withValue({ fingerprint in
+                if fingerprint == fixture.oldFingerprint { await gate.pause() }
+            }) {
+                try await fixture.catalog.resolution(for: fixture.identifier)
+            }
+        }
+        await fulfillment(of: [started], timeout: 5)
+        do {
+            try await fixture.store.publish(fixture.snapshot(.holo, fingerprint: fixture.currentFingerprint))
+        } catch {
+            await gate.release()
+            throw error
+        }
+        let next = Task { try await fixture.catalog.resolution(for: fixture.identifier) }
+        await gate.release()
+
+        let first = try await inFlight.value
+        let current = try await next.value
+        XCTAssertEqual(first.card.variantEvidence.catalogVariants, [.normal])
+        XCTAssertEqual(current.card.variantEvidence.catalogVariants, [.holo])
+        let cached = await fixture.catalog.cachedCard(for: fixture.identifier)
+        XCTAssertEqual(cached?.variantEvidence.catalogVariants, [.holo])
+    }
+
     func testOfflinePokemonCardAllowsMasterCountDifferentFromPrintedDenominator() throws {
         let set = sampleSet(id: "sv10", name: "Destined Rivals")
         let summary = CatalogCardSummary(
@@ -8151,6 +8236,75 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         return root
+    }
+}
+
+private struct ChecklistScanFixture: Sendable {
+    let oldFingerprint = String(repeating: "a", count: 64)
+    let currentFingerprint = String(repeating: "b", count: 64)
+    let key = "pokemon|fixture|1|100"
+    let set = CatalogSet(catalogID: .init(game: .pokemon, providerID: "fixture"),
+        name: "Fixture", code: "TST", logoURL: nil, symbolURL: nil, cardCount: 1, releaseDate: nil, sortRank: 0)
+    let diskRoot: URL
+    let disk: ResolvedPokemonCardCache
+    let store: PokemonChecklistStore
+    let source: CountingPokemonCardSource
+    let catalog: CardCatalog
+    let identifier: ScanIdentifier
+
+    init(root: URL, exactBundle: Bool = false) async throws {
+        let registry = PokemonCatalogRegistry(release: .init(revision: 2, generatedAt: .now, sets: [
+            .init(providerSetID: set.providerID, displayName: set.name, releaseDate: "2026-01-01", releaseOrder: 1,
+                recognitionKind: .expansion, printedCode: set.code, officialCount: 100, printedPrefix: nil,
+                catalogLocalIDPrefix: nil, localIDPadWidth: nil, scanEnabled: true, logoURL: nil, symbolURL: nil,
+                providerFingerprint: currentFingerprint)
+        ]))
+        identifier = try XCTUnwrap(PokemonScanProfile(registry: registry).parse("TST EN 001/100"))
+        let bundle = root.appendingPathComponent("bundled")
+        store = PokemonChecklistStore(root: root.appendingPathComponent("downloaded"), bundle: nil, bundledRoot: bundle)
+        diskRoot = root.appendingPathComponent("resolved")
+        disk = ResolvedPokemonCardCache(root: diskRoot, appVersion: "test")
+        source = CountingPokemonCardSource(primary: .failure(.badResponse), fallback: .failure(.badResponse),
+            recoveredArtwork: .init(thumbnail: "https://example.com/low.png", image: "https://example.com/high.png",
+                source: .tcgdexCDNProbe))
+        catalog = CardCatalog(source: source, offline: PokemonOfflineCatalog(store: store, registry: registry),
+            resolvedDiskCache: disk, tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0), registry: registry)
+        try await PokemonChecklistStore(root: bundle, bundle: nil).publish(
+            snapshot(exactBundle ? .holo : .normal, fingerprint: exactBundle ? currentFingerprint : oldFingerprint)
+        )
+    }
+
+    func snapshot(_ variant: PhysicalVariant, fingerprint: String?) -> PokemonChecklistSnapshot {
+        let summary = CatalogCardSummary(game: .pokemon, providerID: "fixture-001", setID: set.catalogID,
+            setName: set.name, setCode: set.code, name: "Fixture Card", collectorNumber: "001",
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: variant)
+        let entry = PokemonChecklistSnapshotEntry(set: set, providerID: set.providerID, providerFingerprint: fingerprint,
+            officialCount: 100, standardSlotCount: 1, expandedSlotCount: 1, resource: "sets/fixture.json")
+        return PokemonChecklistSnapshot(manifest: .init(schemaVersion: PokemonChecklistSnapshotVersion.schema,
+            rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules, generatedAt: .now,
+            directoryFingerprint: "fixture", entries: [entry]), checklists: [set.id: [summary]])
+    }
+}
+
+private actor ChecklistScanGate {
+    private let started: XCTestExpectation
+    private var continuation: CheckedContinuation<Void, Never>?
+    private var released = false
+
+    init(started: XCTestExpectation) { self.started = started }
+
+    func pause() async {
+        guard !released else { return }
+        await withCheckedContinuation {
+            continuation = $0
+            started.fulfill()
+        }
+    }
+
+    func release() {
+        released = true
+        continuation?.resume()
+        continuation = nil
     }
 }
 

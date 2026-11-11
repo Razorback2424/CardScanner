@@ -24,8 +24,8 @@ enum PokemonOfflineCardFactory {
         // The offline snapshot has no live prices, but it does have authoritative
         // variant evidence. Preserve that evidence so the same resolver used by
         // collection scans can choose one variant or ask the user.
-        let variants = Set(PokemonFinishMinimumCatalog.retainingMinimum(
-            cardID: summaries[0].providerID, variants: summaries.compactMap(\.masterSetVariant)))
+        let variants = PokemonFinishMinimumCatalog.retainingMinimum(
+            cardID: summaries[0].providerID, variants: summaries.compactMap(\.masterSetVariant))
         let hasNormal = variants.contains(.normal)
         let hasHolo = variants.contains(.holo)
         let hasReverse = variants.contains(.reverse)
@@ -72,7 +72,8 @@ enum PokemonOfflineCardFactory {
                     wPromo: nil
                 ),
             pricing: nil,
-            variantsDetailed: detailedVariants.isEmpty ? nil : detailedVariants
+            variantsDetailed: detailedVariants.isEmpty ? nil : detailedVariants,
+            projectedCatalogVariants: variants
         )
     }
 
@@ -371,6 +372,16 @@ enum PokemonOfflineCardFactory {
 }
 
 actor PokemonOfflineCatalog {
+    struct CardLookup: Sendable {
+        let card: TCGdexCard
+        let source: PokemonChecklistStore.ChecklistSource
+        let providerFingerprint: String?
+    }
+
+    #if DEBUG
+    @TaskLocal static var didReadChecklistForTesting: (@Sendable (String?) async -> Void)?
+    #endif
+
     private let store: PokemonChecklistStore
     private var entries: [PokemonChecklistSnapshotEntry] = []
     private var didLoad = false
@@ -397,27 +408,34 @@ actor PokemonOfflineCatalog {
     func card(
         providerSetID: String,
         localID: String,
-        expectedOfficialCount: Int?,
-        requiresExactChecklistFingerprint: Bool = false
+        expectedOfficialCount: Int?
     ) async -> TCGdexCard? {
-        await loadIfNeeded()
-        for entry in entries where
-            entry.providerID.caseInsensitiveCompare(providerSetID) == .orderedSame
-            && entry.set.pokemonPrintRun == nil {
-            let fingerprint = registry.descriptor(forProviderSetID: entry.providerID)?.providerFingerprint
-            guard let cards = await store.mergedChecklist(for: entry.set.catalogID,
-                providerFingerprint: fingerprint, requiresExactFingerprint: requiresExactChecklistFingerprint) else { continue }
-            let snapshot = snapshot(entry: entry, cards: cards)
-            if let card = PokemonOfflineCardFactory.card(
-                in: snapshot,
+        await cardWithSource(providerSetID: providerSetID, localID: localID,
+            expectedOfficialCount: expectedOfficialCount,
+            providerFingerprint: registry.descriptor(forProviderSetID: providerSetID)?.providerFingerprint,
+            requiresExactFingerprint: false)?.card
+    }
+
+    func cardWithSource(
+        providerSetID: String,
+        localID: String,
+        expectedOfficialCount: Int?,
+        providerFingerprint: String?,
+        requiresExactFingerprint: Bool
+    ) async -> CardLookup? {
+        let setID = CatalogSetID(game: .pokemon, providerID: providerSetID)
+        guard let loaded = await store.loadedChecklist(for: setID, providerFingerprint: providerFingerprint,
+            requiresExactFingerprint: requiresExactFingerprint),
+              let card = PokemonOfflineCardFactory.card(
+                in: snapshot(entry: loaded.entry, cards: loaded.cards),
                 providerSetID: providerSetID,
                 localID: localID,
                 expectedOfficialCount: expectedOfficialCount
-            ) {
-                return card
-            }
-        }
-        return nil
+              ) else { return nil }
+        #if DEBUG
+        await Self.didReadChecklistForTesting?(loaded.entry.providerFingerprint)
+        #endif
+        return CardLookup(card: card, source: loaded.source, providerFingerprint: loaded.entry.providerFingerprint)
     }
 
     func card(
@@ -824,7 +842,8 @@ actor ResolvedPokemonCardCache {
                         languages: ["en"],
                         thirdParty: nil
                     )
-                }
+                },
+            projectedCatalogVariants: entry.variants
         )
         return CachedCard(card: card, setCode: entry.setCode, storedAt: entry.storedAt,
             catalogFingerprint: entry.catalogFingerprint)

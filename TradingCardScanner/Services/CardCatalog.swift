@@ -17,6 +17,7 @@ enum CatalogFailure: Equatable {
 
 enum CatalogResolutionPath: String, Sendable {
     case cacheHit = "cache-hit"
+    case offlineFallback = "offline-fallback"
     case network
     case historicalFallback = "historical-fallback"
 }
@@ -144,7 +145,7 @@ actor CardCatalog {
         case let .resolved(resolution):
             // Intake consumes identity immediately. Read-only presentation can
             // still request optional artwork without holding the shared lookup.
-            guard recoverArtwork, resolution.path != .cacheHit,
+            guard recoverArtwork, resolution.path != .cacheHit, resolution.path != .offlineFallback,
                   resolution.card.storedImageURL == nil,
                   identifier.game == .pokemon,
                   let adapter = gameCatalogAdapters.pokemonCatalog else { return resolution }
@@ -183,8 +184,9 @@ actor CardCatalog {
             } else if identifier.game == .magic, identifier.namespace.hasPrefix("historical"),
                case .resolved = cached {} else { return cached }
         }
+        let existingLookup = adapterLookups[prepared]
         let lookup: AdapterLookup
-        if let existing = adapterLookups[prepared] { lookup = existing }
+        if let existingLookup { lookup = existingLookup }
         else {
             lookup = .init(token: UUID(), task: Task { try await adapter.lookup(prepared) })
             adapterLookups[prepared] = lookup
@@ -192,7 +194,13 @@ actor CardCatalog {
         defer {
             if adapterLookups[prepared]?.token == lookup.token { adapterLookups[prepared] = nil }
         }
-        let outcome = try await lookup.task.value
+        var outcome = try await lookup.task.value
+        if existingLookup != nil, case let .resolved(resolution) = outcome,
+           resolution.path == .offlineFallback {
+            // A checklist can finish installing while the original lookup is
+            // in flight. A later caller can re-read it even if it joined that task.
+            outcome = try await adapter.lookup(prepared)
+        }
         try await adapter.validateLookupContext(prepared)
         guard gameCatalogAdapters.adapter(for: identifier.game)?.acceptsCompletion(for: prepared, fromGeneration: adapter.generation) == true else {
             throw CatalogLookupError.staleCatalog
@@ -200,6 +208,7 @@ actor CardCatalog {
         switch outcome {
         case let .resolved(resolution):
             guard resolution.card.game == identifier.game else { throw CatalogLookupError.invalidAdapterOutcome }
+            if resolution.path == .offlineFallback { return outcome }
         case let .needsPrintingChoice(canonical, candidates):
             guard canonical.game == identifier.game, !candidates.isEmpty,
                   Set(candidates.map(\.id)).count == candidates.count,

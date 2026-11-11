@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import UIKit
 import PokemonCatalogCore
@@ -45,6 +46,27 @@ enum PokemonChecklistReviewedProjection {
         .union(PokemonFinishMinimumCatalog.setIDs)
         .union(PokemonFinishCoverage.sets.keys)
 
+    /// Only the bundle reader calls this with the original resource bytes.
+    fileprivate static func removingBundledAggregates(
+        from cards: [CatalogCardSummary], resource: String, bytes: Data
+    ) -> [CatalogCardSummary] {
+        guard let expected = PokemonFinishMinimumCatalog.aggregateChecklistSources[resource],
+              SHA256.hash(data: bytes).map({ String(format: "%02x", $0) }).joined() == expected else { return cards }
+        let variantsByCard = Dictionary(grouping: cards, by: \.providerID).mapValues { slots in
+            Set(slots.compactMap { $0.masterSetVariant?.id })
+        }
+        return cards.filter { card in
+            guard let variants = variantsByCard[card.providerID] else { return true }
+            if card.masterSetVariant == .holo, let patterns = PokemonFinishMinimumCatalog.holoAggregates[card.providerID] {
+                return patterns.isDisjoint(with: variants)
+            }
+            if card.masterSetVariant == .reverse, let patterns = PokemonFinishMinimumCatalog.reverseAggregates[card.providerID] {
+                return !patterns.isSubset(of: variants)
+            }
+            return true
+        }
+    }
+
     static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
         guard cards.contains(where: needsProjection) else {
             return PokemonMasterSetDefinition.checklist(cards)
@@ -70,11 +92,6 @@ enum PokemonChecklistReviewedProjection {
             } else if PokemonFinishMinimumCatalog.minimum(cardID: base.providerID) != nil {
                 variants = PokemonFinishMinimumCatalog.retainingMinimum(cardID: base.providerID,
                     variants: cardSlots.compactMap(\.masterSetVariant))
-            } else if PokemonFinishMinimumCatalog.holoAggregates[base.providerID] != nil
-                        || PokemonFinishMinimumCatalog.reverseAggregates[base.providerID] != nil {
-                let holo = PokemonFinishMinimumCatalog.removingAggregate(.holo, cardID: base.providerID,
-                    variants: cardSlots.compactMap(\.masterSetVariant))
-                variants = PokemonFinishMinimumCatalog.removingAggregate(.reverse, cardID: base.providerID, variants: holo)
             } else { return [base] }
             guard emitted.insert(base.providerID).inserted else { return [] }
             if variants.isEmpty {
@@ -97,7 +114,7 @@ enum PokemonChecklistReviewedProjection {
 
     private static func needsProjection(_ card: CatalogCardSummary) -> Bool {
         card.game == .pokemon && (setIDs.contains(card.setID.providerID)
-            || PokemonFinishMinimumCatalog.holoAggregates[card.providerID] != nil)
+            || PokemonFinishCoverage.variants(cardID: card.providerID) != nil)
     }
 
     static func entry(_ entry: PokemonChecklistSnapshotEntry, cards: [CatalogCardSummary]) -> PokemonChecklistSnapshotEntry {
@@ -845,6 +862,17 @@ private struct PokemonChecklistRefreshState: Codable, Equatable, Sendable {
 }
 
 actor PokemonChecklistStore {
+    enum ChecklistSource: Equatable, Sendable {
+        case bundled
+        case downloaded
+    }
+
+    struct LoadedChecklist: Sendable {
+        let entry: PokemonChecklistSnapshotEntry
+        let source: ChecklistSource
+        let cards: [CatalogCardSummary]
+    }
+
     private enum ChecklistLoadOutcome {
         case loaded([CatalogCardSummary])
         case undecodable
@@ -909,7 +937,7 @@ actor PokemonChecklistStore {
     func downloadedSnapshot() -> PokemonChecklistSnapshot? {
         installMemoryWarningObserverIfNeeded()
         guard downloadedSnapshotCache == nil else { return downloadedSnapshotCache }
-        downloadedSnapshotCache = loadSnapshot(from: root)
+        downloadedSnapshotCache = loadSnapshot(from: root, source: .downloaded)
         if let manifest = downloadedSnapshotCache?.manifest {
             downloadedManifestCache = manifest
             didLoadDownloadedManifest = true
@@ -922,7 +950,7 @@ actor PokemonChecklistStore {
         guard bundledSnapshotCache == nil, let bundledRoot else {
             return bundledSnapshotCache
         }
-        bundledSnapshotCache = loadSnapshot(from: bundledRoot)
+        bundledSnapshotCache = loadSnapshot(from: bundledRoot, source: .bundled)
         if let manifest = bundledSnapshotCache?.manifest {
             bundledManifestCache = manifest
             didLoadBundledManifest = true
@@ -951,6 +979,7 @@ actor PokemonChecklistStore {
             downloaded: downloadedValidEntries()
         ).map { entry in
             guard PokemonChecklistReviewedProjection.setIDs.contains(entry.providerID)
+                    || PokemonFinishMinimumCatalog.aggregateChecklistSources[entry.resource] != nil
                     || entry.standardSlotCount != entry.expandedSlotCount else { return entry }
             if let cached = projectedEntryCache[entry.set.id], cached.source == entry { return cached.projected }
             guard let cards = mergedChecklist(for: entry.set.catalogID) else { return entry }
@@ -986,7 +1015,7 @@ actor PokemonChecklistStore {
         let key = setID.id
         guard !unreadableChecklistIDs.contains(key) else { return false }
         if let entry = downloadedEntry(for: key) {
-            guard case .loaded = cachedChecklist(for: entry, in: root, isDownloaded: true) else {
+            guard case .loaded = cachedChecklist(for: entry, in: root, source: .downloaded) else {
                 return false
             }
             return true
@@ -995,7 +1024,7 @@ actor PokemonChecklistStore {
         guard case .loaded = cachedChecklist(
             for: entry,
             in: bundledRoot,
-            isDownloaded: false
+            source: .bundled
         ) else {
             return false
         }
@@ -1009,42 +1038,43 @@ actor PokemonChecklistStore {
     /// reader wants the best data available — deciding whether the *overlay*
     /// needs repairing is `hasMergedChecklist(for:)`'s job, not this one's.
     func mergedChecklist(for setID: CatalogSetID) -> [CatalogCardSummary]? {
-        mergedChecklist(for: setID, providerFingerprint: nil, requiresExactFingerprint: false)
+        loadedChecklist(for: setID)?.cards
     }
 
-    func mergedChecklist(
-        for setID: CatalogSetID, providerFingerprint: String?, requiresExactFingerprint: Bool
-    ) -> [CatalogCardSummary]? {
+    func loadedChecklist(
+        for setID: CatalogSetID,
+        providerFingerprint: String? = nil,
+        requiresExactFingerprint: Bool = false
+    ) -> LoadedChecklist? {
         installMemoryWarningObserverIfNeeded()
         let key = setID.id
         guard !unreadableChecklistIDs.contains(key) else { return nil }
+
+        var sources: [(entry: PokemonChecklistSnapshotEntry, source: ChecklistSource, directory: URL)] = []
+        if let entry = downloadedEntry(for: key) {
+            sources.append((entry, .downloaded, root))
+        }
+        if let bundledRoot, let entry = bundledEntry(for: key) {
+            sources.append((entry, .bundled, bundledRoot))
+        }
+        if let providerFingerprint {
+            let exact = sources.filter { $0.entry.providerFingerprint == providerFingerprint }
+            // A legacy download may be usable on a cold miss, but must not
+            // shadow a bundle that matches the active signed fingerprint.
+            let fallback = sources.filter {
+                $0.entry.providerFingerprint != providerFingerprint
+                    && ($0.source == .bundled || $0.entry.providerFingerprint == nil)
+            }
+            sources = requiresExactFingerprint ? exact : exact + fallback
+        }
+
         var encounteredUndecodableResource = false
         var encounteredUnreadableResource = false
-
-        func matches(_ entry: PokemonChecklistSnapshotEntry) -> Bool {
-            providerFingerprint == nil || entry.providerFingerprint == providerFingerprint
-                || (!requiresExactFingerprint && entry.providerFingerprint == nil)
-        }
-
-        if let entry = downloadedEntry(for: key), matches(entry) {
-            switch cachedChecklist(for: entry, in: root, isDownloaded: true) {
+        for (entry, source, directory) in sources {
+            switch cachedChecklist(for: entry, in: directory, source: source) {
             case let .loaded(cards):
                 unreadableChecklistIDs.remove(key)
-                return cards
-            case .undecodable:
-                encounteredUndecodableResource = true
-            case .unreadable:
-                encounteredUnreadableResource = true
-            }
-        }
-
-        // An installed snapshot is the cold-start fallback. A cache entry
-        // already bound to a different signed revision requires exact parity.
-        if let bundledRoot, let entry = bundledEntry(for: key), !requiresExactFingerprint || matches(entry) {
-            switch cachedChecklist(for: entry, in: bundledRoot, isDownloaded: false) {
-            case let .loaded(cards):
-                unreadableChecklistIDs.remove(key)
-                return cards
+                return LoadedChecklist(entry: entry, source: source, cards: cards)
             case .undecodable:
                 encounteredUndecodableResource = true
             case .unreadable:
@@ -1076,22 +1106,22 @@ actor PokemonChecklistStore {
     private func cachedChecklist(
         for entry: PokemonChecklistSnapshotEntry,
         in directory: URL,
-        isDownloaded: Bool
+        source: ChecklistSource
     ) -> ChecklistLoadOutcome {
         let key = entry.set.id
-        if isDownloaded {
-            if let cached = downloadedChecklistCache[key] { return .loaded(PokemonChecklistReviewedProjection.cards(cached)) }
-        } else if let cached = bundledChecklistCache[key] {
+        let cached = source == .downloaded ? downloadedChecklistCache[key] : bundledChecklistCache[key]
+        if let cached {
             return .loaded(PokemonChecklistReviewedProjection.cards(cached))
         }
 
-        let outcome = loadChecklist(for: entry, in: directory)
+        let outcome = loadChecklist(for: entry, in: directory, source: source)
         if case let .loaded(cards) = outcome {
-            if isDownloaded {
+            if source == .downloaded {
                 downloadedChecklistCache[key] = cards
             } else {
                 bundledChecklistCache[key] = cards
             }
+            return .loaded(PokemonChecklistReviewedProjection.cards(cards))
         }
         return outcome
     }
@@ -1566,7 +1596,7 @@ actor PokemonChecklistStore {
         }
     }
 
-    private func loadSnapshot(from directory: URL) -> PokemonChecklistSnapshot? {
+    private func loadSnapshot(from directory: URL, source: ChecklistSource) -> PokemonChecklistSnapshot? {
         guard let manifest = loadManifest(from: directory) else {
             return nil
         }
@@ -1576,15 +1606,17 @@ actor PokemonChecklistStore {
         var validEntries: [PokemonChecklistSnapshotEntry] = []
         var checklists: [String: [CatalogCardSummary]] = [:]
         for entry in manifest.entries {
-            guard case let .loaded(cards) = loadChecklist(
+            guard case let .loaded(rawCards) = loadChecklist(
                 for: entry,
                 in: directory,
+                source: source,
                 decoder: decoder
             ) else {
                 // One damaged or interrupted resource must not hide the rest of
                 // an otherwise useful offline catalog.
                 continue
             }
+            let cards = PokemonChecklistReviewedProjection.cards(rawCards)
             validEntries.append(PokemonChecklistReviewedProjection.entry(entry, cards: cards))
             checklists[entry.set.id] = cards
         }
@@ -1674,6 +1706,7 @@ actor PokemonChecklistStore {
     private func loadChecklist(
         for entry: PokemonChecklistSnapshotEntry,
         in directory: URL,
+        source: ChecklistSource,
         decoder: JSONDecoder = JSONDecoder()
     ) -> ChecklistLoadOutcome {
         let file = directory.appendingPathComponent(entry.resource)
@@ -1684,7 +1717,12 @@ actor PokemonChecklistStore {
             return .unreadable
         }
         do {
-            return .loaded(PokemonChecklistReviewedProjection.cards(try decoder.decode([CatalogCardSummary].self, from: data)))
+            let cards = try decoder.decode([CatalogCardSummary].self, from: data)
+            if source == .bundled {
+                return .loaded(PokemonChecklistReviewedProjection.removingBundledAggregates(
+                    from: cards, resource: entry.resource, bytes: data))
+            }
+            return .loaded(cards)
         } catch {
             return .undecodable
         }

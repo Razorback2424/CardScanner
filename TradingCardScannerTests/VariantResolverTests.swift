@@ -235,6 +235,180 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         XCTAssertEqual(Set(live.catalogVariants), [.normal, .pokeBall, .pokemonFoilPattern("energy")])
     }
 
+    func testLegacyAggregateRepairRequiresBundledOriginPathAndExactBytes() async throws {
+        let bundle = try XCTUnwrap(Bundle.main.url(forResource: "PokemonChecklistSnapshot", withExtension: nil))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let manifest = try decoder.decode(PokemonChecklistSnapshotManifest.self,
+            from: Data(contentsOf: bundle.appendingPathComponent("manifest.json")))
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        for (setID, cardID, plain) in [("me01", "me01-058", PhysicalVariant.holo),
+                                      ("me02.5", "me02.5-001", PhysicalVariant.reverse)] {
+            let entry = try XCTUnwrap(manifest.entries.first { $0.providerID == setID })
+            let raw = try Data(contentsOf: bundle.appendingPathComponent(entry.resource))
+            for (label, resource, bytes, bundled, expectedPlain) in [
+                ("pinned", entry.resource, raw, true, false),
+                ("wrong-path", "sets/copied.json", raw, true, true),
+                ("changed-bytes", entry.resource, raw + Data("\n".utf8), true, true),
+                ("downloaded-copy", entry.resource, raw, false, true),
+            ] {
+                let directory = root.appendingPathComponent(setID).appendingPathComponent(label)
+                let resourceURL = directory.appendingPathComponent(resource)
+                try FileManager.default.createDirectory(at: resourceURL.deletingLastPathComponent(),
+                    withIntermediateDirectories: true)
+                try bytes.write(to: resourceURL)
+                let copy = PokemonChecklistSnapshotEntry(set: entry.set, providerID: entry.providerID,
+                    providerFingerprint: entry.providerFingerprint, providerProbeFingerprint: entry.providerProbeFingerprint,
+                    officialCount: entry.officialCount, standardSlotCount: entry.standardSlotCount,
+                    expandedSlotCount: entry.expandedSlotCount, resource: resource)
+                let encoder = JSONEncoder()
+                encoder.dateEncodingStrategy = .iso8601
+                try encoder.encode(PokemonChecklistSnapshotManifest(schemaVersion: manifest.schemaVersion,
+                    rulesVersion: manifest.rulesVersion, generatedAt: manifest.generatedAt,
+                    directoryFingerprint: manifest.directoryFingerprint, entries: [copy]))
+                    .write(to: directory.appendingPathComponent("manifest.json"))
+                let store = PokemonChecklistStore(root: bundled ? directory.appendingPathComponent("overlay") : directory,
+                    bundle: nil, bundledRoot: bundled ? directory : nil)
+                let loaded = await store.mergedChecklist(for: entry.set.catalogID)
+                let slots = try XCTUnwrap(loaded).filter { $0.providerID == cardID }.compactMap(\.masterSetVariant)
+                XCTAssertEqual(slots.contains(plain), expectedPlain, "\(cardID) \(label)")
+                let offline = await PokemonOfflineCatalog(store: store).card(providerSetID: setID,
+                    localID: String(cardID.dropFirst(setID.count + 1)), expectedOfficialCount: entry.officialCount)
+                XCTAssertEqual(try XCTUnwrap(offline).catalogVariants.contains(plain), expectedPlain, "\(cardID) \(label)")
+            }
+        }
+    }
+
+    func testLiveFoilPayloadWithoutQualifyingDetailsKeepsPlainFlagsForReviewedIDs() throws {
+        let holo = try foilCard(setID: "me01", number: "058", plain: .holo,
+            details: #"{"type":"reverse","foil":"cosmos"}"#)
+        let reverse = try foilCard(setID: "me02.5", number: "001", plain: .reverse,
+            details: #"{"type":"holo","foil":"energy"},{"type":"holo","foil":"pokeball"}"#)
+        XCTAssertEqual(Set(holo.catalogVariants.map(\.id)), ["holo", "cosmos"])
+        XCTAssertEqual(Set(reverse.catalogVariants.map(\.id)), ["reverse", "energy", "pokeBall"])
+        XCTAssertEqual(try foilCard(setID: "me01", number: "058", plain: .holo, details: "").catalogVariants, [.holo])
+        XCTAssertEqual(try foilCard(setID: "me02.5", number: "001", plain: .reverse, details: "").catalogVariants, [.reverse])
+    }
+
+    func testFreshPlainFoilsSurviveChecklistPublicationArtworkAndResolvedCache() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cards: [(TCGdexCard, Set<String>)] = [
+            (try foilCard(setID: "me01", number: "058", plain: .holo,
+                details: #"{"type":"holo","foil":"cosmos"},{"type":"holo"}"#), ["holo", "cosmos"]),
+            (try foilCard(setID: "me02.5", number: "001", plain: .reverse,
+                details: #"{"type":"reverse","foil":"energy"},{"type":"reverse","foil":"pokeball"}"#,
+                pricing: #"{"tcgplayer":{"reverse-holofoil":{"productId":42,"marketPrice":1}}}"#),
+                ["reverse", "energy", "pokeBall"]),
+        ]
+        for (provider, expected) in cards {
+            XCTAssertEqual(Set(provider.catalogVariants.map(\.id)), expected)
+            let set = CatalogSet(catalogID: .init(game: .pokemon, providerID: provider.set.id),
+                name: "Fixture", code: "TST", logoURL: nil, symbolURL: nil, cardCount: 1, releaseDate: nil, sortRank: 0)
+            let providerSet = try JSONDecoder().decode(TCGdexSetCatalog.self, from: Data("""
+            {"id":"\(provider.set.id)","name":"Fixture","cardCount":{"total":1,"official":1},
+             "cards":[{"id":"\(provider.id)","localId":"\(provider.localId)","name":"Fixture Card"}]}
+            """.utf8))
+            let built = try PokemonMasterSetChecklistBuilder.build(providerSet: providerSet, baseSet: set,
+                cardDetails: [provider.id: provider])
+            let checklistRoot = root.appendingPathComponent(set.providerID).appendingPathComponent("checklists")
+            try await PokemonChecklistStore(root: checklistRoot, bundle: nil).publish(.from(builtSets: built))
+            let store = PokemonChecklistStore(root: checklistRoot, bundle: nil)
+            let slots = await store.mergedChecklist(for: set.catalogID)
+            XCTAssertEqual(Set(try XCTUnwrap(slots).compactMap { $0.masterSetVariant?.id }), expected)
+
+            let fingerprint = try XCTUnwrap(built.first).providerFingerprint
+            let artwork = "https://example.com/\(provider.localId)/high.png"
+            let registry = PokemonCatalogRegistry(release: .init(revision: 1, generatedAt: .now, sets: [
+                .init(providerSetID: set.providerID, displayName: set.name, releaseDate: "2026-01-01", releaseOrder: 1,
+                    recognitionKind: .expansion, printedCode: set.code, officialCount: 1, printedPrefix: nil,
+                    catalogLocalIDPrefix: nil, localIDPadWidth: nil, scanEnabled: true, logoURL: nil, symbolURL: nil,
+                    providerFingerprint: fingerprint,
+                    cardArtwork: [.init(localID: provider.localId, thumbnailURL: "https://example.com/low.png", imageURL: artwork)])
+            ]))
+            let definition = PokemonSetDefinition(printedCode: set.code, tcgdexSetID: set.providerID,
+                officialCount: 1, releaseIndex: 1)
+            let identifier = ScanIdentifier.pokemon(setCode: set.code, cardNumber: provider.localId, printedTotal: 1,
+                setDefinition: definition)
+            let diskRoot = root.appendingPathComponent(set.providerID).appendingPathComponent("disk")
+            let cache = ResolvedPokemonCardCache(root: diskRoot, appVersion: "fixture")
+            let catalog = CardCatalog(source: RetailVariantSource(cards: [:]), offline: .init(store: store, registry: registry),
+                resolvedDiskCache: cache, registry: registry)
+            let offline = try await catalog.resolution(for: identifier)
+            XCTAssertEqual(offline.path, .cacheHit)
+            XCTAssertEqual(offline.card.displayImageURL?.absoluteString, artwork)
+            XCTAssertEqual(Set(offline.card.variantEvidence.catalogVariants.map(\.id)), expected)
+
+            await cache.store(card: provider, setCode: set.code, key: provider.id, catalogFingerprint: fingerprint)
+            let reopened = await ResolvedPokemonCardCache(root: diskRoot, appVersion: "fixture").card(for: provider.id)
+            XCTAssertEqual(Set(try XCTUnwrap(reopened).card.catalogVariants.map(\.id)), expected)
+        }
+    }
+
+    func testLegacyResolvedCacheDecodesPlainReverseWithNamedPatterns() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let storedAt = ISO8601DateFormatter().string(from: .now)
+        try Data("""
+        {"appVersion":"fixture","schemaGeneration":3,"entries":[
+          {"key":"old","storedAt":"\(storedAt)","cardID":"me02.5-001","localID":"001","name":"Fixture",
+           "setID":"me02.5","setName":"Fixture","officialCount":217,"setCode":"ASC","variants":[
+             {"id":"reverse","label":"Reverse"},{"id":"pokeBall","label":"Poké Ball"},{"id":"energy","label":"Energy"}
+           ]}
+        ]}
+        """.utf8).write(to: root.appendingPathComponent("ResolvedPokemonCards.json"))
+        let cached = await ResolvedPokemonCardCache(root: root, appVersion: "fixture").card(for: "old")
+        let loaded = try XCTUnwrap(cached)
+        XCTAssertNil(loaded.catalogFingerprint)
+        XCTAssertEqual(Set(loaded.card.catalogVariants.map(\.id)), ["reverse", "pokeBall", "energy"])
+    }
+
+    func testSharedCertificateAndCertifiedFoilsKeepDetailAndChecklistMembership() async throws {
+        let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        let fixtureURL = repo.appendingPathComponent("scripts/fixtures/pokemon_finish_coverage.json")
+        let fixture = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: fixtureURL)) as? [String: Any])
+        let certificate = try XCTUnwrap(fixture["certificate"])
+        let sets = PokemonFinishCoverage.decodeSets(from: try JSONSerialization.data(withJSONObject: certificate))
+        let sample = try XCTUnwrap(sets["sample"])
+        var certified = sample.cards.mapValues { $0.map(PhysicalVariant.resolving) }
+        certified["me01-058"] = [.holo, .pokemonFoilPattern("cosmos")]
+        certified["me02.5-001"] = [.reverse, .pokeBall, .pokemonFoilPattern("energy")]
+        certified["ex5-1"] = [.reverse, .pokemonFoilPattern("energy")]
+        try await PokemonFinishCoverage.$certifiedForTesting.withValue(certified) {
+            let bundled = try await snapshot()
+            for id in ["me01-058", "me02.5-001", "ex5-1"] {
+                let detail = try card(id, in: bundled)
+                let entry = try XCTUnwrap(bundled.entry(forProviderID: detail.set.id))
+                let slots = try XCTUnwrap(bundled.checklist(for: entry.set.catalogID)).filter { $0.providerID == id }
+                let expected = Set(try XCTUnwrap(certified[id]).map(\.id))
+                XCTAssertEqual(Set(slots.compactMap { $0.masterSetVariant?.id }), expected, id)
+                XCTAssertEqual(Set(detail.catalogVariants.map(\.id)), expected, id)
+                XCTAssertTrue(slots.allSatisfy { !$0.isSoleSlotForCard })
+            }
+            let detail = try foilCard(setID: "sample", number: "003", plain: .holo, details: "")
+            let base = CatalogCardSummary(game: .pokemon, providerID: detail.id,
+                setID: .init(game: .pokemon, providerID: "sample"), setName: "Sample", setCode: "TST",
+                name: detail.name, collectorNumber: detail.localId, thumbnailURL: nil, imageURL: nil,
+                masterSetVariant: .holo)
+            XCTAssertEqual(Set(detail.catalogVariants.map(\.id)), ["cosmos", "holo"])
+            XCTAssertEqual(Set(PokemonChecklistReviewedProjection.cards([base]).compactMap { $0.masterSetVariant?.id }),
+                ["cosmos", "holo"])
+        }
+    }
+
+    private func foilCard(
+        setID: String, number: String, plain: PhysicalVariant, details: String, pricing: String = "null"
+    ) throws -> TCGdexCard {
+        try JSONDecoder().decode(TCGdexCard.self, from: Data("""
+        {"id":"\(setID)-\(number)","localId":"\(number)","name":"Fixture Card",
+         "set":{"id":"\(setID)","name":"Fixture","cardCount":{"total":1,"official":1}},
+         "variants":{"holo":\(plain == .holo),"normal":false,"reverse":\(plain == .reverse),"firstEdition":false},
+         "variants_detailed":[\(details)],"pricing":\(pricing)}
+        """.utf8))
+    }
+
     func testReleasedDeltaReignPlaceholderUsesExactProductMinimums() throws {
         func card(number: String, name: String) -> TCGdexCard {
             TCGdexCard(id: "me06-" + number, localId: number, name: name, image: nil, rarity: nil,

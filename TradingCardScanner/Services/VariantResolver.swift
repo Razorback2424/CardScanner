@@ -116,6 +116,7 @@ enum PokemonFinishMinimumCatalog {
         let cards: [String: Entry]
         let holoAggregates: [String: Set<String>]
         let reverseAggregates: [String: Set<String>]
+        let aggregateChecklistSources: [String: String]?
     }
 
     private static let projection: ProjectionTable? = {
@@ -135,6 +136,7 @@ enum PokemonFinishMinimumCatalog {
 
     static let holoAggregates = projection?.holoAggregates ?? [:]
     static let reverseAggregates = projection?.reverseAggregates ?? [:]
+    static let aggregateChecklistSources = projection?.aggregateChecklistSources ?? [:]
     static let ascendedHeroesReversePatterns: Set<String> = [
         "pokeBall", "duskBall", "friendBall", "quickBall", "loveBall", "team-rocket", "energy"
     ]
@@ -179,17 +181,6 @@ enum PokemonFinishMinimumCatalog {
         return legacyEntries[cardID]?.normalNeedsReview == true || entries[cardID]?.normalNeedsReview == true
     }
 
-    static func removingAggregate(_ finish: PhysicalVariant, cardID: String, variants: [PhysicalVariant]) -> [PhysicalVariant] {
-        if finish == .holo, let patterns = holoAggregates[cardID],
-           variants.contains(where: { patterns.contains($0.id) }) {
-            return variants.filter { $0 != .holo }
-        }
-        if finish == .reverse, let patterns = reverseAggregates[cardID],
-           patterns.isSubset(of: Set(variants.map(\.id))) {
-            return variants.filter { $0 != .reverse }
-        }
-        return variants
-    }
 }
 
 /// Everything the resolver is allowed to reason from. Deliberately a plain value

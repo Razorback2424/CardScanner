@@ -13,6 +13,7 @@ from collections import defaultdict
 import json
 from pathlib import Path
 import re
+import subprocess
 
 from certify_pokemon_finish_coverage import (
     ROOT, SNAPSHOT, checklist, compare, local_number, name_key, numbered_products,
@@ -21,6 +22,7 @@ from certify_pokemon_finish_coverage import (
 from market_price_feeds import digest
 
 REVIEWED_SETS = {"sma", "xya"}  # Already covered by dedicated physical evidence.
+AGGREGATE_BASELINE = "d1d7fb8aa3073a5fa639f8764467ec7ecf88fcfd"
 STANDARD = {"normal", "holo", "reverse"}
 TRAIT_NAMES = {"Ω": "Omega", "α": "Alpha", "Δ": "Delta"}
 ASCENDED_REVERSE_PATTERNS = {
@@ -186,10 +188,10 @@ def derive_aggregates(evidence, by_set, patterns_for_card):
     return aggregates, receipt
 
 
-def ascended_market_evidence(repo, evidence):
+def ascended_market_evidence(repo, evidence, read_baseline):
     report = read_json(evidence / "market-report.json")
     group = report["tcgplayerGroupID"]
-    cards, sources, _ = checklist(repo, "me02.5")
+    cards, sources, _ = checklist(repo, "me02.5", read_bytes=read_baseline)
     if report["setID"] != "me02.5" or report["checklistSources"] != sources:
         raise ValueError("Ascended Heroes market report differs from the checklist")
     raw = {kind: (evidence / f"market-{kind}.json").read_bytes() for kind in ("products", "prices")}
@@ -248,16 +250,35 @@ def released_normal_scope(evidence, candidate):
 
 
 def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=None, candidate=None):
+    def read_baseline(path):
+        return subprocess.check_output(
+            ["git", "-C", str(repo), "show", f"{AGGREGATE_BASELINE}:{path.relative_to(repo).as_posix()}"]
+        )
+
+    baseline = json.loads(read_baseline(repo / SNAPSHOT / "manifest.json"))
+    legacy_sets, legacy_resources = defaultdict(list), {}
+    for entry in baseline["entries"]:
+        resource = entry["resource"]
+        raw = read_baseline(repo / SNAPSHOT / resource)
+        slots = json.loads(raw)
+        legacy_sets[entry["providerID"]].extend(slots)
+        legacy_resources[resource] = (digest(raw), {slot["providerID"] for slot in slots})
+    holo_aggregates, foil_receipt = derive_aggregates(foil_evidence, legacy_sets, cosmos_holo_aggregate)
+    market, reverse_market_sources = ascended_market_evidence(repo, reverse_evidence, read_baseline)
+    reverse_aggregates, reverse_receipt = derive_aggregates(
+        reverse_evidence, {"me02.5": legacy_sets["me02.5"]},
+        lambda card, variants: ascended_reverse_aggregate(card, variants, market.get(card["id"], set())),
+    )
+    repaired_cards = holo_aggregates.keys() | reverse_aggregates.keys()
+    aggregate_sources = {
+        resource: sha256 for resource, (sha256, ids) in sorted(legacy_resources.items())
+        if repaired_cards & ids
+    }
+
     manifest = read_json(repo / SNAPSHOT / "manifest.json")
     by_set = defaultdict(list)
     for entry in manifest["entries"]:
         by_set[entry["providerID"]].extend(read_json(repo / SNAPSHOT / entry["resource"]))
-    holo_aggregates, foil_receipt = derive_aggregates(foil_evidence, by_set, cosmos_holo_aggregate)
-    market, reverse_market_sources = ascended_market_evidence(repo, reverse_evidence)
-    reverse_aggregates, reverse_receipt = derive_aggregates(
-        reverse_evidence, {"me02.5": by_set["me02.5"]},
-        lambda card, variants: ascended_reverse_aggregate(card, variants, market.get(card["id"], set())),
-    )
     scope = {}
     for set_id, rows in sorted(by_set.items()):
         if set_id not in REVIEWED_SETS and rows and all(
@@ -331,12 +352,14 @@ def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=No
         "schemaVersion": 1, "marketBuild": receipt["marketBuild"],
         "secondaryCatalogCommit": secondary_receipt["commit"], "cards": output,
         "holoAggregates": holo_aggregates, "reverseAggregates": reverse_aggregates,
+        "aggregateChecklistSources": aggregate_sources,
     }, {
         "schemaVersion": 1, "market": receipt, "independentCatalog": secondary_receipt,
         "marketGroupIndexSHA256": digest(group_index_path.read_bytes()), "sets": report,
         "foilEvidence": foil_receipt, "holoAggregates": holo_aggregates,
         "reverseEvidence": reverse_receipt, "reverseMarketSources": reverse_market_sources,
         "reverseAggregates": reverse_aggregates,
+        "aggregateChecklistSources": aggregate_sources,
         "releasedSetEvidence": released_report,
     }
 
