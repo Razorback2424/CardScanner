@@ -1,9 +1,8 @@
 # Pokémon 30th Celebration Battle Deck catalog coverage
 
-**Open.** Checked November 12, 2026 against signed production revision 23
-and the working tree based on `7daef56`. Recheck weekly during Pokémon
-catalog review until the verified deck finishes are selectable in Scan and
-Browse.
+**Implemented locally.** The app projects 34 reviewed deck finishes onto the
+original card identities in revision 23. Production price publication is
+pending. Provider coverage was last checked November 12, 2026.
 
 Pokémon released the English Espeon ex and Umbreon ex Battle Decks on
 October 30, 2026. Each contains 60 foil cards. The box backs and decklists give
@@ -18,9 +17,10 @@ the original footers on both. [Pokémon product page](https://www.pokemon.com/us
 
 ## Catalog and provider results
 
-- **Scan and Browse.** The signed snapshot has all 38 underlying card
-  identities, and the bundled checklist has 27. The catalog lacks 34
-  deck-specific finish entries. Scan resolves the photographed cards to
+- **Catalog baseline.** The signed snapshot has all 38 underlying card
+  identities. Before the reviewed projection, the bundled checklist had 27
+  underlying identities and the catalog was missing 34 deck finish entries.
+  Scan resolves the photographed cards to
   `me01-119` and `sv10.5b-084` by the footer. Their existing finishes include
   ordinary Reverse. Pokégear also has a separate Poké Ball parallel. The
   Pikachu stamp sits in the artwork and the footer supplies the same card
@@ -53,11 +53,12 @@ the original footers on both. [Pokémon product page](https://www.pokemon.com/us
   [Pokégear SKU](https://mp-search-api.tcgplayer.com/v2/product/729923/details),
   [MEE products](https://tcgcsv.com/tcgplayer/3/24461/products),
   [stamped Energy specimen](https://www.radamspokestop.co.uk/shop-all/p/psychic-energy-battle-deck-exclusive-energy-mee-005-30th-celebrations-presented-by-pokmon-tcg).
-- **Hosted prices.** The app's scoped index omits groups `1840` and `24451`.
-  Its checksummed `24461` files omit all four deck Energy IDs and include the
-  separate anniversary Energy run numbered `009`–`016`. The hosted `24722`
-  files contain both lead products. JustTCG exact-product coverage remains
-  unverified. [Hosted price index](https://catalog.scan-stash.com/market-prices/v1/index.json).
+- **Hosted prices.** The November 12 readback used the November 11
+  `20:05:27 UTC` build. Group `1840` returned HTTP 404 and group `24461`
+  contained zero of the four deck Energy products. The earlier readback found
+  the separate Energy run numbered `009`–`016` in `24461` and both lead
+  products in `24722`. JustTCG exact-product coverage remains unverified.
+  [Hosted price index](https://catalog.scan-stash.com/market-prices/v1/index.json).
 
 ## English deck inventory
 
@@ -107,26 +108,28 @@ market lane. The quantities sum to 60 in each deck.
 | POR 084/088 | Rosa's Encouragement | 2 | 0 | `729928` |
 | WHT 084/086 | Hilda | 0 | 2 | `729905` |
 
-## Recheck and catalog admission
+## Catalog and pricing implementation
 
-1. Join the printed set, number, and name to each live English TCGdex card.
-   Recheck `variants_detailed` for the expected stamp and finish, and match
-   the exact product against the TCGCSV group and English TCGplayer SKUs. A
-   `30C` anniversary stamp by itself also appears on the base printing.
-   Keep the two lead ex cards on watch for a corroborated deck distinction.
-2. The marketplace evidence already supports a reviewed addition while TCGdex
-   coverage catches up. Reuse the existing stamp-aware finish keys and original
-   card identities. Add distinct Grand Master choices for the confirmed deck
-   printings. The signed additional-variant validator currently accepts
-   ordinary unstamped, Cosmos and jumbo membership. It needs explicit support
-   for stamped membership. The `30C` Holo projection also needs to retain
-   the confirmed deck Reverse. [Stamp keys](../../TradingCardScanner/Models/CardVariant.swift),
-   [signed validator](../../PokemonCatalogCore/Sources/PokemonCatalogCore/CatalogContract.swift),
-   [Holo projection](../../TradingCardScanner/Models/TCGdexCard.swift).
-3. Add only the matched group, product and finish to the scoped price feed.
-   The existing Pokémon scope generator assumes Holofoil, so the 30
-   `1840` entries need explicit Reverse Holofoil lanes. Verify both
-   photographed cards in offline Browse and Scan. Use ordinary Reverse,
-   Black Bolt Poké Ball, a `30C` pack card and unstamped `MEE` as controls.
-   Confirm that saves use distinct finish keys and price requests use the
-   corresponding exact SKU. [Price feed generator](../../scripts/market_price_feeds.py).
+The app and price publisher share one reviewed mapping of card IDs, printed
+numbers, TCGplayer groups, product IDs, and finishes. Scan offers the deck
+finishes as separate choices. Browse includes them in Grand Master and shows
+the named deck finish and its exact product link from card search. Collection
+records keep the original card ID and store the stamped finish and exact
+product ID. The price publisher includes the exact Reverse Holofoil or
+Holofoil lane for each product. A replay of the November 11 feed returned
+market prices for all 34 deck products and preserved the eight existing
+anniversary Energy products. [Reviewed mapping](../../publisher/pokemon-battle-deck-finishes.json),
+[price feed generator](../../scripts/market_price_feeds.py).
+
+## Follow-up checks
+
+1. After the next production price publication, read back groups `1840` and
+   `24461` against the price index and check all 34 exact product and finish
+   pairs. Check the two photographed cards in the app against those prices.
+   [Publication workflow](../../.github/workflows/yugioh-catalog.yml).
+2. During the weekly Pokémon catalog review, check English TCGdex
+   `variants_detailed` and TCGplayer product records for changes to the deck
+   printings. Compare the finish, stamp and product ID before changing a
+   binding. A `30C` anniversary stamp also appears on the base printing.
+   Keep the two lead ex cards on watch for evidence of distinct deck finishes
+   and confirm the four Energy foil patterns with specimens.

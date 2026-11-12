@@ -105,6 +105,15 @@ SKUs. TCGdex lacks the 30 deck Reverse entries and four stamped Energy
 entries. The two photographed variants have separate marketplace products.
 [Deck inventory and weekly provider recheck](docs/audits/pokemon-30th-battle-deck-coverage-2026-11-12.md).
 
+The app now offers all 34 verified deck finishes in Scan and Browse Grand
+Master. Card detail links and quotes use the exact TCGplayer product and
+finish. The ProfileLocal run against revision 23 passed 223 tests, with one
+opt-in live price test skipped. All 29 feed and hosting script tests passed.
+A replay of the November 11 TCGCSV feed supplied 34 exact deck prices and
+preserved the eight existing anniversary Energy products. Production price
+publication is pending. The simulator result is
+`CodexBuilds/PokemonCatalogFix-RxLf6u/BattleDeckFinalRevision23.xcresult` on T7.
+
 # 2026-11-12 — One Piece product batches and owner revision 6
 
 Signed and verified owner revision 6 on the dirty `7daef56` tree. Against
