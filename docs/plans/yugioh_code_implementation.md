@@ -1,5 +1,69 @@
 # Yu-Gi-Oh! implementation and verification
 
+**Catalog coverage follow-up — 2026-11-12.** The regenerated seed contains
+47,521 printings. All 696 European-English reference printings across 13
+releases and 226 Australian-English printings from Legend of Blue Eyes and
+the Yugi and Kaiba starter decks have a verified edition users can select in
+Scan and Browse. Edition-specific galleries were matched on the release,
+printed code, name and rarity. The review also supports edition choices on
+three previously unselectable marketplace printings. The unnumbered Secret Rare Blue-Eyes
+display card and all six oversized Duel Overload cards appear in Browse for
+reference. The regional replay preserved existing printing IDs, price evidence and all 262
+automatic families. [Regional edition evidence](../../scripts/yugioh_legacy_edition_evidence.json)
+and [display card evidence](../../scripts/yugioh_printing_corrections.json).
+
+Browse gained dates for 163 verified groups, including separate original,
+Worldwide English and 25th Anniversary issues. The 77 populated groups still
+without a date include combined releases, month-only records and unresolved
+source conflicts. The date evidence binds each day to the intended group ID,
+title and set abbreviation. [Release date evidence](../../scripts/yugioh_release_date_evidence.json).
+
+**Marketplace edition and finish follow-up — 2026-11-12.** The bundle
+supports selection for 47,483 of 47,521 printings. The 205 additions include
+all 60 Thank You Pack printings, the 25 outstanding Winner's Pack logo
+variants, nine redemption codes ending in `K` and ten Duel Terminal previews.
+The edition projection joins the release, printed code, card name, finish
+and artwork or logo, then binds each receipt to the exact marketplace product.
+Independent membership evidence carries no quote. [Edition projection](../../scripts/yugioh_edition_galleries.py)
+and [edition evidence](../../scripts/yugioh_physical_editions.json).
+
+All 731 original machine printings now show the printed Duel Terminal stamp
+in Scan and Browse. They keep the existing ownership ID and marketplace
+Limited mapping. The replay withdrew conflicting marketplace editions for
+`DT03-EN033`, `DT04-EN058`, `DT05-EN013`, `DT06-EN062` and `TSC-E001`.
+Each original observation remains in the audit. The replacement editions
+have quotes only where the provider records the correct lane. Six verified
+Duel Terminal rarity corrections and the Gold Sarcophagus correction
+preserve product IDs. The two verified printed passcodes for each of Dark
+Magician and Polymerization now corroborate their scan families.
+[Printing corrections](../../scripts/yugioh_printing_corrections.json).
+
+The 38 Browse-only rows include seven unnumbered display cards, 25 rows with
+unsupported codes, two numbered oversized cards, three prize cards and a
+Soul Rope reissue. Unsupported numbers stay in Browse and outside the scan
+index. The upstream report has 339 additional products awaiting printed
+identity classification. Reconcile those by release against official
+checklists and physical evidence. Conflicting Duel Terminal rarity sources
+still need specimen checks for `DT04-EN007`, `DT04-EN072`, `DT04-EN087`
+and `DT05-EN009`. The sources also disagree about a second preview finish
+for `DTP1-EN005`. Keep those open until a specimen distinguishes the finish.
+
+The [catalog workflow](../../.github/workflows/yugioh-catalog.yml) compares
+each candidate and its approved parent with the retained checklists and recent
+Konami release lists. The Beyond the Brave premiere checklist requires
+`BETB-ENSP1` inside the marketplace's booster group, which distinguishes
+the promo from the booster copies. The coverage report also records undated populated groups,
+unmatched releases and failed checklist reads. A candidate that removes an
+existing printing or withdraws edition or automatic authority requires review
+before staging. Recheck a flagged cohort against the official checklist and
+exact product evidence, rebuild from retained inputs, and run the Scan, Browse
+and CSV regressions before approving it. Regional artwork, additional editions
+and individual misprints still require independent evidence.
+
+Approved heads carry signed ancestor catalog hashes so a device can validate
+its installed revision and fetch just the current snapshot. Production trust
+configuration and physical-device acceptance remain separate release gates.
+
 **Market history implementation — 2026-10-28, working-tree patch:** catalog
 and collection details now request JustTCG history using the active catalog's
 exact TCGplayer product and supported edition. English, USD, Near Mint listings
