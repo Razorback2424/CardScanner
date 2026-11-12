@@ -3188,5 +3188,6 @@
     }
   ],
   "capturedAt": "2026-10-23T03:52:28Z",
-  "productsSHA256": "73ed018dff2dca79ffc2e5db4cbc823c8cf25e04bbb36e0390c1f040c78339ac"
+  "productsSHA256": "73ed018dff2dca79ffc2e5db4cbc823c8cf25e04bbb36e0390c1f040c78339ac",
+  "productIdentitySHA256": "bb7491904a9d9257f9d69a3813fc2e9183c470f5dc6c62c36f5721de0e52d347"
 }

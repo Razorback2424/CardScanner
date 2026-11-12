@@ -6,16 +6,261 @@ import sys
 import tempfile
 import unittest
 import build_yugioh_catalog as builder
+import yugioh_edition_galleries as galleries
 
 class BuilderTests(unittest.TestCase):
     def setUp(self):
         self.fixture = json.loads(pathlib.Path(__file__).with_name("catalog.json").read_text())
 
-    def build(self, reviews=None):
+    def build(self, reviews=None, **options):
         f = self.fixture
         return builder.build(f["groups"], {1: f["products"]}, {1: f["prices"]}, f["cards"],
             {"12206212": ["Harpie's Brother"]}, reviews or {}, "2026-10-20T00:00:00Z", floor=1,
-            price_provenance={1:{'h':'a'*64, 's':'2026-10-20T00:00:00Z', 'st':'capturedAt'}})
+            price_provenance={1:{'h':'a'*64, 's':'2026-10-20T00:00:00Z', 'st':'capturedAt'}}, **options)
+
+    def test_verified_metadata_keeps_the_original_printing_binding(self):
+        f = self.fixture
+        product = f["products"][0]
+        product["name"] = "SkyScout (Ultra Rare)"
+        product["extendedData"][1]["value"] = "Starfoil Rare"
+        f["cards"][0]["name"] = "Sky★Scout"
+        f["cards"][0]["card_sets"][0]["set_name"] = f["groups"][0]["name"]
+        old = self.build()[0]
+        corrections = {"1": {"groupID": 1, "code": "PSV-EN049", "productName": product["name"],
+                             "providerRarity": "Starfoil Rare", "physicalRarity": "Ultra Rare"}}
+        new = self.build(release_calendar=[{"name": f["groups"][0]["name"], "date": "2002-10-20"}],
+                         rarity_corrections=corrections)[0]
+        before = next(row for row in old["printings"] if row["p"] == 1)
+        after = next(row for row in new["printings"] if row["p"] == 1)
+        self.assertEqual(before["id"], after["id"])
+        self.assertEqual(before["pn"], after["pn"])
+        self.assertEqual(after["r"], "Starfoil Rare")
+        self.assertEqual(after["vr"], "Ultra Rare")
+        self.assertEqual(new["sets"][0]["d"], "2002-10-20")
+        self.assertEqual(after["on"], "Sky★Scout")
+        self.assertEqual(after["dn"], "Sky★Scout (Ultra Rare)")
+        self.assertEqual(builder.catalog_regressions(new, old), {})
+
+    def test_release_report_flags_an_expected_variant_missing_from_a_populated_parent(self):
+        seed = self.build()[0]
+        profile = {"groupID": 1, "url": "https://example.com/release", "count": 1,
+                   "rows": [{"name": "Sky Scout", "rarities": ["Ultra Rare", "Starlight Rare"]}]}
+        report = builder.release_coverage(seed, self.fixture["groups"], [], [profile], {"releases": []}, seed)
+        expected = [{"name": "Sky Scout", "rarity": "Starlight Rare"}]
+        self.assertEqual(report["checkedReleases"][0]["missingNameOrRarity"], expected)
+        self.assertEqual(report["checkedReleases"][0]["parentMissingNameOrRarity"], expected)
+        promo = {"id": "123", "date": "2026-10-19", "name": "Release event promo"}
+        unmatched = builder.release_coverage(seed, self.fixture["groups"], [promo], [], {"releases": []}, seed)
+        self.assertEqual(unmatched["unmatchedOfficialReleases"], [promo])
+        self.assertEqual(unmatched["recentReleaseGaps"], [])
+
+    def test_release_dates_are_scoped_to_original_reprint_and_regional_group(self):
+        original = self.fixture["groups"][0]
+        title = original["name"]
+        reprint = {**original, "groupId": 2, "name": title + " (Reprint)"}
+        self.fixture["groups"].append(reprint)
+        releases = [{"id": "123", "name": title, "date": "2002-10-20"},
+                    {"id": "456", "name": reprint["name"], "date": "1990-01-01"},
+                    {"id": "789", "name": title + " 25th Anniversary", "date": "2023-04-21"}]
+        name = self.fixture["cards"][0]["name"]
+        regional = {"groupID": -1, "referenceID": "psv-eu", "code": "PSV", "name": title + " (European English)",
+                    "rows": [["PSV-E049", self.fixture["cards"][0]["id"], name, "Ultra Rare"]]}
+        reviews = {"2": {"name": reprint["name"], "abbreviation": "PSV", "date": "2023-04-21",
+                         "source": "https://example.com/789", "officialReleaseID": "789"},
+                   "-1": {"name": regional["name"], "abbreviation": "PSV-E", "date": "2003-12-12",
+                          "source": "https://example.com/regional"}}
+        f = self.fixture
+        inventory = {"url": "https://example.com/regional", "sha256": "b" * 64, "releases": [regional]}
+        seed = builder.build(f["groups"], {1: f["products"], 2: []}, {1: f["prices"], 2: []}, f["cards"],
+            {"12206212": ["Harpie's Brother"]}, {}, "2026-10-20T00:00:00Z", floor=1,
+            release_calendar=releases, reviewed_dates=reviews, reference_inventory=inventory,
+            reference_editions={"sources": []})[0]
+        self.assertEqual({s["g"]: s["d"] for s in seed["sets"]},
+                         {1: "2002-10-20", 2: "2023-04-21", -1: "2003-12-12"})
+        self.assertEqual(builder.matching_releases(f["groups"], releases, reviews), {1: releases[0], 2: releases[2]})
+        reprint["abbreviation"] = "DIFFERENT"
+        self.assertEqual(builder.matching_releases(f["groups"], releases, reviews), {1: releases[0]})
+
+    def test_premiere_checklist_requires_the_exact_promo_inside_its_market_group(self):
+        groups = self.fixture["groups"]
+        group = groups[0]
+        retail = {"id": "123", "date": "2026-10-19", "name": group["name"]}
+        premiere = {"id": "456", "date": "2026-10-17", "name": group["name"] + " Premiere!"}
+        code = "PSV-ENSP1"
+        reviews = {"456": {"groupID": group["groupId"], "name": group["name"], "abbreviation": group["abbreviation"],
+                           "printingCode": code, "source": "https://example.com/card"}}
+        profile = {"groupID": group["groupId"], "url": "https://example.com/456", "count": 1, "printingCode": code,
+                   "rows": [{"name": "Sky Scout", "rarities": ["Ultra Rare"]}]}
+        seed = self.build(release_calendar=[retail, premiere])[0]
+        self.assertEqual(seed["sets"][0]["d"], retail["date"])
+        parent = copy.deepcopy(seed)
+        row = next(p for p in seed["printings"] if p["p"] == 1)
+        seed["printings"].append({**row, "id": "promo-printing", "c": code})
+        report = builder.release_coverage(seed, groups, [retail, premiere], [profile], {"releases": []}, parent,
+                                          supplemental_checklists=reviews)
+        self.assertEqual(report["unmatchedOfficialReleases"], [])
+        self.assertEqual(report["checkedReleases"][0]["missingNameOrRarity"], [])
+        self.assertEqual(report["checkedReleases"][0]["parentMissingNameOrRarity"], [{"name": "Sky Scout", "rarity": "Ultra Rare"}])
+        self.assertEqual(report["recentReleaseGaps"], [{**premiere, "printingCode": code, "groupID": group["groupId"],
+                                                      "candidatePrintings": 1, "parentPrintings": 0}])
+
+    def test_reviewed_unnumbered_display_card_is_discoverable_without_edition_authority(self):
+        f = self.fixture
+        product = copy.deepcopy(f["products"][0])
+        product["productId"] = 100
+        product["extendedData"] = [field for field in product["extendedData"] if field["name"] != "Number"]
+        f["products"].append(product)
+        correction = {"100": {"groupID": 1, "code": "", "productName": product["name"],
+                              "providerRarity": "Ultra Rare", "physicalRarity": "Ultra Rare",
+                              "unnumberedDisplayCardID": f["cards"][0]["id"]}}
+        seed = self.build(rarity_corrections=correction)[0]
+        row = seed["referencePrintings"][0]
+        self.assertEqual((row["p"], row["c"], row["ir"]), (100, "", "unnumberedDisplay"))
+        self.assertEqual((row["e"], row["pe"], row["m"]), ([], [], []))
+        self.assertNotIn("", seed["autoEligibleCodes"])
+        product["name"] += " different product"
+        self.assertNotIn("referencePrintings", self.build(rarity_corrections=correction)[0])
+
+    def test_reference_printing_keeps_id_when_an_exact_market_product_is_added(self):
+        f = self.fixture
+        title = f["groups"][0]["name"]
+        name = f["cards"][0]["name"]
+        inventory = {"url": "https://example.com/reference", "sha256": "b" * 64, "releases": [
+            {"groupID": -1, "referenceID": "psv-eu", "code": "PSV",
+             "name": title + " (European English)", "rows": [["PSV-E049", f["cards"][0]["id"], name, "Ultra Rare"]]},
+        ]}
+        editions = {"capturedAt": "2026-10-20T00:00:00Z", "sources": [
+            {"url": "https://example.com/edition", "firstEditionCodes": ["PSV-E049"]},
+        ]}
+        options = dict(reference_inventory=inventory, reference_editions=editions)
+        old = self.build(**options)[0]
+        prior = old["referencePrintings"][0]
+        self.assertNotIn("p", prior)
+        self.assertEqual(prior["e"], ["yugioh1stEdition"])
+        self.assertIsNone(prior["m"][0]["q"])
+
+        product = copy.deepcopy(f["products"][0])
+        product["productId"], product["name"] = 100, name
+        product["extendedData"][0]["value"] = "PSV-E049"
+        f["products"].append(product)
+        f["cards"][0]["card_sets"].append({"set_code": "PSV-E049", "set_name": title, "set_rarity": "Ultra Rare"})
+        f["prices"].append({"productId": 100, "subTypeName": "1st Edition", "marketPrice": 15})
+        new = self.build(previous_references={prior["id"]: prior}, **options)[0]
+        after = new["referencePrintings"][0]
+        self.assertEqual(after["id"], prior["id"])
+        self.assertEqual((after["p"], after["pg"], after["m"][0]["q"]), (100, 1, 15))
+        self.assertFalse(any(row["p"] == 100 for row in new["printings"]))
+        self.assertEqual(builder.catalog_regressions(new, old), {})
+
+    def test_gallery_editions_use_exact_inventory_and_keep_market_authority_separate(self):
+        name = self.fixture["cards"][0]["name"]
+        title = self.fixture["groups"][0]["name"]
+        codes = ["PSV-E049", "PSV-E050"]
+        inventory = {"url": "https://example.com/reference", "sha256": "b" * 64, "releases": [
+            {"groupID": 1, "referenceID": None, "code": "PSV", "name": title,
+             "rows": [[code, self.fixture["cards"][0]["id"], name, "Ultra Rare"] for code in codes]},
+        ]}
+        date = "2026-10-20T00:00:00Z"
+        contents = f"{{{{Set gallery|rarity=UR|\n{codes[0]}; {name}\n{codes[1]}; {name}; Rare\n}}}}"
+        pages = [{"title": f"Set Card Galleries:{title} (TCG-EU-UE)", "revisions": [
+            {"revid": 123, "slots": {"main": {"content": contents}}},
+        ]}]
+        projection = galleries.project(inventory, [(json.dumps({"query": {"pages": pages}}).encode(), date)])
+        self.assertEqual(projection["sources"][0]["codes"], [codes[0]])
+        product = self.fixture["products"][0]
+        product["name"] = name
+        product["extendedData"][0]["value"] = codes[0]
+        self.fixture["cards"][0]["card_sets"].append({"set_code": codes[0], "set_name": title, "set_rarity": "Ultra Rare"})
+        original = self.build()[0]
+        editions = {"capturedAt": date, "sources": [], "galleryEvidence": projection}
+        seed = self.build(reference_inventory=inventory, reference_editions=editions)[0]
+        row = next(p for p in seed["printings"] if p["p"] == 1)
+        self.assertEqual(row["e"], ["yugioh1stEdition", "yugiohUnlimited"])
+        self.assertEqual(row["pe"], ["yugioh1stEdition"])
+        self.assertEqual(row["m"][1]["t"], "independentlyReviewed")
+        self.assertIsNone(row["m"][1]["q"])
+        self.assertEqual(seed["referencePrintings"][0]["e"], [])
+        self.assertEqual(builder.catalog_regressions(seed, original), {})
+        inventory["releases"][0]["rows"][1][3] = "Rare"
+        with self.assertRaisesRegex(AssertionError, "belongs to another inventory"):
+            self.build(reference_inventory=inventory, reference_editions=editions)
+
+    def test_same_title_regional_galleries_cannot_grant_each_others_editions(self):
+        title = "Legend of Blue Eyes White Dragon"
+        cards = [["LOB-E001", 89631139, "Blue-Eyes White Dragon", "Ultra Rare"],
+                 ["LOB-A001", 89631139, "Blue-Eyes White Dragon", "Ultra Rare"]]
+        inventory = {"releases": [
+            {"groupID": -1, "name": title + " (European English)", "rows": [cards[0]]},
+            {"groupID": -14, "name": title + " (Australian English)", "suffix": "A", "rows": [cards[1]]},
+        ]}
+        content = "{{Set gallery|rarity=UR|\nLOB-A001; Blue-Eyes White Dragon\nLOB-E001; Blue-Eyes White Dragon\n}}"
+        pages = [{"title": f"Set Card Galleries:{title} (TCG-AU-1E)", "revisions": [
+            {"revid": 123, "slots": {"main": {"content": content}}},
+        ]}]
+        projected = galleries.project(inventory, [(json.dumps({"query": {"pages": pages}}).encode(), "2026-10-20T00:00:00Z")])
+        self.assertEqual([(s["groupID"], s["codes"]) for s in projected["sources"]], [(-14, ["LOB-A001"])])
+        self.assertIsNotNone(builder.CODE.fullmatch("LOB-A001"))
+        self.assertIsNone(builder.CODE.fullmatch("MRD-A001"))
+
+    def test_market_gallery_requires_the_exact_finish_and_product_binding(self):
+        f = self.fixture
+        f["prices"] = []
+        base = f["products"][0]
+        alternate = copy.deepcopy(base)
+        alternate["productId"] = 3
+        alternate["name"] = "Harpie's Brother (Alternate Art)"
+        common = copy.deepcopy(base)
+        common["productId"] = 4
+        common["extendedData"][1]["value"] = "Common"
+        f["products"].extend([alternate, common])
+        old = self.build()[0]
+        title = f["groups"][0]["name"]
+        body = (f"{{{{Card gallery|region=EN|\nPSV-EN049; {title}; UR; UE\n}}}}\n"
+                f"{{{{Card gallery|region=JP|\nPSV-EN049; {title}; C; LE\n}}}}")
+        pages = [{"title": "Card Gallery:Sky Scout", "revisions": [
+            {"revid": 42, "slots": {"main": {"content": body}}},
+        ]}]
+        date = "2026-10-19T00:00:00Z"
+        reviews = galleries.project_market(old, [(json.dumps({"query": {"pages": pages}}).encode(), date)])
+        self.assertEqual(set(reviews), {"1"})
+        candidate, _, _, _ = self.build(reviews)
+        printing = next(p for p in candidate["printings"] if p["p"] == 1)
+        self.assertEqual(printing["e"], ["yugiohUnlimited"])
+        self.assertFalse(printing["ec"])
+        self.assertEqual(printing["pe"], [])
+        self.assertEqual(printing["m"][0]["s"], date)
+        self.assertIsNone(printing["m"][0]["q"])
+        self.assertEqual(candidate["autoEligibleCodes"], [])
+        self.assertEqual(builder.catalog_regressions(candidate, old), {})
+        base["name"] = "Harpie's Brother (Different Artwork)"
+        drifted, _, exceptions, _ = self.build(reviews, previous={1: printing})
+        self.assertEqual(exceptions["printingEditionEvidenceDrift"], [1])
+        self.assertTrue(all(not p["e"] for p in drifted["printings"]))
+
+    def test_bound_edition_correction_never_transfers_the_rejected_quote(self):
+        prior = self.build()[0]
+        before = next(p for p in prior["printings"] if p["p"] == 1)
+        review = {
+            "printing": {"groupID": before["g"], "code": before["c"], "productName": before["pn"], "rarity": before["r"]},
+            "editions": ["yugiohUnlimited"],
+            "rejectProviderEditions": ["yugioh1stEdition"],
+            "evidence": {"yugiohUnlimited": {"url": "https://example.com/specimen"}},
+        }
+        candidate, _, _, _ = self.build({"1": review}, previous={1: before})
+        after = next(p for p in candidate["printings"] if p["p"] == 1)
+        self.assertEqual(after["id"], before["id"])
+        self.assertEqual(after["e"], ["yugiohUnlimited"])
+        self.assertEqual(after["pe"], before["pe"])
+        self.assertFalse(after["ec"])
+        self.assertIsNone(after["m"][0]["q"])
+        self.assertEqual(after["historicalContradictions"], before["m"])
+        self.assertEqual(builder.catalog_regressions(candidate, prior), {
+            "withdrawnEditions": [{"id": before["id"], "code": before["c"], "editions": ["yugioh1stEdition"]}],
+        })
+        self.assertEqual(self.build({"1": review}, previous={1: after})[0], candidate)
+        del review["printing"]
+        with self.assertRaisesRegex(AssertionError, "unbound edition correction"):
+            self.build({"1": review})
 
     def test_alias_matches_and_canonical_id_does_not_depend_on_printed_name(self):
         seed, _, exceptions, _ = self.build()
@@ -26,6 +271,19 @@ class BuilderTests(unittest.TestCase):
         self.fixture["products"][0]["name"] = "Sky Scout (UR)"
         renamed = self.build()[0]
         self.assertEqual(seed["cards"], renamed["cards"])
+
+    def test_reviewed_passcodes_replace_provider_ids_without_changing_identity(self):
+        old = self.build()[0]
+        before = next(c for c in old["cards"] if c["sourceID"] == 12206212)
+        review = {"12206212": {"name": "Sky Scout", "passcodes": [12345678, 87654321], "evidence": "https://example.com/card"}}
+        new = self.build(passcode_corrections=review)[0]
+        after = next(c for c in new["cards"] if c["id"] == before["id"])
+        self.assertEqual(after, {**before, "pc": [12345678, 87654321]})
+        self.assertEqual(builder.catalog_regressions(new, old), {})
+        review["12206212"]["name"] = "Different Card"
+        unchanged, _, exceptions, _ = self.build(passcode_corrections=review)
+        self.assertEqual(unchanged, old)
+        self.assertEqual(exceptions["canonicalPasscodeEvidenceDrift"], [12206212])
 
     def test_group_price_union_cannot_create_physical_editions(self):
         seed, stats, _, _ = self.build()

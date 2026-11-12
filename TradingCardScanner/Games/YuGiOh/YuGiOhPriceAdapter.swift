@@ -10,7 +10,7 @@ struct YuGiOhBundledPriceSource: YuGiOhMarketPriceSource {
     func quote(printing p: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String,
                minimumFetchedAt: Date?, allowsHistoricalFallback: Bool = true) async throws -> PriceLookup {
         try Task.checkCancellation()
-        guard allowsHistoricalFallback else { throw PriceQuoteError.providerUnavailable }
+        guard allowsHistoricalFallback, let productID = p.productID else { throw PriceQuoteError.providerUnavailable }
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         guard let m = p.membership.first(where: { $0.e == edition }), let amount = m.q,
@@ -21,7 +21,7 @@ struct YuGiOhBundledPriceSource: YuGiOhMarketPriceSource {
         }
         guard minimumFetchedAt.map({ date > $0 }) ?? true else { throw PriceQuoteError.providerUnavailable }
         return .price(.init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgCSV,
-            sourceVariantID: "tcgplayer:\(p.productID):\(edition.tcgplayerSubtype)",
+            sourceVariantID: "tcgplayer:\(productID):\(edition.tcgplayerSubtype)",
             sourceUpdatedAt: m.st == "providerSnapshot" ? date : nil, fetchedAt: date))
     }
 }
@@ -32,9 +32,10 @@ struct YuGiOhDailyPriceSource: YuGiOhMarketPriceSource {
     var transport: TCGCSVProductPriceSource = .shared
     func quote(printing: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String,
                minimumFetchedAt: Date?, allowsHistoricalFallback: Bool = true) async throws -> PriceLookup {
+        guard let productID = printing.productID, let group = printing.marketGroupID else { throw PriceQuoteError.providerUnavailable }
         do {
-            return try await transport.quote(category: 2, group: printing.set.groupID,
-                productID: printing.productID, name: printing.productName, number: printing.code,
+            return try await transport.quote(category: 2, group: group,
+                productID: productID, name: printing.productName, number: printing.code,
                 lane: edition.tcgplayerSubtype, generation: generation, minimumFetchedAt: minimumFetchedAt)
         } catch is CancellationError {
             throw CancellationError()
@@ -58,8 +59,9 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
     var game: CardGame { .yuGiOh }
     var allowsProviderFallback: Bool { false }
     var supportsStoredPrintingRefresh: Bool { true }
-    static func mappingIdentity(_ p: YuGiOhCatalog.Printing, _ edition: YuGiOhEdition) -> String {
-        "tcgcsv:2:\(p.set.groupID):\(p.productID):\(edition.tcgplayerSubtype)"
+    static func mappingIdentity(_ p: YuGiOhCatalog.Printing, _ edition: YuGiOhEdition) -> String? {
+        guard let productID = p.productID, let group = p.marketGroupID else { return nil }
+        return "tcgcsv:2:\(group):\(productID):\(edition.tcgplayerSubtype)"
     }
     /// Deferred so binding Yu-Gi-Oh at launch does not decode a lazily loaded
     /// bundled catalog; the mappings are built once, on first read.
@@ -107,6 +109,7 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
         guard request.identity.matches(.legacy(card)), let variant = request.variant,
               let edition = YuGiOhEdition(rawValue: variant.id), let id = UUID(uuidString: card.physicalPrintingID),
               let p = catalog.printingByID[id], p.editions.contains(edition) else { throw PriceQuoteError.identityMismatch }
+        guard let mapping = Self.mappingIdentity(p, edition) else { throw PriceQuoteError.providerUnavailable }
         // pe is build evidence only. Valid physical mappings always reach the
         // existing transport, so a newly available quote is discoverable.
         let quote = try await source.quote(printing: p, edition: edition, generation: catalog.generation,
@@ -115,7 +118,7 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
         if case var .price(price) = quote {
             guard price.source == .tcgCSV, price.currencyCode == "USD", price.unitMarketPriceUSD.isFinite,
                   price.unitMarketPriceUSD >= 0, request.minimumFetchedAt.map({ price.fetchedAt > $0 }) ?? true else { throw PriceQuoteError.providerUnavailable }
-            price.catalogIdentity = Self.mappingIdentity(p, edition)
+            price.catalogIdentity = mapping
             return .price(price)
         }
         return quote

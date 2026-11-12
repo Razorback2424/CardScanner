@@ -36,11 +36,10 @@ enum YuGiOhCandidateVerifier {
         // loader validates before catalog and price authority are built together.
         let raw = try JSONSerialization.jsonObject(with: envelope.catalog) as? [String: Any]
         guard raw?["policyVersion"] as? String == policy else { throw YuGiOhCandidateError.invalidManifest }
-        for printing in catalog.printingByID.values {
-            for member in printing.membership {
-                guard let timestamp = member.s, let date = iso.date(from: timestamp) ?? fractional.date(from: timestamp),
-                      date <= catalog.capturedAt else { throw YuGiOhCandidateError.invalidManifest }
-            }
+        let timestamps = Set(catalog.printingByID.values.flatMap { $0.membership.compactMap(\.s) })
+        for timestamp in timestamps {
+            guard let date = iso.date(from: timestamp) ?? fractional.date(from: timestamp),
+                  date <= catalog.capturedAt else { throw YuGiOhCandidateError.invalidManifest }
         }
         if state == .approved { catalog.publicationRevision = manifest.revision }
         return (manifest, .init(catalog: catalog))
@@ -48,18 +47,7 @@ enum YuGiOhCandidateVerifier {
 
     static func validateTransition(from old: YuGiOhCatalog, to new: YuGiOhCatalog,
                                    reviewedSameSnapshot: Bool = false) throws {
-        guard new.capturedAt >= old.capturedAt,
-              new.generation == old.generation || new.capturedAt > old.capturedAt || reviewedSameSnapshot else { throw YuGiOhCandidateError.invalidTransition }
-        if new.generation == old.generation {
-            guard new.capturedAt == old.capturedAt, new.printingByID == old.printingByID,
-                  new.autoEligibleCodes == old.autoEligibleCodes, new.incompleteCodes == old.incompleteCodes else { throw YuGiOhCandidateError.invalidTransition }
-        }
-        for (id, previous) in old.printingByID {
-            guard let next = new.printingByID[id], previous.productID == next.productID,
-                  previous.card.id == next.card.id, previous.code == next.code,
-                  previous.set.groupID == next.set.groupID, previous.rarity == next.rarity,
-                  previous.artLabel == next.artLabel, previous.productName == next.productName else { throw YuGiOhCandidateError.invalidTransition }
-        }
+        try YuGiOhCatalog.validateTransition(from: old, to: new, reviewedSameSnapshot: reviewedSameSnapshot)
     }
 }
 
@@ -80,7 +68,8 @@ actor YuGiOhCandidateReleaseStore {
         self.state = state
         self.bundled = .init(catalog: bundled)
         let transition: @Sendable (Core.StoredRelease?, Core.StoredRelease) throws -> Void = { previous, next in
-            if state == .approved {
+            if state == .approved,
+               !next.release.canInstallCheckpoint(after: previous?.release, bundleSHA256: bundledSHA256 ?? "") {
                 guard next.release.parentSHA256 == (previous?.release.sha256 ?? bundledSHA256) else { throw YuGiOhCandidateError.invalidTransition }
                 if let revision = next.release.parentRevision {
                     guard revision == (previous?.release.revision ?? 0) else { throw YuGiOhCandidateError.invalidTransition }

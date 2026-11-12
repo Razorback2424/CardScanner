@@ -27,6 +27,18 @@ class PrintingFamilyTests(unittest.TestCase):
         self.assertEqual(p['pf']['sha256'], self.inventory['sha256'])
         self.assertEqual(self.build(False)['autoEligibleCodes'], [])
 
+    def test_checked_in_inventory_admits_stable_identity_without_html_input(self):
+        rows = self.fixture["products"]
+        self.inventory["productIdentitySHA256"] = builder.product_identity_digest(rows)
+        scope = {23481: rows}
+        self.assertEqual(builder.reviewed_inventories([self.inventory], scope, {23481: "new-response-hash"}, []),
+                         [self.inventory])
+        rows[0]["imageUrl"] = "https://example.com/recompressed.jpg"
+        self.assertEqual(builder.reviewed_inventories([self.inventory], scope, {23481: "another-hash"}, []),
+                         [self.inventory])
+        rows[0]["extendedData"][0]["value"] = "MP24-EN999"
+        self.assertEqual(builder.reviewed_inventories([self.inventory], scope, {23481: "changed-product"}, []), [])
+
     def test_competing_rarity_artwork_unmatched_and_conflicting_crosswalk_excluded(self):
         original = copy.deepcopy(self.inventory)
         for change in ['rarity', 'artwork', 'name', 'duplicate']:

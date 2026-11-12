@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "canonicalPasscodes": {
+    "46986420": {
+      "name": "Dark Magician",
+      "passcodes": [36996508, 46986414],
+      "evidence": "https://yugipedia.com/index.php?oldid=5815192",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/21876_in_1000x1000.jpg",
+        "https://tcgplayer-cdn.tcgplayer.com/product/627267_in_1000x1000.jpg"
+      ]
+    },
+    "24094653": {
+      "name": "Polymerization",
+      "passcodes": [24094653, 27847700],
+      "evidence": "https://yugipedia.com/index.php?oldid=5558436",
+      "exactReleaseEvidence": "https://yugipedia.com/index.php?oldid=5945919",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/22308_in_1000x1000.jpg",
+        "https://tcgplayer-cdn.tcgplayer.com/product/264902_in_1000x1000.jpg"
+      ]
+    }
+  },
+  "products": {
+    "26169": {
+      "groupID": 280,
+      "code": "SJCS-EN005",
+      "productName": "Gold Sarcophagus",
+      "providerRarity": "Super Rare",
+      "physicalRarity": "Ultra Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=6161&ope=2&request_locale=en"
+    },
+    "210873": {
+      "groupID": 2610,
+      "code": "",
+      "productName": "Dark Magician Girl (Oversized)",
+      "providerRarity": "Common",
+      "physicalRarity": "Common",
+      "unnumberedDisplayCardID": 38033121,
+      "evidence": "https://yugipedia.com/index.php?oldid=4446260#Oversized_cards"
+    },
+    "210874": {
+      "groupID": 2610,
+      "code": "",
+      "productName": "Blue-Eyes White Dragon (Oversized)",
+      "providerRarity": "Common",
+      "physicalRarity": "Common",
+      "unnumberedDisplayCardID": 89631139,
+      "evidence": "https://yugipedia.com/index.php?oldid=4446260#Oversized_cards"
+    },
+    "210875": {
+      "groupID": 2610,
+      "code": "",
+      "productName": "Cyber Dragon Infinity (Oversized)",
+      "providerRarity": "Common",
+      "physicalRarity": "Common",
+      "unnumberedDisplayCardID": 10443958,
+      "evidence": "https://yugipedia.com/index.php?oldid=4446260#Oversized_cards"
+    },
+    "210876": {
+      "groupID": 2610,
+      "code": "",
+      "productName": "Stardust Dragon (Oversized)",
+      "providerRarity": "Common",
+      "physicalRarity": "Common",
+      "unnumberedDisplayCardID": 44508094,
+      "evidence": "https://yugipedia.com/index.php?oldid=4446260#Oversized_cards"
+    },
+    "210877": {
+      "groupID": 2610,
+      "code": "",
+      "productName": "The Dark Magicians (Oversized)",
+      "providerRarity": "Common",
+      "physicalRarity": "Common",
+      "unnumberedDisplayCardID": 50237654,
+      "evidence": "https://yugipedia.com/index.php?oldid=4446260#Oversized_cards"
+    },
+    "210878": {
+      "groupID": 2610,
+      "code": "",
+      "productName": "Tour Guide From the Underworld (Oversized)",
+      "providerRarity": "Common",
+      "physicalRarity": "Common",
+      "unnumberedDisplayCardID": 10802915,
+      "evidence": "https://yugipedia.com/index.php?oldid=4446260#Oversized_cards"
+    },
+    "549287": {
+      "groupID": 23366,
+      "code": "",
+      "productName": "Blue-Eyes White Dragon (Secret Rare)",
+      "providerRarity": "Secret Rare",
+      "physicalRarity": "Secret Rare",
+      "unnumberedDisplayCardID": 89631139,
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001309000&rp=99999&request_locale=en"
+    },
+    "696518": {
+      "groupID": 24621,
+      "code": "BLGG-EN116",
+      "productName": "Mayhem Fur Hire (Starlight Rare)",
+      "providerRarity": "Starfoil Rare",
+      "physicalRarity": "Starlight Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=13666&ope=2&request_locale=en"
+    },
+    "80879": {
+      "groupID": 179,
+      "code": "DTP1-EN013",
+      "productName": "Burst Stream of Destruction",
+      "providerRarity": "Duel Terminal Normal Parallel Rare",
+      "physicalRarity": "Duel Terminal Rare Parallel Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=17701001&request_locale=en&rp=99999",
+      "evidenceSHA256": "d023639315d1aee4fb0f2f8e2bc7db782a04af45a6d273632be09a646b93577e",
+      "corroboratingEvidence": "https://yugipedia.com/index.php?oldid=6003079"
+    },
+    "80911": {
+      "groupID": 1327,
+      "code": "DT01-EN016",
+      "productName": "Flamvell Dragnov",
+      "providerRarity": "Duel Terminal Super Parallel Rare",
+      "physicalRarity": "Duel Terminal Normal Parallel Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=17701002&request_locale=en&rp=99999",
+      "evidenceSHA256": "55b642abe6444cb399fb06bce267e3d611b52c0ecab14df1ab08b50aef0d537c",
+      "corroboratingEvidence": "https://yugipedia.com/index.php?oldid=5836175"
+    },
+    "80985": {
+      "groupID": 1327,
+      "code": "DT01-EN083",
+      "productName": "Worm Illidan",
+      "providerRarity": "Duel Terminal Rare Parallel Rare",
+      "physicalRarity": "Duel Terminal Super Parallel Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=17701002&request_locale=en&rp=99999",
+      "evidenceSHA256": "55b642abe6444cb399fb06bce267e3d611b52c0ecab14df1ab08b50aef0d537c",
+      "corroboratingEvidence": "https://yugipedia.com/index.php?oldid=5389379"
+    },
+    "81772": {
+      "groupID": 1328,
+      "code": "DT02-EN020",
+      "productName": "Mist Valley Executor",
+      "providerRarity": "Duel Terminal Super Parallel Rare",
+      "physicalRarity": "Duel Terminal Normal Parallel Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=17701003&request_locale=en&rp=99999",
+      "evidenceSHA256": "77fefe309c6ff52202c5f25e7b75554db990682bad9c6e15e328c29af14a3f4c",
+      "corroboratingEvidence": "https://yugipedia.com/index.php?oldid=5707534"
+    },
+    "81483": {
+      "groupID": 1332,
+      "code": "DT06-EN052",
+      "productName": "Elemental Hero Neos Alius",
+      "providerRarity": "Duel Terminal Normal Parallel Rare",
+      "physicalRarity": "Duel Terminal Rare Parallel Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=17701009&request_locale=en&rp=99999",
+      "evidenceSHA256": "b2572a69ced8977c2fca7d50ba56c5615c1d987f84b205f96f798b49c42f3abb",
+      "corroboratingEvidence": "https://yugipedia.com/index.php?oldid=5930480"
+    },
+    "81592": {
+      "groupID": 1333,
+      "code": "DT07-EN060",
+      "productName": "Infernity Archfiend",
+      "providerRarity": "Duel Terminal Normal Parallel Rare",
+      "physicalRarity": "Duel Terminal Rare Parallel Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=17701011&request_locale=en&rp=99999",
+      "evidenceSHA256": "46524780af9a133ebb11f8f8f255b78899c7f3b4a1cd36741d4f545c80537708",
+      "corroboratingEvidence": "https://yugipedia.com/index.php?oldid=5915773"
+    }
+  }
+}

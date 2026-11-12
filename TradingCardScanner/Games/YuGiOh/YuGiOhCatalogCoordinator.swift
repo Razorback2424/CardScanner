@@ -112,6 +112,9 @@ actor YuGiOhCatalogCoordinator: GameCatalogActivationSource {
         let anchor = active?.release.sha256 ?? bundledSHA256
         var manifest = try YuGiOhReleaseWire.verify(head, keys: keys, state: .approved, now: .now)
         if manifest.revision <= (active?.release.revision ?? 0) { return try await activate(head) }
+        if manifest.canInstallCheckpoint(after: active?.release, bundleSHA256: bundledSHA256) {
+            return try await activate(head)
+        }
         var chain = [head]
         var total = head.catalog.count
         while manifest.parentSHA256 != anchor || (manifest.parentRevision ?? 0) > (active?.release.revision ?? 0) {

@@ -200,14 +200,15 @@ final class YuGiOhCandidateDeliveryTests: XCTestCase {
         let key = Curve25519.Signing.PrivateKey()
         let candidate = try envelope(object, revision: 1, key: key)
         let (manifest, snapshot) = try YuGiOhCandidateVerifier.verify(candidate, keys: ["yugioh-fixture":key.publicKey], now: .now)
-        XCTAssertEqual(snapshot.catalog.printingByID.count, 46_592)
-        XCTAssertEqual(snapshot.catalog.printingByID.values.filter(\.explicitSelectionSupported).count, 46_352)
+        XCTAssertEqual(snapshot.catalog.printingByID.count, 47_521)
+        XCTAssertEqual(snapshot.catalog.printingByID.values.filter(\.explicitSelectionSupported).count, 47_483)
         XCTAssertEqual(manifest.generation, snapshot.catalog.generation)
     }
 
     private func envelope(_ object: [String: Any], revision: Int, key: Curve25519.Signing.PrivateKey,
                           state: YuGiOhPublicationState = .candidate, parent: String? = nil,
-                          parentRevision: Int? = nil) throws -> YuGiOhCandidateEnvelope {
+                          parentRevision: Int? = nil, checkpoint: String? = nil,
+                          ancestors: [Int: String]? = nil) throws -> YuGiOhCandidateEnvelope {
         var object = object
         object["policyVersion"] = YuGiOhCandidateVerifier.policy
         let bytes = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys, .withoutEscapingSlashes])
@@ -218,6 +219,8 @@ final class YuGiOhCandidateDeliveryTests: XCTestCase {
             status: state.rawValue, capturedAt: object["capturedAt"] as! String)
         manifest.parentSHA256 = parent
         manifest.parentRevision = parentRevision
+        manifest.checkpointSHA256 = checkpoint
+        manifest.ancestors = ancestors
         manifest.reviewID = state == .approved ? "fixture-review-\(revision)" : nil
         let payload = try JSONEncoder().encode(manifest)
         return .init(keyID: "yugioh-fixture", payload: YuGiOhCandidateVerifier.encodeURL(payload),
@@ -279,6 +282,57 @@ final class YuGiOhCandidateDeliveryTests: XCTestCase {
         let reopened = try YuGiOhCatalogCoordinator(root: skippedRoot, keys: keys, bundledBytes: bundle)
         let recovered = await reopened.catalog()
         XCTAssertEqual(recovered.publicationRevision, 3)
+    }
+
+    func testSignedCheckpointSkipsAncestorsAndReopensWithVerifiedPrevious() async throws {
+        let key = Curve25519.Signing.PrivateKey(), keys = ["yugioh-fixture": key.publicKey]
+        var object = YuGiOhFixture.providerSupportedObject()
+        object["capturedAt"] = "2026-10-20T21:00:00Z"
+        let bundle = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
+        let anchor = YuGiOhReleaseWire.hash(bundle)
+        object["generation"] = "yugioh-en-checkpoint-first"
+        let first = try envelope(object, revision: 1, key: key, state: .approved, parent: anchor, checkpoint: anchor)
+        object["generation"] = "yugioh-en-checkpoint-sixth"
+        let previousHash = String(repeating: "a", count: 64)
+        let head = try envelope(object, revision: 6, key: key, state: .approved,
+            parent: previousHash, parentRevision: 5, checkpoint: anchor,
+            ancestors: [1: YuGiOhReleaseWire.hash(first.catalog), 5: previousHash])
+        let bytes = try JSONEncoder().encode(head)
+        let endpoint = URL(string: "https://example.com/yugioh/v1/current.json")!
+        YuGiOhPricingProtocol.handler = { request in
+            guard request.url == endpoint else { throw URLError(.badURL) }
+            return bytes
+        }
+        defer { YuGiOhPricingProtocol.handler = nil }
+        let config = URLSessionConfiguration.ephemeral; config.protocolClasses = [YuGiOhPricingProtocol.self]
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-checkpoint-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let fresh = try YuGiOhCatalogCoordinator(root: root.appendingPathComponent("fresh"), keys: keys,
+            bundledBytes: bundle, endpoint: endpoint, configuration: config)
+        guard case .activated(6) = await fresh.refresh() else { return XCTFail("Fresh install must use the checkpoint") }
+
+        let installed = root.appendingPathComponent("installed")
+        let old = try YuGiOhCatalogCoordinator(root: installed, keys: keys, bundledBytes: bundle,
+            endpoint: endpoint, configuration: config)
+        _ = try await old.activate(first)
+        guard case .activated(6) = await old.refresh() else { return XCTFail("Returning install must use the checkpoint") }
+        let reopened = try YuGiOhCatalogCoordinator(root: installed, keys: keys, bundledBytes: bundle)
+        let reopenedRevision = await reopened.catalog().publicationRevision
+        XCTAssertEqual(reopenedRevision, 6)
+        let wrongAnchor = try YuGiOhCatalogCoordinator(root: root.appendingPathComponent("wrong"), keys: keys,
+            bundledBytes: bundle + Data(" ".utf8), endpoint: endpoint, configuration: config)
+        guard case .rejected = await wrongAnchor.refresh() else { return XCTFail("Different bundle cannot use the checkpoint") }
+
+        let rebundled = try YuGiOhCatalogCoordinator(root: root.appendingPathComponent("rebundled"), keys: keys,
+            bundledBytes: first.catalog, endpoint: endpoint, configuration: config)
+        guard case .activated(6) = await rebundled.refresh() else { return XCTFail("A bundled ancestor can install the head") }
+
+        object["generation"] = "yugioh-en-checkpoint-fork"
+        let fork = try envelope(object, revision: 1, key: key, state: .approved, parent: anchor, checkpoint: anchor)
+        let forked = try YuGiOhCatalogCoordinator(root: root.appendingPathComponent("forked"), keys: keys,
+            bundledBytes: bundle, endpoint: endpoint, configuration: config)
+        _ = try await forked.activate(fork)
+        guard case .rejected = await forked.refresh() else { return XCTFail("A shared bundle cannot authorize a fork") }
     }
 
     func testSignedMalformedMembershipRejectedByActualLoader() throws {
@@ -524,6 +578,7 @@ enum YuGiOhFixture {
         let card = (object["cards"] as! [[String: Any]])[row["k"] as! Int]
         row["k"] = 0
         object["cards"] = [card]; object["printings"] = [row]
+        object.removeValue(forKey: "referencePrintings")
         object["sets"] = (object["sets"] as! [[String: Any]]).filter { $0["g"] as? Int == 23481 }
         object["autoEligibleCodes"] = ["MP24-EN372"]; object["incompleteCodes"] = []
         return object
@@ -585,10 +640,12 @@ private actor YuGiOhTestPriceSource: YuGiOhMarketPriceSource {
     func enable() { available = true }
     func quote(printing: YuGiOhCatalog.Printing, edition: YuGiOhEdition, generation: String,
                minimumFetchedAt: Date?, allowsHistoricalFallback: Bool) async throws -> PriceLookup {
-        calls.append("2:\(printing.set.groupID):\(printing.productID):\(edition.tcgplayerSubtype)")
+        let product = try XCTUnwrap(printing.productID)
+        let group = try XCTUnwrap(printing.marketGroupID)
+        calls.append("2:\(group):\(product):\(edition.tcgplayerSubtype)")
         guard available else { return .unavailable(.tcgCSV) }
         return .price(.init(unitMarketPriceUSD: 12.34, currencyCode: "USD", source: .tcgCSV,
-            sourceVariantID: "tcgplayer:\(printing.productID):\(edition.tcgplayerSubtype)", sourceUpdatedAt: nil, fetchedAt: .now))
+            sourceVariantID: "tcgplayer:\(product):\(edition.tcgplayerSubtype)", sourceUpdatedAt: nil, fetchedAt: .now))
     }
 }
 
@@ -664,6 +721,7 @@ final class YuGiOhPricingTests: XCTestCase {
         object["printings"] = rows
         let catalog = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
         let printing = try XCTUnwrap(catalog.printingByID.values.first)
+        let product = try XCTUnwrap(printing.productID)
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root); YuGiOhPricingProtocol.handler = nil }
         let config = URLSessionConfiguration.ephemeral
@@ -678,18 +736,18 @@ final class YuGiOhPricingTests: XCTestCase {
             XCTAssertEqual(request.url?.host, MarketMirrorFixture.baseURL.host)
             if request.url?.lastPathComponent == "products" {
                 return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [[
-                    "productId": printing.productID, "categoryId": 2, "groupId": printing.set.groupID,
+                    "productId": product, "categoryId": 2, "groupId": printing.set.groupID,
                     "name": printing.productName, "extendedData": [["name": "Number", "value": printing.code]]]]])
             }
             return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [
-                ["productId": printing.productID, "subTypeName": "1st Edition", "marketPrice": 999],
-                ["productId": printing.productID, "subTypeName": "Unlimited", "marketPrice": amount.map { $0 as Any } ?? NSNull()]]])
+                ["productId": product, "subTypeName": "1st Edition", "marketPrice": 999],
+                ["productId": product, "subTypeName": "Unlimited", "marketPrice": amount.map { $0 as Any } ?? NSNull()]]])
         }
         guard case let .price(fresh) = try await adapter.refreshStoredPrinting(printing.idString, variant: .yugiohUnlimited)
         else { return XCTFail("A missing seed quote must be discoverable from the daily mirror") }
         XCTAssertEqual(fresh.unitMarketPriceUSD, 42)
         XCTAssertEqual(fresh.catalogIdentity, YuGiOhPriceAdapter.mappingIdentity(printing, .unlimited))
-        XCTAssertEqual(fresh.sourceVariantID, "tcgplayer:\(printing.productID):Unlimited")
+        XCTAssertEqual(fresh.sourceVariantID, "tcgplayer:\(product):Unlimited")
         XCTAssertNil(fresh.sourceUpdatedAt)
         let currentCheck = try await adapter.refresh(.init(identity: .legacy(
             try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: printing.id).card),
@@ -725,11 +783,11 @@ final class YuGiOhPricingTests: XCTestCase {
                 if mode == "cancelled" { throw URLError(.cancelled) }
                 if request.url?.lastPathComponent == "products" {
                     return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [[
-                        "productId": printing.productID, "categoryId": 2, "groupId": printing.set.groupID,
+                        "productId": product, "categoryId": 2, "groupId": printing.set.groupID,
                         "name": "A different product", "extendedData": [["name": "Number", "value": printing.code]]]]])
                 }
                 return try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": [[
-                    "productId": printing.productID, "subTypeName": "1st Edition", "marketPrice": 99]]])
+                    "productId": product, "subTypeName": "1st Edition", "marketPrice": 99]]])
             }
             do {
                 _ = try await strict.refreshStoredPrinting(printing.idString, variant: .yugiohFirstEdition)
@@ -886,16 +944,17 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
         let catalog = try YuGiOhFixture.catalog(editions: YuGiOhEdition.allCases.map(\.rawValue), priced: [])
         let runtimes = try CardGameRuntimeContainer(runtimes: [catalog.runtime])
         let p = try XCTUnwrap(catalog.printingByID.values.first)
+        let product = String(try XCTUnwrap(p.productID))
         let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
         for edition in YuGiOhEdition.allCases {
             XCTAssertEqual(TCGplayerLinkBuilder.destination(for: card,
-                variant: edition.variant)?.url.path, "/product/\(p.productID)")
+                variant: edition.variant)?.url.path, "/product/\(product)")
             var request = CardMarketHistoryRequest(card: card, variant: edition.variant, printRun: nil)
             request.exactProductID = "untrusted-stored-product"
             request.marketVariantID = "untrusted-stored-variant"
             let resolved = await request.resolvingMarketMapping(in: runtimes)
             XCTAssertTrue(resolved.requiresCatalogMapping)
-            XCTAssertEqual(resolved.lookups, [.tcgplayerID(String(p.productID))])
+            XCTAssertEqual(resolved.lookups, [.tcgplayerID(product)])
             XCTAssertEqual(resolved.providerPrinting, edition.tcgplayerSubtype)
             XCTAssertNil(resolved.marketVariantID)
             let owned = CollectedCard(card: card, resolved: .init(variant: edition.variant, resolution: .userConfirmed))
@@ -922,6 +981,7 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
             let catalog = try YuGiOhFixture.catalog(editions: YuGiOhEdition.allCases.map(\.rawValue))
             let runtimes = try CardGameRuntimeContainer(runtimes: [catalog.runtime])
             let p = try XCTUnwrap(catalog.printingByID.values.first)
+            let product = String(try XCTUnwrap(p.productID))
             let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
             var calls = 0
             YuGiOhPricingProtocol.handler = { request in
@@ -930,12 +990,12 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
                 XCTAssertEqual(url.path, "/v1/cards")
                 let query = Dictionary(uniqueKeysWithValues: URLComponents(url: url, resolvingAgainstBaseURL: false)!
                     .queryItems!.map { ($0.name, $0.value ?? "") })
-                XCTAssertEqual(query["tcgplayerId"], String(p.productID))
+                XCTAssertEqual(query["tcgplayerId"], product)
                 XCTAssertEqual(query["include_price_history"], "true")
                 XCTAssertEqual(query["priceHistoryDuration"], "1y")
                 XCTAssertNil(query["variantId"])
                 return Data("""
-                {"data":[{"tcgplayerId":"\(p.productID)","variants":[
+                {"data":[{"tcgplayerId":"\(product)","variants":[
                   {"printing":"Unlimited","condition":"Near Mint","priceHistory":[{"p":2,"t":1700000000}]},
                   {"printing":"1st Edition","condition":"Damaged","priceHistory":[{"p":999,"t":1700000000}]},
                   {"printing":"1st Edition","condition":"Near Mint","language":"Japanese","priceHistory":[{"p":888,"t":1700000000}]},
@@ -965,6 +1025,7 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
             let catalog = try YuGiOhFixture.catalog()
             let runtimes = try CardGameRuntimeContainer(runtimes: [catalog.runtime])
             let p = try XCTUnwrap(catalog.printingByID.values.first)
+            let product = String(try XCTUnwrap(p.productID))
             let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
             let request = CardMarketHistoryRequest(card: card, variant: .yugiohFirstEdition, printRun: nil)
             let exact = #"{"printing":"1st Edition","condition":"Near Mint","priceHistory":[{"p":42,"t":1700000000}]}"#
@@ -979,7 +1040,7 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
             ]
             for (index, variants) in attacks.enumerated() {
                 YuGiOhPricingProtocol.handler = { _ in
-                    Data("{\"data\":[{\"tcgplayerId\":\"\(p.productID)\",\"variants\":[\(variants)]}]}".utf8)
+                    Data("{\"data\":[{\"tcgplayerId\":\"\(product)\",\"variants\":[\(variants)]}]}".utf8)
                 }
                 do {
                     _ = try await service.history(for: request, now: Date.now.addingTimeInterval(Double(index) * 90000), runtimes: runtimes)
@@ -1002,6 +1063,7 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
         try await withService { service, _ in
             let catalog = try YuGiOhFixture.catalog()
             let p = try XCTUnwrap(catalog.printingByID.values.first)
+            let product = String(try XCTUnwrap(p.productID))
             let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
             let source = YuGiOhNoticeSource()
             await source.install(catalog)
@@ -1014,7 +1076,7 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
             YuGiOhPricingProtocol.handler = { _ in
                 calls += 1
                 return Data("""
-                {"data":[{"tcgplayerId":"\(p.productID)","variants":[{"printing":"1st Edition","condition":"Near Mint","priceHistory":[{"p":12,"t":1700000000}]}]}]}
+                {"data":[{"tcgplayerId":"\(product)","variants":[{"printing":"1st Edition","condition":"Near Mint","priceHistory":[{"p":12,"t":1700000000}]}]}]}
                 """.utf8)
             }
             let points = try await service.history(for: request, runtimes: runtimes)
@@ -1052,6 +1114,7 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
         try await withService(protocolClass: YuGiOhDeliveryGateProtocol.self) { service, _ in
             let catalog = try YuGiOhFixture.catalog()
             let p = try XCTUnwrap(catalog.printingByID.values.first)
+            let product = String(try XCTUnwrap(p.productID))
             let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: p.id).card
             let source = YuGiOhNoticeSource()
             await source.install(catalog)
@@ -1068,7 +1131,7 @@ final class YuGiOhMarketHistoryTests: XCTestCase {
             await fulfillment(of: [started], timeout: 5)
             await source.install(try YuGiOhFixture.catalog(editions: [YuGiOhEdition.unlimited.rawValue]))
             await gate.respond(Data("""
-            {"data":[{"tcgplayerId":"\(p.productID)","variants":[{"printing":"1st Edition","condition":"Near Mint","priceHistory":[{"p":12,"t":1700000000}]}]}]}
+            {"data":[{"tcgplayerId":"\(product)","variants":[{"printing":"1st Edition","condition":"Near Mint","priceHistory":[{"p":12,"t":1700000000}]}]}]}
             """.utf8))
             do { _ = try await pending.value; XCTFail("Obsolete response published") }
             catch is CancellationError {}
@@ -1636,7 +1699,7 @@ final class YuGiOhWorkflowTests: XCTestCase {
         XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).first?.providerID, supported.idString)
     }
 
-    func testDCRRecoveryAvailabilityReloadLegacyAuthorityAndDirectActions() async throws {
+    func testSpecialEditionRecoveryAvailabilityReloadLegacyAuthorityAndDirectActions() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-recovery-\(UUID())")
         let catalog = try YuGiOhCatalog.bundled.get(), original = try container(root.appendingPathComponent("collection.store"))
         let bound = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: original)
@@ -1646,13 +1709,14 @@ final class YuGiOhWorkflowTests: XCTestCase {
             catalog: service, unresolvedScanStore: recovery)
         model.start(context: original.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
         defer { model.viewDisappeared() }
-        let identifier = try YuGiOhRecognitionAdapter.identifier(code: "DCR-EN000", generation: catalog.generation)
+        let identifier = try YuGiOhRecognitionAdapter.identifier(code: "LODT-ENSE2", generation: catalog.generation)
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), .init(identifier: identifier), nil)
         let appeared = await waitUntil { model.pendingIdentityChoice != nil && !model.isIdentificationProcessingForTesting }
         XCTAssertTrue(appeared)
         let family = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates)
-        let discoveryID = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 476802 }).idString
-        let supportedID = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 487277 }).idString
+        let printings = try XCTUnwrap(catalog.printingsByCode["LODT-ENSE2"])
+        let discoveryID = try XCTUnwrap(printings.first { $0.productID == 562288 }).idString
+        let supportedID = try XCTUnwrap(printings.first { $0.productID == 26795 }).idString
         let discovery = try XCTUnwrap(family.first { $0.id == discoveryID })
         let supported = try XCTUnwrap(family.first { $0.id == supportedID })
         let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: family)
@@ -1726,7 +1790,7 @@ final class YuGiOhWorkflowTests: XCTestCase {
         reloaded.resolveUnresolved(id: row.id, choice: .printing(supported))
         let edition = await waitUntil { reloaded.pendingChoice != nil && !reloaded.isIdentificationProcessingForTesting }
         XCTAssertTrue(edition)
-        reloaded.choose(.yugiohUnlimited)
+        reloaded.choose(.yugiohLimited)
         let saved = await waitUntil { reloaded.successCount == 1 }
         XCTAssertTrue(saved)
         XCTAssertEqual(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [1])
@@ -1919,7 +1983,7 @@ final class YuGiOhWorkflowTests: XCTestCase {
         try await runChain(printedEdition: false, realProductID: 476160)
     }
     func testRealMixedDiscoverySiblingScanChoiceOwnershipExportImportReopen() async throws {
-        try await runChain(printedEdition: false, realProductID: 487277)
+        try await runChain(printedEdition: true, realProductID: 26795, printedVariant: .yugiohLimited)
     }
     func testRealModernAlternateArtWorkflow() async throws {
         try await runChain(printedEdition: true, realProductID: 550852)
@@ -1930,12 +1994,56 @@ final class YuGiOhWorkflowTests: XCTestCase {
     func testRealEarlyEuropeanCodeWorkflow() async throws {
         try await runChain(printedEdition: true, realProductID: 229392)
     }
-    private func runChain(printedEdition: Bool, realProductID: Int? = nil, printedVariant: PhysicalVariant = .yugiohFirstEdition) async throws {
+    func testUnpricedRegionalPrintingScanBrowseAndCSVRoundTrip() async throws {
+        try await runChain(printedEdition: true, realPrintedCode: "LOB-E001")
+    }
+    func testDuelTerminalScanBrowseAndCSVRoundTrip() async throws {
+        try await runChain(printedEdition: true, realProductID: 81260, printedVariant: YuGiOhEdition.duelTerminalVariant)
+    }
+
+    func testExistingHoldingReceivesReviewedRarityWithoutChangingOwnership() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-rarity-\(UUID())")
+        let url = root.appendingPathComponent("collection.store")
+        let store = try container(url)
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let bound = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: store)
+        let printing = try XCTUnwrap(catalog.printingsByCode["BLGG-EN116"]?.first { $0.productID == 696518 })
+        let card = try YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: printing.id).card
+        _ = try CollectionStore(context: store.mainContext).add(card,
+            resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed), identityResolution: .catalogSelected)
+        let key = card.collectionKey(variant: .yugiohFirstEdition)
+        try CollectionWriteSerializer.perform(container: store, timeout: .mainThread) { context in
+            let row = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+            row.rarity = "Starfoil Rare"
+            row.name = "Mayhem Fur Hire · Starfoil Rare"
+            try context.save()
+        }
+
+        await bound.makeCollectionNormalizer().normalizeImportedCards(in: store)
+        let reopened = try container(url)
+        let row = try XCTUnwrap(reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(row.rarity, "Starlight Rare")
+        XCTAssertEqual(row.name, "Mayhem Fur Hire · Starlight Rare")
+        XCTAssertEqual(row.collectionKey, key)
+        XCTAssertEqual(row.catalogProviderID, printing.idString)
+        XCTAssertEqual(row.variantID, PhysicalVariant.yugiohFirstEdition.id)
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(try reopened.mainContext.fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+    }
+
+    private func runChain(printedEdition: Bool, realProductID: Int? = nil, realPrintedCode: String? = nil,
+                          printedVariant: PhysicalVariant = .yugiohFirstEdition) async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-chain-\(UUID())")
         // SwiftData actors can outlive local containers; leave isolated stores
         // in the simulator's temporary directory rather than unlink open SQLite files.
-        let catalog = try realProductID == nil ? YuGiOhFixture.catalog(count: 2) : YuGiOhCatalog.bundled.get()
-        let targetPrinting = catalog.printingByID.values.first { $0.productID == realProductID }
+        let usesBundledCatalog = realProductID != nil || realPrintedCode != nil
+        let catalog = try usesBundledCatalog ? YuGiOhCatalog.bundled.get() : YuGiOhFixture.catalog(count: 2)
+        let targetPrinting: YuGiOhCatalog.Printing?
+        if let realProductID {
+            targetPrinting = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == realProductID })
+        } else if let realPrintedCode {
+            targetPrinting = try XCTUnwrap(catalog.printingsByCode[realPrintedCode]?.first { $0.isReference })
+        } else { targetPrinting = nil }
         let source = YuGiOhTestPriceSource()
         let module = YuGiOhGameRuntime(catalog: catalog).runtime
         let runtime = CardGameRuntime(descriptor: module.descriptor, variantPolicy: module.variantPolicy,
@@ -1949,13 +2057,13 @@ final class YuGiOhWorkflowTests: XCTestCase {
         model.start(context: original.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
         defer { model.viewDisappeared() }
         let recognizer = YuGiOhRecognitionAdapter(catalog: catalog)
-        let lines = [RecognizedLine(text: targetPrinting?.code ?? "RA02-EN037")] + (printedEdition ? [.init(text: printedVariant == .yugiohLimited ? "Limited Edition" : "1st Edition")] : [])
+        let lines = [RecognizedLine(text: targetPrinting?.code ?? "RA02-EN037")] + (printedEdition ? [.init(text: printedVariant.label)] : [])
         guard case let .identified(subject) = recognizer.identify(lines) else { return XCTFail() }
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
         let pending = await waitUntil { model.pendingIdentityChoice != nil && !model.isIdentificationProcessingForTesting }
         XCTAssertTrue(pending)
         XCTAssertTrue(try original.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
-        let choice = try XCTUnwrap(model.pendingIdentityChoice?.printingCandidates.first { realProductID == nil || $0.id == targetPrinting?.idString })
+        let choice = try XCTUnwrap(model.pendingIdentityChoice?.printingCandidates.first { targetPrinting == nil || $0.id == targetPrinting?.idString })
         if let discovery = model.pendingIdentityChoice?.printingCandidates.first(where: { $0.acquisitionUnavailableReason != nil }) {
             model.choose(discovery)
             XCTAssertNotNil(model.pendingIdentityChoice)
@@ -1975,7 +2083,7 @@ final class YuGiOhWorkflowTests: XCTestCase {
         let scanOrder = row.setReleaseOrder
         let browse = YuGiOhBrowseAdapter(catalog: catalog)
         let sets = try await browse.sets()
-        let set = try XCTUnwrap(sets.first { realProductID == nil || $0.catalogID.providerID == "tcgplayer-group:\(targetPrinting!.set.groupID)" })
+        let set = try XCTUnwrap(sets.first { targetPrinting == nil || $0.catalogID.providerID == targetPrinting?.set.providerID })
         let page = try await browse.cards(in: set, cursor: nil)
         var items = page.items, next = page.nextCursor
         while !items.contains(where: { $0.providerID == choice.id }), let cursor = next {
@@ -1986,7 +2094,7 @@ final class YuGiOhWorkflowTests: XCTestCase {
         let details = try await browse.details(for: summary)
         XCTAssertEqual(scanOrder, set.releaseOrder, "Scan and Browse Add must share epoch-day order")
         XCTAssertEqual(details.card.setReleaseOrder, set.releaseOrder)
-        XCTAssertEqual(scanOrder, realProductID == nil ? 19_867 : 0)
+        if !usesBundledCatalog { XCTAssertEqual(scanOrder, 19_867) }
         let browseStore = try container(root.appendingPathComponent("browse.store"))
         _ = try await runtimes.bound(to: browseStore)
         _ = try CollectionStore(context: browseStore.mainContext).add(details.card,
@@ -1997,11 +2105,22 @@ final class YuGiOhWorkflowTests: XCTestCase {
         let key = "yu-gi-oh:\(choice.id)#\(edition.id)"
         XCTAssertEqual(row.collectionKey, key); XCTAssertEqual(row.catalogProviderID, choice.id)
         await source.enable()
-        let fresh = try await YuGiOhPriceAdapter(catalog: catalog, source: source).refreshStoredPrinting(choice.id, variant: edition)
+        let priceAdapter = YuGiOhPriceAdapter(catalog: catalog, source: source)
         let prices = PriceStore(context: original.mainContext)
-        XCTAssertTrue(prices.store(fresh, game: .yuGiOh, printingID: choice.id, variantID: edition.id)); XCTAssertTrue(prices.save())
         let priceKey = PriceRecord.key(game: .yuGiOh, printingID: choice.id, variantID: edition.id)
-        XCTAssertEqual(prices.record(forKey: priceKey)?.effectiveUnitMarketPriceUSD, 12.34)
+        let expectedPrice: Double?
+        if let targetPrinting, targetPrinting.productID == nil {
+            do {
+                _ = try await priceAdapter.refreshStoredPrinting(choice.id, variant: edition)
+                XCTFail("An unbound printing cannot gain a marketplace price")
+            } catch PriceQuoteError.providerUnavailable {}
+            expectedPrice = nil
+        } else {
+            let fresh = try await priceAdapter.refreshStoredPrinting(choice.id, variant: edition)
+            XCTAssertTrue(prices.store(fresh, game: .yuGiOh, printingID: choice.id, variantID: edition.id)); XCTAssertTrue(prices.save())
+            expectedPrice = 12.34
+        }
+        XCTAssertEqual(prices.record(forKey: priceKey)?.effectiveUnitMarketPriceUSD, expectedPrice)
         let csv = try await CollectionCSV.exportIsolated(from: original)
         let targetURL = root.appendingPathComponent("target.store"), target = try container(targetURL)
         let targetRuntimes: CardGameRuntimeContainer
@@ -2040,7 +2159,7 @@ final class YuGiOhWorkflowTests: XCTestCase {
         XCTAssertEqual(reloaded.variantID, edition.id)
         XCTAssertEqual(reloaded.setReleaseOrder, scanOrder, "CSV import must preserve the same set order")
         let reopenedSource = try container(root.appendingPathComponent("source.store"))
-        XCTAssertEqual(PriceStore(context: reopenedSource.mainContext).record(forKey: priceKey)?.effectiveUnitMarketPriceUSD, 12.34)
+        XCTAssertEqual(PriceStore(context: reopenedSource.mainContext).record(forKey: priceKey)?.effectiveUnitMarketPriceUSD, expectedPrice)
     }
     func testConflictCannotWriteBeforeResolutionAndRetryPreservesIt() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-conflict-\(UUID())")
@@ -2159,18 +2278,20 @@ final class YuGiOhCatalogTests: XCTestCase {
     func testFullSeedPartitionAndIndependentFactsThroughRealLoader() throws {
         let catalog = try YuGiOhCatalog.bundled.get()
         let rows = Array(catalog.printingByID.values)
-        XCTAssertEqual(rows.count, 46_592)
-        XCTAssertEqual(rows.filter(\.explicitSelectionSupported).count, 46_352)
-        XCTAssertEqual(rows.filter { !$0.explicitSelectionSupported }.count, 240)
+        XCTAssertEqual(rows.count, 47_521)
+        XCTAssertEqual(rows.filter(\.explicitSelectionSupported).count, 47_483)
+        XCTAssertEqual(rows.filter { !$0.explicitSelectionSupported }.count, 38)
+        XCTAssertEqual(rows.filter(\.isReference).count, 929)
+        XCTAssertEqual(rows.filter { $0.isReference && $0.explicitSelectionSupported }.count, 922)
         XCTAssertEqual(catalog.autoEligibleCodes.count, 262)
         XCTAssertTrue(catalog.autoEligibleCodes.contains("MP24-EN372"))
         XCTAssertTrue(["DUNE-EN080", "PSV-013"].allSatisfy(catalog.autoEligibleCodes.contains))
         XCTAssertTrue(rows.allSatisfy { !$0.coverageVerified })
-        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.count }, 60_014)
-        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.filter { $0.q != nil }.count }, 58_308)
-        XCTAssertEqual(rows.flatMap(\.membership).filter { $0.t == "providerListing" }.count, 1_706)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.count }, 61_905)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.filter { $0.q != nil }.count }, 58_312)
+        XCTAssertEqual(rows.flatMap(\.membership).filter { $0.t == "providerListing" }.count, 1_707)
         XCTAssertTrue(catalog.printingByID.values.contains { $0.code == "IOC-SE1" && $0.editions == [.limited] })
-        let blueEyes = rows.filter { [476160,486054].contains($0.productID) }
+        let blueEyes = rows.filter { $0.productID == 476160 || $0.productID == 486054 }
         XCTAssertEqual(Set(blueEyes.map(\.id)).count, 2)
         XCTAssertEqual(Set(blueEyes.map { $0.set.groupID }).count, 2)
         for p in rows {
@@ -2192,7 +2313,8 @@ final class YuGiOhCatalogTests: XCTestCase {
                 try YuGiOhCatalogAdapter(catalog: catalog).resolutionForExistingHolding(printing.id).card),
                 variant: membership.e.variant, pokemonPrintRun: nil, catalogRefreshOverride: nil))
             else { return XCTFail("Missing snapshot quote for \(code)") }
-            XCTAssertEqual(price.sourceVariantID, "tcgplayer:\(printing.productID):\(membership.e.tcgplayerSubtype)", code)
+            let product = try XCTUnwrap(printing.productID)
+            XCTAssertEqual(price.sourceVariantID, "tcgplayer:\(product):\(membership.e.tcgplayerSubtype)", code)
             XCTAssertEqual(price.unitMarketPriceUSD, membership.q, code)
             let formatter = ISO8601DateFormatter()
             formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -2213,8 +2335,9 @@ final class YuGiOhCatalogTests: XCTestCase {
         let catalog = try YuGiOhCatalog.bundled.get()
         XCTAssertTrue(catalog.generation.hasPrefix("yugioh-en-"))
         XCTAssertGreaterThan(catalog.printingsByCode.count, 10000)
-        for p in catalog.printingByID.values {
-            XCTAssertEqual(p.id, DeterministicUUID.make(namespace: "yugioh-printing:", material: "tcgplayer:2:\(p.productID)"))
+        for p in catalog.printingByID.values where !p.isReference {
+            let product = try XCTUnwrap(p.productID)
+            XCTAssertEqual(p.id, DeterministicUUID.make(namespace: "yugioh-printing:", material: "tcgplayer:2:\(product)"))
         }
         for code in ["RA02-EN037", "GENF-EN098", "LOB-001", "LOB-EN001", "L26D-ENM26"] {
             XCTAssertNotNil(catalog.printingsByCode[code], code)
@@ -2247,7 +2370,12 @@ final class YuGiOhCatalogTests: XCTestCase {
         }
     }
     func testCodesKeepRegionAndAlphanumericSuffix() {
-        for code in ["LOB-001", "LOB-E001", "LOB-EN001", "L26D-ENM26"] { XCTAssertTrue(YuGiOhCatalog.validCode(code)) }
+        for code in ["LOB-001", "LOB-E001", "LOB-EN001", "LOB-A001", "SDY-A050", "SDK-A001", "L26D-ENM26"] {
+            XCTAssertTrue(YuGiOhCatalog.validCode(code), code)
+        }
+        for code in ["MRD-A001", "LOB-AX01", "LOB-AE001"] {
+            XCTAssertFalse(YuGiOhCatalog.validCode(code), code)
+        }
         for code in ["LOB-JP001", "LOB-ABC", "x-1", "LOB-EN001X"] { XCTAssertFalse(YuGiOhCatalog.validCode(code)) }
     }
     func testAppDefaultsEnablesSupportedCatalog() {
@@ -2258,10 +2386,10 @@ final class YuGiOhCatalogTests: XCTestCase {
         }
         XCTAssertFalse(defaults.unavailableGames.contains { $0.game == .yuGiOh })
     }
-    func testCodeMatcherAgreesWithOriginalPatternForBundledAndEdgeCodes() throws {
-        func original(_ code: String) -> Bool {
-            if ["IOC-SE1", "IOC-SE2", "IOC-SE3", "IOC-SE4"].contains(code) { return true }
-            return code.range(of: "^[A-Z0-9]{2,4}-(?:(?:EN|E)[A-Z0-9]{3}|[0-9]{3})$", options: .regularExpression) != nil
+    func testCodeMatcherAgreesWithPrintedCodeGrammarForBundledAndEdgeCodes() throws {
+        func expected(_ code: String) -> Bool {
+            let pattern = "^(?:[A-Z0-9]{2,4}-(?:(?:EN|E)[A-Z0-9]{3}|[0-9]{3})|IOC-SE[1-4]|(?:LOB|SDY|SDK)-A[0-9]{3}|EEN-EN015K|EOJ-EN004K|MDP2-EN00[12456]K|POTD-EN031K|TLM-EN035K)$"
+            return code.range(of: pattern, options: .regularExpression) != nil
         }
         let url = try XCTUnwrap(YuGiOhBundledLaunch.seedURL())
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
@@ -2269,9 +2397,9 @@ final class YuGiOhCatalogTests: XCTestCase {
         XCTAssertFalse(codes.isEmpty)
         let edges = ["", "-", "A-001", "AB-001", "ABCD-001", "ABCDE-001", "AB-00", "AB-0001", "AB-E00", "AB-EN00",
                      "AB-EX001", "AB-ENE01", "AB-E0A1", "ab-001", "AB_001", "AB-001-", "AB--001", "ÄB-001",
-                     "AB-\u{0661}\u{0662}\u{0663}", "IOC-SE5", "IOC-SE1"]
+                     "AB-\u{0661}\u{0662}\u{0663}", "IOC-SE5", "IOC-SE1", "MDP2-EN003K", "TLM-EN035KK"]
         for code in codes + edges {
-            XCTAssertEqual(YuGiOhCatalog.validCode(code), original(code), code)
+            XCTAssertEqual(YuGiOhCatalog.validCode(code), expected(code), code)
         }
     }
     func testBundledLaunchCacheRegistersWithoutDecodingAndMatchesEagerRuntime() async throws {
@@ -2372,6 +2500,24 @@ final class GameRecognitionRegistrySupplementalTests: XCTestCase {
 }
 
 final class YuGiOhRecognitionTests: XCTestCase {
+    func testPrintedDarkMagicianAndPolymerizationPasscodesReachTheCatalog() throws {
+        let recognizer = YuGiOhRecognitionAdapter(catalog: try YuGiOhCatalog.bundled.get())
+        let cases = [("LOB-005", "46986414"), ("RA04-EN106", "36996508"),
+                     ("LOB-059", "24094653"), ("DT04-EN043", "27847700")]
+        for (code, passcode) in cases {
+            guard case let .identified(subject) = recognizer.identify([.init(text: code), .init(text: passcode)]) else {
+                return XCTFail("The printed passcode \(passcode) blocked \(code)")
+            }
+            XCTAssertEqual(subject.identifier.displayIdentifier, code)
+        }
+        for passcode in ["46986420", "89631139"] {
+            guard case let .rejected(rejection) = recognizer.identify([.init(text: "LOB-005"), .init(text: passcode)]) else {
+                return XCTFail("A provider artwork ID or another card's passcode must not authorize the scan")
+            }
+            XCTAssertTrue(rejection.blocksFallbackRecognition)
+        }
+    }
+
     func testLowConfidencePositiveEditionRequiresAnAnswer() throws {
         let adapter = YuGiOhRecognitionAdapter(catalog: try YuGiOhFixture.catalog())
         for confidence in [Float(0.2), .nan, .infinity] {
@@ -2453,7 +2599,7 @@ final class YuGiOhRecognitionTests: XCTestCase {
 
 @MainActor
 final class YuGiOhResolutionTests: XCTestCase {
-    func testReleasedTournamentPackSupportsExplicitLimitedEditionAndKeepsMissingLaneDiscoverable() async throws {
+    func testReleasedTournamentPackSupportsBothExactLimitedEditions() async throws {
         let catalog = try YuGiOhCatalog.bundled.get()
         let adapter = YuGiOhCatalogAdapter(catalog: catalog)
         let printing = try XCTUnwrap(catalog.printingsByCode["UP02-EN001"]?.first)
@@ -2469,11 +2615,238 @@ final class YuGiOhResolutionTests: XCTestCase {
         XCTAssertEqual(VariantResolver.gate(resolved.card.variantEvidence, printedEdition: .absent),
             .needsChoice(options: [.yugiohLimited], lockDidNotApply: nil))
 
-        let unquoted = try XCTUnwrap(catalog.printingsByCode["UP02-EN002"]?.first)
-        XCTAssertEqual(unquoted.canonicalLinkStatus, "linked")
-        XCTAssertTrue(unquoted.editions.isEmpty)
-        XCTAssertFalse(unquoted.explicitSelectionSupported)
-        XCTAssertThrowsError(try adapter.resolution(forPrintingID: unquoted.id))
+        let miracle = try XCTUnwrap(catalog.printingsByCode["UP02-EN002"]?.first)
+        XCTAssertEqual(miracle.canonicalLinkStatus, "linked")
+        XCTAssertEqual(miracle.editions, [.limited])
+        XCTAssertEqual(miracle.membership.first?.s, "2026-11-11T20:05:27+0000")
+        let miracleCard = try adapter.resolution(forPrintingID: miracle.id).card
+        XCTAssertEqual(miracleCard.marketProductIDsByVariant[YuGiOhEdition.limited.rawValue], "731110")
+    }
+
+    func testBrowseAndScanAgreeOnRegionalAndCorrectedPrintings() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let browse = YuGiOhBrowseAdapter(catalog: catalog)
+        let scan = YuGiOhCatalogAdapter(catalog: catalog)
+        let recognizer = YuGiOhRecognitionAdapter(catalog: catalog)
+        let regionalCases: [(String, [PhysicalVariant])] = [
+            ("LOB-E001", [.yugiohFirstEdition, .yugiohUnlimited]),
+            ("LOB-A001", [.yugiohFirstEdition]),
+            ("SDK-A001", [.yugiohFirstEdition, .yugiohUnlimited]),
+            ("PSV-E000", [.yugiohFirstEdition, .yugiohUnlimited]),
+            ("DL1-E001", [.yugiohUnlimited]),
+            ("PCY-E004", [.yugiohUnlimited]),
+        ]
+        for (code, editions) in regionalCases {
+            guard case let .identified(subject) = recognizer.identify([.init(text: code)]),
+                  case let .needsPrintingChoice(_, choices) = try await scan.lookup(subject.identifier) else {
+                return XCTFail("Missing regional printing \(code)")
+            }
+            let choice = try XCTUnwrap(choices.first)
+            let scanned = try await scan.resolve(choice, for: subject.identifier).card
+            let results = try await browse.search(query: code, setIDs: [], cursor: nil)
+            XCTAssertEqual(results.items.map(\.providerID), [scanned.physicalPrintingID])
+            let details = try await browse.details(for: XCTUnwrap(results.items.first))
+            XCTAssertEqual(details.card.physicalPrintingID, scanned.physicalPrintingID)
+            XCTAssertEqual(details.card.rarity, scanned.rarity)
+            XCTAssertEqual(details.card.variantEvidence.catalogVariants, scanned.variantEvidence.catalogVariants)
+            XCTAssertEqual(Set(scanned.variantEvidence.catalogVariants), Set(editions), code)
+            XCTAssertTrue(scanned.marketProductIDsByVariant.isEmpty)
+            let request = GamePriceRequest(identity: .legacy(scanned), variant: try XCTUnwrap(editions.first),
+                pokemonPrintRun: nil, catalogRefreshOverride: nil)
+            do {
+                _ = try await YuGiOhPriceAdapter(catalog: catalog).refresh(request)
+                XCTFail("Unbound printing gained a marketplace quote")
+            } catch PriceQuoteError.providerUnavailable {}
+        }
+        let finishFamily = try XCTUnwrap(catalog.printingsByCode["BLGG-EN116"])
+        XCTAssertEqual(Set(finishFamily.map(\.displayRarity)), ["Ultra Rare", "Starlight Rare"])
+        let corrected = try XCTUnwrap(finishFamily.first { $0.productID == 696518 })
+        let resolved = try scan.resolution(forPrintingID: corrected.id).card
+        XCTAssertEqual(resolved.rarity, "Starlight Rare")
+        XCTAssertEqual(resolved.marketProductIDsByVariant[YuGiOhEdition.first.rawValue], "696518")
+        XCTAssertTrue(catalog.printingsByCode["SP18-EN031"]?.contains { $0.displayRarity == "Starfoil Rare" } == true)
+    }
+
+    func testReviewedPromoFinishesStampsAndRedemptionCodesResolveInBrowseAndScan() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let scan = YuGiOhCatalogAdapter(catalog: catalog)
+        let browse = YuGiOhBrowseAdapter(catalog: catalog)
+        let recognition = YuGiOhRecognitionAdapter(catalog: catalog)
+        let rows = Array(catalog.printingByID.values)
+        let thankYou = rows.filter { $0.set.groupID == 24918 }
+        XCTAssertEqual(thankYou.count, 60)
+        XCTAssertTrue(thankYou.allSatisfy { $0.editions == [.limited] && $0.pricedEditions.isEmpty })
+        let winner = Dictionary(grouping: rows.filter { $0.set.groupID == 24789 }, by: \.code)
+        XCTAssertEqual(winner.count, 40)
+        for printings in winner.values {
+            XCTAssertEqual(Set(printings.compactMap(\.artLabel)), ["OTS Stamp", "Regional Qualifier Stamp", "Judge Stamp"])
+            XCTAssertTrue(printings.allSatisfy { $0.editions == [.unlimited] })
+        }
+
+        let cases: [(code: String, group: Int, rarity: String, art: String?, edition: PhysicalVariant)] = [
+            ("TYP1-EN001", 24918, "Common", nil, .yugiohLimited),
+            ("TYP1-EN001", 24918, "Super Rare", nil, .yugiohLimited),
+            ("WI26-EN002", 24789, "Ultra Rare", "Regional Qualifier Stamp", .yugiohUnlimited),
+            ("TLM-EN035K", 2889, "Rare", "TLM-EN035K", .yugiohUnlimited),
+            ("SJCS-EN005", 280, "Ultra Rare", nil, .yugiohLimited),
+        ]
+        for example in cases {
+            guard case let .identified(subject) = recognition.identify([.init(text: example.code)]),
+                  case let .needsPrintingChoice(_, choices) = try await scan.lookup(subject.identifier) else {
+                return XCTFail("Missing printing choice for \(example.code)")
+            }
+            let printing = try XCTUnwrap(catalog.printingsByCode[example.code]?.first {
+                $0.set.groupID == example.group && $0.displayRarity == example.rarity && $0.artLabel == example.art
+            })
+            let choice = try XCTUnwrap(choices.first { $0.id == printing.idString })
+            let scanned = try await scan.resolve(choice, for: subject.identifier).card
+            let set = CatalogSetID(game: .yuGiOh, providerID: printing.set.providerID)
+            let results = try await browse.search(query: example.code, setIDs: [set], cursor: nil)
+            let summary = try XCTUnwrap(results.items.first { $0.providerID == printing.idString })
+            let details = try await browse.details(for: summary)
+            XCTAssertNil(details.collectionWriteUnavailableReason)
+            XCTAssertEqual(scanned.physicalPrintingID, details.card.physicalPrintingID)
+            XCTAssertEqual(scanned.cardNumber, example.code)
+            XCTAssertEqual(scanned.rarity, example.rarity)
+            XCTAssertEqual(scanned.variantEvidence.catalogVariants, [example.edition])
+            XCTAssertEqual(scanned.variantEvidence, details.card.variantEvidence)
+        }
+        if case .identified = recognition.identify([.init(text: "MDP2-EN003K")]) {
+            XCTFail("An unsupported redemption code must not resolve as the base card")
+        }
+    }
+
+    func testDuelTerminalStampUsesTheExistingLimitedOwnershipAndQuoteIDs() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let scan = YuGiOhCatalogAdapter(catalog: catalog)
+        let browse = YuGiOhBrowseAdapter(catalog: catalog)
+        let recognizer = YuGiOhRecognitionAdapter(catalog: catalog)
+        let terminal = catalog.printingByID.values.filter(\.hasDuelTerminalStamp)
+        XCTAssertEqual(terminal.count, 731)
+        XCTAssertTrue(terminal.allSatisfy { $0.editions == [.limited] && $0.explicitSelectionSupported })
+        let stamp = YuGiOhEdition.duelTerminalVariant
+        XCTAssertEqual(stamp.label, "Duel Terminal")
+        XCTAssertEqual(stamp.id, PhysicalVariant.yugiohLimited.id)
+
+        let sampleCodes = ["DTP1-EN029", "DT03-EN033", "DT04-EN058", "DT05-EN013", "DT06-EN062", "DT01-EN016", "DT01-EN083"]
+        for code in sampleCodes {
+            guard case let .identified(subject) = recognizer.identify(footerLines: [],
+                      supplementalLines: [.init(text: code), .init(text: "DUEL TERMINAL")]),
+                  case let .needsPrintingChoice(_, choices) = try await scan.lookup(subject.identifier) else {
+                return XCTFail("Missing original Duel Terminal printing \(code)")
+            }
+            let scanned = try await scan.resolve(XCTUnwrap(choices.first), for: subject.identifier).card
+            let matches = try await browse.search(query: code, setIDs: [], cursor: nil)
+            let summary = try XCTUnwrap(matches.items.first { $0.providerID == scanned.physicalPrintingID })
+            let details = try await browse.details(for: summary)
+            XCTAssertEqual(scanned.variantEvidence.catalogVariants, [stamp])
+            XCTAssertEqual(details.card.variantEvidence, scanned.variantEvidence)
+            XCTAssertNil(details.collectionWriteUnavailableReason)
+            XCTAssertEqual(VariantResolver.resolveAcquisition(scanned.variantEvidence, printedEdition: subject.printedEdition),
+                .resolved(.init(variant: stamp, resolution: .printedLabel)))
+            XCTAssertEqual(VariantResolver.gate(scanned.variantEvidence, printedEdition: .observed(.yugiohLimited)),
+                .needsChoice(options: [], lockDidNotApply: nil))
+            let key = scanned.collectionKey(variant: .yugiohLimited)
+            XCTAssertEqual(key, scanned.collectionKey(variant: stamp))
+            try scan.validateCollectionMutation(printingID: scanned.physicalPrintingID, catalogProviderID: nil,
+                variantID: PhysicalVariant.yugiohLimited.id, itemKindRaw: CollectionItemKind.rawCard.rawValue, collectionKey: key)
+            let printing = try XCTUnwrap(catalog.printingsByCode[code]?.first)
+            let group = try XCTUnwrap(printing.marketGroupID)
+            let product = try XCTUnwrap(printing.productID)
+            XCTAssertEqual(YuGiOhPriceAdapter.mappingIdentity(printing, .limited), "tcgcsv:2:\(group):\(product):Limited")
+            XCTAssertEqual(scanned.rarity, details.card.rarity)
+            if code == "DT01-EN016" { XCTAssertEqual(scanned.rarity, "Duel Terminal Normal Parallel Rare") }
+            if code == "DT01-EN083" { XCTAssertEqual(scanned.rarity, "Duel Terminal Super Parallel Rare") }
+        }
+        let woodsman = try XCTUnwrap(catalog.printingsByCode["DT04-EN058"]?.first)
+        XCTAssertEqual(woodsman.pricedEditions, [.unlimited])
+        XCTAssertNil(woodsman.membership.first?.q)
+        let exchange = try XCTUnwrap(catalog.printingsByCode["TSC-E001"]?.first)
+        XCTAssertEqual(exchange.editions, [.unlimited])
+        XCTAssertNil(exchange.membership.first?.q)
+        let hiddenArsenal = try XCTUnwrap(catalog.printingsByCode["HAC1-EN001"]?.first)
+        XCTAssertFalse(hiddenArsenal.hasDuelTerminalStamp)
+        XCTAssertEqual(try scan.resolution(forPrintingID: hiddenArsenal.id).card.variantEvidence.catalogVariants, [.yugiohFirstEdition])
+    }
+
+    func testUnsupportedNumberRemainsDiscoverableWithoutEnteringTheScanIndex() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let code = "2023-JPP001"
+        XCTAssertNil(catalog.printingsByCode[code])
+        XCTAssertEqual(YuGiOhRecognitionAdapter(catalog: catalog).identify([.init(text: code)]), .nothing)
+        let browse = YuGiOhBrowseAdapter(catalog: catalog)
+        let matches = try await browse.search(query: code, setIDs: [], cursor: nil)
+        let summary = try XCTUnwrap(matches.items.first { $0.collectorNumber == code })
+        let details = try await browse.details(for: summary)
+        XCTAssertNotNil(details.collectionWriteUnavailableReason)
+        XCTAssertTrue(details.card.variantEvidence.catalogVariants.isEmpty)
+    }
+
+    func testUnnumberedDisplayCardIsDiscoverableWithoutInventingScanIdentity() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let browse = YuGiOhBrowseAdapter(catalog: catalog)
+        let set = CatalogSetID(game: .yuGiOh, providerID: "tcgplayer-group:23366")
+        let result = try await browse.search(query: "Blue-Eyes White Dragon", setIDs: [set], cursor: nil)
+        let summary = try XCTUnwrap(result.items.first { $0.collectorNumber.isEmpty })
+        let id = try XCTUnwrap(UUID(uuidString: summary.providerID))
+        XCTAssertEqual(catalog.printingByID[id]?.productID, 549287)
+        XCTAssertNil(catalog.printingsByCode[""])
+        let details = try await browse.details(for: summary)
+        XCTAssertEqual(details.card.rarity, "Secret Rare")
+        XCTAssertNotNil(details.collectionWriteUnavailableReason)
+        XCTAssertTrue(details.card.variantEvidence.catalogVariants.isEmpty)
+        XCTAssertTrue(details.card.marketProductIDsByVariant.isEmpty)
+
+        let duelOverload = CatalogSetID(game: .yuGiOh, providerID: "tcgplayer-group:2610")
+        let oversized = try await browse.search(query: "oversized", setIDs: [duelOverload], cursor: nil)
+        XCTAssertEqual(oversized.items.count, 6)
+        var productIDs = Set<Int>()
+        for item in oversized.items {
+            XCTAssertTrue(item.collectorNumber.isEmpty)
+            let id = try XCTUnwrap(UUID(uuidString: item.providerID))
+            productIDs.insert(try XCTUnwrap(catalog.printingByID[id]?.productID))
+            let details = try await browse.details(for: item)
+            XCTAssertEqual(details.card.rarity, "Common")
+            XCTAssertNotNil(details.collectionWriteUnavailableReason)
+            XCTAssertTrue(details.card.marketProductIDsByVariant.isEmpty)
+        }
+        XCTAssertEqual(productIDs, Set(210_873...210_878))
+    }
+
+    func testBrowseOfficialNameDatesAndOrderedSearchPagination() async throws {
+        let browse = YuGiOhBrowseAdapter(catalog: try YuGiOhCatalog.bundled.get())
+        let printed = try await browse.search(query: "Yummy★Snatchy", setIDs: [], cursor: nil)
+        let market = try await browse.search(query: "YummySnatchy", setIDs: [], cursor: nil)
+        XCTAssertEqual(printed.items.map(\.id), market.items.map(\.id))
+        XCTAssertEqual(printed.items.count, 8)
+        XCTAssertTrue(printed.items.allSatisfy { $0.name.hasPrefix("Yummy★Snatchy") })
+        let sets = try await browse.sets()
+        let tournament = try XCTUnwrap(sets.first { $0.code == "UP02" })
+        let formatter = ISO8601DateFormatter()
+        XCTAssertEqual(tournament.releaseDate, formatter.date(from: "2026-11-04T00:00:00Z"))
+        let releaseDates = [
+            "tcgplayer-group:330": "2002-03-08",
+            "yugioh-release:psv-eu": "2003-12-12",
+            "tcgplayer-group:22881": "2004-12-01",
+            "tcgplayer-group:23050": "2023-04-21",
+            "tcgplayer-group:24815": "2026-10-09",
+        ]
+        for (id, day) in releaseDates {
+            let set = try XCTUnwrap(sets.first { $0.catalogID.providerID == id })
+            XCTAssertEqual(set.releaseDate, formatter.date(from: day + "T00:00:00Z"), id)
+        }
+        let scope: Set<CatalogSetID> = [tournament.catalogID]
+        let first = try await browse.search(query: "common", setIDs: [], cursor: nil)
+        let cursor = try XCTUnwrap(first.nextCursor)
+        let second = try await browse.search(query: "common", setIDs: [], cursor: cursor)
+        let ids = (first.items + second.items).map(\.id)
+        XCTAssertEqual(ids.count, 120)
+        XCTAssertEqual(Set(ids).count, ids.count)
+        XCTAssertEqual(ids, ids.sorted())
+        do {
+            _ = try await browse.search(query: "common", setIDs: scope, cursor: cursor)
+            XCTFail("An unscoped cursor cannot advance a set-scoped search")
+        } catch CatalogLookupError.staleCatalog {}
     }
 
     func testEveryBundledSupportedCodeFamilyReachesSharedCatalog() async throws {
@@ -2594,12 +2967,13 @@ final class YuGiOhResolutionTests: XCTestCase {
         object["printings"] = rows
         return try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
     }
-    func testRealDCRFamilyKeepsUnsupportedDiscoveryDisabled() async throws {
+    func testRealSpecialEditionFamilyKeepsUnsupportedDiscoveryDisabled() async throws {
         let catalog = try YuGiOhCatalog.bundled.get(), adapter = YuGiOhCatalogAdapter(catalog: catalog)
-        let identifier = try YuGiOhRecognitionAdapter.identifier(code: "DCR-EN000", generation: catalog.generation)
+        let identifier = try YuGiOhRecognitionAdapter.identifier(code: "LODT-ENSE2", generation: catalog.generation)
         guard case let .needsPrintingChoice(_, candidates) = try await adapter.lookup(identifier) else { return XCTFail() }
-        let unsupported = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 476802 })
-        let supported = try XCTUnwrap(catalog.printingByID.values.first { $0.productID == 487277 })
+        let family = try XCTUnwrap(catalog.printingsByCode["LODT-ENSE2"])
+        let unsupported = try XCTUnwrap(family.first { $0.productID == 562288 })
+        let supported = try XCTUnwrap(family.first { $0.productID == 26795 })
         XCTAssertNotNil(candidates.first { $0.id == unsupported.idString }?.acquisitionUnavailableReason)
         XCTAssertNil(candidates.first { $0.id == supported.idString }?.acquisitionUnavailableReason)
         do { _ = try await adapter.resolve(adapter.candidate(unsupported), for: identifier); XCTFail() }

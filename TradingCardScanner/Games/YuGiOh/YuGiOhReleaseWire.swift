@@ -22,6 +22,25 @@ struct YuGiOhCandidateManifest: Codable, Equatable, Sendable {
     var reviewID: String? = nil
     /// Signed locator for the immutable parent envelope; the hash remains the authority.
     var parentRevision: Int? = nil
+    /// The reviewed full snapshot may be installed from this exact bundled seed.
+    var checkpointSHA256: String? = nil
+    /// Catalog hashes of reviewed predecessors, keyed by approval revision.
+    var ancestors: [Int: String]? = nil
+
+    var ancestryIncludingSelf: [Int: String] {
+        var lineage = ancestors ?? [:]
+        lineage[revision] = sha256
+        return lineage
+    }
+
+    var checkpointBaseSHA256: String? {
+        checkpointSHA256 ?? ((parentRevision ?? 0) == 0 ? parentSHA256 : nil)
+    }
+
+    func canInstallCheckpoint(after active: Self?, bundleSHA256: String) -> Bool {
+        if let active { return ancestors?[active.revision] == active.sha256 }
+        return checkpointSHA256 == bundleSHA256 || ancestors?.values.contains(bundleSHA256) == true
+    }
 }
 
 struct YuGiOhCandidateEnvelope: Codable, Equatable, Sendable {
@@ -37,6 +56,9 @@ enum YuGiOhCandidateError: Error { case invalidManifest, invalidSignature, inval
 enum YuGiOhReleaseWire {
     static let maximumCatalogBytes = 48 * 1_024 * 1_024
     static let maximumEnvelopeBytes = 65 * 1_024 * 1_024
+    // A revision is at most six digits. Even a hash for every supported
+    // approval revision fits this encoded payload and the envelope stays bounded.
+    private static let maximumApprovedPayloadBytes = 12 * 1_024 * 1_024
     static let policy = "yugioh-provider-membership-v1-2026-10-21"
 
     static func hash(_ data: Data) -> String {
@@ -59,13 +81,16 @@ enum YuGiOhReleaseWire {
     }
     static func verify(_ envelope: YuGiOhCandidateEnvelope, keys: [String: Curve25519.Signing.PublicKey],
                        state: YuGiOhPublicationState, now: Date) throws -> YuGiOhCandidateManifest {
-        guard envelope.catalog.count <= maximumCatalogBytes, envelope.payload.utf8.count <= 8192 else { throw YuGiOhCandidateError.oversized }
+        let approved = state == .approved
+        guard envelope.catalog.count <= maximumCatalogBytes,
+              envelope.payload.utf8.count <= (approved ? maximumApprovedPayloadBytes : 8192) else {
+            throw YuGiOhCandidateError.oversized
+        }
         guard envelope.keyID.range(of: "^yugioh-[a-z0-9][a-z0-9-]{0,63}$", options: .regularExpression) != nil,
               let key = keys[envelope.keyID], let payload = decodeURL(envelope.payload),
               envelope.signature.count == 86, let signature = decodeURL(envelope.signature), signature.count == 64,
               key.isValidSignature(signature, for: payload) else { throw YuGiOhCandidateError.invalidSignature }
         let manifest = try JSONDecoder().decode(YuGiOhCandidateManifest.self, from: payload)
-        let approved = state == .approved
         guard manifest.schemaVersion == (approved ? 2 : 1), (1...100_000).contains(manifest.revision),
               manifest.policyVersion == policy, manifest.status == state.rawValue,
               manifest.bytes == envelope.catalog.count, manifest.sha256 == hash(envelope.catalog),
@@ -82,7 +107,21 @@ enum YuGiOhReleaseWire {
             if let parent = manifest.parentRevision {
                 guard (0..<manifest.revision).contains(parent) else { throw YuGiOhCandidateError.invalidManifest }
             }
-        } else if manifest.parentSHA256 != nil || manifest.reviewID != nil || manifest.parentRevision != nil {
+            if let checkpoint = manifest.checkpointSHA256 {
+                guard checkpoint.range(of: "^[a-f0-9]{64}$", options: .regularExpression) != nil,
+                      manifest.parentRevision != nil || checkpoint == manifest.parentSHA256 else {
+                    throw YuGiOhCandidateError.invalidManifest
+                }
+            }
+            if let ancestors = manifest.ancestors {
+                guard let parent = manifest.parentRevision, parent > 0, ancestors[parent] == manifest.parentSHA256,
+                      ancestors.allSatisfy({ revision, hash in
+                          (1...parent).contains(revision) && hash.utf8.count == 64
+                              && hash.utf8.allSatisfy { (48...57).contains($0) || (97...102).contains($0) }
+                      }) else { throw YuGiOhCandidateError.invalidManifest }
+            }
+        } else if manifest.parentSHA256 != nil || manifest.reviewID != nil || manifest.parentRevision != nil
+                    || manifest.checkpointSHA256 != nil || manifest.ancestors != nil {
             throw YuGiOhCandidateError.invalidManifest
         }
         return manifest

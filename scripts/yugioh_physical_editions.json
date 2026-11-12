@@ -1,4 +1,3877 @@
 {
   "schemaVersion": 1,
-  "products": {}
+  "products": {
+    "26169": {
+      "printing": {
+        "groupID": 280,
+        "code": "SJCS-EN005",
+        "productName": "Gold Sarcophagus",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6016210",
+          "sha256": "902c26009fb40213a7fe0782e352ac34c6b550e10181c85563c92ec89191fb9a",
+          "officialSource": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=6161&ope=2&request_locale=en"
+        }
+      }
+    },
+    "26600": {
+      "printing": {
+        "groupID": 357,
+        "code": "EP1-EN000",
+        "productName": "Card of Sanctity (Kids WB Duel of Destiny Promo)",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5885365",
+          "sha256": "62b1221cdbd42294c548b63ebb0383f79f26689adfca05a461b0157affdd4245"
+        }
+      }
+    },
+    "81888": {
+      "printing": {
+        "groupID": 271,
+        "code": "DDY1-EN001",
+        "productName": "Vice Dragon (Promo)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5888712",
+          "sha256": "796caea2b88b300ee45916cc4c3316a60616ce221113e00b33968097653a518c"
+        }
+      }
+    },
+    "228257": {
+      "printing": {
+        "groupID": 298,
+        "code": "SDY-004",
+        "productName": "Summoned Skull (Sample Promo)",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6018644",
+          "sha256": "6d7fdaf0af8cc49cd7657c6363b8277232a5c500ac5a9b6908115f3afa2dcda1"
+        }
+      }
+    },
+    "679562": {
+      "printing": {
+        "groupID": 24351,
+        "code": "25YC-ENP01",
+        "productName": "Blue-Eyes White Dragon (World Championship Qualifier)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:54:26+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://tcgplayer-cdn.tcgplayer.com/product/679562_in_1000x1000.jpg",
+          "sha256": "af835db6f0fa926360e2b7b3d486f78c0337c42d12c5fc87f1d8bbd26908b008",
+          "officialSource": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001491000&rp=99999&request_locale=en"
+        }
+      }
+    },
+    "33075": {
+      "printing": {
+        "groupID": 155,
+        "code": "CP07-EN003",
+        "productName": "Threatening Roar",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5995775",
+          "sha256": "dbeb35d757094b9e047453c2be7af0175afd0724f73d5fbbfe05479f4a8bc818",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "476802": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN000",
+        "productName": "Vampire Lord",
+        "rarity": "Secret Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6023445",
+          "sha256": "efeeadd7a22d9a2f84d821429fdf6117094566cb4288754bce2822ed05c42824",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476803": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN001",
+        "productName": "Battle Footballer",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5674195",
+          "sha256": "cd0ffbd0c2f3019bc6456d20c2b287ade4c7a770fa14908a9fd6ab91ba9d1427",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476809": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN007",
+        "productName": "Guardian Grarl",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5889694",
+          "sha256": "5b346d348750e5d850fabb7325841c7ba487e9b73c76ff762afadc63b25f56b9",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476810": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN008",
+        "productName": "Guardian Baou",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5910737",
+          "sha256": "2588d36b1355c3a83311fed9a1f464d99522e5b36e6d75c292b75c120b77eed1",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476812": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN010",
+        "productName": "Guardian Tryce",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5890631",
+          "sha256": "24d508b87c4fc6225aa92bdc44c66ded9c1f5bbe2261c547c059d53608d074ea",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476813": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN012",
+        "productName": "Reflect Bounder",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5652056",
+          "sha256": "16408ea6333d6540196a84404e68031ac2384bb4c67cd7ca54b1030f35f1c494",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476818": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN016",
+        "productName": "Shinato, King of a Higher Plane",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5656174",
+          "sha256": "419be34fea7c0b00a810fcd35a758646ecb862c16684e352d9e942bd1a1a4664",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476823": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN021",
+        "productName": "Gyaku-Gire Panda",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5894766",
+          "sha256": "ed2f5749224281ac9540e91763bd1ae305b1c43d21a375d7b73bcbf25b177306",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476831": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN027",
+        "productName": "D.D. Warrior Lady",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5783687",
+          "sha256": "e61ebdf1babd2efdda3ca99f026e467db5deb032b6205c9e669a236f4c4b9b27",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476861": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN053",
+        "productName": "Cost Down",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5740392",
+          "sha256": "1d00240051bc144e97e31e35333aa6ab86be2c90fd7a55753d0594e4fba7cd11",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476865": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN057",
+        "productName": "Archfiend Soldier",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6003065",
+          "sha256": "14f9cdb9337aad031ee29ed05b052868771cd82a53f8af1d753a6254933dcc97",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476871": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN063",
+        "productName": "Great Maju Garzett",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6003330",
+          "sha256": "e7974ffc005c84bbfa3246980fc73e257860d5fd69513a17b0c1bc2503ec3c1c",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476881": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN069",
+        "productName": "Darkbishop Archfiend",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5773034",
+          "sha256": "ca1da245dabbb67af6514ed66002767db12680508240475cb72fb1da2dee8778",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476874": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN071",
+        "productName": "Infernalqueen Archfiend",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:05.176536+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5402764",
+          "sha256": "ed03f9e0eb3410e6eaa1aa49df048cb2dfcb8fae88da52693c6726f0afb2812f",
+          "capturedAt": "2026-11-12T14:43:05.176536+00:00"
+        }
+      }
+    },
+    "476883": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN072",
+        "productName": "Terrorking Archfiend",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5656159",
+          "sha256": "8d2a24b88b8490ec6a0fada16210ac7126f27c4258cd0266258ff59ee3e504bb",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476884": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN073",
+        "productName": "Skull Archfiend of Lightning",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5908188",
+          "sha256": "ed66bbfe35368fee82e2838492a282c5511cd97fc04a462bc85269bb774627af",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476875": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN076",
+        "productName": "Mudora",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5651918",
+          "sha256": "8e8f4718d9fbc6104439f81fb4f9e22d8066b6e37442867c34dc575eb5c7d0fb",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476902": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN094",
+        "productName": "Pandemonium",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5908168",
+          "sha256": "ee66ccf25530d204fefb0b8002c98537a5a7f8f326aa0cdffa05f024aa7cd32b",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476912": {
+      "printing": {
+        "groupID": 22886,
+        "code": "DCR-EN105",
+        "productName": "Judgment of Anubis",
+        "rarity": "Secret Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5472237",
+          "sha256": "7425d965eb4cb626bac3b92d3334371494119ef3a750a3dc7719f86a2ae358af",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "217881": {
+      "printing": {
+        "groupID": 2682,
+        "code": "DEM3-EN019",
+        "productName": "Defense Draw",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5774085",
+          "sha256": "fd506222ca685c00e640904904f362f61d3a5779567bbbfe77b2e99ef68792fc",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "80347": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL11-EN017",
+        "productName": "Royal Tribute (Green)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5883778",
+          "sha256": "6c53428004e1cdb09c77b53d3c853787a69620e8c242f321bea3065c3aad65dd",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "77404": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL12-EN007",
+        "productName": "Thestalos the Firestorm Monarch (Red)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5709923",
+          "sha256": "31a821f85994cbf3e1908639015e9122ced41100f2aabce890e497df003e2734",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "80474": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL14-EN001",
+        "productName": "Kabazauls (Purple)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5729668",
+          "sha256": "d9f0debbe1f23fb42cdf070ac1027136a92a0d6a870201e2defcd6e81cd5e8da",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "80487": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL14-EN006",
+        "productName": "Defender, the Magical Knight (Blue)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5865697",
+          "sha256": "38950e564818c451d6da15ce7fb1dc4cd35e60c57558210713841d77304cb925",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "80510": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL14-EN013",
+        "productName": "Secret Village of the Spellcasters (Purple)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5914916",
+          "sha256": "b3e101325b450c6b05dcd88fefe680dcb52237b19b4e15d7b5aae68b8710e2c8",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "80526": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL14-EN018",
+        "productName": "Fish Depth Charge (Blue)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5836136",
+          "sha256": "be03c3f6d6e4b7be40878f9fa609f1d999435f8aa567304918977d78f845ccd6",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "80531": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL14-EN019",
+        "productName": "Light-Imprisoning Mirror (Purple)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5738887",
+          "sha256": "3a3b116f8ba62913a714df21be00a6187b405941e0c4c4645825e3d1b3fc6fe5",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "77619": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL16-EN006",
+        "productName": "Endymion, the Master Magician (Purple)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956535",
+          "sha256": "9c028cc625d3d0e4dfcbab59d03cb09c10ad3f7475ce55ba5dbfcc1074dfdc36",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "80558": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL17-EN007",
+        "productName": "Blackwing - Sirocco the Dawn (Green)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5931022",
+          "sha256": "cf62c0921a592e867331d75fe79e0e3aefc95ae6b457435eb8ff50740283faf4",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "80556": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL17-EN007",
+        "productName": "Blackwing - Sirocco the Dawn (Red)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5931022",
+          "sha256": "cf62c0921a592e867331d75fe79e0e3aefc95ae6b457435eb8ff50740283faf4",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "94949": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL18-EN003",
+        "productName": "Dark Magician Girl (Purple)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6020775",
+          "sha256": "463d68831e0c9287e6d2c9db5920402bca5b02fb308c84d03dedb36196845aa2",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "94929": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL18-EN015",
+        "productName": "DNA Surgery (Green)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5792667",
+          "sha256": "111f3ef3524b85c03241d7dcdbefc36665246be6113af48f0d28544fcf1d0d32",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "94968": {
+      "printing": {
+        "groupID": 182,
+        "code": "DL18-EN018",
+        "productName": "Scrap-Iron Scarecrow (Red)",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6028520",
+          "sha256": "8695e5d6231f8694d0c94a375911f48baa4c9896cba227fb3c06eeb1e819b6e9",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "267970": {
+      "printing": {
+        "groupID": 1660,
+        "code": "DOCS-ENSE2",
+        "productName": "Frightfur Tiger",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5973962",
+          "sha256": "6d798b9f0fad9b69aac1775bbc2bded71de15bc3ef72b1ab9c4040a725637686",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "214603": {
+      "printing": {
+        "groupID": 175,
+        "code": "DOD-EN003",
+        "productName": "Widespread Ruin (EU)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6003451",
+          "sha256": "2a8fbc74a0bff532c45c3cb62e094d32620442afe35e6fc01d797bb82c29988d",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "80626": {
+      "printing": {
+        "groupID": 1279,
+        "code": "DR04-EN015",
+        "productName": "Cyber Dragon",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6003090",
+          "sha256": "943b6a493fe014b86876901382a3ed06dcaa0828a17a4e9006cc5d17e273aa83",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "80632": {
+      "printing": {
+        "groupID": 1279,
+        "code": "DR04-EN021",
+        "productName": "B.E.S. Crystal Core",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5916517",
+          "sha256": "f14d8aca73e54df0ad904ef7b03f0c935163ef8919f97211c9b67f7974cee811",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "58655": {
+      "printing": {
+        "groupID": 201,
+        "code": "EOJ-EN004",
+        "productName": "Destiny Hero - Dreadmaster (UTR)",
+        "rarity": "Ultimate Rare"
+      },
+      "editions": [
+        "yugioh1stEdition",
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6028276",
+          "sha256": "daba45b6c0ebcd86b74ba00274c6b5f182c922cc211ee4888d0a6909ca976046",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        },
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6028276",
+          "sha256": "daba45b6c0ebcd86b74ba00274c6b5f182c922cc211ee4888d0a6909ca976046",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "476917": {
+      "printing": {
+        "groupID": 22887,
+        "code": "IOC-EN000",
+        "productName": "Chaos Emperor Dragon - Envoy of the End",
+        "rarity": "Secret Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6022918",
+          "sha256": "e62f199c8ce408feba61283995cb64ab8cd48c7f39737c254c98f9804c4bc785",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "476670": {
+      "printing": {
+        "groupID": 22885,
+        "code": "LOD-EN034",
+        "productName": "Tyrant Dragon",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6001770",
+          "sha256": "77db2138c93791a3ee8dcf3898114d931c657f38bdcdd89528c4acc6664c99bc",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476694": {
+      "printing": {
+        "groupID": 22885,
+        "code": "LOD-EN050",
+        "productName": "Luster Dragon #2",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:50:13.019679+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6003363",
+          "sha256": "618024c094a759549a8bd5590058c05a06f2eab14fe38539965fc1346dd2ed04",
+          "capturedAt": "2026-11-12T14:50:13.019679+00:00"
+        }
+      }
+    },
+    "476723": {
+      "printing": {
+        "groupID": 22885,
+        "code": "LOD-EN065",
+        "productName": "Inaba White Rabbit",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5945902",
+          "sha256": "2559c2b8934ddea6c1368b8fe3f4a038764d2d8f5a23816978eac71c29fe6f29",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476726": {
+      "printing": {
+        "groupID": 22885,
+        "code": "LOD-EN068",
+        "productName": "Great Long Nose",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5972112",
+          "sha256": "b9594b7176d6ea1d1193b7792c518aa1bf8def74d90a67adece5f6c56c22a9ee",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476728": {
+      "printing": {
+        "groupID": 22885,
+        "code": "LOD-EN070",
+        "productName": "Hino-Kagu-Tsuchi",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5972118",
+          "sha256": "2e627c9be4124ec6ca9a9215452bb15e8478c3b333290b17a5d34d4dcfb5d1b3",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476760": {
+      "printing": {
+        "groupID": 22885,
+        "code": "LOD-EN081",
+        "productName": "Creature Swap",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5935726",
+          "sha256": "70ca0782bd89a2b54ac4d1c415643bf81bafd75afa99bbb7058389c9670913e9",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476765": {
+      "printing": {
+        "groupID": 22885,
+        "code": "LOD-EN087",
+        "productName": "Magic Reflector",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5274625",
+          "sha256": "48997d919561d83fbff268cbdda368d6188a94492adcf8776c3468651fde598a",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476574": {
+      "printing": {
+        "groupID": 22884,
+        "code": "LON-EN074",
+        "productName": "Zombyra the Dark",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5403633",
+          "sha256": "42f456dc30d9f8b4f947abdddd6427363b3823a307f46b7cda3f062e0f29cc5e",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "476603": {
+      "printing": {
+        "groupID": 22884,
+        "code": "LON-EN085",
+        "productName": "Destruction Punch",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5775230",
+          "sha256": "9f297ccbaf7d239af51d96e62f9f24bf17da8df8bf8557a510ba02b0c3221810",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "452552": {
+      "printing": {
+        "groupID": 3154,
+        "code": "MAMA-EN109",
+        "productName": "Necrovalley (Ultra Pharaoh's Rare)",
+        "rarity": "Ultra Pharaoh’s Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=5911274",
+          "sha256": "780d7275af7320f1f0fa75abb4ca02519e45ce7dced9280492f8d74be541e3f9",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "452564": {
+      "printing": {
+        "groupID": 3154,
+        "code": "MAMA-EN115",
+        "productName": "Mirror Force (Ultra Pharaoh's Rare)",
+        "rarity": "Ultra Pharaoh’s Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6021398",
+          "sha256": "2847410f2d6b646e2b07d834e1d167e217d82f83722704b17225276d5e26930e",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "714611": {
+      "printing": {
+        "groupID": 24707,
+        "code": "MAMO-EN001",
+        "productName": "Dark Magician, the Pharaoh's Servant (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6029166",
+          "sha256": "4211d8984b4d254851f50525296c326941e764a9118510fc7892d75d5b889d77",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "714613": {
+      "printing": {
+        "groupID": 24707,
+        "code": "MAMO-EN003",
+        "productName": "Dark Magical Curtain (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6030885",
+          "sha256": "cf89af46f06b33bb698aaa48a18b47fc2e02881b1b0b6bad9fad46611a61a81e",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "714614": {
+      "printing": {
+        "groupID": 24707,
+        "code": "MAMO-EN004",
+        "productName": "Favorite HERO Shining Flare Wingman (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=5966918",
+          "sha256": "a42de0b0c5cce1586e426db797896a90fd8ddcd2df27184cef1267a53478172c",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "714616": {
+      "printing": {
+        "groupID": 24707,
+        "code": "MAMO-EN006",
+        "productName": "Winged Kuriboh Sabatiel LV10 (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:43:10.889457+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=5966923",
+          "sha256": "32edd0d645dd2d6a6c0b0806792293e594ef1d9d28bcbc64bc04870d1a1ed69e",
+          "capturedAt": "2026-11-12T14:43:10.889457+00:00"
+        }
+      }
+    },
+    "714619": {
+      "printing": {
+        "groupID": 24707,
+        "code": "MAMO-EN009",
+        "productName": "Synchro Emergency (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=5967004",
+          "sha256": "04c639bcda65622ee19997053a1b5445d7d5dd895701c014e21742f504132a14",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "714620": {
+      "printing": {
+        "groupID": 24707,
+        "code": "MAMO-EN010",
+        "productName": "Number 39: Utopia, Emissary of Light (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=5967005",
+          "sha256": "7c0aa81eadcd23286fbd964a5310c3a484bf3c0338d1e38e5b20ce7235eb3b9e",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "714625": {
+      "printing": {
+        "groupID": 24707,
+        "code": "MAMO-EN015",
+        "productName": "Astrograph Sorcerer, the Starfrost Magician (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=5967036",
+          "sha256": "6fa06e4314a03931239513d50b850074243a595530570e495dbfd655563a0733",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "714627": {
+      "printing": {
+        "groupID": 24707,
+        "code": "MAMO-EN017",
+        "productName": "Cyberse Code Magician (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=5989458",
+          "sha256": "83b5b850d91ac38413c476b485193994eaa37e31a76cf3868487858b57d11f04",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "158241": {
+      "printing": {
+        "groupID": 2197,
+        "code": "MF03-EN003",
+        "productName": "Elemental HERO Clayman",
+        "rarity": "Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6014600",
+          "sha256": "fb6805947537e970d5dd17e74090a56fcc1cf3df9f56a4e165c2bff77113e69a",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "158243": {
+      "printing": {
+        "groupID": 2197,
+        "code": "MF03-EN005",
+        "productName": "Elemental HERO Bladedge",
+        "rarity": "Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5913813",
+          "sha256": "5a687fc6868da92aa80fa1e9196a3efd9be0c39a5103541e1bbe46275f226b45",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "158246": {
+      "printing": {
+        "groupID": 2197,
+        "code": "MF03-EN008",
+        "productName": "Ancient Gear Golem",
+        "rarity": "Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5902408",
+          "sha256": "2a1ae20e8e5a5f37ea56ed806f921a033c2f2b346a422713b6fc8e9cf500692a",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "158248": {
+      "printing": {
+        "groupID": 2197,
+        "code": "MF03-EN009",
+        "productName": "Cyber Dragon",
+        "rarity": "Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6003090",
+          "sha256": "943b6a493fe014b86876901382a3ed06dcaa0828a17a4e9006cc5d17e273aa83",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "476253": {
+      "printing": {
+        "groupID": 22883,
+        "code": "PSV-EN012",
+        "productName": "Call Of The Haunted",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6022066",
+          "sha256": "edd1cf24833566ae00552cb46b7eff4d7fbabac9263a9f15ad8f9efc57ecbb36",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476267": {
+      "printing": {
+        "groupID": 22883,
+        "code": "PSV-EN023",
+        "productName": "Numinous Healer",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:06.682206+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5676328",
+          "sha256": "77190b22b521a73a1d97903cc0c9940fd050b5c40c57ca93fbc7eb14ead56a99",
+          "capturedAt": "2026-11-12T14:43:06.682206+00:00"
+        }
+      }
+    },
+    "476329": {
+      "printing": {
+        "groupID": 22883,
+        "code": "PSV-EN073",
+        "productName": "Gravity Bind",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012436",
+          "sha256": "4bfbfa185d28ff88414732e071d9b113f3a0a54a29bf92732fc9d6178a1261a3",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "476332": {
+      "printing": {
+        "groupID": 22883,
+        "code": "PSV-EN076",
+        "productName": "The Legendary Fisherman",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6001356",
+          "sha256": "e8c4985dffb708e4a9509e7c5dc1fb4dde1c0fb2ce350449613e7ec1ab6ec68c",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "162275": {
+      "printing": {
+        "groupID": 2215,
+        "code": "PT02-EN001",
+        "productName": "Shrink",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6001762",
+          "sha256": "1f498b080ad090ceea6c2fd583dd8084f884512fadacd742f4e4b24aa41dfbc7",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "162273": {
+      "printing": {
+        "groupID": 2215,
+        "code": "PT03-EN001",
+        "productName": "Gold Sarcophagus",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6016210",
+          "sha256": "902c26009fb40213a7fe0782e352ac34c6b550e10181c85563c92ec89191fb9a",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "162278": {
+      "printing": {
+        "groupID": 2215,
+        "code": "PT1-EN002",
+        "productName": "Des Volstgalph",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5774917",
+          "sha256": "ba29935251549b11ced1d8b9b8d306df65e26efe5b3e4dd0ba20d044efc97c58",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "78131": {
+      "printing": {
+        "groupID": 1291,
+        "code": "RP01-EN061",
+        "productName": "Megamorph",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6023708",
+          "sha256": "108a22cc1971cf64144370077b4c9b050b5e8aba3082f13c7ba5c191a9d7e91b",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "78166": {
+      "printing": {
+        "groupID": 1291,
+        "code": "RP01-EN096",
+        "productName": "Cyber Harpie Lady",
+        "rarity": "Secret Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5971846",
+          "sha256": "2850678085832ff683097e33f9d9d79c402a15413c2f8bc72e5694c480e77b7e",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "26579": {
+      "printing": {
+        "groupID": 280,
+        "code": "SJC-EN002",
+        "productName": "Des Volstgalph",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5774917",
+          "sha256": "ba29935251549b11ced1d8b9b8d306df65e26efe5b3e4dd0ba20d044efc97c58",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "26691": {
+      "printing": {
+        "groupID": 279,
+        "code": "SJCS-EN006",
+        "productName": "Doomcaliber Knight",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5793516",
+          "sha256": "a2cfb44e15a1fd910243b872cca0c269591da99b7dbd13045fb49946a960b53b",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "33482": {
+      "printing": {
+        "groupID": 279,
+        "code": "SJCS-EN007",
+        "productName": "Dark End Dragon",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5931170",
+          "sha256": "cf1e3b0e5d0fc51199eab1dfc3fcc25d839a9338a1ad8a362db5a4f616699b91",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "287236": {
+      "printing": {
+        "groupID": 3180,
+        "code": "STP4-EN019",
+        "productName": "Gearfried the Swordmaster",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5883143",
+          "sha256": "3eecd19c7305615afe5c7afff33a81e3121576244981bd5d8e16a7e2c23698d2",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "22708": {
+      "printing": {
+        "groupID": 333,
+        "code": "TP1-017",
+        "productName": "Giant Flea",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:12.313768+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5884675",
+          "sha256": "f4e02a3f69b7d3d5dc1d6be4f6419ece030f3c17e51252ae54cfe7edc4179fa0",
+          "capturedAt": "2026-11-12T14:43:12.313768+00:00"
+        }
+      }
+    },
+    "236754": {
+      "printing": {
+        "groupID": 1921,
+        "code": "TSC-E002",
+        "productName": "Graceful Dice",
+        "rarity": "Prismatic Secret Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6032426",
+          "sha256": "f57046929e7d30535c378d2ff1c2a9cb117bc1c2cdb0237ea5fd1e4bdb1ce5f9",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "724477": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN001",
+        "productName": "Gene-Warped Warwolf",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994297",
+          "sha256": "6667474d9bee015d17f10d1fdf02d6c30c880a3a70de9f7dd15c85f6926a2b91",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724478": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN001",
+        "productName": "Gene-Warped Warwolf (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994297",
+          "sha256": "6667474d9bee015d17f10d1fdf02d6c30c880a3a70de9f7dd15c85f6926a2b91",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724479": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN002",
+        "productName": "Jinzo",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6011097",
+          "sha256": "d8afdd222602573860937751af4534165c714240eb8b615c92b7f46e6d2a157b",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724480": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN002",
+        "productName": "Jinzo (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6011097",
+          "sha256": "d8afdd222602573860937751af4534165c714240eb8b615c92b7f46e6d2a157b",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724481": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN003",
+        "productName": "Black Luster Soldier - Envoy of the Beginning",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6015426",
+          "sha256": "900d783d6f5dc1fb3400186156dae21e3b86af13743c21f4603cc61932057acc",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724482": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN003",
+        "productName": "Black Luster Soldier - Envoy of the Beginning (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6015426",
+          "sha256": "900d783d6f5dc1fb3400186156dae21e3b86af13743c21f4603cc61932057acc",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724483": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN004",
+        "productName": "Goblin Elite Attack Force",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956400",
+          "sha256": "b14e16a489bfb7035a854e5d011a0c654aa41f94041429c12646fee4db0fa80d",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724484": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN004",
+        "productName": "Goblin Elite Attack Force (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956400",
+          "sha256": "b14e16a489bfb7035a854e5d011a0c654aa41f94041429c12646fee4db0fa80d",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724485": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN005",
+        "productName": "White Night Dragon",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994303",
+          "sha256": "d8393d906fd02d843e9b559cb09321e21530be909f01273dfd79144457174ff6",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724486": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN005",
+        "productName": "White Night Dragon (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994303",
+          "sha256": "d8393d906fd02d843e9b559cb09321e21530be909f01273dfd79144457174ff6",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724487": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN006",
+        "productName": "Thunder King Rai-Oh",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012025",
+          "sha256": "93ceb73e0781588209ee9f45a7078c3a8475e25325d2d30bf05e0231dd26228b",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724488": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN006",
+        "productName": "Thunder King Rai-Oh (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012025",
+          "sha256": "93ceb73e0781588209ee9f45a7078c3a8475e25325d2d30bf05e0231dd26228b",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724489": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN007",
+        "productName": "Deep Diver",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012438",
+          "sha256": "936ad3478937f0e467b6ec2f0622c055d3368026a67ce1f364dcfa6fa2adf4f0",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724490": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN007",
+        "productName": "Deep Diver (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012438",
+          "sha256": "936ad3478937f0e467b6ec2f0622c055d3368026a67ce1f364dcfa6fa2adf4f0",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724491": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN008",
+        "productName": "X-Saber Airbellum",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956403",
+          "sha256": "98328fd23a582193fc30dcb3ad370a8956872b22134fdfdbde98a56e52fc3851",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724492": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN008",
+        "productName": "X-Saber Airbellum (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956403",
+          "sha256": "98328fd23a582193fc30dcb3ad370a8956872b22134fdfdbde98a56e52fc3851",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724493": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN009",
+        "productName": "Snowman Eater",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994333",
+          "sha256": "91eadefe34eb635bd93fb73133fb44bf8452f3deb746fe3dc6a9d84938db94e9",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724494": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN009",
+        "productName": "Snowman Eater (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994333",
+          "sha256": "91eadefe34eb635bd93fb73133fb44bf8452f3deb746fe3dc6a9d84938db94e9",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724495": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN010",
+        "productName": "Zubaba Knight",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012439",
+          "sha256": "063fa3cbf1704c5cd34435c167f1f93c928623f6398c443bb0c0e0390c1d3c2e",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724496": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN010",
+        "productName": "Zubaba Knight (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012439",
+          "sha256": "063fa3cbf1704c5cd34435c167f1f93c928623f6398c443bb0c0e0390c1d3c2e",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724497": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN011",
+        "productName": "Kagetokage",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6026720",
+          "sha256": "68eb1a27941d546cbb377a9502d20f66541ae896832bd254a4733957cd486646",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724498": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN011",
+        "productName": "Kagetokage (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6026720",
+          "sha256": "68eb1a27941d546cbb377a9502d20f66541ae896832bd254a4733957cd486646",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724499": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN012",
+        "productName": "Gagaga Gardna",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994338",
+          "sha256": "977fcde26e3dbcd2545d76c25704292db3bdea8683641d928025de771ae4b978",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724500": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN012",
+        "productName": "Gagaga Gardna (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994338",
+          "sha256": "977fcde26e3dbcd2545d76c25704292db3bdea8683641d928025de771ae4b978",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724501": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN013",
+        "productName": "Trishula, Dragon of the Ice Barrier",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956404",
+          "sha256": "7908eea0c3ea6a17c5d32e526982e4280efaf9c20a152439e8eab921e2771a11",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724502": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN013",
+        "productName": "Trishula, Dragon of the Ice Barrier (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956404",
+          "sha256": "7908eea0c3ea6a17c5d32e526982e4280efaf9c20a152439e8eab921e2771a11",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724503": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN014",
+        "productName": "Scrap Dragon",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994339",
+          "sha256": "2bdd0ec690801f4df2153a331d8b17ad5e324e635201d6fc919f1c076dd2fb3e",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724504": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN014",
+        "productName": "Scrap Dragon (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:58.134314+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994339",
+          "sha256": "2bdd0ec690801f4df2153a331d8b17ad5e324e635201d6fc919f1c076dd2fb3e",
+          "capturedAt": "2026-11-12T14:42:58.134314+00:00"
+        }
+      }
+    },
+    "724505": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN015",
+        "productName": "Number 17: Leviathan Dragon",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956405",
+          "sha256": "5076c3cfdedb3256e4dbc96e86b135fa4a85aa20ce1fb71572488ea69ae72ed7",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724506": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN015",
+        "productName": "Number 17: Leviathan Dragon (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956405",
+          "sha256": "5076c3cfdedb3256e4dbc96e86b135fa4a85aa20ce1fb71572488ea69ae72ed7",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724507": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN016",
+        "productName": "Number 101: Silent Honor ARK",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994342",
+          "sha256": "fc0856f079208c54ebf22e7317c6e17454c9e2dfc8a8d61f48efa8de5779ee62",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724508": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN016",
+        "productName": "Number 101: Silent Honor ARK (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994342",
+          "sha256": "fc0856f079208c54ebf22e7317c6e17454c9e2dfc8a8d61f48efa8de5779ee62",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724509": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN017",
+        "productName": "Raigeki",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994343",
+          "sha256": "25d3340a30f39c6e0078f6e89666a5ffe4b685a8f6075b74f9eaa40339000e35",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724510": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN017",
+        "productName": "Raigeki (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994343",
+          "sha256": "25d3340a30f39c6e0078f6e89666a5ffe4b685a8f6075b74f9eaa40339000e35",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724511": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN018",
+        "productName": "Monster Reborn",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6028402",
+          "sha256": "d6ee63971cbf219ad21e61f3b949679f030dc0a4746d51ead551cbb264264934",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724512": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN018",
+        "productName": "Monster Reborn (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6028402",
+          "sha256": "d6ee63971cbf219ad21e61f3b949679f030dc0a4746d51ead551cbb264264934",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724513": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN019",
+        "productName": "Change of Heart",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6021339",
+          "sha256": "886f8585c951e8e23dce40c7af8b30d83c7b81a7560f7672e7dc75dbdd3838db",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724514": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN019",
+        "productName": "Change of Heart (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6021339",
+          "sha256": "886f8585c951e8e23dce40c7af8b30d83c7b81a7560f7672e7dc75dbdd3838db",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724515": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN020",
+        "productName": "Smashing Ground",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994920",
+          "sha256": "f60cf93a55d7a43a37f5525cba9d0c160ff67f291914a3d4495df776cb859919",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724516": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN020",
+        "productName": "Smashing Ground (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994920",
+          "sha256": "f60cf93a55d7a43a37f5525cba9d0c160ff67f291914a3d4495df776cb859919",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724517": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN021",
+        "productName": "Hammer Shot",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6003338",
+          "sha256": "bd82e42d1f2e2e4dda03b68de67b4ec4a744c446cf3e8d16a1324a7d02fd193b",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724518": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN021",
+        "productName": "Hammer Shot (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6003338",
+          "sha256": "bd82e42d1f2e2e4dda03b68de67b4ec4a744c446cf3e8d16a1324a7d02fd193b",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724519": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN022",
+        "productName": "Ancient Rules",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994352",
+          "sha256": "b3d9824550e0ebb7e3dce1edef2bf6daa857d9f5594fa9e629887f9ae95ffafd",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724520": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN022",
+        "productName": "Ancient Rules (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994352",
+          "sha256": "b3d9824550e0ebb7e3dce1edef2bf6daa857d9f5594fa9e629887f9ae95ffafd",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724521": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN023",
+        "productName": "Synch Blast Wave",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012440",
+          "sha256": "cfab9d1eeb9a37040008f36c249e7cbde7a84592ce7424ae9163f6c2a984460f",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724522": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN023",
+        "productName": "Synch Blast Wave (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012440",
+          "sha256": "cfab9d1eeb9a37040008f36c249e7cbde7a84592ce7424ae9163f6c2a984460f",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724523": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN024",
+        "productName": "Book of Lunar Eclipse",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956408",
+          "sha256": "54b50ff40f658cddf36608524a5bd657aafd1449b5d37c630699bfa1cf036b4e",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724524": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN024",
+        "productName": "Book of Lunar Eclipse (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956408",
+          "sha256": "54b50ff40f658cddf36608524a5bd657aafd1449b5d37c630699bfa1cf036b4e",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724525": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN025",
+        "productName": "Mirror Force",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6021398",
+          "sha256": "2847410f2d6b646e2b07d834e1d167e217d82f83722704b17225276d5e26930e",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724526": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN025",
+        "productName": "Mirror Force (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6021398",
+          "sha256": "2847410f2d6b646e2b07d834e1d167e217d82f83722704b17225276d5e26930e",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724527": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN026",
+        "productName": "Torrential Tribute",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6022989",
+          "sha256": "bbd2e3cbd558501e3c38fe4bd6618b94a83538b910fc0bbd0853d2f58db1f14f",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724528": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN026",
+        "productName": "Torrential Tribute (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6022989",
+          "sha256": "bbd2e3cbd558501e3c38fe4bd6618b94a83538b910fc0bbd0853d2f58db1f14f",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724529": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN027",
+        "productName": "Bottomless Trap Hole",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6021817",
+          "sha256": "75966b27e9723917fd5baee72218b951ae5980daf7361a7a16438609ede027e0",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724530": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN027",
+        "productName": "Bottomless Trap Hole (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6021817",
+          "sha256": "75966b27e9723917fd5baee72218b951ae5980daf7361a7a16438609ede027e0",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724531": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN028",
+        "productName": "Raigeki Break",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956471",
+          "sha256": "496c278e2160d5a2a278236b719e3c7bc1a4d22a03f3f34d23714d40a82334bb",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724532": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN028",
+        "productName": "Raigeki Break (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:42:59.581301+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956471",
+          "sha256": "496c278e2160d5a2a278236b719e3c7bc1a4d22a03f3f34d23714d40a82334bb",
+          "capturedAt": "2026-11-12T14:42:59.581301+00:00"
+        }
+      }
+    },
+    "724533": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN029",
+        "productName": "Typhoon",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994374",
+          "sha256": "5851d2753a19a397ff44a609beebd2284e39fa5478117f0f12d71eaad497e001",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00"
+        }
+      }
+    },
+    "724534": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN029",
+        "productName": "Typhoon (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5994374",
+          "sha256": "5851d2753a19a397ff44a609beebd2284e39fa5478117f0f12d71eaad497e001",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00"
+        }
+      }
+    },
+    "724535": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN030",
+        "productName": "Quaking Mirror Force",
+        "rarity": "Common"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956473",
+          "sha256": "e3e0520a015891894213915f2a6b20aec13388c28efc13aca53d43dd3b784cd9",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00"
+        }
+      }
+    },
+    "724536": {
+      "printing": {
+        "groupID": 24918,
+        "code": "TYP1-EN030",
+        "productName": "Quaking Mirror Force (Super Rare)",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5956473",
+          "sha256": "e3e0520a015891894213915f2a6b20aec13388c28efc13aca53d43dd3b784cd9",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00"
+        }
+      }
+    },
+    "164478": {
+      "printing": {
+        "groupID": 2227,
+        "code": "WCPP-EN018",
+        "productName": "Ancient Gear Gadjiltron Dragon",
+        "rarity": "Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5700810",
+          "sha256": "a9f31a072e96eeef2fcc027806928f01f92da8facbf8db05cffddceffdc74232",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "26596": {
+      "printing": {
+        "groupID": 351,
+        "code": "WCPS-EN601",
+        "productName": "Testament of the Arcane Lords",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5653164",
+          "sha256": "ba991a6caaf71ac08aac77e41796119b12221cd7a77a861ae8b97afa3cf07f67",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "26598": {
+      "printing": {
+        "groupID": 351,
+        "code": "WCPS-EN701",
+        "productName": "Chimaera, the Master of Beasts",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5653165",
+          "sha256": "0ca31814bb8871711c72f54ae584e9b1012f505140f2f6dbeea1c625334eeb00",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "26599": {
+      "printing": {
+        "groupID": 351,
+        "code": "WCPS-EN702",
+        "productName": "Emperor of Lightning",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5653159",
+          "sha256": "86d5f11a601f577d9867a7c9e60c190ff7bc3b96d9f7e35f7da11c1d3a937404",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "710113": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN002",
+        "productName": "Miscellaneousaurus (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5995829",
+          "sha256": "85e217dbebe77e618227464fb7299a394a673dc51b292210fdc697318e732511",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710114": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN003",
+        "productName": "Ghost Belle & Haunted Mansion (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5960671",
+          "sha256": "a099d29e6e6caa16581e475c2032101bdeeb3668911af61ec8b866e9cdc9f60c",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710157": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN006",
+        "productName": "Kashtira Fenrir (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5960700",
+          "sha256": "741e34c3afb5e59349669ae61fa14c73c3252581286b725abf384788c18fe944",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710159": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN008",
+        "productName": "Fiendsmith Engraver (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5960735",
+          "sha256": "b54622da50005fc6063971b773fc23253b5f23a4cf6969a0fce0d6f53be7deda",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710119": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN008",
+        "productName": "Fiendsmith Engraver (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5960735",
+          "sha256": "b54622da50005fc6063971b773fc23253b5f23a4cf6969a0fce0d6f53be7deda",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710161": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN010",
+        "productName": "Mulcharmy Fuwalos (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6004647",
+          "sha256": "f2a296cf459a4114b806b540b1dfd95dcad809f62b04c91836471f24013bd647",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710122": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN011",
+        "productName": "Mulcharmy Meowls (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6022331",
+          "sha256": "aabfe299658d85ff6bba07759ddab55e3490306f7f82e22af231e6ba799d61a6",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710163": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN012",
+        "productName": "Medius the Pure (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:00.973259+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6009201",
+          "sha256": "acf84602c4766acae2e65126f04e038a180d99002ec1b3d3470ed45161a7127d",
+          "capturedAt": "2026-11-12T14:43:00.973259+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710164": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN013",
+        "productName": "Clown Crew Biancaviso (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5980057",
+          "sha256": "c8806f326e16ab138a04a3dd8d7427248493e9daae75bf08dc33fdb88e204622",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710167": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN016",
+        "productName": "Secreterion Dragon (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5977565",
+          "sha256": "e3e1905ad2c8909b84e36f9762645a9d35dca24609af0b00644a456510b596de",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710127": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN016",
+        "productName": "Secreterion Dragon (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5977565",
+          "sha256": "e3e1905ad2c8909b84e36f9762645a9d35dca24609af0b00644a456510b596de",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710128": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN017",
+        "productName": "Hyperinvoked Aeon (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6008159",
+          "sha256": "4f5fdf0189037dbbf5c9e66dd44c0efe27ac519dca0ab346643083f014f921cd",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710129": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN018",
+        "productName": "Shooting Majestic Star Dragon (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6022345",
+          "sha256": "d7e845075d21a0351bd14765d055ddc3d32d5e00c199c861e3155c867857707e",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710172": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN021",
+        "productName": "Terraforming (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6012081",
+          "sha256": "6b1581d7b3f878a113d219902291bca8ef89a4bbe084719358262c9cfeb7ac38",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710174": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN023",
+        "productName": "One for One (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5960811",
+          "sha256": "5f0b4b38c056ae8c77024a879f2e2a09b8ab8f5a18c5fb963129960557c689b1",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710175": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN024",
+        "productName": "Shaddoll Fusion (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5960816",
+          "sha256": "43c00d963fc59f3e2797ed491d278cf1045b27a6e5ec369875b823ce46e4dd57",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710135": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN024",
+        "productName": "Shaddoll Fusion (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5960816",
+          "sha256": "43c00d963fc59f3e2797ed491d278cf1045b27a6e5ec369875b823ce46e4dd57",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710176": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN025",
+        "productName": "Foolish Burial Goods (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5960817",
+          "sha256": "79448426b4d13cc730f15cac5a74830cb88c8fd44458503ddee21a0c47dfbfec",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710177": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN026",
+        "productName": "Called by the Grave (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5990475",
+          "sha256": "1b61a8b0dc65df91835478dd6116f1aea7afa3217271d35a45428c8a1eb8db0c",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710137": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN026",
+        "productName": "Called by the Grave (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:02.393033+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5990475",
+          "sha256": "1b61a8b0dc65df91835478dd6116f1aea7afa3217271d35a45428c8a1eb8db0c",
+          "capturedAt": "2026-11-12T14:43:02.393033+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710138": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN027",
+        "productName": "Crossout Designator (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:03.776581+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5992397",
+          "sha256": "fc4413d2801951f64cfab0c90a5b8b46338256f0843d61ce89fe279776d90498",
+          "capturedAt": "2026-11-12T14:43:03.776581+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710140": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN029",
+        "productName": "Triple Tactics Talent (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:03.776581+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6009161",
+          "sha256": "07e8bd2a2c99670ad359e3468e6b39e7a395bf4cee49451c9d06fd1bc2311c52",
+          "capturedAt": "2026-11-12T14:43:03.776581+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710146": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN035",
+        "productName": "Solemn Strike (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:03.776581+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5961399",
+          "sha256": "edc25160aaf38a69ec665d1b1c15382f565567499a054fefd3d3f606e9eb4f5d",
+          "capturedAt": "2026-11-12T14:43:03.776581+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710188": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN037",
+        "productName": "Infinite Impermanence (Judge Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:03.776581+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5961417",
+          "sha256": "895c615471cfc5a3c9b4a8cdb96685b43236619d433940da67992b9181ceca02",
+          "capturedAt": "2026-11-12T14:43:03.776581+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "710148": {
+      "printing": {
+        "groupID": 24789,
+        "code": "WI26-EN037",
+        "productName": "Infinite Impermanence (Regional Qualifier Stamp)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:03.776581+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5961417",
+          "sha256": "895c615471cfc5a3c9b4a8cdb96685b43236619d433940da67992b9181ceca02",
+          "capturedAt": "2026-11-12T14:43:03.776581+00:00",
+          "stampSource": "https://www.yugioh-card.com/en/products/up01/"
+        }
+      }
+    },
+    "131348": {
+      "printing": {
+        "groupID": 1929,
+        "code": "WP11-EN009",
+        "productName": "Garoozis",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:14.050836+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6022132",
+          "sha256": "5993c5e0627f147c8c78950190ac57d3722475b23b41dd1f38ef4914417c9cf7",
+          "capturedAt": "2026-11-12T14:43:14.050836+00:00"
+        }
+      }
+    },
+    "131351": {
+      "printing": {
+        "groupID": 1929,
+        "code": "WP11-EN012",
+        "productName": "Alligator's Sword",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6021979",
+          "sha256": "77919ad0de153ad257184537bd4bd15a59abd2349f55553a82ea256f41ca4c5b",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "131356": {
+      "printing": {
+        "groupID": 1929,
+        "code": "WP11-EN017",
+        "productName": "Breath of Light",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5701118",
+          "sha256": "595f3c1b1da0e1adb6d4e49e30c0d1c4a267f5990974fa27d65443a45e0c71b2",
+          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
+        }
+      }
+    },
+    "82263": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN001",
+        "productName": "Darklord Asmodeus",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5800209",
+          "sha256": "976828d3154d6d916eb547b1d1feb3a06d925820c6ba3a53624e9b8a9512ccd9",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "82265": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN002",
+        "productName": "Darklord Superbia",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5871542",
+          "sha256": "8fa53edd77c82912294ef859af06742ae54455a6fde88fb2f82ff957e132b5a3",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "82268": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN003",
+        "productName": "Darklord Edeh Arae",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5800202",
+          "sha256": "5c43ec6d2600ce099953560ad828c6a473d52990f1225ace09c2c8416e788203",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "82269": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN004",
+        "productName": "Blood Mefist",
+        "rarity": "Super Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5698830",
+          "sha256": "b2846bbf013a53bd2de4162bad1629777b665c0226ceef8ee6c84019ff2f8df0",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "82273": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN005",
+        "productName": "Digvorzhak, King of Heavy Industry",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5776297",
+          "sha256": "23bd77b91edff26a5ab63eacf74d8a1ccf61ff08ea150ea16e46178251872c33",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "82261": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN006",
+        "productName": "Number 106: Giant Hand",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5889955",
+          "sha256": "0140d4af9a731f269f6e6d428d4d08e5e51dc64bd3be82eaca97a14dfe68a008",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "97962": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN007",
+        "productName": "Ascension Sky Dragon",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5539987",
+          "sha256": "97b2b2112138e68761d83656afb6ce66811850acc35da7132b20040f50d88bda",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "123742": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN009",
+        "productName": "Number 93: Utopia Kaiser",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=4967931",
+          "sha256": "60abadeeef1e72141224cde39ebac4f114d9ce34efc7f030079994da33a0ec5a",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "284861": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN013",
+        "productName": "Anotherverse Dragon (UR)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5519229",
+          "sha256": "1fe172472670ca9272708ddfa7d936628c883fc26aece794af19b23373469091",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "515596": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN014",
+        "productName": "Anotherverse Gluttonia (UR)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=4864548",
+          "sha256": "be28aa2a22cb55d5dff6c5fd8ebcbbd80de64a9cf89ea8892c7dc923253b2b93",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "585984": {
+      "printing": {
+        "groupID": 1347,
+        "code": "YCSW-EN015",
+        "productName": "Anotherverse Solaria (UR)",
+        "rarity": "Ultra Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:09.425299+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5342269",
+          "sha256": "8d214626cbfc943bebdc4eab009b73eafd6e40dd7464c8b4ec0dcfd850c7e58d",
+          "capturedAt": "2026-11-12T14:43:09.425299+00:00"
+        }
+      }
+    },
+    "80868": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN002",
+        "productName": "Dark Magician",
+        "rarity": "Duel Terminal Rare Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6025504",
+          "sha256": "749fd06bde8046a110e16c4d509ed59f18d51e4535c5bd67d47f5bdfadae2fbd",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "80869": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN003",
+        "productName": "Red-Eyes B. Dragon",
+        "rarity": "Duel Terminal Rare Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6027875",
+          "sha256": "039e96f4faac97a2e4a602e9d1b73d3da7c13353b8c8de0cd5365c85107bf574",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "80870": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN004",
+        "productName": "Ojama Yellow",
+        "rarity": "Duel Terminal Normal Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5997004",
+          "sha256": "d98e6cc019feb275d24493e4ab1221b7c4ecf64611e7dcafd6dc204755541b38",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "80871": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN005",
+        "productName": "Elemental Hero Neos",
+        "rarity": "Duel Terminal Rare Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6003295",
+          "sha256": "2fc8206274e424335379ddd13565672c9f5d355aa3b07847889fbe5ab4eca906",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "80873": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN007",
+        "productName": "Kuriboh",
+        "rarity": "Duel Terminal Normal Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6020848",
+          "sha256": "4fea57038d4f45635b6234b5e0fe378d8045a312a55c1ffdc9d055bb9383827b",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "80874": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN008",
+        "productName": "Winged Kuriboh",
+        "rarity": "Duel Terminal Normal Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5997007",
+          "sha256": "fc099c2a179191cc4da92e35b7c08505546186e70846e496bce025ecc4fc3ce7",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "80877": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN011",
+        "productName": "Malevolent Nuzzler",
+        "rarity": "Duel Terminal Normal Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5712203",
+          "sha256": "3d154756744e69f24aedabc048894711ee470223ea447874d2dfc98e14be923d",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "80878": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN012",
+        "productName": "Nobleman of Extermination",
+        "rarity": "Duel Terminal Normal Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6023712",
+          "sha256": "2af8afc7e409d7d1965cc07f280b102b96ad3d7e055a375833b0bd0d7a9a80f2",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "80881": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN015",
+        "productName": "Inferno Fire Blast",
+        "rarity": "Duel Terminal Rare Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:43:08.136472+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5954456",
+          "sha256": "9191e33bbef3feff591421f47a21e5c3004f12b6e92cd16998a9995049218da2",
+          "capturedAt": "2026-11-12T14:43:08.136472+00:00"
+        }
+      }
+    },
+    "80895": {
+      "printing": {
+        "groupID": 179,
+        "code": "DTP1-EN029",
+        "productName": "Nitro Warrior",
+        "rarity": "Duel Terminal Super Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T15:02:11.679117+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=4733873",
+          "sha256": "b9b21a50591611d94eb4826de87b86dce27c771679d5651e3e768d9f4d81c9b0",
+          "capturedAt": "2026-11-12T15:02:11.679117+00:00"
+        }
+      }
+    },
+    "81135": {
+      "printing": {
+        "groupID": 1329,
+        "code": "DT03-EN033",
+        "productName": "Ultimate Ancient Gear Golem",
+        "rarity": "Duel Terminal Normal Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:58:51.415815+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5830021",
+          "sha256": "9cd747afb1fddb0951529368633ac06c31de5d22cda633304a70c958b82ca1cc",
+          "capturedAt": "2026-11-12T14:58:51.415815+00:00",
+          "specimenURL": "https://tcgplayer-cdn.tcgplayer.com/product/81135_200w.jpg",
+          "specimenSHA256": "a4bd51d643b48c9ab3cb9c771b799468de7fdb5d53f47af6df7849bb3b9a6ace"
+        }
+      },
+      "rejectProviderEditions": [
+        "yugioh1stEdition"
+      ]
+    },
+    "81260": {
+      "printing": {
+        "groupID": 1330,
+        "code": "DT04-EN058",
+        "productName": "Elemental Hero Woodsman",
+        "rarity": "Duel Terminal Rare Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:58:51.415815+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5818267",
+          "sha256": "eccc01182ad77e72dacb054d25fa3f84357770e9b7b44417c7c5c86b98b0cde6",
+          "capturedAt": "2026-11-12T14:58:51.415815+00:00",
+          "specimenURL": "https://tcgplayer-cdn.tcgplayer.com/product/81260_200w.jpg",
+          "specimenSHA256": "6c47c51cde8ff3715faefe290cc4fb8c9e539d8a8b18cab4dd5c8ffd2d06c9ef"
+        }
+      },
+      "rejectProviderEditions": [
+        "yugiohUnlimited"
+      ]
+    },
+    "81344": {
+      "printing": {
+        "groupID": 1331,
+        "code": "DT05-EN013",
+        "productName": "Card Ejector",
+        "rarity": "Duel Terminal Normal Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:58:51.415815+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5759079",
+          "sha256": "a1e58634acad91dadadbab0c5f1c3683035046d89ac65936e30b564c0ba83b5c",
+          "capturedAt": "2026-11-12T14:58:51.415815+00:00",
+          "specimenURL": "https://tcgplayer-cdn.tcgplayer.com/product/81344_200w.jpg",
+          "specimenSHA256": "158f274fa9eaffcee86812f43c51f7806a6c9543a8293590b1ea221deaba7a4f"
+        }
+      },
+      "rejectProviderEditions": [
+        "yugioh1stEdition"
+      ]
+    },
+    "81493": {
+      "printing": {
+        "groupID": 1332,
+        "code": "DT06-EN062",
+        "productName": "Legendary Jujitsu Master",
+        "rarity": "Duel Terminal Normal Parallel Rare"
+      },
+      "editions": [
+        "yugiohLimited"
+      ],
+      "reviewedAt": "2026-11-12T14:58:51.415815+00:00",
+      "evidence": {
+        "yugiohLimited": {
+          "url": "https://yugipedia.com/index.php?oldid=6026784",
+          "sha256": "9c75633413679ad322c6adf4d9f39090af1be0fd236a9b822b74343b85a3d183",
+          "capturedAt": "2026-11-12T14:58:51.415815+00:00",
+          "specimenURL": "https://tcgplayer-cdn.tcgplayer.com/product/81493_200w.jpg",
+          "specimenSHA256": "ef93dfa188c41e5f4e0ef968301eabe3dd1fdadcec3cf5ca68ac4ed8c43b298e"
+        }
+      },
+      "rejectProviderEditions": [
+        "yugiohUnlimited"
+      ]
+    },
+    "236749": {
+      "printing": {
+        "groupID": 1921,
+        "code": "TSC-E001",
+        "productName": "Exchange",
+        "rarity": "Prismatic Secret Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T14:58:51.415815+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5833586",
+          "sha256": "5bb633335b579c20c7174ca13ef5026d15a45987770c3c7c9a4c6d86675ffeef",
+          "capturedAt": "2026-11-12T14:58:51.415815+00:00",
+          "specimenURL": "https://tcgplayer-cdn.tcgplayer.com/product/236749_in_1000x1000.jpg",
+          "specimenSHA256": "21112b68fd5a467a187f8e0d257371fe346e832e091f3ecf601c96d56ef9f328"
+        }
+      },
+      "rejectProviderEditions": [
+        "yugioh1stEdition"
+      ]
+    }
+  }
 }

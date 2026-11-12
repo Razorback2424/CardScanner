@@ -7,7 +7,7 @@ struct YuGiOhRecognitionAdapter: GameRecognitionAdapter {
     var game: CardGame { .yuGiOh }
     var customWords: [String] { [] }
     var supplementalRegion: SupplementalTextRegion? { Self.underArtRegion }
-    private static let codeExpression = try! NSRegularExpression(pattern: "(?<![A-Z0-9])([A-Z0-9]{2,4})\\s?[-–—]\\s?([A-Z0-9]{3,5})(?![A-Z0-9])")
+    private static let codeExpression = try! NSRegularExpression(pattern: "(?<![A-Z0-9])([A-Z0-9]{2,4})\\s?[-–—]\\s?([A-Z0-9]{3,6})(?![A-Z0-9])")
     private static let passcodeExpression = try! NSRegularExpression(pattern: "(?<![0-9])[0-9]{8}(?![0-9])")
     private static func valid(_ line: RecognizedLine) -> Bool {
         guard line.text.utf16.count <= 1024 else { return false }
@@ -18,7 +18,7 @@ struct YuGiOhRecognitionAdapter: GameRecognitionAdapter {
     func needsSupplementalText(afterFooterLines lines: [RecognizedLine]) -> Bool {
         lines.contains { line in
             guard Self.valid(line), line.text.utf16.count <= 120 else { return false }
-            return line.text.range(of: "KONAMI|\\bEDITION\\b|(?<![0-9])[0-9]{8}(?![0-9])", options: [.regularExpression, .caseInsensitive]) != nil
+            return line.text.range(of: "KONAMI|\\bEDITION\\b|^\\s*DUEL TERMINAL\\s*$|(?<![0-9])[0-9]{8}(?![0-9])", options: [.regularExpression, .caseInsensitive]) != nil
         }
     }
     func identify(_ lines: [RecognizedLine]) -> GameRecognitionOutcome { identify(footerLines: lines, supplementalLines: []) }
@@ -66,8 +66,12 @@ struct YuGiOhRecognitionAdapter: GameRecognitionAdapter {
     /// Only digit-led First tokens are accepted. T/S/I fragments overlap Limited
     /// and are deliberately illegible. These are synthetic rules, not camera calibration.
     static func edition(_ text: String) -> PrintedEditionEvidence {
-        guard text.utf16.count <= 40, text.range(of: "\\bEDITION\\b", options: [.regularExpression, .caseInsensitive]) != nil else { return .absent }
+        guard text.utf16.count <= 40 else { return .absent }
         let upper = text.uppercased()
+        if upper.trimmingCharacters(in: .whitespacesAndNewlines) == "DUEL TERMINAL" {
+            return .observed(YuGiOhEdition.duelTerminalVariant)
+        }
+        guard upper.range(of: "\\bEDITION\\b", options: .regularExpression) != nil else { return .absent }
         let first = upper.range(of: "(?<![A-Z0-9])1(?:ST|T|[\"’])?\\s+EDITION\\b", options: .regularExpression) != nil
         let limited = upper.range(of: "\\b(?:LIMITED|LIMI|LIMITE|IMITED|MITED|ITED)\\s*EDITION\\b", options: .regularExpression) != nil
         var observations: [PrintedEditionEvidence] = []

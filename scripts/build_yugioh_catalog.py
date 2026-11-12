@@ -14,17 +14,21 @@ import os
 import pathlib
 import re
 import time
-import unicodedata
 import urllib.request
 import uuid
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
-from yugioh_official_inventory import RULE as FAMILY_RULE, extract as extract_inventory
+from yugioh_edition_galleries import inventory_hash
+from yugioh_official_inventory import RULE as FAMILY_RULE, extract as extract_inventory, extract_release_calendar, norm
 LANES = {"1st Edition": "yugioh1stEdition", "Unlimited": "yugiohUnlimited", "Limited": "yugiohLimited"}
 RARITIES = set("UR SR SCR SE UTR ULR PUR PCR PSR QCSR QCR GR STR CR R C SP SSP MSR ESR GSR PGR".split())
-CODE = re.compile(r"^(?:[A-Z0-9]{2,4}-(?:(?:EN|E)[A-Z0-9]{3}|[0-9]{3})|IOC-SE[1-4])$")
+# Exact numbered releases from the Konami redemption program.
+REDEMPTION_CODES = ("EEN-EN015K", "EOJ-EN004K", "MDP2-EN001K", "MDP2-EN002K", "MDP2-EN004K",
+                    "MDP2-EN005K", "MDP2-EN006K", "POTD-EN031K", "TLM-EN035K")
+CODE = re.compile(r"^(?:[A-Z0-9]{2,4}-(?:(?:EN|E)[A-Z0-9]{3}|[0-9]{3})|IOC-SE[1-4]|(?:LOB|SDY|SDK)-A[0-9]{3}|"
+                  + "|".join(REDEMPTION_CODES) + ")$")
 POLICY = "yugioh-provider-membership-v1-2026-10-21"
 INVALID_RARITIES = {"new", "2", "3", "new artwork"}
 PRICE_FIELDS = ("marketPrice", "lowPrice", "midPrice", "highPrice", "directLowPrice")
@@ -62,16 +66,191 @@ def corresponding_rarity(gid, code, rarity):
             return rule['rarities'].get(rarity, rarity)
     return rarity
 
-def norm(value):
-    return " ".join(re.sub(r"[^a-z0-9]+", " ", unicodedata.normalize("NFKD", value).lower()).split())
-
 def stable(namespace, material):
     return str(uuid.UUID(bytes=hashlib.md5((namespace + material).encode()).digest(), version=3))
 
 def packed(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
 
-def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=10000, price_provenance=None, previous=None, taxonomy_scopes=None, printing_inventory=None):
+
+def product_identity_digest(products):
+    """Bind reviewed inventories to the product fields used for physical identity."""
+    rows = [(p["productId"], p.get("categoryId"), p.get("groupId"), p["name"],
+             sorted((x["name"], x["value"]) for x in p.get("extendedData", []) if x["name"] in ("Number", "Rarity")))
+            for p in sorted(products, key=lambda p: p["productId"])]
+    return hashlib.sha256(packed(rows)).hexdigest()
+
+
+def reviewed_inventories(profiles, products, product_hashes, official_html):
+    """Use checked-in review receipts when their covered product identity still agrees."""
+    requested = set()
+    for path in official_html:
+        data = path.read_bytes()
+        profile = next((p for p in profiles if p["sha256"] == hashlib.sha256(data).hexdigest()), None)
+        assert profile is not None, "unreviewed official inventory capture"
+        assert all(profile[k] == v for k, v in extract_inventory(data, profile).items()), "official inventory changed"
+        requested.add(profile["groupID"])
+
+    admitted = []
+    for profile in profiles:
+        gid = profile["groupID"]
+        if gid not in products:
+            continue
+        if (profile["productsSHA256"] == product_hashes[gid]
+                or profile.get("productIdentitySHA256") == product_identity_digest(products[gid])):
+            admitted.append(profile)
+    assert requested <= {profile["groupID"] for profile in admitted}, "product identity changed; review required"
+    return admitted
+
+
+def matching_releases(groups, release_calendar, reviewed_dates=None):
+    official = collections.defaultdict(list)
+    for release in release_calendar:
+        if release["date"] != "1990-01-01":  # Placeholder in the Konami archive.
+            official[norm(release["name"])].append(release)
+    group_names = collections.Counter(norm(g["name"]) for g in groups)
+    matches = {g["groupId"]: official[norm(g["name"])][0] for g in groups
+               if group_names[norm(g["name"])] == 1 and len(official[norm(g["name"])]) == 1}
+    by_id = {release["id"]: release for releases in official.values() for release in releases if "id" in release}
+    for group in groups:
+        gid = group["groupId"]
+        review = scoped_release_date(reviewed_dates, gid, group["name"], group.get("abbreviation") or "")
+        if not review:
+            continue
+        release_id = review.get("officialReleaseID")
+        release = by_id.get(release_id) if release_id else matches.get(gid)
+        if release and release["date"] == review["date"]:
+            matches[gid] = release
+        else:
+            matches.pop(gid, None)
+    return matches
+
+
+def scoped_release_date(reviews, group_id, name, abbreviation):
+    review = (reviews or {}).get(str(group_id))
+    if review and (review["name"], review["abbreviation"]) == (name, abbreviation):
+        date = datetime.date.fromisoformat(review["date"])
+        assert date.isoformat() == review["date"] and date.year >= 2002, f"invalid release date {group_id}"
+        assert review["source"].startswith("https://"), f"missing release date evidence {group_id}"
+        return review
+    return None
+
+
+def release_checklist_targets(groups, calendar, reviewed_dates, supplemental_checklists):
+    targets = {release["id"]: (gid, release)
+               for gid, release in matching_releases(groups, calendar, reviewed_dates).items()}
+    groups_by_id = {group["groupId"]: group for group in groups}
+    for release in calendar:
+        review = (supplemental_checklists or {}).get(release["id"])
+        if not review or not (group := groups_by_id.get(review["groupID"])):
+            continue
+        if (group["name"], group.get("abbreviation") or "") != (review["name"], review["abbreviation"]):
+            continue
+        assert CODE.fullmatch(review["printingCode"]) and review["source"].startswith("https://")
+        targets[release["id"]] = (review["groupID"], {**release, "printingCode": review["printingCode"]})
+    return targets
+
+
+def reviewed_reference_membership(inventory, evidence):
+    printings = {code: (release["groupID"], name, rarity)
+                 for release in inventory["releases"] for code, _, name, rarity in release["rows"]}
+    memberships = collections.defaultdict(dict)
+
+    def admit(code, edition, url, captured_at, source_hash=None):
+        _, name, rarity = printings[code]
+        receipt = {"url": url, "code": code, "name": name, "rarity": rarity, "edition": edition}
+        if source_hash is not None:
+            receipt["sourceSHA256"] = source_hash
+        memberships[code].setdefault(edition, {"e": edition, "t": "independentlyReviewed", "q": None,
+            "h": hashlib.sha256(packed(receipt)).hexdigest(), "s": captured_at, "st": "reviewedAt"})
+
+    for source in evidence["sources"]:
+        for code in source["firstEditionCodes"]:
+            admit(code, LANES["1st Edition"], source["url"], evidence["capturedAt"])
+
+    if gallery := evidence.get("galleryEvidence"):
+        assert gallery["inventorySHA256"] == inventory_hash(inventory), "gallery evidence belongs to another inventory"
+        for source in gallery["sources"]:
+            assert re.fullmatch(r"https://yugipedia\.com/index\.php\?oldid=[1-9][0-9]*", source["url"])
+            assert re.fullmatch(r"[a-f0-9]{64}", source["sha256"])
+            for code in source["codes"]:
+                assert code in printings and printings[code][0] == source["groupID"], f"gallery release mismatch {code}"
+                admit(code, LANES[source["edition"]], source["url"], source["capturedAt"], source["sha256"])
+    return memberships
+
+
+def reference_printings(inventory, edition_evidence, rows, canonical, sets, previous_references, previous):
+    """Retain a stable physical identity for documented printings without a market product."""
+    if not inventory:
+        return [], set()
+    by_code = collections.defaultdict(list)
+    for row in rows:
+        by_code[row["c"]].append(row)
+    reviewed = reviewed_reference_membership(inventory, edition_evidence)
+    reference_rows, assigned_products = [], set()
+    known_groups = {row["g"] for row in sets}
+    marketplace_names = {row["g"]: norm(row["n"]) for row in sets}
+    for release in inventory["releases"]:
+        gid = release["groupID"]
+        if reference_id := release["referenceID"]:
+            assert gid not in known_groups and gid < 0, "reference group collision"
+            sets.append({"g": gid, "n": release["name"], "a": release["code"] + "-" + release.get("suffix", "E"), "d": "",
+                         "ref": reference_id, "sourceSHA256": release.get("sourceSHA256", inventory["sha256"])})
+            known_groups.add(gid)
+        else:
+            assert gid in known_groups, "missing shared marketplace release"
+        release_names = {norm(release["name"]), norm(release["name"].removesuffix(" (European English)").removesuffix(" (Australian English)"))}
+        for code, source_id, name, rarity in release["rows"]:
+            canonical_id = stable("yugioh-card:", "ygoprodeck:" + str(source_id))
+            identity = stable("yugioh-reference-printing:", f"{gid}:{code}:{source_id}:{rarity}")
+            prior = previous_references.get(identity)
+            matching = [row for row in by_code[code] if not row["ir"]
+                        and marketplace_names[row["g"]] in release_names
+                        and row.get("vr", row["r"]) == rarity and row["art"] in (None, code)
+                        and norm(canonical[row["k"]]["n"]) == norm(name)]
+            if prior is None and len(matching) == 1:
+                row = matching[0]
+                if not row["ec"] and reviewed[code]:
+                    membership = {**reviewed[code], **{m["e"]: m for m in row["m"]}}
+                    row["e"] = sorted(membership)
+                    row["m"] = [membership[e] for e in row["e"]]
+                    row["ee"] = POLICY
+                continue
+            # A new exact product can attach to an already released reference.
+            # Previously assigned marketplace UUIDs keep their original rows.
+            linked = None
+            if prior and len(matching) == 1:
+                match = matching[0]
+                if (match["pn"] == name and match["art"] is None and match["r"] == rarity
+                        and (match["p"] == prior.get("p") or (prior.get("p") is None and match["p"] not in previous))):
+                    linked = match
+                    assigned_products.add(match["p"])
+            canonical.setdefault(canonical_id, {"id": canonical_id, "n": name,
+                "pc": [source_id] if 0 < source_id <= 99_999_999 else [], "sourceID": source_id, "imageIDs": []})
+            retained = prior or {}
+            membership = {m["e"]: {**m, "q": None} for m in retained.get("m", [])}
+            membership.update(reviewed[code])
+            if linked:
+                for reason in linked["limitations"]:
+                    if reason.startswith(("invalidNumeric:", "conflictingDuplicate:")):
+                        edition = reason.split(":", 1)[1]
+                        if membership.get(edition, {}).get("t") != "independentlyReviewed":
+                            membership.pop(edition, None)
+                membership.update({m["e"]: m for m in linked["m"]})
+            market = ({"p": linked["p"], "pg": linked["g"]} if linked else
+                      {key: retained[key] for key in ("p", "pg") if key in retained})
+            reference_rows.append({"id": identity, "c": code, "g": gid, "k": canonical_id,
+                "r": rarity, "art": None, "pn": name, "e": sorted(membership), "ec": False,
+                "ee": POLICY if membership else None, "pe": linked["pe"] if linked else [],
+                "img": linked["img"] if linked else retained.get("img"),
+                "m": [membership[e] for e in sorted(membership)], "ir": None, "canonicalLink": "linked", **market})
+    return reference_rows, assigned_products
+
+
+def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=10000, price_provenance=None,
+          previous=None, taxonomy_scopes=None, printing_inventory=None, release_calendar=(), rarity_corrections=None,
+          reference_inventory=None, reference_editions=None, previous_references=None, reviewed_dates=None,
+          passcode_corrections=None):
     entries = collections.defaultdict(list)
     identity_entries = collections.defaultdict(set)
     names, by_id = {}, {}
@@ -87,9 +266,12 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     incomplete = collections.defaultdict(set)
     canonical, rows, sets = {}, [], []
     correspondence = {}
+    release_matches = matching_releases(groups, release_calendar, reviewed_dates)
+    display_cards = []
     for group in sorted(groups, key=lambda x: x["groupId"]):
         gid = group["groupId"]
-        sets.append({"g": gid, "n": group["name"], "a": group.get("abbreviation") or "", "d": "",
+        sets.append({"g": gid, "n": group["name"], "a": group.get("abbreviation") or "",
+                     "d": release_matches.get(gid, {}).get("date", ""),
                      "created": group.get("publishedOn")})
         lanes = collections.defaultdict(set)
         product_prices = collections.defaultdict(list)
@@ -101,6 +283,27 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
             ext = {x["name"]: x["value"] for x in product.get("extendedData", [])}
             conflicting_fields = any(len({x['value'] for x in product.get('extendedData', []) if x['name'] == field}) > 1 for field in ('Number', 'Rarity'))
             code, rarity = ext.get("Number", "").strip().upper(), ext.get("Rarity", "").strip()
+            prior = (previous or {}).get(pid)
+            physical_rarity = None
+            correction = (rarity_corrections or {}).get(str(pid))
+            if (correction and not conflicting_fields and product.get("categoryId") == 2
+                    and product.get("groupId") == gid == correction["groupID"]
+                    and code == correction["code"] and product["name"] == correction["productName"]
+                    and rarity in (correction["providerRarity"], correction["physicalRarity"])):
+                if not code and (display_id := correction.get("unnumberedDisplayCardID")) in by_id:
+                    source = by_id[display_id]
+                    card_id = stable("yugioh-card:", f"ygoprodeck:{display_id}")
+                    canonical[card_id] = {"id": card_id, "n": source["name"], "pc": [display_id],
+                        "sourceID": display_id, "imageIDs": [i["id"] for i in source.get("card_images", [])]}
+                    display_cards.append({"id": stable("yugioh-printing:", f"tcgplayer:2:{pid}"),
+                        "c": "", "g": gid, "k": card_id, "r": rarity, "art": None,
+                        "p": pid, "pn": product["name"], "e": [], "ec": False, "ee": None, "pe": [],
+                        "img": product.get("imageUrl"), "m": [], "ir": "unnumberedDisplay", "canonicalLink": "linked"})
+                    continue
+                physical_rarity = correction["physicalRarity"]
+                if prior and prior["r"] in (correction["providerRarity"], physical_rarity):
+                    # A known provider correction keeps the admitted product binding.
+                    rarity = prior["r"]
             unsupported_code = bool(code and not CODE.fullmatch(code))
             reason = "noNumber" if not code else "foreignLanguage" if re.search(r"-(?:JP|FR|DE|IT|SP|PT|KR|AE|CN)[0-9]", code) else "noRarity" if not rarity else None
             if reason:
@@ -119,6 +322,17 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                 if suffix.upper() not in RARITIES and suffix.lower() != rarity.lower(): art.insert(0, suffix)
             matches = {cid for cid in identity_entries[code] if norm(name) in names[cid]}
             cid = next(iter(matches)) if len(matches) == 1 else None
+            # Some exact marketplace titles omit the printed stars entirely.
+            # Recover the name only when the release, code, rarity and full
+            # title after star elision identify one secondary record.
+            official_name = None
+            if not matches and not conflicting_fields and product.get("categoryId") == 2 and product.get("groupId") == gid:
+                symbol_matches = {candidate for candidate, release, finish in entries[code]
+                    if norm(release) == norm(group["name"]) and norm(finish) == norm(physical_rarity or rarity)
+                    and ("★" in by_id[candidate]["name"] or "☆" in by_id[candidate]["name"])
+                    and norm(by_id[candidate]["name"].replace("★", "").replace("☆", "")) == norm(name)}
+                if len(symbol_matches) == 1:
+                    official_name = by_id[next(iter(symbol_matches))]["name"]
             key = "ygoprodeck:" + str(cid) if cid is not None else "name:" + norm(name)
             card_id = stable("yugioh-card:", key)
             source = by_id.get(cid, {})
@@ -128,15 +342,23 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
             if cid is None: incomplete[code].add("nameMismatch")
             elif norm(name) != norm(source["name"]): exceptions["aliasMatch"].append(pid)
             review = reviews.get(str(pid))
-            editions, complete, evidence = [], False, None
+            if review and (binding := review.get("printing")) is not None and binding != {
+                    "groupID": gid, "code": code, "productName": product["name"], "rarity": rarity}:
+                exceptions["printingEditionEvidenceDrift"].append(pid)
+                review = None
+            membership, membership_reasons = grade_prices(product_prices[pid])
+            editions, rejected, complete, evidence = [], set(), False, None
             if review:
                 assert review.get("evidence") and set(review["editions"]) <= set(LANES.values()) and review["editions"]
                 editions = sorted(set(review["editions"]))
                 complete, evidence = review.get("complete") is True, review["evidence"]
+                rejected = set(review.get("rejectProviderEditions", []))
+                if rejected:
+                    assert (review.get("printing") and isinstance(evidence, dict) and set(editions) <= evidence.keys()
+                            and rejected <= set(LANES.values()) - set(editions)), f"unbound edition correction {pid}"
                 if complete:
-                    assert {m['e'] for m in grade_prices(product_prices[pid])[0]} <= set(editions), f"review/price contradiction {pid}"
+                    assert {m['e'] for m in membership} <= set(editions) | rejected, f"review/price contradiction {pid}"
             if not complete: exceptions["physicalCoverageUnknown"].append(pid)
-            membership, membership_reasons = grade_prices(product_prices[pid])
             blocked = {r.split(':', 1)[1] for r in membership_reasons if r.startswith(('conflictingDuplicate:', 'invalidNumeric:'))}
             provenance = (price_provenance or {}).get(gid, {})
             for m in membership: m.update(provenance)
@@ -144,20 +366,18 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                 for edition in editions:
                     if edition not in {m['e'] for m in membership}:
                         membership.append({'e':edition, 't':'independentlyReviewed', 'q':None,
-                            'h':hashlib.sha256(packed(review)).hexdigest(), 's':captured_at, 'st':'reviewedAt'})
+                            'h':hashlib.sha256(packed(review)).hexdigest(), 's':review.get('reviewedAt', captured_at), 'st':'reviewedAt'})
             # Historical support survives absence, but explicit conflicting rows
             # retract only their affected lane. No edition transfer across products.
-            prior = (previous or {}).get(pid)
             if prior and (prior["g"], prior["c"], prior["r"], prior["pn"]) == (gid, code, rarity, product["name"]):
                 for m in prior.get("m", []):
                     if m["e"] not in {x["e"] for x in membership} | blocked and m.get("h") and m.get("s"):
                         membership.append({**m, "q": None})
-            membership = [m for m in membership if m['e'] not in blocked]
-            if complete:
-                contradicted = [m for m in membership if m['e'] not in editions]
-                membership = [m for m in membership if m['e'] in editions]
-            else:
-                contradicted = []
+            contradicted = [m for m in membership if m['e'] not in blocked
+                            and (m['e'] in rejected or (complete and m['e'] not in editions))]
+            historical = {packed(m): m for m in (prior or {}).get('historicalContradictions', []) + contradicted}
+            excluded = blocked | rejected
+            membership = [m for m in membership if m['e'] not in excluded and (not complete or m['e'] in editions)]
             editions = sorted((set(editions) | {m["e"] for m in membership}) - blocked)
             if blocked: complete = False
             if membership: evidence = POLICY
@@ -172,7 +392,9 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
             # equal rarity counts are never evidence of correspondence.
             source_rows = {(card_id, set_name, source_rarity) for card_id, set_name, source_rarity in entries[code]}
             exact = {row for row in source_rows if row[0] == cid
-                     and norm(row[1]) == norm(group["name"]) and norm(row[2]) == norm(corresponding_rarity(gid, code, rarity) if taxonomy_scopes is None or gid in taxonomy_scopes else rarity)}
+                     and norm(row[1]) == norm(group["name"]) and norm(row[2]) == norm(
+                         corresponding_rarity(gid, code, physical_rarity or rarity)
+                         if taxonomy_scopes is None or gid in taxonomy_scopes else (physical_rarity or rarity))}
             mapped = review.get("sourcePrintings") if review else None
             if mapped is not None:
                 assert review.get("correspondenceEvidence") and mapped, f"missing correspondence evidence {pid}"
@@ -188,10 +410,20 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                 "m": sorted(membership, key=lambda x: x["e"]), "ir": identity_reason,
                 "limitations": membership_reasons, "correspondence": "exactOrScopedTaxonomy" if exact else "unresolvedSecondaryLink",
                 "canonicalLink": "linked" if cid is not None else "unresolved",
-                **({"historicalContradictions": (prior or {}).get('historicalContradictions', []) + contradicted}
-                   if contradicted or (prior or {}).get('historicalContradictions') else {})})
+                **({"vr": physical_rarity} if physical_rarity else {}),
+                **({"on": official_name, "dn": official_name + product["name"].strip()[len(name):]} if official_name else {}),
+                **({"historicalContradictions": list(historical.values())} if historical else {})})
+    references, assigned_products = reference_printings(reference_inventory, reference_editions, rows, canonical, sets,
+        previous_references or {}, previous or {})
+    for group in sets:
+        if review := scoped_release_date(reviewed_dates, group["g"], group["n"], group["a"]):
+            group["d"] = review["date"]
+    references += display_cards
+    market_rows = [row for row in rows if row["p"] not in assigned_products]
+    rows = market_rows + references
     families = collections.defaultdict(list)
-    for row in rows: families[row["c"]].append(row)
+    for row in rows:
+        if row["c"]: families[row["c"]].append(row)
     release_name_counts = collections.Counter((row['g'], norm(row['pn'])) for row in rows)
     auto = []
     inventories = printing_inventory if isinstance(printing_inventory, list) else [printing_inventory] if printing_inventory else []
@@ -206,7 +438,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         release_inventories[inventory['groupID']] = (inventory, official_names)
     for code, family in families.items():
         source_rows = set(entries[code])
-        matched = set().union(*(correspondence[x["p"]] for x in family))
+        matched = set().union(*(correspondence.get(x.get("p"), set()) for x in family))
         if matched != source_rows: incomplete[code].add("printingCorrespondenceGap")
         if not entries[code] or len({x["r"] for x in family}) < len({r for _, _, r in entries[code]}): incomplete[code].add("rarityShortfall")
         if len({(x["g"], x["r"], x["art"]) for x in family}) < len(entries[code]): incomplete[code].add("printingShortfall")
@@ -215,7 +447,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         counts = collections.Counter(labels)
         for row in family:
             if counts[(row["g"], row["r"], row["art"], row["pn"])] > 1: row["ir"] = "indistinguishableProduct"
-        if not incomplete[code] and len(family) == 1 and len(entries[code]) == 1 and not family[0]["art"] and not family[0]['ir'] and family[0]['e'] and family[0]['ee']:
+        if not incomplete[code] and len(family) == 1 and len(entries[code]) == 1 and "p" in family[0] and "pg" not in family[0] and not family[0]["art"] and not family[0]['ir'] and family[0]['e'] and family[0]['ee']:
             cid = entries[code][0][0]
             row = family[0]
             inventory, official_names = release_inventories.get(row['g'], (None, {}))
@@ -233,16 +465,30 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                 if verified_family:
                     row['pf'] = {k: inventory[k] for k in ('rule', 'url', 'sha256', 'count', 'capturedAt', 'productsSHA256', 'groupID', 'codePrefix', 'language', 'rarities')}
                 auto.append(code)
+    for card in canonical.values():
+        if correction := (passcode_corrections or {}).get(str(card["sourceID"])):
+            if card["n"] != correction["name"]:
+                exceptions["canonicalPasscodeEvidenceDrift"].append(card["sourceID"])
+                continue
+            passcodes = correction["passcodes"]
+            assert passcodes and len(set(passcodes)) == len(passcodes) and correction["evidence"]
+            assert all(type(value) is int and 0 < value <= 99_999_999 for value in passcodes)
+            card["pc"] = sorted(passcodes)
     ordered_cards = sorted(canonical.values(), key=lambda x: x["id"])
     indices = {x["id"]: i for i, x in enumerate(ordered_cards)}
     dates = {x["g"]: x["d"] for x in sets}
-    rows.sort(key=lambda x: (x["c"], dates[x["g"]], x["r"], x["art"] or "", x["p"]))
+    sort_row = lambda x: (x["c"], dates[x["g"]], x["r"], x["art"] or "", x.get("p", 0))
+    market_rows.sort(key=sort_row)
+    references.sort(key=sort_row)
     for row in rows: row["k"] = indices[row["k"]]
     assert len(families) >= floor, "catalog below sanity floor"
     assert len({x["id"] for x in rows}) == len(rows)
-    assert len({(x["g"], x["p"]) for x in rows}) == len(rows)
     seed = {"schemaVersion": 1, "policyVersion": POLICY, "generation": "", "capturedAt": captured_at, "sets": sets, "cards": ordered_cards,
-        "printings": rows, "incompleteCodes": sorted(k for k, v in incomplete.items() if v), "autoEligibleCodes": sorted(auto)}
+        "printings": market_rows, "incompleteCodes": sorted(k for k, v in incomplete.items() if v), "autoEligibleCodes": sorted(auto)}
+    if references:
+        seed["referencePrintings"] = references
+    if reference_inventory:
+        seed["referenceInventory"] = {"url": reference_inventory["url"], "sha256": reference_inventory["sha256"]}
     seed["generation"] = "yugioh-en-" + hashlib.sha256(packed(seed)).hexdigest()[:12]
     validate_output(seed)
     stats = {"groups": len(groups), "products": sum(map(len, products.values())), "printings": len(rows), "codes": len(families),
@@ -250,12 +496,15 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         "verifiedPhysicalProducts": sum(x["ec"] for x in rows), "unknownCoverageProducts": sum(not x["ec"] for x in rows),
         "manualEligibleProducts": sum(bool(x["e"]) and not x["ir"] for x in rows),
         "observedLanes": dict(collections.Counter(e for x in rows for e in x["pe"]))}
-    status = collections.Counter("discoveryOnly" if x['ir'] == 'unsupportedCode' else "quarantined" if x["ir"] else "discoveryOnly" if not x["e"] else "automaticAcquisitionEligible" if x["c"] in auto else "explicitChoiceOnlyEligible" for x in rows)
+    source_ids = {product["productId"] for group_products in products.values() for product in group_products}
+    status = collections.Counter("discoveryOnly" if x['ir'] in ('unsupportedCode', 'unnumberedDisplay') else "quarantined" if x["ir"] else "discoveryOnly" if not x["e"] else "automaticAcquisitionEligible" if x["c"] in auto else "explicitChoiceOnlyEligible" for x in rows if x.get("p") in source_ids)
     stats["productStatusPartition"] = {k: status[k] for k in ('automaticAcquisitionEligible', 'explicitChoiceOnlyEligible', 'discoveryOnly', 'quarantined')}
     stats["legitimatelyExcluded"] = len(exceptions["foreignLanguage"])
     stats["excludedPendingClassification"] = {k: len(exceptions[k]) for k in ("noNumber", "noRarity")}
     stats["supportedPairs"] = sum(len(x["e"]) for x in rows)
     stats["quotePairs"] = sum(m["q"] is not None for x in rows for m in x["m"])
+    stats["referencePrintings"] = len(references)
+    stats["referencePrintingsWithEditionEvidence"] = sum(bool(row["e"]) for row in references)
     return seed, stats, exceptions, incomplete
 
 def read_price_receipts(paths):
@@ -278,7 +527,7 @@ def populated_released_groups(seed, previous):
     released = []
     for group in seed["sets"]:
         count = new_counts[group["g"]]
-        raw_date = group["d"] or group["created"]
+        raw_date = group["d"] or group.get("created")
         if not count or not raw_date:
             continue
         try:
@@ -289,6 +538,142 @@ def populated_released_groups(seed, previous):
             released.append({"groupID": group["g"], "code": group["a"], "providerDate": str(release_day),
                              "candidatePrintings": count})
     return released
+
+
+def all_printings(seed):
+    return seed["printings"] + seed.get("referencePrintings", [])
+
+
+def catalog_regressions(seed, parent):
+    if parent is None:
+        return {}
+    current = {p["id"]: p for p in all_printings(seed)}
+    removed, withdrawn, changed = [], [], []
+    for prior in all_printings(parent):
+        printing = current.get(prior["id"])
+        if printing is None:
+            removed.append({"id": prior["id"], "code": prior["c"], "groupID": prior["g"]})
+            continue
+        immutable = ["g", "c", "r", "art", "pn"]
+        if "p" in prior:
+            immutable += ["p", "pg"]
+        if (any(prior.get(key) != printing.get(key) for key in immutable)
+                or parent["cards"][prior["k"]]["id"] != seed["cards"][printing["k"]]["id"]):
+            changed.append({"id": prior["id"], "code": prior["c"], "groupID": prior["g"]})
+        if not prior.get("ir"):
+            lost = sorted(set(prior["e"]) - (set() if printing.get("ir") else set(printing["e"])))
+            if lost:
+                withdrawn.append({"id": prior["id"], "code": prior["c"], "editions": lost})
+    return {key: value for key, value in {
+        "removedPrintings": removed, "changedPrintingIdentities": changed, "withdrawnEditions": withdrawn,
+        "withdrawnAutomaticCodes": sorted(set(parent["autoEligibleCodes"]) - set(seed["autoEligibleCodes"])),
+    }.items() if value}
+
+
+def release_coverage(seed, groups, calendar, profiles, reference_inventory, parent, reviewed_dates=None,
+                     supplemental_checklists=None):
+    """Compare verified inventories even when market data for a release is absent."""
+    targets = release_checklist_targets(groups, calendar, reviewed_dates, supplemental_checklists)
+    exact_codes = {release["printingCode"] for _, release in targets.values() if "printingCode" in release}
+    by_name = collections.defaultdict(set)
+    by_code = collections.defaultdict(set)
+    counts = collections.Counter()
+    for row in all_printings(seed):
+        name = row.get("on") or seed["cards"][row["k"]]["n"]
+        rarity = row.get("vr", row["r"])
+        normalized_name = norm(name)
+        by_name[(row["g"], normalized_name, None)].add(rarity)
+        by_code[row["c"]].add((normalized_name, rarity))
+        counts[row["g"]] += 1
+        if row["c"] in exact_codes:
+            by_name[(row["g"], normalized_name, row["c"])].add(rarity)
+            counts[(row["g"], row["c"])] += 1
+    parent_by_name = collections.defaultdict(set)
+    parent_counts = collections.Counter()
+    if parent:
+        for row in all_printings(parent):
+            name = row.get("on") or parent["cards"][row["k"]]["n"]
+            rarity, normalized_name = row.get("vr", row["r"]), norm(name)
+            parent_by_name[(row["g"], normalized_name, None)].add(rarity)
+            parent_counts[row["g"]] += 1
+            if row["c"] in exact_codes:
+                parent_by_name[(row["g"], normalized_name, row["c"])].add(rarity)
+                parent_counts[(row["g"], row["c"])] += 1
+    else:
+        parent_counts = counts
+    checked_releases = []
+    for profile in profiles:
+        code = profile.get("printingCode")
+        def missing(index):
+            return [{"name": row["name"], "rarity": rarity}
+                    for row in profile["rows"] for rarity in row["rarities"]
+                    if rarity not in index[(profile["groupID"], norm(row["name"]), code)]]
+        checked_releases.append({"groupID": profile["groupID"], "url": profile["url"], "sha256": profile.get("sha256"),
+                                 "expectedCards": profile["count"], "missingNameOrRarity": missing(by_name),
+                                 "parentMissingNameOrRarity": missing(parent_by_name) if parent else [],
+                                 **({"printingCode": code} if code else {})})
+    reference_releases = []
+    for release in reference_inventory["releases"]:
+        missing = [code for code, _, name, rarity in release["rows"] if (norm(name), rarity) not in by_code[code]]
+        reference_releases.append({"groupID": release["groupID"], "release": release["name"],
+                                   "expectedPrintings": len(release["rows"]), "missingCodeOrRarity": missing})
+    captured_day = datetime.datetime.fromisoformat(seed["capturedAt"]).date()
+    recent, unmatched = [], []
+    for release in calendar:
+        day = datetime.date.fromisoformat(release["date"])
+        if not 0 <= (captured_day - day).days <= 45:
+            continue
+        target = targets.get(release["id"])
+        if target is None:
+            unmatched.append(release)
+            continue
+        group, target_release = target
+        code = target_release.get("printingCode")
+        key = (group, code) if code else group
+        if not counts[key] or not parent_counts[key]:
+            recent.append({**target_release, "groupID": group, "candidatePrintings": counts[key],
+                           "parentPrintings": parent_counts[key]})
+    undated = [{"groupID": group["g"], "release": group["n"], "printings": counts[group["g"]]}
+               for group in seed["sets"] if not group["d"] and counts[group["g"]]]
+    return {"checkedReleases": checked_releases, "referenceReleases": reference_releases, "recentReleaseGaps": recent,
+            "unmatchedOfficialReleases": unmatched,
+            "undatedPopulatedGroups": undated,
+            "parentRegressions": catalog_regressions(seed, parent)}
+
+
+def recent_release_checklists(groups, calendar, captured_at, cache, offline, reviewed_dates=None,
+                              supplemental_checklists=None):
+    """Collect current official comparison rows independently of pricing or automatic eligibility."""
+    today = datetime.datetime.fromisoformat(captured_at).date()
+    checklists, unavailable = [], []
+    for group, release in release_checklist_targets(groups, calendar, reviewed_dates, supplemental_checklists).values():
+        if not 0 <= (today - datetime.date.fromisoformat(release["date"])).days <= 45:
+            continue
+        release_id = release["id"]
+        assert release_id.isascii() and release_id.isdigit(), "invalid official release identifier"
+        url = ("https://www.db.yugioh-card.com/yugiohdb/card_search.action"
+               f"?ope=1&pid={release_id}&rp=99999&request_locale=en")
+        profile = {"groupID": group, "releaseName": release["name"], "url": url}
+        if "printingCode" in release:
+            profile["printingCode"] = release["printingCode"]
+        path = cache / "konami" / f"{release_id}.html"
+        try:
+            if path.exists() or offline:
+                raw = path.read_bytes()
+                inventory = extract_inventory(raw, profile, require_unique_card_ids=False)
+            else:
+                request = urllib.request.Request(url, headers={"User-Agent": "CardScanner catalog builder"})
+                with urllib.request.urlopen(request, timeout=15) as response:
+                    raw = response.read(8 * 1024 * 1024 + 1)
+                if len(raw) > 8 * 1024 * 1024:
+                    raise ValueError("release inventory exceeded size limit")
+                inventory = extract_inventory(raw, profile, require_unique_card_ids=False)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(raw)
+            checklists.append({**profile, **inventory})
+        except (AssertionError, ValueError, OSError) as error:
+            unavailable.append({"groupID": group, "name": release["name"], "url": url, "reason": str(error)})
+    return checklists, unavailable
 
 
 def main():
@@ -302,6 +687,9 @@ def main():
     parser.add_argument("--price-receipt", action="append", type=pathlib.Path, default=[],
                         help="Offline price receipt binding a capture to raw hashes; repeat for disjoint group scopes")
     parser.add_argument("--official-inventory-html", type=pathlib.Path, action='append', help="Captured full Konami release inventory; repeat for each reviewed release")
+    parser.add_argument("--release-calendar-html", type=pathlib.Path, help="Captured English Konami release directory")
+    parser.add_argument("--check-recent-official-releases", action="store_true",
+                        help="Compare recent Konami release checklists with the candidate and its parent")
     parser.add_argument("--hosting-root", type=pathlib.Path, help="Stage an immutable candidate under the existing Firebase site; never deploy")
     parser.add_argument("--publication-revision", type=int, default=1, help="Candidate publication sequence, independent of provider capture time")
     args = parser.parse_args()
@@ -361,19 +749,30 @@ def main():
     previous = json.loads(args.previous_seed.read_text()) if args.previous_seed else None
     if previous: assert previous.get("policyVersion") == POLICY, "unrecognized historical membership policy"
     taxonomy_scopes = {r['groupID'] for r in CORRESPONDENCE_RULES['rules'] if product_hashes.get(r['groupID']) == r['expectedProductsSHA256']}
-    inventories = []
     profiles = [json.loads((ROOT / name).read_text()) for name in json.loads((ROOT / 'yugioh_printing_inventories.json').read_text())['inventories']]
-    for path in args.official_inventory_html or []:
-        data = path.read_bytes()
-        inventory = next((p for p in profiles if p['sha256'] == hashlib.sha256(data).hexdigest()), None)
-        assert inventory is not None, 'unreviewed official inventory capture'
-        actual = extract_inventory(data, inventory)
-        assert all(inventory[k] == v for k, v in actual.items()), 'official inventory changed; review required'
-        assert inventory['productsSHA256'] == product_hashes[inventory['groupID']], 'product snapshot changed; review required'
-        timestamp = max(timestamp, inventory['capturedAt'])
-        inventories.append(inventory)
-    seed, stats, exceptions, incomplete = build(groups, products, prices, cards, json.loads((ROOT / "yugioh_name_aliases.json").read_text()), json.loads((ROOT / "yugioh_physical_editions.json").read_text())["products"], timestamp,
-        price_provenance=price_provenance, previous={x["p"]: x for x in previous["printings"]} if previous else None, taxonomy_scopes=taxonomy_scopes, printing_inventory=inventories)
+    inventories = reviewed_inventories(profiles, products, product_hashes, args.official_inventory_html or [])
+    timestamp = max([timestamp] + [i["capturedAt"] for i in inventories])
+    calendar = (extract_release_calendar(args.release_calendar_html.read_bytes()) if args.release_calendar_html
+                else json.loads((ROOT / "yugioh_release_calendar.json").read_text()))
+    printing_corrections = json.loads((ROOT / "yugioh_printing_corrections.json").read_text())
+    reference_inventory = json.loads((ROOT / "yugioh_legacy_inventory.json").read_text())
+    reference_editions = json.loads((ROOT / "yugioh_legacy_edition_evidence.json").read_text())
+    physical_editions = json.loads((ROOT / "yugioh_physical_editions.json").read_text())["products"]
+    release_evidence = json.loads((ROOT / "yugioh_release_date_evidence.json").read_text())
+    release_dates = release_evidence["groups"]
+    supplemental_checklists = release_evidence["supplementalChecklists"]
+    timestamp = max(timestamp, reference_editions["capturedAt"],
+                    *(source["capturedAt"] for source in reference_editions.get("galleryEvidence", {}).get("sources", [])),
+                    *(review.get("reviewedAt", timestamp) for review in physical_editions.values()))
+    seed, stats, exceptions, incomplete = build(groups, products, prices, cards, json.loads((ROOT / "yugioh_name_aliases.json").read_text()), physical_editions, timestamp,
+        price_provenance=price_provenance, previous={x["p"]: x for x in all_printings(previous) if "p" in x} if previous else None,
+        taxonomy_scopes=taxonomy_scopes, printing_inventory=inventories, release_calendar=calendar["releases"],
+        rarity_corrections=printing_corrections["products"], reference_inventory=reference_inventory, reference_editions=reference_editions,
+        previous_references={x["id"]: x for x in previous.get("referencePrintings", [])} if previous else None,
+        reviewed_dates=release_dates, passcode_corrections=printing_corrections.get("canonicalPasscodes"))
+    stats["releaseCalendar"] = {"url": calendar["url"], "sha256": calendar["sha256"],
+                                "datedGroups": sum(bool(group["d"]) for group in seed["sets"])}
+    stats["printingInventoryDriftGroups"] = sorted({p["groupID"] for p in profiles} - {i["groupID"] for i in inventories})
     if inventories:
         stats['printingFamilyRule'] = FAMILY_RULE
         stats['printingFamilySources'] = [{k: i[k] for k in ('url', 'sha256', 'count', 'capturedAt', 'productsSHA256', 'groupID', 'codePrefix', 'rarities')} for i in inventories]
@@ -383,7 +782,22 @@ def main():
     stats['taxonomyScopeDriftGroups'] = sorted({r['groupID'] for r in CORRESPONDENCE_RULES['rules']} - taxonomy_scopes)
     if previous:
         stats["populatedReleasedGroupsMissingFromParent"] = populated_released_groups(seed, previous)
-    retained = {p['p'] for p in seed['printings']}
+    unavailable = []
+    checklists = []
+    if args.check_recent_official_releases:
+        checklists, unavailable = recent_release_checklists(groups, calendar["releases"], timestamp, args.cache_dir,
+            args.offline, release_dates, supplemental_checklists)
+    coverage_profiles = {(profile["groupID"], profile.get("printingCode")): profile for profile in profiles + checklists}
+    coverage = release_coverage(seed, groups, calendar["releases"], coverage_profiles.values(), reference_inventory,
+        previous, release_dates, supplemental_checklists)
+    coverage["unavailableOfficialChecklists"] = unavailable
+    stats["recentOfficialReleaseGaps"] = len(coverage["recentReleaseGaps"])
+    stats["unmatchedOfficialReleases"] = len(coverage["unmatchedOfficialReleases"])
+    stats["officialChecklistsWithGaps"] = sum(bool(row["missingNameOrRarity"] or row["parentMissingNameOrRarity"])
+                                              for row in coverage["checkedReleases"])
+    stats["unavailableOfficialChecklists"] = len(unavailable)
+    stats["parentAuthorityRegressions"] = {key: len(value) for key, value in coverage["parentRegressions"].items()}
+    retained = {p['p'] for p in all_printings(seed) if 'p' in p}
     excluded = []
     for gid in sorted(products):
         for p in products[gid]:
@@ -393,7 +807,14 @@ def main():
             # Bounded product-name evidence. Ambiguous missing-code singles are
             # kept in this ledger for review, never called foreign or sealed.
             sealed = not code and re.search(r'\b(?:booster (?:box|pack)|blister pack|starter deck|structure deck|playmat|sleeves|binder|sealed|collector.?s? tin)\b', p['name'], re.I)
-            reason = 'foreignLanguage' if p['productId'] in exceptions['foreignLanguage'] else 'sealedOrAccessoryName' if sealed else 'missingPrintedIdentity'
+            if p['productId'] in exceptions['foreignLanguage']:
+                reason = 'foreignLanguage'
+            elif not code and ext.get('Card Type') == 'Field Center':
+                reason = 'fieldCenterAccessory'
+            elif sealed:
+                reason = 'sealedOrAccessoryName'
+            else:
+                reason = 'missingPrintedIdentity'
             excluded.append({'productID':p['productId'], 'groupID':gid, 'name':p['name'], 'code':code, 'reason':reason,
                 'status':'legitimatelyExcluded' if reason != 'missingPrintedIdentity' else 'discoveryPendingIdentity'})
     stats['upstreamDisposition'] = dict(collections.Counter(x['status'] for x in excluded))
@@ -409,13 +830,21 @@ def main():
     # No output changes until every input and invariant passed.
     validate_output(seed, strict=True)
     for path, data in [(args.out, packed(seed)), (args.report, report.encode()),
-                       (args.report.with_suffix('.exclusions.json'), packed(excluded))]:
+                       (args.report.with_suffix('.exclusions.json'), packed(excluded)),
+                       (args.report.with_suffix('.coverage.json'), packed(coverage))]:
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix(path.suffix + ".tmp")
         temporary.write_bytes(data)
         temporary.replace(path)
     if args.hosting_root:
-        stage_hosting(seed, args.hosting_root, args.publication_revision)
+        if coverage["parentRegressions"]:
+            print("::warning title=Yu-Gi-Oh! candidate requires review::See coverage report for lost printing or edition authority.")
+        else:
+            stage_hosting(seed, args.hosting_root, args.publication_revision)
+    if os.environ.get("GITHUB_ACTIONS") == "true" and (
+            stats["recentOfficialReleaseGaps"] or stats["unmatchedOfficialReleases"]
+            or stats["officialChecklistsWithGaps"] or unavailable):
+        print("::warning title=Yu-Gi-Oh! official coverage needs review::See the coverage report for missing rows or sources.")
     if stats.get("populatedReleasedGroupsMissingFromParent"):
         ids = ", ".join(str(row["groupID"]) for row in stats["populatedReleasedGroupsMissingFromParent"])
         message = f"Provider-dated Yu-Gi-Oh! groups with candidate printings absent from the parent: {ids}"
@@ -430,11 +859,20 @@ def validate_output(seed, strict=False):
     assert seed['schemaVersion'] == 1 and seed['policyVersion'] == POLICY
     captured = datetime.datetime.fromisoformat(seed['capturedAt'].replace('Z', '+00:00'))
     ids, products = set(), set()
-    for row in seed['printings']:
-        assert row['id'] not in ids and row['p'] not in products and row['p'] > 0, 'duplicate identity'
-        ids.add(row['id']); products.add(row['p'])
+    for index, row in enumerate(all_printings(seed)):
+        assert row['id'] not in ids, 'duplicate identity'
+        ids.add(row['id'])
+        if 'p' in row:
+            assert row['p'] not in products and row['p'] > 0, 'duplicate identity'
+            products.add(row['p'])
+        else:
+            assert index >= len(seed['printings']) and not row['pe'] and not row['ec'] and 'pg' not in row
+            assert all(m['t'] == 'independentlyReviewed' and m['q'] is None for m in row['m'])
         assert str(uuid.UUID(row['id'])) == row['id'] and 0 <= row['k'] < len(seed['cards'])
-        assert CODE.fullmatch(row['c']) or (row['ir'] == 'unsupportedCode' and row['c'] and not row['e'])
+        unnumbered_display = (index >= len(seed['printings']) and row['c'] == '' and row['ir'] == 'unnumberedDisplay'
+                             and 'p' in row and not row['e'] and not row['pe'] and not row['ec'] and not row['m'])
+        assert (CODE.fullmatch(row['c']) or unnumbered_display
+                or (row['ir'] == 'unsupportedCode' and row['c'] and not row['e']))
         families[row['c']].append(row)
         assert len(row['e']) == len(set(row['e'])) and set(row['e']) <= set(LANES.values())
         assert len(row['m']) == len({m['e'] for m in row['m']})

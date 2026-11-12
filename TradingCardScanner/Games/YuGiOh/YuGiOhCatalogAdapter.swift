@@ -1,6 +1,10 @@
 import Foundation
 
 extension YuGiOhEdition {
+    // The marketplace calls the original machine stamp "Limited". Keep the
+    // existing ownership and quote IDs while showing the printed wording.
+    static let duelTerminalVariant = PhysicalVariant(id: YuGiOhEdition.limited.rawValue, label: "Duel Terminal")
+
     var variant: PhysicalVariant {
         switch self { case .first: .yugiohFirstEdition; case .unlimited: .yugiohUnlimited; case .limited: .yugiohLimited }
     }
@@ -63,7 +67,7 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
         let summaryID = Set(family.map { $0.card.id }).count == 1
             ? first.card.id.uuidString.lowercased() : Self.choiceGroupID(for: code)
         let summary = CanonicalCardSummary(id: summaryID, game: game,
-            name: first.card.name, printedIdentifier: code, language: "en")
+            name: first.cardName, printedIdentifier: code, language: "en")
         let candidates = family.map(candidate)
         guard family.contains(where: { $0.explicitSelectionSupported && candidate($0).selectionEvidence(among: candidates) != .insufficient }) else { return .catalogIncomplete(summary) }
         if family.count == 1 && catalog.autoEligibleCodes.contains(code) { return .resolved(try resolution(forPrintingID: first.id)) }
@@ -136,15 +140,22 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
     func validateCollectionMutation(printingID: String, catalogProviderID: String?, variantID: String?, itemKindRaw: String, collectionKey: String) throws {
         guard itemKindRaw == CollectionItemKind.rawCard.rawValue, catalogProviderID == nil || catalogProviderID == printingID,
               let id = UUID(uuidString: printingID), id.uuidString.lowercased() == printingID,
-              let edition = variantID.flatMap(YuGiOhEdition.init(rawValue:)) else { throw CatalogLookupError.invalidPrintingChoice }
+              let variantID else { throw CatalogLookupError.invalidPrintingChoice }
         let card = try resolution(forPrintingID: id).card
-        guard card.variantEvidence.catalogVariants.contains(edition.variant), card.collectionKey(variant: edition.variant) == collectionKey else { throw CatalogLookupError.invalidPrintingChoice }
+        guard let variant = card.variantEvidence.catalogVariants.first(where: { $0.id == variantID }),
+              card.collectionKey(variant: variant) == collectionKey else { throw CatalogLookupError.invalidPrintingChoice }
+    }
+    func correctedRarity(printingID: String, cardNumber: String, storedRarity: String) -> String? {
+        guard let id = UUID(uuidString: printingID), let printing = catalog.printingByID[id],
+              printing.idString == printingID, printing.code == cardNumber, printing.rarity == storedRarity,
+              let corrected = printing.physicalRarity, corrected != storedRarity else { return nil }
+        return corrected
     }
     func candidate(_ p: YuGiOhCatalog.Printing) -> PhysicalPrintingCandidate {
         .init(id: p.idString, game: game, canonicalCardID: p.card.id.uuidString.lowercased(), language: "en",
-            catalogGeneration: generation, name: p.card.name, printedIdentifier: p.code, releaseLabel: p.set.name,
-            treatmentLabel: p.rarity, distributionLabel: p.artLabel, releaseDate: p.set.releaseDate,
-            thumbnailURL: p.thumbnailURL, artworkID: nil, distinctionLabels: [p.productName],
+            catalogGeneration: generation, name: p.cardName, printedIdentifier: p.code, releaseLabel: p.set.name,
+            treatmentLabel: p.displayRarity, distributionLabel: p.displayArtLabel, releaseDate: p.set.releaseDate,
+            thumbnailURL: p.thumbnailURL, artworkID: nil, distinctionLabels: [p.browseName],
             acquisitionUnavailableReason: p.explicitSelectionSupported ? nil
                 : "Discovery only. This product has no supported edition or needs identity review.")
     }
@@ -165,16 +176,20 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
         guard let p = catalog.printingByID[id] else { throw CatalogLookupError.invalidPrintingChoice }
         let family = catalog.printingsByCode[p.code] ?? []
         let candidates = family.map(candidate)
-        let name = p.card.name + (family.count > 1 ? " · " + candidate(p).compactChoiceLabel(among: candidates) : "")
+        let name = p.cardName + (family.count > 1 ? " · " + candidate(p).compactChoiceLabel(among: candidates) : "")
         let order = p.set.releaseDate.map { Int($0.timeIntervalSince1970 / 86_400) }
+        let variants: [PhysicalVariant] = p.explicitSelectionSupported ? p.editions.map {
+            $0 == .limited && p.hasDuelTerminalStamp ? YuGiOhEdition.duelTerminalVariant : $0.variant
+        } : []
         let card = try ResolvedCatalogCard(game: game, physicalPrintingID: p.idString, canonicalCardID: p.card.id.uuidString.lowercased(),
             language: "en", name: name, setName: p.set.name, setCode: p.set.abbreviation, cardNumber: p.code,
-            printedIdentifier: p.code, rarity: p.rarity, displayImageURL: p.imageURL, thumbnailImageURL: p.thumbnailURL,
-            setReleaseOrder: order ?? 0, variantEvidence: .init(game: game, setID: "tcgplayer-group:\(p.set.groupID)",
-                cardNumber: p.code, catalogVariants: p.explicitSelectionSupported ? p.editions.map(\.variant) : [],
+            printedIdentifier: p.code, rarity: p.displayRarity, displayImageURL: p.imageURL, thumbnailImageURL: p.thumbnailURL,
+            setReleaseOrder: order ?? 0, variantEvidence: .init(game: game, setID: p.set.providerID,
+                cardNumber: p.code, catalogVariants: variants,
                 physicalCoverageVerified: p.coverageVerified, explicitMembershipSupported: p.explicitSelectionSupported),
-            marketProductIDsByVariant: p.explicitSelectionSupported && p.productID > 0
-                ? Dictionary(uniqueKeysWithValues: p.editions.map { ($0.rawValue, String(p.productID)) }) : [:])
+            marketProductIDsByVariant: p.explicitSelectionSupported
+                ? p.productID.map { product in Dictionary(uniqueKeysWithValues: p.editions.map { ($0.rawValue, String(product)) }) } ?? [:]
+                : [:])
         return .init(card, retrievedAt: catalog.capturedAt, path: .cacheHit)
     }
 }

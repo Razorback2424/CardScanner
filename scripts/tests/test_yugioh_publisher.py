@@ -4,6 +4,7 @@ RFC 8032 test vector only; these bytes must never become production pins.
 """
 import base64
 import copy
+import hashlib
 import importlib.util
 import json
 import os
@@ -65,10 +66,14 @@ class YuGiOhPublisherTests(unittest.TestCase):
         unrelated.parent.mkdir(parents=True)
         unrelated.write_bytes(b"unchanged magic")
         parent = None
+        ancestors = {}
         for revision in range(1, 4):
             parent = self.approve(revision, parent)
             payload = json.loads(base64.urlsafe_b64decode(json.loads(parent.read_text())["payload"] + "=="))
             self.assertEqual(payload.get("parentRevision"), revision - 1 if revision > 1 else None)
+            self.assertEqual(payload["checkpointSHA256"], hashlib.sha256(self.bundle.read_bytes()).hexdigest())
+            self.assertEqual(payload.get("ancestors", {}), ancestors)
+            ancestors[str(revision)] = payload["sha256"]
             self.assertEqual(self.promote(parent).returncode, 0)
             exported = self.root / "approved-parent.json"
             result = self.run_tool("export-parent", input=parent, output=exported)
@@ -88,10 +93,14 @@ class YuGiOhPublisherTests(unittest.TestCase):
         fixture = Path(__file__).resolve().parents[2] / "TestFixtures/YuGiOhDelivery/approved-wire.json"
         expected = json.loads(fixture.read_bytes())
         actual = json.loads(release.read_bytes())
-        # CryptoKit may hedge Ed25519 signing with fresh randomness. Require
-        # byte-identical signed payload and catalog, then verify both signatures.
+        # The checked-in fixture predates the optional checkpoint. Compare its
+        # catalog and other signed fields, then verify both envelopes.
         expected.pop("signature")
         actual.pop("signature")
+        decode = lambda envelope: json.loads(base64.urlsafe_b64decode(envelope.pop("payload") + "=="))
+        expected_manifest, actual_manifest = decode(expected), decode(actual)
+        self.assertEqual(actual_manifest.pop("checkpointSHA256"), hashlib.sha256(self.bundle.read_bytes()).hexdigest())
+        self.assertEqual(expected_manifest, actual_manifest)
         self.assertEqual(expected, actual)
         self.assertEqual(self.run_tool("verify", input=fixture).returncode, 0)
         self.assertEqual(self.run_tool("verify", input=release).returncode, 0)

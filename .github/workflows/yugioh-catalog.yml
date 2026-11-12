@@ -21,6 +21,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Test evidence admission
         run: python3 -I scripts/build_yugioh_catalog.py --self-test
+      - name: Build and test the standalone publisher
+        run: |
+          bash scripts/build_yugioh_publisher.sh "$RUNNER_TEMP/yugioh-publisher"
+          YUGIOH_CATALOG_PUBLISHER="$RUNNER_TEMP/yugioh-publisher" PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_yugioh_publisher.py
       - name: Test daily price contracts
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_market_price_feeds.py
       - name: Identify the upstream daily build
@@ -59,21 +63,33 @@ jobs:
             https://scanstash-catalog-prod.web.app/yugioh/v1/current.json|https://catalog.scan-stash.com/yugioh/v1/current.json) ;;
             *) echo "Unapproved parent origin/path" >&2; exit 1 ;;
           esac
-          swiftc TradingCardScanner/Games/YuGiOh/YuGiOhReleaseWire.swift TradingCardScanner/Games/YuGiOh/YuGiOhCatalog.swift scripts/yugioh_catalog_publisher.swift -o "$RUNNER_TEMP/yugioh-publisher"
           curl --fail --proto '=https' --tlsv1.2 --max-filesize 68157440 --max-time 60 \
             "$APPROVED_PARENT_URL" -o "$RUNNER_TEMP/yugioh-approved-parent.json"
           "$RUNNER_TEMP/yugioh-publisher" export-parent --input "$RUNNER_TEMP/yugioh-approved-parent.json" \
             --keys Config/YuGiOhCatalogProduction.keys.json --output "$RUNNER_TEMP/yugioh-approved-parent-catalog.json"
           echo "YUGIOH_PREVIOUS_SEED=$RUNNER_TEMP/yugioh-approved-parent-catalog.json" >> "$GITHUB_ENV"
       - name: Ingest once on the server and stage a candidate
-        run: >-
-          python3 -I scripts/build_yugioh_catalog.py
-          --cache-dir "${RUNNER_TEMP}/yugioh-source"
-          --previous-seed "${YUGIOH_PREVIOUS_SEED}"
-          --out "${RUNNER_TEMP}/yugioh/catalog.json"
-          --report "${RUNNER_TEMP}/yugioh/build-report.md"
-          --hosting-root "${RUNNER_TEMP}/yugioh/site"
-          --publication-revision "${{ github.run_number }}"
+        shell: bash
+        run: |
+          calendar="$RUNNER_TEMP/yugioh-release-calendar.html"
+          calendar_args=()
+          if curl --fail --proto '=https' --tlsv1.2 --retry 2 --max-filesize 4000000 --max-time 35 \
+            'https://www.db.yugioh-card.com/yugiohdb/card_list.action?wname=CardSearch&request_locale=en' -o "$calendar"; then
+            if python3 scripts/yugioh_official_inventory.py "$calendar" "$RUNNER_TEMP/verified-release-calendar.json"; then
+              calendar_args+=(--release-calendar-html "$calendar")
+            fi
+          fi
+          if [ "${#calendar_args[@]}" -eq 0 ]; then
+            echo '::warning title=Yu-Gi-Oh! release calendar::Fresh Konami directory unavailable. Using the checked-in capture.'
+          fi
+          python3 -I scripts/build_yugioh_catalog.py \
+            --cache-dir "$RUNNER_TEMP/yugioh-source" \
+            --previous-seed "$YUGIOH_PREVIOUS_SEED" \
+            --out "$RUNNER_TEMP/yugioh/catalog.json" \
+            --report "$RUNNER_TEMP/yugioh/build-report.md" \
+            --check-recent-official-releases \
+            --hosting-root "$RUNNER_TEMP/yugioh/site" \
+            --publication-revision "${{ github.run_number }}" "${calendar_args[@]}"
       - name: Bind the completed capture to the same upstream build
         run: |
           curl --fail --proto '=https' --tlsv1.2 --max-filesize 1024 --max-time 45 \
@@ -96,6 +112,17 @@ jobs:
         with:
           name: yugioh-catalog-candidate
           path: ${{ runner.temp }}/yugioh
+          retention-days: 7
+      - name: Retain catalog diagnostics when staging fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yugioh-catalog-diagnostics
+          path: |
+            ${{ runner.temp }}/yugioh/build-report.md
+            ${{ runner.temp }}/yugioh/build-report.coverage.json
+            ${{ runner.temp }}/yugioh/build-report.exclusions.json
+          if-no-files-found: ignore
           retention-days: 7
       # Catalog candidates remain separate from the price-only publication below.
 

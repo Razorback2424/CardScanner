@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 struct YuGiOhVariantPolicy: GameVariantPolicy {
     let selectableVariants = YuGiOhEdition.allCases.map(\.variant)
@@ -33,7 +34,73 @@ struct YuGiOhGameRuntime: Sendable {
     }
 }
 
-extension YuGiOhBundledLaunch {
+extension YuGiOhCatalog {
+    /// Every bundled runtime shares this deferred load.
+    static let bundledHandle = YuGiOhCatalog(knownGeneration: YuGiOhBundledLaunch.cachedManifest()?.generation) {
+        let interval = PerformanceSignpost.beginInterval(
+            "YuGiOh.catalogLoad", id: PerformanceSignpost.makeID(), "main=\(Thread.isMainThread ? 1 : 0)"
+        )
+        defer { PerformanceSignpost.endInterval("YuGiOh.catalogLoad", interval, "") }
+        do {
+            return try YuGiOhBundledLaunch.loadSeed()
+        } catch {
+            YuGiOhBundledLaunch.clear()
+            Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
+                .error("Yu-Gi-Oh! bundled seed rejected on deferred load; lookups are disabled for this session")
+            throw error
+        }
+    }
+    static var bundled: Result<Self, Error> { Result { try bundledHandle.loaded() } }
+}
+
+/// Per-build registration facts let warm launches defer decoding the bundle.
+enum YuGiOhBundledLaunch {
+    struct Manifest: Codable, Equatable {
+        let buildKey: String
+        let generation: String
+        let capabilities: Int
+    }
+    static let defaultsKey = "yugioh.bundledLaunchManifest"
+
+    static func seedURL(bundle: Bundle = .main) -> URL? {
+        bundle.url(forResource: "catalog", withExtension: "json", subdirectory: "YuGiOhCatalogSeed")
+    }
+
+    static func buildKey(bundle: Bundle = .main) -> String? {
+        guard let url = seedURL(bundle: bundle),
+              let values = try? url.resourceValues(forKeys: [.fileSizeKey, .contentModificationDateKey]),
+              let size = values.fileSize else { return nil }
+        let info = bundle.infoDictionary ?? [:]
+        let version = info["CFBundleShortVersionString"] as? String ?? ""
+        let build = info["CFBundleVersion"] as? String ?? ""
+        let modified = values.contentModificationDate?.timeIntervalSince1970 ?? 0
+        return "\(version)|\(build)|\(size)|\(modified)"
+    }
+
+    static func cachedManifest(defaults: UserDefaults = .standard, bundle: Bundle = .main) -> Manifest? {
+        guard let key = buildKey(bundle: bundle), let data = defaults.data(forKey: defaultsKey),
+              let manifest = try? JSONDecoder().decode(Manifest.self, from: data),
+              manifest.buildKey == key, !manifest.generation.isEmpty, manifest.capabilities != 0 else { return nil }
+        return manifest
+    }
+
+    static func store(generation: String, capabilities: CardGameCapabilities,
+                      defaults: UserDefaults = .standard, bundle: Bundle = .main) {
+        guard !capabilities.isEmpty, let key = buildKey(bundle: bundle),
+              let data = try? JSONEncoder().encode(Manifest(buildKey: key, generation: generation,
+                                                            capabilities: capabilities.rawValue)) else { return }
+        defaults.set(data, forKey: defaultsKey)
+    }
+
+    static func clear(defaults: UserDefaults = .standard) {
+        defaults.removeObject(forKey: defaultsKey)
+    }
+
+    static func loadSeed(bundle: Bundle = .main) throws -> YuGiOhCatalog.Contents {
+        guard let url = seedURL(bundle: bundle) else { throw YuGiOhCatalog.LoadError.missingResource }
+        return try YuGiOhCatalog.Contents(data: Data(contentsOf: url, options: .mappedIfSafe))
+    }
+
     /// The bundled-mode runtime for a normal launch. A cache hit registers the
     /// shared handle without decoding it. A miss decodes and validates the seed
     /// now, exactly as launches always did, and records the facts for the next

@@ -841,5 +841,6 @@
     "Ultra Rare"
   ],
   "capturedAt": "2026-10-23T04:04:10Z",
-  "productsSHA256": "78d2820d33d3a7c9eedb6d563a922ff72c1000041064dc57eea18b4a70a63a46"
+  "productsSHA256": "78d2820d33d3a7c9eedb6d563a922ff72c1000041064dc57eea18b4a70a63a46",
+  "productIdentitySHA256": "220413ac594391188385c269f26426db26f80e6b73bd93d0cdbfc5571f6d290d"
 }

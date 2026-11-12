@@ -1,4 +1,4 @@
-// Compile with YuGiOhReleaseWire.swift and YuGiOhCatalog.swift from the app.
+// Build with scripts/build_yugioh_publisher.sh.
 // Local files only. This executable has no deployment or credential provisioning.
 import CryptoKit
 import Foundation
@@ -53,12 +53,18 @@ enum YuGiOhCatalogPublisher {
                   let captured = catalog["capturedAt"] as? String else { throw Failure.revision }
             let parentBytes: Data
             let parentRevision: Int
+            let checkpointSHA256: String?
+            let ancestors: [Int: String]?
             if let parent = options["--parent-release"] {
                 let (_, envelope, manifest) = try verified(URL(fileURLWithPath: parent))
                 parentBytes = envelope.catalog; parentRevision = manifest.revision
+                checkpointSHA256 = manifest.checkpointBaseSHA256
+                ancestors = manifest.ancestryIncludingSelf
             } else {
                 parentBytes = try read(file("bundle"), limit: YuGiOhReleaseWire.maximumCatalogBytes)
                 parentRevision = 0
+                checkpointSHA256 = YuGiOhReleaseWire.hash(parentBytes)
+                ancestors = nil
             }
             guard revision > parentRevision else { throw Failure.revision }
             try transition(from: parentBytes, to: bytes)
@@ -70,14 +76,17 @@ enum YuGiOhCatalogPublisher {
                 policyVersion: YuGiOhReleaseWire.policy, path: "yugioh/v1/releases/\(revision)/catalog.json",
                 sha256: YuGiOhReleaseWire.hash(bytes), bytes: bytes.count, status: YuGiOhPublicationState.approved.rawValue,
                 capturedAt: captured, parentSHA256: YuGiOhReleaseWire.hash(parentBytes), reviewID: try required("review-id"),
-                parentRevision: parentRevision > 0 ? parentRevision : nil)
+                parentRevision: parentRevision > 0 ? parentRevision : nil, checkpointSHA256: checkpointSHA256,
+                ancestors: ancestors)
             let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
             let payload = try encoder.encode(manifest)
             let envelope = YuGiOhCandidateEnvelope(keyID: keyID, payload: YuGiOhReleaseWire.encodeURL(payload),
                 signature: YuGiOhReleaseWire.encodeURL(try key.signature(for: payload)), catalog: bytes)
             _ = try YuGiOhReleaseWire.verify(envelope, keys: keys, state: .approved, now: .now)
             try validateCatalog(bytes, manifest: manifest)
-            try immutable(encoder.encode(envelope), at: file("output"))
+            let signedBytes = try encoder.encode(envelope)
+            guard signedBytes.count <= YuGiOhReleaseWire.maximumEnvelopeBytes else { throw YuGiOhCandidateError.oversized }
+            try immutable(signedBytes, at: file("output"))
             print(revision)
         case "promote":
             let (bytes, envelope, manifest) = try verified(file("input"))
@@ -92,6 +101,10 @@ enum YuGiOhCatalogPublisher {
                     print(manifest.revision); return
                 }
                 guard manifest.revision > previousManifest.revision else { throw Failure.revision }
+                if let ancestors = manifest.ancestors {
+                    guard ancestors == previousManifest.ancestryIncludingSelf,
+                          manifest.checkpointSHA256 == previousManifest.checkpointBaseSHA256 else { throw Failure.parent }
+                }
                 parentBytes = previous.catalog
                 parentRevision = previousManifest.revision
             } else {
@@ -153,37 +166,22 @@ enum YuGiOhCatalogPublisher {
               catalog["generation"] as? String == manifest.generation,
               catalog["capturedAt"] as? String == manifest.capturedAt,
               let captured = YuGiOhReleaseWire.date(manifest.capturedAt),
-              let rows = catalog["printings"] as? [[String: Any]], !rows.isEmpty else { throw Failure.catalog }
-        var ids = Set<String>()
+              let marketRows = catalog["printings"] as? [[String: Any]], !marketRows.isEmpty else { throw Failure.catalog }
+        let rows = marketRows + (catalog["referencePrintings"] as? [[String: Any]] ?? [])
+        var timestamps = Set<String>()
         for row in rows {
-            guard let id = row["id"] as? String, UUID(uuidString: id) != nil, ids.insert(id).inserted,
-                  let editions = row["e"] as? [String], Set(editions).isSubset(of: ["yugioh1stEdition", "yugiohUnlimited", "yugiohLimited"]),
-                  let members = row["m"] as? [[String: Any]] else { throw Failure.catalog }
+            guard let members = row["m"] as? [[String: Any]] else { throw Failure.catalog }
             for member in members {
-                guard let edition = member["e"] as? String, editions.contains(edition),
-                      let stamp = member["s"] as? String, let date = YuGiOhReleaseWire.date(stamp), date <= captured,
-                      let hash = member["h"] as? String, hash.range(of: "^[a-f0-9]{64}$", options: .regularExpression) != nil else { throw Failure.catalog }
+                guard let stamp = member["s"] as? String else { throw Failure.catalog }
+                timestamps.insert(stamp)
             }
         }
+        guard timestamps.allSatisfy({ YuGiOhReleaseWire.date($0).map { $0 <= captured } == true }) else { throw Failure.catalog }
     }
     static func transition(from parent: Data, to next: Data) throws {
-        _ = try YuGiOhCatalog(data: parent)
-        _ = try YuGiOhCatalog(data: next)
-        let old = try object(parent), new = try object(next)
-        guard let oldStamp = old["capturedAt"] as? String, let oldDate = YuGiOhReleaseWire.date(oldStamp),
-              let newStamp = new["capturedAt"] as? String, let newDate = YuGiOhReleaseWire.date(newStamp), newDate >= oldDate,
-              old["generation"] as? String != new["generation"] as? String || parent == next,
-              let oldRows = old["printings"] as? [[String: Any]], let newRows = new["printings"] as? [[String: Any]],
-              let oldCards = old["cards"] as? [[String: Any]], let newCards = new["cards"] as? [[String: Any]] else { throw Failure.catalog }
-        let grouped = Dictionary(grouping: newRows, by: { $0["id"] as? String ?? "" })
-        for row in oldRows {
-            guard let id = row["id"] as? String, let matches = grouped[id], matches.count == 1, let other = matches.first,
-                  let oldIndex = row["k"] as? Int, oldCards.indices.contains(oldIndex),
-                  let newIndex = other["k"] as? Int, newCards.indices.contains(newIndex),
-                  oldCards[oldIndex]["id"] as? String == newCards[newIndex]["id"] as? String else { throw Failure.catalog }
-            for field in ["p", "c", "g", "r", "art", "pn"] {
-                guard NSDictionary(dictionary: [field: row[field] ?? NSNull()]) == NSDictionary(dictionary: [field: other[field] ?? NSNull()]) else { throw Failure.catalog }
-            }
-        }
+        let old = try YuGiOhCatalog(data: parent)
+        let new = try YuGiOhCatalog(data: next)
+        guard old.generation != new.generation || parent == next else { throw Failure.catalog }
+        try YuGiOhCatalog.validateTransition(from: old, to: new, reviewedSameSnapshot: true)
     }
 }
