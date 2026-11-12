@@ -38,7 +38,11 @@ jobs:
       - name: Test Yu-Gi-Oh membership and printing families
         run: PYTHONPATH=scripts python3 -m unittest discover -s scripts/fixtures/yugioh -v
       - name: Check retained catalog integrity and report coverage gaps
-        run: python3 scripts/audit_catalog_coverage.py --repo . --output "$RUNNER_TEMP/catalog-coverage"
+        env:
+          CATALOG_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$CATALOG_BASE_SHA"
+          python3 scripts/audit_catalog_coverage.py --repo . --output "$RUNNER_TEMP/catalog-coverage" --lorcana-baseline-ref "$CATALOG_BASE_SHA"
       - name: Retain the catalog census
         if: always()
         uses: actions/upload-artifact@v4
@@ -65,6 +69,8 @@ jobs:
           set -euo pipefail
           swift test --package-path PokemonCatalogCore
           swift test --package-path MagicCatalogCore
+          bash scripts/build_yugioh_publisher.sh "$RUNNER_TEMP/yugioh-publisher"
+          YUGIOH_CATALOG_PUBLISHER="$RUNNER_TEMP/yugioh-publisher" python3 -m unittest discover -s scripts/tests -p test_yugioh_publisher.py -v
       - name: Select an available iPhone simulator
         id: simulator
         run: |
@@ -113,8 +119,12 @@ jobs:
             -only-testing:TradingCardScannerTests/VariantResolverTests \
             -only-testing:TradingCardScannerTests/PokemonFinishEvidenceTests \
             -only-testing:TradingCardScannerTests/RetailVariantTests/testSevenOrdinaryHoloMinimumsAutoResolveRetainNormalAndUseExactProducts \
+            -only-testing:TradingCardScannerTests/RetailVariantTests/testBrowseWriterRejectsDisputedNormalAndUnavailableMachampEdition \
             -only-testing:TradingCardScannerTests/ScannerViewModelTests/testAutoModeAddsSoleBundledPokemonVariantWithoutPausing \
             -only-testing:TradingCardScannerTests/ScannerViewModelTests/testAutoModeAddsSoleLegacyCachedVariantsAndStillAsksForMultipleVariants \
+            -only-testing:TradingCardScannerTests/ScannerViewModelTests/testProvisionalPokemonFinishIsFiledForReviewWithoutWriting \
+            -only-testing:TradingCardScannerTests/ScannerViewModelTests/testUnnumberedEnergyScanSavesOnlyTheChosenTypeAndFinish \
+            -only-testing:TradingCardScannerTests/UnresolvedScanStoreTests/testStandaloneHistoricalNumberSurvivesRelaunch \
             -only-testing:TradingCardScannerTests/PokemonTCGCSVPriceTests \
             -only-testing:TradingCardScannerTests/CollectionKeyTests \
             -only-testing:TradingCardScannerTests/CardLatchTests \
@@ -125,6 +135,11 @@ jobs:
             -only-testing:TradingCardScannerTests/PokemonCatalogSliceDTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogInvalidationTests \
             -only-testing:TradingCardScannerTests/PokemonCatalogCoordinatorInvalidationTests \
+            -only-testing:TradingCardScannerTests/PokemonCatalogCoordinatorTests/testSignedChecklistGatesActivationAndReopensWithoutNetwork \
+            -only-testing:TradingCardScannerTests/PokemonCatalogCoordinatorTests/testSignedChecklistCannotSupplyFinishesUnderThePreviousRegistry \
+            -only-testing:TradingCardScannerTests/PokemonCatalogCoordinatorTests/testCreatorPackCompletesBrowseAndOfflineScanWithCertifiedNormal \
+            -only-testing:TradingCardScannerTests/PokemonCatalogCoordinatorTests/testUnnumberedEnergyAlwaysRequiresExplicitPrintingAndRevalidatesTheFamily \
+            -only-testing:TradingCardScannerTests/PokemonCatalogCoordinatorTests/testVivillonScanOffersBothArtworkChoicesAndResolvesTheSelectedPrintingOffline \
             -only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests \
             -only-testing:TradingCardScannerTests/PokemonClassicCollectionArtworkTests \
             -only-testing:TradingCardScannerTests/PricingTests \
@@ -156,9 +171,15 @@ jobs:
             -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
             -only-testing:TradingCardScannerTests/MagicPhysicalObjectTests \
             -only-testing:TradingCardScannerTests/LorcanaPhysicalCatalogTests \
+            -only-testing:TradingCardScannerTests/LorcanaDiscoveryCatalogTests \
+            -only-testing:TradingCardScannerTests/LorcanaPricingTests/testBundledMultiFoilFinishesUseDistinctKeysAndExactQuotes \
+            -only-testing:TradingCardScannerTests/LorcanaPricingTests/testScannerFilesHeldFamilyBeforeFinishOrSave \
             -only-testing:TradingCardScannerTests/MagicTokenPairingSessionTests \
             -only-testing:TradingCardScannerTests/CollectionActivityHistoryTests/testReviewedFinishNeverAutomaticallyRekeysAStoredFinishNeedingReview \
             -only-testing:TradingCardScannerTests/MagicContentKindTests \
+            -only-testing:TradingCardScannerTests/MagicHistoricalRecognitionTests \
+            -only-testing:TradingCardScannerTests/BrowseLoadingRefinementTests \
+            -only-testing:TradingCardScannerTests/BrowseCollectionTests/testMagicBrowseCountsTheFinishThatWasActuallySaved \
             -only-testing:TradingCardScannerTests/MagicCatalogBootstrapTests \
             -only-testing:TradingCardScannerTests/CatalogNormalizationTests \
             -only-testing:TradingCardScannerTests/YuGiOhRecognitionTests \

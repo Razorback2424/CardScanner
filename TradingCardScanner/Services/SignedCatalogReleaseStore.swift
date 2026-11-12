@@ -106,7 +106,10 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
         }
     }
 
-    func activate(_ next: StoredRelease) throws -> SignedCatalogActivationResult {
+    func activate(
+        _ next: StoredRelease,
+        canRetainCurrent: @Sendable (Release) -> Bool = { _ in true }
+    ) throws -> SignedCatalogActivationResult {
         let comparison = revisionPolicy == .currentSlot ? current : activeRelease
         let previousRevision = comparison.map { revision($0.release) }
         let nextRevision = revision(next.release)
@@ -123,7 +126,7 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
         try validateTransition(activeRelease, next)
         let nextBytes = try encode(next.envelope)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
-        if let current, let currentBytes {
+        if let current, let currentBytes, canRetainCurrent(current.release) {
             // Copy known verified bytes; disk corruption or external cache
             // deletion cannot turn the backup into an unverified current file.
             try writeConfirmingCommit(currentBytes, to: url(.previous))

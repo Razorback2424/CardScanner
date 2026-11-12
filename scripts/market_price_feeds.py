@@ -106,9 +106,11 @@ def scope_from_repo(repo):
                 add(68, int(market["qualifiers"]["groupID"]), int(market["productID"]), market["providerVariantID"])
     yugioh = json.loads((repo / "TradingCardScanner/YuGiOhCatalogSeed/catalog.json").read_bytes())
     lanes = {"yugioh1stEdition": "1st Edition", "yugiohUnlimited": "Unlimited", "yugiohLimited": "Limited"}
-    for printing in yugioh["printings"]:
+    for printing in yugioh["printings"] + yugioh.get("referencePrintings", []):
+        if "p" not in printing:
+            continue
         for edition in printing["e"]:
-            add(2, printing["g"], printing["p"], lanes[edition])
+            add(2, printing.get("pg", printing["g"]), printing["p"], lanes[edition])
     if {category for category, _ in scope} != {2, 3, 68, 71} or len(scope) > 900:
         raise ValueError("Unexpected catalog pricing scope")
     return scope

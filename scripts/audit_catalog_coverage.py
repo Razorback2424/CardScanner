@@ -14,8 +14,10 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 import uuid
+from build_lorcana_market_catalog import MARKET_LANES_BY_FINISH, validate_previous, validate_source_universes
 
 
 class CatalogIntegrityError(ValueError):
@@ -476,12 +478,119 @@ def one_piece(audit):
         boundary='The owner seed is signed/local-only. This census decodes but does not verify its signature or activate a release; production configuration remains a separate gate.')
 
 
-def lorcana(audit):
+def validate_lorcana_release_inventory(sources, physical_sources, inventory):
+    require(inventory['schemaVersion'] == 1, 'Unknown Lorcana release inventory version')
+    by_set = collections.defaultdict(list)
+    for row in sources.values():
+        if row['footer']:
+            by_set[row['setCode']].append(row)
+    for scope in inventory['scopes']:
+        code = scope['code']
+        marker = scope.get('printedSetMarker', code if code.isdigit() else None)
+        by_number = collections.defaultdict(list)
+        collector_numbers = set()
+        for row in by_set[code]:
+            footer = row['footer']
+            if (footer['language'] != inventory['language'] or footer['denominator'] != scope['denominator']
+                    or (marker and footer['printedSetMarker'] != marker)):
+                continue
+            number = re.fullmatch(r'([0-9]+)[A-Za-z]?', footer['collectorNumber'])
+            if number:
+                by_number[int(number[1])].append(row)
+                collector_numbers.add(footer['collectorNumber'])
+        expected_numbers = range(scope['first'], scope['last'] + 1)
+        missing = set(expected_numbers) - by_number.keys()
+        require(not missing, f"Lorcana release {code} is missing printed numbers {sorted(missing)}")
+        missing_variants = set(scope.get('requiredCollectorNumbers', [])) - collector_numbers
+        require(not missing_variants, f"Lorcana release {code} is missing variants {sorted(missing_variants)}")
+        if scope.get('requiresAcquisition'):
+            allowed_holds = set(scope.get('heldCollectorNumbers', []))
+            held = [r['id'] for number in expected_numbers for r in by_number[number]
+                    if r['id'] not in physical_sources and r['footer']['collectorNumber'] not in allowed_holds]
+            require(not held, f"Lorcana release {code} has unexpected acquisition gaps: {held}")
+
+
+def validate_lorcana_publisher_gallery(sources, html):
+    """Compare published English identities and finish declarations with discovery."""
+    records = re.findall(
+        r'card_identifier:("(?:[^"\\]|\\.)*"),(?:(?!card_identifier:).){0,400}?'
+        r'culture_invariant_id:(\d+),((?:(?!card_identifier:).){0,12000}?)card_type:"([a-z]+)"', html)
+    require(records and len(records) == html.count('culture_invariant_id:'),
+            'Lorcana publisher gallery format or capture completeness changed')
+    require(len(records) == len({identity for _, identity, _, _ in records}), 'Duplicate Lorcana publisher card ID')
+    publisher = {f'lorcanajson:en:{identity}': (json.loads(printed), body)
+                 for printed, identity, body, kind in records if kind != 'supplies'}
+    source = {identity: row for identity, row in sources.items()
+              if identity.startswith('lorcanajson:en:')}
+    require(publisher.keys() == source.keys(),
+            f"Lorcana publisher census differs: missing {sorted(publisher.keys() - source.keys())}, "
+            f"source only {sorted(source.keys() - publisher.keys())}")
+    def normalize(printed):
+        value = printed.replace(' • ', ' ')
+        value = re.sub(r'^(\d+)\s*TFC ', r'\1 TFC ', value)
+        return re.sub(r'^0+([0-9]+)(?=/D23 )', r'\1', value)
+    mismatched = sorted(identity for identity, row in source.items()
+                        if normalize(row['printedIdentifier']) != normalize(publisher[identity][0]))
+    require(not mismatched, f'Lorcana publisher printed identifiers differ: {mismatched}')
+    finish_count = 0
+    for identity, (_, body) in publisher.items():
+        variants = re.findall(r'\{detail_image_url:[^{}]*variant_id:"[^"]+"[^{}]*\}', body)
+        require(variants and len(variants) == body.count('variant_id:'),
+                f'Lorcana publisher variant declarations changed format: {identity}')
+        patterns = []
+        for variant in variants:
+            foil = re.search(r'foil_type:"([^"]+)"', variant)
+            require(foil is not None or 'foil_mask_url:null' in variant,
+                    f'Lorcana publisher finish is unclear: {identity}')
+            patterns.append(foil[1] if foil else 'None')
+        row = source[identity]
+        require(sorted(patterns) == sorted(row.get('sourceFoilTypes', row['foilTypes'])),
+                f'Lorcana publisher finish declarations differ: {identity}')
+        if 'sourceFoilTypes' in row:
+            require(row.get('nonfoilEvidence', '').startswith('https://') and 'None' not in patterns
+                    and sorted(row['foilTypes']) == sorted(['None', *patterns]),
+                    f'Lorcana nonfoil companion evidence is invalid: {identity}')
+        finish_count += len(patterns)
+    return dict(cards=len(publisher), supplies=len(records) - len(publisher), finishes=finish_count)
+
+
+def validate_lorcana_market_capture(printings, directory):
+    by_group = collections.defaultdict(list)
+    for printing in printings:
+        for mapping in printing.get('marketMappings') or []:
+            by_group[mapping['groupID']].append(mapping)
+    for group, mappings in by_group.items():
+        batches = [json.loads((directory / f'{group}-{kind}.json').read_bytes())
+                   for kind in ('products', 'prices')]
+        for batch in batches:
+            require(batch['success'] and not batch['errors']
+                    and batch.get('totalItems', len(batch['results'])) == len(batch['results']),
+                    f'Lorcana incomplete captured market group: {group}')
+        products = unique(batches[0]['results'], lambda product: product['productId'], 'Lorcana market product')
+        lanes = collections.Counter((price['productId'], price['subTypeName']) for price in batches[1]['results'])
+        for mapping in mappings:
+            identity = mapping['productID']
+            product = products.get(identity)
+            require(product is not None and product['categoryId'] == 71 and product['groupId'] == group
+                    and product['name'] == mapping['productName']
+                    and [field['value'] for field in product['extendedData'] if field['name'] == 'Number']
+                    == [mapping['productNumber']], f'Lorcana market product changed: {group}/{identity}')
+            lane = mapping['providerVariantID']
+            require(lanes[identity, lane] == 1, f'Lorcana market lane changed: {group}/{identity}/{lane}')
+    return sum(map(len, by_group.values()))
+
+
+def lorcana(audit, baseline_ref=None, publisher_gallery=None, market_capture=None):
     root = Path('TradingCardScanner/LorcanaCatalogSeed')
     discovery = audit.json(root / 'discovery.json')
     market = audit.json(root / 'market.json')
+    if baseline_ref is not None:
+        previous = subprocess.run(['git', 'show', f"{baseline_ref}:{(root / 'market.json').as_posix()}"],
+                                  cwd=audit.repo, capture_output=True, check=True).stdout
+        validate_previous(market, decode_json(previous, 'previous Lorcana market catalog'))
     require(market['discoverySHA256'] == audit.sources[(root / 'discovery.json').as_posix()]['sha256'],
         'Lorcana physical catalog is bound to different discovery bytes')
+    validate_source_universes(discovery['cards'], market)
     sources = unique(discovery['cards'], lambda row: row['id'], 'Lorcana discovery card')
     unique(discovery['sealed'], lambda row: row['id'], 'Lorcana sealed product')
     cards = unique(market['canonicalCards'], lambda row: uid(row['id']), 'Lorcana canonical card')
@@ -495,15 +604,17 @@ def lorcana(audit):
         require(footer in families and uid(row['identity']['canonicalCardID']) in cards,
             f'Lorcana dangling family/canonical reference: {identity}')
         finishes = {value['finish'] for value in row['finishes']}
-        require(len(finishes) == len(row['finishes']) and finishes <= {'normal', 'foil'}, f'Lorcana invalid finish: {identity}')
+        require(len(finishes) == len(row['finishes']) and finishes <= MARKET_LANES_BY_FINISH.keys()
+                and ('foil' not in finishes or finishes <= {'normal', 'foil'}),
+                f'Lorcana invalid finish: {identity}')
         if row['status'] != 'superseded':
             active[footer].add(identity)
-        if row['status'] == 'verified':
+        if row['status'] == 'verified' and universes.get(footer, {}).get('isComplete'):
             physical_sources.update(alias['id'] for alias in row['sourceAliases'])
         for mapping in row.get('marketMappings') or []:
             require(mapping['finish'] in finishes, f'Lorcana dangling mapping finish: {identity}')
-            allowed = ['Normal'] if mapping['finish'] == 'normal' else ['Cold Foil', 'Holofoil']
-            require(mapping['providerVariantID'] in allowed, f'Lorcana wrong market lane: {identity}')
+            require(mapping['providerVariantID'] in MARKET_LANES_BY_FINISH[mapping['finish']],
+                f'Lorcana wrong market lane: {identity}')
             if row['status'] != 'superseded':
                 key = (mapping['productID'], mapping['providerVariantID'])
                 require(key not in market_keys, f'Lorcana duplicate market lane: {key}')
@@ -512,10 +623,28 @@ def lorcana(audit):
     for footer, universe in universes.items():
         require(footer in families and {uid(value) for value in universe['printingIDs']} == active[footer],
             f'Lorcana dangling/incomplete universe membership: {footer}')
+    inventory = audit.json('scripts/lorcana_release_inventory.json')
+    validate_lorcana_release_inventory(sources, physical_sources, inventory)
+    gallery = None
+    if publisher_gallery is not None:
+        raw = publisher_gallery.read_bytes()
+        gallery = validate_lorcana_publisher_gallery(sources, raw.decode('utf-8'))
+        gallery['sha256'] = hashlib.sha256(raw).hexdigest()
+    verified_mappings = validate_lorcana_market_capture(printings.values(), market_capture) if market_capture is not None else None
     held = [row for identity, row in sources.items() if identity not in physical_sources]
     for row in held:
+        if row['footer'] is None:
+            reason = 'Unnumbered or unverified footer'
+        elif footer_key(row['footer']) in universes:
+            reason = 'Incomplete physical family'
+        elif len(row['foilTypes']) > 2:
+            reason = 'Multiple foil patterns require exact evidence'
+        elif row['setCode'].isdigit():
+            reason = 'Expansion printing or distribution requires physical review'
+        else:
+            reason = 'Promo, product, or scenario distribution requires physical review'
         audit.gap('lorcana', 'discoveryOnly', row['id'], row['setCode'],
-            row['name'] + ' | ' + row['printedIdentifier'], 'intentionally_held')
+            f"{row['name']} | {row['printedIdentifier']} | {reason}")
     return dict(discoveryGeneratedOn=discovery['generatedOn'], physicalReviewedAtFoundationSeconds=market['reviewedAt'],
         discoveryRows=len(sources), sourceSetCounts=counts(row['setCode'] for row in sources.values()),
         sealedProducts=len(discovery['sealed']), reviewedPhysicalPrintings=len(printings), reviewedFooterFamilies=len(families),
@@ -523,6 +652,8 @@ def lorcana(audit):
         physicalStatusCounts=counts(row['status'] for row in printings.values()),
         mappedPrintings=sum(bool(row.get('marketMappings')) for row in printings.values()), exactFinishMappings=lanes,
         discoveryOnlyRows=len(held), discoveryOnlyBySet=counts(row['setCode'] for row in held),
+        publisherGallery=gallery,
+        mappingsMatchedInCapture=verified_mappings,
         boundary='Discovery is not physical acquisition authority. Unreviewed rows and incomplete universes remain held.')
 
 
@@ -533,8 +664,9 @@ def yugioh_summary(seed, audit=None):
     sets = unique(seed['sets'], lambda row: row['g'], 'Yu-Gi-Oh set group')
     cards = seed['cards']
     unique(cards, lambda row: uid(row['id']), 'Yu-Gi-Oh canonical card')
-    printings = unique(seed['printings'], lambda row: uid(row['id']), 'Yu-Gi-Oh printing')
-    unique(seed['printings'], lambda row: row['p'], 'Yu-Gi-Oh product')
+    rows = seed['printings'] + seed.get('referencePrintings', [])
+    printings = unique(rows, lambda row: uid(row['id']), 'Yu-Gi-Oh printing')
+    unique([row for row in rows if 'p' in row], lambda row: row['p'], 'Yu-Gi-Oh product')
     by_code, eligible, eligible_ids = collections.defaultdict(list), [], set()
     for identity, row in printings.items():
         require(isinstance(row['k'], int) and 0 <= row['k'] < len(cards) and row['g'] in sets,
@@ -579,17 +711,18 @@ def yugioh_summary(seed, audit=None):
         boundary='Supported/choice counts mirror seed edition eligibility; native picker distinction checks are not executed. Automatic-family eligibility does not establish optical success or complete edition coverage. Pricing memberships are retained provider evidence.')
 
 
-def run(repo):
+def run(repo, lorcana_baseline_ref=None, lorcana_publisher_gallery=None, lorcana_market_capture=None):
     audit = Audit(repo)
     if (audit.repo / 'scripts/audit_catalog_coverage.py').is_file():
         audit.text('scripts/audit_catalog_coverage.py')
     results, errors = {}, []
-    functions = [('pokemon', pokemon), ('magic', magic), ('one-piece', one_piece), ('lorcana', lorcana),
+    functions = [('pokemon', pokemon), ('magic', magic), ('one-piece', one_piece),
+                 ('lorcana', lambda state: lorcana(state, lorcana_baseline_ref, lorcana_publisher_gallery, lorcana_market_capture)),
                  ('yugioh', lambda state: yugioh_summary(state.json('TradingCardScanner/YuGiOhCatalogSeed/catalog.json'), state))]
     for game, operation in functions:
         try:
             results[game] = operation(audit)
-        except (CatalogIntegrityError, KeyError, ValueError, TypeError, OSError) as error:
+        except (CatalogIntegrityError, KeyError, ValueError, TypeError, OSError, subprocess.CalledProcessError) as error:
             errors.append(dict(game=game, error=str(error)))
             audit.gap(game, 'structuralError', game, 'input validation', str(error), 'structural_error')
     discrepancies = sorted(audit.discrepancies, key=lambda row: tuple(row[key] for key in ['game', 'code', 'scope', 'identity', 'detail']))
@@ -602,8 +735,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--repo', type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument('--output', type=Path, required=True, help='Directory for summary.json and discrepancies.csv')
+    parser.add_argument('--lorcana-baseline-ref', help='Git revision of the previous shipped Lorcana manifest')
+    parser.add_argument('--lorcana-publisher-gallery', type=Path, help='Retained HTML capture of the English publisher card gallery')
+    parser.add_argument('--lorcana-market-capture', type=Path, help='Directory with retained TCGCSV product and price batches')
     args = parser.parse_args()
-    summary, discrepancies = run(args.repo)
+    summary, discrepancies = run(args.repo, args.lorcana_baseline_ref, args.lorcana_publisher_gallery,
+                                 args.lorcana_market_capture)
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / 'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n', encoding='utf-8')
     with (args.output / 'discrepancies.csv').open('w', newline='', encoding='utf-8') as stream:

@@ -251,6 +251,74 @@ final class OnePieceCatalogActivationTests: XCTestCase {
         return try OnePieceCatalogSignature.sign(release, keyID: keyID, privateKey: key)
     }
 
+    func testColdLaunchETagIsUsedOnlyWithItsVerifiedEnvelope() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        defer { CatalogTransportProtocol.handler = nil }
+        let seed = try envelope(1)
+        let next = try envelope(2, name: "Updated")
+        let seedBytes = try JSONEncoder().encode(seed)
+        let nextBytes = try JSONEncoder().encode(next)
+        let endpoint = try XCTUnwrap(URL(string: "https://fixture.invalid/one-piece/v1/current.json"))
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [CatalogTransportProtocol.self]
+        func launch(seed: OnePieceCatalogReleaseEnvelope) throws -> OnePieceCatalogCoordinator {
+            let store = try OnePieceCatalogReleaseStore(root: root, keys: keys, bundledEnvelope: seed, now: now)
+            let client = try OnePieceCatalogUpdateClient(endpoint: endpoint, configuration: configuration,
+                conditionalStateURL: store.conditionalStateURL)
+            return OnePieceCatalogCoordinator(store: store, client: client, rolloutMode: .remoteAuthority)
+        }
+
+        CatalogTransportProtocol.handler = { request in
+            guard request.value(forHTTPHeaderField: "If-None-Match") == nil else { return (400, [:], []) }
+            return (200, ["ETag": "\"first\""], [seedBytes])
+        }
+        guard case .activation(.notModified) = try await launch(seed: seed).refresh(now: now) else {
+            return XCTFail("The first unchanged body should verify against the bundled release")
+        }
+        CatalogTransportProtocol.handler = { request in
+            guard request.value(forHTTPHeaderField: "If-None-Match") == "\"first\"" else { return (400, [:], []) }
+            return (304, [:], [])
+        }
+        guard case .notModified = try await launch(seed: seed).refresh(now: now) else {
+            return XCTFail("The next process should use the conditional validator for the same verified seed")
+        }
+        CatalogTransportProtocol.handler = { request in
+            guard request.value(forHTTPHeaderField: "If-None-Match") == nil else { return (400, [:], []) }
+            return (200, ["ETag": "\"second\""], [nextBytes])
+        }
+        guard case .activation(.notModified) = try await launch(seed: next).refresh(now: now) else {
+            return XCTFail("A changed verified seed must discard the old validator")
+        }
+        let invalid = OnePieceCatalogReleaseEnvelope(keyID: keyID, payload: next.payload, signature: "invalid")
+        let invalidBytes = try JSONEncoder().encode(invalid)
+        CatalogTransportProtocol.handler = { _ in (200, ["ETag": "\"invalid\""], [invalidBytes]) }
+        guard case .rejected = try await launch(seed: next).refresh(now: now) else {
+            return XCTFail("Invalid signed bytes must not supply a persistent validator")
+        }
+        CatalogTransportProtocol.handler = { request in
+            guard request.value(forHTTPHeaderField: "If-None-Match") == nil else { return (400, [:], []) }
+            return (200, ["ETag": "\"second\""], [nextBytes])
+        }
+        guard case .activation(.notModified) = try await launch(seed: next).refresh(now: now) else {
+            return XCTFail("A rejected response must allow an unconditional retry after relaunch")
+        }
+
+        let modified = "Thu, 12 Nov 2026 00:00:00 GMT"
+        let sameProcess = try launch(seed: next)
+        CatalogTransportProtocol.handler = { _ in (200, ["Last-Modified": modified], [nextBytes]) }
+        guard case .activation(.notModified) = await sameProcess.refresh(now: now) else {
+            return XCTFail("A verified response without an ETag can still supply Last-Modified")
+        }
+        CatalogTransportProtocol.handler = { request in
+            guard request.value(forHTTPHeaderField: "If-None-Match") == nil,
+                  request.value(forHTTPHeaderField: "If-Modified-Since") == modified else { return (400, [:], []) }
+            return (304, [:], [])
+        }
+        guard case .notModified = await sameProcess.refresh(now: now) else {
+            return XCTFail("Last-Modified should remain available for the verified envelope in this process")
+        }
+    }
+
     func testSignedCurrentPreviousRecoveryAndBundleFallback() async throws {
         let root = root(); defer { try? FileManager.default.removeItem(at: root) }
         let seed = try envelope(1)

@@ -68,6 +68,13 @@ actor SignedCatalogUpdateClient<Envelope: Decodable & Sendable> {
     }
 
     func resetConditionalState() { etag = nil; modified = nil }
+
+    func conditionalHeaders() -> (etag: String?, modified: String?) { (etag, modified) }
+
+    func useConditionalHeaders(etag: String?, modified: String?) {
+        self.etag = etag
+        self.modified = modified
+    }
 }
 
 /// Bounds bytes while receiving them, including responses without Content-Length.

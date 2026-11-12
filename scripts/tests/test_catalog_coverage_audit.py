@@ -10,7 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from audit_catalog_coverage import (
     Audit, CatalogIntegrityError, compare_magic_audit, one_piece_registry, pokemon,
     validate_magic_treatments, validate_pokemon_slots, validate_pokemon_parallel_proof,
-    validate_pokemon_physical_objects, yugioh_summary,
+    validate_pokemon_physical_objects, validate_lorcana_market_capture, validate_lorcana_publisher_gallery,
+    validate_lorcana_release_inventory, yugioh_summary,
 )
 
 
@@ -20,6 +21,56 @@ CARD = 'cccccccc-3333-4333-8333-333333333333'
 
 
 class CatalogCoverageAuditTests(unittest.TestCase):
+    def testLorcanaReleaseInventoryDetectsMissingLetteredVariantAndAcquisition(self):
+        rows = {n: dict(id=n, setCode='3', footer=dict(collectorNumber=n, denominator='204',
+                language='en', printedSetMarker='3')) for n in ['4A', '4B']}
+        inventory = dict(schemaVersion=1, language='en', scopes=[
+            dict(code='3', denominator='204', first=4, last=4,
+                 requiredCollectorNumbers=['4A', '4B'], requiresAcquisition=True)])
+        validate_lorcana_release_inventory(rows, rows.keys(), inventory)
+        with self.assertRaisesRegex(CatalogIntegrityError, 'missing variants'):
+            validate_lorcana_release_inventory({'4A': rows['4A']}, {'4A'}, inventory)
+        with self.assertRaisesRegex(CatalogIntegrityError, 'unexpected acquisition gaps'):
+            validate_lorcana_release_inventory(rows, {'4A'}, inventory)
+
+    def testLorcanaPublisherGalleryNormalizesObservedFootersAndRejectsSourceDrift(self):
+        normal = '{detail_image_url:"https://example.com/card",variant_id:"Regular",foil_mask_url:null}'
+        foil = '{detail_image_url:"https://example.com/card",foil_type:"Silver",variant_id:"Foiled"}'
+        gallery = ('card_identifier:"4a/204 EN 3",culture_invariant_id:436,'
+                   f'variants:[{normal},{foil}],card_type:"characters",'
+                   'card_identifier:"1/D23 EN 1",culture_invariant_id:1191,'
+                   f'variants:[{normal}],card_type:"characters",'
+                   'card_identifier:"EN 14",culture_invariant_id:3592,card_type:"supplies"')
+        sources = {'lorcanajson:en:436': dict(printedIdentifier='4a/204 • EN • 3', foilTypes=['None', 'Silver']),
+                   'lorcanajson:en:1191': dict(printedIdentifier='01/D23 • EN • 1', foilTypes=['None'])}
+        self.assertEqual(validate_lorcana_publisher_gallery(sources, gallery), dict(cards=2, supplies=1, finishes=3))
+        with self.assertRaisesRegex(CatalogIntegrityError, 'printed identifiers differ'):
+            validate_lorcana_publisher_gallery(sources, gallery.replace('4a/204', '4b/204'))
+        with self.assertRaisesRegex(CatalogIntegrityError, 'publisher census differs'):
+            validate_lorcana_publisher_gallery(sources, gallery.replace('436', '437'))
+        with self.assertRaisesRegex(CatalogIntegrityError, 'finish declarations differ'):
+            validate_lorcana_publisher_gallery(sources, gallery.replace('Silver', 'Satin'))
+
+    def testLorcanaMarketCaptureRejectsRetainedMappingDrift(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            product = dict(productId=532867, categoryId=71, groupId=23367, name='Fixture',
+                           extendedData=[dict(name='Number', value='4a/204')])
+            lane = dict(productId=532867, subTypeName='Cold Foil')
+            printing = dict(marketMappings=[dict(groupID=23367, productID=532867, productName='Fixture',
+                                                  productNumber='4a/204', providerVariantID='Cold Foil')])
+            def write(kind, rows):
+                (root / f'23367-{kind}.json').write_text(json.dumps(dict(success=True, errors=[], results=rows)))
+            write('products', [product])
+            write('prices', [lane])
+            self.assertEqual(validate_lorcana_market_capture([printing], root), 1)
+            write('prices', [lane, lane])
+            with self.assertRaisesRegex(CatalogIntegrityError, 'market lane changed'):
+                validate_lorcana_market_capture([printing], root)
+            write('products', [dict(product, name='Other printing')])
+            with self.assertRaisesRegex(CatalogIntegrityError, 'market product changed'):
+                validate_lorcana_market_capture([printing], root)
+
     def testPhysicalCollisionProofRejectsRehashedSubtypeBaseAndProductChanges(self):
         root = Path(__file__).resolve().parents[2]
         document = json.loads((root / 'TestFixtures/TradingCards/PokemonCatalogCoverageAudit/reported-physical-collisions.json').read_bytes())
