@@ -1,5 +1,15 @@
 # Centering boundary evidence and implementation plan
 
+**Guided confirmation workflow — 2026-11-11.** Valid frames show live ratios
+marked **Unconfirmed**. Confirm reviews both frames in one tap. It preserves
+an identified reference and records a neutral geometric estimate for an
+unidentified one. Confirm clears detector notes that ask the user to check
+the guides. Warnings about an angled photo, strong rotation, or curved printed
+borders persist on screen and in the export. **Exact Values** includes X/Y
+steppers in **Corners** for 1 px adjustments to the card edge or inner frame.
+Sharing and export require confirmed, valid frames. Photo rotation returns
+the measurement to pending review.
+
 **Squirtle shadow-contact alternative — 2026-11-07.** Native source review
 distinguishes the textured surface ending from a lower fading shadow; the earlier
 same-photo frozen bottom path follows the latter. A clipping-aware, explicit DEBUG
@@ -419,7 +429,7 @@ research inputs, not universal requirements or approved production defaults.
 | --- | --- | --- |
 | A. Boundary identity, supported straight edges and virtual corners | Partial | Analyzer:1993–2320 samples the middle 12–88% of each outer edge, rejects offsets and intersects fitted lines. Vision/nested contours and registered backs provide proposals. Generic fronts still lack defensible reference identity; `placeDefaultInnerFrame` (model:1523) assigns `artWindow` to a placeholder. Distinguish an editing aid from an observed reference. |
 | B. Multiple color/threshold signals | Partial | Analyzer:2629–3018, 3948–4323 uses RGB/Lab, gradients and back-template evidence. Outer weighted RGB brightness is at :2353; it is neither arithmetic RGB mean nor linear-light luminance. The specified RGB-mean/chroma threshold sweeps, channel differences and Gaussian settings are not implemented as that pipeline. |
-| C. Gradient versus profile estimates | Partial | Analyzer:2322–2350 interpolates crossings; :4729–4850 uses median Lab-distance profiles and local quadratic refinement. [Edge snapper](../../TradingCardScanner/Services/CardCenteringEdgeSnapper.swift):69–197 uses signed brightness coherence and quadratic interpolation. Native V1/V2b provide more peak evidence, DEBUG opt-in. The specified Gaussian-scale and profile-alignment comparison is absent. |
+| C. Gradient versus profile estimates | Partial | Analyzer:2322–2350 interpolates crossings; :4729–4850 uses median Lab-distance profiles and local quadratic refinement. Native V1/V2b provide more peak evidence, DEBUG opt-in. The specified Gaussian-scale and profile-alignment comparison is absent. |
 | D. Robust fits and spatial stability | Partial | Outer MAD rejection plus line fitting exists (:2183–2302, :5039). Native V2b (:305–503) keeps peaks, fits slopes and gates coverage, spatial bins, residuals and rivals. Production lacks a full leave-one-band-out test and retained independent inner slopes. Soft-L1, trimmed/profile estimator comparisons and historical block bootstrap are not this implementation. |
 | E. Outer-only perspective rectification | Implemented foundation; incomplete validation | Model:326–554 derives one transform from the outer quad and applies it to both frames. Original/presentation mappings survive. Automatic inner squaring undermines retained print geometry; no physical distortion proof follows from four-corner residuals. No normal rectified review surface exists. |
 | F. Explicit directional ratios and valid margins | Implemented core; partial spatial reporting | Model:22–37, 998–1057, 1126–1168 uses opposing-border sums, finite/positive/nested geometry and directional labels. Current headline margins average endpoint distances; samples are not common-row intersections. State the convention and add common-row/column diagnostics before considering a headline-method change. |
@@ -441,7 +451,7 @@ Do not recreate a source from an annotated or downscaled PNG.
 
 | Case | Available evidence | What can be concluded |
 | --- | --- | --- |
-| Gengar | November 1 `current-default-gengar/result.json` records 1112×1536 input, SHA-256 `d174c27d5aaba21dd4602d926488eb6d93a535f31eabdee5937c13bc4a405562`, working 869×1200, presentation 883×1210. Retained baseline/default/V2b outputs and manual export exist. | Baseline unchanged guides yielded 64.5/35.5 LR, 44.4/55.6 TB; later default 64.4/35.6, 44.0/56.0; V2b 49.8/50.2, 44.2/55.8. The manually selected example is 52.2/47.8, 50.4/49.6. These are reported after explicit confirmation for comparison; automatic proposal ratios are hidden. None is calibrated truth. |
+| Gengar | November 1 `current-default-gengar/result.json` records 1112×1536 input, SHA-256 `d174c27d5aaba21dd4602d926488eb6d93a535f31eabdee5937c13bc4a405562`, working 869×1200, presentation 883×1210. Retained baseline/default/V2b outputs and manual export exist. | Baseline unchanged guides yielded 64.5/35.5 LR, 44.4/55.6 TB; later default 64.4/35.6, 44.0/56.0; V2b 49.8/50.2, 44.2/55.8. The manually selected example is 52.2/47.8, 50.4/49.6. These comparison exports followed explicit confirmation. None is calibrated truth. |
 | Gengar historical assessment | Attachment reports approximately 53/47 and 50/50, manually adjudicated, with a reconstructed multi-method workflow. | Related retained metadata identifies a particular JPEG, but its bytes were not rehashed here and the attachment's original scripts/line constants are missing. The differing manual numbers are not an error benchmark. The separate 29 MB scan is not identified as this JPEG. |
 | Mew | Attachment only: approximately 44/56 LR and 48/52 TB, with shadow-dependent alternative geometry. | Exact bytes, hashes, edge fits, scripts and overlays are missing; no reproduction or threshold classification. |
 | Mewtwo | Attachment only: approximate 49/51 LR and 46/54 TB plus comparison images. | Exact inputs and transformation evidence are missing. Do not attribute Gengar's sweeps/bootstrap/fits to Mewtwo or use graded comparison images as calibration. |
@@ -456,7 +466,7 @@ were copied into the repository for this review.
 
 **Implemented scope:** the analyzer retains independent inner lines; immutable
 proposal geometry and detector confidence are separate from pending/user-confirmed
-review. Small-angle detents preserve independent slopes. Positional variation
+review. Manual nudges preserve small angles and independent slopes. Positional variation
 appears in the screen and export without changing headline aggregation, and
 DEBUG receipts identify the ratio method and review provenance. Existing
 one-action confirmation, live valid edits, explicit Square/Undo and invalidation
@@ -478,11 +488,9 @@ the same slice.
 - Run the existing centering selectors from the unchanged tree to establish a
   fresh baseline. Keep development-only benchmarks and their enablement explicit;
   reconcile selected methods against finalized result bundles.
-- Retain raw proposals and independent line slopes. Make the existing Square
-  action explicit and undoable; retain what it replaced. Audit auto-squaring and
-  small-angle detents so ordinary nudges cannot silently erase independently
-  adjusted geometry. Existing tests that deliberately specify squaring continue
-  to test the explicit action; document the changed default behavior.
+- Retain raw proposals and independent line slopes. Square is an explicit,
+  undoable action. Ordinary nudges preserve the edited angle through zero.
+  Regression tests cover both manual adjustment and explicit squaring.
 - Separate `reviewState` (pending/user-confirmed) from `boundaryIdentity`
   (supported/ambiguous/user-selected/unknown) and localization evidence. Preserve
   current valid-edit live updates, one confirmation for both frames, and
@@ -499,8 +507,8 @@ establishes faithful geometry, not new automatic perception accuracy.
 
 ### 2. Make reference identity and competing boundaries explicit
 
-**Implemented — 2026-11-04.** Native candidate/input records, explicit reference
-choice and side-only repair are covered by the
+**Implemented — 2026-11-04.** Native candidate/input records, reference
+definitions and side-only repair are covered by the
 [slice 2 receipt](../audits/centering-guided-repair.md#reference-identity-and-competing-boundaries--2026-11-04).
 Existing detector observations are retained; unavailable polarity/residual or
 sampling data remain unknown. This does not promote new automatic perception.
@@ -523,10 +531,9 @@ from the 5,369-line analyzer only as needed for these seams.
   role before refining location. Do not select whichever ratio is closest to
   50/50, or independently align a template to the printed frame and thereby
   remove its displacement.
-- For unsupported designs, offer a deliberate user-selected reference or no
-  measurement. A default inner rectangle remains an unverified placement aid.
-  Manual selection may produce a clearly labeled geometric estimate; it cannot
-  establish grading-reference equivalence.
+- For unsupported designs, ask the user to review and confirm valid frames.
+  Confirmation produces a labeled geometric estimate. A default inner rectangle
+  remains an unverified placement aid until review.
 
 **Exit:** cut/shadow and printed-border/artwork fixtures preserve both candidates
 with reasons; absent references remain unavailable; a single side choice resolves
@@ -641,8 +648,8 @@ Rendered iPhone/iPad normal and maximum-text checks pass; physical VoiceOver and
 capture-diverse accuracy remain open. The original proposed scope follows.
 
 Keep Pro navigation, capture/import choices, original overlay, source-pixel
-detail, undo and current entitlement. Default flow: acquire image → inspect
-proposed frames → confirm both → read/share. When one edge is ambiguous, focus
+detail, undo and current entitlement. Default flow: acquire image → inspect live
+unconfirmed ratios and guides → confirm both frames → share. When one edge is ambiguous, focus
 that side with two selectable lines and an enlarged original-pixel region.
 Avoid an eight-edge wizard or a dashboard of thresholds. Advanced diagnostics
 stay disclosed on demand. Preserve an accessible numeric alternative to dragging.
