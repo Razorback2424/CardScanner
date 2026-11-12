@@ -14,6 +14,14 @@ import market_price_feeds as feeds
 
 
 class MarketPriceFeedTests(unittest.TestCase):
+    def test_m26_market_scope_contains_only_the_verified_product_finishes(self):
+        repo = Path(__file__).resolve().parents[2]
+        scope = feeds.scope_from_repo(repo)
+        normal = {730416, 730422, 730424, 730426, 730427, 730430, 730431, 730432}
+        holofoil = {730417, 730418, 730419, 730420, 730421, 730423, 730429}
+        self.assertEqual(scope[(3, 24938)],
+                         {product: {"Normal"} for product in normal} | {product: {"Holofoil"} for product in holofoil})
+
     def test_battle_deck_products_enter_scope_with_their_exact_lanes(self):
         repo = Path(__file__).resolve().parents[2]
         scope = feeds.scope_from_repo(repo)
@@ -22,13 +30,19 @@ class MarketPriceFeedTests(unittest.TestCase):
         self.assertEqual(len(entries), 34)
         self.assertEqual(len({entry["cardID"] for entry in entries}), 34)
         self.assertEqual(len({entry["productID"] for entry in entries}), 34)
-        self.assertEqual(len(scope[(3, 1840)]), 30)
+        self.assertEqual(len(scope[(3, 1840)]), 32)
         self.assertEqual(scope[(3, 1840)][729924], {"Reverse Holofoil"})
         self.assertEqual(scope[(3, 1840)][729923], {"Reverse Holofoil"})
         self.assertEqual({entry["productID"] for entry in entries if entry["groupID"] == 24461},
                          {729815, 729816, 729817, 729818})
         for entry in entries:
             self.assertEqual(scope[(3, entry["groupID"])][entry["productID"]], {entry["printing"]})
+
+    def test_delta_reign_uses_exact_normal_and_holofoil_products(self):
+        scope = feeds.scope_from_repo(Path(__file__).resolve().parents[2])
+        self.assertEqual({pid for pid, lanes in scope[(3, 1840)].items() if lanes == {"Normal"}}, {732417, 732418})
+        self.assertEqual(scope[(3, 24451)], {pid: {"Holofoil"} for pid in
+                         (730455, 730456, 730453, 730454, 730451, 730452, 730130, 732591, 731807, 731799, 732872)})
 
     marker = "2026-10-29T07:00:00Z"
     captured = "2026-10-29T08:00:00+00:00"
@@ -75,6 +89,15 @@ class MarketPriceFeedTests(unittest.TestCase):
         self.prepare("replay", now="2026-10-29T09:00:00+00:00")
         self.assertEqual(self.calls, ["https://tcgcsv.com/last-updated.txt"] * 2)
         self.assertEqual((self.root / "replay" / feeds.NAMESPACE / "index.json").read_bytes(), index)
+
+    def test_upstream_product_without_metadata_keeps_an_empty_staged_number_list(self):
+        del self.products["results"][0]["extendedData"]
+        self.prices["results"] = []
+        self.prepare()
+        site = self.root / "site" / feeds.NAMESPACE
+        product = json.loads((site / "tcgplayer/71/1/products").read_bytes())["results"][0]
+        self.assertEqual(product["extendedData"], [])
+        self.assertEqual(json.loads((site / "tcgplayer/71/1/prices").read_bytes())["results"], [])
 
     def test_mixed_build_fails_before_writing_any_hosting_files(self):
         original = self.fetch

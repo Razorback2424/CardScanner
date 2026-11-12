@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "groupID": 24938,
+  "setCode": "M26",
+  "setName": "McDonald's Collection 2026",
+  "releaseDate": "2026-11-10",
+  "cards": [
+    { "number": "001/015", "name": "Decidueye", "productID": 730416, "printing": "Normal" },
+    { "number": "002/015", "name": "Chandelure", "productID": 730417, "printing": "Holofoil" },
+    { "number": "003/015", "name": "Palafin", "productID": 730418, "printing": "Holofoil" },
+    { "number": "004/015", "name": "Pikachu", "productID": 730419, "printing": "Holofoil" },
+    { "number": "005/015", "name": "Mimikyu", "productID": 730420, "printing": "Holofoil" },
+    { "number": "006/015", "name": "Lucario", "productID": 730421, "printing": "Holofoil" },
+    { "number": "007/015", "name": "Hawlucha", "productID": 730422, "printing": "Normal" },
+    { "number": "008/015", "name": "Tyranitar", "productID": 730423, "printing": "Holofoil" },
+    { "number": "009/015", "name": "Absol", "productID": 730424, "printing": "Normal" },
+    { "number": "010/015", "name": "Zoroark", "productID": 730426, "printing": "Normal" },
+    { "number": "011/015", "name": "Metagross", "productID": 730427, "printing": "Normal" },
+    { "number": "012/015", "name": "Jirachi", "productID": 730429, "printing": "Holofoil" },
+    { "number": "013/015", "name": "Eevee", "productID": 730430, "printing": "Normal" },
+    { "number": "014/015", "name": "Snorlax", "productID": 730431, "printing": "Normal" },
+    { "number": "015/015", "name": "Wooloo", "productID": 730432, "printing": "Normal" }
+  ]
+}

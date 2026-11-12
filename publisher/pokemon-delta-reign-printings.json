@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "cards": [
+    {"cardID": "me06-021", "name": "Magmortar", "number": "021/103", "printings": [
+      {"finish": "normal", "productID": 732417, "marketName": "Magmortar - 021/103"}
+    ]},
+    {"cardID": "me06-075", "name": "Kommo-o", "number": "075/103", "printings": [
+      {"finish": "normal", "productID": 732418, "marketName": "Kommo-o"}
+    ]},
+    {"cardID": "mep-111", "name": "Masquerain", "number": "111", "printings": [
+      {"finish": "prerelease", "productID": 730455, "marketName": "Masquerain - 111"},
+      {"finish": "staff", "productID": 730456, "marketName": "Masquerain - 111 [Staff]"}
+    ]},
+    {"cardID": "mep-112", "name": "Magmortar", "number": "112", "printings": [
+      {"finish": "prerelease", "productID": 730453, "marketName": "Magmortar - 112"},
+      {"finish": "staff", "productID": 730454, "marketName": "Magmortar - 112 [Staff]"}
+    ]},
+    {"cardID": "mep-113", "name": "Enamorus", "number": "113", "printings": [
+      {"finish": "prerelease", "productID": 730451, "marketName": "Enamorus - 113"},
+      {"finish": "staff", "productID": 730452, "marketName": "Enamorus - 113 [Staff]"}
+    ]},
+    {"cardID": "mep-114", "name": "Kommo-o", "number": "114", "printings": [
+      {"finish": "prerelease", "productID": 730130, "marketName": "Kommo-o - 114"},
+      {"finish": "staff"}
+    ]},
+    {"cardID": "mep-115", "name": "Spritzee", "number": "115", "printings": [
+      {"finish": "cosmos", "productID": 732591, "marketName": "Spritzee - 115 (Cosmos Holo)"}
+    ]},
+    {"cardID": "mep-116", "name": "Seel", "number": "116", "printings": [
+      {"finish": "cosmos", "productID": 731807, "marketName": "Seel - 116 (Cosmos Holo)"}
+    ]},
+    {"cardID": "mep-117", "name": "Kyogre", "number": "117", "printings": [
+      {"finish": "holo", "productID": 731799, "marketName": "Kyogre - 117"},
+      {"finish": "pokemonCenter", "productID": 732872, "marketName": "Kyogre - 117 (Pokemon Center Exclusive)", "marketNumberMayBeMissing": true}
+    ]}
+  ]
+}

@@ -96,6 +96,33 @@ def scope_from_repo(repo):
         if (printing["groupID"], printing["printing"]) not in {(1840, "Reverse Holofoil"), (24461, "Holofoil")}:
             raise ValueError("Invalid Pokémon Battle Deck market lane")
         add(3, printing["groupID"], printing["productID"], printing["printing"])
+    m26 = json.loads((repo / "publisher/pokemon-mcdonalds-2026.json").read_bytes())
+    cards = m26["cards"]
+    if (m26["schemaVersion"] != 1 or m26["groupID"] != 24938 or m26["setCode"] != "M26"
+            or len(cards) != 15 or {card["number"] for card in cards} != {f"{n:03d}/015" for n in range(1, 16)}
+            or len({card["productID"] for card in cards}) != len(cards)):
+        raise ValueError("Invalid Pokémon M26 catalog")
+    for card in cards:
+        if card["printing"] not in {"Normal", "Holofoil"}:
+            raise ValueError("Invalid Pokémon M26 market lane")
+        add(3, m26["groupID"], card["productID"], card["printing"])
+    delta_reign = json.loads((repo / "publisher/pokemon-delta-reign-printings.json").read_bytes())
+    if delta_reign["schemaVersion"] != 1:
+        raise ValueError("Invalid Delta Reign printing catalog")
+    for card in delta_reign["cards"]:
+        set_id, _ = card["cardID"].rsplit("-", 1)
+        for printing in card["printings"]:
+            finish = printing["finish"]
+            if set_id == "me06" and finish == "normal":
+                group, lane = 1840, "Normal"
+            elif set_id == "mep" and finish in {"prerelease", "staff", "cosmos", "holo", "pokemonCenter"}:
+                group, lane = 24451, "Holofoil"
+            else:
+                raise ValueError("Invalid Delta Reign market lane")
+            product = printing.get("productID")
+            if product is None and card["cardID"] == "mep-114" and finish == "staff":
+                continue
+            add(3, group, product, lane)
     lorcana = json.loads((repo / "TradingCardScanner/LorcanaCatalogSeed/market.json").read_bytes())
     for printing in lorcana["physicalPrintings"]:
         if printing["status"] != "verified":
@@ -123,7 +150,7 @@ def scope_from_repo(repo):
     return scope
 
 
-def validate_response(raw, category, group, resource):
+def validate_response(raw, category, group, resource, *, upstream=False):
     doc = json.loads(raw)
     if doc.get("success") is not True or doc.get("errors") != [] or not isinstance(doc.get("results"), list):
         raise ValueError("Failed or malformed provider response")
@@ -142,13 +169,14 @@ def validate_response(raw, category, group, resource):
             raise ValueError("Duplicate provider product or price lane")
         seen.add(key)
         if resource == "products":
+            fields = row.get("extendedData", [] if upstream else None)
             if (type(row.get("categoryId")) is not int or type(row.get("groupId")) is not int
                     or row["categoryId"] != category or row["groupId"] != group
                     or not isinstance(row.get("name"), str) or not row["name"]
-                    or not isinstance(row.get("extendedData"), list)):
+                    or not isinstance(fields, list)):
                 raise ValueError("Foreign or incomplete product")
             if any(not isinstance(field, dict) or not isinstance(field.get("name"), str)
-                   or (field["name"] == "Number" and not isinstance(field.get("value"), str)) for field in row["extendedData"]):
+                   or (field["name"] == "Number" and not isinstance(field.get("value"), str)) for field in fields):
                 raise ValueError("Malformed product fields")
         else:
             value = row.get("marketPrice")
@@ -203,7 +231,7 @@ def prepare(scope, cache, site, fetch=read_http, now=stamp, pause=time.sleep, yu
                     pause(0.1)
                     raw = fetch("https://tcgcsv.com/" + path)
                     captured_at = now()
-                validate_response(raw, category, group, resource)
+                validate_response(raw, category, group, resource, upstream=True)
                 receipt = {"sha256": digest(raw), "capturedAt": captured_at}
                 raw_path.write_bytes(raw)
                 receipts[path] = receipt
@@ -212,7 +240,7 @@ def prepare(scope, cache, site, fetch=read_http, now=stamp, pause=time.sleep, yu
                 temporary.replace(receipts_path)
             if not 0 <= (instant(now()) - instant(receipt["capturedAt"])).total_seconds() < 86400:
                 raise ValueError("A stale capture cannot be published as current")
-            rows = validate_response(raw, category, group, resource)
+            rows = validate_response(raw, category, group, resource, upstream=True)
             selected = []
             for row in rows:
                 product = row["productId"]
@@ -220,7 +248,7 @@ def prepare(scope, cache, site, fetch=read_http, now=stamp, pause=time.sleep, yu
                     continue
                 if resource == "products":
                     selected.append({key: row[key] for key in ("productId", "categoryId", "groupId", "name")} | {
-                        "extendedData": [field for field in row["extendedData"] if field["name"] == "Number"]})
+                        "extendedData": [field for field in row.get("extendedData", []) if field["name"] == "Number"]})
                 elif row["subTypeName"] in products[product]:
                     selected.append({"productId": product, "subTypeName": row["subTypeName"], "marketPrice": row.get("marketPrice")})
             if resource == "products":
