@@ -55,6 +55,10 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
     var normalizedName: String = ""
     var collectorNumberSortKey: CollectorNumber.SortKey = .empty
 
+    var displayCardNumber: String {
+        PokemonFinishMinimumCatalog.displayCollectorNumber(cardNumber, game: game, providerID: catalogProviderID)
+    }
+
     var variant: PhysicalVariant? {
         guard let variantID else { return nil }
         return PhysicalVariant(id: variantID, label: variantLabel ?? variantID.capitalized)
@@ -365,6 +369,76 @@ enum CardNameSearch {
     static func matches(normalizedName: String, normalizedQuery: String) -> Bool {
         guard !normalizedQuery.isEmpty else { return true }
         return normalizedName.contains(normalizedQuery)
+    }
+}
+
+/// Printed collector evidence supplied by local catalogs that support exact
+/// number searches. Other catalogs keep their existing name/number matching.
+struct CatalogCardSearchFields: Codable, Hashable, Sendable {
+    let collectorNumber: String
+    let denominator: String?
+    let text: String
+    let collectorNumberAliases: [String]?
+
+    init(collectorNumber: String, denominator: String?, text: String, collectorNumberAliases: [String]? = nil) {
+        self.collectorNumber = SetCompletionCalculator.canonicalNumber(collectorNumber) ?? ""
+        self.denominator = denominator?.lowercased()
+        self.text = CardNameSearch.normalize(text)
+        self.collectorNumberAliases = collectorNumberAliases
+    }
+}
+
+struct CatalogCardSearchQuery: Equatable, Sendable {
+    private static let fraction = try! NSRegularExpression(
+        pattern: "(?<![a-z0-9])([0-9]+[a-z]?)\\s*/\\s*([a-z0-9]+(?:-[a-z0-9]+)*)(?![a-z0-9])"
+    )
+    let normalized: String
+    private let fractions: [String]
+    private let terms: [String]
+
+    init(_ query: String) {
+        normalized = CardNameSearch.normalize(query)
+        let folded = query.folding(options: [.caseInsensitive, .widthInsensitive], locale: Locale(identifier: "en_US_POSIX"))
+        let source = folded as NSString
+        let range = NSRange(location: 0, length: source.length)
+        let matches = Self.fraction.matches(in: folded, range: range)
+        fractions = matches.map { match in
+            let number = source.substring(with: match.range(at: 1))
+            let denominator = source.substring(with: match.range(at: 2))
+            return (SetCompletionCalculator.canonicalNumber(number) ?? number) + "/" + denominator
+        }
+        let remainder = Self.fraction.stringByReplacingMatches(in: folded, range: range, withTemplate: " ")
+        terms = CardNameSearch.normalize(remainder).split(separator: " ").map(String.init)
+    }
+
+    var scope: String { (fractions + terms).joined(separator: " ") }
+
+    func matches(_ fields: CatalogCardSearchFields) -> Bool {
+        if let aliases = fields.collectorNumberAliases {
+            let query = " " + normalized + " "
+            for alias in aliases {
+                guard let range = query.range(of: " " + alias + " ") else { continue }
+                let remainder = (query[..<range.lowerBound] + " " + query[range.upperBound...])
+                    .trimmingCharacters(in: .whitespaces)
+                return remainder.isEmpty || fields.text.contains(remainder)
+            }
+            return normalized.isEmpty || fields.text.contains(normalized)
+        }
+        if !fractions.isEmpty {
+            guard let denominator = fields.denominator,
+                  fractions.allSatisfy({ $0 == fields.collectorNumber + "/" + denominator }) else { return false }
+        }
+        if fractions.isEmpty, terms.count == 1, let term = terms.first, term.first?.isNumber == true,
+           term.drop(while: \.isNumber).count <= 1 {
+            return SetCompletionCalculator.canonicalNumber(term) == fields.collectorNumber
+        }
+        return terms.allSatisfy { term in
+            if term.first?.isNumber == true {
+                return SetCompletionCalculator.canonicalNumber(term) == fields.collectorNumber
+                    || fields.text.split(separator: " ").contains(Substring(term))
+            }
+            return fields.text.contains(term)
+        }
     }
 }
 

@@ -1756,7 +1756,7 @@ struct CollectionCardTile: View {
     }
 
     private var identityLine: String {
-        [row.setName, row.cardNumber]
+        [row.setName, row.displayCardNumber]
             .filter { !$0.isEmpty }
             .joined(separator: " · ")
     }

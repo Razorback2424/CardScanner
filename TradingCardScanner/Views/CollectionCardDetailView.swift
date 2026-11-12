@@ -741,7 +741,7 @@ private struct CollectionCardDetailContent: View {
             parts.append(card.setName)
         }
 
-        let designation = [card.setCode, card.cardNumber]
+        let designation = [card.setCode, card.displayCardNumber]
             .filter { !$0.isEmpty }
             .joined(separator: " ")
         if !designation.isEmpty {
@@ -993,8 +993,8 @@ private struct CollectionCardDetailContent: View {
         if !card.setCode.isEmpty {
             raw.append(("Set code", card.setCode))
         }
-        if !card.cardNumber.isEmpty {
-            raw.append(("Number", card.cardNumber))
+        if !card.displayCardNumber.isEmpty {
+            raw.append(("Number", card.displayCardNumber))
         }
         if let rarity = card.rarity, !rarity.isEmpty {
             raw.append(("Rarity", rarity.capitalized))

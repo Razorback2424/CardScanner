@@ -142,6 +142,12 @@ enum CardPricing {
             return reviewedAdditionalProductID(on: pokemon, variant: variant)
         }
         guard !PokemonVariantRules.requiresPhysicalReview(cardID: pokemon.id, variant: variant) else { return nil }
+        if let printing = PokemonReviewedEnergyCatalog.unnumberedPrinting(for: pokemon) {
+            return printRun == nil ? printing.finishProducts[variant.id] : nil
+        }
+        if let printing = PokemonReviewedArtworkCatalog.printing(for: pokemon) {
+            return printRun == nil && printing.marketFinishes.contains(variant.id) ? printing.artworkProductID : nil
+        }
         if pokemon.set.id == "xya", ReviewedPokemonProductIdentity.catalogIDs.contains(pokemon.id) {
             return ReviewedPokemonProductIdentity.productID(for: pokemon, variant: variant, printRun: printRun)
         }
@@ -345,6 +351,20 @@ enum CardPricing {
         case .none:
             return .unavailable(nil)
         case let .pokemon(pokemon, _):
+            let artworkPrinting = PokemonReviewedArtworkCatalog.printing(for: pokemon)
+            let energyPrinting = PokemonReviewedEnergyCatalog.unnumberedPrinting(for: pokemon)
+            let exactProductID: Int?
+            if artworkPrinting != nil || energyPrinting != nil {
+                guard pokemonPrintRun == nil, let variant,
+                      let product = energyPrinting?.finishProducts[variant.id] ?? artworkPrinting.flatMap({
+                          $0.marketFinishes.contains(variant.id) ? $0.artworkProductID : nil
+                      }) else {
+                    return .unavailable(nil)
+                }
+                exactProductID = product
+            } else {
+                exactProductID = nil
+            }
             if let variant, variant == .jumbo || hasSignedProduct(on: pokemon, variant: variant) {
                 guard pokemonPrintRun == nil || pokemonPrintRun == .unlimited,
                       reviewedAdditionalProductID(on: pokemon, variant: variant) != nil,
@@ -374,9 +394,9 @@ enum CardPricing {
             // Per-object pricing first. It is the only representation that can
             // tell a Poké Ball copy from a Master Ball one, so when TCGdex
             // publishes it, it is strictly better evidence than the flat object.
-            let detailed = variant.map {
+            let detailed = exactProductID == nil ? variant.map {
                 exactDetailedVariants(on: pokemon, variant: $0, printRun: pokemonPrintRun)
-            } ?? []
+            } ?? [] : []
             if !detailed.isEmpty {
                 guard let resolved = unambiguousPrice(from: detailed, at: fetchedAt)
                     ?? verifiedFlatPrice(for: detailed, on: pokemon, at: fetchedAt) else {
@@ -389,7 +409,7 @@ enum CardPricing {
                 return .unavailable(pokemon.pricing == nil ? nil : .tcgplayer)
             }
             guard let listing = tcgplayerListing(for: variant),
-                  let amount = marketPrice(from: tcg, listing: listing) else {
+                  let amount = marketPrice(from: tcg, listing: listing, requiredProductID: exactProductID) else {
                 return .unavailable(.tcgplayer)
             }
             return .price(
@@ -517,15 +537,19 @@ enum CardPricing {
         card.pricing != nil || card.variantsDetailed?.contains { $0.pricing != nil } == true
     }
 
-    private static func marketPrice(from pricing: TCGPlayerPricing, listing: String) -> Double? {
+    private static func marketPrice(from pricing: TCGPlayerPricing, listing: String, requiredProductID: Int? = nil) -> Double? {
         guard pricing.unit == nil || pricing.unit?.caseInsensitiveCompare("USD") == .orderedSame else { return nil }
+        func eligibleAmount(for point: TCGPlayerPricePoint?) -> Double? {
+            guard let point, requiredProductID == nil || requiredProductID == point.productID else { return nil }
+            return point.marketPrice
+        }
         let amount: Double?
         switch listing {
-        case "normal": amount = pricing.normal?.marketPrice
+        case "normal": amount = eligibleAmount(for: pricing.normal)
         // TCGdex has published both spellings over time; either is the same
         // listing, so accept whichever is present rather than losing the price.
-        case "holofoil": amount = pricing.holofoil?.marketPrice ?? pricing.holo?.marketPrice
-        case "reverse-holofoil": amount = pricing.reverseHolofoil?.marketPrice ?? pricing.reverse?.marketPrice
+        case "holofoil": amount = eligibleAmount(for: pricing.holofoil) ?? eligibleAmount(for: pricing.holo)
+        case "reverse-holofoil": amount = eligibleAmount(for: pricing.reverseHolofoil) ?? eligibleAmount(for: pricing.reverse)
         default: amount = nil
         }
         guard let amount, amount >= 0, Money(rounding: amount) != nil else { return nil }

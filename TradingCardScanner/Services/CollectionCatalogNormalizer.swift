@@ -166,7 +166,8 @@ final class CollectionCatalogNormalizer: ObservableObject {
         let inputActor = await CollectionCatalogNormalizationInputActor.makeBackground(
             modelContainer: context.container
         )
-        let inputs = await inputActor.inputs(now: now, gameRegistry: gameRegistry, retryFailedSealed: retriesSealed)
+        let inputs = await inputActor.inputs(now: now, gameRegistry: gameRegistry, retryFailedSealed: retriesSealed,
+                                            shouldContinue: shouldContinue)
         isCollectingInputs = false
         guard !Task.isCancelled, shouldContinue?() ?? true else {
             requestsAnotherPass = false
@@ -494,7 +495,8 @@ actor CollectionCatalogNormalizationInputActor: BackgroundModelActor {
             }
     }
 
-    fileprivate func inputs(now: Date, gameRegistry: CardGameRegistry, retryFailedSealed: Bool) -> ImportedCatalogNormalizationInputs {
+    fileprivate func inputs(now: Date, gameRegistry: CardGameRegistry, retryFailedSealed: Bool,
+                            shouldContinue: StorageGenerationContinuation?) -> ImportedCatalogNormalizationInputs {
         let readContext = ModelContext(modelContext.container)
         let store = CollectionStore(context: readContext, gameRegistry: gameRegistry)
         var allCards = (try? readContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
@@ -508,14 +510,16 @@ actor CollectionCatalogNormalizationInputActor: BackgroundModelActor {
             }
             return (card.collectionKey, oldURL, newURL, card.thumbnailURL != nil)
         }
-        if !repairs.isEmpty {
+        let rarityKeys = allCards.filter { store.correctedCatalogRarity(for: $0) != nil }.map(\.collectionKey)
+        let keys = Array(Set(repairs.map(\.key) + rarityKeys))
+        if !keys.isEmpty {
             do {
                 try CollectionWriteSerializer.perform(
                     container: modelContext.container,
                     timeout: .wait
                 ) { context in
+                    guard !Task.isCancelled, shouldContinue?() ?? true else { throw CancellationError() }
                     let writeStore = CollectionStore(context: context, gameRegistry: gameRegistry)
-                    let keys = Array(Set(repairs.map(\.key)))
                     let rows = try context.fetch(
                         FetchDescriptor<CollectedCard>(
                             predicate: #Predicate { keys.contains($0.collectionKey) }
@@ -526,14 +530,21 @@ actor CollectionCatalogNormalizationInputActor: BackgroundModelActor {
                         uniquingKeysWith: { first, _ in first }
                     )
                     for row in rows {
-                        guard let repair = repairsByKey[row.collectionKey],
-                              row.itemKind == .sealedProduct,
-                              writeStore.permitsSyncedMetadataWrite(for: row),
-                              row.imageURL == repair.oldURL else { continue }
-                        row.imageURL = repair.newURL
-                        if repair.updateThumbnail { row.thumbnailURL = repair.newURL }
+                        if let repair = repairsByKey[row.collectionKey], row.itemKind == .sealedProduct,
+                           writeStore.permitsSyncedMetadataWrite(for: row), row.imageURL == repair.oldURL {
+                            row.imageURL = repair.newURL
+                            if repair.updateThumbnail { row.thumbnailURL = repair.newURL }
+                        }
+                        if let stored = row.rarity, let corrected = writeStore.correctedCatalogRarity(for: row) {
+                            let suffix = " · " + stored
+                            if row.name.hasSuffix(suffix) {
+                                row.name = String(row.name.dropLast(suffix.count)) + " · " + corrected
+                            }
+                            row.rarity = corrected
+                        }
                     }
                     if context.hasChanges {
+                        guard !Task.isCancelled, shouldContinue?() ?? true else { throw CancellationError() }
                         try writeStore.validatePendingGameWrites()
                         try context.save()
                     }

@@ -565,6 +565,14 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         let (mutation, storageID) = try performOwnershipWrite { context in
             try Task.checkCancellation()
             guard shouldContinue() else { throw CancellationError() }
+            let authority = CollectionStoreSessionRegistry.shared
+                .mutationAuthority(for: details.card.game, container: context.container)
+            try authority.adapter?.validateBrowseAcquisition(
+                printingID: details.card.physicalPrintingID, variantID: resolved.variant?.id)
+            if details.card.game == .pokemon, details.collectionWriteUnavailableReason != nil {
+                throw CollectionStoreError.unverifiedPokemonPrinting
+            }
+            try validatePokemonAcquisition(details.card, finish: resolved.variant, printRun: pokemonPrintRun, in: context)
             let store = CollectionStore(context: context)
             let mutation = try store.add(details.card, resolved: resolved, pokemonPrintRun: pokemonPrintRun,
                 identityResolution: .catalogSelected, setReleaseOrder: details.set.releaseOrder,
@@ -576,6 +584,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
                 throw CollectionStoreError.missingDestinationRow(key)
             }
             let storageID = row.priceStorageID
+            try validatePokemonAuthority(details.card, in: context)
             try saveModelContext(context)
             return (mutation, storageID)
         }
@@ -664,6 +673,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         try performOwnershipWrite { context in
             try Task.checkCancellation()
             guard shouldContinue() else { throw CancellationError() }
+            try validatePokemonAcquisition(card, finish: nil, printRun: pokemonPrintRun, in: context)
             return try CollectionStore(context: context).addGraded(underlying: card, variant: variant,
                 certificationNumber: certificationNumber, setReleaseOrder: setReleaseOrder,
                 pokemonPrintRun: pokemonPrintRun)
@@ -811,7 +821,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
 
     func containsCollectionEntry(for candidate: CollectionCommitCandidate) throws -> Bool {
         try performOwnershipWrite { context in
-            if candidate.identifier.game == .onePiece {
+            if candidate.identifier.game == .onePiece || candidate.identifier.game == .pokemon {
                 try validateScanAcquisition(candidate, in: context)
             }
             try validateAcquisitionContext(candidate.acquisitionIdentifier, in: context)
@@ -1070,6 +1080,10 @@ actor ScannerCollectionWriter: BackgroundModelActor {
     }
 
     private func validateScanAcquisition(_ candidate: CollectionCommitCandidate, in context: ModelContext) throws {
+        try validatePokemonAcquisition(candidate.card, finish: candidate.resolved.variant,
+            printRun: candidate.pokemonPrintRun,
+            automaticIdentifier: candidate.identityResolution == .printedIdentifier ? candidate.acquisitionIdentifier : nil,
+            in: context)
         if candidate.identifier.game == .onePiece {
             guard let adapter = CollectionStoreSessionRegistry.shared
                 .mutationAuthority(for: .onePiece, container: context.container).adapter as? OnePieceCatalogAdapter else {
@@ -1084,6 +1098,24 @@ actor ScannerCollectionWriter: BackgroundModelActor {
             throw CatalogLookupError.staleCatalog
         }
         try adapter.validateAcquisition(candidate)
+    }
+
+    private func validatePokemonAcquisition(_ card: IdentifiedCard, finish: PhysicalVariant?,
+                                             printRun: PokemonPrintRun?, automaticIdentifier: ScanIdentifier? = nil,
+                                             in context: ModelContext) throws {
+        try validatePokemonAuthority(card, automaticIdentifier: automaticIdentifier, in: context)
+        guard PokemonVariantPolicy.allowsAcquisition(of: card, finish: finish, printRun: printRun) else {
+            throw CollectionStoreError.unverifiedPokemonPrinting
+        }
+    }
+
+    private func validatePokemonAuthority(_ card: IdentifiedCard, automaticIdentifier: ScanIdentifier? = nil,
+                                          in context: ModelContext) throws {
+        guard case let .pokemon(payload, _) = card.legacyIdentity,
+              let coordinator = CollectionStoreSessionRegistry.shared.pokemonCatalogCoordinator(for: context.container) else { return }
+        guard coordinator.acceptsAcquisition(payload, automaticIdentifier: automaticIdentifier) else {
+            throw CatalogLookupError.staleCatalog
+        }
     }
 
     func undo(_ mutation: CollectionMutation) throws {
@@ -1352,6 +1384,7 @@ enum CollectionStoreError: Error, Equatable {
     case quantityOutOfRange(String)
     case restoreConflict(String)
     case staleQuantityDefect(String)
+    case unverifiedPokemonPrinting
 }
 
 extension CollectionStoreError: LocalizedError {
@@ -1387,6 +1420,8 @@ extension CollectionStoreError: LocalizedError {
             return "This removal cannot be restored: \(detail)."
         case let .staleQuantityDefect(key):
             return "The quantity mismatch for \(key) is no longer current."
+        case .unverifiedPokemonPrinting:
+            return "Scan Stash couldn't verify this printing."
         }
     }
 }
@@ -1453,6 +1488,7 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
         let session: CollectionStoreSession
         var gameRegistry: CardGameRegistry?
         var catalogAdapters: GameCatalogAdapterRegistry?
+        var pokemonCatalogCoordinator: PokemonCatalogCoordinator?
         var legacyCorrectionGames = Set<CardGame>()
         var catalogRevisions: [CardGame: Int] = [:]
         var hasCatalogAuthority = false
@@ -1476,6 +1512,7 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
     func configureCatalogAdapters(
         _ adapters: GameCatalogAdapterRegistry,
         legacyCorrectionGames: Set<CardGame>,
+        pokemonCatalogCoordinator: PokemonCatalogCoordinator?,
         for container: ModelContainer
     ) {
         _ = session(for: container)
@@ -1489,6 +1526,7 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
             }
         }
         entry.catalogAdapters = active
+        entry.pokemonCatalogCoordinator = pokemonCatalogCoordinator
         entry.legacyCorrectionGames = legacyCorrectionGames
         entry.hasCatalogAuthority = true
     }
@@ -1547,6 +1585,10 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
         lock.lock(); defer { lock.unlock() }
         guard let entry = entries[ObjectIdentifier(container)], entry.hasCatalogAuthority else { return (nil, false) }
         return (entry.catalogAdapters?.adapter(for: game), !entry.legacyCorrectionGames.contains(game))
+    }
+
+    func pokemonCatalogCoordinator(for container: ModelContainer) -> PokemonCatalogCoordinator? {
+        lock.withLock { entries[ObjectIdentifier(container)]?.pokemonCatalogCoordinator }
     }
 
     func gameRegistry(for container: ModelContainer, fallback: CardGameRegistry = .standard) -> CardGameRegistry {
@@ -1845,10 +1887,12 @@ struct CollectionStore {
     static func configureCatalogAdapters(
         _ adapters: GameCatalogAdapterRegistry,
         legacyCorrectionGames: Set<CardGame>,
+        pokemonCatalogCoordinator: PokemonCatalogCoordinator? = nil,
         for container: ModelContainer
     ) {
         CollectionStoreSessionRegistry.shared.configureCatalogAdapters(
-            adapters, legacyCorrectionGames: legacyCorrectionGames, for: container
+            adapters, legacyCorrectionGames: legacyCorrectionGames,
+            pokemonCatalogCoordinator: pokemonCatalogCoordinator, for: container
         )
     }
 
@@ -2081,6 +2125,14 @@ struct CollectionStore {
 
     func permitsSyncedMetadataWrite(for card: CollectedCard) -> Bool {
         gameRegistry.supports(card.cardGame, .collectionWrite)
+    }
+
+    func correctedCatalogRarity(for card: CollectedCard) -> String? {
+        guard card.itemKind == .rawCard, permitsSyncedMetadataWrite(for: card),
+              let stored = card.rarity else { return nil }
+        let authority = CollectionStoreSessionRegistry.shared.mutationAuthority(for: card.cardGame, container: context.container)
+        return authority.adapter?.correctedRarity(printingID: card.catalogProviderID ?? card.providerID,
+            cardNumber: card.cardNumber, storedRarity: stored)
     }
 
     /// Namespaced keys retain unknown games. Only the historic unnamespaced

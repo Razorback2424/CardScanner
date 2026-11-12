@@ -417,6 +417,10 @@ final class CollectedCard {
         CardGame(rawValue: game)
     }
 
+    var displayCardNumber: String {
+        PokemonFinishMinimumCatalog.displayCollectorNumber(cardNumber, game: cardGame, providerID: underlyingPrintingID)
+    }
+
     // MARK: - Namespaced identities
     //
     // Raw rows keep the key they have always had — unprefixed — so no existing

@@ -141,12 +141,13 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
                   printRun == nil, treatments.isEmpty,
                   let edition = variantID.flatMap(YuGiOhEdition.init(rawValue:)),
                   let printing = catalog.catalog.printingByID[id],
+                  let productID = printing.productID,
                   printing.editions.contains(edition),
                   (try? catalog.resolutionForExistingHolding(id)) != nil {
             // Edition membership authorizes the lookup even when the bundled
             // snapshot has no quote. The exact product already fixes rarity,
             // artwork and release; the provider printing fixes its edition.
-            result.exactProductID = String(printing.productID)
+            result.exactProductID = String(productID)
             result.providerPrinting = edition.tcgplayerSubtype
         }
         if let productID = result.exactProductID { result.lookups = [.tcgplayerID(productID)] }
