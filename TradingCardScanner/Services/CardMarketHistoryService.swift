@@ -76,7 +76,10 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
               let catalogID else { return }
         let productID: String
         let printing: String
-        if let stamped = PokemonStampedReleaseCatalog.entries(providerID: catalogID)
+        if printRun == nil, let deck = PokemonBattleDeckFinishCatalog.entry(cardID: catalogID, variantID: variantID) {
+            productID = String(deck.productID)
+            printing = deck.printing.rawValue
+        } else if let stamped = PokemonStampedReleaseCatalog.entries(providerID: catalogID)
             .first(where: { $0.variant.id == variantID }) {
             productID = stamped.tcgplayerProductID
             printing = stamped.printing

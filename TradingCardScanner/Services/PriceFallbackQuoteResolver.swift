@@ -399,6 +399,9 @@ final class PriceFallbackQuoteResolver {
         catalogID: String,
         variant: PhysicalVariant?
     ) -> [JustTCGBatchLookup] {
+        if let deck = PokemonBattleDeckFinishCatalog.entry(cardID: catalogID, variantID: variant?.id) {
+            return [.tcgplayerID(String(deck.productID))]
+        }
         guard let variant,
               let stamped = PokemonStampedReleaseCatalog.entries(providerID: catalogID)
                 .first(where: { $0.variant.id == variant.id }) else {

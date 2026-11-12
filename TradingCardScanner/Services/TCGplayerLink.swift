@@ -68,6 +68,11 @@ enum TCGplayerLinkBuilder {
     /// button: it looks authoritative and is silently wrong, and the whole
     /// point of this link is letting someone check the price we showed them.
     static func url(for card: CollectedCard) -> URL? {
+        if card.cardGame == .pokemon, let cardID = card.underlyingPrintingID,
+           let deck = PokemonBattleDeckFinishCatalog.entry(cardID: cardID, variantID: card.variantID) {
+            guard card.pokemonPrintRun == nil, deck.matches(name: card.name, number: card.cardNumber) else { return nil }
+            return productURL(productID: String(deck.productID), variantID: card.variantID, game: .pokemon)
+        }
         if let product = productURL(
             productID: card.tcgplayerProductID,
             variantID: card.variantID,
@@ -155,7 +160,10 @@ enum TCGplayerLinkBuilder {
         // Only printings with an exact, known name. An unrecognised finish
         // drops the filter rather than inventing one — the product page is
         // still the right card, just unfiltered.
-        if let printing = printingName(variantID: variantID, game: game) {
+        let deckPrinting = game == .pokemon ? Int(id).flatMap {
+            PokemonBattleDeckFinishCatalog.entry(productID: $0, variantID: variantID)?.printing.rawValue
+        } : nil
+        if let printing = deckPrinting ?? printingName(variantID: variantID, game: game) {
             components.queryItems = [URLQueryItem(name: "Printing", value: printing)]
         }
         return components.url

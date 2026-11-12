@@ -305,20 +305,31 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
 /// Exact-identity fallback policy shared by all price surfaces. No recognition work.
 struct PokemonMarketPriceResolver: Sendable {
     let source: any PokemonTCGCSVPriceSource
-    init(source: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared) { self.source = source }
+    private let productSource: TCGCSVProductPriceSource
+
+    init(source: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared,
+         productSource: TCGCSVProductPriceSource = .shared) {
+        self.source = source
+        self.productSource = productSource
+    }
 
     /// Share one publication check per set for the whole collection pass,
     /// including a second attempt through its fallback lane.
     func forRefresh(retry: Bool) -> Self {
-        Self(source: PokemonTCGCSVRefreshSource(source: source, retry: retry))
+        Self(source: PokemonTCGCSVRefreshSource(source: source, retry: retry), productSource: productSource)
     }
 
     func fallback(
         cardID: String, game: CardGame, variant: PhysicalVariant?, printRun: PokemonPrintRun?,
         retry: Bool = false
     ) async throws -> PriceLookup? {
-        guard game == .pokemon, variant == .holo,
-              printRun == nil || printRun == .unlimited,
+        guard game == .pokemon else { return nil }
+        if printRun == nil, let deck = PokemonBattleDeckFinishCatalog.entry(cardID: cardID, variantID: variant?.id) {
+            return try await productSource.quote(category: 3, group: deck.groupID, productID: deck.productID,
+                name: deck.marketName, number: deck.printedNumber, lane: deck.printing.rawValue,
+                generation: nil, minimumFetchedAt: nil)
+        }
+        guard variant == .holo, printRun == nil || printRun == .unlimited,
               let mapping = PokemonTCGCSVMapping.byCardID[cardID] else { return nil }
         let snapshot = try await source.snapshot(setID: mapping.setID, retry: retry)
         try Task.checkCancellation()
