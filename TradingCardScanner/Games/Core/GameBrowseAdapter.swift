@@ -5,6 +5,7 @@ protocol GameBrowseAdapter: Sendable {
     var generation: String { get }
     func sets() async throws -> [CatalogSet]
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary>
+    func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]?
     func search(query: String, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary>
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails
     /// Optional read-only source quote; does not grant physical ownership.
@@ -12,6 +13,7 @@ protocol GameBrowseAdapter: Sendable {
 }
 
 extension GameBrowseAdapter {
+    func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]? { nil }
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup? { nil }
 }
 

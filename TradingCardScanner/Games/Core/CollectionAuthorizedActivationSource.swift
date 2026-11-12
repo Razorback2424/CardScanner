@@ -1,29 +1,6 @@
 import Foundation
 import SwiftData
 
-/// Computes a value at most once, on first read, for every copy that shares
-/// it. Readers that arrive while it is being computed wait for that result.
-final class LoadOnce<Value: Sendable>: @unchecked Sendable {
-    private let lock = NSLock()
-    private var value: Value?
-    private var make: (@Sendable () -> Value)?
-
-    init(_ make: @escaping @Sendable () -> Value) { self.make = make }
-    init(value: Value) { self.value = value }
-
-    var isLoaded: Bool { lock.withLock { value != nil } }
-
-    func get() -> Value {
-        lock.lock()
-        defer { lock.unlock() }
-        if let value { return value }
-        let made = make!()
-        value = made
-        make = nil
-        return made
-    }
-}
-
 /// An adapter's exact market mappings, indexed by the existing persisted price key.
 /// Absence withdraws managed-provider quotes, never user-entered prices.
 struct GameCatalogPriceAuthority: Sendable {

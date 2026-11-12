@@ -15,6 +15,7 @@ protocol GameRecognitionAdapter: Sendable {
     /// An unnumbered footer can require a title outside the normal OCR band.
     /// Request it only for supported evidence, from the same camera frame.
     func needsFullCardText(afterFooterLines lines: [RecognizedLine]) -> Bool
+    func identify(footerLines: [RecognizedLine], fullCardLines: [RecognizedLine]) -> GameRecognitionOutcome
 }
 
 extension GameRecognitionAdapter {
@@ -24,6 +25,9 @@ extension GameRecognitionAdapter {
         identify(footerLines)
     }
     func needsFullCardText(afterFooterLines lines: [RecognizedLine]) -> Bool { false }
+    func identify(footerLines: [RecognizedLine], fullCardLines: [RecognizedLine]) -> GameRecognitionOutcome {
+        identify(footerLines + fullCardLines)
+    }
 }
 
 struct RecognitionRejection: Sendable, Equatable {
@@ -96,7 +100,7 @@ struct GameRecognitionRegistry: Sendable {
             guard adapter.needsFullCardText(afterFooterLines: footerLines) else {
                 return (adapter.game, adapter.identify(footerLines))
             }
-            let result = adapter.identify(footerLines + fullCardLines)
+            let result = adapter.identify(footerLines: footerLines, fullCardLines: fullCardLines)
             if result == .nothing {
                 // A known footer with an unreadable title must not borrow an
                 // unrelated historical identity from card rules or artwork text.

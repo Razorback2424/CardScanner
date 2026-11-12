@@ -259,6 +259,7 @@ struct CardGameRuntimeContainer: Sendable {
         CollectionStore.configureCatalogAdapters(
             catalogAdapters,
             legacyCorrectionGames: legacyCollectionCorrectionGames,
+            pokemonCatalogCoordinator: legacyBindings.pokemon,
             for: container
         )
     }

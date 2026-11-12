@@ -225,7 +225,6 @@
 		A0010042 /* CardCenteringAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010042 /* CardCenteringAnalyzer.swift */; };
 		A3CE00F1 /* CardCenteringPrintReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CE00F1 /* CardCenteringPrintReference.swift */; };
 		A0010043 /* CardCenteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010043 /* CardCenteringView.swift */; };
-		A00C0E01 /* CardCenteringEdgeSnapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00C0E01 /* CardCenteringEdgeSnapper.swift */; };
 		A00C0E02 /* CardCenteringCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00C0E02 /* CardCenteringCanvas.swift */; };
 		A0010044 /* CenteringCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010044 /* CenteringCameraView.swift */; };
 		A0010113 /* EbayQuadrantCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010113 /* EbayQuadrantCropper.swift */; };
@@ -367,6 +366,7 @@
 		F17A00000000000000000005 /* OnePieceGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17B00000000000000000005; };
 		F32A00000000000000000001 /* OnePiecePriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32B00000000000000000001; };
 		F33A00000000000000000001 /* CollectionAuthorizedActivationSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33B00000000000000000001; };
+		F33A00000000000000000002 /* LoadOnce.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33B00000000000000000002; };
 		F34A00000000000000000001 /* MagicCatalogAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34B00000000000000000001; };
 		F17A00000000000000000006 /* OnePieceIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17B00000000000000000006; };
 
@@ -604,7 +604,6 @@
 		B0010042 /* CardCenteringAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringAnalyzer.swift; sourceTree = "<group>"; };
 		B3CE00F1 /* CardCenteringPrintReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringPrintReference.swift; sourceTree = "<group>"; };
 		B0010043 /* CardCenteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringView.swift; sourceTree = "<group>"; };
-		B00C0E01 /* CardCenteringEdgeSnapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringEdgeSnapper.swift; sourceTree = "<group>"; };
 		B00C0E02 /* CardCenteringCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringCanvas.swift; sourceTree = "<group>"; };
 		B0010044 /* CenteringCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringCameraView.swift; sourceTree = "<group>"; };
 		B0010113 /* EbayQuadrantCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EbayQuadrantCropper.swift; sourceTree = "<group>"; };
@@ -751,6 +750,7 @@
 		F17B00000000000000000005 /* OnePieceGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePiece/OnePieceGameRuntime.swift; sourceTree = "<group>"; };
 		F32B00000000000000000001 /* OnePiecePriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePiece/OnePiecePriceAdapter.swift; sourceTree = "<group>"; };
 		F33B00000000000000000001 /* CollectionAuthorizedActivationSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CollectionAuthorizedActivationSource.swift; sourceTree = "<group>"; };
+		F33B00000000000000000002 /* LoadOnce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/LoadOnce.swift; sourceTree = "<group>"; };
 		F34B00000000000000000001 /* MagicCatalogAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Magic/MagicCatalogAdapter.swift; sourceTree = "<group>"; };
 		F17B00000000000000000006 /* OnePieceIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceIntegrationTests.swift; sourceTree = "<group>"; };
 
@@ -869,6 +869,7 @@
 				F17B00000000000000000005,
 				F32B00000000000000000001,
 				F33B00000000000000000001,
+				F33B00000000000000000002,
 				F34B00000000000000000001,
 				F35B00000000000000000001,
 				F35B00000000000000000002,
@@ -1000,7 +1001,6 @@
 				B0010042 /* CardCenteringAnalyzer.swift */,
 				B3CE00F1 /* CardCenteringPrintReference.swift */,
 				CCB50002 /* CardCenteringReviewRenderer.swift */,
-				B00C0E01 /* CardCenteringEdgeSnapper.swift */,
 				E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */,
 				86E86CDA24A14713B91EEEB7 /* CardCenteringPixelKernels.h */,
 				B0010046 /* CollectionCSV.swift */,
@@ -1523,6 +1523,7 @@
 				F14A00000000000000000001 /* GamePriceAdapter.swift in Sources */,
 				F32A00000000000000000001 /* OnePiecePriceAdapter.swift in Sources */,
 				F33A00000000000000000001 /* CollectionAuthorizedActivationSource.swift in Sources */,
+				F33A00000000000000000002 /* LoadOnce.swift in Sources */,
 				F34A00000000000000000001 /* MagicCatalogAdapter.swift in Sources */,
 				F35A00000000000000000001 /* PokemonCatalogAdapter.swift in Sources */,
 				F35A00000000000000000002 /* PokemonCatalogSupport.swift in Sources */,
@@ -1588,7 +1589,6 @@
 				A3CE00F1 /* CardCenteringPrintReference.swift in Sources */,
 				C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */,
 				A0010043 /* CardCenteringView.swift in Sources */,
-				A00C0E01 /* CardCenteringEdgeSnapper.swift in Sources */,
 				A00C0E02 /* CardCenteringCanvas.swift in Sources */,
 				A0010044 /* CenteringCameraView.swift in Sources */,
 				A0010113 /* EbayQuadrantCropper.swift in Sources */,

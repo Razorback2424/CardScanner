@@ -230,6 +230,8 @@ protocol GameCatalogAdapter: Sendable {
     /// printing while the scanner retains the original observation separately.
     func identifierForCatalogSelection(printingID: String, original: ScanIdentifier) throws -> ScanIdentifier
     func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome
+    /// Adapters with their own freshness policy can opt out of resolved session entries.
+    func cachesResolvedLookup(for identifier: ScanIdentifier) -> Bool
     /// Optional fresh membership lookup for explicit choices. It must not
     /// turn a user's answer into automatic resolution after language confirmation.
     func lookupPrintingChoices(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome?
@@ -239,6 +241,9 @@ protocol GameCatalogAdapter: Sendable {
     /// Runs immediately before persistence; automatic resolution requires a
     /// current complete universe while an explicit reviewed choice is distinct.
     func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws
+    func validateAcquisition(_ identifier: ScanIdentifier, resolvedCard: IdentifiedCard, automatic: Bool) async throws
+    /// Checks a Browse selection against the authority installed inside the write transaction.
+    func validateBrowseAcquisition(printingID: String, variantID: String?) throws
     /// Revalidates a user-requested finish change against the currently
     /// installed physical printing before collection rows or ledger history move.
     func validateVariantCorrection(printingID: String, variantID: String?) throws
@@ -246,15 +251,22 @@ protocol GameCatalogAdapter: Sendable {
     /// also validates CSV/staged rows against authority installed after lookup.
     func validateCollectionMutation(printingID: String, catalogProviderID: String?, variantID: String?,
                                     itemKindRaw: String, collectionKey: String) throws
+    func correctedRarity(printingID: String, cardNumber: String, storedRarity: String) -> String?
 }
 
 extension GameCatalogAdapter {
     func identifierForCatalogSelection(printingID: String, original: ScanIdentifier) throws -> ScanIdentifier { original }
+    func cachesResolvedLookup(for identifier: ScanIdentifier) -> Bool { true }
     func validateCollectionMutation(printingID: String, catalogProviderID: String?, variantID: String?,
                                     itemKindRaw: String, collectionKey: String) throws {}
+    func correctedRarity(printingID: String, cardNumber: String, storedRarity: String) -> String? { nil }
     func lookupPrintingChoices(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome? { nil }
     func validateLookupContext(_ identifier: ScanIdentifier) async throws {}
     func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {}
+    func validateAcquisition(_ identifier: ScanIdentifier, resolvedCard: IdentifiedCard, automatic: Bool) async throws {
+        try await validateAcquisition(identifier, printingID: resolvedCard.physicalPrintingID, automatic: automatic)
+    }
+    func validateBrowseAcquisition(printingID: String, variantID: String?) throws {}
     func acceptsCompletion(for identifier: ScanIdentifier, fromGeneration: String) -> Bool {
         identifier.game == game && generation == fromGeneration
     }
