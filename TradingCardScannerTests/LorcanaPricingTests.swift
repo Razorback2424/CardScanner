@@ -57,11 +57,15 @@ final class LorcanaPricingTests: XCTestCase {
         let adapter = LorcanaPriceAdapter(registry: catalog.registry, source: source)
         var groups = Set<Int>()
         for code in ["1", "2", "3", "4"] {
-            let printing = try XCTUnwrap(physical.manifest.physicalPrintings.filter {
-                $0.providerSetCode == code && ($0.marketMappings?.count ?? 0) == 2
-            }.min { Int($0.identity.footer.collectorNumber)! < Int($1.identity.footer.collectorNumber)! })
+            let printing = try XCTUnwrap(physical.manifest.physicalPrintings.first {
+                let footer = $0.identity.footer
+                return footer.printedSetMarker == code && footer.denominator == "204"
+                    && footer.collectorNumber == "1" && $0.identity.size == .standard
+            })
             let mappings = try XCTUnwrap(printing.marketMappings)
             let first = try XCTUnwrap(mappings.first)
+            XCTAssertEqual(Set(mappings.map(\.finish)), [.normal, .foil])
+            XCTAssertEqual(Set(mappings.map(\.productID)), [first.productID])
             groups.insert(first.groupID)
             let product: [String: Any] = ["productId": first.productID, "categoryId": 71, "groupId": first.groupID,
                 "name": first.productName, "extendedData": [["name": "Number", "value": first.productNumber]]]
@@ -141,22 +145,39 @@ final class LorcanaPricingTests: XCTestCase {
         let importer = LorcanaImportAdapter(registry: catalog.registry)
         for printing in additions {
             let footer = printing.identity.footer
+            let id = printing.id.uuidString.lowercased()
             guard case let .identified(subject) = LorcanaDiscoveryRecognizer(catalog: catalog)
-                .identify([.init(text: footer.displayIdentifier)]),
-                  case let .resolved(resolution) = try await catalog.lookup(subject.identifier) else {
-                XCTFail("Candidate footer must resolve exactly: \(footer.displayIdentifier)"); continue
+                .identify([.init(text: footer.printedLabel)]) else {
+                XCTFail("Candidate footer must be recognized: \(footer.printedLabel)")
+                continue
             }
-            let card = resolution.card
-            XCTAssertEqual(card.providerID, printing.id.uuidString.lowercased())
+            let card: IdentifiedCard
+            let automatic: Bool
+            switch try await catalog.lookup(subject.identifier) {
+            case let .resolved(resolution):
+                card = resolution.card
+                automatic = true
+            case let .needsPrintingChoice(_, choices):
+                let selected = try XCTUnwrap(choices.first { $0.id == id })
+                card = try await catalog.resolve(selected, for: subject.identifier).card
+                automatic = false
+            case .catalogIncomplete:
+                XCTFail("Candidate footer must resolve exactly: \(footer.printedLabel)")
+                continue
+            }
+            XCTAssertEqual(card.providerID, id)
             XCTAssertEqual(Set(card.variantEvidence.catalogVariants), Set(printing.finishes.map { $0.finish.variant }))
-            try await catalog.validateAcquisition(subject.identifier, printingID: card.providerID, automatic: true)
+            try await catalog.validateAcquisition(subject.identifier, printingID: card.providerID, automatic: automatic)
             for finish in printing.finishes {
                 let csv = "game,provider_id,card_name,card_number,finish,quantity\nlorcana,\(card.providerID),Candidate,\(footer.displayIdentifier),\(finish.finish.rawValue),1\n"
                 let entry = try XCTUnwrap(CollectionCSV.parse(Data(csv.utf8)).entries.first)
-                try importer.validate(entry)
+                XCTAssertNoThrow(try importer.validate(entry), "\(footer.printedLabel) / \(finish.finish.rawValue)")
                 XCTAssertEqual(entry.collectionKey, card.collectionKey(variant: finish.finish.variant))
-                let mapping = try XCTUnwrap(printing.marketMappings?.first { $0.finish == finish.finish })
-                XCTAssertTrue(mapping.hasValidMarketLane)
+                if let mapping = printing.marketMappings?.first(where: { $0.finish == finish.finish }) {
+                    XCTAssertTrue(mapping.hasValidMarketLane)
+                } else {
+                    XCTAssertNil(TCGplayerLinkBuilder.destination(for: card, variant: finish.finish.variant))
+                }
             }
         }
     }
@@ -1120,10 +1141,10 @@ final class LorcanaPricingTests: XCTestCase {
     #if DEBUG && LOCAL_ONLY_SIGNING
     func testNormalAppRegistersReviewedPricingAndPreservesDiscoveryAndSealed() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
-        XCTAssertEqual(catalog.cardsByID.count, 3_582)
-        XCTAssertEqual(catalog.products.count, 177)
-        XCTAssertEqual(catalog.registry.physicalCatalog?.manifest.physicalPrintings.count, 1_749)
-        XCTAssertEqual(LorcanaPriceAdapter.priceAuthority(catalog.registry).identityByPriceKey.count, 3_364)
+        XCTAssertEqual(catalog.cardsByID.count, 3_595)
+        XCTAssertEqual(catalog.products.count, 188)
+        XCTAssertEqual(catalog.registry.physicalCatalog?.manifest.physicalPrintings.count, 3_426)
+        XCTAssertEqual(LorcanaPriceAdapter.priceAuthority(catalog.registry).identityByPriceKey.count, 6_288)
         let module = try XCTUnwrap(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
         XCTAssertTrue(module.descriptor.capabilities.contains(.pricing))
         XCTAssertTrue(module.descriptor.capabilities.contains(.collectionWrite))
@@ -1141,15 +1162,15 @@ final class LorcanaPricingTests: XCTestCase {
         let details = try await catalog.details(for: summary)
         XCTAssertEqual(details.card.collectionKey(variant: .foil), card.collectionKey(variant: .foil))
         XCTAssertNil(details.collectionWriteUnavailableReason)
-        let heldPage = try await catalog.search(query: "Elsa", setIDs: [], cursor: nil)
-        let heldSummary = try XCTUnwrap(heldPage.items.first { $0.collectorNumber == "210" })
+        let heldPage = try await catalog.search(query: "Mother Knows Best 1/C3", setIDs: [], cursor: nil)
+        let heldSummary = try XCTUnwrap(heldPage.items.first)
         let heldDetails = try await catalog.details(for: heldSummary)
         XCTAssertNotNil(heldDetails.collectionWriteUnavailableReason)
-        guard case let .identified(held) = LorcanaDiscoveryRecognizer(catalog: catalog).identify([.init(text: "210/204 EN 9")]),
+        guard case let .identified(held) = LorcanaDiscoveryRecognizer(catalog: catalog).identify([.init(text: "1/C3 EN 9")]),
               case let .needsPrintingChoice(_, candidates) = try await catalog.lookup(held.identifier) else { return XCTFail() }
         do {
             try await catalog.validateAcquisition(held.identifier, printingID: try XCTUnwrap(candidates.first).id, automatic: false)
-            XCTFail("Later unreviewed Enchanted cannot inherit the first-eight-set policy")
+            XCTFail("An unreviewed promo cannot inherit acquisition authority")
         } catch CatalogLookupError.catalogIncomplete {}
     }
 
@@ -1175,11 +1196,68 @@ final class LorcanaPricingTests: XCTestCase {
         XCTAssertEqual(rows.first?.game, "lorcana")
     }
 
-    func testAll132EnchantedPrintingsResolveAndImportAsTheirOwnFoilIdentity() async throws {
+    func testScannerFilesHeldFamilyBeforeFinishOrSave() async throws {
+        let host = try container()
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let bound = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: host)
+        let model = bound.makeScannerModel()
+        model.start(context: host.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+        defer { model.viewDisappeared() }
+        guard case let .identified(subject) = LorcanaDiscoveryRecognizer(catalog: catalog).identify([.init(text: "26/P2 EN 7")])
+        else { return XCTFail() }
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+        let filed = await waitUntil { !model.unresolvedScans.isEmpty }
+        XCTAssertTrue(filed)
+        XCTAssertNil(model.pendingIdentityChoice)
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
+        XCTAssertEqual(model.unresolvedScans.first?.printingCandidates.count, 2)
+        XCTAssertTrue(model.note?.text.contains("needs review") == true)
+        XCTAssertEqual(try host.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 0)
+    }
+
+    func testBundledMultiFoilFinishesUseDistinctKeysAndExactQuotes() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let physical = try XCTUnwrap(catalog.registry.physicalCatalog)
+        let source = LorcanaTestPriceSource()
+        let adapter = LorcanaPriceAdapter(registry: catalog.registry, source: source)
+        let importer = LorcanaImportAdapter(registry: catalog.registry)
+        let printings = physical.manifest.physicalPrintings.filter { $0.finishes.count == 3 }
+        XCTAssertEqual(printings.count, 16)
+        var unpricedFoils = 0
+        for printing in printings {
+            let footer = printing.identity.footer
+            let identifier = try LorcanaRecognitionAdapter.identifier(footer, generation: catalog.generation)
+            guard case let .resolved(resolution) = try await catalog.lookup(identifier) else { return XCTFail(footer.displayIdentifier) }
+            let card = resolution.card
+            XCTAssertEqual(card.physicalPrintingID, printing.id.uuidString.lowercased())
+            let variants = card.variantEvidence.catalogVariants
+            XCTAssertEqual(variants.count, 3)
+            XCTAssertFalse(variants.contains(.foil))
+            XCTAssertEqual(Set(variants.map { card.collectionKey(variant: $0) }).count, 3)
+            for variant in variants {
+                let csv = "game,provider_id,card_name,card_number,finish,quantity\nlorcana,\(card.providerID),Reviewed,\(footer.displayIdentifier),\(variant.id),1\n"
+                let entry = try XCTUnwrap(try CollectionCSV.parse(Data(csv.utf8)).entries.first)
+                try importer.validate(entry)
+                XCTAssertEqual(PhysicalVariant.resolving(variant.id), variant)
+                let quote = try await adapter.refreshStoredPrinting(card.physicalPrintingID, variant: variant)
+                if let mapping = printing.marketMappings?.first(where: { $0.finish.rawValue == variant.id }) {
+                    guard case let .price(price) = quote else { return XCTFail(variant.id) }
+                    XCTAssertEqual(price.catalogIdentity, LorcanaPriceAdapter.mappingIdentity(mapping))
+                } else {
+                    XCTAssertEqual(quote, .unavailable(nil))
+                    unpricedFoils += 1
+                }
+            }
+        }
+        XCTAssertEqual(unpricedFoils, 6)
+    }
+
+    func testAllEnchantedPrintingsResolveAndImportAsTheirOwnFoilIdentity() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
         let physical = try XCTUnwrap(catalog.registry.physicalCatalog)
         let enchanted = physical.manifest.physicalPrintings.filter { $0.identity.distributionID.hasPrefix("enchanted-expansion-") }
-        XCTAssertEqual(enchanted.count, 132)
+        XCTAssertEqual(enchanted.count, 240)
         let importer = LorcanaImportAdapter(registry: catalog.registry)
         for printing in enchanted {
             let footer = printing.identity.footer
@@ -1217,11 +1295,10 @@ final class LorcanaPricingTests: XCTestCase {
         let service = bound.makePriceQuoteService()
         var observations: [[String: Any]] = []
         for code in 1...8 {
-            let eligible = catalog.registry.physicalCatalog?.manifest.physicalPrintings.filter {
-                $0.providerSetCode == String(code) && !($0.marketMappings ?? []).isEmpty
-            } ?? []
-            let printing = try XCTUnwrap(eligible.min {
-                Int($0.identity.footer.collectorNumber)! < Int($1.identity.footer.collectorNumber)!
+            let printing = try XCTUnwrap(catalog.registry.physicalCatalog?.manifest.physicalPrintings.first {
+                let footer = $0.identity.footer
+                return footer.printedSetMarker == String(code) && footer.denominator == "204"
+                    && footer.collectorNumber == "1" && $0.identity.size == .standard
             })
             let card = try LorcanaCatalogAdapter(registry: catalog.registry).resolution(forPrintingID: printing.id).card
             for variant in [PhysicalVariant.normal, .foil] {
@@ -1275,7 +1352,7 @@ final class LorcanaPricingTests: XCTestCase {
         for printing in printings {
             let card = try LorcanaCatalogAdapter(registry: catalog.registry).resolution(forPrintingID: printing.id).card
             for mapping in printing.marketMappings ?? [] {
-                let variant: PhysicalVariant = mapping.finish == .normal ? .normal : .foil
+                let variant = mapping.finish.variant
                 let quote = try await service.refresh(card: card, variant: variant, pokemonPrintRun: nil)
                 var observation: [String: Any] = ["printingID": card.physicalPrintingID,
                     "set": printing.providerSetCode, "finish": variant.id,

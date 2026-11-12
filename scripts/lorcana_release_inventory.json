@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "language": "en",
+  "asOf": "2026-11-11",
+  "references": [
+    "https://disneylorcana.com/en/product-archive/",
+    "https://cards.disneylorcana.com/en-US/",
+    "https://disneylorcana.com/en/news/2026/10/timeless-tales-and-totally-rockin-tunes/"
+  ],
+  "scopes": [
+    {"code": "1", "denominator": "204", "first": 1, "last": 216, "requiresAcquisition": true},
+    {"code": "2", "denominator": "204", "first": 1, "last": 216, "requiresAcquisition": true},
+    {"code": "3", "denominator": "204", "first": 1, "last": 223, "requiresAcquisition": true, "requiredCollectorNumbers": ["4A", "4B", "4C", "4D", "4E"]},
+    {"code": "4", "denominator": "204", "first": 1, "last": 225, "requiresAcquisition": true},
+    {"code": "5", "denominator": "204", "first": 1, "last": 223, "requiresAcquisition": true},
+    {"code": "6", "denominator": "204", "first": 1, "last": 222, "requiresAcquisition": true},
+    {"code": "7", "denominator": "204", "first": 1, "last": 224, "requiresAcquisition": true},
+    {"code": "8", "denominator": "204", "first": 1, "last": 224, "requiresAcquisition": true},
+    {"code": "9", "denominator": "204", "first": 0, "last": 242, "requiresAcquisition": true},
+    {"code": "10", "denominator": "204", "first": 1, "last": 242, "requiresAcquisition": true},
+    {"code": "11", "denominator": "204", "first": 1, "last": 243, "requiresAcquisition": true},
+    {"code": "12", "denominator": "204", "first": 1, "last": 243, "requiresAcquisition": true},
+    {"code": "13", "denominator": "207", "first": 1, "last": 247, "requiresAcquisition": true},
+    {"code": "14", "denominator": "204", "first": 1, "last": 242, "requiresAcquisition": true},
+    {
+      "code": "CC1", "denominator": "CC1", "first": 1, "last": 6, "requiresAcquisition": true,
+      "fixedProducts": [{
+        "groupID": 23234,
+        "marketProductIDs": [702517, 702518, 702519, 702520, 702521, 702603],
+        "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "Satin",
+        "sourceImagePath": "cc1", "sourceDistribution": "Curator's Collection: Heroines Edition",
+        "distributionID": "curators-collection-heroines",
+        "distributionLabel": "Curator’s Collection: Heroines Edition",
+        "reference": "https://www.disneylorcana.com/en-GB/news/2026/06/curators-collection-heroines"
+      }]
+    },
+    {"code": "CC2", "denominator": "CC2", "first": 1, "last": 6, "requiresAcquisition": true},
+    {
+      "code": "C1", "denominator": "C1", "first": 1, "last": 10, "requiresAcquisition": true,
+      "heldCollectorNumbers": ["5"],
+      "fixedProducts": [
+        {
+          "first": 1, "last": 4, "groupID": 23234, "marketProductIDs": [544498, 544501, 544502, 544503],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "Tempest",
+          "sourceImagePath": "challenge1", "sourceDistribution": "Challenge",
+          "distributionID": "challenge-2024-2025-regional", "distributionLabel": "Challenge regional promo",
+          "reference": "https://disneylorcana.com/en/news/2024/03/challenge-announcement/"
+        },
+        {
+          "first": 6, "last": 9, "groupID": 23234, "marketProductIDs": [595440, 595441, 595438, 595439],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "Tempest",
+          "sourceImagePath": "challenge1", "sourceDistribution": "Challenge",
+          "distributionID": "challenge-2024-2025-continental", "distributionLabel": "Challenge continental promo",
+          "reference": "https://www.disneylorcana.com/en-GB/news/events_challenge2024_euchamps_details"
+        },
+        {
+          "first": 10, "last": 10, "groupID": 23234, "marketProductIDs": [654595],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "Tempest",
+          "sourceImagePath": "challenge1", "sourceDistribution": "Challenge",
+          "distributionID": "challenge-2025-worlds-infinity", "distributionLabel": "World Championship and Infinity Weekend promo",
+          "reference": "https://www.disneylorcana.com/en-GB/news/2025/06/2025-6-watch-worlds-on-twitch"
+        }
+      ]
+    },
+    {
+      "code": "C2", "denominator": "C2", "first": 1, "last": 18, "requiresAcquisition": true,
+      "fixedProducts": [
+        {
+          "first": 1, "last": 4, "groupID": 23234, "marketProductIDs": [655961, 672472, 655960, 695330],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "Tempest",
+          "sourceImagePath": "challenge2", "sourceDistribution": "Challenge",
+          "distributionID": "challenge-2025-2026-regional-foil", "distributionLabel": "Challenge regional foil",
+          "reference": "https://www.disneylorcana.com/en-US/play/lorcana-challenge/richmond"
+        },
+        {
+          "first": 5, "last": 10, "groupID": 23234, "marketProductIDs": [686340, 655962, 672467, 655963, 693401, 672385],
+          "marketRarity": "Promo", "marketLane": "Normal", "foilPattern": "None",
+          "sourceImagePath": "challenge2", "sourceDistribution": "Challenge",
+          "distributionID": "challenge-2025-2026-prize-wall", "distributionLabel": "Challenge prize wall",
+          "reference": "https://disneylorcana.com/en/news/2026/03/disney-lorcana-challenge-championships-information/"
+        }
+      ]
+    },
+    {
+      "code": "PD1", "denominator": "PD1", "first": 3, "last": 14, "requiresAcquisition": true,
+      "fixedProducts": [
+        {
+          "first": 3, "last": 8, "groupID": 23234, "marketProductIDs": [705068, 705072, 705073, 702706, 705074, 702707],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "Satin",
+          "marketRarityOverrides": {"8": "Rare"},
+          "sourceImagePath": "pd1", "sourceDistribution": "'Attack of the Vine!' Prerelease Pack",
+          "distributionID": "attack-of-the-vine-prerelease", "distributionLabel": "Attack of the Vine! prerelease",
+          "reference": "https://disneylorcana.com/en/news/2026/07/whats-new-in-attack-of-the-vine/"
+        },
+        {
+          "first": 9, "last": 14, "groupID": 23234, "marketProductIDs": [722990, 722992, 722993, 722994, 722995, 722996],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "Satin",
+          "marketRarityOverrides": {"13": "Rare"},
+          "sourceImagePath": "pd1", "sourceDistribution": "'Hyperia City' Prerelease Pack",
+          "distributionID": "hyperia-city-prerelease", "distributionLabel": "Hyperia City prerelease",
+          "reference": "https://disneylorcana.com/en/news/2026/10/hyperia-city-prerelease-guide/"
+        }
+      ]
+    },
+    {
+      "code": "Q1", "denominator": "31", "printedSetMarker": "Q1", "first": 1, "last": 31, "requiresAcquisition": true,
+      "fixedProducts": [{
+        "groupID": 23528, "marketRarity": "Quest", "marketLane": "Normal", "foilPattern": "None",
+        "sourceImagePath": "quest1", "sourceDistribution": "Illumineer's Quest",
+        "distributionID": "deep-trouble-scenario-deck", "distributionLabel": "Deep Trouble scenario deck",
+        "reference": "https://www.disneylorcana.com/en-GB/product/deep-trouble"
+      }]
+    },
+    {
+      "code": "Q2", "denominator": "35", "printedSetMarker": "Q2", "first": 1, "last": 35, "requiresAcquisition": true,
+      "fixedProducts": [{
+        "groupID": 24257, "marketRarity": "Quest", "marketLane": "Normal", "foilPattern": "None",
+        "sourceImagePath": "quest2", "sourceDistribution": "Illumineer's Quest",
+        "distributionID": "palace-heist-scenario-deck", "distributionLabel": "Palace Heist scenario deck",
+        "reference": "https://disneylorcana.com/en/product/palace-heist/"
+      }]
+    },
+    {
+      "code": "Q3", "denominator": "37", "printedSetMarker": "Q3", "first": 1, "last": 37, "requiresAcquisition": true,
+      "fixedProducts": [{
+        "groupID": 24734, "marketRarity": "Quest", "marketLane": "Normal", "foilPattern": "None",
+        "sourceImagePath": "quest3", "sourceDistribution": "Illumineer's Quest",
+        "distributionID": "great-hunny-rescue-scenario-deck", "distributionLabel": "Great Hunny Rescue scenario deck",
+        "reference": "https://disneylorcana.com/en/product/great-hunny-rescue/"
+      }]
+    },
+    {
+      "code": "P1", "denominator": "P1", "printedSetMarker": "1", "first": 1, "last": 7, "requiresAcquisition": true,
+      "fixedProducts": [
+        {
+          "first": 1, "last": 1, "groupID": 17690, "marketProductIDs": [454233],
+          "marketRarity": "Promo", "marketLane": "Normal", "foilPattern": "None",
+          "sourceImagePath": "promo1", "sourceDistribution": "D23 Expo 2022",
+          "distributionID": "d23-expo-2022-promo", "distributionLabel": "D23 Expo 2022 promo",
+          "stamp": "D23 Expo and 1st Edition",
+          "reference": "https://cards.disneylorcana.com/en-US/?cardId=659"
+        },
+        {
+          "first": 2, "last": 7, "groupID": 17690,
+          "marketProductIDs": [454245, 454230, 454229, 454232, 454234, 454231],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "Lava",
+          "sourceImagePath": "promo1", "sourceDistribution": "D23 Expo 2022 Collector's Set",
+          "distributionID": "d23-expo-2022-collector-set", "distributionLabel": "D23 Expo 2022 Collector’s Set",
+          "stamp": "D23 Expo and 1st Edition",
+          "reference": "https://disneylorcana.com/en/news/2023/08/gen-con-2023-contest/"
+        }
+      ]
+    },
+    {
+      "code": "D23", "denominator": "D23", "first": 1, "last": 16, "requiresAcquisition": true,
+      "fixedProducts": [
+        {
+          "first": 1, "last": 6, "groupID": 17690,
+          "marketProductIDs": [559532, 559533, 559534, 559535, 559537, 559538],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "FreeForm2",
+          "sourceImagePath": "d23", "sourceDistribution": "D23 Expo 2024 Collector's Set",
+          "distributionID": "d23-collection-2024", "distributionLabel": "D23 Collection 2024",
+          "reference": "https://ravensburger.runfair.com/en-GB/us/disney-lorcana-tcg-d23-collection-2024/login"
+        },
+        {
+          "first": 7, "last": 7, "groupID": 17690, "marketProductIDs": [559564],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "FreeForm2",
+          "sourceImagePath": "d23", "sourceDistribution": "D23 Expo 2024",
+          "distributionID": "d23-expo-2024-promo", "distributionLabel": "D23 Expo 2024 promo",
+          "reference": "https://d23.com/calling-all-illumineers-ravensburger-brings-disney-lorcana-tcg-and-more-to-d23-the-ultimate-disney-fan-event/"
+        },
+        {
+          "first": 8, "last": 8, "groupID": 17690, "marketProductIDs": [630086],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "SeaWave",
+          "sourceImagePath": "d23", "sourceDistribution": "D23 Gold Membership",
+          "distributionID": "d23-gold-membership-2025", "distributionLabel": "D23 Gold Membership 2025",
+          "reference": "https://d23.com/app/uploads/2024/11/20241125_D23-PressRelease.pdf"
+        },
+        {
+          "first": 9, "last": 9, "groupID": 17690, "marketProductIDs": [711367],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "FreeForm2",
+          "sourceImagePath": "d23", "sourceDistribution": "D23",
+          "distributionID": "d23-expo-2026-promo", "distributionLabel": "D23 Expo 2026 promo",
+          "reference": "https://www.disneylorcana.com/en-GB/news/2026/06/d23"
+        },
+        {
+          "first": 10, "last": 15, "groupID": 17690,
+          "marketProductIDs": [711353, 711355, 711358, 711361, 711359, 711360],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "FreeForm2",
+          "sourceImagePath": "d23", "sourceDistribution": "D23",
+          "distributionID": "d23-collection-2026", "distributionLabel": "D23 Collection 2026",
+          "reference": "https://www.disneylorcana.com/en-GB/news/2026/06/d23"
+        },
+        {
+          "first": 16, "last": 16, "groupID": 17690, "marketProductIDs": [679565],
+          "marketRarity": "Promo", "marketLane": "Holofoil", "foilPattern": "Satin",
+          "sourceImagePath": "d23", "sourceDistribution": "D23",
+          "distributionID": "d23-gold-membership-2026", "distributionLabel": "D23 Gold Membership 2026",
+          "reference": "https://d23.com/d23-in-2026-epic-events-outstanding-offerings-and-memorable-moments-to-come/"
+        }
+      ]
+    }
+  ]
+}

@@ -12,11 +12,12 @@ struct LorcanaImportAdapter: GameImportAdapter {
             throw GameImportValidationError.unsupportedItemKind
         }
         guard let id = exactUUID(entry.providerID),
+              let printing = registry.physicalCatalog?.printingByID[id],
               let card = try? LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id).card else {
             throw GameImportValidationError.invalidPrinting
         }
         guard entry.catalogProviderID == nil || entry.catalogProviderID == entry.providerID,
-              matchesNumber(entry.cardNumber, card: card),
+              matchesNumber(entry.cardNumber, footer: printing.identity.footer),
               entry.sourceLanguage == nil || normalizedLanguage(entry.sourceLanguage!) == card.language,
               entry.pokemonPrintRun == nil, entry.magicTreatmentIDsRaw.isEmpty, entry.magicTreatmentQualifiers.isEmpty,
               entry.magicContentKindRaw == MagicContentKind.regular.rawValue,
@@ -37,7 +38,7 @@ struct LorcanaImportAdapter: GameImportAdapter {
             guard let id = exactUUID(request.catalogProviderID ?? request.sourceProviderID),
                   let printing = registry.physicalCatalog?.printingByID[id],
                   let card = try? LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id).card,
-                  matchesNumber(request.cardNumber, card: card) else { continue }
+                  matchesNumber(request.cardNumber, footer: printing.identity.footer) else { continue }
             // A shared provider alias is provenance, not a candidate picker.
             // It is usable only alongside the explicit reviewed physical UUID.
             guard request.sourceProviderID == card.physicalPrintingID
@@ -55,8 +56,9 @@ struct LorcanaImportAdapter: GameImportAdapter {
         guard let id = UUID(uuidString: value), id.uuidString.lowercased() == value else { return nil }
         return id
     }
-    private func matchesNumber(_ number: String, card: ResolvedCatalogCard) -> Bool {
-        number.isEmpty || number == card.cardNumber || number == card.identifier
+    private func matchesNumber(_ number: String, footer: LorcanaPrintedIdentity) -> Bool {
+        number.isEmpty || number == footer.collectorNumber
+            || number == footer.displayIdentifier || number == footer.printedLabel
     }
     private func normalizedLanguage(_ value: String) -> String {
         let lower = value.lowercased()

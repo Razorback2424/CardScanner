@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from build_lorcana_market_catalog import ORIGINAL_GROUPS, build, validate_previous, reviewed_finishes
+from build_lorcana_market_catalog import ORIGINAL_GROUPS, build, validate_previous, validate_source_universes, reviewed_finishes
 
 
 class MarketCatalogTests(unittest.TestCase):
@@ -83,7 +83,10 @@ class MarketCatalogTests(unittest.TestCase):
 
     def testAdoptedOriginalPrintingsRetainTheirExactFinishAndGroupMappings(self):
         seed = Path(__file__).resolve().parents[2] / 'TradingCardScanner/LorcanaCatalogSeed'
-        sources = {row['id']: row for row in json.loads((seed / 'discovery.json').read_bytes())['cards']}
+        discovery = json.loads((seed / 'discovery.json').read_bytes())
+        sources = {row['id']: row for row in discovery['cards']}
+        product_evidence = {row.get('sourceCardID', f"tcgcsv:71:{row['productID']}"): row
+                            for row in discovery['coverage']['productEvidence'] if row.get('physicalReleaseEvidence')}
         market = json.loads((seed / 'market.json').read_bytes())
         checked = 0
         for printing in market['physicalPrintings']:
@@ -94,11 +97,63 @@ class MarketCatalogTests(unittest.TestCase):
                 rows = [sources[alias['id']] for alias in printing['sourceAliases'] if alias['id'] in sources]
                 self.assertEqual(len(rows), 1)
                 row = rows[0]
+                if row['setCode'] not in ORIGINAL_GROUPS or printing['identity']['size'] != 'standard':
+                    continue
+                if row['id'] in product_evidence:
+                    proof = product_evidence[row['id']]
+                    lanes = {'Normal'} if 'None' in proof['foilTypes'] else set()
+                    if any(pattern != 'None' for pattern in proof['foilTypes']):
+                        lanes.add(proof['marketLane'])
+                    self.assertEqual({(m['groupID'], m['productID'], m['providerVariantID']) for m in mappings},
+                                     {(proof['groupID'], proof['productID'], lane) for lane in lanes})
+                    continue
                 self.assertEqual(sorted(reviewed_finishes(row)),
                     sorted((mapping['finish'], mapping['providerVariantID']) for mapping in mappings))
                 self.assertEqual({mapping['groupID'] for mapping in mappings}, {ORIGINAL_GROUPS[row['setCode']]})
                 checked += 1
         self.assertGreater(checked, 0)
+
+    def testPreviouslyCompleteFamilyRejectsNewSiblingOrFinishEvidence(self):
+        manifest, _, _ = self.run_build()
+        validate_source_universes([self.row], manifest)
+        sibling = dict(self.row, id='lorcanajson:en:99999', name='New stamped source row')
+        with self.assertRaisesRegex(ValueError, 'omits discovery sibling'):
+            validate_source_universes([self.row, sibling], manifest)
+        changed_finish = dict(self.row, foilTypes=['None', 'Silver', 'RainbowPillars'])
+        with self.assertRaisesRegex(ValueError, 'disagrees with discovery finishes'):
+            validate_source_universes([changed_finish], manifest)
+        held = copy.deepcopy(manifest)
+        held['universes'][0]['isComplete'] = False
+        validate_source_universes([self.row, sibling], held)
+
+    def testMissingPriceLaneLeavesVerifiedFinishAvailable(self):
+        self.prices = self.prices[:1]
+        manifest, _, _ = self.run_build()
+        printing = manifest['physicalPrintings'][0]
+        self.assertEqual({f['finish'] for f in printing['finishes']}, {'normal', 'foil'})
+        self.assertEqual([m['finish'] for m in printing['marketMappings']], ['normal'])
+        self.assertTrue(manifest['universes'][0]['isComplete'])
+
+    def testFixedQuestPrintingWithWrongMarketplaceNumberRemainsUnpriced(self):
+        self.row.update(id='lorcanajson:en:1915', name='Disastrous Sandstorm', setCode='Q2', sourceSetCode='Q2',
+                        distribution="Illumineer's Quest", foilTypes=['None'], rarity='Special',
+                        imageURL='https://api.lorcana.ravensburger.com/images/en/quest2/20_fixture.jpg',
+                        footer=dict(collectorNumber='20', denominator='35', language='en', printedSetMarker='Q2'))
+        self.groupID = 24257
+        self.product.update(productId=634437, groupId=24257, name=self.row['name'],
+                            extendedData=[dict(name='Number', value='19/35'), dict(name='Rarity', value='Quest')])
+        self.prices = [dict(productId=634437, subTypeName='Normal')]
+        catalog, ledger, _ = self.run_build()
+        printing = catalog['physicalPrintings'][0]
+        self.assertEqual(printing['identity']['footer']['collectorNumber'], '20')
+        self.assertEqual([f['finish'] for f in printing['finishes']], ['normal'])
+        self.assertEqual(printing['marketMappings'], [])
+        self.product['extendedData'][0]['value'] = '20/35'
+        verified = self.run_build(ledger)[0]['physicalPrintings'][0]
+        self.assertEqual(verified['id'], printing['id'])
+        self.assertEqual([mapping['productID'] for mapping in verified['marketMappings']], [634437])
+        self.row['foilTypes'].append('Silver')
+        self.assertEqual(self.run_build(ledger)[0]['physicalPrintings'], [])
     def testPreviouslyAllocatedIdentityCannotBeRemovedOrChanged(self):
         m,_,_=self.run_build();changed=copy.deepcopy(m)
         changed['physicalPrintings'][0]['identity']['size']='oversized'

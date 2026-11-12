@@ -51,7 +51,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
     func testEverySourceCardIsBrowsableWithArtworkAndFinishMetadata() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundled.get()
         XCTAssertEqual(catalog.cardsByID.values.filter { $0.id.hasPrefix("lorcanajson:") }.count, 3_556)
-        XCTAssertEqual(catalog.cardsByID.count, 3_582)
+        XCTAssertEqual(catalog.cardsByID.count, 3_595)
         var seen: Set<String> = []
         for set in try await catalog.sets() {
             var cursor: String?
@@ -97,6 +97,146 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         }
     }
 
+    func testHeldFooterSiblingsPassSharedCatalogMembershipAndStayReadOnly() async throws {
+        let discovery = try LorcanaDiscoveryCatalog.bundled.get()
+        let catalog = try CardGameRuntimeContainer(runtimes: [discovery.runtime]).makeCardCatalog()
+        let recognizer = LorcanaDiscoveryRecognizer(catalog: discovery)
+        let families = discovery.cardsByFooter.values.filter { $0.count > 1 }
+        XCTAssertGreaterThanOrEqual(families.count, 6)
+        for rows in families {
+            let first = try XCTUnwrap(rows.first)
+            guard case let .identified(subject) = recognizer.identify([.init(text: first.printedIdentifier)]),
+                  case let .needsPrintingChoice(family, candidates) = try await catalog.lookupOutcome(for: subject.identifier)
+            else { return XCTFail(first.printedIdentifier) }
+            XCTAssertEqual(Set(candidates.map(\.id)), Set(rows.map(\.id)))
+            for candidate in candidates {
+                XCTAssertEqual(candidate.canonicalCardID, family.id)
+                XCTAssertNotNil(candidate.acquisitionUnavailableReason)
+                let resolved = try await catalog.resolvePrintingChoice(candidate, for: subject.identifier)
+                XCTAssertEqual(resolved.card.physicalPrintingID, candidate.id)
+            }
+        }
+    }
+
+    func testLocalSetSearchUsesFullChecklistAndExactPrintedNumbers() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let sets = try await catalog.sets()
+        let first = try XCTUnwrap(sets.first { $0.code == "1" })
+        let full = try await catalog.completeLocalCards(in: first)
+        let rows = try XCTUnwrap(full)
+        XCTAssertEqual(rows.count, first.cardCount)
+        let result = try await catalog.search(query: "05 / 204 EN 1", setIDs: [first.catalogID], cursor: nil)
+        XCTAssertEqual(result.items.map(\.collectorNumber), ["5", "5"])
+        let combined = try await catalog.search(query: "Mulan 118", setIDs: [first.catalogID], cursor: nil)
+        XCTAssertEqual(combined.items.map(\.collectorNumber), ["118", "118"])
+        let builder = CatalogSetPresentationBuilder()
+        let inputs = CatalogSetPresentationInputs(setID: first.catalogID, contentGeneration: UUID(),
+            cards: rows, search: "Mulan 118/204", sort: .numberLowToHigh, ownership: .all,
+            ownershipRevision: 0, tier: .standard, prices: [:])
+        let groups = try await builder.groups(for: inputs, owned: CatalogOwnershipIndex(rows: []))
+        XCTAssertEqual(groups.map(\.preferredSummary.collectorNumber), ["118", "118"])
+        let fabled = try XCTUnwrap(sets.first { $0.code == "9" })
+        let zero = try await catalog.search(query: "0/204", setIDs: [fabled.catalogID], cursor: nil)
+        XCTAssertEqual(zero.items.map(\.collectorNumber), ["0"])
+        let inklands = try XCTUnwrap(sets.first { $0.code == "3" })
+        let suffix = try await catalog.search(query: "04B/204", setIDs: [inklands.catalogID], cursor: nil)
+        XCTAssertEqual(suffix.items.map(\.collectorNumber), ["4B"])
+    }
+
+    func testNewSourceSiblingOrFinishWithdrawsAutomaticAcquisition() async throws {
+        let bundled = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let manifest = try XCTUnwrap(bundled.registry.normalizedPhysicalManifest)
+        let url = try XCTUnwrap(Bundle.main.url(forResource: "discovery", withExtension: "json", subdirectory: "LorcanaCatalogSeed"))
+        let data = try Data(contentsOf: url)
+        for addsSibling in [true, false] {
+            var payload = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+            var rows = try XCTUnwrap(payload["cards"] as? [[String: Any]])
+            let index = try XCTUnwrap(rows.firstIndex { $0["id"] as? String == "lorcanajson:en:6" })
+            if addsSibling {
+                var extra = rows[index]
+                extra["id"] = "lorcanajson:en:99999"
+                rows.append(extra)
+                var coverage = try XCTUnwrap(payload["coverage"] as? [String: Any])
+                coverage["sourceCardCount"] = try XCTUnwrap(coverage["sourceCardCount"] as? Int) + 1
+                payload["coverage"] = coverage
+            } else {
+                rows[index]["foilTypes"] = ["None", "Silver", "RainbowPillars"]
+            }
+            payload["cards"] = rows
+            let catalog = try LorcanaDiscoveryCatalog(data: JSONSerialization.data(withJSONObject: payload), reviewedManifest: manifest)
+            guard case let .identified(subject) = LorcanaDiscoveryRecognizer(catalog: catalog).identify([.init(text: "6/204 EN 1")]),
+                  case .catalogIncomplete = try await catalog.lookup(subject.identifier)
+            else { return XCTFail("A changed source family must withhold acquisition") }
+        }
+    }
+
+    func testSharedDiscoveryRowProjectsBothReviewedPhysicalSiblings() async throws {
+        let discoveryURL = try XCTUnwrap(Bundle.main.url(forResource: "discovery", withExtension: "json", subdirectory: "LorcanaCatalogSeed"))
+        let marketURL = try XCTUnwrap(Bundle.main.url(forResource: "market", withExtension: "json", subdirectory: "LorcanaCatalogSeed"))
+        var payload = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: discoveryURL)) as? [String: Any])
+        let cards = try XCTUnwrap(payload["cards"] as? [[String: Any]])
+        payload["cards"] = cards.filter { $0["id"] as? String != "tcgcsv:71:516775" }
+        var coverage = try XCTUnwrap(payload["coverage"] as? [String: Any])
+        coverage["supplementalCardCount"] = try XCTUnwrap(coverage["supplementalCardCount"] as? Int) - 1
+        payload["coverage"] = coverage
+        var market = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: marketURL)) as? [String: Any])
+        var printings = try XCTUnwrap(market["physicalPrintings"] as? [[String: Any]])
+        let oversized = try XCTUnwrap(printings.firstIndex {
+            ($0["id"] as? String)?.lowercased() == "64cde47d-47b8-4d05-ac65-05975c59ead4"
+        })
+        printings[oversized]["sourceAliases"] = [["provider": "lorcanajson", "id": "lorcanajson:en:5"]]
+        market["physicalPrintings"] = printings
+        let reviewed = try JSONDecoder().decode(LorcanaPhysicalCatalogManifest.self,
+            from: JSONSerialization.data(withJSONObject: market))
+        let catalog = try LorcanaDiscoveryCatalog(data: JSONSerialization.data(withJSONObject: payload), reviewedManifest: reviewed)
+        let sets = try await catalog.sets()
+        let set = try XCTUnwrap(sets.first { $0.code == "1" })
+        let choices = try await catalog.search(query: "5/204", setIDs: [set.catalogID], cursor: nil)
+        XCTAssertEqual(choices.items.count, 2)
+        XCTAssertEqual(Set(choices.items.map(\.providerID)).count, 2)
+        XCTAssertTrue(choices.items.allSatisfy { $0.collectionAvailabilityNotice == nil })
+        XCTAssertTrue(choices.items.contains { $0.name.contains("Oversized") })
+    }
+
+    func testBundledAcquirableBrowseIDsMatchEveryReviewedFooter() async throws {
+        let bundled = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let catalog = try CardGameRuntimeContainer(runtimes: [bundled.runtime]).makeCardCatalog()
+        let physical = try XCTUnwrap(bundled.registry.physicalCatalog)
+        let sets = try await bundled.sets()
+        var fromBrowse: [String: CatalogCardSummary] = [:]
+        for set in sets {
+            for row in try await bundled.completeLocalCards(in: set) ?? [] where row.collectionAvailabilityNotice == nil {
+                XCTAssertNil(fromBrowse.updateValue(row, forKey: row.providerID))
+            }
+        }
+        XCTAssertEqual(fromBrowse.count, 3_426)
+        for (footer, universe) in physical.universesByFooter where universe.isComplete {
+            let identifier = try LorcanaRecognitionAdapter.identifier(footer, generation: bundled.generation)
+            let outcome = try await catalog.lookupOutcome(for: identifier)
+            let resolved: [IdentifiedCard]
+            switch outcome {
+            case let .resolved(result):
+                resolved = [result.card]
+            case let .needsPrintingChoice(_, choices):
+                var selected: [IdentifiedCard] = []
+                for choice in choices {
+                    selected.append(try await catalog.resolvePrintingChoice(choice, for: identifier).card)
+                }
+                resolved = selected
+            case .catalogIncomplete:
+                return XCTFail(footer.displayIdentifier)
+            }
+            XCTAssertEqual(Set(resolved.map(\.physicalPrintingID)),
+                           Set(universe.printingIDs.map { $0.uuidString.lowercased() }))
+            for card in resolved {
+                let row = try XCTUnwrap(fromBrowse.removeValue(forKey: card.physicalPrintingID))
+                let details = try await bundled.details(for: row)
+                XCTAssertEqual(details.card.variantEvidence.catalogVariants, card.variantEvidence.catalogVariants)
+            }
+        }
+        XCTAssertTrue(fromBrowse.isEmpty)
+    }
+
     func testDalmatiansAndPromoArtworkSuffixesRemainDistinct() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundled.get()
         let recognizer = LorcanaDiscoveryRecognizer(catalog: catalog)
@@ -109,6 +249,143 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         for text in ["24A/P2 • EN • 7", "24B/P2 • EN • 7", "1 TFC • EN • 2/P1"] {
             guard case let .identified(subject) = recognizer.identify([.init(text: text)]) else { return XCTFail(text) }
             guard case .needsPrintingChoice = try await catalog.lookup(subject.identifier) else { return XCTFail(text) }
+        }
+    }
+
+    func testBundledLetteredDalmatiansResolveExactArtAndMarketLanes() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let recognizer = LorcanaDiscoveryRecognizer(catalog: catalog)
+        var printingIDs: Set<String> = []
+        var artworkURLs: Set<URL> = []
+        for (index, suffix) in ["a", "b", "c", "d", "e"].enumerated() {
+            let text = "4\(suffix)/204 EN 3"
+            guard case let .identified(subject) = recognizer.identify([.init(text: text)]),
+                  case let .resolved(resolution) = try await catalog.lookup(subject.identifier) else {
+                return XCTFail(text)
+            }
+            let card = resolution.card
+            let id = try XCTUnwrap(UUID(uuidString: card.physicalPrintingID))
+            let printing = try XCTUnwrap(catalog.registry.physicalCatalog?.printingByID[id])
+            XCTAssertEqual(printing.identity.footer.collectorNumber, "4\(suffix.uppercased())")
+            XCTAssertTrue(printingIDs.insert(card.physicalPrintingID).inserted)
+            XCTAssertTrue(artworkURLs.insert(try XCTUnwrap(printing.imageURL)).inserted)
+            XCTAssertEqual(Set(printing.finishes.map(\.finish)), [.normal, .foil])
+            XCTAssertEqual(Set(printing.marketMappings?.map(\.productID) ?? []), [532867 + index])
+            XCTAssertEqual(Set(printing.marketMappings?.map(\.providerVariantID) ?? []), ["Normal", "Cold Foil"])
+        }
+    }
+
+    func testBundledD23PrintedFootersFindTheCorrectMickeyAndFinish() async throws {
+        let bundled = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let recognizer = LorcanaDiscoveryRecognizer(catalog: bundled)
+        let sets = try await bundled.sets()
+        let catalog = try CardGameRuntimeContainer(runtimes: [bundled.runtime]).makeCardCatalog()
+        let importer = LorcanaImportAdapter(registry: bundled.registry)
+        var printingIDs: Set<String> = []
+        for (input, printed, normalized, wrong, setCode, finish, product) in [
+            ("1TFC - EN - 1/P1", "1TFC EN 1/P1", "1/P1 EN 1", "2/P1 EN 1", "P1", PhysicalVariant.normal, "454233"),
+            ("01/D23 - EN - 1", "01/D23 EN 1", "1/D23 EN 1", "02/D23 EN 1", "D23", .foil, "559532")
+        ] {
+            guard case let .identified(subject) = recognizer.identify([.init(text: input)]),
+                  case let .resolved(result) = try await catalog.lookupOutcome(for: subject.identifier) else {
+                return XCTFail(input)
+            }
+            let card = result.card
+            XCTAssertTrue(printingIDs.insert(card.physicalPrintingID).inserted)
+            XCTAssertEqual(card.identifier, printed)
+            XCTAssertEqual(card.variantEvidence.catalogVariants, [finish])
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: card, variant: finish)?.url.path, "/product/\(product)")
+            let set = try XCTUnwrap(sets.first { $0.code == setCode })
+            let hits = try await bundled.search(query: printed, setIDs: [set.catalogID], cursor: nil)
+            XCTAssertEqual(hits.items.map(\.providerID), [card.physicalPrintingID])
+            for (number, valid) in [(printed, true), (normalized, true), (wrong, false)] {
+                let csv = "game,provider_id,card_name,card_number,finish,quantity\nlorcana,\(card.providerID),Mickey,\(number),\(finish.id),1\n"
+                let entry = try XCTUnwrap(CollectionCSV.parse(Data(csv.utf8)).entries.first)
+                if valid {
+                    XCTAssertNoThrow(try importer.validate(entry), number)
+                } else {
+                    XCTAssertThrowsError(try importer.validate(entry), number)
+                }
+            }
+        }
+    }
+
+    func testNumberedQuestCardKeepsItsPrintedNumberWithoutTheWrongPrice() async throws {
+        let bundled = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let recognizer = LorcanaDiscoveryRecognizer(catalog: bundled)
+        guard case let .identified(subject) = recognizer.identify([.init(text: "20/35 EN Q2")]),
+              case let .resolved(result) = try await bundled.lookup(subject.identifier) else {
+            return XCTFail("The published 20/35 should resolve")
+        }
+        XCTAssertEqual(result.card.name, "Disastrous Sandstorm")
+        XCTAssertEqual(result.card.variantEvidence.catalogVariants, [.normal])
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: result.card, variant: .normal))
+    }
+
+    func testChampionshipFoilIsBrowsableWithoutBorrowingTheNonFoilMarketProduct() async throws {
+        let bundled = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let recognizer = LorcanaDiscoveryRecognizer(catalog: bundled)
+        let sets = try await bundled.sets()
+        let challenge = try XCTUnwrap(sets.first { $0.code == "C2" })
+        let page = try await bundled.search(query: "Headless Horseman 13/C2", setIDs: [challenge.catalogID], cursor: nil)
+        let summary = try XCTUnwrap(page.items.first)
+        XCTAssertEqual(page.items.count, 1)
+        let details = try await bundled.details(for: summary)
+        XCTAssertNil(details.collectionWriteUnavailableReason)
+        XCTAssertEqual(details.card.variantEvidence.catalogVariants, [.foil])
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: details.card, variant: .foil))
+        guard case let .identified(subject) = recognizer.identify([.init(text: "13/C2 EN 10")]),
+              case let .resolved(result) = try await bundled.lookup(subject.identifier)
+        else { return XCTFail("The published foil footer should resolve") }
+        XCTAssertEqual(result.card.physicalPrintingID, details.card.physicalPrintingID)
+    }
+
+    func testChallengeYearOneKeepsBothFinishesAndQuotesOnlyExactLanes() async throws {
+        let bundled = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let sets = try await bundled.sets()
+        let set = try XCTUnwrap(sets.first { $0.code == "C1" })
+        let localCards = try await bundled.completeLocalCards(in: set)
+        let rows = try XCTUnwrap(localCards)
+        XCTAssertEqual(rows.count, 10)
+        for row in rows {
+            let details = try await bundled.details(for: row)
+            let number = try XCTUnwrap(Int(row.collectorNumber))
+            if number == 5 {
+                XCTAssertNotNil(details.collectionWriteUnavailableReason)
+                continue
+            }
+            XCTAssertNil(details.collectionWriteUnavailableReason)
+            let expected: Set<PhysicalVariant> = [3, 4, 8, 9, 10].contains(number) ? [.normal, .foil] : [.foil]
+            XCTAssertEqual(Set(details.card.variantEvidence.catalogVariants), expected)
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: details.card, variant: .foil) != nil, [1, 2, 3].contains(number))
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: details.card, variant: .normal) != nil, expected.contains(.normal))
+        }
+    }
+
+    func testBundledFloodbornErrataRequireAVisiblePrintingChoice() async throws {
+        let bundled = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let recognizer = LorcanaDiscoveryRecognizer(catalog: bundled)
+        let catalog = try CardGameRuntimeContainer(runtimes: [bundled.runtime]).makeCardCatalog()
+        let cases: [(String, [String: (product: String, normal: Bool)])] = [
+            ("39/204 EN 2", ["Separated branch": ("516333", true), "Continuous branch": ("618771", true)]),
+            ("73/204 EN 2", ["Cost 2 · Ward": ("519506", true), "Cost 3 · no Ward": ("597095", false)])
+        ]
+        for (printed, expected) in cases {
+            guard case let .identified(subject) = recognizer.identify([.init(text: printed)]),
+                  case let .needsPrintingChoice(_, choices) = try await catalog.lookupOutcome(for: subject.identifier)
+            else { return XCTFail(printed) }
+            XCTAssertEqual(Set(choices.compactMap(\.treatmentLabel)), Set(expected.keys))
+            XCTAssertEqual(Set(choices.compactMap(\.thumbnailURL)).count, 2)
+            var ids: Set<String> = []
+            for choice in choices {
+                let label = try XCTUnwrap(choice.treatmentLabel)
+                let match = try XCTUnwrap(expected[label])
+                let card = try await catalog.resolvePrintingChoice(choice, for: subject.identifier).card
+                XCTAssertTrue(ids.insert(card.physicalPrintingID).inserted)
+                XCTAssertEqual(Set(card.variantEvidence.catalogVariants), match.normal ? [.normal, .foil] : [.foil])
+                XCTAssertEqual(TCGplayerLinkBuilder.destination(for: card, variant: .foil)?.url.path,
+                               "/product/\(match.product)")
+            }
         }
     }
 
@@ -155,10 +432,10 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
 
     func testSealedInventoryIsCompleteOfflineAndHasNoFabricatedPricesOrVendorVariants() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundled.get()
-        XCTAssertEqual(catalog.products.count, 177)
+        XCTAssertEqual(catalog.products.count, 188)
         var seen: Set<String> = []
         let sets = try await catalog.sealedSets(game: .lorcana)
-        XCTAssertEqual(sets.reduce(0) { $0 + $1.sealedCount }, 177)
+        XCTAssertEqual(sets.reduce(0) { $0 + $1.sealedCount }, 188)
         for set in sets {
             var offset = 0
             var hasMore = true
@@ -174,7 +451,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
                 offset += page.items.count; hasMore = page.hasMore
             }
         }
-        XCTAssertEqual(seen.count, 177)
+        XCTAssertEqual(seen.count, 188)
         let search = try await catalog.searchSealedProducts(game: .lorcana, setID: nil, query: "first chapter booster", offset: 0)
         XCTAssertFalse(search.items.isEmpty)
         XCTAssertTrue(search.items.allSatisfy { $0.name.contains("Booster") })
@@ -201,14 +478,17 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         let runtime = try XCTUnwrap(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
         XCTAssertTrue(runtime.descriptor.capabilities.contains([.scan, .browse, .sealed]))
         XCTAssertTrue(runtime.descriptor.capabilities.contains([.collectionWrite, .pricing]))
-        XCTAssertEqual(runtime.priceAuthority?.identityByPriceKey.count,3_364)
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let manifest = try XCTUnwrap(catalog.registry.physicalCatalog?.manifest)
+        let expectedMappings = manifest.physicalPrintings.reduce(0) { $0 + ($1.marketMappings?.count ?? 0) }
+        XCTAssertEqual(runtime.priceAuthority?.identityByPriceKey.count, expectedMappings)
         XCTAssertNotNil(runtime.pricing); XCTAssertNotNil(runtime.importer)
     }
 
     func testBrowseAvailabilityMatchesReviewedAcquisitionAuthority() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
         let sets = try await catalog.sets()
-        let recent = try XCTUnwrap(sets.first { $0.code == "14" })
+        let recent = try XCTUnwrap(sets.first { $0.code == "C3" })
         XCTAssertEqual(recent.collectionAvailabilityNotice, "Browse only")
         XCTAssertEqual(recent.withSortRank(99).collectionAvailabilityNotice, "Browse only")
         let recentCards = try await catalog.cards(in: recent, cursor: nil)
@@ -217,12 +497,20 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         let recentDetail = try await catalog.details(for: recentCard)
         XCTAssertNotNil(recentDetail.collectionWriteUnavailableReason)
 
-        let firstSet = try XCTUnwrap(sets.first { $0.code == "1" })
+        let firstSet = try XCTUnwrap(sets.first { $0.code == "P1" })
         XCTAssertEqual(firstSet.collectionAvailabilityNotice, "Some cards are browse only")
         let firstCards = try await catalog.cards(in: firstSet, cursor: nil)
         let reviewedCard = try XCTUnwrap(firstCards.items.first { $0.collectionAvailabilityNotice == nil })
         let reviewedDetail = try await catalog.details(for: reviewedCard)
         XCTAssertNil(reviewedDetail.collectionWriteUnavailableReason)
+        let owned = CatalogOwnershipIndex(rows: [])
+        XCTAssertNil(owned.directoryProgress(for: recent).total)
+        let partial = owned.directoryProgress(for: firstSet)
+        XCTAssertEqual(partial.unit, "reviewed printings")
+        XCTAssertEqual(partial.total, firstSet.physicalPrintingIDs?.count)
+        XCTAssertLessThan(try XCTUnwrap(partial.total), try XCTUnwrap(firstSet.cardCount))
+        let complete = try XCTUnwrap(sets.first { $0.code == "14" })
+        XCTAssertEqual(owned.directoryProgress(for: complete).total, complete.cardCount)
 
         let search = try await catalog.search(query: recentCard.name, setIDs: [recent.catalogID], cursor: nil)
         XCTAssertTrue(search.items.contains { $0.id == recentCard.id && $0.collectionAvailabilityNotice == "Browse only" })
@@ -313,7 +601,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
             XCTAssertEqual(resolved.card.name, row.name)
             XCTAssertEqual(try catalog.identifierForRetry(identifier), identifier)
         }
-        XCTAssertEqual(heldCount, 3)
+        XCTAssertEqual(heldCount, 9)
         XCTAssertThrowsError(try catalog.identifierForCatalogSelection(printingID: "tcgcsv:71:unknown", original: original))
     }
 

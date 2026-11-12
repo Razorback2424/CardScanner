@@ -9,7 +9,7 @@ struct LorcanaRecognitionAdapter: GameRecognitionAdapter {
     private static let expression = try! NSRegularExpression(pattern:
         "(?<![A-Z0-9/-])([0-9OILSBZ]{1,4}[A-Z]?)[\\t ]*/[\\t ]*([A-Z0-9][A-Z0-9-]{0,11})[\\t •·–—-]+([A-Z]{2})[\\t •·–—-]+([A-Z0-9][A-Z0-9-]{0,11})(?![A-Z0-9/-])")
     private static let d23Expression = try! NSRegularExpression(pattern:
-        "(?<![A-Z0-9/-])([0-9]{1,4})[\\t ]+TFC[\\t •·–—-]+([A-Z]{2})[\\t •·–—-]+([0-9]{1,4})[\\t ]*/[\\t ]*(P1)(?![A-Z0-9/-])")
+        "(?<![A-Z0-9/-])([0-9]{1,4})[\\t ]*TFC[\\t •·–—-]+([A-Z]{2})[\\t •·–—-]+([0-9]{1,4})[\\t ]*/[\\t ]*(P1)(?![A-Z0-9/-])")
 
     func identify(_ lines: [RecognizedLine]) -> GameRecognitionOutcome {
         var found: Set<LorcanaPrintedIdentity> = []

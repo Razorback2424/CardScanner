@@ -17,11 +17,24 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         let recognitionTitles: [String]?
 
         var setID: CatalogSetID { .init(game: .lorcana, providerID: "lorcana-source:" + setCode) }
+        var discoveryFamilyID: String { footer?.familyID ?? id }
+        var reportedFinishNotice: String? {
+            guard !foilTypes.isEmpty else { return nil }
+            let labels = foilTypes.map { type in
+                if type == "Foil" { return type }
+                return LorcanaPhysicalFinish.allCases.first(where: { $0.sourcePattern == type })?.variant.label
+                    ?? type + " foil"
+            }
+            return "Reported finishes · " + labels.joined(separator: ", ")
+        }
         var variants: [PhysicalVariant] {
             let foils = foilTypes.filter { $0 != "None" }
             return foilTypes.map { type in
                 if type == "None" { return .normal }
                 if foils.count == 1 { return .foil }
+                if let finish = LorcanaPhysicalFinish.allCases.first(where: { $0.sourcePattern == type }) {
+                    return finish.variant
+                }
                 return .init(id: "lorcanaFoil:" + type, label: type + " Foil")
             }
         }
@@ -102,9 +115,7 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
     let unnumberedCards: [Card]
     private let setsByID: [CatalogSetID: CatalogSet]
     private let summariesBySetID: [CatalogSetID: [CatalogCardSummary]]
-    private let searchTextByID: [String: String]
     private let capturedAt: Date
-    private let physicalBySourceID: [String: UUID]
     private let sourceByPhysicalID: [String: Card]
     private let browseMappings: [String: [LorcanaMarketMapping]]
     private let browsePriceSource: TCGCSVProductPriceSource
@@ -123,7 +134,8 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         let timestamp = ISO8601DateFormatter()
         guard let captured = timestamp.date(from: payload.generatedOn + "Z") else { throw BrowseCatalogError.badResponse }
         for card in payload.cards {
-            guard (card.id.hasPrefix("lorcanajson:en:") || card.id.hasPrefix("tcgcsv:71:")), !card.name.isEmpty,
+            guard (card.id.hasPrefix("lorcanajson:en:") || card.id.hasPrefix("tcgcsv:71:")
+                   || card.id.hasPrefix("lorcana-published:en:")), !card.name.isEmpty,
                   !card.number.isEmpty, !card.setCode.isEmpty, !card.setName.isEmpty,
                   (card.id.hasPrefix("tcgcsv:") || !card.foilTypes.isEmpty), Set(card.foilTypes).count == card.foilTypes.count,
                   [card.imageURL, card.thumbnailURL].compactMap({ $0 }).allSatisfy({ $0.scheme == "https" && $0.host != nil }),
@@ -141,7 +153,10 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
                   product.setID.hasPrefix("tcgcsv:71:"), !product.name.isEmpty, !product.setName.isEmpty,
                   product.imageURL == nil || product.imageURL?.scheme == "https" else { throw BrowseCatalogError.badResponse }
         }
-        let upcomingScopes = Set(payload.cards.filter { (Self.date($0.releaseDate) ?? .distantPast) > asOf }
+        let releaseDates = Set(payload.cards.compactMap(\.releaseDate)).reduce(into: [String: Date]()) {
+            $0[$1] = Self.date($1)
+        }
+        let upcomingScopes = Set(payload.cards.filter { ($0.releaseDate.flatMap { releaseDates[$0] } ?? .distantPast) > asOf }
             .map(\.setCode)).sorted().joined(separator: ":")
         // Release labels advance on relaunch. Bind cursors/details to that
         // presentation phase so an old "Upcoming" page cannot survive it.
@@ -172,7 +187,8 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
             }
             browseMappings = Dictionary(grouping: prices.entries, by: \.sourceID).mapValues { $0.map(\.mapping) }
         } else { browseMappings = [:] }
-        cardsByFooter = Dictionary(grouping: payload.cards.filter { $0.footer != nil }, by: { $0.footer! })
+        let discoveryRowsByFooter = Dictionary(grouping: payload.cards.filter { $0.footer != nil }, by: { $0.footer! })
+        cardsByFooter = discoveryRowsByFooter
         unnumberedCards = payload.cards.filter { $0.unnumberedSetMarker != nil }.sorted { $0.id < $1.id }
         products = payload.sealed
         let sourceEvidence = payload.coverage.productEvidence ?? []
@@ -183,9 +199,11 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
             let first = rows.sorted { $0.id < $1.id }[0]
             return .init(footer: footer, providerSetCode: first.sourceSetCode, name: first.name, version: nil,
                 rarity: first.rarity, layout: first.layout,
-                sourceAliases: rows.map { .init(provider: $0.id.hasPrefix("tcgcsv:") ? "tcgcsv" : "lorcanajson", id: $0.id) },
+                sourceAliases: rows.map { row in
+                    .init(provider: String(row.id.prefix { $0 != ":" }), id: row.id)
+                },
                 footerEvidenceReference: first.id.hasPrefix("lorcanajson:") ? "https://lorcanajson.org/#field-explanation"
-                    : evidenceReferences[first.id] ?? "https://tcgcsv.com/")
+                    : evidenceReferences[first.id] ?? first.imageURL?.absoluteString ?? "https://tcgcsv.com/")
         }))
         if let manifest = reviewedManifest {
             var families = discoveryRegistry.familiesByFooter
@@ -195,27 +213,39 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
                     name: family.name, version: family.version, rarity: family.rarity, layout: family.layout,
                     sourceAliases: Array(Set(source.sourceAliases + family.sourceAliases)), footerEvidenceReference: family.footerEvidenceReference)
             }
+            let activeByFooter = Dictionary(grouping: manifest.physicalPrintings.filter { $0.status != .superseded },
+                                             by: { $0.identity.footer })
+            let universes = manifest.universes.map { universe in
+                let printings = activeByFooter[universe.footer] ?? []
+                let sources = discoveryRowsByFooter[universe.footer] ?? []
+                guard universe.isComplete, !sources.allSatisfy({ Self.sourceEvidence($0, agreesWith: printings) }) else {
+                    return universe
+                }
+                return LorcanaPhysicalUniverse(footer: universe.footer, printingIDs: universe.printingIDs,
+                    isComplete: false, evidenceReference: universe.evidenceReference)
+            }
             registry = try .init(manifest: .init(schemaVersion: 2, reviewedAt: manifest.reviewedAt,
                 printFamilies: Array(families.values), canonicalCards: manifest.canonicalCards,
-                physicalPrintings: manifest.physicalPrintings, universes: manifest.universes, corrections: manifest.corrections),
+                physicalPrintings: manifest.physicalPrintings, universes: universes, corrections: manifest.corrections),
                 presentationContext: catalogGeneration)
             catalogGeneration = registry.generation
         } else { registry = discoveryRegistry }
         generation = catalogGeneration
-        var physicalIDs: [String: UUID] = [:], physicalSources: [String: Card] = [:]
+        var physicalCards: [String: [ResolvedCatalogCard]] = [:], physicalSources: [String: Card] = [:]
         let sourceCardsByID = cardsByID
         let adapter = LorcanaCatalogAdapter(registry: registry)
         for printing in registry.physicalCatalog?.manifest.physicalPrintings ?? [] {
-            guard (try? adapter.resolution(forPrintingID: printing.id)) != nil else { continue }
+            guard let resolved = try? adapter.resolution(forPrintingID: printing.id).card else { continue }
             let matches = printing.sourceAliases.compactMap { sourceCardsByID[$0.id] }
-            guard matches.count == 1, let source = matches.first, source.footer == printing.identity.footer,
-                  physicalIDs.updateValue(printing.id, forKey: source.id) == nil else { throw BrowseCatalogError.badResponse }
-            physicalSources[printing.id.uuidString.lowercased()] = source
+            guard matches.count == 1, let source = matches.first, source.footer == printing.identity.footer else {
+                throw BrowseCatalogError.badResponse
+            }
+            physicalCards[source.id, default: []].append(resolved)
+            physicalSources[resolved.physicalPrintingID] = source
         }
-        physicalBySourceID = physicalIDs; sourceByPhysicalID = physicalSources
+        sourceByPhysicalID = physicalSources
         var sets: [CatalogSetID: CatalogSet] = [:]
         var summaries: [CatalogSetID: [CatalogCardSummary]] = [:]
-        var texts: [String: String] = [:]
         for (id, rows) in Dictionary(grouping: payload.cards, by: \.setID) {
             let ordered = rows.sorted {
                 let comparison = CollectorNumber.compare($0.number, $1.number)
@@ -223,34 +253,54 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
             }
             let first = ordered[0]
             guard ordered.allSatisfy({ $0.setName == first.setName }) else { throw BrowseCatalogError.badResponse }
-            let date = Self.date(first.releaseDate)
+            let date = first.releaseDate.flatMap { releaseDates[$0] }
             let incomplete = payload.coverage.sets[first.setCode]?.hasAllCards == false || first.setCode == "C3"
             let upcoming = (date ?? .distantPast) > asOf
             let name = first.setName + " · EN" + (incomplete ? " · Partial catalog" : upcoming ? " · Upcoming" : "")
-            var set = CatalogSet(catalogID: id, name: name, code: first.setCode,
-                logoURL: nil, symbolURL: nil, cardCount: ordered.count, releaseDate: date,
-                sortRank: Int(first.setCode) ?? 0)
-            let browseOnlyCount = ordered.filter { physicalIDs[$0.id] == nil }.count
-            if browseOnlyCount > 0 {
-                set.collectionAvailabilityNotice = browseOnlyCount == ordered.count
-                    ? "Browse only" : "Some cards are browse only"
+            let rows = ordered.flatMap { card -> [CatalogCardSummary] in
+                let printings = (physicalCards[card.id] ?? []).sorted { $0.physicalPrintingID < $1.physicalPrintingID }
+                let options: [ResolvedCatalogCard?] = printings.isEmpty ? [nil] : printings.map(Optional.some)
+                let number = card.footer?.collectorNumber ?? card.number
+                let compactTFC = card.printedIdentifier.contains(" TFC")
+                    ? card.printedIdentifier.replacingOccurrences(of: " TFC", with: "TFC") : ""
+                return options.map { printing in
+                    let title = printings.count > 1 ? printing?.name ?? card.name : card.name
+                    let fields = CatalogCardSearchFields(collectorNumber: number, denominator: card.footer?.denominator,
+                        text: [title, card.printedIdentifier, compactTFC, card.number, card.setName, card.setCode, card.distribution ?? ""].joined(separator: " "))
+                    return CatalogCardSummary(game: .lorcana, providerID: printing?.physicalPrintingID ?? card.id,
+                        setID: id, setName: name, setCode: card.setCode, name: title, collectorNumber: number,
+                        thumbnailURL: printing?.thumbnailImageURL ?? card.thumbnailURL,
+                        imageURL: printing?.displayImageURL ?? card.imageURL, catalogGeneration: catalogGeneration,
+                        collectionAvailabilityNotice: printing == nil ? "Browse only" : nil, searchFields: fields)
+                }
             }
-            let rows = ordered.map { card in
-                let summary = CatalogCardSummary(game: .lorcana, providerID: physicalIDs[card.id]?.uuidString.lowercased() ?? card.id, setID: id, setName: set.name,
-                    setCode: card.setCode, name: card.name, collectorNumber: card.footer?.collectorNumber ?? card.number,
-                    thumbnailURL: card.thumbnailURL, imageURL: card.imageURL, catalogGeneration: catalogGeneration,
-                    collectionAvailabilityNotice: physicalIDs[card.id] == nil ? "Browse only" : nil)
-                texts[summary.id] = CardNameSearch.normalize([card.name, card.printedIdentifier, card.setName,
-                    card.setCode, card.distribution ?? ""].joined(separator: " "))
-                return summary
+            var set = CatalogSet(catalogID: id, name: name, code: first.setCode,
+                logoURL: nil, symbolURL: nil, cardCount: rows.count, releaseDate: date,
+                sortRank: Int(first.setCode) ?? 0)
+            let browseOnlyCount = rows.filter { $0.collectionAvailabilityNotice != nil }.count
+            if browseOnlyCount > 0 {
+                set.collectionAvailabilityNotice = browseOnlyCount == rows.count
+                    ? "Browse only" : "Some cards are browse only"
             }
             // Keep discovery rows visible while completion counts explicit
             // reviewed UUID targets rather than inferring ownership from aliases.
-            if reviewedManifest != nil { set.physicalPrintingIDs = Set(rows.map(\.providerID)) }
+            set.physicalPrintingIDs = Set(rows.filter { $0.collectionAvailabilityNotice == nil }.map(\.providerID))
             set.artworkFallbackURLs = Array(rows.compactMap(\.thumbnailURL).prefix(3))
             sets[id] = set; summaries[id] = rows
         }
-        setsByID = sets; summariesBySetID = summaries; searchTextByID = texts
+        setsByID = sets; summariesBySetID = summaries
+    }
+
+    private static func sourceEvidence(_ row: Card, agreesWith printings: [LorcanaPhysicalPrinting]) -> Bool {
+        let matches = printings.filter { $0.sourceAliases.contains(where: { $0.id == row.id }) }
+        guard !matches.isEmpty else { return false }
+        guard !row.foilTypes.isEmpty else { return true }
+        let observed = Set(row.foilTypes)
+        let finishes = Set(matches.flatMap { $0.finishes.map(\.finish) })
+        let named = Set(finishes.compactMap(\.sourcePattern))
+        guard named.isSubset(of: observed) else { return false }
+        let remaining = observed.subtracting(named)
+        return finishes.contains(.foil) ? remaining.count == 1 && !remaining.contains("None") : remaining.isEmpty
     }
 
     var runtime: CardGameRuntime {
@@ -276,26 +326,32 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         }
     }
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        try page(rows(in: set), cursor: cursor, scope: set.id)
+    }
+    func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]? {
+        try rows(in: set)
+    }
+    private func rows(in set: CatalogSet) throws -> [CatalogCardSummary] {
         guard setsByID[set.catalogID] == set else { throw CatalogLookupError.staleCatalog }
-        return try page(summariesBySetID[set.catalogID] ?? [], cursor: cursor, scope: set.id)
+        return summariesBySetID[set.catalogID] ?? []
     }
     func search(query: String, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         guard setIDs.allSatisfy({ setsByID[$0] != nil }) else { throw CatalogLookupError.staleCatalog }
-        let normalized = CardNameSearch.normalize(query)
-        let scope = ([normalized] + setIDs.map(\.id).sorted()).map { "\($0.utf8.count):\($0)" }.joined()
+        let search = CatalogCardSearchQuery(query)
+        let scope = ([search.scope] + setIDs.map(\.id).sorted()).map { "\($0.utf8.count):\($0)" }.joined()
         let rows = summariesBySetID.filter { setIDs.isEmpty || setIDs.contains($0.key) }.values.flatMap { $0 }
-            .filter { normalized.count >= 2 && searchTextByID[$0.id]?.contains(normalized) == true }.sorted { $0.id < $1.id }
+            .filter { search.normalized.count >= 2 && $0.searchFields.map(search.matches) == true }.sorted { $0.id < $1.id }
         return try page(rows, cursor: cursor, scope: scope)
     }
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
         guard summary.game == game, summary.catalogGeneration == generation,
               summariesBySetID[summary.setID]?.contains(summary) == true,
               let card = sourceByPhysicalID[summary.providerID] ?? cardsByID[summary.providerID], let set = setsByID[summary.setID] else { throw CatalogLookupError.staleCatalog }
-        if let id = physicalBySourceID[card.id] {
+        if let id = UUID(uuidString: summary.providerID), sourceByPhysicalID[summary.providerID] != nil {
             return .init(card: try physical.resolution(forPrintingID: id).card, set: set, retrievedAt: capturedAt)
         }
         return .init(card: try resolution(card).card, set: set, retrievedAt: capturedAt,
-            collectionWriteUnavailableReason: "This printing needs review before it can be added.")
+            collectionWriteUnavailableReason: Self.reviewRequired, catalogNotice: card.reportedFinishNotice)
     }
 
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup? {
@@ -336,7 +392,7 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         }
         let rows = try matches(identifier)
         guard let first = rows.first else { return .catalogIncomplete(nil) }
-        let canonical = CanonicalCardSummary(id: first.id, game: game, name: first.name,
+        let canonical = CanonicalCardSummary(id: first.discoveryFamilyID, game: game, name: first.name,
                                              printedIdentifier: identifier.displayIdentifier, language: "en")
         // Never auto-acquire a source row: neither an app-data record nor an
         // all-print query establishes the standard/oversized/stamped universe.
@@ -391,10 +447,6 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         return try .init(collectorNumber: fields["collectorNumber"]!, denominator: fields["denominator"]!,
                          language: fields["language"]!, printedSetMarker: fields["printedSetMarker"]!)
     }
-    func unnumberedIdentifier(generation: String?) throws -> ScanIdentifier {
-        guard let row = cardsByID["lorcanajson:en:3551"] else { throw CatalogLookupError.catalogIncomplete(nil) }
-        return try unnumberedIdentifier(for: row, generation: generation)
-    }
     func unnumberedIdentifier(for row: Card, generation: String?) throws -> ScanIdentifier {
         guard let marker = row.unnumberedSetMarker, let title = row.recognitionTitles?.first else {
             throw CatalogLookupError.invalidAdapterOutcome
@@ -409,15 +461,17 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         try .init(game: game, namespace: "catalog-record", fields: [.init(key: "sourceID", value: row.id)],
             displayIdentifier: row.name, suppressionIdentity: "source-record:" + row.id, catalogGeneration: generation)
     }
+    private static let reviewRequired = "This printing needs review before it can be added."
+
     private func candidate(_ row: Card) -> PhysicalPrintingCandidate {
-        .init(id: row.id, game: game, canonicalCardID: row.id, language: "en", catalogGeneration: generation,
+        .init(id: row.id, game: game, canonicalCardID: row.discoveryFamilyID, language: "en", catalogGeneration: generation,
               name: row.name, printedIdentifier: row.printedIdentifier, releaseLabel: row.setName,
               treatmentLabel: row.rarity, distributionLabel: row.distribution,
               thumbnailURL: row.thumbnailURL, artworkID: row.id,
-              distinctionLabels: ["Source catalog record", row.layout])
+              distinctionLabels: ["Source catalog record", row.layout], acquisitionUnavailableReason: Self.reviewRequired)
     }
     private func resolution(_ row: Card) throws -> CardCatalog.CatalogResolution {
-        let card = try ResolvedCatalogCard(game: game, physicalPrintingID: row.id, canonicalCardID: row.id,
+        let card = try ResolvedCatalogCard(game: game, physicalPrintingID: row.id, canonicalCardID: row.discoveryFamilyID,
             language: "en", name: row.name, setName: row.setName, setCode: row.setCode,
             cardNumber: row.footer?.collectorNumber ?? row.number, printedIdentifier: row.printedIdentifier,
             rarity: row.rarity, displayImageURL: row.imageURL, thumbnailImageURL: row.thumbnailURL,

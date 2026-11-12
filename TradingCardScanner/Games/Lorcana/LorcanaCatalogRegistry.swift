@@ -42,6 +42,14 @@ struct LorcanaPrintedIdentity: Hashable, Codable, Sendable {
     }
 
     var displayIdentifier: String { "\(collectorNumber)/\(denominator) \(language.uppercased()) \(printedSetMarker)" }
+    var printedLabel: String {
+        guard let number = Int(collectorNumber), (1...7).contains(number) else { return displayIdentifier }
+        if denominator == "P1", printedSetMarker == "1" {
+            return "1TFC \(language.uppercased()) \(collectorNumber)/P1"
+        }
+        if denominator == "D23" { return "0" + displayIdentifier }
+        return displayIdentifier
+    }
     var evidenceKey: String { "\(language):\(printedSetMarker):\(collectorNumber):\(denominator)" }
     var familyID: String { "lorcana-family:\(evidenceKey)" }
     var setScopeID: String { "lorcana-set:\(language):\(printedSetMarker):\(denominator)" }

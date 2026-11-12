@@ -47,14 +47,14 @@ struct LorcanaCatalogAdapter: GameCatalogAdapter {
         let key = try footer(for: identifier)
         guard let family = registry.familiesByFooter[key] else { return .catalogIncomplete(nil) }
         let familySummary = CanonicalCardSummary(id: key.familyID, game: game, name: family.displayName,
-            printedIdentifier: key.displayIdentifier, language: key.language)
+            printedIdentifier: key.printedLabel, language: key.language)
         guard let physical = registry.physicalCatalog,
               let printings = physical.reviewedPrintings(for: key), let first = printings.first,
               let canonical = physical.canonicalByID[first.identity.canonicalCardID] else {
             return .catalogIncomplete(familySummary)
         }
         let summary = CanonicalCardSummary(id: canonical.id.uuidString.lowercased(), game: game,
-            name: canonical.displayName, printedIdentifier: key.displayIdentifier, language: key.language)
+            name: canonical.displayName, printedIdentifier: key.printedLabel, language: key.language)
         if printings.count == 1, first.identity.size == .standard {
             return .resolved(try resolution(first, canonical: canonical))
         }
@@ -154,7 +154,7 @@ struct LorcanaCatalogAdapter: GameCatalogAdapter {
     private func candidate(_ printing: LorcanaPhysicalPrinting, canonical: LorcanaCanonicalCard) -> PhysicalPrintingCandidate {
         .init(id: printing.id.uuidString.lowercased(), game: game, canonicalCardID: canonical.id.uuidString.lowercased(),
               language: printing.identity.footer.language, catalogGeneration: generation, name: canonical.displayName,
-              printedIdentifier: printing.identity.footer.displayIdentifier, releaseLabel: printing.setName,
+              printedIdentifier: printing.identity.footer.printedLabel, releaseLabel: printing.setName,
               treatmentLabel: printing.identity.size == .oversized
                 && registry.physicalCatalog?.reviewedPrintings(for: printing.identity.footer)?.count == 1
                 ? "Oversized · \(printing.artworkLabel)" : printing.artworkLabel,
@@ -167,7 +167,9 @@ struct LorcanaCatalogAdapter: GameCatalogAdapter {
     private func resolution(_ printing: LorcanaPhysicalPrinting, canonical: LorcanaCanonicalCard,
                             siblingChoiceLabel: String? = nil) throws -> CardCatalog.CatalogResolution {
         let footer = printing.identity.footer
-        let variants = printing.finishes.map { $0.finish.variant }.sorted { $0.choicePriority < $1.choicePriority }
+        let variants = printing.finishes.map { $0.finish.variant }.sorted {
+            ($0.choicePriority, $0.id) < ($1.choicePriority, $1.id)
+        }
         let siblings = siblingChoiceLabel == nil ? registry.physicalCatalog?.reviewedPrintings(for: footer) ?? [] : []
         let name: String
         if let siblingChoiceLabel {
@@ -182,7 +184,7 @@ struct LorcanaCatalogAdapter: GameCatalogAdapter {
         let card = try ResolvedCatalogCard(game: game, physicalPrintingID: printing.id.uuidString.lowercased(),
             canonicalCardID: canonical.id.uuidString.lowercased(), language: footer.language, name: name,
             setName: printing.setName, setCode: printing.providerSetCode, cardNumber: footer.collectorNumber,
-            printedIdentifier: footer.displayIdentifier, rarity: registry.familiesByFooter[footer]?.rarity,
+            printedIdentifier: footer.printedLabel, rarity: registry.familiesByFooter[footer]?.rarity,
             displayImageURL: printing.imageURL, thumbnailImageURL: printing.imageURL,
             variantEvidence: .init(game: game, setID: footer.setScopeID,
                 cardNumber: footer.collectorNumber, catalogVariants: variants),
@@ -199,7 +201,9 @@ struct LorcanaVariantPolicy: GameVariantPolicy {
         guard let physical = registry.physicalCatalog else { selectableVariants = []; return }
         let finishes = Set(physical.printingByID.values.filter { $0.status == .verified }
             .flatMap { $0.finishes.map(\.finish) })
-        selectableVariants = finishes.map(\.variant).sorted { $0.choicePriority < $1.choicePriority }
+        selectableVariants = finishes.map(\.variant).sorted {
+            ($0.choicePriority, $0.id) < ($1.choicePriority, $1.id)
+        }
     }
 }
 

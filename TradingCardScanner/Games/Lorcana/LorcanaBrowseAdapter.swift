@@ -9,7 +9,6 @@ struct LorcanaBrowseAdapter: GameBrowseAdapter {
     var generation: String { registry.generation }
     private let setsByID: [CatalogSetID: CatalogSet]
     private let cardsBySetID: [CatalogSetID: [CatalogCardSummary]]
-    private let searchTextByID: [String: String]
     private let pageSize = 60
 
     init(registry: LorcanaCatalogRegistry) {
@@ -23,7 +22,6 @@ struct LorcanaBrowseAdapter: GameBrowseAdapter {
             }
         }
         var sets: [CatalogSetID: CatalogSet] = [:], cards: [CatalogSetID: [CatalogCardSummary]] = [:]
-        var texts: [String: String] = [:]
         for (id, members) in grouped {
             let ordered = members.sorted {
                 let result = CollectorNumber.compare($0.1.cardNumber, $1.1.cardNumber)
@@ -37,37 +35,45 @@ struct LorcanaBrowseAdapter: GameBrowseAdapter {
                 logoURL: nil, symbolURL: nil, cardCount: ordered.count, releaseDate: nil, sortRank: 0,
                 physicalPrintingIDs: Set(ordered.map { $0.1.physicalPrintingID }))
             let summaries = ordered.map { printing, card in
-                let summary = CatalogCardSummary(game: .lorcana, providerID: card.physicalPrintingID, setID: id,
+                let fields = CatalogCardSearchFields(collectorNumber: card.cardNumber, denominator: footer.denominator,
+                    text: [card.name, printing.identity.footer.printedLabel, label, card.setCode].joined(separator: " "))
+                return CatalogCardSummary(game: .lorcana, providerID: card.physicalPrintingID, setID: id,
                     setName: label, setCode: card.setCode, name: card.name, collectorNumber: card.cardNumber,
-                    thumbnailURL: card.thumbnailImageURL, imageURL: card.displayImageURL, catalogGeneration: registry.generation)
-                texts[summary.id] = CardNameSearch.normalize([summary.name, printing.identity.footer.displayIdentifier,
-                    label, card.setCode].joined(separator: " "))
-                return summary
+                    thumbnailURL: card.thumbnailImageURL, imageURL: card.displayImageURL, catalogGeneration: registry.generation,
+                    searchFields: fields)
             }
             var seen: Set<URL> = []
             set.artworkFallbackURLs = Array(summaries.compactMap(\.thumbnailURL).filter { seen.insert($0).inserted }.prefix(3))
             sets[id] = set; cards[id] = summaries
         }
-        setsByID = sets; cardsBySetID = cards; searchTextByID = texts
+        setsByID = sets; cardsBySetID = cards
     }
 
     func sets() async throws -> [CatalogSet] { setsByID.values.sorted { $0.id < $1.id } }
 
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        try page(rows(in: set), cursor: cursor, scope: "set:" + set.id)
+    }
+
+    func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]? {
+        try rows(in: set)
+    }
+
+    private func rows(in set: CatalogSet) throws -> [CatalogCardSummary] {
         guard set.game == game, setsByID[set.catalogID] == set else { throw CatalogLookupError.staleCatalog }
-        return try page(cardsBySetID[set.catalogID] ?? [], cursor: cursor, scope: "set:" + set.id)
+        return cardsBySetID[set.catalogID] ?? []
     }
 
     func search(query: String, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         guard setIDs.allSatisfy({ $0.game == game && setsByID[$0] != nil }) else { throw CatalogLookupError.staleCatalog }
-        let normalized = CardNameSearch.normalize(query)
-        guard normalized.count >= 2 else {
+        let search = CatalogCardSearchQuery(query)
+        guard search.normalized.count >= 2 else {
             guard cursor == nil else { throw CatalogLookupError.staleCatalog }
             return .init(items: [], nextCursor: nil)
         }
-        let scope = ([normalized] + setIDs.map(\.id).sorted()).map { "\($0.utf8.count):\($0)" }.joined()
+        let scope = ([search.scope] + setIDs.map(\.id).sorted()).map { "\($0.utf8.count):\($0)" }.joined()
         let rows = cardsBySetID.filter { setIDs.isEmpty || setIDs.contains($0.key) }.values.flatMap { $0 }
-            .filter { searchTextByID[$0.id]?.contains(normalized) == true }.sorted { $0.id < $1.id }
+            .filter { $0.searchFields.map(search.matches) == true }.sorted { $0.id < $1.id }
         return try page(rows, cursor: cursor, scope: "search:" + scope)
     }
 

@@ -14,6 +14,13 @@ import re
 import unicodedata
 
 
+SUPPLEMENTAL_PROMO_NAMES = {
+    'P1': 'Promo Set 1', 'P2': 'Promo Set 2', 'C1': 'Challenge Year 1',
+    'C2': 'Challenge Year 2', 'C3': 'Challenge Year 3',
+    'CC2': 'Curator’s Collection: Beauty and the Beast Edition',
+}
+
+
 def name_key(value):
     # Marketplace names often omit accents (Hector/Héctor, Mama/Mamá). Match
     # exact normalized words, never fuzzy titles or a nearest collector number.
@@ -25,9 +32,9 @@ def footer(identifier):
     match = re.fullmatch(r"(\d+[A-Za-z]?)/([A-Z0-9-]+) • EN • ([A-Z0-9-]+)", identifier)
     if match:
         number, denominator, marker = match.groups()
-        return dict(collectorNumber=number.upper(), denominator=denominator,
+        return dict(collectorNumber=re.sub(r'^0+(?=[0-9])', '', number).upper(), denominator=denominator,
                     language="en", printedSetMarker=marker)
-    match = re.fullmatch(r"(\d+) TFC • EN • (\d+)/P1", identifier)
+    match = re.fullmatch(r"(\d+) ?TFC • EN • (\d+)/P1", identifier)
     if match:
         marker, number = match.groups()
         return dict(collectorNumber=number, denominator="P1", language="en", printedSetMarker=marker)
@@ -42,7 +49,8 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
     raw = cards_path.read_bytes()
     source = json.loads(raw)
     assert source['metadata']['language'] == 'en'
-    assert source['metadata']['formatVersion'] == '2.4.0'
+    if source['metadata']['formatVersion'] not in {'2.4.0', '2.4.1'}:
+        raise ValueError('Unsupported LorcanaJSON source format')
     cards = []
     evidence = json.loads(evidence_path.read_bytes()) if evidence_path else dict(schemaVersion=1, records=[])
     if evidence['schemaVersion'] != 1:
@@ -55,7 +63,7 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
             raise ValueError('Product evidence requires a public reference and exact name')
         evidence_by_id[row['productID']] = row
     used_evidence = set()
-    tcg_ids = {str(c['externalLinks'].get('tcgPlayerId')) for c in source['cards']}
+    cards_by_product = collections.defaultdict(list)
     ids = set()
     for card in source['cards']:
         assert card['id'] not in ids
@@ -67,9 +75,10 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
             'PD1': 'Disney Lorcana Day', 'D23': 'D23 Collection', 'C1': 'Challenge Year 1',
             'C2': 'Challenge Year 2', 'DIS': 'Disney Parks Promos', 'RPH': 'Ravensburger Play Hub',
             'CC1': "Curator’s Collection: Heroines Edition",
+            'CC2': "Curator’s Collection: Beauty and the Beast Edition",
         }[group]
         assert card['foilTypes'] and len(set(card['foilTypes'])) == len(card['foilTypes'])
-        cards.append(dict(id=f"lorcanajson:en:{card['id']}", name=card['fullName'],
+        row = dict(id=f"lorcanajson:en:{card['id']}", name=card['fullName'],
                           number='Unnumbered' if card['fullIdentifier'].startswith('EN • Q') else str(card['number']) + card.get('variant', ''),
                           printedIdentifier=card['fullIdentifier'], footer=footer(card['fullIdentifier']),
                           setCode=group, setName=group_name,
@@ -79,7 +88,19 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
                           foilTypes=card['foilTypes'], distribution=card.get('promoSource') or card.get('promoSourceCategory'),
                           unnumberedSetMarker='Q3' if card['fullIdentifier'] == 'EN • Q3' else None,
                           recognitionTitles=['Vine Tendril'] if card['fullIdentifier'] == 'EN • Q3' else [],
-                          sourceSetCode=card['setCode']))
+                          sourceSetCode=card['setCode'])
+        cards.append(row)
+        if (product_id := card['externalLinks'].get('tcgPlayerId')) is not None:
+            cards_by_product[str(product_id)].append(row)
+    rows_by_id = {row['id']: row for row in cards}
+    for identity, proof in evidence.get('nonfoilCompanions', {}).items():
+        row = rows_by_id.get(identity)
+        if (not row or row['printedIdentifier'] != proof['printedIdentifier']
+                or row['foilTypes'] != ['Tempest'] or not proof['reference'].startswith('https://')):
+            raise ValueError(f'Reviewed Lorcana nonfoil companion needs reconciliation: {identity}')
+        row['sourceFoilTypes'] = row['foilTypes']
+        row['foilTypes'] = ['None', *row['foilTypes']]
+        row['nonfoilEvidence'] = proof['reference']
     # Count every source row, including promos and artwork suffixes. The source
     # explicitly marks Q3 incomplete; retain that fact in the coverage receipt.
     counts = collections.Counter(c['setCode'] for c in source['cards'])
@@ -108,7 +129,24 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
             # A missing collector number alone is insufficient: puzzle inserts,
             # oversized Quest components and accessories must not become sealed.
             if product['extendedData']:
-                if str(product['productId']) in tcg_ids:
+                reviewed = evidence_by_id.get(product['productId'])
+                if reviewed:
+                    if reviewed['expectedName'] != product['name']:
+                        raise ValueError(f"Product evidence name changed: {product['productId']}")
+                    if reviewed.get('groupID', group['groupId']) != group['groupId']:
+                        raise ValueError(f"Product evidence group changed: {product['productId']}")
+                    used_evidence.add(product['productId'])
+                direct = cards_by_product.get(str(product['productId']))
+                if direct:
+                    if reviewed:
+                        matching = [c for c in direct if
+                                    reviewed.get('sourceCardID', c['id']) == c['id']
+                                    and reviewed.get('printedIdentifier', c['printedIdentifier']) == c['printedIdentifier']]
+                        if len(matching) != 1:
+                            raise ValueError(f"Inspected alias contradicts source product link: {product['productId']}")
+                        joined_products.append(product['productId'])
+                        product_joins.append(dict(productID=product['productId'], sourceCardID=matching[0]['id'],
+                                                  basis='reviewed image and source product link'))
                     continue
                 fields = {field['name']: field['value'] for field in product['extendedData']}
                 if fields.get('Rarity') in (None, 'None'):
@@ -122,11 +160,6 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
                                 (c['setName'] == 'The Reign of Jafar' and group['name'] == 'Reign of Jafar'))
                            and (c['footer'] and number in (c['footer']['collectorNumber'],
                                c['footer']['collectorNumber'] + '/' + c['footer']['denominator']))]
-                reviewed = evidence_by_id.get(product['productId'])
-                if reviewed:
-                    if reviewed['expectedName'] != product['name']:
-                        raise ValueError(f"Product evidence name changed: {product['productId']}")
-                    used_evidence.add(product['productId'])
                 if product['productId'] == 652646:
                     excluded_products.append(dict(productID=652646, reason='Five-card marketplace bundle, not an individual card'))
                     continue
@@ -155,23 +188,30 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
                         observed_footer['collectorNumber'] + '/' + observed_footer['denominator']):
                     raise ValueError('Product number contradicts inspected footer')
                 promo_group = observed_footer['denominator'] if observed_footer and not observed_footer['denominator'].isdigit() else None
-                promo_name = {'P1':'Promo Set 1','P2':'Promo Set 2','C1':'Challenge Year 1',
-                              'C2':'Challenge Year 2','C3':'Challenge Year 3'}.get(promo_group)
+                promo_name = SUPPLEMENTAL_PROMO_NAMES.get(promo_group)
                 printed_set = source['sets'].get(observed_footer['printedSetMarker']) if observed_footer and not promo_group else None
                 browse_code = promo_group if promo_name else observed_footer['printedSetMarker'] if printed_set else f"market-{group['groupId']}"
                 browse_name = promo_name or (printed_set['name'] if printed_set else group['name'] + ' · Additional products')
+                if promo_name:
+                    release_date = reviewed.get('releaseDate')
+                elif printed_set:
+                    release_date = printed_set['prereleaseDate'] or printed_set['releaseDate']
+                else:
+                    release_date = (product['presaleInfo'].get('releasedOn') or '')[:10] or None
                 supplemental.append(dict(id=f"tcgcsv:71:{product['productId']}", name=product['name'],
                     number=number or 'Unnumbered', printedIdentifier=observed_identifier or number or 'Unnumbered',
                     footer=observed_footer,
                     setCode=browse_code, setName=browse_name,
-                    releaseDate=None if promo_name else (printed_set['prereleaseDate'] or printed_set['releaseDate'])
-                        if printed_set else (product['presaleInfo'].get('releasedOn') or '')[:10] or None,
-                    rarity=fields['Rarity'], layout='unknown', sourceSetCode=observed_footer['printedSetMarker'] if observed_footer else
+                    releaseDate=release_date,
+                    rarity=fields['Rarity'], layout=reviewed.get('layout', 'unknown') if reviewed else 'unknown',
+                    sourceSetCode=observed_footer['printedSetMarker'] if observed_footer else
                         reviewed.get('unnumberedSetMarker', '') if reviewed else '',
                     unnumberedSetMarker=reviewed.get('unnumberedSetMarker') if reviewed else None,
                     recognitionTitles=reviewed.get('recognitionTitles', []) if reviewed else [],
-                    imageURL=product['imageUrl'], thumbnailURL=product['imageUrl'], foilTypes=[],
-                    distribution='TCGplayer product record; physical review pending'))
+                    imageURL=reviewed['reference'] if reviewed and reviewed.get('foilTypes') else product['imageUrl'],
+                    thumbnailURL=product['imageUrl'], foilTypes=reviewed.get('foilTypes', []) if reviewed else [],
+                    distribution=reviewed.get('distribution', 'TCGplayer product record; physical review pending')
+                        if reviewed else 'TCGplayer product record; physical review pending'))
                 continue
             if not re.search(r"booster|deck|trove|gift|bundle|collection|collector|quest|starter|pack|case|box|display|gateway|promo set", product['name'], re.I):
                 excluded.append(dict(id=product['productId'], name=product['name']))
@@ -184,6 +224,27 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
     assert len({p['id'] for p in sealed}) == len(sealed)
     if set(evidence_by_id) != used_evidence:
         raise ValueError('Product evidence is no longer represented by captured products')
+    published = evidence.get('publishedCards', [])
+    for proof in published:
+        identity = proof['sourceID']
+        printed = footer(proof['printedIdentifier'])
+        if (not re.fullmatch(r'lorcana-published:en:[a-z0-9-]+', identity)
+                or not re.fullmatch(r'[0-9a-f]{64}', proof['bodySHA256'])
+                or not proof['reference'].startswith('https://')
+                or not proof['physicalReleaseEvidence'].startswith('https://')
+                or not printed or printed['denominator'] not in SUPPLEMENTAL_PROMO_NAMES
+                or proof['layout'] not in {'normal', 'landscape'} or not proof['foilTypes']
+                or not proof['expectedName'] or not proof['distribution'] or not proof['releaseDate']):
+            raise ValueError(f'Invalid published Lorcana card evidence: {identity}')
+        if any(row['id'] == identity or row['footer'] == printed for row in cards + supplemental):
+            raise ValueError(f'Published Lorcana card needs reconciliation with a source row: {identity}')
+        code = printed['denominator']
+        supplemental.append(dict(id=identity, name=proof['expectedName'], number=printed['collectorNumber'],
+            printedIdentifier=proof['printedIdentifier'], footer=printed, setCode=code,
+            setName=SUPPLEMENTAL_PROMO_NAMES[code], releaseDate=proof['releaseDate'],
+            rarity='Promo', layout=proof['layout'], sourceSetCode=printed['printedSetMarker'],
+            unnumberedSetMarker=None, recognitionTitles=[], imageURL=proof['reference'], thumbnailURL=proof['reference'],
+            foilTypes=proof['foilTypes'], distribution=proof['distribution']))
     return dict(schemaVersion=1, generatedOn=source['metadata']['generatedOn'],
                 cards=sorted(cards + supplemental, key=lambda c: c['id']), sealed=sorted(sealed, key=lambda p: p['id']),
                 coverage=dict(cardSource='https://lorcanajson.org/files/current/en/allCards.json',
@@ -192,6 +253,7 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
                               sets=source['sets'], productGroups=product_receipts,
                               supplementalCardCount=len(supplemental), joinedProductIDs=joined_products,
                               productJoins=product_joins, excludedProducts=excluded_products, productEvidence=evidence['records'],
+                              publishedCards=published,
                               sealedCount=len(sealed)))
 
 

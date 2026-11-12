@@ -13,7 +13,38 @@ enum LorcanaPhysicalSize: String, Codable, Hashable, Sendable {
 /// finishes fail decoding instead of disappearing from a printing's universe.
 enum LorcanaPhysicalFinish: String, Codable, Hashable, CaseIterable, Sendable {
     case normal, foil
-    var variant: PhysicalVariant { self == .normal ? .normal : .foil }
+    case silverFoil = "lorcanaSilverFoil"
+    case freeFormFoil = "lorcanaFreeForm1Foil"
+    case rainbowPillarsFoil = "lorcanaRainbowPillarsFoil"
+
+    var variant: PhysicalVariant {
+        switch self {
+        case .normal: .normal
+        case .foil: .foil
+        case .silverFoil: .init(id: rawValue, label: "Silver foil")
+        case .freeFormFoil: .init(id: rawValue, label: "Freeform foil")
+        case .rainbowPillarsFoil: .init(id: rawValue, label: "Rainbow Pillars foil")
+        }
+    }
+
+    var sourcePattern: String? {
+        switch self {
+        case .normal: "None"
+        case .foil: nil
+        case .silverFoil: "Silver"
+        case .freeFormFoil: "FreeForm1"
+        case .rainbowPillarsFoil: "RainbowPillars"
+        }
+    }
+
+    func allowsMarketLane(_ lane: String) -> Bool {
+        switch self {
+        case .normal: lane == "Normal"
+        case .silverFoil: lane == "Cold Foil"
+        case .rainbowPillarsFoil: lane == "Holofoil"
+        case .foil, .freeFormFoil: lane == "Cold Foil" || lane == "Holofoil"
+        }
+    }
 }
 
 enum LorcanaPhysicalEvidenceKind: String, Codable, Hashable, CaseIterable, Sendable {
@@ -68,7 +99,7 @@ struct LorcanaMarketMapping: Codable, Hashable, Sendable {
 
     var hasValidMarketLane: Bool {
         market == "us" && currency == "USD" && condition == "aggregate"
-            && (finish == .normal ? providerVariantID == "Normal" : ["Cold Foil", "Holofoil"].contains(providerVariantID))
+            && finish.allowsMarketLane(providerVariantID)
     }
 
     var normalized: Self {
@@ -166,6 +197,8 @@ struct LorcanaPhysicalCatalog: Sendable {
                   printing.identityEvidence.allSatisfy({ Self.text($0.reference) }),
                   printing.finishes.count <= LorcanaPhysicalFinish.allCases.count,
                   Set(printing.finishes.map(\.finish)).count == printing.finishes.count,
+                  !printing.finishes.contains(where: { $0.finish == .foil })
+                    || printing.finishes.allSatisfy({ $0.finish == .normal || $0.finish == .foil }),
                   printing.finishes.allSatisfy({ Self.references($0.evidenceReferences) }),
                   printing.finishUniverseEvidenceReference == nil || Self.text(printing.finishUniverseEvidenceReference!) else {
                 throw ValidationError.invalidPrinting
@@ -183,7 +216,8 @@ struct LorcanaPhysicalCatalog: Sendable {
                 guard printing.identity.footer.language == "en", mapping.groupID > 0, mapping.productID > 0,
                       Self.text(mapping.productName), Self.text(mapping.productNumber),
                       [printing.identity.footer.collectorNumber,
-                       printing.identity.footer.collectorNumber + "/" + printing.identity.footer.denominator].contains(mapping.productNumber),
+                       printing.identity.footer.collectorNumber + "/" + printing.identity.footer.denominator]
+                        .contains(mapping.productNumber.uppercased()),
                       mapping.hasValidMarketLane,
                       printing.finishes.contains(where: { $0.finish == mapping.finish }),
                       Self.references(mapping.evidenceReferences) else { throw ValidationError.invalidPrinting }

@@ -16,6 +16,8 @@ class LorcanaDiscoveryBuilderTests(unittest.TestCase):
         self.assertEqual(regular['collectorNumber'], '4A')
         self.assertEqual(builder.footer('24B/P2 • EN • 7')['denominator'], 'P2')
         d23 = builder.footer('1 TFC • EN • 2/P1')
+        self.assertEqual(builder.footer('1TFC • EN • 2/P1'), d23)
+        self.assertEqual(builder.footer('02/D23 • EN • 2')['collectorNumber'], '2')
         self.assertEqual(d23, dict(collectorNumber='2', denominator='P1', language='en', printedSetMarker='1'))
         self.assertIsNone(builder.footer('EN • Q3'))
         with self.assertRaises(ValueError):
@@ -23,7 +25,7 @@ class LorcanaDiscoveryBuilderTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             builder.footer('1/204 • FR • 1')
 
-    def build_fixture(self, mutate=None, evidence=None):
+    def build_fixture(self, mutate=None, evidence=None, published=None):
         source = dict(metadata=dict(language='en', formatVersion='2.4.0', generatedOn='2026-10-10T17:54:17'),
                       sets={'1': dict(name='The First Chapter', prereleaseDate='2023-08-18', releaseDate='2023-09-01',
                                       cardCounts=dict(total=1))}, cards=[dict(id=1, setCode='1', fullIdentifier='1/204 • EN • 1',
@@ -41,9 +43,10 @@ class LorcanaDiscoveryBuilderTests(unittest.TestCase):
             (path / 'groups.json').write_text(json.dumps(groups))
             (path / '1.json').write_text(json.dumps(products))
             evidence_path = None
-            if evidence:
+            if evidence or published:
                 evidence_path = path / 'evidence.json'
-                evidence_path.write_text(json.dumps(dict(schemaVersion=1, records=evidence)))
+                evidence_path.write_text(json.dumps(dict(schemaVersion=1, records=evidence or [],
+                                                        publishedCards=published or [])))
             return builder.build(path / 'cards.json', path / 'groups.json', path, evidence_path)
 
     def test_source_count_mismatch_and_duplicate_cards_fail(self):
@@ -76,17 +79,49 @@ class LorcanaDiscoveryBuilderTests(unittest.TestCase):
         self.assertEqual(len(supplemental), 1)
         self.assertIsNone(supplemental[0]['footer'], 'A name/number match is not inspected footer evidence')
         self.assertEqual(supplemental[0]['foilTypes'], [])
+        self.assertEqual(supplemental[0]['releaseDate'], '2023-08-18')
 
     def test_unknown_products_and_source_schema_require_review(self):
         with self.assertRaises(AssertionError):
             self.build_fixture(lambda source, products: products['results'][0].update(name='Unclassified Product'))
-        with self.assertRaises(AssertionError):
+        with self.assertRaisesRegex(ValueError, 'Unsupported LorcanaJSON source format'):
             self.build_fixture(lambda source, products: source['metadata'].update(formatVersion='3.0.0'))
+
+    def test_source_product_link_preserves_prior_review_and_rejects_footer_drift(self):
+        evidence = dict(productID=10, expectedName='Ariel - On Human Legs', sourceCardID='lorcanajson:en:1',
+                        printedIdentifier='1/204 • EN • 1', reference='https://example.com/scan.jpg',
+                        bodySHA256='a' * 64)
+        def add_link(source, products):
+            source['metadata']['formatVersion'] = '2.4.1'
+            source['cards'][0]['externalLinks']['tcgPlayerId'] = 10
+            products['results'][0].update(name=evidence['expectedName'],
+                extendedData=[dict(name='Number', value='1/204'), dict(name='Rarity', value='Uncommon')])
+        result = self.build_fixture(add_link, [evidence])
+        self.assertEqual(len(result['cards']), 1)
+        self.assertEqual(result['coverage']['joinedProductIDs'], [10])
+        with self.assertRaisesRegex(ValueError, 'Inspected alias contradicts source product link'):
+            self.build_fixture(add_link, [dict(evidence, printedIdentifier='2/204 • EN • 1')])
 
     def test_prices_are_not_copied_into_discovery(self):
         result = self.build_fixture(lambda source, products: products['results'][0].update(marketPrice=1234))
         self.assertEqual(len(result['sealed']), 1)
         self.assertNotIn('marketPrice', result['sealed'][0])
+
+    def test_published_card_without_marketplace_product_retains_literal_footer(self):
+        proof = dict(sourceID='lorcana-published:en:c2-13', printedIdentifier='13/C2 • EN • 10',
+                     expectedName='The Headless Horseman - Cursed Rider', foilTypes=['Foil'], layout='normal',
+                     reference='https://example.com/card.png', bodySHA256='a'*64, releaseDate='2026-08-28',
+                     distribution='Challenge Championships Top 32',
+                     physicalReleaseEvidence='https://example.com/championship')
+        result = self.build_fixture(published=[proof])
+        card = next(row for row in result['cards'] if row['id'] == proof['sourceID'])
+        self.assertEqual(card['footer'], dict(collectorNumber='13', denominator='C2',
+                                              language='en', printedSetMarker='10'))
+        self.assertEqual(card['foilTypes'], ['Foil'])
+        self.assertEqual(card['setName'], 'Challenge Year 2')
+        self.assertEqual(result['coverage']['supplementalCardCount'], 1)
+        with self.assertRaisesRegex(ValueError, 'needs reconciliation'):
+            self.build_fixture(published=[proof, dict(proof, sourceID='lorcana-published:en:duplicate')])
 
     def test_accented_names_and_rarity_qualifiers_join_without_duplicate_cards(self):
         def epic(source, products):
@@ -111,6 +146,9 @@ class LorcanaDiscoveryBuilderTests(unittest.TestCase):
             printedIdentifier='1/P2 • EN • 1', reference='https://example.com/card.jpg', bodySHA256='a'*64)
         result = self.build_fixture(autograph, [proof])
         self.assertEqual(result['cards'][1]['footer']['denominator'], 'P2')
+        self.assertIsNone(result['cards'][1]['releaseDate'])
+        dated = self.build_fixture(autograph, [dict(proof, releaseDate='2023-11-17')])
+        self.assertEqual(dated['cards'][1]['releaseDate'], '2023-11-17')
         bad = dict(proof, printedIdentifier='2/P2 • EN • 1')
         with self.assertRaises(ValueError):
             self.build_fixture(autograph, [bad])

@@ -1,7 +1,294 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-10-13",
+  "reviewedAt": "2026-11-12",
+  "nonfoilCompanions": {
+    "lorcanajson:en:1189": {"printedIdentifier": "3/C1 • EN • 2", "reference": "https://lorcanaplayer.com/set/challenge-set-1/"},
+    "lorcanajson:en:1190": {"printedIdentifier": "4/C1 • EN • 1", "reference": "https://lorcanaplayer.com/set/challenge-set-1/"},
+    "lorcanajson:en:1198": {"printedIdentifier": "8/C1 • EN • 1", "reference": "https://lorcanaplayer.com/set/challenge-set-1/"},
+    "lorcanajson:en:1664": {"printedIdentifier": "9/C1 • EN • 6", "reference": "https://lorcanaplayer.com/set/challenge-set-1/"},
+    "lorcanajson:en:1199": {"printedIdentifier": "10/C1 • EN • 1", "reference": "https://www.disneylorcana.com/en-GB/news/2025/10/2025-10-prizes-and-promos"}
+  },
+  "publishedCards": [
+    {
+      "sourceID": "lorcana-published:en:c2-13",
+      "expectedName": "The Headless Horseman - Cursed Rider",
+      "printedIdentifier": "13/C2 • EN • 10",
+      "reference": "https://www.cardtrader.com/uploads/blueprints/image/410430/show_410430-the-headless-horseman-cursed-rider-13-c2-foil-lorcana-challenge-promos.png",
+      "bodySHA256": "8ecaa73dba806e043c46ac6e88c879d4bc0814c52832ea22c93f4878a8681087",
+      "groupID": 23234,
+      "releaseDate": "2026-08-28",
+      "foilTypes": ["Foil"],
+      "layout": "normal",
+      "distribution": "Challenge Championships Top 32",
+      "distributionID": "challenge-2026-championship-top-32",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/03/disney-lorcana-challenge-championships-information/",
+      "marketLane": null
+    }
+  ],
   "records": [
+    {
+      "productID": 544485,
+      "expectedName": "Mickey Mouse - Playful Sorcerer (225/204)",
+      "sourceName": "Mickey Mouse - Playful Sorcerer",
+      "sourceCardID": "lorcanajson:en:949",
+      "printedIdentifier": "225/204 • EN • 4",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/544485_400w.jpg",
+      "bodySHA256": "8a16c9078f2800ec5e9e95a425efd048b5ff1af67575db8aca17d8f2a87f9228",
+      "groupID": 23528,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Deep Trouble player deck",
+      "distributionID": "deep-trouble-player-deck",
+      "physicalReleaseEvidence": "https://www.disneylorcana.com/en-GB/product/deep-trouble",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 544487,
+      "expectedName": "Piglet - Pooh Pirate Captain (223/204)",
+      "sourceName": "Piglet - Pooh Pirate Captain",
+      "sourceCardID": "lorcanajson:en:945",
+      "printedIdentifier": "223/204 • EN • 3",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/544487_400w.jpg",
+      "bodySHA256": "b2625631ca95e61330bc86e76d8825e3fab09115a6ae366dfd3fc176ed5c1dfc",
+      "groupID": 23528,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Deep Trouble player deck",
+      "distributionID": "deep-trouble-player-deck",
+      "physicalReleaseEvidence": "https://www.disneylorcana.com/en-GB/product/deep-trouble",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 544492,
+      "expectedName": "Yen Sid - Powerful Sorcerer (223/204)",
+      "sourceName": "Yen Sid - Powerful Sorcerer",
+      "sourceCardID": "lorcanajson:en:946",
+      "printedIdentifier": "223/204 • EN • 4",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/544492_400w.jpg",
+      "bodySHA256": "b05f4b2a68301bcdf89df68d20fedec0d1aae6873c5163d2f8753efc8ab95218",
+      "groupID": 23528,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Deep Trouble player deck",
+      "distributionID": "deep-trouble-player-deck",
+      "physicalReleaseEvidence": "https://www.disneylorcana.com/en-GB/product/deep-trouble",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 544494,
+      "expectedName": "Mulan - Elite Archer (224/204)",
+      "sourceName": "Mulan - Elite Archer",
+      "sourceCardID": "lorcanajson:en:948",
+      "printedIdentifier": "224/204 • EN • 4",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/544494_400w.jpg",
+      "bodySHA256": "c17a728e2cb311a8287a1298b4dc02120c28afb3526d3deff197427e486513f0",
+      "groupID": 23528,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Deep Trouble player deck",
+      "distributionID": "deep-trouble-player-deck",
+      "physicalReleaseEvidence": "https://www.disneylorcana.com/en-GB/product/deep-trouble",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 557538,
+      "expectedName": "Half Hexwell Crown",
+      "sourceCardID": "lorcanajson:en:1179",
+      "printedIdentifier": "223/204 • EN • 5",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/557538_400w.jpg",
+      "bodySHA256": "613aadc78e1694149bb21ef5ee5601ff39b2b50437b04804ea1acdd68474d589",
+      "groupID": 23528,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Deep Trouble victory card",
+      "distributionID": "deep-trouble-victory-card",
+      "physicalReleaseEvidence": "https://www.disneylorcana.com/en-GB/product/deep-trouble",
+      "marketLane": "Holofoil"
+    },
+    {
+      "productID": 634262,
+      "expectedName": "Bolt - Superdog (223/204)",
+      "sourceName": "Bolt - Superdog",
+      "sourceCardID": "lorcanajson:en:1931",
+      "printedIdentifier": "223/204 • EN • 7",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/634262_400w.jpg",
+      "bodySHA256": "494dbfd8ec63ccf1f80e79ad35532a66d43626220fdeb1018968cbcee3202e0e",
+      "groupID": 24257,
+      "foilTypes": [
+        "SeaWave"
+      ],
+      "layout": "normal",
+      "distribution": "Palace Heist player deck",
+      "distributionID": "palace-heist-player-deck",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/product/palace-heist/",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 634263,
+      "expectedName": "Goofy - Groundbreaking Chef (223/204)",
+      "sourceName": "Goofy - Groundbreaking Chef",
+      "sourceCardID": "lorcanajson:en:1933",
+      "printedIdentifier": "223/204 • EN • 8",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/634263_400w.jpg",
+      "bodySHA256": "51113ff3bf7d9f54b9be9c5e087d3e5367ffeefc3c1d71383f317ac92e0e1cb1",
+      "groupID": 24257,
+      "foilTypes": [
+        "SeaWave"
+      ],
+      "layout": "normal",
+      "distribution": "Palace Heist player deck",
+      "distributionID": "palace-heist-player-deck",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/product/palace-heist/",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 634264,
+      "expectedName": "Pinocchio - Strings Attached (224/204)",
+      "sourceName": "Pinocchio - Strings Attached",
+      "sourceCardID": "lorcanajson:en:1934",
+      "printedIdentifier": "224/204 • EN • 8",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/634264_400w.jpg",
+      "bodySHA256": "d94d17dc83fc6f82eb845f479bd5605b66fce7ee42170e85cac66ba2ac35ab08",
+      "groupID": 24257,
+      "foilTypes": [
+        "SeaWave"
+      ],
+      "layout": "normal",
+      "distribution": "Palace Heist player deck",
+      "distributionID": "palace-heist-player-deck",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/product/palace-heist/",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 634265,
+      "expectedName": "Elsa - Ice Maker (224/204)",
+      "sourceName": "Elsa - Ice Maker",
+      "sourceCardID": "lorcanajson:en:1932",
+      "printedIdentifier": "224/204 • EN • 7",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/634265_400w.jpg",
+      "bodySHA256": "90c02d466d9daa4bddcf105bce1f619d18d8e59a47f0d2d4c5453657e8dfafe1",
+      "groupID": 24257,
+      "foilTypes": [
+        "SeaWave"
+      ],
+      "layout": "normal",
+      "distribution": "Palace Heist player deck",
+      "distributionID": "palace-heist-player-deck",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/product/palace-heist/",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 723031,
+      "expectedName": "Be Our Guest",
+      "printedIdentifier": "1/CC2 • EN • 9",
+      "reference": "https://cardgamer.com/wp-content/uploads/2026/08/Lorcana-CC2-1.png",
+      "bodySHA256": "08ce2a98b73cb3602e77b03bddf36ad7d62e4b99993ea8e1962f50daa5a611cf",
+      "groupID": 23234,
+      "releaseDate": "2026-10-16",
+      "foilTypes": [
+        "Textured"
+      ],
+      "layout": "normal",
+      "distribution": "Curator’s Collection: Beauty and the Beast Edition",
+      "distributionID": "curators-collection-beauty-and-the-beast",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/10/timeless-tales-and-totally-rockin-tunes/",
+      "marketLane": "Holofoil"
+    },
+    {
+      "productID": 723034,
+      "expectedName": "Mrs. Potts - Enchanted Teapot",
+      "printedIdentifier": "2/CC2 • EN • 4",
+      "reference": "https://cardgamer.com/wp-content/uploads/2026/08/Lorcana-CC2-2.png",
+      "bodySHA256": "8be124d74018525836b13bbddbae3ef7976b860a252fa0e2b96026712d87f51f",
+      "groupID": 23234,
+      "releaseDate": "2026-10-16",
+      "foilTypes": [
+        "Textured"
+      ],
+      "layout": "normal",
+      "distribution": "Curator’s Collection: Beauty and the Beast Edition",
+      "distributionID": "curators-collection-beauty-and-the-beast",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/10/timeless-tales-and-totally-rockin-tunes/",
+      "marketLane": "Holofoil"
+    },
+    {
+      "productID": 723035,
+      "expectedName": "Belle - Hidden Archer",
+      "printedIdentifier": "3/CC2 • EN • 2",
+      "reference": "https://cardgamer.com/wp-content/uploads/2026/08/Lorcana-CC2-3.png",
+      "bodySHA256": "1fa5be92a2009314f3056f5573512bdbc9a815821eb825dd5281e55f5d40cd20",
+      "groupID": 23234,
+      "releaseDate": "2026-10-16",
+      "foilTypes": [
+        "Textured"
+      ],
+      "layout": "normal",
+      "distribution": "Curator’s Collection: Beauty and the Beast Edition",
+      "distributionID": "curators-collection-beauty-and-the-beast",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/10/timeless-tales-and-totally-rockin-tunes/",
+      "marketLane": "Holofoil"
+    },
+    {
+      "productID": 723036,
+      "expectedName": "Lumiere - Fiery Friend",
+      "printedIdentifier": "4/CC2 • EN • 9",
+      "reference": "https://cardgamer.com/wp-content/uploads/2026/08/Lorcana-CC2-4.png",
+      "bodySHA256": "8a0e365b8589867b54e19f5d967a2c351e063af4cc66f0e39b6858d0c4bc6707",
+      "groupID": 23234,
+      "releaseDate": "2026-10-16",
+      "foilTypes": [
+        "Textured"
+      ],
+      "layout": "normal",
+      "distribution": "Curator’s Collection: Beauty and the Beast Edition",
+      "distributionID": "curators-collection-beauty-and-the-beast",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/10/timeless-tales-and-totally-rockin-tunes/",
+      "marketLane": "Holofoil"
+    },
+    {
+      "productID": 723037,
+      "expectedName": "Gaston - Intellectual Powerhouse",
+      "printedIdentifier": "5/CC2 • EN • 2",
+      "reference": "https://cardgamer.com/wp-content/uploads/2026/08/Lorcana-CC2-5.png",
+      "bodySHA256": "933aeb55b36f9cc1b61613040fe90d9f14a1971b1241063c8106fc6c324bedf4",
+      "groupID": 23234,
+      "releaseDate": "2026-10-16",
+      "foilTypes": [
+        "Textured"
+      ],
+      "layout": "normal",
+      "distribution": "Curator’s Collection: Beauty and the Beast Edition",
+      "distributionID": "curators-collection-beauty-and-the-beast",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/10/timeless-tales-and-totally-rockin-tunes/",
+      "marketLane": "Holofoil"
+    },
+    {
+      "productID": 723038,
+      "expectedName": "Beast - Tragic Hero",
+      "printedIdentifier": "6/CC2 • EN • 2",
+      "reference": "https://cardgamer.com/wp-content/uploads/2026/08/Lorcana-CC2-6.png",
+      "bodySHA256": "91e6a5738e03d3de389eac18ee74f7b66cec060d6d870483446438eff90fd9c5",
+      "groupID": 23234,
+      "releaseDate": "2026-10-16",
+      "foilTypes": [
+        "Textured"
+      ],
+      "layout": "normal",
+      "distribution": "Curator’s Collection: Beauty and the Beast Edition",
+      "distributionID": "curators-collection-beauty-and-the-beast",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/10/timeless-tales-and-totally-rockin-tunes/",
+      "marketLane": "Holofoil"
+    },
     {
       "productID": 692489,
       "sourceCardID": "lorcanajson:en:3250",
@@ -206,7 +493,15 @@
       "printedIdentifier": "246/207 • EN • 13",
       "expectedName": "Christopher Robin - Hunny Sage",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721876_400w.jpg",
-      "bodySHA256": "a57fb5ce08b3cbc92d217eb9f4835d583fa4f3863ec54c464641e8b9ed1384e4"
+      "bodySHA256": "a57fb5ce08b3cbc92d217eb9f4835d583fa4f3863ec54c464641e8b9ed1384e4",
+      "groupID": 24734,
+      "foilTypes": ["Satin"],
+      "layout": "normal",
+      "size": "standard",
+      "distribution": "Illumineer’s Quest: The Great Hunny Rescue",
+      "distributionID": "great-hunny-rescue-player-deck",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/product/great-hunny-rescue/",
+      "marketLane": "Cold Foil"
     }
     ,
     {
@@ -215,7 +510,15 @@
       "printedIdentifier": "247/207 • EN • 13",
       "expectedName": "Violet Parr - Super Resilient",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721878_400w.jpg",
-      "bodySHA256": "bc6061025efd682974b74c68b7bdbafd310f702f1224f9657f9b0bff81c892c0"
+      "bodySHA256": "bc6061025efd682974b74c68b7bdbafd310f702f1224f9657f9b0bff81c892c0",
+      "groupID": 24734,
+      "foilTypes": ["Satin"],
+      "layout": "normal",
+      "size": "standard",
+      "distribution": "Illumineer’s Quest: The Great Hunny Rescue",
+      "distributionID": "great-hunny-rescue-player-deck",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/product/great-hunny-rescue/",
+      "marketLane": "Cold Foil"
     }
     ,
     {
@@ -224,7 +527,15 @@
       "printedIdentifier": "243/204 • EN • 12",
       "expectedName": "Mr. Incredible - Super Strong",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721882_400w.jpg",
-      "bodySHA256": "43f75a71e1af436f4b9a879f2281c4897459e36365f3c57a772a3c5243b8a87c"
+      "bodySHA256": "43f75a71e1af436f4b9a879f2281c4897459e36365f3c57a772a3c5243b8a87c",
+      "groupID": 24734,
+      "foilTypes": ["Satin"],
+      "layout": "normal",
+      "size": "standard",
+      "distribution": "Illumineer’s Quest: The Great Hunny Rescue",
+      "distributionID": "great-hunny-rescue-player-deck",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/product/great-hunny-rescue/",
+      "marketLane": "Cold Foil"
     }
     ,
     {
@@ -233,7 +544,15 @@
       "printedIdentifier": "243/204 • EN • 11",
       "expectedName": "Sven - Leaping Reindeer",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721891_400w.jpg",
-      "bodySHA256": "de6025e8510a6d9b8f7e739dcdd4f8e8e0b3d025512a42c3b21f0fa90662c20c"
+      "bodySHA256": "de6025e8510a6d9b8f7e739dcdd4f8e8e0b3d025512a42c3b21f0fa90662c20c",
+      "groupID": 24734,
+      "foilTypes": ["Satin"],
+      "layout": "normal",
+      "size": "standard",
+      "distribution": "Illumineer’s Quest: The Great Hunny Rescue",
+      "distributionID": "great-hunny-rescue-player-deck",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/product/great-hunny-rescue/",
+      "marketLane": "Cold Foil"
     }
     ,
     {
@@ -292,49 +611,119 @@
       "printedIdentifier": "15/C2 • EN • 9",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712024_400w.jpg",
       "bodySHA256": "1ce371b9c0a47ab477b8c402bcb690fa35ec6e5e334d98231340cb96ae06c2ac",
-      "expectedName": "Stand Out"
+      "expectedName": "Stand Out",
+      "groupID": 23234,
+      "releaseDate": "2026-08-28",
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Challenge Championships attendee or prize wall",
+      "distributionID": "challenge-2026-championship-prize-wall",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/03/disney-lorcana-challenge-championships-information/",
+      "marketLane": "Normal"
     },
     {
       "productID": 712025,
       "printedIdentifier": "16/C2 • EN • 8",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712025_400w.jpg",
       "bodySHA256": "077bbf2b293453602777b3f7a71e6b410311650f6f724339f0dcd44ccc587052",
-      "expectedName": "Down in New Orleans"
+      "expectedName": "Down in New Orleans",
+      "groupID": 23234,
+      "releaseDate": "2026-08-28",
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Challenge Championships prize wall",
+      "distributionID": "challenge-2026-championship-prize-wall",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/03/disney-lorcana-challenge-championships-information/",
+      "marketLane": "Normal"
     },
     {
       "productID": 712026,
       "printedIdentifier": "17/C2 • EN • 10",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712026_400w.jpg",
       "bodySHA256": "320738a5a60d9df143c4ef8f9c316ff3fcff4f82a46976f13a0dd00db2a65985",
-      "expectedName": "The Headless Horseman - Cursed Rider"
+      "expectedName": "The Headless Horseman - Cursed Rider",
+      "groupID": 23234,
+      "releaseDate": "2026-08-28",
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Challenge Championships prize wall",
+      "distributionID": "challenge-2026-championship-prize-wall",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/03/disney-lorcana-challenge-championships-information/",
+      "marketLane": "Normal"
     },
     {
       "productID": 712027,
       "printedIdentifier": "18/C2 • EN • 8",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712027_400w.jpg",
       "bodySHA256": "84be38ca3418fd8e5fa4fc5882eb9a70d2e24c266ee29d149cb21f9ff63824c3",
-      "expectedName": "Tinker Bell - Insistent Fairy"
+      "expectedName": "Tinker Bell - Insistent Fairy",
+      "groupID": 23234,
+      "releaseDate": "2026-08-28",
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Challenge Championships prize wall",
+      "distributionID": "challenge-2026-championship-prize-wall",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/03/disney-lorcana-challenge-championships-information/",
+      "marketLane": "Normal"
     },
     {
       "productID": 714566,
       "printedIdentifier": "11/C2 • EN • 9",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/714566_400w.jpg",
       "bodySHA256": "aafc9e2b0f08dc4537ca686f5572905728c4c7efea39b24f48903daf8440f104",
-      "expectedName": "Stand Out (Foil)"
+      "expectedName": "Stand Out (Foil)",
+      "groupID": 23234,
+      "releaseDate": "2026-08-28",
+      "foilTypes": [
+        "Foil"
+      ],
+      "layout": "normal",
+      "distribution": "Challenge Championships main event participation",
+      "distributionID": "challenge-2026-championship-participation",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/03/disney-lorcana-challenge-championships-information/",
+      "marketLane": "Holofoil"
     },
     {
       "productID": 715979,
       "printedIdentifier": "12/C2 • EN • 8",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/715979_400w.jpg",
       "bodySHA256": "9aab8a31380048e3d0c382d687cd2d4fb05294a4e4400826f7dc60cfa6eb1708",
-      "expectedName": "Down in New Orleans (Foil)"
+      "expectedName": "Down in New Orleans (Foil)",
+      "groupID": 23234,
+      "releaseDate": "2026-08-28",
+      "foilTypes": [
+        "Foil"
+      ],
+      "layout": "normal",
+      "distribution": "Challenge Championships Top 64",
+      "distributionID": "challenge-2026-championship-top-64",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/03/disney-lorcana-challenge-championships-information/",
+      "marketLane": "Holofoil"
     },
     {
       "productID": 715981,
       "printedIdentifier": "14/C2 • EN • 8",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/715981_400w.jpg",
       "bodySHA256": "f726c3a73faed9fdbf5d32f3e4343c7a8ba7b26f6efd2921ea75f8d12c1f27d9",
-      "expectedName": "Tinker Bell - Insistent Fairy (Foil)"
+      "expectedName": "Tinker Bell - Insistent Fairy (Foil)",
+      "groupID": 23234,
+      "releaseDate": "2026-08-28",
+      "foilTypes": [
+        "Foil"
+      ],
+      "layout": "normal",
+      "distribution": "Challenge Championships Top 16",
+      "distributionID": "challenge-2026-championship-top-16",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/news/2026/03/disney-lorcana-challenge-championships-information/",
+      "marketLane": "Holofoil"
     },
     {
       "productID": 552741,
@@ -392,35 +781,111 @@
       "printedIdentifier": "118/204 • EN • 1",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/516778_400w.jpg",
       "bodySHA256": "8eb26102d972b105a70ac0812a40d333da3d98543eca33d652a453f5c2d17a08",
-      "expectedName": "Mulan - Imperial Soldier (Oversized)"
+      "expectedName": "Mulan - Imperial Soldier (Oversized)",
+      "groupID": 22937,
+      "foilTypes": ["Foil"],
+      "layout": "normal",
+      "size": "oversized",
+      "distribution": "The First Chapter gift set",
+      "distributionID": "first-chapter-gift-set",
+      "physicalReleaseEvidence": "https://disneylorcana.com/en/product/the-first-chapter/",
+      "marketLane": "Cold Foil"
     },
     {
       "productID": 539145,
       "printedIdentifier": "89/204 • EN • 3",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/539145_400w.jpg",
       "bodySHA256": "2dedac5571d3b3a1f88a1fae0157c6df3fdd68f29bf68c13ccd5f75c3c69eaa5",
-      "expectedName": "Stitch - Covert Agent (Oversized)"
+      "expectedName": "Stitch - Covert Agent (Oversized)",
+      "groupID": 23367,
+      "foilTypes": ["Foil"],
+      "layout": "normal",
+      "size": "oversized",
+      "distribution": "Into the Inklands gift set",
+      "distributionID": "into-the-inklands-gift-set",
+      "physicalReleaseEvidence": "https://www.ravensburger.co.uk/en-GB/pdp/11098295",
+      "marketLane": "Cold Foil"
     },
     {
       "productID": 539148,
       "printedIdentifier": "157/204 • EN • 3",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/539148_400w.jpg",
       "bodySHA256": "fa0e2f93729113e845c7b52eebb2fd119537d82ccd37620d1e48a6abaf4d76ff",
-      "expectedName": "Tinker Bell - Very Clever Fairy (Oversized)"
+      "expectedName": "Tinker Bell - Very Clever Fairy (Oversized)",
+      "groupID": 23367,
+      "foilTypes": ["Foil"],
+      "layout": "normal",
+      "size": "oversized",
+      "distribution": "Into the Inklands gift set",
+      "distributionID": "into-the-inklands-gift-set",
+      "physicalReleaseEvidence": "https://www.ravensburger.co.uk/en-GB/pdp/11098295",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 519506,
+      "sourceCardID": "lorcanajson:en:289",
+      "printedIdentifier": "73/204 • EN • 2",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/519506_400w.jpg",
+      "bodySHA256": "a24652f615fd9a85acf6372f47a1a5e81aabab27036415dedd075be584902053",
+      "expectedName": "Bucky - Squirrel Squeak Tutor",
+      "groupID": 23303,
+      "foilTypes": ["None", "Silver"],
+      "layout": "normal",
+      "distribution": "Original Rise of the Floodborn",
+      "distributionID": "ordinary-expansion-2",
+      "printingVariant": "original",
+      "artworkLabel": "Cost 2 · Ward",
+      "physicalReleaseEvidence": "https://www.disneylorcana.com/en-US/news/july2024-errata/",
+      "marketLane": "Cold Foil"
     },
     {
       "productID": 597095,
       "printedIdentifier": "73/204 • EN • 2",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/597095_400w.jpg",
       "bodySHA256": "a55ad105b40424f1dc88ecf945d64c512c1a882967c0718c592ac0ccb91d6425",
-      "expectedName": "Bucky - Squirrel Squeak Tutor (Errata Version)"
+      "expectedName": "Bucky - Squirrel Squeak Tutor (Errata Version)",
+      "groupID": 23303,
+      "foilTypes": ["Silver"],
+      "layout": "normal",
+      "distribution": "Azurite Sea booster box promo",
+      "distributionID": "azurite-sea-bucky-errata",
+      "printingVariant": "corrected",
+      "artworkLabel": "Cost 3 · no Ward",
+      "physicalReleaseEvidence": "https://www.disneylorcana.com/en-US/news/july2024-errata/",
+      "marketLane": "Cold Foil"
+    },
+    {
+      "productID": 516333,
+      "sourceCardID": "lorcanajson:en:255",
+      "printedIdentifier": "39/204 • EN • 2",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/516333_400w.jpg",
+      "bodySHA256": "600c40a1bd90a1107ba3fb357a228061a5c6ba303e631e9c694ec8a6d2c0ca51",
+      "expectedName": "Elsa - Gloves Off",
+      "groupID": 23303,
+      "foilTypes": ["None", "Silver"],
+      "layout": "normal",
+      "distribution": "Original Rise of the Floodborn",
+      "distributionID": "ordinary-expansion-2",
+      "printingVariant": "original",
+      "artworkLabel": "Separated branch",
+      "physicalReleaseEvidence": "https://www.beckett.com/news/a-guide-to-disney-lorcana-erratas-cards/",
+      "marketLane": "Cold Foil"
     },
     {
       "productID": 618771,
       "printedIdentifier": "39/204 • EN • 2",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/618771_400w.jpg",
       "bodySHA256": "4feab92170fcec47bd0fc08efedc5fdae04f294b13d9b64a04117e5cbb569b79",
-      "expectedName": "Elsa - Gloves Off (Errata Version)"
+      "expectedName": "Elsa - Gloves Off (Errata Version)",
+      "groupID": 23303,
+      "foilTypes": ["None", "Silver"],
+      "layout": "normal",
+      "distribution": "Corrected Rise of the Floodborn",
+      "distributionID": "rise-of-the-floodborn-elsa-errata",
+      "printingVariant": "corrected",
+      "artworkLabel": "Continuous branch",
+      "physicalReleaseEvidence": "https://www.beckett.com/news/a-guide-to-disney-lorcana-erratas-cards/",
+      "marketLane": "Cold Foil"
     },
     {
       "productID": 668575,
