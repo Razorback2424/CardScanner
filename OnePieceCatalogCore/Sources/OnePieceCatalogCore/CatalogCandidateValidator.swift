@@ -54,9 +54,11 @@ public enum OnePieceCatalogCandidateValidator {
         let cards = Dictionary(state.canonicalCards.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let artworks = Dictionary(state.artworks.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let printings = Dictionary(state.printings.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        let activeFamilies = Dictionary(grouping: state.printings.filter { $0.status != .superseded }, by: \.canonicalCardID)
         let variants = Set(state.variants.map(\.id))
         let products = Set(state.products.map(\.id))
         let observations = Dictionary(release.observations.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        let discoveryAliases = Set(release.observations.lazy.filter(\.isBrowseDiscovery).map(\.alias))
         // Index the full candidate once. Repeated linear scans here made every
         // app launch quadratic in the number of physical printings/evidence.
         // Retain all languages for an alias, including duplicate observations.
@@ -75,6 +77,18 @@ public enum OnePieceCatalogCandidateValidator {
                   !values.isEmpty, Set(values).count == values.count else { return nil }
             return Set(values)
         }
+        func matchesFinishPresentation(_ observation: OnePieceSourceObservation, _ printing: OnePiecePhysicalPrinting) -> Bool {
+            let fields: [(String, String?)] = [
+                ("treatment", printing.treatment), ("stamp", printing.stamp),
+                ("distribution", printing.distributionLabel), ("region", printing.region),
+                ("blockText", printing.blockText), ("copyrightText", printing.copyrightText)
+            ]
+            let artworkHash = artworks[printing.artworkID]?.imageSHA256
+            return fields.allSatisfy { key, expected in
+                observation.printedEvidence[key].map { $0 == expected } ?? true
+            } && (observation.imageSHA256.map { $0 == artworkHash } ?? true)
+                && (observation.printedEvidence["matchedBandaiImageSHA256"].map { $0 == artworkHash } ?? true)
+        }
         func validReview(_ review: OnePieceReview?, required: Set<OnePieceEvidenceKind>, context: String) {
             guard let review, OnePieceTextNormalization.nonempty(review.reference), !review.evidence.isEmpty else {
                 fail("missingReview", context); return
@@ -82,7 +96,7 @@ public enum OnePieceCatalogCandidateValidator {
             let kinds = Set(review.evidence.map(\.kind))
             if !required.isSubset(of: kinds) { fail("missingDistinctionEvidence", context) }
             for evidence in review.evidence {
-                if observations[evidence.observationID] == nil || !OnePieceTextNormalization.nonempty(evidence.detail) {
+                if observations[evidence.observationID]?.isBrowseDiscovery != false || !OnePieceTextNormalization.nonempty(evidence.detail) {
                     fail("invalidEvidenceReference", context)
                 }
             }
@@ -126,9 +140,20 @@ public enum OnePieceCatalogCandidateValidator {
                hash.version < 1 || !OnePieceTextNormalization.nonempty(hash.algorithm) || !OnePieceTextNormalization.nonempty(hash.value) {
                 fail("invalidPerceptualHash", observation.id)
             }
+            if observation.isBrowseDiscovery {
+                let number = observation.printedEvidence["number"]
+                let source = URLComponents(url: observation.sourceURL, resolvingAgainstBaseURL: false)
+                if observation.kind != .catalog || observation.alias.provider != "bandai" || observation.language != "en" ||
+                    source?.host != "en.onepiece-cardgame.com" || source?.path != "/cardlist/" ||
+                    observation.productEvidence.count != 1 || !observation.productEvidence.allSatisfy(products.contains) ||
+                    number == nil || number.flatMap(OnePieceTextNormalization.printedNumber) != number ||
+                    observation.printedEvidence["finishVariantID"] != nil || observation.printedEvidence["finishVariantIDs"] != nil {
+                    fail("invalidBrowseDiscovery", observation.id)
+                }
+            }
         }
         for artwork in state.artworks {
-            if artwork.observationIDs.isEmpty || artwork.observationIDs.contains(where: { observations[$0] == nil }) {
+            if artwork.observationIDs.isEmpty || artwork.observationIDs.contains(where: { observations[$0]?.isBrowseDiscovery != false }) {
                 fail("invalidArtworkEvidence", artwork.id.uuidString)
             }
             if let hash = artwork.imageSHA256, !OnePieceTextNormalization.isSHA256(hash) { fail("invalidImageHash", artwork.id.uuidString) }
@@ -169,11 +194,19 @@ public enum OnePieceCatalogCandidateValidator {
                             && (printing.copyrightText == nil || observation.printedEvidence["copyrightText"] == printing.copyrightText)
                     case .finish:
                         let ids = finishIDs(observation) ?? []
-                        agrees = observation.kind == .catalog && !ids.isEmpty &&
+                        // An exact alias or a unique presentation in the release binds
+                        // the finish to this printing, even when two share the footer.
+                        let anchored = printing.sourceAliases.contains(observation.alias) ||
+                            !(activeFamilies[printing.canonicalCardID] ?? []).contains {
+                                $0.id != printing.id && $0.releaseID == printing.releaseID &&
+                                    ($0.sourceAliases.contains(observation.alias) || matchesFinishPresentation(observation, $0))
+                            }
+                        agrees = observation.kind == .catalog && !observation.isBrowseDiscovery && !ids.isEmpty &&
                             ids.isSubset(of: Set(printing.supportedVariantIDs)) &&
                             observation.language == printing.language &&
                             observation.printedEvidence["number"] == cards[printing.canonicalCardID]?.printedNumber &&
                             (printing.releaseID.map { observation.productEvidence.contains($0) } ?? true) &&
+                            anchored && matchesFinishPresentation(observation, printing) &&
                             observation.printedEvidence["sourceRole"] != "watermarked-digital-render" &&
                             observation.printedEvidence["sourceRole"] != "photograph-of-physical-card"
                         if agrees { reviewedFinishes.formUnion(ids) }
@@ -187,6 +220,7 @@ public enum OnePieceCatalogCandidateValidator {
             }
             for alias in printing.sourceAliases {
                 if !validAlias(alias) { fail("invalidAlias", context) }
+                if discoveryAliases.contains(alias) { fail("invalidBrowseDiscoveryAlias", context) }
                 if aliases.updateValue(printing.id, forKey: alias) != nil { fail("duplicateSourceAlias", context) }
                 if observationLanguagesByAlias[alias]?.contains(printing.language) != true {
                     fail("missingAliasObservation", context)
@@ -244,13 +278,19 @@ public enum OnePieceCatalogCandidateValidator {
                 }
             }
         }
+        let completeInventoryObservations = Set(release.inventories.lazy.filter(\.paginationComplete).flatMap(\.observationIDs))
+        var incompleteFamilies: Set<String> = []
         for observation in release.observations where observation.kind == .catalog {
             guard let rawNumber = observation.printedEvidence["number"],
                   let number = OnePieceTextNormalization.printedNumber(rawNumber) else { continue }
             let canonicalID = "one-piece:\(observation.language):\(number)"
             guard let canonical = cards[canonicalID] else { fail("unregisteredCanonicalObservation", observation.id); continue }
-            if canonical.printingCoverageComplete && aliases[observation.alias] == nil {
+            if canonical.printingCoverageComplete && (observation.isBrowseDiscovery || aliases[observation.alias] == nil) {
                 fail("unreconciledCanonicalObservation", observation.id)
+            }
+            if release.indexes.automaticCandidateIDsByCanonicalID[canonicalID] != nil,
+               !completeInventoryObservations.contains(observation.id) {
+                incompleteFamilies.insert(canonicalID)
             }
         }
         // Graph traversal also catches cycles that an individual row cannot detect.
@@ -289,7 +329,7 @@ public enum OnePieceCatalogCandidateValidator {
             if !appearance.observationIDs.contains(where: { id in
                 guard let printing = printings[appearance.printingID],
                       let observation = observations[id] else { return false }
-                return observation.kind == .catalog && observation.productEvidence.contains(appearance.productID)
+                return observation.kind == .catalog && !observation.isBrowseDiscovery && observation.productEvidence.contains(appearance.productID)
                     && observation.language == printing.language
                     && observation.printedEvidence["number"] == cards[printing.canonicalCardID]?.printedNumber
                     // Explicit retained identity review also anchors historical
@@ -310,8 +350,8 @@ public enum OnePieceCatalogCandidateValidator {
         let inventoriedIDs = Set(release.inventories.flatMap(\.observationIDs))
         if !Set(observations.keys).isSubset(of: inventoriedIDs) { fail("missingObservationInventory", "observations") }
         if release.indexes != OnePieceCatalogIndexes(registry: state) { fail("invalidCandidateIndexes", "indexes disagree with registry") }
-        if release.inventories.contains(where: { !$0.paginationComplete }) && !release.indexes.automaticCandidateIDsByCanonicalID.isEmpty {
-            fail("incompleteSourceInventory", "automatic authority requires complete discovery inventories")
+        for id in incompleteFamilies {
+            fail("incompleteSourceInventory", id)
         }
         if let previous {
             // Recovery can span revisions no longer present in the two slots.

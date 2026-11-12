@@ -1,0 +1,90 @@
+{
+  "artworks": [
+    {
+      "id": "960C79C6-AA22-43F2-9689-53BABA3115AD",
+      "imageSHA256": "b94449535d274314ad0174d1c229d26719e42aef2ea56a936bc31164bc77acc9",
+      "observationIDs": ["prb02:OP09-020_p2:render"]
+    }
+  ],
+  "printings": [
+    {
+      "id": "CED0705B-85A3-4B99-B7D8-4BFEACC28DF2",
+      "canonicalCardID": "one-piece:en:OP09-020",
+      "artworkID": "960C79C6-AA22-43F2-9689-53BABA3115AD",
+      "language": "en",
+      "releaseID": "product:prb02-premium-booster-the-best-vol-2-2025",
+      "treatment": "Full-art alternate artwork",
+      "stamp": "Foil stamp",
+      "blockText": "3",
+      "supportedVariantIDs": ["foil"],
+      "status": "verified",
+      "review": {
+        "reference": "publisher/one-piece/production/revision-2/printing-additions.json#OP09-020_p2",
+        "evidence": [
+          {"kind": "artwork", "observationID": "prb02:OP09-020_p2:render", "detail": "Exact English alternate artwork render for the manufacturer card-list alias."},
+          {"kind": "finish", "observationID": "prb02:OP09-020_p2:spec", "detail": "The PRB-02 specification explicitly describes this pictured Event alternate artwork as foil-stamped."},
+          {"kind": "footer", "observationID": "prb02:OP09-020_p2:render", "detail": "Block icon 3 is visible beside the printed collector number."},
+          {"kind": "language", "observationID": "prb02:OP09-020_p2:render", "detail": "English rules text and EN footer are visible on the exact artwork."},
+          {"kind": "printedIdentity", "observationID": "prb02:OP09-020_p2:list", "detail": "The English PRB-02 list identifies OP09-020 with exact presentation alias OP09-020_p2."},
+          {"kind": "release", "observationID": "prb02:OP09-020_p2:list", "detail": "Bandai lists this exact alternate artwork in PRB-02."},
+          {"kind": "stamp", "observationID": "prb02:OP09-020_p2:spec", "detail": "The pictured alternate art is identified as foil-stamped in the product specification."},
+          {"kind": "treatment", "observationID": "prb02:OP09-020_p2:spec", "detail": "The product specification shows the full-art alternate beside the normal version."}
+        ]
+      },
+      "sourceAliases": [{"provider": "bandai", "sourceID": "product:prb02-premium-booster-the-best-vol-2-2025:OP09-020_p2"}],
+      "marketMappings": [],
+      "supersedes": []
+    }
+  ],
+  "observations": [
+    {
+      "id": "prb02:OP09-020_p2:list",
+      "kind": "catalog",
+      "alias": {"provider": "bandai", "sourceID": "product:prb02-premium-booster-the-best-vol-2-2025:OP09-020_p2"},
+      "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569302",
+      "observedAt": "2026-11-12T00:18:51.615030+00:00",
+      "language": "en",
+      "payloadSHA256": "5afdabbd0ef210bcd1f70296f961205828bfdd8e0d210c091f277e9dc2a44c27",
+      "productEvidence": ["product:prb02-premium-booster-the-best-vol-2-2025"],
+      "printedEvidence": {"number": "OP09-020", "sourceArtworkAlias": "OP09-020_p2"}
+    },
+    {
+      "id": "prb02:OP09-020_p2:render",
+      "kind": "catalog",
+      "alias": {"provider": "bandai", "sourceID": "product:prb02-premium-booster-the-best-vol-2-2025:OP09-020_p2"},
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP09-020_p2.png?261016",
+      "observedAt": "2026-11-12T00:30:01.965443+00:00",
+      "language": "en",
+      "payloadSHA256": "b94449535d274314ad0174d1c229d26719e42aef2ea56a936bc31164bc77acc9",
+      "imageSHA256": "b94449535d274314ad0174d1c229d26719e42aef2ea56a936bc31164bc77acc9",
+      "productEvidence": ["product:prb02-premium-booster-the-best-vol-2-2025"],
+      "printedEvidence": {"number": "OP09-020", "blockText": "3", "sourceRole": "watermarked-digital-render"}
+    },
+    {
+      "id": "prb02:OP09-020_p2:spec",
+      "kind": "catalog",
+      "alias": {"provider": "bandai", "sourceID": "product:prb02-premium-booster-the-best-vol-2-2025:OP09-020_p2"},
+      "sourceURL": "https://en.onepiece-cardgame.com/products/boosters/prb02.php",
+      "observedAt": "2026-11-12T00:20:22.595344+00:00",
+      "language": "en",
+      "payloadSHA256": "eea224892a5229791e0aea87dbb4d0b9820082cdd5f607f42517078452281cff",
+      "productEvidence": ["product:prb02-premium-booster-the-best-vol-2-2025"],
+      "printedEvidence": {
+        "number": "OP09-020",
+        "finishVariantID": "foil",
+        "stamp": "Foil stamp",
+        "treatment": "Full-art alternate artwork",
+        "sourceArtworkAlias": "OP09-020_p2",
+        "sourceRole": "manufacturer-physical-product-specification"
+      }
+    }
+  ],
+  "inventories": [
+    {
+      "provider": "bandai",
+      "snapshotID": "prb02:OP09-020_p2:2026-11-12",
+      "paginationComplete": false,
+      "observationIDs": ["prb02:OP09-020_p2:list", "prb02:OP09-020_p2:render", "prb02:OP09-020_p2:spec"]
+    }
+  ]
+}

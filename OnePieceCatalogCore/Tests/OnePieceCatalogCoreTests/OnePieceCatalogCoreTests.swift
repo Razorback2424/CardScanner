@@ -242,6 +242,7 @@ final class OnePieceCatalogCoreTests: XCTestCase {
             keyID: keyID, privateKey: key, trustedKeys: keys, bootstrap: true)
         XCTAssertEqual(result.manifest.revision, 1)
         XCTAssertNil(result.manifest.previousRevision)
+        XCTAssertNil(result.manifest.previousEnvelopeSHA256)
         XCTAssertEqual(result.manifest.payloadSHA256, hash)
         XCTAssertEqual(result.manifest.classification.changeClass, .protectedReview)
         XCTAssertEqual(result.manifest.envelopeSHA256,
@@ -268,6 +269,8 @@ final class OnePieceCatalogCoreTests: XCTestCase {
         let result = try OnePieceCatalogPublication.prepare(candidate: bytes, reviewedSHA256: hash,
             keyID: keyID, privateKey: key, trustedKeys: keys, previous: baseline)
         XCTAssertEqual(result.manifest.previousRevision, 1)
+        XCTAssertEqual(result.manifest.previousEnvelopeSHA256,
+            OnePieceSourceObservation.sha256(try OnePieceCatalogPublication.envelopeData(baseline)))
         XCTAssertEqual(result.manifest.classification.changeClass, .none)
         XCTAssertThrowsError(try OnePieceCatalogPublication.prepare(candidate: bytes, reviewedSHA256: hash,
             keyID: keyID, privateKey: key, trustedKeys: keys, bootstrap: true))
@@ -623,6 +626,86 @@ final class OnePieceCatalogCoreTests: XCTestCase {
         XCTAssertTrue(codes(supported).isEmpty)
     }
 
+    func testFinishCannotBorrowEvidenceFromAnotherPresentationInTheSameRelease() throws {
+        let base = try fixture()
+        let productID = base.registry.products[0].id
+        let sourceIDs = base.registry.printings.map { printing in
+            printing.review!.evidence.first { $0.kind == .finish }!.observationID
+        }
+        let treatments = ["Standard artwork", "Alternate artwork"]
+        let finishes = ["normal", "foil"]
+        let correct = try alter(base) { object in
+            var registry = object["registry"] as! [String: Any]
+            registry["variants"] = [["id": "normal", "label": "Normal"], ["id": "foil", "label": "Foil"]]
+            registry["appearances"] = [] as [[String: Any]]
+            object["registry"] = registry
+            editPrintings(&object) { rows in
+                for index in rows.indices {
+                    rows[index]["releaseID"] = productID
+                    rows[index]["treatment"] = treatments[index]
+                    rows[index]["supportedVariantIDs"] = [finishes[index]]
+                    var review = rows[index]["review"] as! [String: Any]
+                    var evidence = review["evidence"] as! [[String: Any]]
+                    evidence.append(["kind": "treatment", "observationID": sourceIDs[index], "detail": "Exact treatment"])
+                    review["evidence"] = evidence
+                    rows[index]["review"] = review
+                }
+            }
+            var observations = object["observations"] as! [[String: Any]]
+            for index in observations.indices {
+                observations[index]["productEvidence"] = [productID]
+                if let printing = sourceIDs.firstIndex(of: observations[index]["id"] as! String) {
+                    var fields = observations[index]["printedEvidence"] as! [String: String]
+                    fields["treatment"] = treatments[printing]
+                    fields["finishVariantID"] = finishes[printing]
+                    observations[index]["printedEvidence"] = fields
+                }
+            }
+            object["observations"] = observations
+        }
+        XCTAssertTrue(codes(correct).isEmpty)
+        let swapped = try alter(correct) { object in
+            editPrintings(&object) { rows in
+                for index in rows.indices {
+                    rows[index]["supportedVariantIDs"] = [finishes[1 - index]]
+                    var review = rows[index]["review"] as! [String: Any]
+                    var evidence = review["evidence"] as! [[String: Any]]
+                    let finish = evidence.firstIndex { $0["kind"] as? String == "finish" }!
+                    evidence[finish]["observationID"] = sourceIDs[1 - index]
+                    review["evidence"] = evidence
+                    rows[index]["review"] = review
+                }
+            }
+        }
+        XCTAssertTrue(codes(swapped).contains("contradictoryReviewedEvidence"))
+        let wrongRetailArtwork = try alter(correct) { object in
+            var observations = object["observations"] as! [[String: Any]]
+            let index = observations.firstIndex { $0["id"] as? String == sourceIDs[0] }!
+            var fields = observations[index]["printedEvidence"] as! [String: String]
+            fields["matchedBandaiImageSHA256"] = String(repeating: "e", count: 64)
+            observations[index]["printedEvidence"] = fields
+            object["observations"] = observations
+        }
+        XCTAssertTrue(codes(wrongRetailArtwork).contains("contradictoryReviewedEvidence"))
+    }
+
+    func testBrowseDiscoveryCannotActAsPhysicalEvidence() throws {
+        let base = try fixture(count: 1)
+        let release = try alter(base) { object in
+            var rows = object["observations"] as! [[String: Any]]
+            rows[0]["sourceURL"] = "https://en.onepiece-cardgame.com/cardlist/?series=569101"
+            var fields = rows[0]["printedEvidence"] as! [String: String]
+            fields["sourceRole"] = OnePieceSourceObservation.browseDiscoveryRole
+            rows[0]["printedEvidence"] = fields
+            object["observations"] = rows
+        }
+        let failures = codes(release)
+        XCTAssertTrue(failures.contains("invalidBrowseDiscovery"))
+        XCTAssertTrue(failures.contains("invalidEvidenceReference"))
+        XCTAssertTrue(failures.contains("invalidBrowseDiscoveryAlias"))
+        XCTAssertTrue(failures.contains("unreconciledCanonicalObservation"))
+    }
+
     func testMarketAndOpticalEvidenceCannotAuthorizePhysicalFinishes() throws {
         let base = try fixture(count: 1)
         for role in ["watermarked-digital-render", "photograph-of-physical-card"] {
@@ -946,6 +1029,31 @@ final class OnePieceCatalogCoreTests: XCTestCase {
             inventories[0]["paginationComplete"] = false; object["inventories"] = inventories
         }
         XCTAssertTrue(codes(release).contains("incompleteSourceInventory"))
+    }
+
+    func testIncompleteInventoryForAnotherNumberDoesNotBlockCertifiedFamily() throws {
+        let base = try fixture(count: 1)
+        let release = try alter(base) { object in
+            var registry = object["registry"] as! [String: Any]
+            var cards = registry["canonicalCards"] as! [[String: Any]]
+            cards.append(["id": "one-piece:en:ST99-001", "printedNumber": "ST99-001",
+                          "name": "Undetermined starter", "language": "en", "printingCoverageComplete": false])
+            registry["canonicalCards"] = cards
+            object["registry"] = registry
+            var observations = object["observations"] as! [[String: Any]]
+            var new = observations[0]
+            new["id"] = "unrelated-discovery"
+            new["alias"] = ["provider": "bandai", "sourceID": "unrelated-starter"]
+            new["printedEvidence"] = ["number": "ST99-001"]
+            observations.append(new)
+            object["observations"] = observations
+            var inventories = object["inventories"] as! [[String: Any]]
+            inventories.append(["provider": "bandai", "snapshotID": "incomplete-starter",
+                                "paginationComplete": false, "observationIDs": ["unrelated-discovery"]])
+            object["inventories"] = inventories
+        }
+        XCTAssertTrue(codes(release).isEmpty)
+        XCTAssertEqual(release.indexes.automaticCandidateIDsByCanonicalID.count, 1)
     }
 
     func testRetirementCannotSilentlyRemoveAPossiblePrinting() throws {

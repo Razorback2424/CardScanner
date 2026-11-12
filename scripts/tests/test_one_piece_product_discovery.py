@@ -10,6 +10,10 @@ import discover_one_piece_products as discovery
 
 
 class ProductDiscoveryTests(unittest.TestCase):
+    def test_distinct_product_prefix_does_not_match_inside_another_code(self):
+        self.assertEqual(discovery.prefixes("PREMIUM EXTRA BOOSTER [PEB-01]"), [])
+        self.assertEqual(discovery.prefixes("BOOSTER [OP15-EB04]"), ["OP15", "EB04"])
+
     def test_draft_keeps_previous_products_and_partitions_unreviewed_treatments(self):
         old = {'prefix': 'ST01', 'productID': 'permanent-old-product'}
         inventory = {'asOf': '2026-10-04', 'reviewedProducts': [old], 'productsWithoutSeries': [],

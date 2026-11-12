@@ -1,10 +1,9 @@
 # One Piece catalog publisher
 
-Status: local preparation tooling; production data, keys and deployment are not
-configured. Physical-printing fixtures are synthetic and do not establish
-provider rights or completeness. The [English stress review inputs](ReviewCorpus/english-stress/README.md)
-now retain real Bandai/Limitless observation metadata and exact capture hashes;
-their canonical-only registry has no reviewed physical printing authority.
+The app includes a signed English catalog seed. The production configuration
+keeps remote activation and collection writes disabled. The retained review
+records identify the evidence and capture hashes for individual physical
+printings. [English review corpus](ReviewCorpus/english-stress/README.md)
 
 `one-piece-catalog-publisher build` takes a durable registry, normalized source
 observations and source inventories. It retains app-owned printing UUIDs and
@@ -41,17 +40,76 @@ After revision one, replace `--bootstrap-registry yes` with `--previous` pointin
 to the signed previous release for both sign and verify. Signing verifies that
 baseline, revision monotonicity, retained identities and the registry transition.
 The manifest includes payload/envelope hashes, change classification and market
-mapping invalidations.
+mapping invalidations. Continuations also record the signed predecessor's
+envelope hash so publication can compare it with the live head.
 
 Use a private, fresh preparation directory. Existing identical artifacts are
 retained after verification; differing artifacts and input/output collisions are
 refused. Interrupted preparation may leave an incomplete artifact, which must
 never be deployed and is rejected on retry. These commands do not publish files.
 
-The repository workflow tests the package. Its optional main-branch manual job
-prepares and verifies artifacts using the dedicated `one-piece-catalog-signing`
-environment; required-reviewer protection must be configured and verified in
-GitHub before production use. It has no deployment step. The disabled production
-configuration contains no inherited Pokémon/Magic key. Hosting preservation,
-current-pointer concurrency, reviewed production data/seed, public-key wiring,
-rights and collection sync policy remain required gates.
+## English card list coverage
+
+Use a fresh capture directory for a current audit. The report checks all series
+in Bandai's English card-list directory and joins exact series, artwork alias,
+and printed number. It records which rows still need physical printing or
+product appearance evidence. DON!! designs require a separate inventory.
+
+```sh
+python3 scripts/audit_one_piece_coverage.py \
+  --capture-root "$AUDIT_DIR/source" --release "$VERIFIED_ENVELOPE" \
+  --output "$AUDIT_DIR/coverage.json" --discovery-inputs "$AUDIT_DIR/inputs"
+```
+
+Use `--offline` to replay retained captures and a fresh output path. The
+generated registry, observations and inventories feed the publisher's
+`build` command with the previous candidate. Browse discoveries have no
+collection identity or finish. Supply exact physical evidence through
+`--reviewed-additions` once per accepted batch. The reviewed revision 2
+inputs include the stamped `OP09-020` and two fixed products whose contents
+Bandai explicitly identifies as holo and textured foil.
+[Stamped printing](../publisher/one-piece/production/revision-2/printing-additions.json)
+[Fixed product rules](../publisher/one-piece/production/revision-2/fixed-foil-products.json)
+
+Replay those products from the retained Bandai card list, product pages and
+artwork receipts. Build an intermediate candidate with the fixed product
+additions before evaluating the retailer batch.
+
+```sh
+python3 scripts/reconcile_one_piece_fixed_foil_products.py \
+  --rules publisher/one-piece/production/revision-2/fixed-foil-products.json \
+  --cardlist-captures "$BANDAI" --specification-captures "$PRODUCT_SPECS" \
+  --output "$AUDIT_DIR/fixed-foil.json"
+
+python3 scripts/reconcile_one_piece_retail_printings.py \
+  --release "$INTERMEDIATE_CANDIDATE" \
+  --products OnePieceCatalogCore/ReviewCorpus/english-stress/products.json \
+  --bandai-captures "$BANDAI" --retail-captures "$RETAIL" \
+  --artwork-captures "$ARTWORK" --market-captures "$MARKET" \
+  --output "$AUDIT_DIR/retail-printings.json"
+```
+
+The retailer replay requires Pillow, paginated CoreTCG product receipts, and
+a complete TCGCSV snapshot with product and price data for those groups.
+It compares each listing with all official artwork siblings for the same
+number in that product. The retailer supplies the explicit English finish.
+The marketplace check holds conflicting titles and finish lanes for review.
+
+For EB-05, pass `--eb05-retail-captures` for each retained Cardboard Colosseum
+or Rocket City Toys capture directory. The comparison uses marketplace group
+24820 and accepts only a product page with a matching reference image and an
+explicit English finish. For named promos, pass `--promo-retail-captures` with
+all pages of CoreTCG group 17675 and its marketplace snapshot. A promo needs a
+single Bandai distribution, the exact name in both listings, and an artwork
+match across the Promotion Card and Other Product Card lists. These options can
+run without the booster product manifest.
+
+Use `--fetch-missing-artwork` to extend an artwork capture with the missing
+references from the retained product pages. Keep captures private. Review the
+batch and the remaining gaps before adding it to the final build.
+
+The workflow runs a weekly read-only coverage report. Its manual jobs prepare
+the reviewed signed artifact and publish it in separate environments. Publication
+compares the predecessor while holding the shared hosting concurrency lock,
+restores the other namespaces, and checks the live bytes after deploy.
+[One Piece catalog workflow](../.github/workflows/one-piece-catalog.yml)

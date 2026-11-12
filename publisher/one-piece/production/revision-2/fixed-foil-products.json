@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "cardList": {
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569801",
+    "payloadSHA256": "65b53ffc5d115b5029b9a22da2cff30e15c10f377b3a6814d76fac61eeeea36d"
+  },
+  "products": [
+    {
+      "id": "product:bandai-card-games-fest-23-24-en",
+      "label": "Premium Card Collection -BANDAI CARD GAMES Fest. 23-24 Edition-",
+      "specificationURL": "https://en.onepiece-cardgame.com/products/other/cardcollection_bcgfest23-24.php",
+      "specificationSHA256": "80ff56159b327c6626afb654978db1f21eba1312daf2f915850acd6758289639",
+      "specificationTitle": "ONE PIECE CARD GAME Premium Card Collection -BANDAI CARD GAMES Fest. 23-24 Edition-",
+      "specificationContents": "・Card x 12 (Holo＋Textured Foil) ・Card booklet x 1"
+    },
+    {
+      "id": "product:bandai-english-1st-anniversary",
+      "label": "English Version 1st Anniversary Set",
+      "specificationURL": "https://en.onepiece-cardgame.com/products/other/1st_anniversary_set.php",
+      "specificationSHA256": "bcbb4676c7aeff41ec866c9245f2e516e13c2f68cef5a5183c738df5468fd69d",
+      "specificationTitle": "ONE PIECE CARD GAME English Version 1st Anniversary Set",
+      "specificationContents": "・Storage Box x1 ・Card (Holo＋Textured Foil) x10 ・Playmat x1 ・Card Sleeve x1 set (100 sleeves/set)"
+    }
+  ]
+}

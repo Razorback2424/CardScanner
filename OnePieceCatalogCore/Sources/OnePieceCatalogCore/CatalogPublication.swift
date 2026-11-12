@@ -8,6 +8,7 @@ public enum OnePieceCatalogPublicationError: Error, Equatable {
 public struct OnePieceCatalogPublicationManifest: Codable, Equatable, Sendable {
     public let revision: Int
     public let previousRevision: Int?
+    public let previousEnvelopeSHA256: String?
     public let keyID: String
     public let payloadSHA256: String
     public let envelopeSHA256: String
@@ -51,6 +52,7 @@ public enum OnePieceCatalogPublication {
         guard verified.payloadFingerprint == reviewedSHA256 else { throw OnePieceCatalogPublicationError.reviewFingerprintMismatch }
         try OnePieceCatalogCandidateValidator.validate(verified.release, previous: baseline)
         return .init(revision: verified.release.revision, previousRevision: baseline?.revision,
+                     previousEnvelopeSHA256: try previous.map { OnePieceSourceObservation.sha256(try envelopeData($0)) },
             keyID: envelope.keyID, payloadSHA256: verified.payloadFingerprint,
             envelopeSHA256: OnePieceSourceObservation.sha256(try envelopeData(envelope)),
             classification: OnePieceCatalogChangeClassifier.classify(previous: baseline, current: verified.release))

@@ -19,6 +19,7 @@ public struct OnePiecePerceptualHash: Codable, Hashable, Sendable {
 public enum OnePieceObservationKind: String, Codable, Hashable, Sendable { case catalog, market }
 
 public struct OnePieceSourceObservation: Codable, Hashable, Sendable {
+    public static let browseDiscoveryRole = "manufacturer-browse-discovery"
     public let id: String
     public let kind: OnePieceObservationKind
     public let alias: OnePieceSourceAlias
@@ -30,6 +31,8 @@ public struct OnePieceSourceObservation: Codable, Hashable, Sendable {
     public let perceptualHash: OnePiecePerceptualHash?
     public let productEvidence: [String]
     public let printedEvidence: [String: String]
+
+    public var isBrowseDiscovery: Bool { printedEvidence["sourceRole"] == Self.browseDiscoveryRole }
 
     public init(id: String, kind: OnePieceObservationKind = .catalog, alias: OnePieceSourceAlias, sourceURL: URL, observedAt: String,
                 language: String, payloadSHA256: String, imageSHA256: String? = nil,

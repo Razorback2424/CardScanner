@@ -10,7 +10,6 @@ struct OnePieceCatalogRegistry: Sendable {
     let recognitionPrefixes: [String]
     let printingByID: [UUID: OnePiecePhysicalPrinting]
     let printingsByCanonicalID: [String: [OnePiecePhysicalPrinting]]
-    let artworkByID: [UUID: OnePieceArtwork]
     let artworkURLByID: [UUID: URL]
     let productsByID: [String: OnePieceProduct]
     let variantsByID: [String: OnePieceVariantDescriptor]
@@ -32,7 +31,6 @@ struct OnePieceCatalogRegistry: Sendable {
         printingsByCanonicalID = release.indexes.printingIDsByCanonicalID.mapValues { ids in
             ids.compactMap { printingIndex[$0] }
         }
-        artworkByID = Dictionary(uniqueKeysWithValues: release.registry.artworks.map { ($0.id, $0) })
         let observations = includeRecordedArtwork
             ? Dictionary(uniqueKeysWithValues: release.observations.map { ($0.id, $0) }) : [:]
         artworkURLByID = Dictionary(uniqueKeysWithValues: release.registry.artworks.compactMap { artwork in

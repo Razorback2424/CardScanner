@@ -12,6 +12,7 @@ import fcntl
 import hashlib
 import json
 from pathlib import Path
+import re
 import threading
 import time
 from urllib.parse import parse_qs, urljoin, urlsplit
@@ -23,11 +24,17 @@ from reconcile_one_piece_launch_products import capture_index, checked_capture, 
 
 MAX_BYTES = 5 * 1024 * 1024
 ORIGINS = {"en.onepiece-cardgame.com", "coretcg.com"}
+TCGPLAYER_ARTWORK_URL = re.compile(r"https://product-images\.tcgplayer\.com/fit-in/600x600/([1-9][0-9]*)\.jpg")
+CARDBOARD_ARTWORK_URL = re.compile(r"https://sortswift\.nyc3\.cdn\.digitaloceanspaces\.com/cards/([1-9][0-9]*)\.jpg")
+ROCKET_ARTWORK_URL = re.compile(r"https://cdn\.shopify\.com/s/files/1/0801/4423/6835/files/([1-9][0-9]*)\.jpg\?v=[0-9]+")
 
 
 def checked_url(value, host=None):
     url = urlsplit(value)
-    if url.scheme != "https" or url.netloc not in ORIGINS or url.fragment or (host and url.netloc != host):
+    known_origin = url.netloc in ORIGINS or any(
+        pattern.fullmatch(value) for pattern in (TCGPLAYER_ARTWORK_URL, CARDBOARD_ARTWORK_URL, ROCKET_ARTWORK_URL)
+    )
+    if url.scheme != "https" or not known_origin or url.fragment or (host and url.netloc != host):
         raise ValueError("unexpected product capture origin: " + value)
     return value
 
@@ -139,7 +146,8 @@ def next_retailer_page(document, current_url, group_id, page):
     forward, explicit = set(), set()
     for pagination in document.nodes(cls="pagination"):
         for link in pagination.nodes("a"):
-            if "disabled" in link.attrs.get("class", "").split():
+            classes = link.attrs.get("class", "").split()
+            if "disabled" in classes:
                 continue
             href = link.attrs.get("href", "")
             if not href or href == "#":
@@ -152,7 +160,8 @@ def next_retailer_page(document, current_url, group_id, page):
                 target_page = int(one(query.get("p", []), "pagination page"))
             except (ValueError, TypeError):
                 raise ValueError("invalid pagination page") from None
-            is_next = "next" in link.attrs.get("rel", "").split()
+            # CoreTCG labels the ellipsis that jumps past a page range rel="next" too.
+            is_next = "next" in link.attrs.get("rel", "").split() and "PagedList-skipToNext" not in classes
             if is_next and target_page <= page:
                 raise ValueError("pagination cycle")
             if target_page > page:

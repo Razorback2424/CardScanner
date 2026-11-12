@@ -110,7 +110,7 @@ def capture_index(records, key):
         if key not in capture:
             continue
         if capture[key] in result:
-            raise ValueError("duplicate capture identity: " + capture[key])
+            raise ValueError(f"duplicate capture identity: {capture[key]}")
         result[capture[key]] = capture
     return result
 

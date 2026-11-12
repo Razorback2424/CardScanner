@@ -16,7 +16,7 @@ from copy import deepcopy
 from capture_one_piece_products import ProductCapture, atomic_json, checked_url
 from normalize_one_piece_sources import Document
 
-PREFIX = re.compile(r"(?:PRB|OP|ST|EB)-?\d{2}")
+PREFIX = re.compile(r"(?<![A-Za-z0-9])(?:PRB|OP|ST|EB)-?\d{2}(?![A-Za-z0-9])")
 ALIAS = re.compile(r"((?:PRB|OP|ST|EB)\d{2}-\d{3}|P-\d{3})(?:_p\d+)?")
 INDEX = "https://en.onepiece-cardgame.com/products/"
 SERIES_INDEX = "https://en.onepiece-cardgame.com/cardlist/?series=569117"

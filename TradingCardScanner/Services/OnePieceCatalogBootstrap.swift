@@ -213,7 +213,9 @@ enum OnePieceCatalogBootstrap {
         guard let registry = store.bundledRegistry else {
             throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingSeed
         }
-        let client = try configuration.endpoint.map { try OnePieceCatalogUpdateClient(endpoint: $0) }
+        let client = try configuration.endpoint.map {
+            try OnePieceCatalogUpdateClient(endpoint: $0, conditionalStateURL: store.conditionalStateURL)
+        }
         let coordinator = OnePieceCatalogCoordinator(store: store, client: client, rolloutMode: configuration.mode)
         // The store has already verified and indexed this bundled envelope.
         var module = OnePieceGameRuntime(registry: registry, coordinator: coordinator)

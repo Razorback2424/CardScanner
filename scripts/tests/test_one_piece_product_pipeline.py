@@ -303,6 +303,16 @@ class ProductCaptureTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, reason):
                     driver.next_retailer_page(document, self.retailer_url, "123", 1)
 
+    def test_pagination_takes_next_page_when_retailer_also_labels_the_ellipsis_next(self):
+        arrow = f'<a rel="next" href="{self.page2_url}">&gt;</a>'
+        jump_url = self.page2_url.replace("p=2", "p=6")
+        jump = f'<a class="PagedList-skipToNext page-link" rel="next" href="{jump_url}">…</a>'
+        document = driver.Document(f'<ul class="pagination">{jump}{arrow}</ul>'.encode()).root
+        self.assertEqual(driver.next_retailer_page(document, self.retailer_url, "123", 1), (2, self.page2_url))
+        missing_page = driver.Document(f'<ul class="pagination">{jump}</ul>'.encode()).root
+        with self.assertRaisesRegex(ValueError, "inventory gap"):
+            driver.next_retailer_page(missing_page, self.retailer_url, "123", 1)
+
     def test_capture_rejects_paths_and_foreign_urls_before_transport(self):
         capture = driver.ProductCapture(self.root, transport=lambda url: self.fail("unexpected transport"))
         for filename in ("../escape", "/absolute"):
@@ -314,6 +324,17 @@ class ProductCaptureTests(unittest.TestCase):
         for url in ("http://coretcg.com/page", "https://coretcg.com@foreign.invalid/page", "https://coretcg.com:444/page"):
             with self.assertRaisesRegex(ValueError, "origin"):
                 capture.capture(url, "page")
+
+    def test_tcgplayer_capture_only_allows_exact_card_artwork_paths(self):
+        artwork = "https://product-images.tcgplayer.com/fit-in/600x600/596971.jpg"
+        capture = driver.ProductCapture(self.root, transport=lambda url: b"reviewed artwork")
+        record, raw = capture.capture(artwork, "tcgplayer/596971.jpg")
+        self.assertEqual(record["sourceURL"], artwork)
+        self.assertEqual(raw, b"reviewed artwork")
+        for url in (artwork + "?redirect=other", artwork.replace("600x600", "500x500"),
+                    artwork.replace("/596971.jpg", "/report.html")):
+            with self.assertRaisesRegex(ValueError, "origin"):
+                capture.capture(url, "bad")
 
     def test_reprint_image_capture_uses_reviewed_alias_and_oversize_stops(self):
         product = self.manifest["products"][0]

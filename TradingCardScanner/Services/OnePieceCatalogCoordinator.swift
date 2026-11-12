@@ -74,6 +74,10 @@ actor OnePieceCatalogCoordinator {
 
     private func fetchAndActivate(_ client: any OnePieceCatalogUpdateFetching, now: Date) async -> RefreshResult {
         await loadPersistedOrBundled(now: now)
+        if rolloutMode == .remoteAuthority {
+            let current = await store.activeRelease
+            await client.useVerifiedEnvelope(current.flatMap { now >= $0.release.verifiedAt ? $0.envelope : nil })
+        }
         do {
             switch try await client.fetch() {
             case .notModified:
@@ -87,6 +91,9 @@ actor OnePieceCatalogCoordinator {
                 }
                 let result = await activateEnvelope(envelope, now: now)
                 if case let .rejected(error) = result { throw error }
+                if await store.activeRelease?.envelope == envelope {
+                    await client.rememberVerifiedEnvelope(envelope)
+                }
                 return .activation(result)
             }
         } catch {

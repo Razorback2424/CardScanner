@@ -15,6 +15,16 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
         return try resolution(for: printing, canonical: canonical)
     }
 
+    func browseDetails(forPrintingID id: UUID, set: CatalogSet) throws -> CatalogCardDetails {
+        guard let printing = registry.printingByID[id], printing.isBrowsableInEnglish,
+              let canonical = registry.canonicalByID[printing.canonicalCardID] else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+        let resolved = try resolution(for: printing, canonical: canonical)
+        return .init(card: resolved.card, set: set, retrievedAt: resolved.retrievedAt,
+            collectionWriteUnavailableReason: printing.status == .verified ? nil : "This printing needs review before it can be added.")
+    }
+
     func validateVariantCorrection(printingID: String, variantID: String?) throws {
         guard let id = UUID(uuidString: printingID), id.uuidString.lowercased() == printingID else {
             throw CatalogLookupError.invalidPrintingChoice
@@ -24,6 +34,10 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
               resolved.card.variantEvidence.catalogVariants.contains(where: { $0.id == variantID }) else {
             throw CatalogLookupError.invalidPrintingChoice
         }
+    }
+
+    func validateBrowseAcquisition(printingID: String, variantID: String?) throws {
+        try validateVariantCorrection(printingID: printingID, variantID: variantID)
     }
 
     func identifierForRetry(_ identifier: ScanIdentifier) throws -> ScanIdentifier {
@@ -67,16 +81,17 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
         // ambiguous. Filtering it out must not automatically select another
         // presentation (for example, P-001 winner versus participant).
         // Explicit selection remains available for the verified printing only.
-        // Unknown global coverage alone does not manufacture a second choice;
-        // this index already excludes superseded history.
-        if eligible.count == 1 && all.count == 1 {
+        let automatic = registry.verifiedRelease.release.indexes.automaticCandidateIDsByCanonicalID[card.id]
+        if !identifier.needsOnePieceEnglishConfirmation, eligible.count == 1,
+           automatic == [eligible[0].id] {
             return .resolved(try resolution(for: eligible[0], canonical: card))
         }
         return .needsPrintingChoice(canonical: summary, candidates: eligible.map { candidate($0, canonical: card) })
     }
 
     func resolve(_ candidate: PhysicalPrintingCandidate, for identifier: ScanIdentifier) async throws -> CardCatalog.CatalogResolution {
-        guard let card = try canonical(for: identifier), candidate.catalogGeneration == generation,
+        guard let card = try canonical(for: identifier), !identifier.needsOnePieceEnglishConfirmation,
+              candidate.catalogGeneration == generation,
               let printingID = UUID(uuidString: candidate.id), let printing = registry.printingByID[printingID],
               printing.status == .verified, printing.canonicalCardID == card.id,
               candidate == self.candidate(printing, canonical: card,
@@ -110,7 +125,7 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
     }
 
     private func validateCurrentAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) throws {
-        guard let canonical = try canonical(for: identifier),
+        guard let canonical = try canonical(for: identifier), !identifier.needsOnePieceEnglishConfirmation,
               let id = UUID(uuidString: printingID), id.uuidString.lowercased() == printingID,
               let printing = registry.printingByID[id], printing.canonicalCardID == canonical.id,
               printing.language == "en", printing.status == .verified else {
@@ -155,6 +170,7 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
     private func resolution(for printing: OnePiecePhysicalPrinting, canonical: OnePieceCanonicalCard) throws -> CardCatalog.CatalogResolution {
         let product = printing.releaseID.flatMap { registry.productsByID[$0] }
         let image = registry.artworkURLByID[printing.artworkID]
+        let verified = printing.status == .verified
         let card = try ResolvedCatalogCard(game: game, physicalPrintingID: printing.id.uuidString.lowercased(),
             canonicalCardID: canonical.id, language: printing.language, name: canonical.name,
             setName: product?.label ?? printing.distributionLabel ?? "One Piece", setCode: OnePieceTextNormalization.prefix(of: canonical.printedNumber) ?? "",
@@ -163,11 +179,11 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
             setReleaseOrder: product?.releaseDate.flatMap(OnePieceTextNormalization.releaseDate)
                 .map { Int($0.timeIntervalSince1970 / 86_400) } ?? 0,
             variantEvidence: .init(game: game, setID: printing.releaseID ?? "one-piece-distribution",
-                cardNumber: canonical.printedNumber, catalogVariants: printing.supportedVariantIDs.compactMap { id in
+                cardNumber: canonical.printedNumber, catalogVariants: verified ? printing.supportedVariantIDs.compactMap { id in
                     registry.variantsByID[id].map { PhysicalVariant(id: $0.id, label: $0.label) }
-                }),
+                } : [], physicalCoverageVerified: verified),
             marketProductIDsByVariant: Dictionary(uniqueKeysWithValues: Dictionary(grouping: printing.marketMappings
-                .filter { $0.status == .exact && $0.provider == "tcgplayer" && $0.market == "us"
+                .filter { verified && $0.status == .exact && $0.provider == "tcgplayer" && $0.market == "us"
                     && $0.currency == "USD" && $0.condition == "aggregate"
                     && Int($0.productID).map({ $0 > 0 }) == true
                     && printing.supportedVariantIDs.contains($0.variantID) }, by: \.variantID)

@@ -332,7 +332,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertNotEqual(acceptance.collectionStorageDirectoryURL, ordinary.collectionStorageDirectoryURL)
     }
 
-    func testShikiScanSavesWithoutPrintingOrFinishPicker() async throws {
+    func testShikiScanRequiresPrintingAndLanguageButNoFinishPicker() async throws {
         let suite = "OnePieceShikiTests-\(UUID())"
         let preferences = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { preferences.removePersistentDomain(forName: suite) }
@@ -344,6 +344,12 @@ final class OnePieceIntegrationTests: XCTestCase {
             return XCTFail("Shiki's printed number should be recognized")
         }
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+        let presented = await waitUntil { model.pendingIdentityChoice != nil }
+        XCTAssertTrue(presented)
+        XCTAssertEqual(model.successCount, 0)
+        let choice = try XCTUnwrap(model.pendingIdentityChoice)
+        XCTAssertTrue(choice.identifier.needsOnePieceEnglishConfirmation)
+        model.chooseWithEnglishConfirmation(try XCTUnwrap(choice.displayCandidates.first))
         let saved = await waitUntil { model.successCount == 1 }
         XCTAssertTrue(saved)
         XCTAssertNil(model.pendingIdentityChoice)
@@ -387,6 +393,67 @@ final class OnePieceIntegrationTests: XCTestCase {
             .first(where: { $0.status == .verified && $0.treatment == "Standard artwork" }))
         XCTAssertTrue(disputed.marketMappings.isEmpty)
         XCTAssertEqual(disputed.supportedVariantIDs, ["normal"])
+    }
+
+    func testBundledOwnerCatalogUsesExactFinishesAndExposesUnresolvedNumbers() async throws {
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime())
+        let catalog = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter)
+        let browse = try XCTUnwrap(runtime.browse)
+        let profile = OnePieceScanProfile(registry: catalog.registry, languageConfirmation: .userConfirmedEnglish)
+
+        guard case let .identified(jinbe) = profile.identify([.init(text: "P-030")]),
+              case let .needsPrintingChoice(canonical, printings) = try await catalog.lookup(jinbe.identifier) else {
+            return XCTFail("The newly recognized number needs explicit selection of its physical printing")
+        }
+        XCTAssertEqual(canonical.name, "Jinbe")
+        let fest = try XCTUnwrap(printings.first { $0.treatmentLabel == "Holo and textured foil" })
+        let resolved = try await catalog.resolve(fest, for: jinbe.identifier)
+        XCTAssertEqual(resolved.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
+
+        let kingdew = try await browse.search(query: "Kingdew OP17006", setIDs: [], cursor: nil)
+        let pandaman = try XCTUnwrap(kingdew.items.first { $0.name.contains("Pandaman artwork") })
+        let pandamanDetails = try await browse.details(for: pandaman)
+        XCTAssertNil(pandamanDetails.collectionWriteUnavailableReason)
+        XCTAssertEqual(pandamanDetails.card.variantEvidence.catalogVariants.map(\.id), ["normal"])
+        XCTAssertThrowsError(try catalog.validateBrowseAcquisition(printingID: pandaman.providerID, variantID: "foil"))
+
+        let mihawk = try catalog.resolution(forPrintingID: XCTUnwrap(UUID(uuidString: "E939026E-2D02-4913-B33C-E924DC231683")))
+        XCTAssertEqual(mihawk.card.cardNumber, "ST32-003")
+        XCTAssertEqual(mihawk.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
+
+        let monet = try await browse.search(query: "Monet EB05-007", setIDs: [], cursor: nil)
+        let monetDetails = try await browse.details(for: XCTUnwrap(monet.items.first))
+        XCTAssertEqual(monetDetails.card.variantEvidence.catalogVariants.map(\.id), ["normal"])
+        XCTAssertNil(monetDetails.collectionWriteUnavailableReason)
+
+        guard case let .identified(robin) = profile.identify([.init(text: "EB05-016")]),
+              case let .needsPrintingChoice(_, robinPrintings) = try await catalog.lookup(robin.identifier) else {
+            return XCTFail("The verified EB-05 parallel must be an explicit choice while the family is incomplete")
+        }
+        let special = try XCTUnwrap(robinPrintings.first { $0.treatmentLabel == "Special artwork" })
+        let robinDetails = try await catalog.resolve(special, for: robin.identifier)
+        XCTAssertEqual(robinDetails.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
+
+        let winner = try await browse.search(query: "Winner Pack 2026 Vol. 2 P-101", setIDs: [], cursor: nil)
+        let winnerDetails = try await browse.details(for: XCTUnwrap(winner.items.first))
+        XCTAssertEqual(winnerDetails.card.cardNumber, "P-101")
+        XCTAssertEqual(winnerDetails.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
+        XCTAssertNil(winnerDetails.collectionWriteUnavailableReason)
+        let tournament = try await browse.search(query: "Tournament Pack 2026 Vol. 2 P-101", setIDs: [], cursor: nil)
+        let tournamentDetails = try await browse.details(for: XCTUnwrap(tournament.items.first))
+        XCTAssertEqual(tournamentDetails.card.variantEvidence.catalogVariants.map(\.id), ["normal"])
+        XCTAssertNotEqual(winnerDetails.card.physicalPrintingID, tournamentDetails.card.physicalPrintingID)
+
+        let dawnWhip = try catalog.resolution(forPrintingID: XCTUnwrap(UUID(uuidString: "BD19030E-2A93-45FF-9964-3731A521AEA7")))
+        XCTAssertEqual(dawnWhip.card.cardNumber, "ST21-016")
+        XCTAssertEqual(dawnWhip.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
+
+        let bonney = try await browse.search(query: "EB05 001", setIDs: [], cursor: nil)
+        let officialRow = try XCTUnwrap(bonney.items.first)
+        let preview = try await browse.details(for: officialRow)
+        XCTAssertEqual(preview.card.name, "Jewelry Bonney")
+        XCTAssertNotNil(preview.collectionWriteUnavailableReason)
+        XCTAssertTrue(preview.card.variantEvidence.catalogVariants.isEmpty)
     }
 
     func testLocalOwnerReviewRotationRequiresAnExplicitMatchingPublicPin() throws {
@@ -716,11 +783,12 @@ final class OnePieceIntegrationTests: XCTestCase {
             UUID(uuidString: "603d83b0-146a-4229-8eaf-b2f884087312")!))
         let browse = OnePieceBrowseAdapter(registry: registry)
         let sets = try await browse.sets()
-        XCTAssertEqual(sets.count, 52, "Entirely held products cannot expose Browse ownership targets")
+        XCTAssertEqual(sets.count, 60, "Known products remain discoverable while their printings are held")
         let page = try await browse.cards(in: try XCTUnwrap(sets.first {
             $0.catalogID.providerID == "event:2022-super-pre-release"
         }), cursor: nil)
-        XCTAssertEqual(page.items.count, 1, "Unverified participation cannot become a Browse ownership target")
+        XCTAssertEqual(page.items.count, 2)
+        XCTAssertEqual(page.items.filter { $0.collectionAvailabilityNotice == nil }.map(\.providerID), [candidate.id])
         XCTAssertNil(selected.card.thumbnailImageURL, "Review asset rights do not authorize app image distribution")
         XCTAssertTrue(registry.verifiedRelease.release.indexes.automaticCandidateIDsByCanonicalID.isEmpty)
         XCTAssertFalse(OnePieceGameRuntime(registry: registry).runtime.descriptor.capabilities.contains(.collectionWrite))
@@ -888,7 +956,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
         let candidates = try XCTUnwrap(model.pendingIdentityChoice).displayCandidates
         XCTAssertEqual(candidates.map(\.id), ["348ad90a-43d8-49b5-a384-4d9cc2a1fe27"])
-        model.choose(try XCTUnwrap(candidates.first))
+        model.chooseWithEnglishConfirmation(try XCTUnwrap(candidates.first))
         let saved = await waitUntil { model.successCount == 1 }
         XCTAssertTrue(saved, "Explicit winner selection with one supported finish should save")
         XCTAssertNil(model.pendingIdentityChoice)
@@ -915,7 +983,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         let sets = try await browse.sets(for: .onePiece)
         let set = try XCTUnwrap(sets.first { $0.catalogID.providerID == "event:2022-super-pre-release" })
         let page = try await browse.cards(in: set, cursor: nil)
-        XCTAssertEqual(page.items.map(\.providerID), [owned.providerID])
+        XCTAssertEqual(page.items.filter { $0.collectionAvailabilityNotice == nil }.map(\.providerID), [owned.providerID])
     }
 #endif
 
@@ -949,7 +1017,7 @@ final class OnePieceIntegrationTests: XCTestCase {
             XCTAssertTrue(presented)
             let choices = try XCTUnwrap(model.pendingIdentityChoice).displayCandidates
             XCTAssertEqual(Set(choices.map(\.id)), Set(originals.map { $0.id.uuidString.lowercased() }))
-            model.choose(try XCTUnwrap(choices.first { $0.id == printing.id.uuidString.lowercased() }))
+            model.chooseWithEnglishConfirmation(try XCTUnwrap(choices.first { $0.id == printing.id.uuidString.lowercased() }))
             let saved = await waitUntil { model.successCount == index + 1 && !model.isIdentificationProcessingForTesting }
             XCTAssertTrue(saved)
             XCTAssertNil(model.pendingChoice, "Both exact printings have one supported finish")
@@ -1042,10 +1110,16 @@ final class OnePieceIntegrationTests: XCTestCase {
             repeat {
                 let page = try await browse.cards(in: set, cursor: cursor)
                 for summary in page.items {
-                    XCTAssertTrue(expectedIDs.contains(summary.providerID), "Browse must not admit held printings")
                     let details = try await browse.details(for: summary)
                     XCTAssertEqual(details.card.physicalPrintingID, summary.providerID)
                     let printing = try XCTUnwrap(UUID(uuidString: summary.providerID).flatMap { registry.printingByID[$0] })
+                    if !expectedIDs.contains(summary.providerID) {
+                        XCTAssertNotNil(details.collectionWriteUnavailableReason)
+                        XCTAssertTrue(details.card.variantEvidence.catalogVariants.isEmpty)
+                        XCTAssertTrue(details.card.marketProductIDsByVariant.isEmpty)
+                        continue
+                    }
+                    XCTAssertNil(details.collectionWriteUnavailableReason)
                     XCTAssertEqual(Set(details.card.variantEvidence.catalogVariants.map(\.id)), Set(printing.supportedVariantIDs))
                     cardsByID[summary.providerID] = details.card
                 }
@@ -1067,8 +1141,6 @@ final class OnePieceIntegrationTests: XCTestCase {
                 XCTAssertFalse(resolution.card.variantEvidence.catalogVariants.isEmpty)
             case let .needsPrintingChoice(_, candidates):
                 XCTAssertFalse(printings.isEmpty)
-                XCTAssertGreaterThan(registry.printingsByCanonicalID[canonical.id]?.count ?? 0, 1,
-                                     "Multiple verified or known held siblings require printing review")
                 XCTAssertEqual(Set(candidates.map(\.id)), Set(printings.map { $0.id.uuidString.lowercased() }))
                 XCTAssertTrue(candidates.allSatisfy { $0.selectionEvidence(among: candidates) != .insufficient },
                               "Verified choices must carry a usable collector distinction")
@@ -1127,7 +1199,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         let printing = try XCTUnwrap(registry.printingsByCanonicalID["one-piece:en:ST11-003"]?.first {
             $0.status == .verified && $0.marketMappings.isEmpty
         })
-        second.choose(try XCTUnwrap(second.pendingIdentityChoice?.displayCandidates.first {
+        second.chooseWithEnglishConfirmation(try XCTUnwrap(second.pendingIdentityChoice?.displayCandidates.first {
             $0.id == printing.id.uuidString.lowercased()
         }))
         let saved = await waitUntil { second.successCount == 1 && second.unresolvedScans.isEmpty }
@@ -1247,7 +1319,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         let presented = await waitUntil { model.pendingIdentityChoice != nil }
         XCTAssertTrue(presented, "Known standard/artwork siblings require selection of FILM RED Nami")
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
-        model.choose(try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first {
+        model.chooseWithEnglishConfirmation(try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first {
             $0.id == nami.id.uuidString.lowercased()
         }))
         let saved = await waitUntil { model.successCount == 1 }
@@ -1301,18 +1373,13 @@ final class OnePieceIntegrationTests: XCTestCase {
                 return XCTFail("Standard card number must be recognized")
             }
             model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
-            let resolvedOrChoice = await waitUntil { model.successCount == 1 || model.pendingIdentityChoice != nil }
-            XCTAssertTrue(resolvedOrChoice)
-            let knownPrintings = reviewed.printingsByCanonicalID[printing.canonicalCardID] ?? []
-            if knownPrintings.count > 1 {
-                let candidate = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first {
-                    $0.id == printing.id.uuidString.lowercased()
-                })
-                XCTAssertEqual(candidate.treatmentLabel, "Standard artwork")
-                model.choose(candidate)
-            } else {
-                XCTAssertNil(model.pendingIdentityChoice)
-            }
+            let presented = await waitUntil { model.pendingIdentityChoice != nil }
+            XCTAssertTrue(presented)
+            let candidate = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first {
+                $0.id == printing.id.uuidString.lowercased()
+            })
+            XCTAssertEqual(candidate.treatmentLabel, "Standard artwork")
+            model.chooseWithEnglishConfirmation(candidate)
             let saved = await waitUntil { model.successCount == 1 }
             XCTAssertTrue(saved)
             let owned = try XCTUnwrap(container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
@@ -1334,7 +1401,7 @@ final class OnePieceIntegrationTests: XCTestCase {
                                 ("product:op05-awakening-of-the-new-era-2023", 118),
                                 ("product:st11-uta-2024", 5), ("product:st12-zoro-and-sanji-2024", 4)] {
             let set = try XCTUnwrap(sets.first { $0.catalogID.providerID == product })
-            XCTAssertEqual(set.cardCount, count)
+            XCTAssertEqual(set.physicalPrintingIDs?.count, count)
         }
         let leader = try XCTUnwrap(reviewed.printingByID.values.first {
             $0.canonicalCardID == "one-piece:en:ST01-001"
@@ -1347,22 +1414,23 @@ final class OnePieceIntegrationTests: XCTestCase {
         let adapter = OnePieceCatalogAdapter(registry: reviewed)
         let browse = OnePieceBrowseAdapter(registry: reviewed)
         let sets = try await browse.sets()
-        for (number, product, hasVerifiedSiblings) in [("ST12-002", "product:st12-zoro-and-sanji-2024", true),
-                                  ("OP02-028", "product:st11-uta-2024", true),
-                                  ("ST31-001", "product:st31-st-31-starter-deck-31-red-monkey-d-luffy-2026", false),
-                                  ("ST30-001", "product:st30-st-30-starter-deck-30-ex-luffy-ace-2026", false)] {
+        for (number, product) in [("ST12-002", "product:st12-zoro-and-sanji-2024"),
+                                  ("OP02-028", "product:st11-uta-2024"),
+                                  ("ST31-001", "product:st31-st-31-starter-deck-31-red-monkey-d-luffy-2026"),
+                                  ("ST30-001", "product:st30-st-30-starter-deck-30-ex-luffy-ace-2026")] {
             let printing = try XCTUnwrap(reviewed.printingByID.values.first {
                 $0.canonicalCardID == "one-piece:en:" + number && $0.releaseID == product
             })
             XCTAssertEqual(printing.status, .provisional)
             XCTAssertTrue(printing.supportedVariantIDs.isEmpty)
             XCTAssertThrowsError(try adapter.resolution(forPrintingID: printing.id))
-            let set = sets.first { $0.catalogID.providerID == product }
-            XCTAssertEqual(set != nil, hasVerifiedSiblings)
-            if let set {
-                let page = try await browse.cards(in: set, cursor: nil)
-                XCTAssertFalse(page.items.contains { $0.providerID == printing.id.uuidString.lowercased() })
-            }
+            let set = try XCTUnwrap(sets.first { $0.catalogID.providerID == product })
+            let page = try await browse.search(query: number, setIDs: [set.catalogID], cursor: nil)
+            let held = try XCTUnwrap(page.items.first { $0.providerID == printing.id.uuidString.lowercased() })
+            let details = try await browse.details(for: held)
+            XCTAssertNotNil(details.collectionWriteUnavailableReason)
+            XCTAssertFalse(set.physicalPrintingIDs?.contains(held.providerID) ?? true)
+            XCTAssertThrowsError(try adapter.validateBrowseAcquisition(printingID: held.providerID, variantID: "normal"))
         }
     }
 
@@ -1688,9 +1756,15 @@ final class OnePieceIntegrationTests: XCTestCase {
         let publication = try XCTUnwrap(bound.runtime(for: .onePiece)?.activationSource)
         let initial = await publication.currentSnapshot()
         XCTAssertEqual(initial?.revision, 1)
+        let browse = bound.makeBrowseCatalog()
+        let initialPage = try await browse.searchCards(named: "Fixture Shanks", game: .onePiece, setIDs: [], cursor: nil)
+        let summary = try XCTUnwrap(initialPage.items.first { $0.providerID == uuid(1).uuidString.lowercased() })
+        let oldDetails = try await browse.details(for: summary)
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
         let ownership = CollectionStore(context: container.mainContext)
-        let card = try OnePieceCatalogAdapter(registry: first).resolution(forPrintingID: uuid(1)).card
-        let acquisition = try ownership.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let acquisition = try await writer.addCatalog(oldDetails,
+            resolved: .init(variant: .normal, resolution: .userConfirmed),
+            pokemonPrintRun: nil, shouldContinue: { true }).mutation
         let owned = try XCTUnwrap(ownership.card(forKey: acquisition.collectionKey))
         let activityID = try XCTUnwrap(acquisition.activityID)
         let quote = try await OnePiecePriceAdapter(registry: first, source: OnePieceTestPriceSource())
@@ -1735,7 +1809,13 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertThrowsError(try ownership.recordVariantCorrection(for: owned, to: corrected,
             claims: [.init(activityID: activityID, quantity: 1)], source: .correction, mode: .visibleCorrection))
         XCTAssertEqual(try lineage(), before)
-        let browse = bound.makeBrowseCatalog()
+        do {
+            _ = try await writer.addCatalog(oldDetails,
+                resolved: .init(variant: .normal, resolution: .userConfirmed),
+                pokemonPrintRun: nil, shouldContinue: { true })
+            XCTFail("An already-open detail must use the installed catalog when adding")
+        } catch CatalogLookupError.invalidPrintingChoice {}
+        XCTAssertEqual(try lineage(), before)
         let page = try await browse.searchCards(named: "Fixture Shanks", game: .onePiece, setIDs: [], cursor: nil)
         XCTAssertFalse(page.items.contains { $0.providerID == uuid(1).uuidString.lowercased() })
         let later = await publication.currentSnapshot()
@@ -1797,11 +1877,12 @@ final class OnePieceIntegrationTests: XCTestCase {
                           includeFooterEvidence: Bool = false, sharedReleaseLabels: Bool = false,
                           withMarketMapping: Bool = false,
                           firstStatus: OnePieceReconciliationStatus = .verified,
-                          language: String = "en", releaseDate: String? = nil) throws -> OnePieceCatalogRegistry {
+                          language: String = "en", releaseDate: String? = nil,
+                          includeDiscovery: Bool = false) throws -> OnePieceCatalogRegistry {
         let number = "OP01-120"
         let card = OnePieceCanonicalCard(printedNumber: number, language: language, name: "Fixture Shanks",
-            printingCoverageComplete: complete && !withMarketMapping,
-            coverageReviewReference: complete && !withMarketMapping ? "fixture-coverage" : nil)
+            printingCoverageComplete: complete,
+            coverageReviewReference: complete ? "fixture-coverage" : nil)
         let artworkID = uuid(900)
         let imageHash = OnePieceSourceObservation.sha256(Data("fixture art".utf8))
         var observations: [OnePieceSourceObservation] = []
@@ -1854,12 +1935,22 @@ final class OnePieceIntegrationTests: XCTestCase {
         }
         if multiProduct { products.append(.init(id: "fixture-bundle", label: "Fixture bundle")) }
         // Future prefix support is derived from registry cards. No permanent set horizon.
-        let futureCards = ["ST01-007", "P-001", "OP99-001", "EB99-001", "PRB99-001", "ST99-001"].map {
+        var futureCards = ["ST01-007", "P-001", "OP99-001", "EB99-001", "PRB99-001", "ST99-001"].map {
             OnePieceCanonicalCard(printedNumber: $0, language: "en", name: "Fixture \($0)")
+        }
+        if includeDiscovery {
+            let product = OnePieceProduct(id: "product:bandai-series:569205", label: "Heroines Edition Vol. 2 · EB-05")
+            products.append(product)
+            futureCards.append(.init(printedNumber: "EB05-001", language: "en", name: "Jewelry Bonney"))
+            observations.append(.init(id: "bandai-browse:569205:EB05-001", alias: .init(provider: "bandai", sourceID: "eb05-fixture"),
+                sourceURL: URL(string: "https://en.onepiece-cardgame.com/cardlist/?series=569205")!,
+                observedAt: date, language: "en", payloadSHA256: imageHash, productEvidence: [product.id],
+                printedEvidence: ["number": "EB05-001", "productLabel": "Official printing preview",
+                                  "sourceRole": OnePieceSourceObservation.browseDiscoveryRole]))
         }
         let release = try OnePieceCatalogBuilder.build(registry: .init(canonicalCards: [card] + futureCards,
             artworks: [.init(id: artworkID, referenceImageURL: URL(string: "https://fixture.invalid/art.png"),
-                            imageSHA256: imageHash, observationIDs: observations.map(\.id))],
+                            imageSHA256: imageHash, observationIDs: observations.filter { !$0.isBrowseDiscovery }.map(\.id))],
             printings: printings, variants: [.init(id: "normal", label: "Normal"), .init(id: "foil", label: "Foil")],
             products: products, appearances: multiProduct ? [.init(printingID: uuid(1),
                 productID: "fixture-bundle", observationIDs: ["fixture-observation-0"])] : []), observations: observations,
@@ -1873,7 +1964,7 @@ final class OnePieceIntegrationTests: XCTestCase {
             trustedKeys: ["one-piece-test": key.publicKey], now: now))
     }
 
-    private func identifier(_ registry: OnePieceCatalogRegistry, confirmedEnglish: Bool = false) throws -> ScanIdentifier {
+    private func identifier(_ registry: OnePieceCatalogRegistry, confirmedEnglish: Bool = true) throws -> ScanIdentifier {
         let profile = OnePieceScanProfile(registry: registry,
             languageConfirmation: confirmedEnglish ? .userConfirmedEnglish : .unconfirmed)
         guard case let .identified(subject) = profile.identify([.init(text: "OP01-120")]) else {
@@ -1931,27 +2022,43 @@ final class OnePieceIntegrationTests: XCTestCase {
         }
     }
 
-    func testSoleVerifiedPrintingResolvesWithoutLanguageConfirmationPicker() async throws {
+    func testCertifiedSingletonRequiresEnglishEvidenceBeforeAutomaticSelection() async throws {
         let registry = try registry(count: 1)
         let catalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [OnePieceCatalogAdapter(registry: registry)]))
-        guard case let .resolved(selected) = try await catalog.lookupOutcome(for: identifier(registry)) else {
-            return XCTFail("A sole verified printing should resolve without an extra tap")
+        let unknown = try identifier(registry, confirmedEnglish: false)
+        guard case let .needsPrintingChoice(_, choices) = try await catalog.lookupOutcome(for: unknown) else {
+            return XCTFail("A printed number cannot establish physical language")
         }
+        let choice = try XCTUnwrap(choices.first)
+        do {
+            try await catalog.validateAcquisition(unknown, printingID: choice.id, automatic: false)
+            XCTFail("An unconfirmed language must not authorize a save")
+        } catch CatalogLookupError.invalidPrintingChoice {}
+        let english = try unknown.confirmingOnePieceEnglish()
+        guard case let .resolved(selected) = try await catalog.lookupOutcome(for: english) else {
+            return XCTFail("Confirmed English and certified singleton should resolve")
+        }
+        let resolvedChoice = try await catalog.resolvePrintingChoice(choice, for: english)
         XCTAssertEqual(selected.card.language, "en")
         XCTAssertEqual(selected.card.providerID, uuid(1).uuidString.lowercased())
+        XCTAssertEqual(resolvedChoice.card.providerID, selected.card.providerID)
         XCTAssertEqual(selected.retrievedAt, now)
-        guard case .resolved = try await catalog.lookupOutcome(for: identifier(registry, confirmedEnglish: true)) else {
-            return XCTFail("Confirmed English plus complete unique verified scope may resolve")
-        }
     }
 
-    func testSoleVerifiedPrintingResolvesInIncompleteScopeWithoutKnownSiblings() async throws {
-        let incomplete = try registry(count: 1, complete: false)
+    func testCatalogGapRequiresAnExplicitChoiceEvenWithOneKnownPrinting() async throws {
+        let incomplete = try reviewedAwardRegistry()
         let adapter = OnePieceCatalogAdapter(registry: incomplete)
-        guard case let .resolved(selected) = try await adapter.lookup(identifier(incomplete, confirmedEnglish: true)) else {
-            return XCTFail("Unknown global coverage alone must not create a choice")
+        let profile = OnePieceScanProfile(registry: incomplete, languageConfirmation: .userConfirmedEnglish)
+        guard case let .identified(subject) = profile.identify([.init(text: "OP09-020")]),
+              case let .needsPrintingChoice(_, choices) = try await adapter.lookup(subject.identifier) else {
+            return XCTFail("The PRB-02 stamped copy shares this number with the only verified printing")
         }
-        XCTAssertEqual(selected.card.providerID, uuid(1).uuidString.lowercased())
+        XCTAssertEqual(choices.count, 1)
+        let base = try XCTUnwrap(choices.first)
+        do {
+            try await adapter.validateAcquisition(subject.identifier, printingID: base.id, automatic: true)
+            XCTFail("The missing sibling must not authorize the base printing")
+        } catch CatalogLookupError.invalidPrintingChoice {}
         let registry = try registry()
         let unknownPrintingNumber = try ScanIdentifier(game: .onePiece, namespace: "numbered-card",
             fields: [.init(key: "number", value: "P-001")], displayIdentifier: "P-001", suppressionIdentity: "number:P-001",
@@ -2173,6 +2280,14 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(summary.providerID, uuid(1).uuidString.lowercased())
         let search = try await browse.searchCards(named: "OP01-120", game: .onePiece, setIDs: [], cursor: nil)
         XCTAssertEqual(search.items.count, 2, "Multiple product appearances must not duplicate physical search results")
+        for query in ["OP01120", "OP-01-120", "Shanks OP01-120", "OP01 120 Shanks"] {
+            let result = try await browse.searchCards(named: query, game: .onePiece, setIDs: [bundle.catalogID], cursor: nil)
+            XCTAssertEqual(result.items.map(\.providerID), [summary.providerID], query)
+        }
+        for query in ["OP01121", "Wrong name OP01-120"] {
+            let result = try await browse.searchCards(named: query, game: .onePiece, setIDs: [], cursor: nil)
+            XCTAssertTrue(result.items.isEmpty, query)
+        }
         let filtered = try await browse.searchCards(named: "Shanks", game: .onePiece, setIDs: [bundle.catalogID], cursor: nil)
         XCTAssertEqual(filtered.items.map(\.providerID), [summary.providerID])
         let details = try await browse.details(for: summary)
@@ -2191,6 +2306,57 @@ final class OnePieceIntegrationTests: XCTestCase {
         model.searchText = "not-a-real-fixture"
         let empty = await waitUntil { model.searchState == .empty(needsSealedSetup: true) }
         XCTAssertTrue(empty, "Enabled sealed browsing should offer setup when credentials are absent")
+    }
+
+    func testOfficialDiscoveryCanBeScannedForRetryAndFoundInBrowseWithoutGrantingOwnership() async throws {
+        let registry = try registry(includeDiscovery: true)
+        let profile = OnePieceScanProfile(registry: registry)
+        guard case let .identified(subject) = profile.identify([.init(text: "EB05-001")]),
+              case let .catalogIncomplete(canonical) = try await OnePieceCatalogAdapter(registry: registry).lookup(subject.identifier) else {
+            return XCTFail("A known official number with no finish review should remain retryable")
+        }
+        XCTAssertEqual(canonical?.name, "Jewelry Bonney")
+        let browse = OnePieceBrowseAdapter(registry: registry)
+        let directory = try await browse.sets()
+        let set = try XCTUnwrap(directory.first { $0.providerID == "product:bandai-series:569205" })
+        let page = try await browse.search(query: "Jewelry Bonney EB05001", setIDs: [set.catalogID], cursor: nil)
+        let row = try XCTUnwrap(page.items.first)
+        let byLabel = try await browse.search(query: "Official printing preview EB05001",
+                                            setIDs: [set.catalogID], cursor: nil)
+        XCTAssertEqual(byLabel.items, [row])
+        let details = try await browse.details(for: row)
+        XCTAssertEqual(row.collectorNumber, "EB05-001")
+        XCTAssertEqual(set.physicalPrintingIDs, [])
+        XCTAssertNotNil(details.collectionWriteUnavailableReason)
+        XCTAssertTrue(details.card.variantEvidence.catalogVariants.isEmpty)
+        let (_, container) = try model(registry: registry, fixtureWritesEnabled: true)
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        do {
+            _ = try await writer.addCatalog(details, resolved: .init(variant: .foil, resolution: .userConfirmed),
+                pokemonPrintRun: nil, shouldContinue: { true })
+            XCTFail("Official discovery alone cannot create an ownership row")
+        } catch CatalogLookupError.invalidPrintingChoice {}
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
+    }
+
+    func testSetBrowseSearchFindsCollectorNumberBeyondTheFirstPage() async throws {
+        let browse = OnePieceBrowseAdapter(registry: try reviewedAwardRegistry())
+        let sets = try await browse.sets()
+        let set = try XCTUnwrap(sets.first { ($0.cardCount ?? 0) > 60 && $0.providerID.contains("op09") })
+        let first = try await browse.cards(in: set, cursor: nil)
+        XCTAssertEqual(first.items.count, 60)
+        let localCards = try await browse.completeLocalCards(in: set)
+        let rows = try XCTUnwrap(localCards)
+        XCTAssertEqual(rows.count, set.cardCount)
+        let target = try XCTUnwrap(rows.dropFirst(first.items.count).first)
+        let number = target.collectorNumber.replacingOccurrences(of: "-", with: "")
+        let builder = CatalogSetPresentationBuilder()
+        let generation = UUID()
+        let groups = try await builder.groups(for: .init(setID: set.catalogID, contentGeneration: generation,
+            cards: rows, search: "\(target.name) \(number)", sort: .numberLowToHigh, ownership: .all,
+            ownershipRevision: 0, tier: .standard, prices: [:]), owned: .init(rows: []))
+        XCTAssertTrue(groups.flatMap(\.summaries).contains(target))
     }
 
     func testCSVExportRoundTripKeepsExactPrintingFinishAndRefusesProductionWrites() throws {
@@ -2576,7 +2742,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(owner.generation, reviewed.generation)
         let adapter = OnePieceBrowseAdapter(registry: owner)
         for set in try await adapter.sets() {
-            XCTAssertFalse(set.artworkFallbackURLs?.isEmpty ?? true, set.name)
+            XCTAssertEqual(set.artworkFallbackURLs?.isEmpty, set.physicalPrintingIDs?.isEmpty, set.name)
             let page = try await adapter.cards(in: set, cursor: nil)
             for card in page.items {
                 let printing = try XCTUnwrap(owner.printingByID[UUID(uuidString: card.providerID)!])
@@ -2890,6 +3056,10 @@ final class OnePieceIntegrationTests: XCTestCase {
         let loaded = await waitUntil { model.unresolvedScans.contains { $0.id == row.id && !$0.isReadOnly } }
         XCTAssertTrue(loaded)
         model.resolveUnresolved(id: row.id, choice: .retryLookup)
+        let presented = await waitUntil { model.pendingIdentityChoice != nil }
+        XCTAssertTrue(presented)
+        let pending = try XCTUnwrap(model.pendingIdentityChoice)
+        model.chooseWithEnglishConfirmation(try XCTUnwrap(pending.displayCandidates.first))
         let committed = await waitUntil { model.successCount == 1 && model.unresolvedScans.isEmpty }
         XCTAssertTrue(committed)
         XCTAssertNil(model.pendingIdentityChoice)
@@ -3659,7 +3829,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
         let pending = try XCTUnwrap(model.pendingIdentityChoice)
         XCTAssertEqual(pending.displayCandidates.count, 2)
-        model.choose(try XCTUnwrap(pending.displayCandidates.first { $0.id == original.id.uuidString.lowercased() }))
+        model.chooseWithEnglishConfirmation(try XCTUnwrap(pending.displayCandidates.first { $0.id == original.id.uuidString.lowercased() }))
         let saved = await waitUntil { model.successCount == 1 }
         XCTAssertTrue(saved)
         XCTAssertNil(model.pendingChoice)

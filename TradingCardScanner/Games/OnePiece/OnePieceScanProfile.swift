@@ -3,6 +3,28 @@ import OnePieceCatalogCore
 
 enum OnePieceLanguageConfirmation: Sendable { case unconfirmed, userConfirmedEnglish }
 
+extension ScanIdentifier {
+    var needsOnePieceEnglishConfirmation: Bool {
+        game == .onePiece && namespace == "numbered-card" &&
+            !(fields.contains(.init(key: "language", value: "en")) &&
+              fields.contains(.init(key: "languageConfirmation", value: "user-confirmed")))
+    }
+
+    func confirmingOnePieceEnglish() throws -> Self {
+        guard game == .onePiece, namespace == "numbered-card",
+              fields.first(where: { $0.key == "language" }).map({ ["unknown", "en"].contains($0.value) }) ?? true,
+              fields.first(where: { $0.key == "languageConfirmation" })
+                  .map({ ["unconfirmed", "user-confirmed"].contains($0.value) }) ?? true else {
+            throw CatalogLookupError.invalidAdapterOutcome
+        }
+        return try .init(game: game, namespace: namespace,
+            fields: fields.filter { $0.key != "language" && $0.key != "languageConfirmation" } +
+                [.init(key: "language", value: "en"), .init(key: "languageConfirmation", value: "user-confirmed")],
+            displayIdentifier: displayIdentifier, suppressionIdentity: suppressionIdentity,
+            catalogGeneration: catalogGeneration)
+    }
+}
+
 struct OnePieceScanProfile: Sendable {
     let generation: String
     let customWords: [String]

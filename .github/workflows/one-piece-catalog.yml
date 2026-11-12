@@ -1,6 +1,8 @@
 name: One Piece catalog
 
 on:
+  schedule:
+    - cron: '21 10 * * 1'
   pull_request:
     paths:
       - "OnePieceCatalogCore/**"
@@ -8,6 +10,8 @@ on:
       - "scripts/normalize_one_piece_sources.py"
       - "scripts/build_one_piece_catalog.py"
       - "scripts/one_piece_pinned_keys.py"
+      - "scripts/prepare_one_piece_hosting.py"
+      - "scripts/tests/test_one_piece_hosting.py"
       - "scripts/tests/test_one_piece_pinned_keys.py"
       - "scripts/one_piece_tcgcsv_capture.py"
       - "scripts/reconcile_one_piece_tcgcsv_sources.py"
@@ -16,6 +20,14 @@ on:
       - "scripts/tests/test_one_piece_base_market_mappings.py"
       - "scripts/capture_one_piece_products.py"
       - "scripts/discover_one_piece_products.py"
+      - "scripts/audit_one_piece_coverage.py"
+      - "scripts/tests/test_one_piece_coverage.py"
+      - "scripts/reconcile_one_piece_fixed_foil_products.py"
+      - "scripts/reconcile_one_piece_retail_printings.py"
+      - "scripts/one_piece_eb05_retail.py"
+      - "scripts/tests/test_one_piece_fixed_foil_products.py"
+      - "scripts/tests/test_one_piece_retail_printings.py"
+      - "publisher/one-piece/production/revision-2/fixed-foil-products.json"
       - "scripts/tests/test_one_piece_product_discovery.py"
       - "scripts/tests/test_one_piece_product_pipeline.py"
       - "scripts/tests/test_one_piece_tcgcsv_catalog.py"
@@ -29,6 +41,10 @@ on:
       - "scripts/tests/test_one_piece_acceptance_samples.py"
   workflow_dispatch:
     inputs:
+      audit:
+        description: "Compare the signed catalog to the current official English card lists"
+        type: boolean
+        default: false
       sign:
         description: "Prepare a signed artifact (does not deploy)"
         type: boolean
@@ -47,7 +63,7 @@ on:
         type: boolean
         default: false
       publish:
-        description: "Publish an already signed revision 1 artifact"
+        description: "Publish an already signed One Piece artifact"
         type: boolean
         default: false
       signed_run_id:
@@ -64,7 +80,42 @@ permissions:
   contents: read
 
 jobs:
+  coverage-report:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.audit)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare the verified catalog with Bandai's current inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          audit="$RUNNER_TEMP/one-piece-coverage"
+          mkdir -p "$audit"
+          python3 - "$audit/current.json" <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from market_price_feeds import ORIGIN, read_http
+
+          data = read_http(f'{ORIGIN}/one-piece/v1/current.json', 48 * 1024 * 1024, absent_ok=True)
+          if data is None:
+              print('Hosted One Piece catalog returned 404. Auditing the bundled seed.')
+              data = Path('TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json').read_bytes()
+          Path(sys.argv[1]).write_bytes(data)
+          PY
+          python3 scripts/one_piece_pinned_keys.py Config/OnePieceCatalogProduction.xcconfig "$audit/keys.json"
+          swift run --package-path OnePieceCatalogCore one-piece-catalog-publisher verify-hosted-release \
+            --input "$audit/current.json" --trusted-keys "$audit/keys.json"
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/audit_one_piece_coverage.py \
+            --capture-root "$audit/source" --release "$audit/current.json" --output "$audit/coverage.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: one-piece-official-coverage-${{ github.run_id }}
+          path: ${{ runner.temp }}/one-piece-coverage/coverage.json
+          if-no-files-found: error
+
   validate:
+    if: github.event_name != 'schedule'
     runs-on: macos-15
     steps:
       - name: Reject a combined sign and publish request
@@ -77,6 +128,7 @@ jobs:
         run: |
           bash scripts/verify_pokemon_catalog_hosting_config.sh
           PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_catalog_hosting_restore.py -v
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_hosting.py -v
           PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_acceptance_samples.py -v
       - name: Test bounded source normalization
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_normalize_one_piece_sources.py -v
@@ -86,6 +138,12 @@ jobs:
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_product_pipeline.py -v
       - name: Test complete ordinary-product discovery
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_product_discovery.py -v
+      - name: Test official coverage comparison and read-only discovery
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_coverage.py -v
+      - name: Test fixed product finish evidence
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_fixed_foil_products.py -v
+      - name: Test exact retailer finish and artwork comparison
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_retail_printings.py -v
       - name: Test exact base market mapping review
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_base_market_mappings.py -v
       - name: Test catalog core and publisher CLI
@@ -178,7 +236,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$BOOTSTRAP" = true
           [[ "$SIGNED_RUN_ID" =~ ^[0-9]+$ ]]
           for digest in "$REVIEWED_SHA256" "$REVIEWED_ENVELOPE_SHA256" "$REVIEWED_MANIFEST_SHA256"; do
             [[ "$digest" =~ ^[0-9a-f]{64}$ ]]
@@ -193,58 +250,45 @@ jobs:
           path: ${{ runner.temp }}/one-piece-reviewed-artifact
           github-token: ${{ github.token }}
           run-id: ${{ inputs.signed_run_id }}
-      - name: Verify the exact signed revision 1 artifact
+      - name: Verify the reviewed artifact against production and stage it
+        id: stage
         shell: bash
         run: |
           set -euo pipefail
           artifact="$RUNNER_TEMP/one-piece-reviewed-artifact"
+          envelope="$artifact/release-envelope.json"
           printf '%s  %s\n' \
-            "$REVIEWED_ENVELOPE_SHA256" "$artifact/release-envelope.json" \
+            "$REVIEWED_ENVELOPE_SHA256" "$envelope" \
             "$REVIEWED_MANIFEST_SHA256" "$artifact/verified-manifest.json" | shasum -a 256 -c -
+          inputs="$RUNNER_TEMP/one-piece-hosting-inputs"
+          revision=$(python3 scripts/prepare_one_piece_hosting.py --artifact "$artifact" \
+            --output-dir "$inputs" --bootstrap "$BOOTSTRAP")
+          if [ "$BOOTSTRAP" = true ]; then
+            baseline=(--bootstrap-registry yes)
+          else
+            baseline=(--previous "$inputs/one-piece-predecessor.json")
+          fi
           trusted_keys="$RUNNER_TEMP/one-piece-app-pinned-keys.json"
           python3 scripts/one_piece_pinned_keys.py Config/OnePieceCatalogProduction.xcconfig "$trusted_keys"
           swift run --package-path OnePieceCatalogCore one-piece-catalog-publisher verify \
-            --input "$artifact/release-envelope.json" --trusted-keys "$trusted_keys" \
-            --reviewed-payload-sha256 "$REVIEWED_SHA256" --bootstrap-registry yes \
+            --input "$envelope" --trusted-keys "$trusted_keys" \
+            --reviewed-payload-sha256 "$REVIEWED_SHA256" "${baseline[@]}" \
             --manifest "$RUNNER_TEMP/one-piece-verified-manifest.json"
           cmp "$RUNNER_TEMP/one-piece-verified-manifest.json" "$artifact/verified-manifest.json"
-      - name: Preserve the active site and stage the One Piece bootstrap
-        shell: bash
-        run: |
-          set -euo pipefail
-          envelope="$RUNNER_TEMP/one-piece-reviewed-artifact/release-envelope.json"
-          python3 - "$RUNNER_TEMP" "$envelope" <<'PY'
-          import sys
-          from pathlib import Path
-          sys.path.insert(0, 'scripts')
-          from market_price_feeds import ORIGIN, read_http
-
-          root = Path(sys.argv[1])
-          approved = Path(sys.argv[2]).read_bytes()
-          limit = 68 * 1024 * 1024
-          pointer = read_http(f'{ORIGIN}/one-piece/v1/current.json', limit, absent_ok=True)
-          if pointer is not None:
-              sys.exit('::error::A One Piece production pointer already exists. The revision 1 bootstrap requires an absent pointer.')
-          immutable = read_http(f'{ORIGIN}/one-piece/v1/releases/1/catalog-release.json', limit, absent_ok=True)
-          if immutable is not None and immutable != approved:
-              sys.exit('::error::The existing immutable One Piece revision 1 has different bytes.')
-          for name, path in [('pokemon', 'v1/current.json'), ('magic', 'magic/v1/current.json')]:
-              data = read_http(f'{ORIGIN}/{path}', limit, absent_ok=name == 'magic')
-              if data is not None:
-                  (root / f'{name}-production-current.json').write_bytes(data)
-          PY
           bash scripts/restore_catalog_hosting_site.sh \
-            "$RUNNER_TEMP/pokemon-production-current.json" "$RUNNER_TEMP/magic-production-current.json" \
-            publisher/site "$HOSTING_ORIGIN"
-          test ! -f publisher/site/one-piece/v1/current.json
+            "$inputs/pokemon-current.json" "$inputs/magic-current.json" publisher/site "$HOSTING_ORIGIN" \
+            '' '' '' '' "$inputs/one-piece-current.json"
           destination=publisher/site/one-piece/v1
-          mkdir -p "$destination/releases/1"
-          if [ -f "$destination/releases/1/catalog-release.json" ]; then
-            cmp "$envelope" "$destination/releases/1/catalog-release.json"
+          immutable="$destination/releases/$revision/catalog-release.json"
+          mkdir -p "$(dirname "$immutable")"
+          if [ -f "$immutable" ]; then
+            cmp "$envelope" "$immutable"
+          else
+            cp "$envelope" "$immutable"
           fi
-          cp "$envelope" "$destination/releases/1/catalog-release.json"
           cp "$envelope" "$destination/current.json"
           bash scripts/verify_pokemon_catalog_hosting_config.sh
+          printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"
       - name: Install Firebase CLI
         run: npm install --global firebase-tools@13.35.1
       - name: Deploy the preserved site to Firebase Hosting
@@ -265,13 +309,15 @@ jobs:
           firebase target:apply hosting production "$FIREBASE_HOSTING_SITE_ID" --project "$FIREBASE_PROJECT_ID"
           firebase deploy --only hosting:production --project "$FIREBASE_PROJECT_ID" --non-interactive
       - name: Verify live catalog bytes and cache headers
+        env:
+          REVISION: ${{ steps.stage.outputs.revision }}
         shell: bash
         run: |
           set -euo pipefail
           readback="$RUNNER_TEMP/one-piece-hosting-readback"
           headers="$RUNNER_TEMP/one-piece-hosting-headers"
           for origin in "$HOSTING_ORIGIN" https://catalog.scan-stash.com; do
-            for path in one-piece/v1/current.json one-piece/v1/releases/1/catalog-release.json \
+            for path in one-piece/v1/current.json "one-piece/v1/releases/$REVISION/catalog-release.json" \
               v1/current.json magic/v1/current.json yugioh/v1/current.json market-prices/v1/index.json; do
               expected="publisher/site/$path"
               if [ ! -f "$expected" ]; then continue; fi

@@ -29,6 +29,10 @@ swift run --package-path PokemonCatalogCore pokemon-catalog-publisher validate \
   --generated-at 2026-01-01T00:00:00Z
 ```
 
+The `verify-candidate` command checks a prepared directory against a verified
+active release. Pass `--candidate-root`, `--active-release`, and `--environment`
+to check an upgrade without signing it.
+
 The fixture directory's `catalog-input.json` is recorded test input. The
 production workflow uses [`publisher/catalog-input.json`](catalog-input.json)
 as the owner-controlled override/fallback policy for the bundled catalog.
@@ -72,23 +76,22 @@ Each local revision contains four public artifacts — `catalog-release.json`,
 ignores dot-files, so `.complete` is deliberately not part of the hosted
 release contract.
 
-Local and pull-request jobs can validate and emit a public review report. The
-production workflow prepares and uploads an unsigned candidate before the
-publication environment gate. The first nil-to-fingerprint population is a
-protected baseline migration. After that, only the explicit content-only
-allow-list uses `pokemon-catalog-production-auto`; candidates that add a set,
-touch scanner authority, or contain an unknown change use the protected
-`pokemon-catalog-production` environment and wait for its required reviewer.
-The approved job only loads that exact candidate, signs it, and deploys it. The
-CLI refuses to load a signing key outside one of those matching GitHub Actions
-production environments. The private key is never checked into the repository
-or written to the site directory.
+The signed payload authenticates the checklist inputs. The app stages those
+inputs before activating the revision. Separate provider fingerprints let the
+publisher identify artwork updates and changes to numbered identities or finish
+evidence. The first fingerprint baseline and subsequent acquisition changes
+require review.
 
-Firebase project selection and the Hosting service account are intentionally
-outside this repository. The first deployment uses the protected
-`pokemon-catalog-production` environment, and the automatic
-`pokemon-catalog-production-auto` environment must carry the same deployment
-and signing secrets, with
+Scheduled runs prepare an unsigned candidate and publish eligible content-only
+updates. A manual run with `publish=false` prepares a candidate for review.
+After reviewing its artifacts, dispatch on `main` with `publish=true`, the
+candidate's workflow run ID, and the manifest SHA-256 from its summary. The
+publication job rechecks those bytes against the current production release
+before signing and verifies the deployed pointer, envelope, and checklist on
+both catalog hosts.
+
+Firebase project selection and the Hosting service account are configured on
+the `pokemon-catalog-production` environment. It carries
 `POKEMON_CATALOG_SIGNING_KEY`, `POKEMON_CATALOG_KEY_ID`,
 `FIREBASE_SERVICE_ACCOUNT`, `FIREBASE_PROJECT_ID`, and
 `FIREBASE_HOSTING_SITE_ID`. The workflow creates the local production target
@@ -108,7 +111,7 @@ as future rollout material, but they are not part of the first production
 deployment. Do not create a staging Firebase project, Hosting site, DNS record,
 or Firebase credential set yet. Add them only when a separate project boundary
 materially reduces rollout risk; keep its credentials and signing key distinct
-from both production publication environments.
+from the production publication environment.
 
 The earlier Slice F validation-only rehearsal used the production hostname and
 discarded the candidate without changing production authority. The committed

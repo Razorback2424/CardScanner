@@ -13,6 +13,7 @@ actor OnePieceCatalogReleaseStore {
     private let core: Core
     private let keys: [String: Curve25519.Signing.PublicKey]
     nonisolated let bundledRegistry: OnePieceCatalogRegistry?
+    nonisolated let conditionalStateURL: URL
 
     init(root: URL? = nil, keys: [String: Curve25519.Signing.PublicKey],
          bundledEnvelope: OnePieceCatalogReleaseEnvelope? = nil, now: Date = .now,
@@ -22,6 +23,7 @@ actor OnePieceCatalogReleaseStore {
         bundledRegistry = fallback?.registry
         let root = root ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first!.appendingPathComponent("BrowseCatalogCache/OnePieceCatalogReleases", isDirectory: true)
+        conditionalStateURL = root.appendingPathComponent("verified-http-validator.json")
         core = Core(root: root, currentName: Slot.current.rawValue, previousName: Slot.previous.rawValue,
             revisionPolicy: .activeRelease, strictRevisionContent: true, rejectLowerRevision: true,
             validateRecovery: true, fallback: fallback,
@@ -61,6 +63,8 @@ actor OnePieceCatalogReleaseStore {
 
     func activate(_ envelope: OnePieceCatalogReleaseEnvelope, now: Date = .now) async throws -> ActivationResult {
         await load(now: now)
+        if let current = await core.activeRelease, now >= current.release.verifiedAt,
+           current.envelope == envelope { return .alreadyCurrent }
         let next = try Self.stored(envelope: envelope, keys: keys, now: now)
         return try await core.activate(next)
     }
@@ -69,6 +73,10 @@ actor OnePieceCatalogReleaseStore {
 
     func validateEnvelope(_ envelope: OnePieceCatalogReleaseEnvelope, now: Date = .now) async throws -> Int {
         await load(now: now)
+        if let previous = await core.activeRelease, now >= previous.release.verifiedAt,
+           previous.envelope == envelope {
+            return previous.release.release.revision
+        }
         let next = try Self.stored(envelope: envelope, keys: keys, now: now)
         if let previous = await core.activeRelease {
             guard next.release.release.revision >= previous.release.release.revision else {
