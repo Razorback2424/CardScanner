@@ -44,7 +44,10 @@ enum CardCenteringExport {
                 notes.append("Boundary uncertainty is unknown. Spatial variation is not an accuracy interval.")
             }
         }
-        return notes + measurement.warnings
+        // Use the same review-aware detector notes as the screen. Keep the
+        // geometry warnings separately from the cached detector messages.
+        let geometryWarnings = measurement.warnings.filter { !measurement.detectionNotes.contains($0) }
+        return notes + measurement.activeDetectionNotes + geometryWarnings
     }
 
     /// Guide colours, matched to what the on-screen overlay draws so the export

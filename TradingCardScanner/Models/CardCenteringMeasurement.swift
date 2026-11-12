@@ -855,6 +855,31 @@ enum CardCenteringReviewState: String, Codable, Equatable {
     case userConfirmed = "user_confirmed"
 }
 
+enum CardCenteringDetectionNote {
+    static let visionFailed = "Automatic rectangle detection failed. Check the outer guides before reading the result."
+    static let outlineNotFound = "The card outline could not be found automatically — check the outer guides before reading the result."
+    static let angledPhoto = "The card's side edges are not parallel or could not be compared reliably — the photo may be angled, so the centering reading may not be reliable."
+    static let stronglyRotated = "The card looks strongly rotated. Straighten the photo and load it again for an accurate reading."
+    static let borderEdgesNotFollowed = "The border edges could not be followed confidently — check all four guides before reading the result."
+    static let curvedPrintedBorder = "The printed border curves in this photo. The straight guides are an approximation; a flatter photo may give a better reading."
+    static let noGradeableInnerReference = "No gradeable inner reference was found — adjust the inner guides manually before reading the result."
+    static let nativeRefinementUnsupported = "Native edge refinement was not supported. The original guides still need review."
+    private static let edgeShadowOverlapPrefix = "Card edge and shadow may overlap on the "
+
+    static func edgeShadowOverlap(sides: [String]) -> String {
+        "\(edgeShadowOverlapPrefix)\(sides.joined(separator: ", ")) side. Review those outer guides using Card edge detail."
+    }
+
+    static func isResolvedByReview(_ note: String) -> Bool {
+        switch note {
+        case visionFailed, outlineNotFound, borderEdgesNotFollowed, noGradeableInnerReference, nativeRefinementUnsupported:
+            return true
+        default:
+            return note.hasPrefix(edgeShadowOverlapPrefix)
+        }
+    }
+}
+
 /// Numeric confidence is deliberately decomposed into the evidence that made
 /// it up. A single opaque score would make a decline impossible to audit.
 struct CardCenteringConfidence: Codable, Equatable {
@@ -958,16 +983,12 @@ struct CardCenteringMeasurement: Equatable {
     var outer: CardCenteringEdges { outerQuad.projectedEdges }
     var inner: CardCenteringEdges { innerQuad?.projectedEdges ?? outerQuad.projectedEdges }
     var warnings: [String]
-    /// What the detector could not establish for itself, set once when the
-    /// measurement is made.
-    ///
-    /// Kept separate from `warnings` because those are recomputed from the
-    /// guide positions every time one is dragged, and a note about how the
-    /// guides were *found* must survive that. Without it a fallback reading
-    /// looks exactly like a confident one: the numbers stay self-consistent, so
-    /// the geometry checks below pass and the screen states a ratio it has no
-    /// grounds for.
+    /// The detector's original notes, retained through guide edits and review.
     var detectionNotes: [String] = []
+    var activeDetectionNotes: [String] {
+        guard reviewState == .userConfirmed else { return detectionNotes }
+        return detectionNotes.filter { !CardCenteringDetectionNote.isResolvedByReview($0) }
+    }
     /// Immutable evidence for the automatic proposal, not the person's later
     /// edited geometry and not a calibrated physical accuracy interval.
     var nativeRefinementEvidence: [CardCenteringNativeSideEvidence]? = nil
@@ -1104,33 +1125,15 @@ struct CardCenteringMeasurement: Equatable {
             return "Place valid inner guides inside the card edges before confirming both frames."
         }
         guard reviewState == .pending else { return nil }
-        guard referenceDefinition.isAvailable else {
-            return "Check both frames, then choose the printed reference the cyan guides follow."
-        }
         return reviewReason ?? confidence.reason
-            ?? "The detector placed starting outer and inner frames. Confirm or adjust both before reading centering."
+            ?? "Check the red and cyan guides, then confirm both frames."
     }
 
     var hasValidFrameGeometry: Bool {
         guard imageWidth > 0, imageHeight > 0, let inner = geometryInnerQuad else { return false }
         let outer = geometryOuterQuad
-        func cross(_ a: CardCenteringPoint, _ b: CardCenteringPoint, _ p: CardCenteringPoint) -> Double {
-            (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x)
-        }
-        func isConvex(_ quad: CardCenteringQuad) -> Bool {
-            let points = quad.points
-            guard points.allSatisfy({
-                $0.x.isFinite && $0.y.isFinite && $0.x >= 0 && $0.y >= 0
-                    && $0.x <= Double(imageWidth) && $0.y <= Double(imageHeight)
-            }) else { return false }
-            let turns = (0..<4).map { cross(points[$0], points[($0 + 1) % 4], points[($0 + 2) % 4]) }
-            // Clockwise winding alone also accepts two inverted axes. Named
-            // side midpoints must still run left-to-right and top-to-bottom.
-            return turns.allSatisfy { $0 > .ulpOfOne }
-                && quad.topLeft.x + quad.bottomLeft.x < quad.topRight.x + quad.bottomRight.x
-                && quad.topLeft.y + quad.topRight.y < quad.bottomLeft.y + quad.bottomRight.y
-        }
-        guard isConvex(outer), isConvex(inner) else { return false }
+        guard outer.hasValidCorners(imageWidth: imageWidth, imageHeight: imageHeight),
+              inner.hasValidCorners(imageWidth: imageWidth, imageHeight: imageHeight) else { return false }
         if let rectification {
             let coefficients = rectification.coefficients
             guard rectification.isNumericallyValid,
@@ -1142,11 +1145,9 @@ struct CardCenteringMeasurement: Equatable {
             return false
         }
         let points = outer.points
-        let clockwise = cross(points[0], points[1], points[2]) > 0
         guard inner.points.allSatisfy({ point in
             (0..<4).allSatisfy { index in
-                let side = cross(points[index], points[(index + 1) % 4], point)
-                return clockwise ? side > .ulpOfOne : side < -.ulpOfOne
+                CardCenteringQuad.cross(points[index], points[(index + 1) % 4], point) > .ulpOfOne
             }
         }) else { return false }
         let distances = measurementBorderDistances(to: inner)
@@ -1204,7 +1205,7 @@ struct CardCenteringMeasurement: Equatable {
 
     mutating func invalidateFrameConfirmationForPhotoRotation() {
         reviewState = .pending
-        reviewReason = "The photo moved beneath the guides. Realign and confirm both frames before reading centering."
+        reviewReason = "The photo moved beneath the guides. Realign and confirm both frames before sharing."
         refreshWarnings()
     }
 
@@ -1287,8 +1288,14 @@ struct CardCenteringMeasurement: Equatable {
         return Self.centeringString(pair.firstPercentage,pair.secondPercentage)
     }
 
+    /// A screen preview of the current guides before the user confirms them.
+    func unconfirmedCentering(horizontal: Bool) -> String {
+        guard hasValidFrameGeometry, let pair = centeringPair(horizontal: horizontal) else { return "—" }
+        return Self.centeringString(pair.firstPercentage, pair.secondPercentage)
+    }
+
     mutating func refreshWarnings() {
-        var updated: [String] = detectionNotes
+        var updated = activeDetectionNotes
         if reviewState == .pending, let reason = reviewReason ?? confidence.reason ?? declineReason,
            !updated.contains(reason) {
             updated.append(reason)
@@ -1368,7 +1375,7 @@ struct CardCenteringMeasurement: Equatable {
         hasManualGuideEdits = true
         if !hasValidFrameGeometry { reviewState = .pending }
         if reviewState == .pending {
-            reviewReason = "Confirm both outer and inner frames before reading centering."
+            reviewReason = "Confirm both outer and inner frames before sharing."
         }
     }
 
@@ -1425,6 +1432,40 @@ enum CardCenteringGuideEnd: Hashable {
 }
 
 extension CardCenteringQuad {
+    enum Corner: CaseIterable {
+        case topLeft, topRight, bottomRight, bottomLeft
+
+        fileprivate var keyPath: WritableKeyPath<CardCenteringQuad, CardCenteringPoint> {
+            switch self {
+            case .topLeft: \.topLeft
+            case .topRight: \.topRight
+            case .bottomRight: \.bottomRight
+            case .bottomLeft: \.bottomLeft
+            }
+        }
+    }
+
+    subscript(corner: Corner) -> CardCenteringPoint {
+        get { self[keyPath: corner.keyPath] }
+        set { self[keyPath: corner.keyPath] = newValue }
+    }
+
+    fileprivate static func cross(_ a: CardCenteringPoint, _ b: CardCenteringPoint, _ point: CardCenteringPoint) -> Double {
+        (b.x - a.x) * (point.y - a.y) - (b.y - a.y) * (point.x - a.x)
+    }
+
+    fileprivate func hasValidCorners(imageWidth: Int, imageHeight: Int) -> Bool {
+        let points = self.points
+        guard points.allSatisfy({
+            $0.x.isFinite && $0.y.isFinite && $0.x >= 0 && $0.y >= 0
+                && $0.x <= Double(imageWidth) && $0.y <= Double(imageHeight)
+        }) else { return false }
+        // Keep the quad convex and its named sides in order.
+        return (0..<4).allSatisfy { Self.cross(points[$0], points[($0 + 1) % 4], points[($0 + 2) % 4]) > .ulpOfOne }
+            && topLeft.x + bottomLeft.x < topRight.x + bottomRight.x
+            && topLeft.y + topRight.y < bottomLeft.y + bottomRight.y
+    }
+
     /// A side's endpoints in reading order.
     func segment(_ side: CardCenteringSide) -> (start: CardCenteringPoint, end: CardCenteringPoint) {
         switch side {
@@ -1502,11 +1543,35 @@ extension CardCenteringMeasurement {
     /// The most one card-edge side may turn in a single edit.
     static let maximumOuterTurnDegrees = 10.0
 
-    func segment(for guide: CardCenteringGuide) -> (start: CardCenteringPoint, end: CardCenteringPoint)? {
-        switch guide.frame {
-        case .outer: geometryOuterQuad.segment(guide.side)
-        case .inner: geometryInnerQuad?.segment(guide.side)
+    func guideQuad(for frame: CardCenteringGuide.Frame) -> CardCenteringQuad? {
+        switch frame {
+        case .outer: geometryOuterQuad
+        case .inner: geometryInnerQuad
         }
+    }
+
+    func segment(for guide: CardCenteringGuide) -> (start: CardCenteringPoint, end: CardCenteringPoint)? {
+        guideQuad(for: guide.frame)?.segment(guide.side)
+    }
+
+    /// Move one vertex in working-image pixels. Each frame can be repaired
+    /// independently while the existing confirmation checks guard the ratios.
+    @discardableResult
+    mutating func moveCorner(_ corner: CardCenteringQuad.Corner, of frame: CardCenteringGuide.Frame,
+                             to point: CardCenteringPoint) -> Bool {
+        guard !hasObservedPaths, var edited = guideQuad(for: frame) else { return false }
+        if edited[corner] == point { return true }
+        edited[corner] = point
+        guard edited.hasValidCorners(imageWidth: imageWidth, imageHeight: imageHeight) else { return false }
+        if !usesQuadGeometry {
+            usesQuadGeometry = true
+            if frame == .inner { rectification = CardCenteringRectification(outerQuad: outerQuad) }
+        }
+        switch frame {
+        case .outer: applyOuterEdit(edited)
+        case .inner: applyInnerEdit(edited)
+        }
+        return true
     }
 
     func borderDistance(_ side: CardCenteringSide) -> Double {
@@ -1542,11 +1607,12 @@ extension CardCenteringMeasurement {
         innerEdgeTiltDegrees.map { $0.reduce(0, +) / Double($0.count) }
     }
 
-    /// A rigidly tilted rectangle can use the familiar square detent. A frame
-    /// with independently fitted/edited slopes must never be flattened by it.
+    static let innerTiltEpsilonDegrees = 1e-7
+
+    /// Whether the inner sides have different angles relative to the card edges.
     var innerFrameHasIndependentSlopes: Bool {
         guard let angles = innerEdgeTiltDegrees, let minimum = angles.min(), let maximum = angles.max() else { return false }
-        return maximum - minimum > 1e-7
+        return maximum - minimum > Self.innerTiltEpsilonDegrees
     }
 
     /// Presentation of the existing five positional samples. This is border

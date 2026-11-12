@@ -53,7 +53,7 @@ enum CardCenteringReferenceDefinition: String, Codable, CaseIterable {
 #endif
         case .userPrintedBorder: "Printed border"
         case .userArtwork: "Artwork frame"
-        case .userOther: "Other reference"
+        case .userOther: "Confirmed frames"
         }
     }
     var role: CardCenteringBoundaryRole {
@@ -69,7 +69,10 @@ enum CardCenteringReferenceDefinition: String, Codable, CaseIterable {
         }
     }
     var reportNote: String {
-        isUserSelected
+        if self == .userOther {
+            return "Geometric estimate from the frames you confirmed. Design asymmetry may be intentional; this is not a grading assessment."
+        }
+        return isUserSelected
             ? "Geometric estimate · \(label.lowercased()) chosen by you. Design asymmetry may be intentional; this is not a grading assessment."
             : "Reference: \(label). Guided estimate, not a grading assessment."
     }

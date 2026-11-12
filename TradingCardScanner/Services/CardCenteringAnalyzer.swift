@@ -1500,17 +1500,17 @@ enum CardCenteringAnalyzer {
         }
         var notes: [String] = []
         if Self.activeEvidence?.visionFailure != nil {
-            notes.append("Automatic rectangle detection failed. Check the outer guides before reading the result.")
+            notes.append(CardCenteringDetectionNote.visionFailed)
         }
         if outline == nil {
             // The gradient scan below is a guess in exactly the conditions that
             // defeat the outline: a card that does not stand out from what it is
             // lying on, or one bled to the edges of the frame. Say so, rather
             // than letting a guess wear the same face as a measurement.
-            notes.append("The card outline could not be found automatically — check the outer guides before reading the result.")
+            notes.append(CardCenteringDetectionNote.outlineNotFound)
         }
         if let outline, !outline.edgesAreParallel {
-            notes.append("The card's side edges are not parallel or could not be compared reliably — the photo may be angled, so the centering reading may not be reliable.")
+            notes.append(CardCenteringDetectionNote.angledPhoto)
         }
 
         // Past the correctable range this is no longer a lean to be taken out;
@@ -1518,7 +1518,7 @@ enum CardCenteringAnalyzer {
         // be a guess. Rotation on this screen is a display adjustment and does
         // not re-run detection, so the person has to straighten the source.
         if let skew = outline?.skewDegrees, abs(skew) > maximumCorrectableSkew {
-            notes.append("The card looks strongly rotated. Straighten the photo and load it again for an accurate reading.")
+            notes.append(CardCenteringDetectionNote.stronglyRotated)
         }
 
         let outer = outline?.edges ?? scalar?.outer ?? CardCenteringEdges(
@@ -1530,7 +1530,7 @@ enum CardCenteringAnalyzer {
         if outline?.usesVision == false || outline == nil,
            scalar?.pinned == true,
            notes.isEmpty {
-            notes.append("The border edges could not be followed confidently — check all four guides before reading the result.")
+            notes.append(CardCenteringDetectionNote.borderEdgesNotFollowed)
         }
 
         let automaticRotation = correctingSkew
@@ -1764,7 +1764,7 @@ enum CardCenteringAnalyzer {
             detectedInnerSupport = profileInnerResult.support
             innerSource = .profile
             if profileInnerResult.hasCurvedEdge {
-                notes.append("The printed border curves in this photo. The straight guides are an approximation; a flatter photo may give a better reading.")
+                notes.append(CardCenteringDetectionNote.curvedPrintedBorder)
             }
         } else if let innerQuad = outline?.innerQuad {
             detectedInnerQuad = innerQuad
@@ -1819,7 +1819,7 @@ enum CardCenteringAnalyzer {
         }
 #endif
         if detectedInnerQuad == nil, !notes.contains(where: { $0.contains("inner reference") }) {
-            notes.append("No gradeable inner reference was found — adjust the inner guides manually before reading the result.")
+            notes.append(CardCenteringDetectionNote.noGradeableInnerReference)
         }
         var nativeEvidence: [CardCenteringNativeSideEvidence]? = nil
         try Task.checkCancellation()
@@ -1853,10 +1853,10 @@ enum CardCenteringAnalyzer {
             }
             let ambiguousSides = refined.evidence.filter { $0.alternativeSeparationNativePixels != nil && $0.frame == "outer" }.map(\.side)
             if !ambiguousSides.isEmpty {
-                notes.append("Card edge and shadow may overlap on the \(ambiguousSides.joined(separator: ", ")) side. Review those outer guides using Card edge detail.")
+                notes.append(CardCenteringDetectionNote.edgeShadowOverlap(sides: ambiguousSides))
             }
             if refined.inner == nil {
-                notes.append("Native edge refinement was not supported. The original guides still need review.")
+                notes.append(CardCenteringDetectionNote.nativeRefinementUnsupported)
             }
         }
 #endif

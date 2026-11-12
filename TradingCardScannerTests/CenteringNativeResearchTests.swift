@@ -319,7 +319,7 @@ import XCTest
         let export = CardCenteringExport.render(image:picture,measurement:reviewed,rotationDegrees:0)
         let rendered = XCTAttachment(image:export); rendered.name = "spinerock-curved-export"; rendered.lifetime = .keepAlways; add(rendered)
         let canvas = CardCenteringCanvas(image:picture,measurement:reviewed,rotationDegrees:0,imageRevision:1,
-            lumaField:nil,selection:.constant(nil),onBeginEdit:{},onEdit:{_ in},onAccessibilityNudge:{_ in})
+            selection:.constant(nil),onBeginEdit:{},onEdit:{_ in},onAccessibilityNudge:{_ in})
             .frame(width:390,height:720)
         let renderer = ImageRenderer(content:canvas)
         renderer.scale = 2

@@ -29,6 +29,6 @@ Two features span several directories; start from all of these files (`.swift` u
 | Feature | Models | Services | Views |
 | --- | --- | --- | --- |
 | Scanner acceptance | `CardVariant`, `ResolvedCatalogCard`, `ScanSubjectMode` | `CardScanner`, `CardCatalog`, `CardLatch`, `VariantResolver` (plus the game's recognition adapter) | `ScannerViewModel`, `ScannerView`, `ScanReviewSheet` |
-| Card centering | `CardCenteringMeasurement`, `CardCenteringSpatialMeasurement`, `CardCenteringBoundaryEvidence` | `CardCenteringAnalyzer`, `CardCenteringEdgeSnapper`, `CardCenteringPixelKernels.c`, `CardCenteringExport`, `CardCenteringReviewRenderer` | `CardCenteringView`, `CardCenteringCanvas`, `CardCenteringReviewSheet`, `CenteringCameraView` |
+| Card centering | `CardCenteringMeasurement`, `CardCenteringSpatialMeasurement`, `CardCenteringBoundaryEvidence` | `CardCenteringAnalyzer`, `CardCenteringPixelKernels.c`, `CardCenteringExport`, `CardCenteringReviewRenderer` | `CardCenteringView`, `CardCenteringCanvas`, `CardCenteringReviewSheet`, `CenteringCameraView` |
 
 Centering research and acceptance evidence live in [`review/`](../review/AGENTS.md).

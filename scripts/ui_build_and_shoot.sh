@@ -73,6 +73,9 @@ if [[ "$ROUTE" == Centering* ]]; then
   if [[ "${UI_CENTERING_CONFIRM_FRAMES:-0}" == "1" ]]; then
     LAUNCH_ARGS+=("-ui_debug_confirm_frames")
   fi
+  if [[ -n "${UI_CENTERING_SELECTION:-}" ]]; then
+    LAUNCH_ARGS+=("-ui_debug_selection" "$UI_CENTERING_SELECTION")
+  fi
   if [[ -n "${UI_CENTERING_REVIEW_MODE:-}" ]]; then
     LAUNCH_ARGS+=("-ui_debug_review" "$UI_CENTERING_REVIEW_MODE")
   fi

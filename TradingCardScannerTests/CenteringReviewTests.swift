@@ -49,7 +49,7 @@ final class CenteringReviewTests: XCTestCase {
             outerQuad: outer, innerQuad: inner, warnings: [])
         var photoFrame: CGRect?
         let canvas = CardCenteringCanvas(image: photo(), measurement: value,
-            rotationDegrees: 0, imageRevision: 0, lumaField: nil,
+            rotationDegrees: 0, imageRevision: 0,
             selection: .constant(nil), onBeginEdit: {}, onEdit: { _ in },
             onAccessibilityNudge: { _ in }, onFrameChange: { photoFrame = $0 })
             .frame(width: 300, height: 420)
