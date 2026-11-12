@@ -386,7 +386,9 @@ final class MagicHistoricalRecognitionTests: XCTestCase {
                                        ("Æther Vial", "Aether Vial")] {
             let card = liveCard(providerName)
             MagicHistoricalTestProtocol.handler = { request in
-                let query = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems?.first(where: { $0.name == "q" })?.value
+                let items = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems
+                let query = items?.first(where: { $0.name == "q" })?.value
+                XCTAssertEqual(items?.first(where: { $0.name == "include_variations" })?.value, "true")
                 let searchTitle = title.replacingOccurrences(of: "\"", with: "")
                 XCTAssertEqual(query, "!\"\(searchTitle)\" lang:en game:paper date<2014-07-18")
                 return try self.page([card])
@@ -555,10 +557,104 @@ final class MagicHistoricalRecognitionTests: XCTestCase {
         XCTAssertEqual(saved.count, 1)
         XCTAssertEqual(saved.first?.providerID, card["id"] as? String)
         XCTAssertEqual(saved.first?.quantity, 1)
-        XCTAssertEqual(requests.count("/cards/search") - searchesBeforeSelection, 2,
-            "Selection and acquisition each validate once; exclusive-write retry must not search again")
+        XCTAssertEqual(requests.count("/cards/search") - searchesBeforeSelection, 1,
+            "The displayed family supplies selection evidence; only the pre-write check searches again")
         XCTAssertEqual(requests.count("/cards/\(choices[0].id)") - cardsBeforeSelection, 1)
         XCTAssertEqual(requests.count("write"), 2)
+    }
+
+    func testHistoricalPreWriteRejectsAChangedFinishForTheSameUUID() async throws {
+        let card = liveCard()
+        MagicHistoricalTestProtocol.handler = { request in
+            if request.url?.path == "/cards/search" { return try self.page([card]) }
+            return try JSONSerialization.data(withJSONObject: card)
+        }
+        let adapter = liveAdapter()
+        let catalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [adapter]))
+        let identifier = try liveEvidence().identifier()
+        guard case let .needsPrintingChoice(_, choices) = try await catalog.lookupOutcome(for: identifier) else {
+            return XCTFail("Expected historical printing choice")
+        }
+        let confirmed = try identifier.confirmingMagicEnglish()
+        let selected = try await catalog.resolvePrintingChoice(choices[0], for: confirmed)
+        MagicHistoricalTestProtocol.handler = { _ in
+            try self.page([card.merging(["finishes": ["etched"]]) { _, new in new }])
+        }
+        do {
+            try await catalog.validateAcquisition(confirmed, printingID: selected.card.physicalPrintingID,
+                automatic: false, resolvedCard: selected.card)
+            XCTFail("A changed finish must return to lookup even when the UUID is unchanged")
+        } catch CatalogLookupError.invalidPrintingChoice {}
+    }
+
+    @MainActor
+    func testModernMagicSharedFooterRequiresExactPrintingBeforeWriting() async throws {
+        let identifier = ScanIdentifier.magic(setCode: "2X2", collectorNumber: "208", language: "en")
+        let family = try XCTUnwrap(MagicPrintingFamily.matching(identifier))
+        let original = "c0728027-a1ec-4814-87c4-10c3baced0e0"
+        let reprint = "a31dc734-a19d-4d45-a8e1-9fb7932a1461"
+        XCTAssertEqual(family.members.map(\.id), [original, reprint])
+        let responses: [String: [String: Any]] = Dictionary(uniqueKeysWithValues: family.members.map { member in
+            (member.id, ["object": "card", "id": member.id, "oracle_id": family.oracleID,
+                "name": "Elsha of the Infinite", "set": member.setCode, "collector_number": member.collectorNumber,
+                "set_name": member.id == original ? "Double Masters 2022" : "The List", "lang": "en",
+                "digital": false, "oversized": false, "games": ["paper"], "layout": "normal",
+                "released_at": "2024-08-02", "finishes": member.id == original ? ["nonfoil", "foil"] : ["nonfoil"]])
+        })
+        let requests = MagicHistoricalRequestRecorder()
+        MagicHistoricalTestProtocol.handler = { request in
+            let path = request.url?.path ?? ""
+            requests.record(path)
+            if path == "/cards/collection" {
+                XCTAssertEqual(request.httpMethod, "POST")
+                return try JSONSerialization.data(withJSONObject: ["data": [responses[reprint]!, responses[original]!]])
+            }
+            guard path == "/cards/\(reprint)" else {
+                XCTFail("Scanner must never ask the single-card footer endpoint for this family")
+                throw ScryfallError.cardNotFound
+            }
+            return try JSONSerialization.data(withJSONObject: responses[reprint]!)
+        }
+        let catalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [liveAdapter()]))
+        let schema = Schema([CollectedCard.self, PriceRecord.self, CollectionActivity.self, InventoryEvent.self,
+                             ReferenceQuote.self, PriceObservation.self, PriceCheckDay.self])
+        let container = try ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let recovery = FileManager.default.temporaryDirectory.appendingPathComponent("Modern-Magic-\(UUID()).json")
+        defer { try? FileManager.default.removeItem(at: recovery) }
+        let model = ScannerViewModel(scanner: CardScanner(), catalog: catalog,
+            unresolvedScanStore: UnresolvedScanStore(fileURL: recovery), collectionAddOverride: { candidate in
+                XCTAssertEqual(candidate.identityResolution, .userSelectedPrinting)
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                return try await writer.add(candidate)
+            })
+        model.start(context: container.mainContext, isSceneActive: true, startCamera: false, shouldRefreshMagicDirectory: false)
+        defer { model.viewDisappeared() }
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), ScanSubject(identifier: identifier), nil)
+        for _ in 0..<600 where model.pendingIdentityChoice == nil { try await Task.sleep(for: .milliseconds(5)) }
+        let choice = try XCTUnwrap(model.pendingIdentityChoice)
+        XCTAssertEqual(choice.displayCandidates.map(\.id), [original, reprint])
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        model.choose(try XCTUnwrap(choice.displayCandidates.last))
+        for _ in 0..<600 where model.recent.isEmpty { try await Task.sleep(for: .milliseconds(5)) }
+        let saved = try container.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(saved.map(\.providerID), [reprint])
+        XCTAssertEqual(saved.map(\.variantID), ["nonfoil"])
+        XCTAssertEqual(requests.count("/cards/collection"), 1)
+        XCTAssertEqual(requests.count("/cards/\(reprint)"), 1)
+    }
+
+    func testModernMagicIncompleteFamilyNeverFallsBackToOriginal() async throws {
+        let identifier = ScanIdentifier.magic(setCode: "FIN", collectorNumber: "544", language: "en")
+        let family = try XCTUnwrap(MagicPrintingFamily.matching(identifier))
+        XCTAssertEqual(family.members.map(\.label), ["Back says Flare Star", "Back says Flame Star"])
+        MagicHistoricalTestProtocol.handler = { request in
+            XCTAssertEqual(request.url?.path, "/cards/collection")
+            return try JSONSerialization.data(withJSONObject: ["data": []])
+        }
+        do {
+            _ = try await liveAdapter().lookup(identifier)
+            XCTFail("An incomplete family cannot authorize the base printing")
+        } catch CatalogLookupError.catalogIncomplete {}
     }
 
     func testGeneralHistoricalTitleOnlyOldFramesLayoutsAndOCRNumberCorrection() async throws {

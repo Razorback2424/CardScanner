@@ -16,6 +16,7 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
     var historicalEnabled = false
     var historicalNow: @Sendable () -> Date = { .now }
     var resolvedCache: ResolvedMagicCardCache? = nil
+    private let historicalFamilies = MagicHistoricalFamilies()
 
     func prepareLookupIdentifier(_ identifier: ScanIdentifier) throws -> ScanIdentifier {
         guard identifier.game == game,
@@ -42,10 +43,20 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
         try prepareLookupIdentifier(identifier)
     }
 
+    func cachesResolvedLookup(for identifier: ScanIdentifier) -> Bool {
+        guard case let .magic(_, _, _, kind) = identifier.legacyIdentity else { return true }
+        // Ordinary printings already have a shared, expiring cache. An outage
+        // fallback must earn a fresh lookup when the provider comes back.
+        return kind != .regular
+    }
+
     func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome {
         let prepared = try prepareLookupIdentifier(identifier)
         if prepared.namespace == "historical-live" { return try await liveHistoricalLookup(prepared) }
         if prepared.namespace == "historical" { return try await historicalLookup(prepared) }
+        if let family = try MagicPrintingFamily.matching(prepared) {
+            return try await modernPrintingChoices(family, identifier: prepared)
+        }
         guard case let .magic(setCode, collectorNumber, language, contentKind) = prepared.legacyIdentity else {
             throw CatalogLookupError.invalidAdapterOutcome
         }
@@ -54,24 +65,35 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
     }
 
     func resolve(_ candidate: PhysicalPrintingCandidate, for identifier: ScanIdentifier) async throws -> CardCatalog.CatalogResolution {
+        let prepared = try prepareLookupIdentifier(identifier)
         if identifier.namespace == "historical-live" {
-            let prepared = try prepareLookupIdentifier(identifier)
             let evidence = try MagicHistoricalLiveEvidence.decode(prepared)
             guard evidence.englishConfirmed else { throw CatalogLookupError.invalidPrintingChoice }
-            let family = try await liveHistoricalFamily(evidence)
+            let family: [ScryfallCard]
+            if let presented = await historicalFamilies.presented(for: evidence) {
+                family = presented
+            } else {
+                family = try await liveHistoricalFamily(evidence)
+            }
             guard let member = family.first(where: { $0.id == candidate.id }),
                   candidate == liveHistoricalCandidate(member, evidence: evidence) else { throw CatalogLookupError.invalidPrintingChoice }
             let card = try await source.fetchCard(id: member.id, ignoringCache: true)
             guard Self.validHistoricalCard(card, evidence: evidence, now: historicalNow()),
-                  card.id == member.id, card.oracleID == member.oracleID, card.setID == member.setID,
-                  card.setCode == member.setCode, card.collectorNumber == member.collectorNumber,
-                  card.name == member.name, card.layout == member.layout, card.releasedAt == member.releasedAt,
-                  Set(card.finishes ?? []) == Set(member.finishes ?? []) else { throw ScryfallError.identityMismatch }
+                  Self.sameHistoricalPrinting(card, member) else { throw ScryfallError.identityMismatch }
             try Task.checkCancellation()
             return .init(.init(legacy: .magic(card), canonicalCardID: card.oracleID))
         }
+        if let family = try MagicPrintingFamily.matching(prepared) {
+            guard let member = family.members.first(where: { $0.id == candidate.id }),
+                  candidate.game == .magic, candidate.language == "en", candidate.catalogGeneration == generation,
+                  candidate.canonicalCardID == family.oracleID, candidate.printedIdentifier == member.collectorNumber,
+                  candidate.distributionLabel == member.label else { throw CatalogLookupError.invalidPrintingChoice }
+            let card = try await source.fetchCard(id: member.id, ignoringCache: true)
+            try validate(card, as: member, in: family)
+            try Task.checkCancellation()
+            return .init(.init(legacy: .magic(card), canonicalCardID: family.oracleID))
+        }
         guard identifier.namespace == "historical" else { throw CatalogLookupError.invalidPrintingChoice }
-        let prepared = try prepareLookupIdentifier(identifier)
         let evidence = try MagicHistoricalScanEvidence.decode(prepared)
         let query = try await historicalQuery(prepared)
         guard evidence.permitsEnglishAcquisition,
@@ -79,6 +101,42 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
               candidate == historicalCandidate(record, evidence: evidence),
               candidate.catalogGeneration == generation else { throw CatalogLookupError.invalidPrintingChoice }
         return try await hydrateHistorical(record, identifier: prepared, automatic: false)
+    }
+
+    private func modernPrintingChoices(_ family: MagicPrintingFamily, identifier: ScanIdentifier) async throws -> CatalogLookupOutcome {
+        let cards = try await source.fetchCards(identifiers: family.members.map { .init(id: $0.id) })
+        let byID = Dictionary(grouping: cards, by: \.id)
+        guard cards.count == family.members.count, let name = cards.first?.name else {
+            throw CatalogLookupError.catalogIncomplete(nil)
+        }
+        let candidates = try family.members.map { member in
+            guard let matches = byID[member.id], matches.count == 1, let card = matches.first else {
+                throw CatalogLookupError.catalogIncomplete(nil)
+            }
+            try validate(card, as: member, in: family)
+            let reverseImage = member.useReverse == true && (card.cardFaces?.count ?? 0) > 1
+                ? card.cardFaces?.last?.imageURIs : nil
+            return PhysicalPrintingCandidate(id: card.id, game: .magic, canonicalCardID: family.oracleID,
+                language: card.language, catalogGeneration: generation, name: card.name,
+                printedIdentifier: card.collectorNumber, releaseLabel: card.setName,
+                distributionLabel: member.label, releaseDate: card.releaseDate,
+                thumbnailURL: reverseImage?.normal ?? reverseImage?.small ?? card.thumbnailImageURL,
+                distinctionLabels: [card.setCode.uppercased(), card.collectorNumber])
+        }
+        try Task.checkCancellation()
+        return .needsPrintingChoice(canonical: .init(id: family.oracleID, game: .magic, name: name,
+            printedIdentifier: identifier.displayIdentifier, language: "en"), candidates: candidates)
+    }
+
+    private func validate(_ card: ScryfallCard, as member: MagicPrintingFamily.Member, in family: MagicPrintingFamily) throws {
+        guard card.object == "card", card.id == member.id, card.oracleID == family.oracleID,
+              card.setCode == member.setCode, card.collectorNumber == member.collectorNumber,
+              card.language == "en", !card.digital, card.games?.contains("paper") == true,
+              card.oversized == false, let finishes = card.finishes, !finishes.isEmpty,
+              Set(finishes).count == finishes.count, Set(finishes).isSubset(of: ["nonfoil", "foil", "etched"]) else {
+            throw ScryfallError.identityMismatch
+        }
+        try source.validateSupported(card)
     }
 
     func lookupPrintingChoices(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome? {
@@ -100,12 +158,7 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
 
     func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {
         if identifier.namespace == "historical-live" {
-            let evidence = try MagicHistoricalLiveEvidence.decode(prepareLookupIdentifier(identifier))
-            // Title/number retrieval cannot automatically select an old printing.
-            guard !automatic, evidence.englishConfirmed,
-                  try await liveHistoricalFamily(evidence).contains(where: { $0.id == printingID }) else {
-                throw CatalogLookupError.invalidPrintingChoice
-            }
+            _ = try await currentHistoricalPrinting(identifier, printingID: printingID, automatic: automatic)
             return
         }
         guard identifier.namespace == "historical" else { return }
@@ -125,6 +178,36 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
             let rechecked = try await historicalQuery(identifier)
             guard rechecked.universeIsCurrent else { throw CatalogLookupError.catalogIncomplete(nil) }
         }
+    }
+
+    func validateAcquisition(_ identifier: ScanIdentifier, resolvedCard: IdentifiedCard, automatic: Bool) async throws {
+        guard identifier.namespace == "historical-live" else {
+            return try await validateAcquisition(identifier, printingID: resolvedCard.physicalPrintingID, automatic: automatic)
+        }
+        let current = try await currentHistoricalPrinting(identifier, printingID: resolvedCard.physicalPrintingID, automatic: automatic)
+        guard case let .magic(selected) = resolvedCard.legacyIdentity,
+              Self.sameHistoricalPrinting(current, selected) else { throw CatalogLookupError.invalidPrintingChoice }
+    }
+
+    private func currentHistoricalPrinting(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws -> ScryfallCard {
+        let evidence = try MagicHistoricalLiveEvidence.decode(prepareLookupIdentifier(identifier))
+        guard !automatic, evidence.englishConfirmed else { throw CatalogLookupError.invalidPrintingChoice }
+        do {
+            guard let member = try await liveHistoricalFamily(evidence).first(where: { $0.id == printingID }) else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+            return member
+        } catch ScryfallError.cardNotFound {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+    }
+
+    private static func sameHistoricalPrinting(_ card: ScryfallCard, _ member: ScryfallCard) -> Bool {
+        card.id == member.id && card.oracleID == member.oracleID && card.setID == member.setID
+            && card.setCode == member.setCode && card.collectorNumber == member.collectorNumber
+            && card.name == member.name && card.layout == member.layout && card.releasedAt == member.releasedAt
+            && Set(card.finishes ?? []) == Set(member.finishes ?? [])
+            && card.magicTreatmentEvidence == member.magicTreatmentEvidence
     }
 
     private func historicalQuery(_ identifier: ScanIdentifier) async throws -> MagicHistoricalIndexSnapshot.Query {
@@ -178,6 +261,8 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
     private func liveHistoricalLookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome {
         let evidence = try MagicHistoricalLiveEvidence.decode(identifier)
         let family = try await liveHistoricalFamily(evidence)
+        try Task.checkCancellation()
+        await historicalFamilies.store(family, for: evidence)
         let groupID = Set(family.compactMap(\.oracleID)).count == 1 ? family[0].oracleID! : evidence.choiceGroupID
         return .needsPrintingChoice(canonical: .init(id: groupID, game: .magic,
             name: family[0].name, printedIdentifier: identifier.displayIdentifier, language: "en"),
@@ -334,6 +419,26 @@ struct MagicCatalogAdapter: GameCatalogAdapter {
             throw ScryfallError.identityMismatch
         }
         return CardCatalog.CatalogResolution(.magic(card))
+    }
+}
+
+/// The picker can reuse the exact pages it already presented. A new lookup
+/// still refreshes them, and the collection write checks current membership.
+private actor MagicHistoricalFamilies {
+    private var entries = BoundedCache<MagicHistoricalLiveEvidence, [ScryfallCard]>(capacity: 8)
+
+    func presented(for evidence: MagicHistoricalLiveEvidence) -> [ScryfallCard]? {
+        entries[lookupEvidence(evidence)]
+    }
+
+    func store(_ family: [ScryfallCard], for evidence: MagicHistoricalLiveEvidence) {
+        entries[lookupEvidence(evidence)] = family
+    }
+
+    private func lookupEvidence(_ evidence: MagicHistoricalLiveEvidence) -> MagicHistoricalLiveEvidence {
+        var key = evidence
+        key.englishConfirmed = false
+        return key
     }
 }
 

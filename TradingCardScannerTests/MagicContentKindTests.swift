@@ -7,6 +7,25 @@ import Foundation
 /// The bug these protect against is silent: scanning a Clue token added
 /// Invisible Woman, with no error and a plausible-looking result.
 final class MagicContentKindTests: XCTestCase {
+    func testBundledForgottenRealmsFamilyDistinguishesAllThreePromoProducts() throws {
+        let identifier = ScanIdentifier.magic(setCode: "AFR", collectorNumber: "0100", language: "en")
+        let family = try XCTUnwrap(MagicPrintingFamily.matching(identifier))
+        let choices = Dictionary(uniqueKeysWithValues: family.members.map { ($0.collectorNumber, $0.label) })
+        XCTAssertEqual(choices, ["100": "Original printing", "100a": "D&D ampersand foil",
+                                 "100p": "Promo Pack stamp", "100s": "Prerelease date stamp"])
+        XCTAssertNil(try MagicPrintingFamily.matching(.magic(setCode: "AFR", collectorNumber: "100", language: "fr")))
+        XCTAssertNil(try MagicPrintingFamily.matching(.magic(setCode: "AFR", collectorNumber: "100", language: "en", contentKind: .token)))
+    }
+
+    func testBundledSerializedPrintingUsesTheSharedPrintedNumber() throws {
+        let identifier = ScanIdentifier.magic(setCode: "MUL", collectorNumber: "0141", language: "en")
+        let family = try XCTUnwrap(MagicPrintingFamily.matching(identifier))
+        XCTAssertEqual(family.members.map(\.collectorNumber), ["141", "141z"])
+        XCTAssertEqual(family.members.last?.label, "Numbered serial stamp")
+        // The suffix on the serialized Traveling Chocobo is actually printed.
+        XCTAssertNil(try MagicPrintingFamily.matching(.magic(setCode: "FIN", collectorNumber: "551f", language: "en")))
+    }
+
     func testLateAlaraPrintingUsesOnlyItsReviewedModernFooter() {
         let adapter = MagicRecognitionAdapter(profile: .init(definitions: [.init(code: "DTK", printedSize: 264)]))
         let expected = GameRecognitionOutcome.identified(ScanSubject(identifier:
@@ -184,6 +203,43 @@ final class MagicContentKindTests: XCTestCase {
         _ = try await adapter.lookup(incomplete)
         _ = try await adapter.lookup(incomplete)
         XCTAssertEqual(recorder.paths.suffix(2), ["/cards/trk/24/en", "/cards/trk/24/en"])
+        await cache.waitForPersistence()
+    }
+
+    func testModernMagicSharedCatalogRechecksAnExpiredPrintingAfterAnOutage() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("MagicCatalogExpiry-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root); MagicAdapterTestProtocol.recorder = nil }
+        let recorder = MagicAdapterTestRecorder()
+        let id = "00000000-0000-4000-8000-000000000025"
+        recorder.setCardChanges(["id": id, "finishes": ["nonfoil", "foil"]])
+        MagicAdapterTestProtocol.recorder = recorder
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MagicAdapterTestProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let cache = ResolvedMagicCardCache(root: root)
+        let source = ScryfallService(breaker: TCGdexCircuitBreaker(cooldown: 0), session: session)
+        let catalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [MagicCatalogAdapter(source: source, resolvedCache: cache)]))
+        let identifier = ScanIdentifier.magic(setCode: "TRK", collectorNumber: "25", language: "en")
+        let initial = try await catalog.resolution(for: identifier)
+        let warm = try await catalog.resolution(for: identifier)
+        XCTAssertEqual(warm.path, .cacheHit)
+        XCTAssertEqual(recorder.paths.count, 1)
+
+        let oldDate = Date.now.addingTimeInterval(-ResolvedMagicCardCache.maxAge - 1)
+        let key = try XCTUnwrap(ScryfallService.cardLookupURL(setCode: "TRK", collectorNumber: "25", language: "en")).absoluteString
+        guard case let .magic(oldCard) = initial.card.legacyIdentity else { return XCTFail("Magic payload") }
+        await cache.store(oldCard, for: key, retrievedAt: oldDate)
+        recorder.setFailure(.notConnectedToInternet)
+        let offline = try await catalog.resolution(for: identifier)
+        XCTAssertEqual(offline.retrievedAt, oldDate)
+        XCTAssertEqual(offline.path, .cacheHit)
+
+        recorder.setFailure(nil)
+        recorder.setCardChanges(["id": id, "finishes": ["foil"]])
+        let recovered = try await catalog.resolution(for: identifier)
+        XCTAssertEqual(recovered.card.variantEvidence.catalogVariants, [.foil])
+        XCTAssertEqual(recorder.paths.count, 3)
         await cache.waitForPersistence()
     }
 

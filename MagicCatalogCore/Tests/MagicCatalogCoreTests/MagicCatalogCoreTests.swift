@@ -126,6 +126,17 @@ final class MagicCatalogCoreTests: XCTestCase {
         XCTAssertEqual(result.report.routingProjectionChangedCodes, ["AABC", "TABC"])
     }
 
+    func testCollectibleEditionsAreBrowsableWithoutAdmittingMemorabiliaToOCR() throws {
+        let sets = ["30a", "ced", "cei", "oecl"].enumerated().map { index, code in
+            MagicCatalogProviderSet(id: "00000000-0000-4000-8000-00000000000\(index + 1)",
+                code: code, name: code.uppercased(), releasedAt: "2022-11-28", setType: "memorabilia")
+        }
+        let release = try build(fixture: .init(sets: sets)).release
+        XCTAssertEqual(Set(release.sets.map(\.code)), ["30A", "CED", "CEI"])
+        XCTAssertTrue(release.sets.allSatisfy { $0.browseEnabled && !$0.scanEnabled && $0.routingKind == nil })
+        XCTAssertFalse(MagicCatalogPolicy.isBrowseEligible(code: "30a", setType: "memorabilia", digital: true))
+    }
+
     func testIconSVGURLValidationRequiresApprovedHTTPSOrigin() throws {
         let validRelease = release(descriptors: [baseDescriptor()])
         XCTAssertNoThrow(try MagicCatalogReleaseValidator.validate(validRelease))

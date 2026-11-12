@@ -8,6 +8,7 @@ on:
       - "TradingCardScanner/Services/MagicCatalog*.swift"
       - "TradingCardScanner/Services/BrowseCatalog.swift"
       - "TradingCardScanner/Services/CardCatalog.swift"
+      - "TradingCardScanner/Games/Magic/**"
       - "TradingCardScanner/Views/ScannerViewModel.swift"
       - "TradingCardScanner/App/TradingCardScannerApp.swift"
       - "TradingCardScanner.xcodeproj/project.pbxproj"
@@ -16,6 +17,8 @@ on:
       - "scripts/restore_catalog_hosting_site.sh"
       - "scripts/verify_magic_publication_environment.sh"
       - "scripts/tests/test_magic_publication_environment.py"
+      - "scripts/build_magic_printing_families.py"
+      - "scripts/tests/test_magic_printing_families.py"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "firebase.json"
       - ".github/workflows/magic-catalog.yml"
@@ -50,6 +53,8 @@ jobs:
         run: bash scripts/verify_pokemon_catalog_hosting_config.sh
       - name: Test publication environment preflight
         run: python3 -m unittest discover -s scripts/tests -p test_magic_publication_environment.py -v
+      - name: Test printing family derivation
+        run: python3 -m unittest discover -s scripts/tests -p test_magic_printing_families.py -v
       - name: Test the macOS core
         run: swift test --package-path MagicCatalogCore
       - name: Build the publisher in release mode

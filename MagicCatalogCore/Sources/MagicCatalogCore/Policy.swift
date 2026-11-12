@@ -9,6 +9,7 @@ public enum MagicCatalogPolicy {
     public static let browseExcludedSetTypes: Set<String> = [
         "token", "memorabilia", "minigame", "art_series"
     ]
+    private static let collectibleEditions: Set<String> = ["30a", "ced", "cei"]
 
     public static func normalizedCode(_ raw: String) -> String {
         raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
@@ -19,11 +20,17 @@ public enum MagicCatalogPolicy {
     }
 
     public static func isBrowseEligible(_ set: MagicCatalogProviderSet) -> Bool {
-        !set.digital && !browseExcludedSetTypes.contains(set.setType.lowercased())
+        isBrowseEligible(code: set.code, setType: set.setType, digital: set.digital)
+    }
+
+    public static func isBrowseEligible(code: String, setType: String, digital: Bool) -> Bool {
+        let type = setType.lowercased()
+        return !digital && (!browseExcludedSetTypes.contains(type)
+            || (type == "memorabilia" && collectibleEditions.contains(normalizedCode(code))))
     }
 
     public static func isScannerEligible(_ set: MagicCatalogProviderSet) -> Bool {
-        guard isBrowseEligible(set),
+        guard !set.digital, !browseExcludedSetTypes.contains(set.setType.lowercased()),
               let releasedAt = set.releasedAt,
               releasedAt >= modernFooterStart else {
             return false

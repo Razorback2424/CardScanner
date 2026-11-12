@@ -170,3 +170,47 @@ struct MagicCatalogRegistry: Sendable {
 }
 
 private final class MagicCatalogResourceLocator: NSObject {}
+
+/// Reviewed relationships between an English printed footer and exact Scryfall IDs.
+/// The bundle supplies membership. Live lookups still supply finishes and prices.
+struct MagicPrintingFamily: Decodable, Sendable {
+    struct Member: Decodable, Sendable {
+        let id: String
+        let setCode: String
+        let collectorNumber: String
+        let label: String
+        let useReverse: Bool?
+    }
+
+    let oracleID: String
+    let members: [Member]
+
+    private struct Artifact: Decodable, Sendable {
+        let schemaVersion: Int
+        let families: [String: MagicPrintingFamily]
+    }
+
+    private static let bundled: Artifact? = {
+        let bundle = Bundle(for: MagicCatalogResourceLocator.self)
+        guard let url = bundle.url(forResource: "printing-families", withExtension: "json", subdirectory: "MagicCatalogSeed"),
+              let data = try? Data(contentsOf: url),
+              let artifact = try? JSONDecoder().decode(Artifact.self, from: data),
+              artifact.schemaVersion == 1, !artifact.families.isEmpty else { return nil }
+        return artifact
+    }()
+
+    static func matching(_ identifier: ScanIdentifier) throws -> Self? {
+        guard case let .magic(set, number, language, kind) = identifier.legacyIdentity,
+              kind == .regular, language.lowercased() == "en" else { return nil }
+        // A damaged resource cannot authorize automatic acquisition as if the
+        // identified footer had no competing printing.
+        guard let bundled else { throw CatalogLookupError.catalogIncomplete(nil) }
+        let key = set.lowercased() + "/" + ScryfallService.canonicalScannedCollectorNumber(number)
+        guard let family = bundled.families[key] else { return nil }
+        guard UUID(uuidString: family.oracleID) != nil, (2...75).contains(family.members.count),
+              Set(family.members.map(\.id)).count == family.members.count else {
+            throw CatalogLookupError.catalogIncomplete(nil)
+        }
+        return family
+    }
+}
