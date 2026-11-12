@@ -1,0 +1,216 @@
+{
+  "setID": "ex5.5",
+  "tcgplayerGroupID": 2214,
+  "reviewedAt": "2026-11-12",
+  "physicalSetSources": [
+    "https://www.psacard.com/psasetregistry/tcg/company-sets/2004-pokemon-kids-wb-poke-card-creator/16846",
+    "https://comics.ha.com/c/fact-sheet.zx?ic3=ViewItem-Auction-Open-Action-PrintFactSheet-071515&lotNo=78045"
+  ],
+  "cards": {
+    "ex5.5-1": {
+      "productID": 162268,
+      "productName": "Treecko - 1/5",
+      "printedNumber": "001/005",
+      "normalOnly": true,
+      "foilOnly": false,
+      "englishSKUs": [
+        {
+          "sku": 3614964,
+          "condition": "Near Mint",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614965,
+          "condition": "Lightly Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614966,
+          "condition": "Moderately Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614967,
+          "condition": "Heavily Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614968,
+          "condition": "Damaged",
+          "variant": "Normal",
+          "language": "English"
+        }
+      ],
+      "url": "https://mp-search-api.tcgplayer.com/v2/product/162268/details",
+      "sha256": "1f964d3a4416d18749d3e83739074ab7e4ec599d0b1729e1cd8d946c02c5d8d5"
+    },
+    "ex5.5-2": {
+      "productID": 162269,
+      "productName": "Wurmple - 2/5",
+      "printedNumber": "002/005",
+      "normalOnly": true,
+      "foilOnly": false,
+      "englishSKUs": [
+        {
+          "sku": 3614969,
+          "condition": "Near Mint",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614970,
+          "condition": "Lightly Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614971,
+          "condition": "Moderately Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614972,
+          "condition": "Heavily Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614973,
+          "condition": "Damaged",
+          "variant": "Normal",
+          "language": "English"
+        }
+      ],
+      "url": "https://mp-search-api.tcgplayer.com/v2/product/162269/details",
+      "sha256": "0d49c92d48bf33e79327c0cf33c0e5a1015d9463517039d5588859cec314ee7f"
+    },
+    "ex5.5-3": {
+      "productID": 162270,
+      "productName": "Torchic - 3/5",
+      "printedNumber": "003/005",
+      "normalOnly": true,
+      "foilOnly": false,
+      "englishSKUs": [
+        {
+          "sku": 3614974,
+          "condition": "Near Mint",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614975,
+          "condition": "Lightly Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614976,
+          "condition": "Moderately Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614977,
+          "condition": "Heavily Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614978,
+          "condition": "Damaged",
+          "variant": "Normal",
+          "language": "English"
+        }
+      ],
+      "url": "https://mp-search-api.tcgplayer.com/v2/product/162270/details",
+      "sha256": "5dfc2a5b545ef7d92d598e51d637e17d09ddb98495f1a692c42060fa24139cc6"
+    },
+    "ex5.5-4": {
+      "productID": 162271,
+      "productName": "Mudkip - 4/5",
+      "printedNumber": "004/005",
+      "normalOnly": true,
+      "foilOnly": false,
+      "englishSKUs": [
+        {
+          "sku": 3614979,
+          "condition": "Near Mint",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614980,
+          "condition": "Lightly Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614981,
+          "condition": "Moderately Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614982,
+          "condition": "Heavily Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614983,
+          "condition": "Damaged",
+          "variant": "Normal",
+          "language": "English"
+        }
+      ],
+      "url": "https://mp-search-api.tcgplayer.com/v2/product/162271/details",
+      "sha256": "c480089090bc4531adad5fad8dc47b2e5a49937c2f091e2341e7c5205b0e1bd0"
+    },
+    "ex5.5-5": {
+      "productID": 162272,
+      "productName": "Pikachu - 5/5",
+      "printedNumber": "005/005",
+      "normalOnly": true,
+      "foilOnly": false,
+      "englishSKUs": [
+        {
+          "sku": 3614984,
+          "condition": "Near Mint",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614985,
+          "condition": "Lightly Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614986,
+          "condition": "Moderately Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614987,
+          "condition": "Heavily Played",
+          "variant": "Normal",
+          "language": "English"
+        },
+        {
+          "sku": 3614988,
+          "condition": "Damaged",
+          "variant": "Normal",
+          "language": "English"
+        }
+      ],
+      "url": "https://mp-search-api.tcgplayer.com/v2/product/162272/details",
+      "sha256": "bbc0065c2139fbcdbd14f8722714dc38215b5112aa5ba57bf7714fb4ef9adaa9"
+    }
+  }
+}

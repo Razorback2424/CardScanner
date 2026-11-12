@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 2,
+  "captureRevision": "2026-11-12",
+  "setID": "ex5.5",
+  "setName": "Poké Card Creator Pack",
+  "tcgplayerGroupID": 2214,
+  "standard": "Each numbered checklist card must agree with the matching TCGplayer products on exact finishes, or have a cited resolution. Every conflict, unmatched number and Normal review must be resolved. Market listings are evidence of membership. Physical or retail evidence resolves disagreements.",
+  "capturedAt": "2026-11-12T14:11:43+00:00",
+  "sourceBuild": "2026-11-11T20:05:27+0000",
+  "checklistSources": {
+    "sets/ebfdd03979f77d5d.json": "4128e188c854b0531f3e7e4e2a5765d73b50e8a67c7c691999643f1bb19123b3"
+  },
+  "finishEvidenceSHA256": "89f8ee6773c0ee201afa2ee89ebad0ffdcd7e12002db0b8097aabcc03264ccec",
+  "marketSources": {
+    "products": {
+      "url": "https://tcgcsv.com/tcgplayer/3/2214/products",
+      "sha256": "5e22a5ee57f99e725c5fd6d958c52facfa0f20e5e095fac0596c0abaa8cb453a"
+    },
+    "prices": {
+      "url": "https://tcgcsv.com/tcgplayer/3/2214/prices",
+      "sha256": "358d666e27b62a22b30bd0b958b8802a650f42a0defdd3e568f3c8e26a7637ad"
+    }
+  },
+  "cards": {
+    "market:product:162268": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 162268,
+          "name": "Treecko - 1/5",
+          "number": "001/005",
+          "subtypes": []
+        }
+      ],
+      "checklistIdentitiesAtNumber": [
+        "ex5.5-1"
+      ]
+    },
+    "ex5.5-1": {
+      "number": "1",
+      "name": "Treecko",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [],
+      "market": [],
+      "products": [],
+      "status": "conflict",
+      "legacyMinimum": []
+    },
+    "market:product:162269": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 162269,
+          "name": "Wurmple - 2/5",
+          "number": "002/005",
+          "subtypes": []
+        }
+      ],
+      "checklistIdentitiesAtNumber": [
+        "ex5.5-2"
+      ]
+    },
+    "ex5.5-2": {
+      "number": "2",
+      "name": "Wurmple",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [],
+      "market": [],
+      "products": [],
+      "status": "conflict",
+      "legacyMinimum": []
+    },
+    "market:product:162270": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 162270,
+          "name": "Torchic - 3/5",
+          "number": "003/005",
+          "subtypes": []
+        }
+      ],
+      "checklistIdentitiesAtNumber": [
+        "ex5.5-3"
+      ]
+    },
+    "ex5.5-3": {
+      "number": "3",
+      "name": "Torchic",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [],
+      "market": [],
+      "products": [],
+      "status": "conflict",
+      "legacyMinimum": []
+    },
+    "market:product:162271": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 162271,
+          "name": "Mudkip - 4/5",
+          "number": "004/005",
+          "subtypes": []
+        }
+      ],
+      "checklistIdentitiesAtNumber": [
+        "ex5.5-4"
+      ]
+    },
+    "ex5.5-4": {
+      "number": "4",
+      "name": "Mudkip",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [],
+      "market": [],
+      "products": [],
+      "status": "conflict",
+      "legacyMinimum": []
+    },
+    "market:product:162272": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 162272,
+          "name": "Pikachu - 5/5",
+          "number": "005/005",
+          "subtypes": []
+        }
+      ],
+      "checklistIdentitiesAtNumber": [
+        "ex5.5-5"
+      ]
+    },
+    "ex5.5-5": {
+      "number": "5",
+      "name": "Pikachu",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [],
+      "market": [],
+      "products": [],
+      "status": "conflict",
+      "legacyMinimum": []
+    }
+  },
+  "resolutions": {
+    "ex5.5-1": {
+      "finishes": [
+        "normal"
+      ],
+      "normalReview": "include",
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The exact numbered product is marked Normal only. All five English catalog SKUs have the Normal finish. The physical contest set contains these five numbered cards."
+    },
+    "market:product:162268": {
+      "exclude": true,
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The daily price feed supplies no subtype. The exact product is accounted for in the cited SKU review for ex5.5-1."
+    },
+    "ex5.5-2": {
+      "finishes": [
+        "normal"
+      ],
+      "normalReview": "include",
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The exact numbered product is marked Normal only. All five English catalog SKUs have the Normal finish. The physical contest set contains these five numbered cards."
+    },
+    "market:product:162269": {
+      "exclude": true,
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The daily price feed supplies no subtype. The exact product is accounted for in the cited SKU review for ex5.5-2."
+    },
+    "ex5.5-3": {
+      "finishes": [
+        "normal"
+      ],
+      "normalReview": "include",
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The exact numbered product is marked Normal only. All five English catalog SKUs have the Normal finish. The physical contest set contains these five numbered cards."
+    },
+    "market:product:162270": {
+      "exclude": true,
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The daily price feed supplies no subtype. The exact product is accounted for in the cited SKU review for ex5.5-3."
+    },
+    "ex5.5-4": {
+      "finishes": [
+        "normal"
+      ],
+      "normalReview": "include",
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The exact numbered product is marked Normal only. All five English catalog SKUs have the Normal finish. The physical contest set contains these five numbered cards."
+    },
+    "market:product:162271": {
+      "exclude": true,
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The daily price feed supplies no subtype. The exact product is accounted for in the cited SKU review for ex5.5-4."
+    },
+    "ex5.5-5": {
+      "finishes": [
+        "normal"
+      ],
+      "normalReview": "include",
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The exact numbered product is marked Normal only. All five English catalog SKUs have the Normal finish. The physical contest set contains these five numbered cards."
+    },
+    "market:product:162272": {
+      "exclude": true,
+      "citation": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/sku-review.json",
+      "reason": "The daily price feed supplies no subtype. The exact product is accounted for in the cited SKU review for ex5.5-5."
+    }
+  }
+}
