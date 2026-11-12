@@ -325,15 +325,19 @@ struct PokemonMarketPriceResolver: Sendable {
     ) async throws -> PriceLookup? {
         guard game == .pokemon else { return nil }
         if printRun == nil, let deck = PokemonBattleDeckFinishCatalog.entry(cardID: cardID, variantID: variant?.id) {
-            return try await productSource.quote(category: 3, group: deck.groupID, productID: deck.productID,
-                name: deck.marketName, number: deck.printedNumber, lane: deck.printing.rawValue,
-                generation: nil, minimumFetchedAt: nil)
+            return try await quote(for: deck)
         }
         guard variant == .holo, printRun == nil || printRun == .unlimited,
               let mapping = PokemonTCGCSVMapping.byCardID[cardID] else { return nil }
         let snapshot = try await source.snapshot(setID: mapping.setID, retry: retry)
         try Task.checkCancellation()
         return snapshot.quote(cardID: cardID, variant: variant, printRun: printRun)
+    }
+
+    func quote(for deck: PokemonBattleDeckFinishCatalog.Entry, minimumFetchedAt: Date? = nil) async throws -> PriceLookup {
+        try await productSource.quote(category: 3, group: deck.groupID, productID: deck.productID,
+            name: deck.marketName, number: deck.printedNumber, lane: deck.printing.rawValue,
+            generation: nil, minimumFetchedAt: minimumFetchedAt)
     }
 
     func price(for card: IdentifiedCard, variant: PhysicalVariant?, printRun: PokemonPrintRun?) async -> PriceLookup {

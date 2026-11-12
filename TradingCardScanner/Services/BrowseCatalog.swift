@@ -175,6 +175,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private let pokemonTransport: any PokemonBrowseTransport
     private let pokemonPriceSource: (any PokemonBulkPriceSource)?
     private let tcgCSVSource: (any PokemonTCGCSVPriceSource)?
+    private let pokemonDeckPrices: PokemonMarketPriceResolver?
     private var tcgCSVRetrySetIDs: Set<String> = []
     private let pokemonSecondarySetSource: (any PokemonSecondarySetSource)?
     private let checklistStore: PokemonChecklistStore
@@ -237,6 +238,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         pokemonTransport: any PokemonBrowseTransport = TCGdexBrowseTransport(),
         pokemonPriceSource: (any PokemonBulkPriceSource)? = nil,
         tcgCSVSource: (any PokemonTCGCSVPriceSource)? = nil,
+        pokemonProductPriceSource: TCGCSVProductPriceSource? = nil,
         pokemonSecondarySetSource: (any PokemonSecondarySetSource)? = nil,
         checklistStore: PokemonChecklistStore = .shared,
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
@@ -267,6 +269,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
         self.pokemonPriceSource = effectivePriceSource
         self.tcgCSVSource = tcgCSVSource
             ?? (pokemonTransport is TCGdexBrowseTransport ? PokemonTCGCSVPriceService.shared : nil)
+        self.pokemonDeckPrices = (pokemonProductPriceSource
+            ?? (pokemonTransport is TCGdexBrowseTransport ? TCGCSVProductPriceSource.shared : nil))
+            .map { PokemonMarketPriceResolver(productSource: $0) }
         self.pokemonSecondarySetSource = pokemonSecondarySetSource
             ?? (effectivePriceSource as? any PokemonSecondarySetSource)
         self.checklistStore = checklistStore
@@ -1322,6 +1327,15 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
+        if let deck = PokemonBattleDeckFinishCatalog.entry(for: summary), deck.variant.id == variant.id {
+            await synchronizeCatalogAuthority()
+            _ = try await authorizedPokemonDetailSet(for: summary)
+            let revision = catalogRevision
+            let quote = try await pokemonDeckPrices?.quote(for: deck) ?? .unavailable(nil)
+            try Task.checkCancellation()
+            guard revision == catalogRevision else { throw CatalogLookupError.staleCatalog }
+            return quote
+        }
         let details = await addingTCGCSVPrices(to: try await details(for: summary))
         try Task.checkCancellation()
         let key = detailCacheKey(for: summary)
@@ -1748,6 +1762,30 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func sortPokemonPriceGroup(
+        for summaries: [CatalogCardSummary]
+    ) async -> SortPriceGroupResult {
+        guard let setID = summaries.first?.setID.providerID,
+              PokemonBattleDeckFinishCatalog.setIDs.contains(setID) else {
+            return await sortPokemonCatalogPriceGroup(for: summaries)
+        }
+        var regular: [CatalogCardSummary] = []
+        var slots: [SortPriceSlot] = []
+        for summary in summaries {
+            guard let variant = summary.masterSetVariant,
+                  PokemonBattleDeckFinishCatalog.entry(for: summary)?.variant.id == variant.id else {
+                regular.append(summary)
+                continue
+            }
+            let lookup = try? await price(for: summary, variant: variant)
+            slots.append(SortPriceSlot(id: summary.id, resolution: lookup.map(CatalogSortPriceResolution.exactLookup) ?? .unresolved))
+        }
+        if !regular.isEmpty {
+            slots.append(contentsOf: await sortPokemonCatalogPriceGroup(for: regular).slots)
+        }
+        return SortPriceGroupResult(slots: slots)
+    }
+
+    private func sortPokemonCatalogPriceGroup(
         for summaries: [CatalogCardSummary]
     ) async -> SortPriceGroupResult {
         if let source = tcgCSVSource,

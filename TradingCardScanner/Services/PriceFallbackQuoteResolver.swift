@@ -372,7 +372,12 @@ final class PriceFallbackQuoteResolver {
         card: IdentifiedCard,
         variant: PhysicalVariant?
     ) -> [JustTCGBatchLookup] {
-        verifiedLookups(catalogID: card.providerID, variant: variant)
+        if let deck = PokemonBattleDeckFinishCatalog.entry(cardID: card.providerID, variantID: variant?.id) {
+            guard case let .pokemon(payload, _) = card.legacyIdentity,
+                  PokemonBattleDeckFinishCatalog.entry(for: payload) != nil else { return [] }
+            return [.tcgplayerID(String(deck.productID))]
+        }
+        return verifiedLookups(catalogID: card.providerID, variant: variant)
     }
 
     /// Direct provider identifiers avoid a paid name/set search. Stamped
@@ -383,6 +388,8 @@ final class PriceFallbackQuoteResolver {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun? = nil
     ) -> [JustTCGBatchLookup] {
+        if pokemonPrintRun != nil,
+           PokemonBattleDeckFinishCatalog.entry(cardID: card.providerID, variantID: variant?.id) != nil { return [] }
         var lookups = verifiedLookups(card: card, variant: variant)
         if let productID = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun) {
             lookups.append(.tcgplayerID(String(productID)))

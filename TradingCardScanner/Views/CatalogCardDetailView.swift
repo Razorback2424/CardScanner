@@ -172,9 +172,7 @@ struct CatalogCardDetailView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-            if let destination = TCGplayerLinkBuilder.destination(
-                for: details.card, variant: summary.masterSetVariant,
-                pokemonPrintRun: summary.pokemonPrintRun) {
+            if let destination = TCGplayerLinkBuilder.destination(for: details.card, summary: summary) {
                 CardDetailMarketplaceButton(destination: destination)
             }
 
@@ -593,6 +591,7 @@ struct CatalogCardDetailView: View {
                   identifiedCatalogCard: true
               ),
               (PokemonTCGCSVMapping.byCardID[card.providerID] != nil
+                  || PokemonBattleDeckFinishCatalog.entry(cardID: card.providerID, variantID: variant?.id) != nil
                   || PriceVendorCredentials.hasKey) else { return }
 
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(

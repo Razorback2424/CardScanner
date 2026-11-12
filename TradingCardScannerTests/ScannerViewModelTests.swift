@@ -692,6 +692,38 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(projected.displayCardNumber, "Unnumbered")
     }
 
+    func testBattleDeckFootersOfferStampedFinishAndSaveExactMarketplaceProduct() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let offline = PokemonOfflineCatalog(store: PokemonChecklistStore(root: root, bundle: .main))
+        let profile = PokemonScanProfile(registry: .bundledSeed)
+        for (footer, cardID, productID) in [
+            ("MEG EN 119/132", "me01-119", "729924"),
+            ("BLK EN 084/086", "sv10.5b-084", "729923")
+        ] {
+            let model = try makeModel(variants: [.normal], offline: offline,
+                fallbackQuoteOverride: { _, _, _ in .lookup(.unavailable(nil)) })
+            defer { model.viewDisappeared() }
+            confirm(model, try XCTUnwrap(profile.parse(footer)), encounterID: UUID())
+            await assertEventually { model.pendingChoice != nil }
+            let choice = try XCTUnwrap(model.pendingChoice)
+            let stamped = PokemonBattleDeckFinishCatalog.reverse
+            XCTAssertEqual(choice.card.providerID, cardID)
+            XCTAssertTrue(choice.options.contains(.reverse))
+            XCTAssertTrue(choice.options.contains(stamped))
+            if cardID == "sv10.5b-084" { XCTAssertTrue(choice.options.contains(.pokeBall)) }
+            XCTAssertEqual(try context().fetchCount(FetchDescriptor<CollectedCard>()), 0)
+            model.choose(stamped)
+            await assertEventually { model.successCount == 1 }
+            let saved = try XCTUnwrap(context().fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(saved.providerID, cardID)
+            XCTAssertEqual(saved.variantID, stamped.id)
+            XCTAssertEqual(saved.tcgplayerProductID, productID)
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: saved)?.url.path, "/product/\(productID)")
+            XCTAssertEqual(try context().fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        }
+    }
+
     func testClassicPhotoFootersOfferBothPrintingsBeforeFinishOrCollectionWrite() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }

@@ -772,6 +772,27 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
         let scanner = CardCatalog(source: transport, offline: .init(store: store, registry: registry),
             resolvedDiskCache: .init(root: root.appendingPathComponent("scanner")), registry: registry)
         let profile = PokemonScanProfile(registry: registry)
+        for entry in PokemonBattleDeckFinishCatalog.entries {
+            let slots = cardsBySet[entry.setID, default: []].filter { $0.providerID == entry.cardID }
+            let deckSlots = slots.filter { $0.masterSetVariant == entry.variant }
+            XCTAssertEqual(deckSlots.count, 1, entry.cardID)
+            let summary = try XCTUnwrap(deckSlots.first, entry.cardID)
+            XCTAssertTrue(summary.isExpandedMasterSetVariant, entry.cardID)
+            let footer = "\(summary.setCode) EN \(entry.printedNumber)"
+            let identifier = try XCTUnwrap(profile.parse(footer), footer)
+            let scanned = try await scanner.card(for: identifier)
+            let details = await browse.installedDetails(for: summary)
+            let browsed = try XCTUnwrap(details?.card, entry.cardID)
+            for card in [scanned, browsed] {
+                XCTAssertEqual(card.providerID, entry.cardID)
+                guard case let .needsChoice(options, _) = VariantResolver.resolve(card.variantEvidence) else {
+                    return XCTFail("Expected the deck finish to be a distinct choice for \(entry.cardID)")
+                }
+                XCTAssertTrue(options.contains(entry.variant), entry.cardID)
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: card, variant: entry.variant, printRun: nil),
+                    entry.productID, entry.cardID)
+            }
+        }
         let delta = Dictionary(grouping: try XCTUnwrap(cardsBySet["me06"]), by: \.providerID)
         var finishCounts: [[String]: Int] = [:]
         for (id, slots) in delta {

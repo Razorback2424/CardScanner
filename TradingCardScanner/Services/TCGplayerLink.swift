@@ -19,8 +19,9 @@ enum TCGplayerLinkBuilder {
     struct Destination: Equatable {
         let url: URL
         let isExactProduct: Bool
-        var title: String { "View on TCGplayer" }
-        var accessibilityLabel: String { "View this printing on TCGplayer" }
+        var printingLabel: String? = nil
+        var title: String { printingLabel.map { "View \($0) on TCGplayer" } ?? "View on TCGplayer" }
+        var accessibilityLabel: String { printingLabel == nil ? "View this printing on TCGplayer" : title }
     }
 
     /// Only show a marketplace action when the exact product is known.
@@ -35,6 +36,19 @@ enum TCGplayerLinkBuilder {
             return .init(url: exact, isExactProduct: true)
         }
         return nil
+    }
+
+    static func destination(for card: IdentifiedCard, summary: CatalogCardSummary) -> Destination? {
+        if let selected = destination(for: card, variant: summary.masterSetVariant, pokemonPrintRun: summary.pokemonPrintRun) {
+            return selected
+        }
+        // Name search opens the card identity. Label the exact deck link with
+        // its finish so it cannot be mistaken for the original printing.
+        guard summary.masterSetVariant == nil, summary.pokemonPrintRun == nil,
+              let deck = PokemonBattleDeckFinishCatalog.entry(for: summary),
+              var selected = destination(for: card, variant: deck.variant) else { return nil }
+        selected.printingLabel = deck.variant.label
+        return selected
     }
 
     /// Persist the same exact product Browse can open, including its ambiguity

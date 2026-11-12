@@ -13,9 +13,10 @@ struct PokemonPriceAdapter: GamePriceAdapter {
 
     init(
         tcgCSVSource: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared,
+        productPriceSource: TCGCSVProductPriceSource = .shared,
         catalogCoordinator: PokemonCatalogCoordinator? = nil
     ) {
-        marketPrices = PokemonMarketPriceResolver(source: tcgCSVSource)
+        marketPrices = PokemonMarketPriceResolver(source: tcgCSVSource, productSource: productPriceSource)
         self.catalogCoordinator = catalogCoordinator
     }
 
@@ -24,6 +25,13 @@ struct PokemonPriceAdapter: GamePriceAdapter {
         let variant = request.variant
         let pokemonPrintRun = request.pokemonPrintRun
         guard card.game == game else { throw PriceQuoteError.identityMismatch }
+        if let deck = PokemonBattleDeckFinishCatalog.entry(cardID: card.printingID, variantID: variant?.id) {
+            guard pokemonPrintRun == nil, card.language == "en", card.setID == deck.setID,
+                  ProductCatalogIdentity.numbersMatch(deck.printedNumber, card.cardNumber) else {
+                throw PriceQuoteError.identityMismatch
+            }
+            return try await marketPrices.quote(for: deck, minimumFetchedAt: request.minimumFetchedAt)
+        }
         let catalog: PriceLookup
         do {
             if let catalogRefreshOverride = request.catalogRefreshOverride {
