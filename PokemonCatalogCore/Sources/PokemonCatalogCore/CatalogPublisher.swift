@@ -36,6 +36,7 @@ public enum PokemonCatalogPublicationError: Error, CustomStringConvertible, Send
     case invalidSigningSecret
     case missingSigningKeyID
     case payloadTooLarge(bytes: Int)
+    case checklistTooLarge(bytes: Int)
 
     public var description: String {
         switch self {
@@ -53,6 +54,8 @@ public enum PokemonCatalogPublicationError: Error, CustomStringConvertible, Send
         case .missingSigningKeyID: return "Catalog signing key ID is not available"
         case .payloadTooLarge(let bytes):
             return "Catalog release payload is too large: \(bytes) bytes (limit \(448 * 1024))"
+        case .checklistTooLarge(let bytes):
+            return "Catalog checklist is too large: \(bytes) bytes (limit \(PokemonCatalogSnapshot.maximumPublishedBytes))"
         }
     }
 }
@@ -213,6 +216,14 @@ public final class PokemonCatalogFilesystemPublisher: @unchecked Sendable {
             guard let existing = try? Data(contentsOf: existingURL), existing == envelopeData else {
                 throw PokemonCatalogPublicationError.immutableRevisionConflict(revision)
             }
+            if signedBuild.build.release.checklistInputSHA256 != nil {
+                let url = revisionDirectory.appendingPathComponent("pokemon-catalog-snapshot.json")
+                guard let bytes = try? Data(contentsOf: url), bytes.count <= PokemonCatalogSnapshot.maximumPublishedBytes,
+                      let snapshot = try? PokemonCatalogJSON.decode(PokemonCatalogSnapshot.self, from: bytes),
+                      (try? snapshot.verifiedChecklistInputs(for: signedBuild.build.release)) != nil else {
+                    throw PokemonCatalogPublicationError.immutableRevisionConflict(revision)
+                }
+            }
         } else {
             let temporaryDirectory = revisions.appendingPathComponent(
                 ".staging-\(UUID().uuidString)",
@@ -296,6 +307,12 @@ public final class PokemonCatalogFilesystemPublisher: @unchecked Sendable {
             options: .atomic
         )
         let snapshotData = try PokemonCatalogJSON.encode(signedBuild.build.snapshot)
+        if signedBuild.build.release.checklistInputSHA256 != nil {
+            guard snapshotData.count <= PokemonCatalogSnapshot.maximumPublishedBytes else {
+                throw PokemonCatalogPublicationError.checklistTooLarge(bytes: snapshotData.count)
+            }
+            _ = try signedBuild.build.snapshot.verifiedChecklistInputs(for: signedBuild.build.release)
+        }
         try snapshotData.write(
             to: directory.appendingPathComponent("pokemon-catalog-snapshot.json"),
             options: .atomic

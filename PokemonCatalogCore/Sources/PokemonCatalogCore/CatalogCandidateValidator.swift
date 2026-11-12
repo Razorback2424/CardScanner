@@ -11,11 +11,13 @@ public enum PokemonCatalogCandidateValidationError: Error, CustomStringConvertib
     case snapshotEntriesDoNotMatchRelease
     case snapshotChecklistsDoNotMatchEntries
     case snapshotFingerprintMismatch
+    case checklistInputsMismatch
     case membershipRowsDoNotMatchSnapshot(String)
     case reportSetsDoNotMatchSnapshot
     case reportSetMismatch(String)
     case duplicateReportSet(String)
     case reportReferencesUnknownSet(String)
+    case mismatchedChangeClassification
 
     public var description: String {
         switch self {
@@ -39,6 +41,8 @@ public enum PokemonCatalogCandidateValidationError: Error, CustomStringConvertib
             return "Candidate snapshot checklists do not match snapshot entries"
         case .snapshotFingerprintMismatch:
             return "Candidate snapshot directory fingerprint is incorrect"
+        case .checklistInputsMismatch:
+            return "Candidate checklist inputs do not match the signed catalog"
         case let .membershipRowsDoNotMatchSnapshot(id):
             return "Membership recognition rows do not match provider checklist \(id)"
         case .reportSetsDoNotMatchSnapshot:
@@ -49,6 +53,8 @@ public enum PokemonCatalogCandidateValidationError: Error, CustomStringConvertib
             return "Candidate review report contains duplicate set \(id)"
         case let .reportReferencesUnknownSet(id):
             return "Candidate review report references unknown set \(id)"
+        case .mismatchedChangeClassification:
+            return "Candidate review report does not match the changes from the active release"
         }
     }
 }
@@ -57,6 +63,20 @@ public enum PokemonCatalogCandidateValidationError: Error, CustomStringConvertib
 /// boundary. The protected job must not sign a candidate merely because its
 /// JSON decodes: all public artifacts must still describe the same release.
 public enum PokemonCatalogCandidateValidator {
+    public static func validate(_ build: PokemonCatalogBuildResult, against activeRelease: PokemonCatalogRelease?) throws {
+        try validate(build, activeRevision: activeRelease?.revision)
+        let changes = PokemonCatalogChangeClassifier.classify(previousRelease: activeRelease, currentRelease: build.release)
+        let report = build.report
+        guard report.changeClass == changes.changeClass,
+              report.addedProviderSetIDs == changes.addedProviderSetIDs,
+              report.changedProviderSetIDs == changes.changedProviderSetIDs,
+              report.contentChangedProviderSetIDs == changes.contentChangedProviderSetIDs,
+              report.authorityChangedProviderSetIDs == changes.authorityChangedProviderSetIDs,
+              report.baselineFingerprintProviderSetIDs == changes.baselineFingerprintProviderSetIDs else {
+            throw PokemonCatalogCandidateValidationError.mismatchedChangeClassification
+        }
+    }
+
     public static func validate(
         _ build: PokemonCatalogBuildResult,
         activeRevision: Int? = nil
@@ -132,6 +152,9 @@ public enum PokemonCatalogCandidateValidator {
                   build.snapshot.checklists[$0.providerSetID]?.count == $0.cardCount
               }) else {
             throw PokemonCatalogCandidateValidationError.snapshotChecklistsDoNotMatchEntries
+        }
+        if build.release.checklistInputSHA256 != nil || build.snapshot.checklistInputs != nil {
+            _ = try build.snapshot.verifiedChecklistInputs(for: build.release)
         }
 
         for descriptor in build.release.sets {

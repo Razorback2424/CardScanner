@@ -128,6 +128,9 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         if locale == .en, let reviewed = PokemonReviewedEnergyCatalog.card(providerID: id) {
             return reviewed
         }
+        if locale == .en, id.hasPrefix("tcgplayer:"), let reviewed = PokemonReviewedArtworkCatalog.card(providerID: id) {
+            return reviewed
+        }
         guard let encoded = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
               let url = URL(string: "https://api.tcgdex.net/v2/\(locale.rawValue)/cards/\(encoded)") else {
             throw TCGdexError.invalidURL
@@ -708,7 +711,8 @@ struct ScryfallService: Sendable {
         guard !title.contains("\""), !title.contains("\\"), !title.contains("\n") else { return false }
         var components = URLComponents(string: "https://api.scryfall.com/cards/search")!
         components.queryItems = [.init(name: "q", value: "!\"\(title)\" lang:en game:paper"),
-                                .init(name: "unique", value: "prints"), .init(name: "include_extras", value: "true")]
+                                .init(name: "unique", value: "prints"), .init(name: "include_extras", value: "true"),
+                                .init(name: "include_variations", value: "true")]
         guard let url = components.url else { return false }
         var bounded = request(for: url, ignoringCache: true)
         bounded.timeoutInterval = 8
@@ -740,7 +744,8 @@ struct ScryfallService: Sendable {
         // every returned root/face name must still match the complete title below.
         let searchTitle = title.replacingOccurrences(of: "\"", with: "")
         components.queryItems = [.init(name: "q", value: "!\"\(searchTitle)\" lang:en game:paper date<2014-07-18"),
-            .init(name: "unique", value: "prints"), .init(name: "include_extras", value: "true")]
+            .init(name: "unique", value: "prints"), .init(name: "include_extras", value: "true"),
+            .init(name: "include_variations", value: "true")]
         var next = components.url
         let deadline = Date.now.addingTimeInterval(8)
         var visited = Set<URL>(), ids = Set<String>(), result: [ScryfallCard] = []
@@ -923,7 +928,7 @@ struct ScryfallService: Sendable {
     /// Rejecting a card the scanner correctly identified, because of a cosmetic
     /// field, is not accuracy. What actually matters is that the printing has the
     /// modern collector-number footer and is a real single card.
-    private func validateSupported(_ card: ScryfallCard) throws {
+    func validateSupported(_ card: ScryfallCard) throws {
         guard let released = card.releasedAt, released >= Self.modernFooterStart,
               let date = FlexibleDate.parse(released), date <= .now,
               let layout = card.layout, !Self.unsupportedLayouts.contains(layout),
@@ -1090,6 +1095,9 @@ struct PokemonCatalogCardIdentity: Equatable, Hashable, Sendable {
     /// legitimate printings easy to distinguish under a thumb.
     var choiceLabel: String {
         let conciseName = Self.conciseSetName(setName)
+        if let label = PokemonReviewedArtworkCatalog.printingLabel(for: providerID, setID: setID) {
+            return "\(conciseName) · \(label)"
+        }
         guard let releaseYear else { return conciseName }
         return "\(conciseName) · \(releaseYear)"
     }
@@ -1168,15 +1176,34 @@ enum PokemonHistoricalIdentityResolver {
         "SV": [94: ["sma"], 122: ["swsh4.5sv"]]
     ]
 
+    private static let standaloneSets: [String: String] = {
+        var sets = ["ONE": "hgss1", "TWO": "hgss2", "THREE": "hgss3", "FOUR": "hgss4"]
+        let families = [
+            ("AR", 1...9, "pl4"), ("SH", 1...3, "dp7"), ("SH", 4...6, "pl1"),
+            ("SH", 7...9, "pl3"), ("SH", 10...12, "pl4"), ("RT", 1...6, "pl2"),
+            ("SL", 1...11, "col1")
+        ]
+        for (prefix, numbers, setID) in families {
+            for number in numbers { sets["\(prefix)\(number)"] = setID }
+        }
+        return sets
+    }()
+
+    static func standaloneSetID(for localID: String) -> String? {
+        standaloneSets[localID.uppercased()]
+    }
+
     /// Whether the printed numbering shape is one this resolver understands.
     /// Ordinary denominators remain open-ended; the live directory decides
     /// whether any sets actually publish that official count.
     static func canAttempt(_ number: PokemonPrintedNumberEvidence) -> Bool {
         switch number.scheme {
         case .officialSet:
-            return true
+            return number.denominator.map { $0 > 0 } ?? false
         case let .subset(prefix):
-            return subsetCandidateSets[prefix]?[number.denominator] != nil
+            return number.denominator.flatMap { subsetCandidateSets[prefix]?[$0] } != nil
+        case .standalone:
+            return standaloneSetID(for: number.localID) != nil
         }
     }
 
@@ -1285,11 +1312,14 @@ enum PokemonHistoricalIdentityResolver {
         let ids: [String]
         switch number.scheme {
         case .officialSet:
+            guard let denominator = number.denominator, denominator > 0 else { return [] }
             ids = directory.compactMap { set in
-                set.cardCount?.official == number.denominator ? set.id : nil
+                set.cardCount?.official == denominator ? set.id : nil
             }
         case let .subset(prefix):
-            ids = subsetCandidateSets[prefix]?[number.denominator] ?? []
+            ids = number.denominator.flatMap { subsetCandidateSets[prefix]?[$0] } ?? []
+        case .standalone:
+            ids = standaloneSetID(for: number.localID).map { [$0] } ?? []
         }
         return Array(Set(ids.map { $0.lowercased() })).sorted()
     }
@@ -1306,6 +1336,7 @@ enum PokemonHistoricalIdentityResolver {
         let numberedCandidates = cards.filter { card in
             setIDs.contains(card.setID.lowercased())
                 && canonicalLocalID(card.localID) == localID
+                && !PokemonFinishMinimumCatalog.isUnnumbered(cardID: card.providerID)
         }
         let matchingIndices = PokemonNameMatcher.matches(
             numberedCandidates.map(\.name),

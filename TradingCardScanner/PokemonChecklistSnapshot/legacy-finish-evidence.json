@@ -5080,14 +5080,20 @@
     "bw6-117": {
       "setID": "bw6",
       "number": "117",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "bw6-118": {
       "setID": "bw6",
       "number": "118",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "bw6-119": {
       "setID": "bw6",
@@ -8777,13 +8783,17 @@
     "bw9-117": {
       "setID": "bw9",
       "number": "117",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "bw9-118": {
       "setID": "bw9",
       "number": "118",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "bw9-119": {
@@ -9092,7 +9102,9 @@
     "g1-28a": {
       "setID": "g1",
       "number": "28a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "g1-29": {
@@ -9500,7 +9512,9 @@
     "g1-73a": {
       "setID": "g1",
       "number": "73a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "g1-74": {
@@ -11282,56 +11296,92 @@
     "sm1-164": {
       "setID": "sm1",
       "number": "164",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false,
+      "isUnnumbered": true
     },
     "sm1-165": {
       "setID": "sm1",
       "number": "165",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false,
+      "isUnnumbered": true
     },
     "sm1-166": {
       "setID": "sm1",
       "number": "166",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false,
+      "isUnnumbered": true
     },
     "sm1-167": {
       "setID": "sm1",
       "number": "167",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false,
+      "isUnnumbered": true
     },
     "sm1-168": {
       "setID": "sm1",
       "number": "168",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false,
+      "isUnnumbered": true
     },
     "sm1-169": {
       "setID": "sm1",
       "number": "169",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false,
+      "isUnnumbered": true
     },
     "sm1-170": {
       "setID": "sm1",
       "number": "170",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false,
+      "isUnnumbered": true
     },
     "sm1-171": {
       "setID": "sm1",
       "number": "171",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false,
+      "isUnnumbered": true
     },
     "sm1-172": {
       "setID": "sm1",
       "number": "172",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false,
+      "isUnnumbered": true
     },
     "sm115-1": {
       "setID": "sm115",
@@ -16337,7 +16387,9 @@
     "sm4-63a": {
       "setID": "sm4",
       "number": "63a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm4-64": {
@@ -17376,7 +17428,9 @@
     "sm5-58": {
       "setID": "sm5",
       "number": "58",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm5-59": {
@@ -17409,7 +17463,9 @@
     "sm5-62": {
       "setID": "sm5",
       "number": "62",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm5-63": {
@@ -17540,7 +17596,9 @@
     "sm5-77": {
       "setID": "sm5",
       "number": "77",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm5-78": {
@@ -17645,7 +17703,9 @@
     "sm5-89": {
       "setID": "sm5",
       "number": "89",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm5-90": {
@@ -17917,7 +17977,9 @@
     "sm5-120": {
       "setID": "sm5",
       "number": "120",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm5-121": {
@@ -18058,20 +18120,28 @@
     "sm5-136": {
       "setID": "sm5",
       "number": "136",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm5-137": {
       "setID": "sm5",
       "number": "137",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "sm5-138": {
       "setID": "sm5",
       "number": "138",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "sm5-139": {
       "setID": "sm5",
@@ -18324,13 +18394,17 @@
     "sm5-170": {
       "setID": "sm5",
       "number": "170",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm5-171": {
       "setID": "sm5",
       "number": "171",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm5-172": {
@@ -19207,7 +19281,9 @@
     "sm7-97": {
       "setID": "sm7",
       "number": "97",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm7-98": {
@@ -19293,13 +19369,17 @@
     "sm7-107": {
       "setID": "sm7",
       "number": "107",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm7-108": {
       "setID": "sm7",
       "number": "108",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm7-109": {
@@ -20108,7 +20188,9 @@
     "sm8-19": {
       "setID": "sm8",
       "number": "19",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm8-20": {
@@ -21220,7 +21302,9 @@
     "sm8-144": {
       "setID": "sm8",
       "number": "144",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm8-145": {
@@ -21306,7 +21390,9 @@
     "sm8-154": {
       "setID": "sm8",
       "number": "154",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm8-155": {
@@ -21482,31 +21568,45 @@
     "sm8-174": {
       "setID": "sm8",
       "number": "174",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "sm8-175": {
       "setID": "sm8",
       "number": "175",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "sm8-176": {
       "setID": "sm8",
       "number": "176",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "sm8-177": {
       "setID": "sm8",
       "number": "177",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "sm8-178": {
       "setID": "sm8",
       "number": "178",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm8-179": {
@@ -21521,7 +21621,9 @@
     "sm8-180": {
       "setID": "sm8",
       "number": "180",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm8-181": {
@@ -21536,7 +21638,9 @@
     "sm8-182": {
       "setID": "sm8",
       "number": "182",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm8-183": {
@@ -21614,7 +21718,9 @@
     "sm8-191": {
       "setID": "sm8",
       "number": "191",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "sm8-192": {
@@ -23965,7 +24071,9 @@
     "xy10-43a": {
       "setID": "xy10",
       "number": "43a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy10-43": {
@@ -24076,7 +24184,9 @@
     "xy10-54a": {
       "setID": "xy10",
       "number": "54a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy10-55": {
@@ -24522,13 +24632,18 @@
     "xy10-105": {
       "setID": "xy10",
       "number": "105",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "xy10-105a": {
       "setID": "xy10",
       "number": "105a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy10-106": {
@@ -24579,7 +24694,9 @@
     "xy10-111a": {
       "setID": "xy10",
       "number": "111a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy10-111": {
@@ -25837,7 +25954,9 @@
     "xy2-13": {
       "setID": "xy2",
       "number": "13",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy2-14": {
@@ -26336,7 +26455,9 @@
     "xy2-69": {
       "setID": "xy2",
       "number": "69",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy2-70": {
@@ -26502,7 +26623,9 @@
     "xy2-88a": {
       "setID": "xy2",
       "number": "88a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy2-88": {
@@ -26672,13 +26795,17 @@
     "xy2-107": {
       "setID": "xy2",
       "number": "107",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy2-108": {
       "setID": "xy2",
       "number": "108",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy2-109": {
@@ -27174,7 +27301,9 @@
     "xy3-55a": {
       "setID": "xy3",
       "number": "55a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy3-55": {
@@ -27913,7 +28042,9 @@
     "xy4-24a": {
       "setID": "xy4",
       "number": "24a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy4-25": {
@@ -28283,7 +28414,9 @@
     "xy4-65a": {
       "setID": "xy4",
       "number": "65a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy4-66": {
@@ -28522,8 +28655,11 @@
     "xy4-92": {
       "setID": "xy4",
       "number": "92",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "xy4-93": {
       "setID": "xy4",
@@ -28564,13 +28700,17 @@
     "xy4-97": {
       "setID": "xy4",
       "number": "97",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy4-98": {
       "setID": "xy4",
       "number": "98",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy4-99": {
@@ -28603,8 +28743,11 @@
     "xy4-102": {
       "setID": "xy4",
       "number": "102",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "xy4-103": {
       "setID": "xy4",
@@ -28636,8 +28779,11 @@
     "xy4-106": {
       "setID": "xy4",
       "number": "106",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "xy4-107": {
       "setID": "xy4",
@@ -29356,8 +29502,11 @@
     "xy5-66": {
       "setID": "xy5",
       "number": "66",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "normal",
+        "reverse"
+      ],
+      "normalNeedsReview": false
     },
     "xy5-67": {
       "setID": "xy5",
@@ -30891,7 +31040,9 @@
     "xy6-77a": {
       "setID": "xy6",
       "number": "77a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy6-77": {
@@ -31031,8 +31182,11 @@
     "xy6-92a": {
       "setID": "xy6",
       "number": "92a",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "holo",
+        "normal"
+      ],
+      "normalNeedsReview": false
     },
     "xy6-92": {
       "setID": "xy6",
@@ -31859,7 +32013,9 @@
     "xy7-75a": {
       "setID": "xy7",
       "number": "75a",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy7-76": {
@@ -33364,8 +33520,11 @@
     "xy8-146a": {
       "setID": "xy8",
       "number": "146a",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "holo",
+        "normal"
+      ],
+      "normalNeedsReview": false
     },
     "xy8-146": {
       "setID": "xy8",
@@ -34386,14 +34545,19 @@
     "xy9-98b": {
       "setID": "xy9",
       "number": "98b",
-      "minimum": [],
+      "minimum": [
+        "holo"
+      ],
       "normalNeedsReview": true
     },
     "xy9-98a": {
       "setID": "xy9",
       "number": "98a",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "holo",
+        "normal"
+      ],
+      "normalNeedsReview": false
     },
     "xy9-98": {
       "setID": "xy9",
@@ -34488,8 +34652,11 @@
     "xy9-107a": {
       "setID": "xy9",
       "number": "107a",
-      "minimum": [],
-      "normalNeedsReview": true
+      "minimum": [
+        "holo",
+        "normal"
+      ],
+      "normalNeedsReview": false
     },
     "xy9-108": {
       "setID": "xy9",
@@ -36800,5 +36967,31 @@
     "sets/ec868c2920fd1c13.json": "512cf08135c9aaf1e20e13abc25f0d5a213b51e21accaaf6980e7f33b2ba5fd4",
     "sets/ee3cf40351e94398.json": "7a5e05b745e40dfa8fa792aa00ea9d251e77a86cffca17b6c4e8bf29c21994f5",
     "sets/f61cf51cf421d859.json": "67ff154bda78f95e32e1bf4a62ee81ffcd61a60e5f34484abbf25ca912a39e38"
+  },
+  "alternateMarketEvidence": {
+    "marketGroup": 1938,
+    "marketBuild": "2026-11-11T20:05:27+0000",
+    "marketSources": {
+      "products": {
+        "url": "https://tcgcsv.com/tcgplayer/3/1938/products",
+        "sha256": "1a9b45512eb52cb6a94290ace999d279d2ac3483333f84599ff05bfdffd94989"
+      },
+      "prices": {
+        "url": "https://tcgcsv.com/tcgplayer/3/1938/prices",
+        "sha256": "1eace6ce7c0d09d92edcb480f0410b8b002f91beb764fa186588c6947d3ac62c"
+      }
+    }
+  },
+  "linkedMarketEvidence": {
+    "bw9-117": {
+      "file": "bw9-117.json",
+      "url": "https://api.tcgdex.net/v2/en/cards/bw9-117",
+      "sha256": "4a0d0a3db963d0670e912a2b12d3306eeb0271bbad65084d0317a5cfd7aad8d6"
+    },
+    "bw9-118": {
+      "file": "bw9-118.json",
+      "url": "https://api.tcgdex.net/v2/en/cards/bw9-118",
+      "sha256": "bd23587b436f233d3033f437a1d292eb7103da8a2b6404a98a5c483ea7e42c92"
+    }
   }
 }

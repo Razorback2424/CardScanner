@@ -19,11 +19,12 @@ actor PokemonCatalogReleaseStore {
         let root = root ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first!.appendingPathComponent("BrowseCatalogCache/CatalogReleases", isDirectory: true)
         core = Core(root: root, currentName: Slot.current.rawValue, previousName: Slot.previous.rawValue,
-                    revisionPolicy: .currentSlot, revision: { $0.revision },
+                    revisionPolicy: .currentSlot, validateRecovery: true, revision: { $0.revision },
                     encode: { try JSONEncoder().encode($0) })
     }
 
     var activeRelease: StoredRelease? { get async { await core.activeRelease } }
+    var previousRelease: StoredRelease? { get async { await core.previousSlotRelease } }
     var activeRevision: Int? { get async { await core.activeRevision } }
     var activeRegistry: PokemonCatalogRegistry? { get async { await core.activeRegistry } }
 
@@ -38,8 +39,10 @@ actor PokemonCatalogReleaseStore {
     }
 
     func activate(envelope: PokemonCatalogReleaseEnvelope, release: PokemonCatalogRelease,
-                  registry: PokemonCatalogRegistry) async throws -> ActivationResult {
-        try await core.activate(.init(envelope: envelope, release: release, registry: registry))
+                  registry: PokemonCatalogRegistry, checklistStore: PokemonChecklistStore = .shared) async throws -> ActivationResult {
+        try await core.activate(.init(envelope: envelope, release: release, registry: registry)) { current in
+            current.checklistInputSHA256 == nil || checklistStore.hasStagedSignedSnapshot(for: current)
+        }
     }
 
     nonisolated func recoverFromBundledSeed() -> PokemonCatalogRegistry { .bundledSeed }

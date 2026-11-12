@@ -238,6 +238,152 @@ enum PokemonTCGCSVMapping {
 /// their real provider; never request `mee-013` from a primary provider that
 /// has not published it. See publisher/fixtures/mee-reviewed-products.json.
 enum PokemonReviewedEnergyCatalog {
+    struct UnnumberedPrinting: Decodable, Sendable {
+        let providerID: String
+        let localID: String
+        let name: String
+        let finishProducts: [String: Int]
+
+        var isSupplemental: Bool { providerID.hasPrefix("tcgplayer:") }
+        var variants: [PhysicalVariant] { [.normal, .holo, .reverse, .waveFoil].filter { finishProducts[$0.id] != nil } }
+        var thumbnailURL: URL? { artworkURL(suffix: "_200w.jpg") }
+        var imageURL: URL? { artworkURL(suffix: "_in_1000x1000.jpg") }
+
+        private func artworkURL(suffix: String) -> URL? {
+            (finishProducts[PhysicalVariant.normal.id] ?? finishProducts[PhysicalVariant.holo.id]).flatMap {
+                URL(string: "https://tcgplayer-cdn.tcgplayer.com/product/\($0)\(suffix)")
+            }
+        }
+    }
+
+    struct UnnumberedFamily: Decodable, Sendable {
+        let providerSetID: String
+        let setName: String
+        let setCode: String
+        let year: Int
+        let officialCount: Int
+        let cards: [UnnumberedPrinting]
+
+        var isStandalone: Bool { officialCount == 0 }
+        var checklistResource: String { "sets/reviewed-energy-\(year).json" }
+    }
+
+    private struct UnnumberedTable: Decodable {
+        let schemaVersion: Int
+        let families: [UnnumberedFamily]
+    }
+
+    static let unnumberedFamilies: [String: UnnumberedFamily] = {
+        guard let url = Bundle.main.resourceURL?.appendingPathComponent("PokemonChecklistSnapshot/\(unnumberedResource)"),
+              let data = try? Data(contentsOf: url),
+              let table = try? JSONDecoder().decode(UnnumberedTable.self, from: data), table.schemaVersion == 1,
+              Set(table.families.map(\.providerSetID)).count == table.families.count,
+              Set(table.families.map(\.year)).count == table.families.count else { return [:] }
+        var printingIDs = Set<String>()
+        for family in table.families {
+            guard family.officialCount >= 0, !family.setName.isEmpty, !family.setCode.isEmpty, !family.cards.isEmpty,
+                  !family.isStandalone || family.providerSetID.hasPrefix("tcgplayer:"),
+                  Set(family.cards.map(\.localID)).count == family.cards.count else { return [:] }
+            for card in family.cards {
+                let normal = card.finishProducts[PhysicalVariant.normal.id]
+                let holo = card.finishProducts[PhysicalVariant.holo.id]
+                let supportedLanes = family.isStandalone
+                    ? Set(card.finishProducts.values).count == 1 && card.finishProducts[PhysicalVariant.waveFoil.id] == nil
+                    : normal != nil && normal == card.finishProducts[PhysicalVariant.reverse.id]
+                guard printingIDs.insert(card.providerID).inserted, !card.name.isEmpty,
+                      let baseProduct = normal ?? holo, supportedLanes,
+                      card.finishProducts.values.allSatisfy({ $0 > 0 }),
+                      card.variants.count == card.finishProducts.count,
+                      card.providerID == (card.isSupplemental ? "tcgplayer:\(baseProduct)" : "\(family.providerSetID)-\(card.localID)")
+                else { return [:] }
+            }
+        }
+        return Dictionary(uniqueKeysWithValues: table.families.map { ($0.providerSetID, $0) })
+    }()
+
+    private static let unnumberedPrintings = Dictionary(uniqueKeysWithValues: unnumberedFamilies.values.flatMap { family in
+        family.cards.map { ($0.providerID, (family, $0)) }
+    })
+
+    static let unnumberedResource = "reviewed-unnumbered-energy.json"
+
+    static let standaloneEntries: [PokemonChecklistSnapshotEntry] = unnumberedFamilies.values
+        .filter(\.isStandalone).sorted { $0.year < $1.year }.map { family in
+            let finishes = family.cards.flatMap(\.variants)
+            let standardCount = finishes.filter { PokemonMasterSetDefinition.isPackVariant($0, setProviderID: family.providerSetID) }.count
+            let set = CatalogSet(catalogID: .init(game: .pokemon, providerID: family.providerSetID),
+                name: family.setName, code: family.setCode, logoURL: nil, symbolURL: nil,
+                cardCount: finishes.count, releaseDate: nil, sortRank: 0)
+            return PokemonChecklistSnapshotEntry(set: set, providerID: family.providerSetID, officialCount: nil,
+                standardSlotCount: standardCount, expandedSlotCount: finishes.count, resource: family.checklistResource)
+        }
+
+    static func standaloneChecklist(for entry: PokemonChecklistSnapshotEntry) -> [CatalogCardSummary]? {
+        let set = entry.set
+        guard let family = unnumberedFamilies[set.providerID], family.isStandalone,
+              entry.resource == family.checklistResource else { return nil }
+        return family.cards.flatMap { printing in
+            slots(printing, from: summary(printing, setID: set.catalogID, setName: set.name, setCode: set.code))
+        }
+    }
+
+    static func isUnnumbered(providerID: String) -> Bool { unnumberedPrintings[providerID] != nil }
+
+    static func printingYear(providerID: String) -> Int? { unnumberedPrintings[providerID]?.0.year }
+
+    static func unnumberedFamily(year: Int) -> UnnumberedFamily? {
+        unnumberedFamilies.values.first { $0.year == year }
+    }
+
+    static func unnumberedCard(providerID: String) -> TCGdexCard? {
+        guard let (family, printing) = unnumberedPrintings[providerID] else { return nil }
+        return TCGdexCard(id: printing.providerID, localId: printing.localID, name: printing.name,
+            image: printing.imageURL?.absoluteString, rarity: nil,
+            set: .init(id: family.providerSetID, name: family.setName,
+                cardCount: .init(total: family.isStandalone ? family.cards.count : family.officialCount, official: family.officialCount)),
+            variants: nil, pricing: nil, variantsDetailed: nil, projectedCatalogVariants: printing.variants)
+    }
+
+    static func unnumberedPrinting(for card: TCGdexCard) -> UnnumberedPrinting? {
+        guard let (family, printing) = unnumberedPrintings[card.id], family.providerSetID == card.set.id,
+              family.officialCount == card.set.cardCount.official, printing.localID == card.localId,
+              printing.name == card.name else { return nil }
+        return printing
+    }
+
+    static func projectingUnnumbered(_ summaries: [CatalogCardSummary]) -> [CatalogCardSummary] {
+        guard let anchor = summaries.first, anchor.game == .pokemon, anchor.pokemonPrintRun == nil,
+              let family = unnumberedFamilies[anchor.setID.providerID], family.setName == anchor.setName
+        else { return summaries }
+        var emitted = Set<String>()
+        let projected = summaries.flatMap { row -> [CatalogCardSummary] in
+            guard row.setID == anchor.setID, let (_, printing) = unnumberedPrintings[row.providerID],
+                  row.collectorNumber == printing.localID, row.name == printing.name else { return [row] }
+            guard emitted.insert(row.providerID).inserted else { return [] }
+            return slots(printing, from: row)
+        }
+        let existing = Set(summaries.map(\.providerID))
+        return projected + family.cards.filter { $0.isSupplemental && !existing.contains($0.providerID) }.flatMap { printing in
+            slots(printing, from: summary(printing, setID: anchor.setID, setName: anchor.setName, setCode: anchor.setCode))
+        }
+    }
+
+    private static func slots(_ printing: UnnumberedPrinting, from base: CatalogCardSummary) -> [CatalogCardSummary] {
+        PokemonMasterSetDefinition.requiredSlots(for: printing.variants, setProviderID: base.setID.providerID).map { slot in
+            var row = base
+            row.masterSetVariant = slot.variant
+            row.isExpandedMasterSetVariant = slot.isExpanded
+            row.isSoleSlotForCard = slot.isSole
+            return row
+        }
+    }
+
+    private static func summary(_ printing: UnnumberedPrinting, setID: CatalogSetID, setName: String, setCode: String) -> CatalogCardSummary {
+        CatalogCardSummary(game: .pokemon, providerID: printing.providerID, setID: setID, setName: setName,
+            setCode: setCode, name: printing.name, collectorNumber: printing.localID,
+            thumbnailURL: printing.thumbnailURL, imageURL: printing.imageURL)
+    }
+
     static var entries: [PokemonTCGCSVMapping.Entry] {
         PokemonTCGCSVMapping.entries.filter { $0.setID == "mee" }
     }
@@ -248,7 +394,10 @@ enum PokemonReviewedEnergyCatalog {
     }
 
     static func card(providerID: String) -> TCGdexCard? {
-        entries.first { $0.cardID == providerID }.map(card(for:))
+        if unnumberedPrintings[providerID]?.1.isSupplemental == true {
+            return unnumberedCard(providerID: providerID)
+        }
+        return entries.first { $0.cardID == providerID }.map(card(for:))
     }
 
     private static func card(for entry: PokemonTCGCSVMapping.Entry) -> TCGdexCard {

@@ -5,10 +5,159 @@ enum PokemonHistoricalCatalogError: Error, Sendable {
     case unsupported
 }
 
+/// Reviewed English artwork identities that share printed set and number.
+/// The original provider key stays with its original artwork.
+enum PokemonReviewedArtworkCatalog {
+    struct Printing: Decodable, Sendable {
+        let providerID: String
+        let label: String
+        let artworkProductID: Int
+        let finishes: [String]
+        let marketFinishes: Set<String>
+
+        var variants: [PhysicalVariant] { finishes.map(PhysicalVariant.resolving) }
+        var imageURL: URL? { URL(string: "https://tcgplayer-cdn.tcgplayer.com/product/\(artworkProductID)_in_1000x1000.jpg") }
+        var thumbnailURL: URL? { URL(string: "https://tcgplayer-cdn.tcgplayer.com/product/\(artworkProductID)_200w.jpg") }
+    }
+
+    struct Family: Decodable, Sendable {
+        let providerSetID: String
+        let setName: String
+        let setCode: String
+        let primaryProviderID: String
+        let name: String
+        let number: String
+        let officialCount: Int
+        let printings: [Printing]
+
+        func matches(setID: String, localID: String, name: String) -> Bool {
+            providerSetID == setID && CatalogIdentityNormalization.localNumber(number)
+                == CatalogIdentityNormalization.localNumber(localID)
+                && CatalogIdentityNormalization.canonicalText(self.name) == CatalogIdentityNormalization.canonicalText(name)
+        }
+
+        var identities: [PokemonCatalogCardIdentity] {
+            printings.map { printing in
+                .init(providerID: printing.providerID, setID: providerSetID, setName: setName, localID: number,
+                    name: name, thumbnailURL: printing.thumbnailURL)
+            }
+        }
+    }
+
+    private struct Table: Decodable {
+        let schemaVersion: Int
+        let families: [Family]
+    }
+
+    private static let families: [Family] = {
+        guard let url = Bundle.main.url(forResource: "reviewed-artwork-printings", withExtension: "json",
+                                        subdirectory: "PokemonChecklistSnapshot"),
+              let data = try? Data(contentsOf: url), let table = try? JSONDecoder().decode(Table.self, from: data),
+              table.schemaVersion == 1 else { return [] }
+        let allIDs = table.families.flatMap { $0.printings.map(\.providerID) }
+        guard Set(allIDs).count == allIDs.count else { return [] }
+        return table.families.filter { family in
+            family.officialCount > 0 && family.primaryProviderID == family.providerSetID + "-" + family.number
+                && family.printings.count > 1 && family.printings.contains { $0.providerID == family.primaryProviderID }
+                && family.printings.allSatisfy { printing in
+                    printing.artworkProductID > 0 && !printing.label.isEmpty && !printing.finishes.isEmpty
+                        && Set(printing.finishes).count == printing.finishes.count
+                        && Set(printing.finishes).isSubset(of: PokemonFinishCoverage.standardVariantIDs)
+                        && printing.marketFinishes.isSubset(of: Set(printing.finishes))
+                        && (printing.providerID == family.primaryProviderID
+                            || printing.providerID == "tcgplayer:\(printing.artworkProductID)")
+                }
+        }
+    }()
+    private static let byProviderID = Dictionary(uniqueKeysWithValues: families.flatMap { family in
+        family.printings.map { ($0.providerID, (family, $0)) }
+    })
+    private static let setIDs = Set(families.map(\.providerSetID))
+
+    static func printingLabel(for providerID: String, setID: String) -> String? {
+        guard let (family, printing) = byProviderID[providerID], family.providerSetID == setID else { return nil }
+        return printing.label
+    }
+
+    static func printing(for card: TCGdexCard) -> Printing? {
+        guard let (family, printing) = byProviderID[card.id],
+              family.matches(setID: card.set.id, localID: card.localId, name: card.name) else { return nil }
+        return printing
+    }
+
+    static func card(providerID: String) -> TCGdexCard? {
+        guard let (family, printing) = byProviderID[providerID] else { return nil }
+        return TCGdexCard(id: providerID, localId: family.number, name: family.name,
+            image: printing.imageURL?.absoluteString, rarity: nil,
+            set: .init(id: family.providerSetID, name: family.setName,
+                       cardCount: .init(total: family.officialCount, official: family.officialCount)),
+            variants: nil, pricing: nil, variantsDetailed: nil, projectedCatalogVariants: printing.variants)
+    }
+
+    static func card(for identity: PokemonCatalogCardIdentity, number: PokemonPrintedNumberEvidence,
+                     registry: PokemonCatalogRegistry) -> IdentifiedCard? {
+        guard let (family, _) = byProviderID[identity.providerID],
+              family.matches(setID: identity.setID, localID: identity.localID, name: identity.name),
+              identities(for: number, registry: registry).contains(where: { $0.providerID == identity.providerID }),
+              let card = card(providerID: identity.providerID) else { return nil }
+        return .pokemon(card, setCode: family.setCode)
+    }
+
+    static func hasAnchor(for providerID: String, in set: TCGdexSetCatalog) -> Bool {
+        guard let (family, _) = byProviderID[providerID], set.cardCount?.official == family.officialCount else { return false }
+        return set.cards.contains {
+            $0.id == family.primaryProviderID && family.matches(setID: set.id, localID: $0.localId, name: $0.name)
+        }
+    }
+
+    static func identities(for number: PokemonPrintedNumberEvidence, registry: PokemonCatalogRegistry) -> [PokemonCatalogCardIdentity] {
+        guard number.scheme == .officialSet else { return [] }
+        let localID = PokemonHistoricalIdentityResolver.canonicalLocalID(number.localID)
+        return families.filter {
+            number.denominator == $0.officialCount
+                && PokemonHistoricalIdentityResolver.canonicalLocalID($0.number) == localID
+                && !registry.isScanDisabled(forProviderSetID: $0.providerSetID)
+        }.flatMap(\.identities)
+    }
+
+    static func projecting(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
+        guard let setID = cards.first?.setID.providerID, setIDs.contains(setID) else { return cards }
+        var emitted = Set<String>()
+        return cards.flatMap { base -> [CatalogCardSummary] in
+            guard base.game == .pokemon, base.pokemonPrintRun == nil,
+                  let (family, _) = byProviderID[base.providerID],
+                  family.matches(setID: base.setID.providerID, localID: base.collectorNumber, name: base.name) else { return [base] }
+            guard emitted.insert(family.primaryProviderID).inserted else { return [] }
+            return family.printings.flatMap { printing in
+                PokemonMasterSetDefinition.requiredSlots(for: printing.variants, setProviderID: family.providerSetID).map { slot in
+                    CatalogCardSummary(game: .pokemon, providerID: printing.providerID, setID: base.setID,
+                        setName: base.setName, setCode: base.setCode, name: family.name, collectorNumber: family.number,
+                        thumbnailURL: printing.thumbnailURL, imageURL: printing.imageURL,
+                        masterSetVariant: slot.variant, isExpandedMasterSetVariant: slot.isExpanded,
+                        isSoleSlotForCard: slot.isSole)
+                }
+            }
+        }
+    }
+}
+
 /// A small, identity-only Pokémon record assembled from the on-device Browse
 /// checklist. The checklist is authoritative for the set/card relationship, but
 /// it deliberately does not pretend to contain live market data.
 enum PokemonOfflineCardFactory {
+    static func card(in checklist: PokemonChecklistStore.LoadedChecklist,
+                     providerCardID: String) -> TCGdexCard? {
+        let entry = checklist.entry
+        let slots = checklist.cards.filter { $0.providerID == providerCardID }
+        guard !slots.isEmpty else { return nil }
+        let suffix = entry.set.pokemonPrintRun.map { " — \($0.label)" }
+        let name = if let suffix, entry.set.name.hasSuffix(suffix) {
+            String(entry.set.name.dropLast(suffix.count))
+        } else { entry.set.name }
+        return makeCard(summaries: slots, setName: name, providerSetID: entry.providerID,
+            officialCount: entry.officialCount ?? entry.set.cardCount ?? 0)
+    }
+
     private static func makeCard(
         summaries: [CatalogCardSummary],
         setName: String,
@@ -16,7 +165,12 @@ enum PokemonOfflineCardFactory {
         officialCount: Int,
         localID: String? = nil
     ) -> TCGdexCard {
-        if let reviewed = PokemonReviewedEnergyCatalog.card(providerID: summaries[0].providerID) {
+        if let reviewed = PokemonReviewedArtworkCatalog.card(providerID: summaries[0].providerID),
+           reviewed.set.id == providerSetID, reviewed.name == summaries[0].name,
+           reviewed.localId == summaries[0].collectorNumber { return reviewed }
+        if let reviewed = PokemonReviewedEnergyCatalog.card(providerID: summaries[0].providerID),
+           reviewed.set.id == providerSetID, reviewed.name == summaries[0].name,
+           reviewed.localId == summaries[0].collectorNumber {
             return reviewed
         }
         // One numbered Pokémon card may occupy several checklist rows: normal,
@@ -96,6 +250,7 @@ enum PokemonOfflineCardFactory {
                     && PokemonHistoricalIdentityResolver.canonicalLocalID($0.collectorNumber)
                         == PokemonHistoricalIdentityResolver.canonicalLocalID(localID)
             }
+            guard Set(matches.map(\.providerID)).count == 1 else { continue }
             let summaries = matches.sorted { left, right in
                 let leftVariant = left.masterSetVariant?.id ?? ""
                 let rightVariant = right.masterSetVariant?.id ?? ""
@@ -130,7 +285,8 @@ enum PokemonOfflineCardFactory {
             registry: registry
         )
         let providerSetID = candidate.setID.lowercased()
-        guard candidateSets.contains(providerSetID) || isMembership,
+        guard !PokemonFinishMinimumCatalog.isUnnumbered(cardID: candidate.providerID),
+              candidateSets.contains(providerSetID) || isMembership,
               let entry = snapshot.manifest.entries.first(where: {
                   $0.providerID.caseInsensitiveCompare(candidate.setID) == .orderedSame
               }),
@@ -161,7 +317,7 @@ enum PokemonOfflineCardFactory {
             providerSetID: entry.providerID,
             officialCount: providerNumbering
                 ? entry.officialCount ?? entry.set.cardCount ?? 0
-                : number.denominator,
+                : number.denominator ?? entry.officialCount ?? 0,
             localID: providerNumbering ? nil : candidate.localID
         )
         return .pokemon(
@@ -190,7 +346,7 @@ enum PokemonOfflineCardFactory {
                 || membershipSetIDs.contains(entry.providerID.lowercased())) {
             guard let cards = snapshot.checklists[entry.set.id] else { continue }
             for summary in cards where summary.game == .pokemon
-                && PokemonHistoricalIdentityResolver.canonicalLocalID(summary.collectorNumber) == localID {
+                && summary.printedCollectorNumber.map(PokemonHistoricalIdentityResolver.canonicalLocalID) == localID {
                 let identity = PokemonCatalogCardIdentity(
                     providerID: summary.providerID,
                     setID: entry.providerID,
@@ -300,6 +456,7 @@ enum PokemonOfflineCardFactory {
             }
             guard let primary = summaries.first else { return nil }
             let officialCount = evidence.number.denominator
+                ?? snapshot.entry(forProviderID: identity.setID)?.officialCount ?? 0
             let card = makeCard(
                 summaries: summaries,
                 setName: identity.setName,
@@ -323,6 +480,7 @@ enum PokemonOfflineCardFactory {
     ) -> Set<String> {
         switch number.scheme {
         case .officialSet:
+            guard let denominator = number.denominator, denominator > 0 else { return [] }
             return Set(entries.compactMap { entry in
                 let descriptor = registry.descriptor(forProviderSetID: entry.providerID)
                     ?? PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: entry.providerID)
@@ -330,12 +488,12 @@ enum PokemonOfflineCardFactory {
                 let officialCount = entry.officialCount
                     ?? registry.officialCount(forProviderSetID: entry.providerID)
                     ?? PokemonCatalogRegistry.bundledSeed.officialCount(forProviderSetID: entry.providerID)
-                return officialCount == number.denominator
+                return officialCount == denominator
                     && !registry.isScanDisabled(forProviderSetID: entry.providerID)
                     ? entry.providerID.lowercased()
                     : nil
             })
-        case .subset:
+        case .subset, .standalone:
             return Set(
                 PokemonHistoricalIdentityResolver.candidateSetIDs(for: number, in: [])
                     .filter { !registry.isScanDisabled(forProviderSetID: $0) }
@@ -410,9 +568,8 @@ actor PokemonOfflineCatalog {
         localID: String,
         expectedOfficialCount: Int?
     ) async -> TCGdexCard? {
-        await cardWithSource(providerSetID: providerSetID, localID: localID,
-            expectedOfficialCount: expectedOfficialCount,
-            providerFingerprint: registry.descriptor(forProviderSetID: providerSetID)?.providerFingerprint,
+        try? await cardWithSource(providerSetID: providerSetID, localID: localID,
+            expectedOfficialCount: expectedOfficialCount, registry: registry,
             requiresExactFingerprint: false)?.card
     }
 
@@ -420,11 +577,11 @@ actor PokemonOfflineCatalog {
         providerSetID: String,
         localID: String,
         expectedOfficialCount: Int?,
-        providerFingerprint: String?,
+        registry: PokemonCatalogRegistry,
         requiresExactFingerprint: Bool
-    ) async -> CardLookup? {
+    ) async throws -> CardLookup? {
         let setID = CatalogSetID(game: .pokemon, providerID: providerSetID)
-        guard let loaded = await store.loadedChecklist(for: setID, providerFingerprint: providerFingerprint,
+        guard let loaded = try await store.loadedChecklist(for: setID, registry: registry,
             requiresExactFingerprint: requiresExactFingerprint),
               let card = PokemonOfflineCardFactory.card(
                 in: snapshot(entry: loaded.entry, cards: loaded.cards),
@@ -440,23 +597,17 @@ actor PokemonOfflineCatalog {
 
     func card(
         for candidate: PokemonCatalogCardIdentity,
-        number: PokemonPrintedNumberEvidence
-    ) async -> IdentifiedCard? {
+        number: PokemonPrintedNumberEvidence,
+        registry: PokemonCatalogRegistry
+    ) async throws -> IdentifiedCard? {
         await loadIfNeeded()
-        let registry = self.registry
         guard let entry = entries.first(where: {
             $0.providerID.caseInsensitiveCompare(candidate.setID) == .orderedSame
         }),
-              let cards = await store.mergedChecklist(for: entry.set.catalogID) else { return nil }
-        let manifest = PokemonChecklistSnapshotManifest(
-            schemaVersion: PokemonChecklistSnapshotVersion.schema,
-            rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
-            generatedAt: .now,
-            directoryFingerprint: "candidate",
-            entries: [entry]
-        )
+              let loaded = try await store.loadedChecklist(for: entry.set.catalogID, registry: registry,
+                requiresExactFingerprint: true) else { return nil }
         return PokemonOfflineCardFactory.card(
-            in: PokemonChecklistSnapshot(manifest: manifest, checklists: [entry.set.id: cards]),
+            in: snapshot(entry: loaded.entry, cards: loaded.cards),
             candidate: candidate,
             number: number,
             registry: registry
@@ -476,10 +627,10 @@ actor PokemonOfflineCatalog {
     }
 
     func candidates(
-        for number: PokemonPrintedNumberEvidence
-    ) async -> [PokemonCatalogCardIdentity] {
+        for number: PokemonPrintedNumberEvidence,
+        registry: PokemonCatalogRegistry
+    ) async throws -> [PokemonCatalogCardIdentity] {
         await loadIfNeeded()
-        let registry = self.registry
         let membershipSetIDs = PokemonOfflineCardFactory.membershipSetIDs(
             for: number,
             registry: registry
@@ -496,9 +647,9 @@ actor PokemonOfflineCatalog {
         for entry in entries where candidateSetIDs.contains(entry.providerID.lowercased())
             && (!registry.isScanDisabled(forProviderSetID: entry.providerID)
                 || membershipSetIDs.contains(entry.providerID.lowercased())) {
-            guard let cards = await store.mergedChecklist(for: entry.set.catalogID) else { continue }
-            matchingEntries.append(entry)
-            checklists[entry.set.id] = cards
+            guard let loaded = try await store.loadedChecklist(for: entry.set.catalogID, registry: registry) else { continue }
+            matchingEntries.append(loaded.entry)
+            checklists[loaded.entry.set.id] = loaded.cards
         }
         let membershipIdentities = PokemonHistoricalIdentityResolver.membershipIdentities(
             for: number,
@@ -519,12 +670,9 @@ actor PokemonOfflineCatalog {
         )
     }
 
-    func historicalCard(for evidence: PokemonHistoricalScanEvidence) async -> IdentifiedCard? {
+    func historicalCard(for evidence: PokemonHistoricalScanEvidence,
+                        registry: PokemonCatalogRegistry) async throws -> IdentifiedCard? {
         await loadIfNeeded()
-        // Pin the immutable snapshot for this lookup. Activation can happen
-        // while checklist files are being read, but one resolution must never
-        // combine candidate filtering from two registry revisions.
-        let registry = self.registry
         let membershipSetIDs = Set(
             PokemonHistoricalIdentityResolver.membershipSetIDs(
                 for: evidence,
@@ -534,6 +682,7 @@ actor PokemonOfflineCatalog {
         let candidateSetIDs: Set<String>
         switch evidence.number.scheme {
         case .officialSet:
+            guard let denominator = evidence.number.denominator, denominator > 0 else { return nil }
             let liveCandidateSetIDs = Set(entries.compactMap { entry -> String? in
                 let descriptor = registry.descriptor(forProviderSetID: entry.providerID)
                     ?? PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: entry.providerID)
@@ -541,13 +690,13 @@ actor PokemonOfflineCatalog {
                 let officialCount = entry.officialCount
                     ?? registry.officialCount(forProviderSetID: entry.providerID)
                     ?? PokemonCatalogRegistry.bundledSeed.officialCount(forProviderSetID: entry.providerID)
-                return officialCount == evidence.number.denominator
+                return officialCount == denominator
                     && !registry.isScanDisabled(forProviderSetID: entry.providerID)
                     ? entry.providerID.lowercased()
                     : nil
             })
             candidateSetIDs = liveCandidateSetIDs.union(membershipSetIDs)
-        case .subset:
+        case .subset, .standalone:
             candidateSetIDs = Set(
                 PokemonHistoricalIdentityResolver.candidateSetIDs(
                     for: evidence.number,
@@ -562,9 +711,14 @@ actor PokemonOfflineCatalog {
         for entry in entries where candidateSetIDs.contains(entry.providerID.lowercased())
             && (!registry.isScanDisabled(forProviderSetID: entry.providerID)
                 || membershipSetIDs.contains(entry.providerID.lowercased())) {
-            guard let cards = await store.mergedChecklist(for: entry.set.catalogID) else { continue }
-            matchingEntries.append(entry)
-            checklists[entry.set.id] = cards
+            let fingerprint = registry.descriptor(forProviderSetID: entry.providerID)?.providerFingerprint
+            guard let loaded = try await store.loadedChecklist(for: entry.set.catalogID, registry: registry,
+                requiresExactFingerprint: true) else {
+                if fingerprint != nil { return nil }
+                continue
+            }
+            matchingEntries.append(loaded.entry)
+            checklists[loaded.entry.set.id] = loaded.cards
         }
         guard !matchingEntries.isEmpty else { return nil }
         let manifest = PokemonChecklistSnapshotManifest(

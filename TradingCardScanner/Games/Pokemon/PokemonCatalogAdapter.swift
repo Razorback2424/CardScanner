@@ -22,7 +22,7 @@ struct PokemonCatalogAdapter: GameCatalogAdapter {
         generation = Self.generation(for: registry)
     }
 
-    fileprivate static func generation(for registry: PokemonCatalogRegistry) -> String {
+    static func generation(for registry: PokemonCatalogRegistry) -> String {
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let bytes = try! encoder.encode(registry.descriptors)
         let digest = SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
@@ -31,6 +31,12 @@ struct PokemonCatalogAdapter: GameCatalogAdapter {
 
     func prepareLookupIdentifier(_ identifier: ScanIdentifier) throws -> ScanIdentifier {
         guard identifier.game == game else { throw CatalogLookupError.staleCatalog }
+        if identifier.namespace == PokemonUnnumberedEnergyEvidence.namespace {
+            guard identifier.catalogGeneration == nil || identifier.catalogGeneration == generation,
+                  let family = PokemonUnnumberedEnergyEvidence.family(for: identifier, registry: registry)
+            else { throw CatalogLookupError.staleCatalog }
+            return PokemonUnnumberedEnergyEvidence.identifier(year: family.year, generation: generation)
+        }
         let expectedFields: Set<String>
         switch identifier.namespace {
         case "modern": expectedFields = ["printedCode", "localID", "denominator", "providerSetID", "officialCount", "releaseIndex"]
@@ -55,6 +61,9 @@ struct PokemonCatalogAdapter: GameCatalogAdapter {
 
     func acceptsCompletion(for identifier: ScanIdentifier, fromGeneration: String) -> Bool {
         guard identifier.game == game else { return false }
+        if identifier.namespace == PokemonUnnumberedEnergyEvidence.namespace {
+            return generation == fromGeneration
+        }
         switch identifier.legacyIdentity {
         case .pokemon, .pokemonPromo, .pokemonEnergy: return true
         case .pokemonHistorical: return generation == fromGeneration
@@ -72,11 +81,33 @@ struct PokemonCatalogAdapter: GameCatalogAdapter {
 
     func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome {
         let prepared = try prepareLookupIdentifier(identifier)
+        if let family = PokemonUnnumberedEnergyEvidence.family(for: prepared, registry: registry) {
+            let summary = CanonicalCardSummary(id: prepared.suppressionIdentity, game: game,
+                name: "\(family.year) Energy", printedIdentifier: prepared.displayIdentifier, language: "en")
+            return .needsPrintingChoice(canonical: summary, candidates: unnumberedChoices(family, for: prepared))
+        }
         return .resolved(try await engine.resolution(for: prepared))
     }
 
     func resolve(_ candidate: PhysicalPrintingCandidate, for identifier: ScanIdentifier) async throws -> CardCatalog.CatalogResolution {
-        throw CatalogLookupError.invalidPrintingChoice
+        let prepared = try prepareLookupIdentifier(identifier)
+        guard let family = PokemonUnnumberedEnergyEvidence.family(for: prepared, registry: registry),
+              unnumberedChoices(family, for: prepared).contains(where: { $0.matchesPersistedChoice(candidate) }),
+              let card = PokemonReviewedEnergyCatalog.unnumberedCard(providerID: candidate.id) else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+        let resolved = IdentifiedCard(legacy: .pokemon(card.applyingAdditionalVariants(from: registry), setCode: family.setCode),
+                                      canonicalCardID: prepared.suppressionIdentity)
+        return .init(resolved, path: .cacheHit)
+    }
+
+    private func unnumberedChoices(_ family: PokemonReviewedEnergyCatalog.UnnumberedFamily,
+                                   for identifier: ScanIdentifier) -> [PhysicalPrintingCandidate] {
+        family.cards.map { card in
+            PhysicalPrintingCandidate(id: card.providerID, game: game, canonicalCardID: identifier.suppressionIdentity,
+                language: "en", catalogGeneration: generation, name: card.name, printedIdentifier: "Unnumbered",
+                thumbnailURL: card.thumbnailURL)
+        }
     }
 
     func prewarm() async { await engine.prewarm() }
@@ -164,7 +195,7 @@ actor PokemonCatalogEngine {
     func candidates(
         for number: PokemonPrintedNumberEvidence
     ) async -> [PokemonCatalogCardIdentity] {
-        await offline.candidates(for: number)
+        (try? await offline.candidates(for: number, registry: catalogRegistry)) ?? []
     }
 
     /// Starts loading both persistent sources before the camera begins feeding
@@ -182,47 +213,59 @@ actor PokemonCatalogEngine {
         matching evidence: PokemonHistoricalScanEvidence,
         recoverArtwork: Bool = true
     ) async throws -> IdentifiedCard {
-        guard PokemonNameMatcher.agrees(
+        let registry = catalogRegistry
+        let generation = catalogGeneration
+        guard !PokemonFinishMinimumCatalog.isUnnumbered(cardID: candidate.providerID),
+              PokemonNameMatcher.agrees(
             cardName: candidate.name,
             readings: evidence.titleCandidates
         ) else {
             throw TCGdexError.identityMismatch
         }
-        if let selectedOfflineCard = await offline.card(
+        if let selectedOfflineCard = try await offline.card(
             for: candidate,
-            number: evidence.number
+            number: evidence.number,
+            registry: registry
         ) {
-            return applyingSignedArtwork(to: selectedOfflineCard)
+            guard generation == catalogGeneration else { throw CatalogLookupError.staleCatalog }
+            return applyingSignedArtwork(to: selectedOfflineCard, registry: registry)
         }
-        if let offlineCard = await offline.historicalCard(for: evidence),
+        if let offlineCard = try await offline.historicalCard(for: evidence, registry: registry),
            case let .pokemon(card, _) = offlineCard.legacyIdentity,
            card.id.caseInsensitiveCompare(candidate.providerID) == .orderedSame,
            card.set.id.caseInsensitiveCompare(candidate.setID) == .orderedSame,
            PokemonHistoricalIdentityResolver.canonicalLocalID(card.localId)
                 == PokemonHistoricalIdentityResolver.canonicalLocalID(candidate.localID) {
-            return applyingSignedArtwork(to: offlineCard)
+            guard generation == catalogGeneration else { throw CatalogLookupError.staleCatalog }
+            return applyingSignedArtwork(to: offlineCard, registry: registry)
         }
         let card = try await historicalPokemon.card(
             for: candidate,
             matching: evidence,
-            registry: catalogRegistry
+            registry: registry
         )
-        let authorized = applyingSignedArtwork(to: card)
+        let authorized = applyingSignedArtwork(to: card, registry: registry)
         let enriched = recoverArtwork ? await recoveringArtworkIfNeeded(for: authorized) : authorized
         try Task.checkCancellation()
-        return applyingSignedArtwork(to: enriched)
+        guard generation == catalogGeneration else { throw CatalogLookupError.staleCatalog }
+        return enriched
     }
 
     func resolution(for identifier: ScanIdentifier) async throws -> CatalogResolution {
+        let registry = catalogRegistry
         if case .pokemonHistorical = identifier.legacyIdentity,
            identifier.catalogGeneration != catalogGeneration { throw CatalogLookupError.staleCatalog }
         let resolution = try await fetchResolution(identifier)
         if case .pokemonHistorical = identifier.legacyIdentity,
            identifier.catalogGeneration != catalogGeneration { throw CatalogLookupError.staleCatalog }
+        if case let .pokemon(card, _) = resolution.card.legacyIdentity,
+           PokemonFinishMinimumCatalog.isUnnumbered(cardID: card.id) {
+            throw PokemonHistoricalCatalogError.unsupported
+        }
         // Optional image discovery must not hold the serial scan lane. Signed
         // and payload artwork remain immediate; Collection's existing missing-
         // metadata normalizer recovers omitted provider images after intake.
-        let card = applyingSignedArtwork(to: resolution.card)
+        let card = applyingSignedArtwork(to: resolution.card, registry: registry)
         let enriched = CatalogResolution(card, isPersistable: resolution.isPersistable,
             retrievedAt: resolution.retrievedAt, path: resolution.path)
         await persistResolution(enriched, for: identifier)
@@ -239,7 +282,7 @@ actor PokemonCatalogEngine {
             case let .pokemonHistorical(evidence): count = evidence.number.denominator
             default: count = nil
             }
-            let fingerprint = catalogRegistry.descriptor(forProviderSetID: pokemonCard.set.id)?.providerFingerprint
+            let fingerprint = catalogRegistry.resolvedCardCacheFingerprint(forProviderSetID: pokemonCard.set.id)
             await resolvedDiskCache.store(card: pokemonCard, setCode: setCode, key: key,
                 officialCount: count, catalogFingerprint: fingerprint)
         }
@@ -249,7 +292,7 @@ actor PokemonCatalogEngine {
         guard identifier.catalogGeneration == catalogGeneration, enriched.isPersistable, enriched.path == .network,
               case let .pokemon(card, _) = enriched.card.legacyIdentity,
               let image = card.storedArtworkURL, let key = Self.persistentKey(for: identifier) else { return }
-        let fingerprint = catalogRegistry.descriptor(forProviderSetID: card.set.id)?.providerFingerprint
+        let fingerprint = catalogRegistry.resolvedCardCacheFingerprint(forProviderSetID: card.set.id)
         await resolvedDiskCache.addArtwork(image, cardID: card.id, key: key, catalogFingerprint: fingerprint)
     }
 
@@ -269,9 +312,15 @@ actor PokemonCatalogEngine {
                let card = PokemonReviewedEnergyCatalog.card(setID: definition.tcgdexSetID, localID: number) {
                 return CatalogResolution(.pokemon(card, setCode: code), path: .cacheHit)
             }
+            if case let .pokemon(_, localID, count, definition) = identifier.legacyIdentity {
+                let number = PokemonPrintedNumberEvidence(localID: localID, denominator: count, scheme: .officialSet)
+                let choices = PokemonReviewedArtworkCatalog.identities(for: number, registry: registry)
+                    .filter { $0.setID == definition.tcgdexSetID }
+                if choices.count > 1 { throw PokemonHistoricalCatalogError.ambiguous(choices) }
+            }
             var requiresExactChecklistFingerprint = false
             if let diskKey, let cached = await resolvedDiskCache.card(for: diskKey) {
-                let fingerprint = registry.descriptor(forProviderSetID: cached.card.set.id)?.providerFingerprint
+                let fingerprint = registry.resolvedCardCacheFingerprint(forProviderSetID: cached.card.set.id)
                 if cached.catalogFingerprint == fingerprint {
                     return CatalogResolution(
                         .pokemon(cached.card, setCode: cached.setCode),
@@ -286,66 +335,74 @@ actor PokemonCatalogEngine {
 
             func checklistResolution(
                 providerSetID: String, localID: String, officialCount: Int?, setCode: String
-            ) async -> CatalogResolution? {
+            ) async throws -> CatalogResolution? {
                 let fingerprint = registry.descriptor(forProviderSetID: providerSetID)?.providerFingerprint
-                guard let match = await offline.cardWithSource(
+                guard let match = try await offline.cardWithSource(
                     providerSetID: providerSetID, localID: localID, expectedOfficialCount: officialCount,
-                    providerFingerprint: fingerprint, requiresExactFingerprint: requiresExactChecklistFingerprint
+                    registry: registry, requiresExactFingerprint: requiresExactChecklistFingerprint
                 ) else { return nil }
                 let provisional = fingerprint != nil && match.providerFingerprint != fingerprint
                 return CatalogResolution(.pokemon(match.card, setCode: setCode),
                     path: provisional ? .offlineFallback : .cacheHit)
             }
 
+            func preferCurrent(_ local: CatalogResolution?,
+                               live: () async throws -> CatalogResolution) async throws -> CatalogResolution {
+                if let local, local.path != .offlineFallback { return local }
+                do {
+                    let current = try await live()
+                    return current.path == .historicalFallback ? local ?? current : current
+                } catch {
+                    if error is CancellationError || Task.isCancelled { throw error }
+                    if case .notInCatalog = CardCatalog.classify(error) { throw error }
+                    if let local { return local }
+                    throw error
+                }
+            }
+
             switch identifier.legacyIdentity {
             case .opaque:
                 throw CardGameSupportError.unsupportedGame(identifier.game)
             case let .pokemon(setCode, cardNumber, printedTotal, setDefinition):
-                if let resolution = await checklistResolution(providerSetID: setDefinition.tcgdexSetID,
-                    localID: cardNumber, officialCount: printedTotal, setCode: setCode) {
-                    return resolution
+                let local = try await checklistResolution(providerSetID: setDefinition.tcgdexSetID,
+                    localID: cardNumber, officialCount: printedTotal, setCode: setCode)
+                return try await preferCurrent(local) {
+                    try await Self.resolveModernPokemon(
+                        setCode: setCode, cardNumber: cardNumber, setDefinition: setDefinition,
+                        source: pokemonSource, breaker: tcgdexBreaker
+                    )
                 }
-                return try await Self.resolveModernPokemon(
-                    setCode: setCode,
-                    cardNumber: cardNumber,
-                    setDefinition: setDefinition,
-                    source: pokemonSource,
-                    breaker: tcgdexBreaker
-                )
 
             case let .pokemonEnergy(code, localID, definition):
-                if let resolution = await checklistResolution(providerSetID: definition.tcgdexSetID,
-                    localID: localID, officialCount: nil, setCode: code) {
-                    return resolution
+                let local = try await checklistResolution(providerSetID: definition.tcgdexSetID,
+                    localID: localID, officialCount: nil, setCode: code)
+                // Existing 001–008 use the same exact set/local-ID transport contract as promos.
+                return try await preferCurrent(local) {
+                    try await Self.resolvePromoPokemon(prefix: code, localID: localID,
+                        setDefinition: .init(printedPrefix: code, tcgdexSetID: definition.tcgdexSetID,
+                            catalogLocalIDPrefix: "", localIDPadWidth: definition.localIDPadWidth),
+                        source: pokemonSource, breaker: tcgdexBreaker)
                 }
-                // Existing 001–008 use the same exact set/local-ID transport
-                // contract as promos, without acquiring a promo identity.
-                return try await Self.resolvePromoPokemon(prefix: code, localID: localID,
-                    setDefinition: .init(printedPrefix: code, tcgdexSetID: definition.tcgdexSetID,
-                        catalogLocalIDPrefix: "", localIDPadWidth: definition.localIDPadWidth),
-                    source: pokemonSource, breaker: tcgdexBreaker)
 
             case let .pokemonPromo(prefix, localID, setDefinition):
-                if let resolution = await checklistResolution(providerSetID: setDefinition.tcgdexSetID,
-                    localID: localID, officialCount: nil, setCode: prefix) {
-                    return resolution
+                let local = try await checklistResolution(providerSetID: setDefinition.tcgdexSetID,
+                    localID: localID, officialCount: nil, setCode: prefix)
+                return try await preferCurrent(local) {
+                    try await Self.resolvePromoPokemon(
+                        prefix: prefix, localID: localID, setDefinition: setDefinition,
+                        source: pokemonSource, breaker: tcgdexBreaker
+                    )
                 }
-                return try await Self.resolvePromoPokemon(
-                    prefix: prefix,
-                    localID: localID,
-                    setDefinition: setDefinition,
-                    source: pokemonSource,
-                    breaker: tcgdexBreaker
-                )
 
             case let .pokemonHistorical(evidence):
                 // A shared reprint footer is already ambiguous on device. Do
                 // not turn the offline factory's nil (no unique card) into a
                 // provider request before offering those known printings.
-                if !PokemonHistoricalIdentityResolver.membershipIdentities(
+                let artworks = PokemonReviewedArtworkCatalog.identities(for: evidence.number, registry: registry)
+                if !artworks.isEmpty || !PokemonHistoricalIdentityResolver.membershipIdentities(
                     for: evidence.number, in: registry
                 ).isEmpty {
-                    let candidates = await offline.candidates(for: evidence.number)
+                    let candidates = try await offline.candidates(for: evidence.number, registry: registry) + artworks
                     if case let .ambiguous(matches) = PokemonHistoricalIdentityResolver.resolve(
                         evidence,
                         candidateSetIDs: candidates.map(\.setID),
@@ -354,7 +411,7 @@ actor PokemonCatalogEngine {
                         throw PokemonHistoricalCatalogError.ambiguous(matches)
                     }
                 }
-                if let card = await offline.historicalCard(for: evidence) {
+                if let card = try await offline.historicalCard(for: evidence, registry: registry) {
                     return CatalogResolution(card, path: .cacheHit)
                 }
                 return CatalogResolution(
@@ -559,16 +616,20 @@ actor PokemonCatalogEngine {
     func recoveringArtworkIfNeeded(for identifiedCard: IdentifiedCard) async -> IdentifiedCard {
         guard case let .pokemon(card, setCode) = identifiedCard.legacyIdentity,
               card.storedArtworkURL == nil else { return identifiedCard }
-        return applyingSignedArtwork(to: .pokemon(await pokemonSource.recoveringArtwork(for: card), setCode: setCode))
+        let registry = card.acquisitionCatalog ?? catalogRegistry
+        return applyingSignedArtwork(to: .pokemon(await pokemonSource.recoveringArtwork(for: card), setCode: setCode),
+            registry: registry)
     }
 
-    private func applyingSignedArtwork(to identifiedCard: IdentifiedCard) -> IdentifiedCard {
+    private func applyingSignedArtwork(to identifiedCard: IdentifiedCard,
+                                       registry: PokemonCatalogRegistry? = nil) -> IdentifiedCard {
         guard case let .pokemon(rawCard, setCode) = identifiedCard.legacyIdentity else { return identifiedCard }
         // Reapply the captured registry on every path, including memory/disk
         // hits. An old authorization cannot survive its signed removal.
-        let card = rawCard.applyingAdditionalVariants(from: catalogRegistry)
+        let registry = registry ?? catalogRegistry
+        let card = rawCard.applyingAdditionalVariants(from: registry)
         guard !Self.hasUsableArtworkURL(card.image),
-              let descriptor = catalogRegistry.descriptor(forProviderSetID: card.set.id),
+              let descriptor = registry.descriptor(forProviderSetID: card.set.id),
               let artwork = descriptor.cardArtwork?.first(where: {
                   CatalogIdentityNormalization.localNumber($0.localID)
                     == CatalogIdentityNormalization.localNumber(card.localId)
@@ -576,7 +637,7 @@ actor PokemonCatalogEngine {
               let image = Self.artworkBaseURL(from: artwork.imageURL) else {
             return .pokemon(card, setCode: setCode)
         }
-        var signedCard = TCGdexCard(
+        let signedCard = TCGdexCard(
             id: card.id,
             localId: card.localId,
             name: card.name,
@@ -588,8 +649,7 @@ actor PokemonCatalogEngine {
             variantsDetailed: card.variantsDetailed,
             projectedCatalogVariants: card.projectedCatalogVariants
         )
-        signedCard.reviewedAdditionalVariants = card.reviewedAdditionalVariants
-        return .pokemon(signedCard, setCode: setCode)
+        return .pokemon(signedCard.applyingAdditionalVariants(from: registry), setCode: setCode)
     }
 
     private static func hasUsableArtworkURL(_ raw: String?) -> Bool {

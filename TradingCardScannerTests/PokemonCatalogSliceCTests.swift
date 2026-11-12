@@ -301,7 +301,7 @@ final class PokemonCatalogSliceCTests: XCTestCase {
             XCTAssertEqual(selected.variantEvidence.catalogVariants, [.holo])
 
             let wrongNumber = PokemonPrintedNumberEvidence(localID: evidence.number.localID,
-                denominator: evidence.number.denominator + 1, scheme: .officialSet)
+                denominator: try XCTUnwrap(evidence.number.denominator) + 1, scheme: .officialSet)
             XCTAssertFalse(PokemonHistoricalIdentityResolver.membershipIdentities(for: wrongNumber, in: registry)
                 .contains { $0.providerID == providerID }, row.footer)
         }

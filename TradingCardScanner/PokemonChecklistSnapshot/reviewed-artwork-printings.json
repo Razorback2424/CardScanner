@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "families": [
+    {
+      "providerSetID": "xy1",
+      "setName": "XY",
+      "setCode": "XY",
+      "primaryProviderID": "xy1-17",
+      "name": "Vivillon",
+      "number": "17",
+      "officialCount": 146,
+      "printings": [
+        {
+          "providerID": "xy1-17",
+          "label": "Meadow",
+          "artworkProductID": 91249,
+          "finishes": ["holo", "reverse", "cosmos"],
+          "marketFinishes": ["holo", "reverse"]
+        },
+        {
+          "providerID": "tcgplayer:90395",
+          "label": "High Plains",
+          "artworkProductID": 90395,
+          "finishes": ["holo", "reverse"],
+          "marketFinishes": ["holo", "reverse"]
+        }
+      ],
+      "evidence": [
+        "https://assets.pokemon.com/assets/cms2/pdf/trading-card-game/checklist/xy1_web_cardlist_en.pdf",
+        "https://assets.tcgdex.net/en/xy/xy1/17/high.png",
+        "https://www.tcgplayer.com/product/91249",
+        "https://www.tcgplayer.com/product/90395",
+        "https://www.cgccards.com/population-report/tcg/pok%C3%A9mon/2/xy/929/xy/12264/?page=1&populationID=477664",
+        "https://www.cgccards.com/registry/trading-cards/competitive-sets/awards/1338/?page=2"
+      ]
+    }
+  ]
+}

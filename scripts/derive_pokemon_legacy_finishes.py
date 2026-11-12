@@ -2,7 +2,7 @@
 """Derive minimum finish evidence for bundled Normal-only Pokémon sets.
 
 Inputs are retained English TCGdex set responses, a pinned Pokémon TCG Data
-card list, and one TCGCSV product/price capture. Aggregate repairs also need
+card list, and retained TCGCSV product and price captures. Aggregate repairs also need
 the original checklist snapshot used to review the Holo and Reverse slots.
 The sources establish exact card identity and positive market membership.
 A missing lane is a review question. This output never certifies exhaustive
@@ -17,14 +17,20 @@ from pathlib import Path
 import re
 
 from certify_pokemon_finish_coverage import (
-    ROOT, SNAPSHOT, checklist, compare, local_number, name_key, numbered_products,
-    product_finishes, read_json, write_json,
+    ROOT, SNAPSHOT, LANES, checklist, compare, local_number, name_key, numbered_products,
+    product_finishes, read_json, without_number_suffix, write_json,
 )
-from market_price_feeds import digest
+from market_price_feeds import digest, validate_response
 
 REVIEWED_SETS = {"sma", "xya"}  # Already covered by dedicated physical evidence.
 STANDARD = {"normal", "holo", "reverse"}
 TRAIT_NAMES = {"Ω": "Omega", "α": "Alpha", "Δ": "Delta"}
+FAIRY_CHARM_MARKET_TYPES = {"Grass": "G", "Psychic": "P", "Fighting": "F", "Dragon": "O"}
+ALTERNATE_ART_MARKET_GROUP = 1938
+LINKED_PRICE_LANES = {
+    "normal": "Normal", "holofoil": "Holofoil", "holo": "Holofoil",
+    "reverse-holofoil": "Reverse Holofoil", "reverse": "Reverse Holofoil",
+}
 ASCENDED_REVERSE_PATTERNS = {
     "pokeball": "pokeBall", "duskball": "duskBall", "friendball": "friendBall",
     "quickball": "quickBall", "loveball": "loveBall", "team-rocket": "team-rocket", "energy": "energy",
@@ -50,10 +56,26 @@ def captured(evidence, files, relative, url):
     return raw
 
 
+def special_energy_identity(name):
+    for family, count in (("Blend Energy", 4), ("Unit Energy", 3)):
+        if not name.startswith(family + " "):
+            continue
+        suffix = name.removeprefix(family + " ").replace(" ", "")
+        types = re.findall(r"Grass|Fire|Water|Lightning|Psychic|Fighting|Darkness|Metal|Fairy|Dragon", suffix)
+        if len(types) == count and "".join(types) == suffix:
+            return family, types
+    return None
+
+
 def identity_agrees(card, alternate, number_key):
-    return alternate is not None and name_key(card["name"]) == name_key(alternate["name"]) and (
-        local_number(card["number"]) == local_number(str(alternate[number_key]))
-    )
+    if alternate is None or local_number(card["number"]) != local_number(str(alternate[number_key])):
+        return False
+    if name_key(card["name"]) == name_key(alternate["name"]):
+        return True
+    if alternate.get("supertype") == "Energy" and "Special" in alternate.get("subtypes", []):
+        identity = special_energy_identity(card["name"])
+        return identity is not None and identity == special_energy_identity(alternate["name"])
+    return False
 
 
 def unique_cards(rows):
@@ -63,10 +85,40 @@ def unique_cards(rows):
     return cards
 
 
-def product_name(product, independent):
+def product_name(product, independent, card_name):
     name = product["name"]
-    if "Team Plasma" in independent.get("subtypes", []):
+    subtypes = independent.get("subtypes", [])
+    if "Team Plasma" in subtypes:
         name = re.sub(r" \(Team Plasma\)(?= \(| - |$)", "", name, flags=re.IGNORECASE)
+    if "Supporter" in subtypes:
+        name = re.sub(r" \(Supporter\)(?= \(| - |$)", "", name, flags=re.IGNORECASE)
+    if "Prism Star" in subtypes and independent["name"].endswith("◇"):
+        name = re.sub(r" Prism Star(?= \(| - |$)", " ◇", name, flags=re.IGNORECASE)
+    mega_form = re.fullmatch(r"M Charizard[- ]EX \(([XY])\)( \(Secret\))?", name, flags=re.IGNORECASE)
+    if mega_form and {"MEGA", "EX"}.issubset(subtypes) and name_key(independent["name"]) == "m charizard ex":
+        form_attack = {"X": "Wild Blaze", "Y": "Crimson Dive"}[mega_form[1].upper()]
+        secret = independent.get("rarity") == "Rare Secret"
+        if secret == bool(mega_form[2]) and any(
+            attack.get("name") == form_attack for attack in independent.get("attacks", [])
+        ):
+            name = independent["name"]
+    alias = None
+    if independent.get("supertype") == "Energy" and "Special" in subtypes:
+        if identity := special_energy_identity(independent["name"]):
+            family, types = identity
+            code = "".join("R" if family == "Unit Energy" and energy_type == "Fire" else energy_type[0]
+                           for energy_type in types)
+            alias = family + " " + code
+    elif "Pokémon Tool" in subtypes and independent["name"].startswith("Fairy Charm "):
+        if code := FAIRY_CHARM_MARKET_TYPES.get(independent["name"].removeprefix("Fairy Charm ")):
+            alias = "Fairy Charm " + code
+    if alias:
+        name = re.sub(rf"^{re.escape(alias)}(?= \(| - |$)", card_name, name, flags=re.IGNORECASE)
+    for annotation in (" Team Flare Gear", " Team Flare Hyper Gear"):
+        if independent["name"].endswith(annotation):
+            title = independent["name"].removesuffix(annotation)
+            if name_key(without_number_suffix(name, product["number"])) == name_key(title):
+                name = independent["name"]
     trait = TRAIT_NAMES.get((independent.get("ancientTrait") or {}).get("name", "")[:1])
     if trait:
         name = re.sub(rf" \({trait}\)(?= \(| - |$)", "", name, flags=re.IGNORECASE)
@@ -74,7 +126,8 @@ def product_name(product, independent):
         name = re.sub(rf"(?<=\d) {trait}\)$", ")", name, flags=re.IGNORECASE)
     for symbol, suffix in (("♀", "F"), ("♂", "M")):
         if symbol in independent["name"]:
-            name = re.sub(rf"^Nidoran {suffix}(?= \(| - |$)", f"Nidoran{symbol}", name, flags=re.IGNORECASE)
+            name = re.sub(rf"^Nidoran (?:{suffix}|\({suffix}\))(?= \(| - |$)",
+                          f"Nidoran{symbol}", name, flags=re.IGNORECASE)
     return name
 
 
@@ -97,7 +150,8 @@ def match_cards(cards, primary, secondary, products):
             status = "independent catalog identity unavailable or differs"
         else:
             for product in products.get(number, []):
-                variants = product_finishes(card, dict(product, name=product_name(product, independent)))
+                title = product_name(product, independent, card["name"])
+                variants = product_finishes(card, dict(product, name=title))
                 if variants and variants <= STANDARD:
                     matches.append((product["productId"], variants))
             if not matches:
@@ -115,6 +169,89 @@ def match_cards(cards, primary, secondary, products):
             "otherProductsAtNumber": unmatched,
         }
     return result
+
+
+def alternate_market_products(evidence, entries, by_set):
+    review = read_json(evidence / "verified-alternates.json")
+    group = review["marketGroup"]
+    if group != ALTERNATE_ART_MARKET_GROUP:
+        raise ValueError("Unexpected alternate-art market group")
+    start = (evidence / "start.txt").read_bytes()
+    if start != (evidence / "end.txt").read_bytes() or start.decode().strip() != review["marketBuild"]:
+        raise ValueError("Alternate-art market capture crossed source builds")
+    raw = {kind: (evidence / f"{group}-{kind}.json").read_bytes() for kind in ("products", "prices")}
+    for kind, data in raw.items():
+        expected = {"url": f"https://tcgcsv.com/tcgplayer/3/{group}/{kind}", "sha256": digest(data)}
+        if review["marketSources"].get(kind) != expected:
+            raise ValueError(f"Alternate-art market {kind} differs from the retained receipt")
+
+    footers = defaultdict(set)
+    for entry in entries:
+        count = entry.get("officialCount")
+        if not count:
+            continue
+        for slot in by_set[entry["providerID"]]:
+            number = local_number(slot["collectorNumber"])
+            if re.fullmatch(r"[0-9]+[a-z]+", number):
+                footers[number, str(count)].add(slot["providerID"])
+
+    by_card = defaultdict(list)
+    for number, products in numbered_products(raw["products"], raw["prices"], group).items():
+        for product in products:
+            denominator = product["number"].partition("/")[2].strip()
+            if not re.fullmatch(r"[0-9]+", denominator):
+                continue
+            ids = footers.get((number, local_number(denominator)), set())
+            if len(ids) == 1:
+                by_card[next(iter(ids))].append(product)
+    return by_card, {key: review[key] for key in ("marketGroup", "marketBuild", "marketSources")}
+
+
+def apply_unnumbered_energy(matches, cards, primary, secondary, raw_products, raw_prices, group):
+    products = defaultdict(list)
+    for product in validate_response(raw_products, 3, group, "products"):
+        if product["name"].endswith(" (2017 Unnumbered)") and not any(
+            field["name"] == "Number" and field["value"].strip() for field in product["extendedData"]
+        ):
+            products[product["name"].removesuffix(" (2017 Unnumbered)")].append(product)
+    lanes = defaultdict(set)
+    for price in validate_response(raw_prices, 3, group, "prices"):
+        lanes[price["productId"]].add(LANES.get(name_key(price["subTypeName"])))
+
+    # These are the unnumbered 2017 designs included alongside the set. The
+    # provider's nine numeric IDs are stable keys, never printed numbers.
+    for number in range(164, 173):
+        card_id = f"sm1-{number}"
+        card = cards.get(card_id)
+        independent = secondary.get(card_id)
+        if (not card or not independent or independent.get("supertype") != "Energy"
+                or "Basic" not in independent.get("subtypes", [])
+                or not identity_agrees(card, primary.get(card_id), "localId")
+                or not identity_agrees(card, independent, "number")):
+            continue
+        row = matches[card_id]
+        row.update(isUnnumbered=True, minimum=[], status="exact unnumbered market product unavailable", productIDs=[])
+        exact = [product for product in products[card["name"]] if any(
+            field["name"] == "Card Type" and field["value"] == "Basic " + card["name"]
+            for field in product["extendedData"]
+        )]
+        if len(exact) == 1:
+            product_id = exact[0]["productId"]
+            if lanes[product_id] and lanes[product_id] <= STANDARD:
+                row.update(minimum=sorted(lanes[product_id]), status="matched", productIDs=[product_id])
+
+
+def linked_market_products(card_id, card, detail, set_id, official_count, products):
+    if (detail["id"] != card_id or detail["set"]["id"] != set_id
+            or not identity_agrees(card, detail, "localId")):
+        raise ValueError(f"Provider detail identity differs for {card_id}")
+    linked = defaultdict(set)
+    for key, value in ((detail.get("pricing") or {}).get("tcgplayer") or {}).items():
+        if key in LINKED_PRICE_LANES and isinstance(value, dict) and type(value.get("productId")) is int:
+            linked[value["productId"]].add(LINKED_PRICE_LANES[key])
+    return [dict(product, subtypes=sorted(linked[product["productId"]])) for product in products
+            if not product["subtypes"] and product["productId"] in linked
+            and re.fullmatch(r"0*" + str(official_count), product["number"].partition("/")[2].strip())]
 
 
 def english_details(card, kind):
@@ -250,7 +387,7 @@ def released_normal_scope(evidence, candidate):
 
 
 def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=None, candidate=None,
-           *, aggregate_baseline=None):
+           *, aggregate_baseline=None, alternate_evidence=None, detail_evidence=None):
     snapshot = repo / SNAPSHOT
     baseline_root = aggregate_baseline or snapshot
     baseline = read_json(baseline_root / "manifest.json")
@@ -274,11 +411,12 @@ def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=No
         resource: sha256 for resource, (sha256, ids) in sorted(legacy_resources.items())
         if repaired_cards & ids
     }
+    previous_path = snapshot / "legacy-finish-evidence.json"
+    previous = read_json(previous_path) if previous_path.is_file() else {}
     if aggregate_baseline is None:
         # Replay from a shallow checkout only while the bundled bytes still
         # reproduce the reviewed bindings.
-        previous = snapshot / "legacy-finish-evidence.json"
-        if not previous.is_file() or read_json(previous).get("aggregateChecklistSources") != aggregate_sources:
+        if previous.get("aggregateChecklistSources") != aggregate_sources:
             raise ValueError(
                 "Supply the checklist directory used for the review with --aggregate-baseline. "
                 f"If the review used the current bundle, run from the repository root with --aggregate-baseline {SNAPSHOT}."
@@ -288,6 +426,14 @@ def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=No
     by_set = defaultdict(list)
     for entry in manifest["entries"]:
         by_set[entry["providerID"]].extend(read_json(snapshot / entry["resource"]))
+    if previous.get("alternateMarketEvidence") and alternate_evidence is None:
+        raise ValueError("Supply --alternate-market-evidence to replay the bundled alternate-art evidence")
+    alternate_products, alternate_receipt = ({}, {}) if alternate_evidence is None else alternate_market_products(
+        alternate_evidence, manifest["entries"], by_set)
+    if previous.get("linkedMarketEvidence") and detail_evidence is None:
+        raise ValueError("Supply --provider-detail-evidence to replay the bundled linked-market evidence")
+    detail_files = {} if detail_evidence is None else capture_files(detail_evidence, read_json(detail_evidence / "receipts.json"))
+    detail_receipts = {}
     scope = {}
     for set_id, rows in sorted(by_set.items()):
         if set_id not in REVIEWED_SETS and rows and all(
@@ -325,6 +471,7 @@ def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=No
         titles = {name_key(primary["name"])}
         titles.update({"sm1": {"sm base set"}, "xy1": {"xy base set"}}.get(set_id, ()))
         products = defaultdict(list)
+        unnumbered_market = None
         for group_id in groups[set_id]:
             name = re.sub(r"^(SM|XY|BW) - ", "", group_index[group_id], flags=re.IGNORECASE)
             if name_key(name.removesuffix(": Radiant Collection")) not in titles:
@@ -332,10 +479,42 @@ def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=No
             url = f"https://tcgcsv.com/tcgplayer/3/{group_id}"
             raw_products = captured(evidence, files, f"TCGCSV/{group_id}-products.json", f"{url}/products")
             raw_prices = captured(evidence, files, f"TCGCSV/{group_id}-prices.json", f"{url}/prices")
+            if set_id == "sm1" and group_id == 1863:
+                unnumbered_market = raw_products, raw_prices, group_id
             for number, rows in numbered_products(raw_products, raw_prices, group_id).items():
                 products[number].extend(rows)
 
-        matches = match_cards(cards, unique_cards(primary["cards"]), secondary, products)
+        primary_cards = unique_cards(primary["cards"])
+        matches = match_cards(cards, primary_cards, secondary, products)
+        if unnumbered_market is not None:
+            apply_unnumbered_energy(matches, cards, primary_cards, secondary, *unnumbered_market)
+        for card_id in matches.keys() & alternate_products.keys():
+            row = matches[card_id]
+            if row["minimum"] or row["status"] != "exact standard market product unavailable":
+                continue
+            number = local_number(row["number"])
+            extra = match_cards({card_id: cards[card_id]}, primary_cards, secondary,
+                                {number: alternate_products[card_id]})[card_id]
+            if extra["minimum"]:
+                row.update(minimum=extra["minimum"], status="matched", productIDs=extra["productIDs"],
+                           marketGroup=ALTERNATE_ART_MARKET_GROUP)
+                row["otherProductsAtNumber"] = sorted(set(row["otherProductsAtNumber"]) | set(extra["otherProductsAtNumber"]))
+        official_count = (primary.get("cardCount") or {}).get("official")
+        for card_id, row in matches.items():
+            if row["status"] != "exact standard market product unavailable" or not official_count:
+                continue
+            number = local_number(row["number"])
+            detail_path = Path(f"{card_id}.json")
+            if not products[number] or detail_path not in detail_files:
+                continue
+            detail = json.loads(captured(detail_evidence, detail_files, detail_path,
+                                         f"https://api.tcgdex.net/v2/en/cards/{card_id}"))
+            linked = linked_market_products(card_id, cards[card_id], detail, set_id, official_count, products[number])
+            extra = match_cards({card_id: cards[card_id]}, primary_cards, secondary, {number: linked})[card_id]
+            if extra["minimum"]:
+                row.update(minimum=extra["minimum"], status="matched", productIDs=extra["productIDs"])
+                row["otherProductsAtNumber"] = sorted(set(row["otherProductsAtNumber"]) - set(extra["productIDs"]))
+                detail_receipts[card_id] = detail_files[detail_path]
         report[set_id] = {"checklistSources": sources, "marketGroups": groups[set_id], "cards": matches}
         for card_id, row in matches.items():
             if card_id in output or card_id != set_id + "-" + row["number"]:
@@ -345,6 +524,8 @@ def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=No
                 "setID": set_id, "number": row["number"], "minimum": minimum,
                 "normalNeedsReview": "normal" not in minimum,
             }
+            if row.get("isUnnumbered"):
+                output[card_id]["isUnnumbered"] = True
     released_report = {}
     if released_evidence is not None:
         set_id, matches, released_report = released_normal_scope(released_evidence, candidate)
@@ -357,11 +538,13 @@ def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=No
                 "setID": set_id, "number": row["number"], "minimum": row["minimum"],
                 "normalNeedsReview": "normal" not in row["minimum"],
             }
+    alternate_provenance = {"alternateMarketEvidence": alternate_receipt} if alternate_receipt else {}
+    linked_provenance = {"linkedMarketEvidence": detail_receipts} if detail_receipts else {}
     return {
         "schemaVersion": 1, "marketBuild": receipt["marketBuild"],
         "secondaryCatalogCommit": secondary_receipt["commit"], "cards": output,
         "holoAggregates": holo_aggregates, "reverseAggregates": reverse_aggregates,
-        "aggregateChecklistSources": aggregate_sources,
+        "aggregateChecklistSources": aggregate_sources, **alternate_provenance, **linked_provenance,
     }, {
         "schemaVersion": 1, "market": receipt, "independentCatalog": secondary_receipt,
         "marketGroupIndexSHA256": digest(group_index_path.read_bytes()), "sets": report,
@@ -369,7 +552,7 @@ def derive(repo, evidence, foil_evidence, reverse_evidence, released_evidence=No
         "reverseEvidence": reverse_receipt, "reverseMarketSources": reverse_market_sources,
         "reverseAggregates": reverse_aggregates,
         "aggregateChecklistSources": aggregate_sources,
-        "releasedSetEvidence": released_report,
+        "releasedSetEvidence": released_report, **alternate_provenance, **linked_provenance,
     }
 
 
@@ -382,13 +565,18 @@ def main():
                         help="Original checklist directory. Defaults to the bundle when its reviewed hashes match.")
     parser.add_argument("--released-evidence", type=Path)
     parser.add_argument("--candidate", type=Path)
+    parser.add_argument("--alternate-market-evidence", type=Path,
+                        help="Retained Alternate Art Promos products, prices, build markers and verified-alternates.json receipt")
+    parser.add_argument("--provider-detail-evidence", type=Path,
+                        help="Retained TCGdex detail responses and receipts.json with exact market product links")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--report", required=True, type=Path)
     args = parser.parse_args()
     if (args.released_evidence is None) != (args.candidate is None):
         parser.error("--released-evidence and --candidate are required together")
     output, report = derive(ROOT, args.evidence, args.foil_evidence, args.reverse_evidence,
-                            args.released_evidence, args.candidate, aggregate_baseline=args.aggregate_baseline)
+                            args.released_evidence, args.candidate, aggregate_baseline=args.aggregate_baseline,
+                            alternate_evidence=args.alternate_market_evidence, detail_evidence=args.provider_detail_evidence)
     write_json(args.output, output)
     write_json(args.report, report)
     count = sum(bool(row["minimum"]) for row in output["cards"].values())

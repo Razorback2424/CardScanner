@@ -331,6 +331,8 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
     public let setID: String?
     public let variants: PokemonCatalogProviderVariants?
     public let variantsDetailed: [PokemonCatalogProviderDetailedVariant]?
+    public let hasPlainHoloLane: Bool
+    public let hasPlainReverseLane: Bool
 
     public init(
         id: String,
@@ -339,7 +341,9 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         image: String? = nil,
         setID: String? = nil,
         variants: PokemonCatalogProviderVariants? = nil,
-        variantsDetailed: [PokemonCatalogProviderDetailedVariant]? = nil
+        variantsDetailed: [PokemonCatalogProviderDetailedVariant]? = nil,
+        hasPlainHoloLane: Bool = false,
+        hasPlainReverseLane: Bool = false
     ) {
         self.id = id
         self.localID = localID
@@ -348,6 +352,8 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         self.setID = setID
         self.variants = variants
         self.variantsDetailed = variantsDetailed
+        self.hasPlainHoloLane = hasPlainHoloLane
+        self.hasPlainReverseLane = hasPlainReverseLane
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -359,10 +365,32 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         case set
         case variants
         case variantsDetailed = "variants_detailed"
+        case pricing, hasPlainHoloLane, hasPlainReverseLane
     }
 
     private struct SetReference: Decodable {
         let id: String
+    }
+
+    private struct Pricing: Decodable {
+        let tcgplayer: FinishLanes?
+    }
+
+    private struct FinishLanes: Decodable {
+        let holo: Bool
+        let reverse: Bool
+
+        private enum Lane: String, CodingKey {
+            case holo, holofoil, reverse
+            case reverseHolofoil = "reverse-holofoil"
+        }
+
+        init(from decoder: Decoder) throws {
+            let lanes = try decoder.container(keyedBy: Lane.self)
+            func has(_ key: Lane) -> Bool { lanes.contains(key) && (try? lanes.decodeNil(forKey: key)) == false }
+            holo = has(.holo) || has(.holofoil)
+            reverse = has(.reverse) || has(.reverseHolofoil)
+        }
     }
 
     public init(from decoder: Decoder) throws {
@@ -385,6 +413,9 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
             [PokemonCatalogProviderDetailedVariant].self,
             forKey: .variantsDetailed
         )
+        let lanes = (try? container.decode(Pricing.self, forKey: .pricing))?.tcgplayer
+        hasPlainHoloLane = try container.decodeIfPresent(Bool.self, forKey: .hasPlainHoloLane) ?? lanes?.holo ?? false
+        hasPlainReverseLane = try container.decodeIfPresent(Bool.self, forKey: .hasPlainReverseLane) ?? lanes?.reverse ?? false
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -396,6 +427,8 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         try container.encodeIfPresent(setID, forKey: .setID)
         try container.encodeIfPresent(variants, forKey: .variants)
         try container.encodeIfPresent(variantsDetailed, forKey: .variantsDetailed)
+        if hasPlainHoloLane { try container.encode(true, forKey: .hasPlainHoloLane) }
+        if hasPlainReverseLane { try container.encode(true, forKey: .hasPlainReverseLane) }
     }
 }
 

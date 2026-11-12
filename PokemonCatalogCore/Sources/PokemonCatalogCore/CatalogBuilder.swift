@@ -334,6 +334,7 @@ public struct PokemonCatalogBuilder: Sendable {
         var descriptors: [PokemonCatalogSetDescriptor] = []
         var entries: [PokemonCatalogSnapshotEntry] = []
         var checklists: [String: [PokemonCatalogCardSummary]] = [:]
+        var checklistInputs: [String: PokemonCatalogChecklistInput] = [:]
         var setReviews: [PokemonCatalogSetReview] = []
         var totalCards = 0
         var occupiedExpansionCodes = Set<String>(
@@ -371,7 +372,7 @@ public struct PokemonCatalogBuilder: Sendable {
                 occupiedExpansionCodes: occupiedExpansionCodes
             )
             let descriptorWithoutFingerprint = descriptorBuild.descriptor
-            let (fingerprint, summaries) = try buildChecklist(
+            let (fingerprint, acquisitionFingerprint, summaries) = try buildChecklist(
                 row: row,
                 providerSet: providerSet,
                 providerCards: providerCards,
@@ -385,6 +386,7 @@ public struct PokemonCatalogBuilder: Sendable {
             )
             let descriptor = descriptorWithoutFingerprint.withProviderFingerprint(
                 fingerprint,
+                providerAcquisitionFingerprint: acquisitionFingerprint,
                 artworkFallbackURLs: artworkFallbackURLs,
                 cardArtwork: cardArtwork
             )
@@ -414,6 +416,9 @@ public struct PokemonCatalogBuilder: Sendable {
                 )
             )
             checklists[providerID] = summaries
+            checklistInputs[providerID] = .init(providerSet: providerSet, cards: providerSet.cards.compactMap {
+                providerCards[$0.id.lowercased()]
+            })
             setReviews.append(
                 PokemonCatalogSetReview(
                     providerSetID: providerID,
@@ -480,7 +485,8 @@ public struct PokemonCatalogBuilder: Sendable {
             revision: request.revision,
             generatedAt: request.generatedAt,
             sets: descriptors.sorted(by: descriptorSort),
-            englishExclusions: englishExclusions
+            englishExclusions: englishExclusions,
+            checklistInputSHA256: checklistInputs.isEmpty ? nil : try PokemonCatalogChecklistInput.digest(checklistInputs)
         )
         try PokemonCatalogReleaseValidator.validate(
             release,
@@ -495,7 +501,8 @@ public struct PokemonCatalogBuilder: Sendable {
                     .joined(separator: "\u{1F}")
             ),
             entries: sortedEntries,
-            checklists: checklists
+            checklists: checklists,
+            checklistInputs: checklistInputs.isEmpty ? nil : checklistInputs
         )
         let classification = PokemonCatalogChangeClassifier.classify(
             previousRelease: request.activeRelease,
@@ -1345,7 +1352,7 @@ public struct PokemonCatalogBuilder: Sendable {
         providerSet: PokemonCatalogProviderSet,
         providerCards: [String: PokemonCatalogProviderCard],
         descriptor: PokemonCatalogSetDescriptor
-    ) throws -> (fingerprint: String, summaries: [PokemonCatalogCardSummary]) {
+    ) throws -> (fingerprint: String, acquisitionFingerprint: String, summaries: [PokemonCatalogCardSummary]) {
         guard providerSet.cards.count <= configuration.maxCardsPerSet else {
             throw PokemonCatalogBuildError.tooManyCards(
                 setID: row.id,
@@ -1388,6 +1395,7 @@ public struct PokemonCatalogBuilder: Sendable {
         }
 
         var briefIDs = Set<String>()
+        var details: [String: PokemonCatalogProviderCard] = [:]
         var summaries: [PokemonCatalogCardSummary] = []
         for brief in providerSet.cards {
             let cardKey = brief.id.lowercased()
@@ -1410,6 +1418,7 @@ public struct PokemonCatalogBuilder: Sendable {
                     received: card.id
                 )
             }
+            details[cardKey] = card
             if let setID = card.setID,
                setID.caseInsensitiveCompare(row.id) != .orderedSame {
                 throw PokemonCatalogBuildError.cardSetMismatch(
@@ -1454,16 +1463,11 @@ public struct PokemonCatalogBuilder: Sendable {
         summaries.sort {
             ($0.localID, $0.providerCardID) < ($1.localID, $1.providerCardID)
         }
-        guard let providerFingerprint = PokemonCatalogProviderFingerprint.v1(
-            providerSet: providerSet,
-            cardDetails: providerCards
-        ) else {
+        guard let providerFingerprint = PokemonCatalogProviderFingerprint.v1(providerSet: providerSet, cardDetails: details),
+              let acquisitionFingerprint = PokemonCatalogProviderFingerprint.acquisitionV1(providerSet: providerSet, cardDetails: details) else {
             throw PokemonCatalogBuildError.invalidProviderFingerprint(row.id)
         }
-        return (
-            providerFingerprint,
-            summaries
-        )
+        return (providerFingerprint, acquisitionFingerprint, summaries)
     }
 
     private func validateMembershipRecognition(

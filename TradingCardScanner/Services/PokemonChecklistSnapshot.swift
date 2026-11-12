@@ -18,28 +18,37 @@ enum PokemonChecklistReviewedProjection {
     /// Signed supplements are a read-time projection. Keep them out of the raw
     /// provider snapshot so removing an authorization also removes its slot.
     static func addingAdditionalVariants(to cards: [CatalogCardSummary], registry: PokemonCatalogRegistry) -> [CatalogCardSummary] {
-        var result = cards
-        for descriptor in registry.descriptors {
-            for reviewed in descriptor.additionalVariants ?? [] where reviewed.addsMembership && reviewed.variantID != "jumbo" {
-                guard let base = cards.first(where: {
-                    $0.providerID == reviewed.providerCardID && $0.setID.providerID == descriptor.providerSetID
-                        && CatalogIdentityNormalization.canonicalText($0.name)
-                            == CatalogIdentityNormalization.canonicalText(reviewed.canonicalName)
-                }) else { continue }
-                let variant = PhysicalVariant.pokemonFoilPattern(reviewed.variantID)
-                guard !result.contains(where: { $0.providerID == base.providerID && $0.setID == base.setID
-                    && $0.masterSetVariant?.id == variant.id }) else { continue }
-                for index in result.indices where result[index].providerID == base.providerID && result[index].setID == base.setID {
-                    result[index].isSoleSlotForCard = false
-                }
-                var added = base
-                added.masterSetVariant = variant
-                added.isExpandedMasterSetVariant = reviewed.variantID == "cosmos"
-                added.isSoleSlotForCard = false
-                result.append(added)
+        let supplements = Dictionary(grouping: Set(cards.map(\.setID.providerID)).flatMap {
+            registry.descriptor(forProviderSetID: $0)?.additionalVariants ?? []
+        }.filter { $0.addsMembership && $0.variantID != "jumbo" }, by: \.providerCardID)
+        guard !supplements.isEmpty else { return cards }
+        let groups = Dictionary(grouping: cards) { [$0.setID.id, $0.providerID] }
+        var emitted = Set<[String]>()
+        return cards.flatMap { base -> [CatalogCardSummary] in
+            let reviewed = supplements[base.providerID, default: []].filter {
+                $0.matchesCard(setID: base.setID.providerID, cardID: base.providerID,
+                    localID: base.collectorNumber, name: base.name)
             }
+            guard !reviewed.isEmpty else { return [base] }
+            let key = [base.setID.id, base.providerID]
+            guard emitted.insert(key).inserted else { return [] }
+            let withholdsNormal = reviewed.contains { $0.normalNeedsReview == true }
+            let slots = groups[key, default: []]
+            // A reviewed finish supplies the slot for an identity-only row.
+            var projected = slots.filter {
+                $0.masterSetVariant != nil && !(withholdsNormal && $0.masterSetVariant == .normal)
+            }
+            for supplement in reviewed where !projected.contains(where: { $0.masterSetVariant?.id == supplement.variantID }) {
+                var added = base
+                let variant = PhysicalVariant.resolving(supplement.variantID)
+                added.masterSetVariant = variant
+                added.isExpandedMasterSetVariant = !PokemonMasterSetDefinition.isPackVariant(
+                    variant, setProviderID: base.setID.providerID)
+                projected.append(added)
+            }
+            for index in projected.indices { projected[index].isSoleSlotForCard = projected.count == 1 }
+            return projected
         }
-        return result
     }
 
     static let setIDs: Set<String> = Set(["me02.5", "sma", "xya", "me05", "me03", "sv04.5", "swsh10.5", "sv03.5"])
@@ -69,7 +78,7 @@ enum PokemonChecklistReviewedProjection {
 
     static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
         guard cards.contains(where: needsProjection) else {
-            return PokemonMasterSetDefinition.checklist(cards)
+            return finishingChecklist(cards)
         }
         let cardsByProviderID = Dictionary(grouping: cards, by: \.providerID)
         var emitted = Set<String>()
@@ -109,7 +118,12 @@ enum PokemonChecklistReviewedProjection {
                 return value
             }
         }
-        return PokemonMasterSetDefinition.checklist(reviewed)
+        return finishingChecklist(reviewed)
+    }
+
+    private static func finishingChecklist(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
+        PokemonMasterSetDefinition.checklist(
+            PokemonReviewedEnergyCatalog.projectingUnnumbered(PokemonReviewedArtworkCatalog.projecting(cards)))
     }
 
     private static func needsProjection(_ card: CatalogCardSummary) -> Bool {
@@ -140,6 +154,8 @@ struct PokemonChecklistSnapshotManifest: Codable, Sendable, Equatable {
     let generatedAt: Date
     let directoryFingerprint: String
     let entries: [PokemonChecklistSnapshotEntry]
+    /// Integrity of projected local resources, written only for signed releases.
+    var resourceSHA256: [String: String]? = nil
 
     var isSupported: Bool {
         schemaVersion == PokemonChecklistSnapshotVersion.schema
@@ -385,6 +401,68 @@ enum PokemonMasterSetChecklistBuilder {
         let expandedSlotCount: Int
     }
 
+    static func signedBaseSet(provider: TCGdexSetCatalog, descriptor: PokemonCatalogSetDescriptor) -> CatalogSet {
+        let providerID = descriptor.providerSetID
+        return CatalogSet(
+            catalogID: .init(game: .pokemon, providerID: providerID),
+            name: descriptor.displayName ?? provider.name,
+            code: descriptor.printedCode ?? descriptor.printedPrefix ?? providerID.uppercased(),
+            logoURL: descriptor.logoURL.flatMap(URL.init(string:)) ?? assetURL(provider.logo, suffix: ".png"),
+            symbolURL: descriptor.symbolURL.flatMap(URL.init(string:)) ?? assetURL(provider.symbol, suffix: ".png"),
+            cardCount: provider.cardCount.map {
+                PokemonMasterSetDefinition.masterCount(cardCount: $0, setName: provider.name, printRun: nil)
+            },
+            releaseDate: descriptor.releaseDate.flatMap(FlexibleDate.parse),
+            sortRank: descriptor.releaseOrder ?? 0,
+            bundledArtworkSourceID: descriptor.bundledArtworkSourceID,
+            artworkFallbackURLs: BrowseCatalogArtworkSelection.fallbackURLs(descriptor: descriptor, snapshotURLs: nil),
+            limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion,
+            cardArtwork: BrowseCatalogArtworkSelection.cardArtworkMap(descriptor: descriptor)
+        )
+    }
+
+    static func buildSigned(
+        _ inputs: [String: PokemonCatalogChecklistInput], registry: PokemonCatalogRegistry, generatedAt: Date
+    ) throws -> PokemonChecklistSnapshot {
+        var built: [BuiltSet] = []
+        for setID in inputs.keys.sorted() {
+            try Task.checkCancellation()
+            guard let descriptor = registry.descriptor(forProviderSetID: setID),
+                  let input = inputs[setID] else { continue }
+            let source = input.providerSet
+            let count = source.cardCount.map {
+                TCGdexCardCount(total: $0.total, official: $0.official,
+                                normal: $0.normal, reverse: $0.reverse, holo: $0.holo, firstEd: $0.firstEd)
+            }
+            let provider = TCGdexSetCatalog(id: source.id, name: source.name, cards: source.cards.map {
+                TCGdexCardBrief(id: $0.id, localId: $0.localID, name: $0.name, image: $0.image)
+            }, logo: source.logo, symbol: source.symbol, releaseDate: source.releaseDate, tcgOnline: source.tcgOnline,
+                cardCount: count, serie: nil, abbreviation: nil)
+            let brief = TCGdexSetBrief(id: setID, name: source.name,
+                                      cardCount: count ?? .init(total: source.cards.count, official: 0))
+            let cards = Dictionary(input.cards.map { card in
+                let detail = TCGdexCard(id: card.id, localId: card.localID, name: card.name,
+                    image: card.image, rarity: nil, set: brief,
+                    variants: card.variants.map {
+                        .init(firstEdition: $0.firstEdition, holo: $0.holo, normal: $0.normal,
+                              reverse: $0.reverse, wPromo: $0.wPromo)
+                    }, pricing: nil, variantsDetailed: card.variantsDetailed?.map {
+                        .init(type: $0.type, subtype: $0.subtype, stamp: $0.stamp, foil: $0.foil, size: $0.size,
+                              variantId: $0.variantID, pricing: nil, languages: $0.languages, thirdParty: nil)
+                    }, hasPlainHoloLane: card.hasPlainHoloLane, hasPlainReverseLane: card.hasPlainReverseLane)
+                return (card.id, detail)
+            }, uniquingKeysWith: { first, _ in first })
+            let sets = try build(providerSet: provider, baseSet: signedBaseSet(provider: provider, descriptor: descriptor),
+                                 cardDetails: cards)
+            guard !sets.isEmpty, sets.allSatisfy({ $0.providerFingerprint == descriptor.providerFingerprint }) else {
+                throw PokemonChecklistError.incompleteProviderSet(setID)
+            }
+            built.append(contentsOf: sets)
+        }
+        guard !built.isEmpty else { throw PokemonChecklistError.malformedSnapshot }
+        return .from(builtSets: built, generatedAt: generatedAt)
+    }
+
     static func baseSets(
         from rows: [TCGdexBrowseSet],
         registry: PokemonCatalogRegistry? = nil
@@ -480,7 +558,7 @@ enum PokemonMasterSetChecklistBuilder {
             let primarySummaries = orderedCards
                 .filter {
                     !PokemonMasterSetDefinition.excludes(
-                        card: $0.0,
+                        localID: $0.0.localId,
                         setProviderID: set.providerID,
                         printRun: set.pokemonPrintRun
                     )
@@ -511,7 +589,8 @@ enum PokemonMasterSetChecklistBuilder {
                     }
                 }
             let summaries = PokemonMasterSetDefinition.checklist(
-                PokemonReviewedEnergyCatalog.addingSummaries(primarySummaries, set: set))
+                PokemonReviewedEnergyCatalog.projectingUnnumbered(
+                    PokemonReviewedEnergyCatalog.addingSummaries(primarySummaries, set: set)))
             return BuiltSet(
                 set: withArtworkFallbacks(set, from: summaries),
                 cards: summaries,
@@ -865,6 +944,7 @@ actor PokemonChecklistStore {
     enum ChecklistSource: Equatable, Sendable {
         case bundled
         case downloaded
+        case signed
     }
 
     struct LoadedChecklist: Sendable {
@@ -891,6 +971,9 @@ actor PokemonChecklistStore {
     private var didLoadBundledManifest = false
     private var bundledValidEntriesCache: [PokemonChecklistSnapshotEntry]?
     private var projectedEntryCache: [String: (source: PokemonChecklistSnapshotEntry, projected: PokemonChecklistSnapshotEntry)] = [:]
+    private var signedDirectory: URL?
+    private var signedEntries: [PokemonChecklistSnapshotEntry] = []
+    private var signedRevision: Int?
 
     // These caches are deliberately per set. The production catalog only needs
     // the set currently being displayed, while the legacy snapshot methods
@@ -898,6 +981,15 @@ actor PokemonChecklistStore {
     // complete value-type snapshot.
     private var downloadedChecklistCache = BoundedCache<String, [CatalogCardSummary]>(capacity: 10)
     private var bundledChecklistCache = BoundedCache<String, [CatalogCardSummary]>(capacity: 10)
+    private struct SearchRow {
+        let card: CatalogCardSummary
+        let name: String
+        let number: String?
+        let canonicalNumber: String?
+        let providerID: String
+    }
+    private var searchRowsBySet: [CatalogSetID: [SearchRow]] = [:]
+    private var searchGeneration = 0
     private var unreadableChecklistIDs: Set<String> = []
     private var downloadedSnapshotCache: PokemonChecklistSnapshot?
     private var bundledSnapshotCache: PokemonChecklistSnapshot?
@@ -963,10 +1055,12 @@ actor PokemonChecklistStore {
     /// for sets the overlay does not contain.
     func mergedSnapshot() -> PokemonChecklistSnapshot? {
         installMemoryWarningObserverIfNeeded()
-        return PokemonChecklistSnapshot.merged(
+        let local = PokemonChecklistSnapshot.merged(
             bundled: bundledSnapshot(),
             downloaded: downloadedSnapshot()
         )
+        let signed = signedDirectory.flatMap { loadSnapshot(from: $0, source: .signed) }
+        return PokemonChecklistSnapshot.merged(bundled: local, downloaded: signed)
     }
 
     /// Returns only manifest entries and verifies that the referenced resource
@@ -976,9 +1070,10 @@ actor PokemonChecklistStore {
         installMemoryWarningObserverIfNeeded()
         return mergeEntries(
             bundled: bundledValidEntries(),
-            downloaded: downloadedValidEntries()
+            downloaded: mergeEntries(bundled: downloadedValidEntries(), downloaded: signedEntries)
         ).map { entry in
             guard PokemonChecklistReviewedProjection.setIDs.contains(entry.providerID)
+                    || PokemonReviewedEnergyCatalog.unnumberedFamilies[entry.providerID] != nil
                     || PokemonFinishMinimumCatalog.aggregateChecklistSources[entry.resource] != nil
                     || entry.standardSlotCount != entry.expandedSlotCount else { return entry }
             if let cached = projectedEntryCache[entry.set.id], cached.source == entry { return cached.projected }
@@ -1001,6 +1096,12 @@ actor PokemonChecklistStore {
         Set(bundledValidEntries().map { $0.providerID.lowercased() })
     }
 
+    func signedProviderFingerprints() -> [String: String] {
+        Dictionary(signedEntries.compactMap { entry in
+            entry.providerFingerprint.map { (entry.providerID.lowercased(), $0) }
+        }, uniquingKeysWith: { first, _ in first })
+    }
+
     /// Whether the checklist `mergedEntries()` names for this set is intact.
     ///
     /// Deliberately **not** `mergedChecklist(for:) != nil`. The refresh crawl
@@ -1014,6 +1115,10 @@ actor PokemonChecklistStore {
         installMemoryWarningObserverIfNeeded()
         let key = setID.id
         guard !unreadableChecklistIDs.contains(key) else { return false }
+        if let signedDirectory, let entry = signedEntry(for: key) {
+            if case .loaded = cachedChecklist(for: entry, in: signedDirectory, source: .signed) { return true }
+            return false
+        }
         if let entry = downloadedEntry(for: key) {
             guard case .loaded = cachedChecklist(for: entry, in: root, source: .downloaded) else {
                 return false
@@ -1041,6 +1146,82 @@ actor PokemonChecklistStore {
         loadedChecklist(for: setID)?.cards
     }
 
+    func search(_ query: String, sets: [CatalogSet], offset: Int, limit: Int) async throws -> CatalogPage<CatalogCardSummary> {
+        let generation = searchGeneration
+        var matches: [CatalogCardSummary] = []
+        var skipped = 0
+        for set in sets {
+            await Task.yield()
+            try Task.checkCancellation()
+            guard generation == searchGeneration else { throw CatalogLookupError.staleCatalog }
+            let code = CardNameSearch.normalize(set.code)
+            let scoped = !code.isEmpty && query.hasPrefix(code + " ")
+            let footer = scoped ? query.dropFirst(code.count + 1) : query[...]
+            let parts = (scoped && footer.hasPrefix("en ") ? footer.dropFirst(3) : footer).split(separator: " ")
+            let officialCount = (signedEntry(for: set.id) ?? downloadedEntry(for: set.id) ?? bundledEntry(for: set.id))?.officialCount
+            let collectorQuery = if parts.count == 1 || (parts.count == 2 && Int(parts[1]) == officialCount && officialCount != nil) {
+                parts.first.map(String.init)
+            } else { nil as String? }
+            let canonicalQuery = collectorQuery.map {
+                PokemonHistoricalIdentityResolver.canonicalLocalID($0).lowercased()
+            }
+            for row in searchRows(for: set.catalogID) {
+                let matchesName = query.count == 1 ? row.name == query : row.name.contains(query)
+                let matchesNumber = if let collectorQuery, let canonicalQuery, let number = row.number {
+                    collectorQuery == number || canonicalQuery == row.canonicalNumber
+                        || (scoped && canonicalQuery == Self.promoNumber(number, code: code))
+                } else { false }
+                guard matchesName || matchesNumber || query == row.providerID else { continue }
+                guard skipped >= offset else { skipped += 1; continue }
+                if matches.count == limit {
+                    return .init(items: matches, nextCursor: String(offset + limit))
+                }
+                matches.append(row.card)
+            }
+        }
+        return .init(items: matches, nextCursor: nil)
+    }
+
+    private static func promoNumber(_ number: String, code: String) -> String? {
+        guard number.hasPrefix(code), let value = Int(number.dropFirst(code.count)) else { return nil }
+        return String(value)
+    }
+
+    private func searchRows(for setID: CatalogSetID) -> [SearchRow] {
+        if let existing = searchRowsBySet[setID] { return existing }
+        guard let cards = mergedChecklist(for: setID) else { return [] }
+        var seen = Set<String>()
+        let rows = cards.compactMap { source -> SearchRow? in
+            guard seen.insert(source.providerID).inserted else { return nil }
+            var identity = source
+            identity.masterSetVariant = nil
+            identity.isExpandedMasterSetVariant = false
+            identity.isSoleSlotForCard = false
+            let printedNumber = source.printedCollectorNumber
+            return SearchRow(card: identity, name: CardNameSearch.normalize(source.displayName),
+                number: printedNumber.map(CardNameSearch.normalize),
+                canonicalNumber: printedNumber.map { PokemonHistoricalIdentityResolver.canonicalLocalID($0).lowercased() },
+                providerID: CardNameSearch.normalize(source.providerID))
+        }
+        searchRowsBySet[setID] = rows
+        return rows
+    }
+
+    /// Pin the read to the registry captured by the caller. The store swaps
+    /// its signed files before the coordinator can publish the new registry.
+    /// Provider V1 fingerprints can match across different signed finish inputs.
+    func loadedChecklist(for setID: CatalogSetID, registry: PokemonCatalogRegistry,
+                         requiresExactFingerprint: Bool = false) throws -> LoadedChecklist? {
+        let fingerprint = registry.descriptor(forProviderSetID: setID.providerID)?.providerFingerprint
+        if signedEntry(for: setID.id) != nil || (registry.checklistInputSHA256 != nil && fingerprint != nil) {
+            guard signedRevision == registry.revision,
+                  signedDirectory == signedDirectory(revision: registry.revision, digest: registry.checklistInputSHA256)
+            else { throw CatalogLookupError.staleCatalog }
+        }
+        return loadedChecklist(for: setID, providerFingerprint: fingerprint,
+            requiresExactFingerprint: requiresExactFingerprint)
+    }
+
     func loadedChecklist(
         for setID: CatalogSetID,
         providerFingerprint: String? = nil,
@@ -1051,6 +1232,9 @@ actor PokemonChecklistStore {
         guard !unreadableChecklistIDs.contains(key) else { return nil }
 
         var sources: [(entry: PokemonChecklistSnapshotEntry, source: ChecklistSource, directory: URL)] = []
+        if let signedDirectory, let entry = signedEntry(for: key) {
+            sources.append((entry, .signed, signedDirectory))
+        }
         if let entry = downloadedEntry(for: key) {
             sources.append((entry, .downloaded, root))
         }
@@ -1095,6 +1279,10 @@ actor PokemonChecklistStore {
             .first { $0.set.id == setID }
     }
 
+    private func signedEntry(for setID: String) -> PokemonChecklistSnapshotEntry? {
+        signedEntries.first { $0.set.id == setID }
+    }
+
     private func bundledEntry(for setID: String) -> PokemonChecklistSnapshotEntry? {
         bundledValidEntries()
             .first { $0.set.id == setID }
@@ -1113,16 +1301,16 @@ actor PokemonChecklistStore {
             return loadChecklist(for: entry, in: directory, source: source)
         }
         #endif
-        let key = entry.set.id
-        let cached = source == .downloaded ? downloadedChecklistCache[key] : bundledChecklistCache[key]
+        let key = source == .signed ? "signed|\(entry.set.id)" : entry.set.id
+        let cached = source == .bundled ? bundledChecklistCache[key] : downloadedChecklistCache[key]
         if let cached { return .loaded(cached) }
 
         let outcome = loadChecklist(for: entry, in: directory, source: source)
         if case let .loaded(cards) = outcome {
-            if source == .downloaded {
-                downloadedChecklistCache[key] = cards
-            } else {
+            if source == .bundled {
                 bundledChecklistCache[key] = cards
+            } else {
+                downloadedChecklistCache[key] = cards
             }
         }
         return outcome
@@ -1317,7 +1505,7 @@ actor PokemonChecklistStore {
             },
             uniquingKeysWith: { first, _ in first }
         )
-        let localEntries = mergedEntries()
+        let localEntries = desiredFingerprints.isEmpty ? [] : mergedEntries()
         var targets: [PokemonChecklistReconciliationTarget] = []
 
         for (rawID, desired) in desiredFingerprints {
@@ -1455,6 +1643,7 @@ actor PokemonChecklistStore {
     /// Drop decoded checklist values under memory pressure while retaining the
     /// tiny manifests. The next set lookup simply decodes that set again.
     func discardDecodedChecklists() {
+        searchRowsBySet.removeAll()
         downloadedChecklistCache = BoundedCache<String, [CatalogCardSummary]>(capacity: 10)
         bundledChecklistCache = BoundedCache<String, [CatalogCardSummary]>(capacity: 10)
         unreadableChecklistIDs.removeAll()
@@ -1487,6 +1676,98 @@ actor PokemonChecklistStore {
         try publish(snapshot, mergingExisting: false, removingStaleResources: true)
     }
 
+    private nonisolated var signedRoot: URL { root.appendingPathComponent("signed-checklists", isDirectory: true) }
+
+    private nonisolated func signedDirectory(revision: Int, digest: String?) -> URL? {
+        guard let digest, digest.utf8.count == 64,
+              digest.utf8.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) }) else { return nil }
+        return signedRoot.appendingPathComponent("\(revision)-\(digest)", isDirectory: true)
+    }
+
+    private nonisolated func stagedSignedEntries(for release: PokemonCatalogRelease) -> [PokemonChecklistSnapshotEntry]? {
+        guard let directory = signedDirectory(revision: release.revision, digest: release.checklistInputSHA256),
+              let manifest = loadManifest(from: directory), !manifest.entries.isEmpty,
+              let digests = manifest.resourceSHA256, digests.count == manifest.entries.count,
+              Set(digests.keys) == Set(manifest.entries.map(\.resource)) else { return nil }
+        let descriptors = Dictionary(release.sets.map { ($0.providerSetID, $0.providerFingerprint) },
+                                     uniquingKeysWith: { first, _ in first })
+        guard manifest.entries.allSatisfy({ entry in
+            guard let fingerprint = descriptors[entry.providerID].flatMap({ $0 }),
+                  fingerprint == entry.providerFingerprint,
+                  let bytes = try? Data(contentsOf: directory.appendingPathComponent(entry.resource), options: .mappedIfSafe)
+            else { return false }
+            return digests[entry.resource] == Self.resourceDigest(bytes)
+        }) else { return nil }
+        return manifest.entries
+    }
+
+    nonisolated func hasStagedSignedSnapshot(for release: PokemonCatalogRelease) -> Bool {
+        stagedSignedEntries(for: release) != nil
+    }
+
+    func stageSignedSnapshot(_ snapshot: PokemonChecklistSnapshot, for release: PokemonCatalogRelease) throws {
+        guard let directory = signedDirectory(revision: release.revision, digest: release.checklistInputSHA256), snapshot.manifest.isSupported,
+              !snapshot.manifest.entries.isEmpty else { throw PokemonChecklistError.malformedSnapshot }
+        if hasStagedSignedSnapshot(for: release) { return }
+        try Task.checkCancellation()
+        try writeResources(snapshot, to: directory, manifest: snapshot.manifest, includeDigests: true)
+    }
+
+    func removeStagedRevisions(olderThan revision: Int) {
+        let directories = (try? FileManager.default.contentsOfDirectory(at: signedRoot,
+            includingPropertiesForKeys: nil)) ?? []
+        for directory in directories {
+            guard directory != signedDirectory,
+                  let first = directory.lastPathComponent.split(separator: "-", maxSplits: 1).first,
+                  let storedRevision = Int(first), storedRevision < revision else { continue }
+            try? FileManager.default.removeItem(at: directory)
+        }
+    }
+
+    /// The signed release store is the durable pointer. An uncommitted stage
+    /// has a distinct directory and cannot displace the active checklist.
+    func activateSignedSnapshot(for release: PokemonCatalogRelease) -> Bool {
+        guard release.revision >= (signedRevision ?? -1) else { return false }
+        let entries: [PokemonChecklistSnapshotEntry]
+        if release.checklistInputSHA256 != nil {
+            guard let staged = stagedSignedEntries(for: release) else { return false }
+            entries = staged
+        } else {
+            entries = []
+        }
+        let directory = signedDirectory(revision: release.revision, digest: release.checklistInputSHA256)
+        if signedRevision == release.revision, signedDirectory == directory { return true }
+        signedDirectory = directory
+        signedEntries = entries
+        signedRevision = release.revision
+        projectedEntryCache.removeAll()
+        searchGeneration &+= 1
+        discardDecodedChecklists()
+        return true
+    }
+
+    private nonisolated static func resourceDigest(_ bytes: Data) -> String {
+        Data(SHA256.hash(data: bytes)).base64EncodedString()
+    }
+
+    private func writeResources(_ snapshot: PokemonChecklistSnapshot, to directory: URL,
+                                manifest: PokemonChecklistSnapshotManifest, includeDigests: Bool = false) throws {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        var storedManifest = manifest
+        var digests: [String: String] = [:]
+        for entry in snapshot.manifest.entries {
+            guard let cards = snapshot.checklists[entry.set.id] else { throw PokemonChecklistError.malformedSnapshot }
+            let file = directory.appendingPathComponent(entry.resource)
+            try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+            let bytes = try encoder.encode(cards)
+            try bytes.write(to: file, options: .atomic)
+            if includeDigests { digests[entry.resource] = Self.resourceDigest(bytes) }
+        }
+        if includeDigests { storedManifest.resourceSHA256 = digests }
+        try encoder.encode(storedManifest).write(to: directory.appendingPathComponent("manifest.json"), options: .atomic)
+    }
+
     private func publish(
         _ snapshot: PokemonChecklistSnapshot,
         mergingExisting: Bool,
@@ -1497,8 +1778,6 @@ actor PokemonChecklistStore {
             throw PokemonChecklistError.malformedSnapshot
         }
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
 
         // A refresh is allowed to publish one set at a time. Always merge that
         // partial overlay with the last valid manifest before writing so a
@@ -1551,20 +1830,7 @@ actor PokemonChecklistStore {
         // Only the incoming overlay needs new resource bytes. Existing
         // resources are already protected by the old manifest and remain in
         // place, which keeps a per-set refresh from rewriting the full catalog.
-        for entry in snapshot.manifest.entries {
-            guard let cards = snapshot.checklists[entry.set.id] else {
-                throw PokemonChecklistError.malformedSnapshot
-            }
-            let file = root.appendingPathComponent(entry.resource)
-            try FileManager.default.createDirectory(
-                at: file.deletingLastPathComponent(),
-                withIntermediateDirectories: true
-            )
-            try encoder.encode(cards).write(to: file, options: .atomic)
-        }
-
-        let manifestURL = root.appendingPathComponent("manifest.json")
-        try encoder.encode(publishable.manifest).write(to: manifestURL, options: .atomic)
+        try writeResources(snapshot, to: root, manifest: publishable.manifest)
         if !removingStaleResources {
             removeUnreferencedResources(keeping: Set(publishable.manifest.entries.map(\.resource)))
         }
@@ -1573,9 +1839,12 @@ actor PokemonChecklistStore {
         projectedEntryCache.removeAll()
         didLoadDownloadedManifest = true
         downloadedValidEntriesCache = nil
+        searchGeneration &+= 1
+        if removingStaleResources { searchRowsBySet.removeAll() }
         for entry in snapshot.manifest.entries {
             downloadedChecklistCache[entry.set.id] = nil
             unreadableChecklistIDs.remove(entry.set.id)
+            searchRowsBySet[entry.set.catalogID] = nil
         }
     }
 
@@ -1605,7 +1874,8 @@ actor PokemonChecklistStore {
         decoder.dateDecodingStrategy = .iso8601
         var validEntries: [PokemonChecklistSnapshotEntry] = []
         var checklists: [String: [CatalogCardSummary]] = [:]
-        for entry in manifest.entries {
+        let entries = source == .bundled ? manifest.entries + reviewedBundleEntries(in: directory) : manifest.entries
+        for entry in entries {
             guard case let .loaded(cards) = loadChecklist(
                 for: entry,
                 in: directory,
@@ -1658,11 +1928,18 @@ actor PokemonChecklistStore {
     private func bundledValidEntries() -> [PokemonChecklistSnapshotEntry] {
         if let bundledValidEntriesCache { return bundledValidEntriesCache }
         let entries = validEntries(from: bundledManifest(), directory: bundledRoot)
+            + (bundledRoot.map { reviewedBundleEntries(in: $0) } ?? [])
         bundledValidEntriesCache = entries
         return entries
     }
 
-    private func validEntries(
+    private func reviewedBundleEntries(in directory: URL) -> [PokemonChecklistSnapshotEntry] {
+        let file = directory.appendingPathComponent(PokemonReviewedEnergyCatalog.unnumberedResource)
+        guard FileManager.default.fileExists(atPath: file.path) else { return [] }
+        return PokemonReviewedEnergyCatalog.standaloneEntries
+    }
+
+    private nonisolated func validEntries(
         from manifest: PokemonChecklistSnapshotManifest?,
         directory: URL?
     ) -> [PokemonChecklistSnapshotEntry] {
@@ -1687,7 +1964,7 @@ actor PokemonChecklistStore {
         return order.compactMap { entriesByID[$0] }
     }
 
-    private func loadManifest(from directory: URL) -> PokemonChecklistSnapshotManifest? {
+    private nonisolated func loadManifest(from directory: URL) -> PokemonChecklistSnapshotManifest? {
         let manifestURL = directory.appendingPathComponent("manifest.json")
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -1708,6 +1985,9 @@ actor PokemonChecklistStore {
         source: ChecklistSource,
         decoder: JSONDecoder = JSONDecoder()
     ) -> ChecklistLoadOutcome {
+        if source == .bundled, let reviewed = PokemonReviewedEnergyCatalog.standaloneChecklist(for: entry) {
+            return .loaded(reviewed)
+        }
         let file = directory.appendingPathComponent(entry.resource)
         let data: Data
         do {

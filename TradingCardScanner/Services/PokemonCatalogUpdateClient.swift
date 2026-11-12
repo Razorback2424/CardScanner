@@ -1,5 +1,6 @@
 import Foundation
 import os
+import PokemonCatalogCore
 
 actor PokemonCatalogUpdateClient {
     private static let logger = Logger(
@@ -186,6 +187,25 @@ actor PokemonCatalogUpdateClient {
         throw lastError ?? UpdateError.networkFailure(
             NSError(domain: "PokemonCatalogUpdateClient", code: -1)
         )
+    }
+
+    func fetchChecklistInputs(for release: PokemonCatalogRelease) async throws -> [String: PokemonCatalogChecklistInput] {
+        let url = baseURL.appendingPathComponent("v1/releases/\(release.revision)/pokemon-catalog-snapshot.json")
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 30
+        // A response is cached before its signed digest is checked. A retry
+        // must fetch again after a rejected immutable response.
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+            throw UpdateError.badResponse(statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
+        }
+        guard data.count <= PokemonCatalogCore.PokemonCatalogSnapshot.maximumPublishedBytes else {
+            throw UpdateError.payloadTooLarge(bytes: data.count)
+        }
+        try Task.checkCancellation()
+        return try PokemonCatalogJSON.decode(PokemonCatalogCore.PokemonCatalogSnapshot.self, from: data)
+            .verifiedChecklistInputs(for: release)
     }
 
     func resetConditionalState() {

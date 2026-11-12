@@ -252,9 +252,11 @@ extension PhysicalVariant {
     static let known: [PhysicalVariant] = [
         .yugiohFirstEdition, .yugiohUnlimited, .yugiohLimited,
         .normal, .holo, .reverse, .jumbo, .firstEdition,
-        .pokeBall, .masterBall, .duskBall, .friendBall, .quickBall, .loveBall,
+        .pokeBall, .masterBall, .duskBall, .friendBall, .quickBall, .loveBall, .waveFoil,
         .nonfoil, .foil, .etched
     ] + PokemonReviewedPhysicalObjects.all
+
+    static let waveFoil = PhysicalVariant(id: "wave", label: "Wave Foil")
 
     /// TCGdex's `foil` vocabulary for parallel patterns, mapped onto this app's
     /// ids. The two differ only in casing, but the map is explicit so a new
@@ -272,6 +274,7 @@ extension PhysicalVariant {
         case "friendball": return .friendBall
         case "quickball": return .quickBall
         case "loveball": return .loveBall
+        case "wave": return .waveFoil
         default: return PhysicalVariant(id: foil, label: foil.capitalized)
         }
     }
@@ -280,6 +283,7 @@ extension PhysicalVariant {
         known.first { $0.id == id }
             ?? PokemonStampedReleaseCatalog.entry(variantID: id)?.variant
             ?? PokemonCatalogStampVariant.resolving(id)
+            ?? LorcanaPhysicalFinish(rawValue: id)?.variant
     }
 
     /// A catalog may name a finish this build has never heard of. Carry it through

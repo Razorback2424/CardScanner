@@ -103,7 +103,8 @@ actor PokemonHistoricalCatalog {
             for: evidence,
             in: registry
         )
-        let setIDs = Array(Set(liveSetIDs + membershipSetIDs)).sorted()
+        let artworks = PokemonReviewedArtworkCatalog.identities(for: evidence.number, registry: registry)
+        let setIDs = Array(Set(liveSetIDs + membershipSetIDs + artworks.map(\.setID))).sorted()
         guard !setIDs.isEmpty else { throw PokemonHistoricalCatalogError.unsupported }
 
         let catalogs = try await withThrowingTaskGroup(of: TCGdexSetCatalog.self) { group in
@@ -121,10 +122,10 @@ actor PokemonHistoricalCatalog {
             validatedCatalogs = catalogs.filter {
                 $0.cardCount?.official == evidence.number.denominator
             }
-        case .subset:
+        case .subset, .standalone:
             validatedCatalogs = catalogs
         }
-        let identities = PokemonHistoricalIdentityResolver.identities(in: validatedCatalogs)
+        let identities = artworks + PokemonHistoricalIdentityResolver.identities(in: validatedCatalogs)
             + PokemonHistoricalIdentityResolver.membershipIdentities(
                 for: evidence,
                 in: registry
@@ -157,7 +158,14 @@ actor PokemonHistoricalCatalog {
         matching evidence: PokemonHistoricalScanEvidence,
         registry: PokemonCatalogRegistry? = nil
     ) async throws -> IdentifiedCard {
+        guard !PokemonFinishMinimumCatalog.isUnnumbered(cardID: identity.providerID) else {
+            throw TCGdexError.identityMismatch
+        }
         let registrySnapshot = registry ?? self.registry
+        if let reviewed = PokemonReviewedArtworkCatalog.card(for: identity, number: evidence.number, registry: registrySnapshot),
+           PokemonNameMatcher.agrees(cardName: identity.name, readings: evidence.titleCandidates) {
+            return reviewed
+        }
         let eligibleSets = Set(
             try await candidateSetIDs(for: evidence, registry: registrySnapshot)
         )
@@ -198,7 +206,7 @@ actor PokemonHistoricalCatalog {
             )
         }
 
-        let printedCount = evidence.number.denominator
+        guard let printedCount = evidence.number.denominator else { throw TCGdexError.identityMismatch }
         let materializedSet = TCGdexSetBrief(
             id: card.set.id,
             name: identity.setName,
@@ -243,7 +251,7 @@ actor PokemonHistoricalCatalog {
         switch evidence.number.scheme {
         case .officialSet:
             directory = try await setDirectory()
-        case .subset:
+        case .subset, .standalone:
             // Subset denominators do not correspond to the containing set's
             // official count, so the explicit scheme map is authoritative.
             directory = []

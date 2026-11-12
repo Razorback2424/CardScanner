@@ -1,4 +1,27 @@
 {
   "schemaVersion": 1,
-  "sets": {}
+  "sets": {
+    "ex5.5": {
+      "tcgplayerGroupID": 2214,
+      "evidence": "docs/research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/report.json",
+      "cards": {
+        "ex5.5-1": [
+          "normal"
+        ],
+        "ex5.5-2": [
+          "normal"
+        ],
+        "ex5.5-3": [
+          "normal"
+        ],
+        "ex5.5-4": [
+          "normal"
+        ],
+        "ex5.5-5": [
+          "normal"
+        ]
+      },
+      "reviewedAt": "2026-11-12"
+    }
+  }
 }

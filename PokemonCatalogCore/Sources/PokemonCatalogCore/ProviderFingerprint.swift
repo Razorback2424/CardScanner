@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 
 /// The one provider-content identity shared by the publisher and the device.
@@ -12,22 +13,39 @@ public enum PokemonCatalogProviderFingerprint {
         providerSet: PokemonCatalogProviderSet,
         cardDetails: [String: PokemonCatalogProviderCard]
     ) -> String? {
+        fields(providerSet: providerSet, cardDetails: cardDetails, includesArtwork: true).map {
+            PokemonCatalogFingerprint.string($0.joined(separator: "\u{1F}"))
+        }
+    }
+
+    /// Covers numbered identities and raw finish evidence independently of artwork.
+    public static func acquisitionV1(
+        providerSet: PokemonCatalogProviderSet,
+        cardDetails: [String: PokemonCatalogProviderCard]
+    ) -> String? {
+        fields(providerSet: providerSet, cardDetails: cardDetails, includesArtwork: false).map {
+            SHA256.hash(data: Data($0.joined(separator: "\u{1F}").utf8))
+                .map { String(format: "%02x", $0) }.joined()
+        }
+    }
+
+    private static func fields(
+        providerSet: PokemonCatalogProviderSet,
+        cardDetails: [String: PokemonCatalogProviderCard],
+        includesArtwork: Bool
+    ) -> [String]? {
         let detailsByID = Dictionary(
             cardDetails.map { (normalizeID($0.key), $0.value) },
             uniquingKeysWith: { first, _ in first }
         )
-        var fields: [String] = [
-            version,
-            value(normalizeID(providerSet.id)),
-            value(providerSet.name),
+        var fields = [includesArtwork ? version : "provider-acquisition-v1", value(normalizeID(providerSet.id))]
+        if includesArtwork {
             // Only raw provider payload values belong here. Publisher-side
             // artwork enrichment (resolvedLogo/resolvedSymbol and card-art
             // fallbacks) is intentionally excluded so the device can
             // reproduce this hash.
-            value(providerSet.logo),
-            value(providerSet.symbol),
-            value(providerSet.releaseDate)
-        ]
+            fields += [value(providerSet.name), value(providerSet.logo), value(providerSet.symbol), value(providerSet.releaseDate)]
+        }
         appendCount(providerSet.cardCount, to: &fields)
 
         let cards = providerSet.cards.sorted {
@@ -39,12 +57,13 @@ public enum PokemonCatalogProviderFingerprint {
         }
         for brief in cards {
             guard let detail = detailsByID[normalizeID(brief.id)] else { return nil }
-            fields += [
-                value(normalizeID(brief.id)),
-                value(brief.localID),
-                value(brief.name),
-                value(brief.image)
-            ]
+            fields += [value(normalizeID(brief.id)), value(brief.localID)]
+            if includesArtwork {
+                fields += [value(brief.name), value(brief.image)]
+            } else {
+                fields += [value(PokemonCatalogTextNormalization.canonicalMembershipName(brief.name)),
+                           value(detail.hasPlainHoloLane), value(detail.hasPlainReverseLane)]
+            }
             // The brief is the identity/artwork input used by the materializer;
             // the detail contributes only variant expansion evidence.
             if let variants = detail.variants {
@@ -79,7 +98,7 @@ public enum PokemonCatalogProviderFingerprint {
                 ]
             }
         }
-        return PokemonCatalogFingerprint.string(fields.joined(separator: "\u{1F}"))
+        return fields
     }
 
     private static func appendCount(

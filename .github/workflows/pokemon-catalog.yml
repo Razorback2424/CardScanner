@@ -38,10 +38,18 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: "Publish the validated candidate"
+        description: "Publish a previously validated candidate"
         required: true
         default: false
         type: boolean
+      candidate_run_id:
+        description: "Workflow run containing the reviewed candidate"
+        required: false
+        type: string
+      candidate_manifest_sha256:
+        description: "Reviewed candidate manifest SHA-256"
+        required: false
+        type: string
       bootstrap:
         description: "Allow initial publication when no production pointer exists"
         default: false
@@ -77,12 +85,10 @@ jobs:
     outputs:
       has_changes: ${{ steps.prepare.outputs.has_changes }}
       requires_approval: ${{ steps.prepare.outputs.requires_approval }}
-      publish_environment: ${{ steps.prepare.outputs.publish_environment }}
-      change_class: ${{ steps.prepare.outputs.change_class }}
       candidate_manifest_sha256: ${{ steps.candidate_manifest.outputs.sha256 }}
     if: >-
       github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && inputs.publish == true)
+      (github.event_name == 'workflow_dispatch' && inputs.publish == false)
     concurrency:
       group: scanstash-catalog-production-hosting
       cancel-in-progress: false
@@ -134,22 +140,14 @@ jobs:
             none)
               has_changes="false"
               requires_approval="false"
-              publish_environment=""
               ;;
             contentOnly)
               has_changes="true"
               requires_approval="false"
-              # Automatic content updates still need the signing and Firebase
-              # secrets configured on the production environment. Its former
-              # reviewer gate is removed, so this remains unattended while
-              # using the same trusted publication credentials as authority
-              # changes.
-              publish_environment="pokemon-catalog-production"
               ;;
             baselineMigration|authority|newSet)
               has_changes="true"
               requires_approval="true"
-              publish_environment="pokemon-catalog-production"
               ;;
             unknown)
               echo "Unknown catalog change class: $change_class" >&2
@@ -163,18 +161,14 @@ jobs:
 
           echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
           echo "requires_approval=$requires_approval" >> "$GITHUB_OUTPUT"
-          echo "publish_environment=$publish_environment" >> "$GITHUB_OUTPUT"
-          echo "change_class=$change_class" >> "$GITHUB_OUTPUT"
           echo "Catalog candidate changes: $has_changes"
           echo "Catalog change class: $change_class"
           echo "Catalog authority approval required: $requires_approval"
-          echo "Catalog publish environment: $publish_environment"
           {
             echo "## Pokémon catalog production candidate"
             jq -r '"- Revision: \(.revision)", "- Change class: \(.changeClass)", "- Added: \(.addedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Content: \(.contentChangedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Authority: \(.authorityChangedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Baseline: \(.baselineFingerprintProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Excluded: \(.excludedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Secondary provider available: \(.secondaryProviderAvailable)", "- Ambiguous secondary matches: \(.ambiguousSecondaryMatches | if length == 0 then "none" else join(", ") end)"' \
               publisher/reports/production.json
             echo "- Approval required: $requires_approval"
-            echo "- Publish environment: $publish_environment"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Create the candidate SHA-256 manifest
         id: candidate_manifest
@@ -190,6 +184,8 @@ jobs:
           )
           manifest_sha256="$(shasum -a 256 publisher/reports/production-manifest.sha256 | awk '{print $1}')"
           echo "sha256=$manifest_sha256" >> "$GITHUB_OUTPUT"
+          echo "- Candidate run: $GITHUB_RUN_ID" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Candidate manifest SHA-256: $manifest_sha256" >> "$GITHUB_STEP_SUMMARY"
       - name: Upload the validated production candidate
         id: upload-candidate
         uses: actions/upload-artifact@v4
@@ -204,17 +200,22 @@ jobs:
 
   publish-production:
     name: Publish production catalog
-    needs: prepare-production
+    needs: [validate, prepare-production]
     if: >-
-      needs.prepare-production.outputs.has_changes == 'true'
+      (!cancelled() && needs.validate.result == 'success' && github.ref == 'refs/heads/main' &&
+      ((github.event_name == 'schedule' && needs.prepare-production.result == 'success' &&
+        needs.prepare-production.outputs.has_changes == 'true' && needs.prepare-production.outputs.requires_approval == 'false') ||
+       (github.event_name == 'workflow_dispatch' && inputs.publish == true)))
     concurrency:
       group: scanstash-catalog-production-hosting
       cancel-in-progress: false
     runs-on: macos-15
-    environment:
-      name: ${{ needs.prepare-production.outputs.publish_environment }}
+    permissions:
+      actions: read
+      contents: read
+    environment: pokemon-catalog-production
     env:
-      GITHUB_ENVIRONMENT: ${{ needs.prepare-production.outputs.publish_environment }}
+      GITHUB_ENVIRONMENT: pokemon-catalog-production
       POKEMON_CATALOG_PUBLISH: "true"
       POKEMON_CATALOG_SIGNING_KEY: ${{ secrets.POKEMON_CATALOG_SIGNING_KEY }}
       POKEMON_CATALOG_KEY_ID: ${{ secrets.POKEMON_CATALOG_KEY_ID }}
@@ -223,21 +224,51 @@ jobs:
       FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
     steps:
       - uses: actions/checkout@v4
+      - name: Select the production candidate
+        id: candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEWED_RUN_ID: ${{ inputs.candidate_run_id }}
+          REVIEWED_MANIFEST_SHA256: ${{ inputs.candidate_manifest_sha256 }}
+          PREPARED_MANIFEST_SHA256: ${{ needs.prepare-production.outputs.candidate_manifest_sha256 }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            candidate_run="$REVIEWED_RUN_ID"
+            candidate_sha="$REVIEWED_MANIFEST_SHA256"
+            if ! [[ "$candidate_run" =~ ^[1-9][0-9]*$ && "$candidate_sha" =~ ^[a-f0-9]{64}$ ]]; then
+              echo "::error::Supply the reviewed run ID and manifest SHA-256 from a candidate preparation run."
+              exit 1
+            fi
+            workflow_id="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/pokemon-catalog.yml" --jq .id)"
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$candidate_run" |
+              jq -e --argjson workflow "$workflow_id" --arg repository "$GITHUB_REPOSITORY" '
+                .workflow_id == $workflow and .head_repository.full_name == $repository and
+                .head_branch == "main" and .conclusion == "success" and
+                (.event == "schedule" or .event == "workflow_dispatch")' > /dev/null
+          else
+            candidate_run="$GITHUB_RUN_ID"
+            candidate_sha="$PREPARED_MANIFEST_SHA256"
+          fi
+          echo "run_id=$candidate_run" >> "$GITHUB_OUTPUT"
+          echo "manifest_sha256=$candidate_sha" >> "$GITHUB_OUTPUT"
       - name: Download the validated production candidate
         uses: actions/download-artifact@v4
         with:
-          name: pokemon-catalog-production-candidate-${{ github.run_id }}
+          name: pokemon-catalog-production-candidate-${{ steps.candidate.outputs.run_id }}
+          run-id: ${{ steps.candidate.outputs.run_id }}
+          github-token: ${{ github.token }}
           path: publisher
       - name: Verify downloaded production candidate
+        env:
+          EXPECTED_MANIFEST_SHA256: ${{ steps.candidate.outputs.manifest_sha256 }}
         run: |
           test -f publisher/candidate/catalog-payload.json
           test -f publisher/candidate/pokemon-catalog-snapshot.json
           test -f publisher/candidate/review-report.json
           test -f publisher/reports/production.json
           test -f publisher/reports/production-manifest.sha256
-          expected_manifest_sha256="${{ needs.prepare-production.outputs.candidate_manifest_sha256 }}"
           actual_manifest_sha256="$(shasum -a 256 publisher/reports/production-manifest.sha256 | awk '{print $1}')"
-          test "$actual_manifest_sha256" = "$expected_manifest_sha256"
+          test "$actual_manifest_sha256" = "$EXPECTED_MANIFEST_SHA256"
           (
             cd publisher
             shasum -a 256 -c reports/production-manifest.sha256
@@ -269,6 +300,11 @@ jobs:
               exit 1
               ;;
           esac
+      - name: Recheck the candidate against the active production release
+        run: |
+          swift run --package-path PokemonCatalogCore pokemon-catalog-publisher verify-candidate \
+            --candidate-root publisher/candidate --environment production \
+            --active-release "${RUNNER_TEMP}/pokemon-catalog-production-current.json"
       - name: Read the active Magic production pointer
         run: |
           active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
@@ -309,13 +345,25 @@ jobs:
           if [ -f "$active_path" ]; then
             active_args+=(--active-release "$active_path")
           fi
+          change_class="$(jq -er .changeClass publisher/candidate/review-report.json)"
+          case "$change_class" in
+            contentOnly) ;;
+            baselineMigration|authority|newSet) test "$GITHUB_EVENT_NAME" = "workflow_dispatch" ;;
+            *) echo "::error::Catalog change class is ineligible for publication"; exit 1 ;;
+          esac
           swift run --package-path PokemonCatalogCore pokemon-catalog-publisher publish \
             --candidate-root publisher/candidate \
             --site-root publisher/site \
             --environment production \
-            --change-class "${{ needs.prepare-production.outputs.change_class }}" \
+            --change-class "$change_class" \
             "${active_args[@]}" \
             --report publisher/reports/production.json
+      - name: Verify the assembled release matches the reviewed candidate
+        run: |
+          revision="$(jq -er .revision publisher/candidate/catalog-payload.json)"
+          for artifact in catalog-payload.json pokemon-catalog-snapshot.json review-report.json; do
+            cmp "publisher/candidate/$artifact" "publisher/site/v1/releases/$revision/$artifact"
+          done
       - name: Retain the production review report
         if: always()
         uses: actions/upload-artifact@v4
@@ -337,3 +385,24 @@ jobs:
             --project "$FIREBASE_PROJECT_ID"
           firebase deploy --only hosting:production \
             --project "$FIREBASE_PROJECT_ID" --non-interactive
+      - name: Verify the deployed revision on both catalog hosts
+        run: |
+          revision="$(jq -er .revision publisher/candidate/catalog-payload.json)"
+          readback="$RUNNER_TEMP/pokemon-catalog-readback.json"
+          for host in "$POKEMON_CATALOG_PRODUCTION_READ_ORIGIN" https://catalog.scan-stash.com; do
+            for artifact in current.json "releases/$revision/catalog-release.json" "releases/$revision/pokemon-catalog-snapshot.json"; do
+              for attempt in 1 2 3 4 5 6; do
+                if curl --fail --silent --show-error --max-time 25 --proto '=https' \
+                  --header 'Cache-Control: no-cache' --output "$readback" "$host/v1/$artifact" &&
+                  cmp -s "publisher/site/v1/$artifact" "$readback"; then
+                  break
+                fi
+                if [ "$attempt" -eq 6 ]; then
+                  echo "::error::Catalog readback did not match the deployed revision at $host/v1/$artifact"
+                  exit 1
+                fi
+                sleep 5
+              done
+            done
+          done
+          echo "Verified revision $revision against both catalog hosts." >> "$GITHUB_STEP_SUMMARY"

@@ -63,10 +63,15 @@ public enum PokemonCatalogChangeClassifier {
 
         // An initial fingerprint is a protected baseline migration, even
         // though the field itself is in the normal content allow-list.
-        let isBaselineMigration = previous.providerFingerprint == nil
-            && current.providerFingerprint != nil
+        let isAcquisitionBaseline = previous.providerAcquisitionFingerprint == nil
+            && current.providerAcquisitionFingerprint != nil
+        let isBaselineMigration = (previous.providerFingerprint == nil && current.providerFingerprint != nil)
+            || isAcquisitionBaseline
+        let allowedFields = isAcquisitionBaseline
+            ? automaticFieldNames.union(["providerAcquisitionFingerprint"])
+            : automaticFieldNames
 
-        guard changedFields.isSubset(of: automaticFieldNames) else {
+        guard changedFields.isSubset(of: allowedFields) else {
             return .authority
         }
         return isBaselineMigration ? .baselineMigration : .contentOnly
@@ -112,16 +117,21 @@ public enum PokemonCatalogChangeClassifier {
             }
         }
 
+        let removesDescriptor = !Set(previousByID.keys).isSubset(of: Set(currentRelease.sets.map { $0.providerSetID.lowercased() }))
         let overall: PokemonCatalogChangeClass
         if classes.contains(.unknown) {
             overall = .unknown
         } else if !added.isEmpty {
             overall = .newSet
-        } else if classes.contains(.authority) {
+        } else if classes.contains(.authority)
+                    || removesDescriptor
+                    || previousRelease?.englishExclusions != currentRelease.englishExclusions
+                    || (previousRelease?.checklistInputSHA256 != nil && currentRelease.checklistInputSHA256 == nil) {
             overall = .authority
         } else if classes.contains(.baselineMigration) {
             overall = .baselineMigration
-        } else if classes.contains(.contentOnly) {
+        } else if classes.contains(.contentOnly)
+                    || previousRelease?.checklistInputSHA256 != currentRelease.checklistInputSHA256 {
             overall = .contentOnly
         } else {
             overall = .none

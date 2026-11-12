@@ -105,6 +105,7 @@ enum PokemonFinishMinimumCatalog {
         let number: String
         let minimum: [String]
         let normalNeedsReview: Bool
+        let isUnnumbered: Bool?
 
         var variants: [PhysicalVariant] {
             minimum.compactMap { id in [.normal, .holo, .reverse].first { $0.id == id } }
@@ -150,6 +151,15 @@ enum PokemonFinishMinimumCatalog {
     }()
 
     static let setIDs = Set(entries.values.map(\.setID)).union(legacyEntries.values.map(\.setID))
+
+    static func isUnnumbered(cardID: String) -> Bool {
+        legacyEntries[cardID]?.isUnnumbered == true || PokemonReviewedEnergyCatalog.isUnnumbered(providerID: cardID)
+    }
+
+    static func displayCollectorNumber(_ number: String, game: CardGame, providerID: String?) -> String {
+        guard game == .pokemon, let providerID, isUnnumbered(cardID: providerID) else { return number }
+        return "Unnumbered"
+    }
 
     static func minimum(cardID: String) -> Entry? {
         guard PokemonFinishCoverage.variants(cardID: cardID) == nil else { return nil }

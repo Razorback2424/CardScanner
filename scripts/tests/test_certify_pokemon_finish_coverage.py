@@ -121,6 +121,19 @@ class PokemonFinishCoverageTests(unittest.TestCase):
         self.assertEqual(comparison["other-1"]["status"], "conflict")
         self.assertEqual(comparison["market:product:11"]["status"], "unmatched")
 
+    def test_alternate_collector_padding_and_finish_labels_preserve_exact_membership(self):
+        card = {"name": "Trainers' Mail", "number": "92a", "checklist": ["holo", "normal"]}
+        holo = {"productId": 1, "name": "Trainers' Mail - 92a/108 (Holo)",
+                "number": "092A/108", "subtypes": ["Holofoil"]}
+        normal = {"productId": 2, "name": "Trainers' Mail - 92a/108 (Non-Holo)",
+                  "number": "092a/108", "subtypes": ["Normal"]}
+        self.assertEqual(coverage.local_number(holo["number"]), "92a")
+        self.assertEqual(coverage.product_finishes(card, holo), {"holo"})
+        self.assertEqual(coverage.product_finishes(card, normal), {"normal"})
+        self.assertIsNone(coverage.product_finishes(card, dict(holo, number="092b/108")))
+        self.assertIsNone(coverage.product_finishes(card, dict(holo, subtypes=["Normal"])))
+        self.assertIsNone(coverage.product_finishes(card, dict(holo, name="Trainers' Mail - 92a/122 (Holo)")))
+
     def test_offline_replay_uses_exact_source_bytes_without_mutating_evidence(self):
         original = self.report()
         before = self.evidence.read_bytes()
@@ -184,6 +197,40 @@ class PokemonFinishCoverageTests(unittest.TestCase):
         self.assertEqual(result["cards"], {"sample-001": ["normal", "reverse"], "sample-002": ["holo"],
                                           "sample-003": ["holo"], "tcgplayer:14": ["pokeBall"]})
         self.assertEqual(set(coverage.read_json(self.snapshot / "finish-minimums.json")), {"other-1"})
+
+    def test_edition_union_can_be_reviewed_but_cannot_become_an_exact_certificate(self):
+        manifest_path = self.snapshot / "manifest.json"
+        manifest = coverage.read_json(manifest_path)
+        first_edition = manifest["entries"][0]
+        first_edition["set"]["catalogID"] = {"providerID": "sample", "pokemonPrintRun": "firstEdition"}
+        unlimited = deepcopy(first_edition)
+        unlimited["set"]["catalogID"]["pokemonPrintRun"] = "unlimited"
+        unlimited["resource"] = "sets/unlimited.json"
+        unlimited_slots = [slot for slot in self.fixture["snapshot"] if slot["providerID"] != "sample-002"]
+        coverage.write_json(self.snapshot / unlimited["resource"], unlimited_slots)
+        manifest["entries"].append(unlimited)
+        coverage.write_json(manifest_path, manifest)
+
+        evidence = self.reviewed()
+        self.assertIn("holo", evidence["cards"]["sample-002"]["checklist"])
+        coverage.write_json(self.evidence, evidence)
+        minimums = self.snapshot / "finish-minimums.json"
+        before = minimums.read_bytes()
+
+        with self.assertRaisesRegex(ValueError, "multiple print runs"):
+            coverage.certify(self.root, "sample")
+
+        self.assertEqual(coverage.read_json(self.snapshot / "finish-coverage.json")["sets"], {})
+        self.assertEqual(minimums.read_bytes(), before)
+
+    def test_exact_certificate_cannot_skip_a_separately_reviewed_artwork_printing(self):
+        coverage.write_json(self.evidence, self.reviewed())
+        coverage.write_json(self.snapshot / "reviewed-artwork-printings.json", {
+            "schemaVersion": 1, "families": [{"providerSetID": "sample"}],
+        })
+        with self.assertRaisesRegex(ValueError, "reviewed artwork printings outside the captured checklist"):
+            coverage.certify(self.root, "sample")
+        self.assertEqual(coverage.read_json(self.snapshot / "finish-coverage.json")["sets"], {})
 
     def test_report_edits_cannot_remove_an_unmatched_product_or_clear_a_conflict(self):
         evidence = self.reviewed()

@@ -90,11 +90,13 @@ def installed_mappings(repo):
     ygo = read(app / 'YuGiOhCatalogSeed/catalog.json')
     sets = {s['g']: s for s in ygo['sets']}
     editions = {'yugioh1stEdition': '1st Edition', 'yugiohUnlimited': 'Unlimited', 'yugiohLimited': 'Limited'}
-    for p in ygo['printings']:
+    for p in ygo['printings'] + ygo.get('referencePrintings', []):
+        if 'p' not in p:
+            continue
         for m in p.get('m', []):
             if m['e'] not in p['e']:
                 raise ValueError('Yu-Gi-Oh membership contradicts edition authority')
-            rows.append(dict(game='yu-gi-oh', category=2, group=p['g'], printing=p['id'],
+            rows.append(dict(game='yu-gi-oh', category=2, group=p.get('pg', p['g']), printing=p['id'],
                 set=sets[p['g']]['n'], product=p['p'], name=p['pn'], number=p['c'],
                 lane=editions[m['e']], localQuote=m.get('q')))
     return rows
@@ -133,13 +135,13 @@ def local_set_coverage(repo):
             note='Discovery records do not grant physical identity or pricing authority'))
     ygo = read(app / 'YuGiOhCatalogSeed/catalog.json')
     by_group = collections.defaultdict(list)
-    for printing in ygo['printings']:
+    for printing in ygo['printings'] + ygo.get('referencePrintings', []):
         by_group[printing['g']].append(printing)
     for s in ygo['sets']:
         rows = by_group[s['g']]
         result.append(dict(game='yu-gi-oh', catalogID=str(s['g']), name=s['n'], scope='snapshotSet', records=len(rows),
             eligiblePrintings=sum(bool(p['e']) and not p.get('ir') for p in rows),
-            mappedLanes=sum(len(p.get('m', [])) for p in rows), note='Dated snapshot; live per-card refresh remains disabled'))
+            mappedLanes=sum(len(p.get('m', [])) for p in rows if 'p' in p), note='Exact marketplace mappings only'))
     return result
 
 

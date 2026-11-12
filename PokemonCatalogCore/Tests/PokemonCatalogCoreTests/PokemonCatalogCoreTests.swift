@@ -633,9 +633,31 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertEqual(newDescriptor.scanEnabled, oldDescriptor.scanEnabled)
         XCTAssertEqual(newDescriptor.releaseOrder, oldDescriptor.releaseOrder)
         XCTAssertNotEqual(newDescriptor.providerFingerprint, oldDescriptor.providerFingerprint)
+        XCTAssertNotNil(oldDescriptor.providerAcquisitionFingerprint)
+        XCTAssertEqual(newDescriptor.providerAcquisitionFingerprint, oldDescriptor.providerAcquisitionFingerprint)
         XCTAssertEqual(result.report.changedProviderSetIDs, ["sv99"])
         XCTAssertEqual(result.report.changeClass, .contentOnly)
         XCTAssertEqual(result.report.contentChangedProviderSetIDs, ["sv99"])
+    }
+
+    func testProviderFinishEvidenceChangesRequirePublicationReview() throws {
+        let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
+        let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")
+        let builder = PokemonCatalogBuilder()
+        let first = try builder.build(.init(fixture: fixture, humanInputs: input.sets, revision: 1, generatedAt: generatedAt))
+        let card = try XCTUnwrap(fixture.cards.first)
+        let changed = PokemonCatalogProviderCard(id: card.id, localID: card.localID, name: card.name,
+            image: card.image, setID: card.setID, variants: card.variants, variantsDetailed: card.variantsDetailed,
+            hasPlainHoloLane: !card.hasPlainHoloLane, hasPlainReverseLane: card.hasPlainReverseLane)
+        let updated = PokemonCatalogProviderFixture(directory: fixture.directory, sets: fixture.sets,
+            cards: fixture.cards.map { $0.id == card.id ? changed : $0 }, secondary: fixture.secondary)
+        let next = try builder.build(.init(fixture: updated, activeRelease: first.release, humanInputs: input.sets,
+            revision: 2, generatedAt: generatedAt))
+        XCTAssertEqual(next.release.sets.first?.providerFingerprint, first.release.sets.first?.providerFingerprint)
+        XCTAssertNotEqual(next.release.sets.first?.providerAcquisitionFingerprint, first.release.sets.first?.providerAcquisitionFingerprint)
+        XCTAssertEqual(next.report.changeClass, .authority)
+        XCTAssertEqual(next.report.authorityChangedProviderSetIDs, ["sv99"])
+        XCTAssertNoThrow(try PokemonCatalogCandidateValidator.validate(next, against: first.release))
     }
 
     func testFirstFingerprintPopulationIsProtectedBaselineMigration() throws {
@@ -2112,6 +2134,17 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
 
         XCTAssertNoThrow(try PokemonCatalogCandidateValidator.validate(build))
+        XCTAssertNoThrow(try PokemonCatalogCandidateValidator.validate(build, against: nil))
+        var alteredReport = try XCTUnwrap(JSONSerialization.jsonObject(with: PokemonCatalogJSON.encode(build.report)) as? [String: Any])
+        alteredReport["changeClass"] = "contentOnly"
+        let misclassified = PokemonCatalogBuildResult(release: build.release, snapshot: build.snapshot,
+            report: try PokemonCatalogJSON.decode(PokemonCatalogReviewReport.self,
+                from: JSONSerialization.data(withJSONObject: alteredReport)))
+        XCTAssertThrowsError(try PokemonCatalogCandidateValidator.validate(misclassified, against: nil)) { error in
+            guard case PokemonCatalogCandidateValidationError.mismatchedChangeClassification = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
         XCTAssertThrowsError(
             try PokemonCatalogCandidateValidator.validate(build, activeRevision: 1)
         ) { error in

@@ -30,6 +30,14 @@ struct PokemonCatalogPublisherMain {
             try writeCandidate(result, rootPath: options.value("--candidate-root"))
             printDiscoveryWarnings(result.report)
             printReport(result.report)
+        case "verify-candidate":
+            guard let root = options.value("--candidate-root") else {
+                throw CLIError.message("verify-candidate requires --candidate-root PATH")
+            }
+            let activeRelease = try loadActiveRelease(explicitPath: options.value("--active-release"),
+                siteRoot: nil, environment: parseEnvironment(options.value("--environment")), options: options)
+            let result = try loadCandidate(rootPath: root, activeRelease: activeRelease)
+            printReport(result.report)
         case "verify-release":
             guard let path = options.value("--path") else {
                 throw CLIError.message("verify-release requires --path PATH")
@@ -70,7 +78,7 @@ struct PokemonCatalogPublisherMain {
                 )
                 result = try loadCandidate(
                     rootPath: candidateRoot,
-                    activeRevision: activeRelease?.revision
+                    activeRelease: activeRelease
                 )
             } else {
                 result = try await build(
@@ -307,6 +315,7 @@ struct PokemonCatalogPublisherMain {
                 generatedAt: generatedAt
             )
         )
+        try PokemonCatalogCandidateValidator.validate(result, against: activeRelease)
         reportUniformNormalSets(result.report, fixture: fixtureForBuild)
         return result
     }
@@ -508,7 +517,7 @@ struct PokemonCatalogPublisherMain {
 
     private static func loadCandidate(
         rootPath: String,
-        activeRevision: Int?
+        activeRelease: PokemonCatalogRelease?
     ) throws -> PokemonCatalogBuildResult {
         let root = URL(fileURLWithPath: rootPath, isDirectory: true)
         let result = PokemonCatalogBuildResult(
@@ -525,10 +534,7 @@ struct PokemonCatalogPublisherMain {
                 from: root.appendingPathComponent("review-report.json")
             )
         )
-        try PokemonCatalogCandidateValidator.validate(
-            result,
-            activeRevision: activeRevision
-        )
+        try PokemonCatalogCandidateValidator.validate(result, against: activeRelease)
         return result
     }
 
@@ -685,6 +691,7 @@ struct PokemonCatalogPublisherMain {
     private static let usage = """
     Usage:
       pokemon-catalog-publisher validate [options]
+      pokemon-catalog-publisher verify-candidate --candidate-root PATH [--active-release PATH --environment NAME]
       pokemon-catalog-publisher publish [options]
 
     Options:

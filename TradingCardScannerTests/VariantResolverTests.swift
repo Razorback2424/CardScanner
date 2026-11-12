@@ -174,13 +174,6 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         let slots = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
         XCTAssertEqual(slots.filter { $0.providerID == venusaur.id }.compactMap(\.masterSetVariant), [.holo])
 
-        let unresolved = try card("ex5.5-1", in: snapshot)
-        XCTAssertTrue(unresolved.catalogVariants.isEmpty)
-        XCTAssertEqual(VariantResolver.resolveAcquisition(
-            IdentifiedCard.pokemon(unresolved, setCode: "PBP").variantEvidence,
-            printedEdition: .absent, finishLock: .init(finish: .normal)
-        ), .needsChoice(options: [], lockDidNotApply: nil))
-
         PokemonFinishCoverage.$certifiedForTesting.withValue([venusaur.id: [.normal]]) {
             let certified = IdentifiedCard.pokemon(venusaur, setCode: "XY").variantEvidence
             XCTAssertTrue(certified.physicalCoverageVerified)
@@ -188,6 +181,88 @@ final class PokemonFinishEvidenceTests: XCTestCase {
                 .resolved(.init(variant: .normal, resolution: .uniqueInCatalog)))
             XCTAssertEqual(PokemonMasterSetDefinition.requiredVariants(for: venusaur).map(\.variant), [.normal])
             XCTAssertFalse(PokemonVariantRules.requiresPhysicalReview(cardID: venusaur.id, variant: .normal))
+        }
+    }
+
+    func testCorroboratedHistoricalAliasesReachBrowseAndScan() async throws {
+        let snapshot = try await snapshot()
+        let examples: [([String], Set<PhysicalVariant>)] = [
+            (["sm5-58", "sm7-97", "sm8-191", "sm5-170", "xy4-97", "bw9-117", "bw9-118"], [.holo]),
+            (["xy2-13", "xy2-69", "xy2-107", "xy2-108"], [.holo]),
+            (["g1-28a", "g1-73a", "sm4-63a", "xy10-43a", "xy10-54a", "xy10-105a", "xy10-111a",
+              "xy2-88a", "xy3-55a", "xy4-24a", "xy4-65a", "xy6-77a", "xy7-75a", "xy9-98b"], [.holo]),
+            (["xy6-92a", "xy8-146a", "xy9-98a", "xy9-107a"], [.normal, .holo]),
+            (["bw6-117", "sm5-137", "sm8-177", "xy10-105", "xy4-92", "xy5-66"], [.normal, .reverse])
+        ]
+        for (ids, expected) in examples {
+            for id in ids {
+                let card = try card(id, in: snapshot)
+                let entry = try XCTUnwrap(snapshot.entry(forProviderID: card.set.id))
+                let rows = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID)).filter { $0.providerID == id }
+                XCTAssertEqual(Set(rows.compactMap(\.masterSetVariant)), expected, id)
+                let evidence = IdentifiedCard.pokemon(card, setCode: entry.set.code).variantEvidence
+                XCTAssertEqual(Set(VariantResolver.options(for: evidence)), expected, id)
+                XCTAssertFalse(evidence.physicalCoverageVerified, id)
+            }
+        }
+    }
+
+    func testUnnumberedEnergyCannotUseItsProviderKeyAsPrintedScanEvidence() async throws {
+        let snapshot = try await snapshot()
+        for number in 164...172 {
+            let id = "sm1-\(number)"
+            let card = try card(id, in: snapshot)
+            let printed = PokemonPrintedNumberEvidence(localID: String(number), denominator: 149, scheme: .officialSet)
+            let evidence = PokemonHistoricalScanEvidence(number: printed, titleCandidates: [card.name])
+            let candidates = PokemonOfflineCardFactory.candidates(in: snapshot, number: printed)
+            XCTAssertFalse(candidates.contains { $0.providerID == id }, id)
+            XCTAssertNil(PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence), id)
+
+            let providerRow = PokemonCatalogCardIdentity(providerID: id, setID: "sm1", setName: "Sun & Moon",
+                localID: String(number), name: card.name)
+            XCTAssertEqual(PokemonHistoricalIdentityResolver.resolve(evidence, candidateSetIDs: ["sm1"], in: [providerRow]),
+                .unsupported, id)
+        }
+        let numbered = PokemonPrintedNumberEvidence(localID: "163", denominator: 149, scheme: .officialSet)
+        XCTAssertTrue(PokemonOfflineCardFactory.candidates(in: snapshot, number: numbered).contains { $0.providerID == "sm1-163" })
+    }
+
+    func testVivillonRejectsTheOtherArtworksPublishedQuote() throws {
+        for product in [90395, 91249] {
+            let payload = """
+            {"id":"xy1-17","localId":"17","name":"Vivillon","set":{"id":"xy1","name":"XY",
+             "cardCount":{"total":146,"official":146}},"pricing":{"tcgplayer":{
+             "unit":"USD","holofoil":{"marketPrice":5,"productId":\(product)}}}}
+            """
+            let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(payload.utf8))
+            let identified = IdentifiedCard.pokemon(card, setCode: "XY")
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .holo, printRun: nil), 91249)
+            let price = CardPricing.price(for: identified, variant: .holo, magicTreatments: [])
+            switch price {
+            case let .price(quote):
+                XCTAssertEqual(product, 91249)
+                XCTAssertEqual(quote.unitMarketPriceUSD, 5)
+            case .unavailable:
+                XCTAssertEqual(product, 90395)
+            }
+        }
+    }
+
+    func testUnnumberedEnergyCannotBorrowTheOrdinaryReverseQuoteForWaveFoil() throws {
+        let payload = """
+        {"id":"sm1-164","localId":"164","name":"Grass Energy","set":{"id":"sm1","name":"Sun & Moon",
+         "cardCount":{"total":172,"official":149}},"pricing":{"tcgplayer":{
+         "unit":"USD","reverse-holofoil":{"marketPrice":5,"productId":127381}}}}
+        """
+        let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(payload.utf8))
+        let identified = IdentifiedCard.pokemon(card, setCode: "SUM")
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .reverse, printRun: nil), 127381)
+        XCTAssertEqual(CardPricing.tcgplayerProductID(for: identified, variant: .waveFoil, printRun: nil), 662712)
+        let reverse = CardPricing.price(for: identified, variant: .reverse, magicTreatments: [])
+        guard case let .price(quote) = reverse else { return XCTFail("Expected the exact ordinary Reverse quote") }
+        XCTAssertEqual(quote.unitMarketPriceUSD, 5)
+        if case .price = CardPricing.price(for: identified, variant: .waveFoil, magicTreatments: []) {
+            XCTFail("The ordinary Reverse product cannot quote Wave Foil")
         }
     }
 
@@ -951,12 +1026,69 @@ final class RetailVariantTests: XCTestCase {
         base.masterSetVariant = .normal; base.isSoleSlotForCard = true
         let registry = try ordinaryCorrectionRegistry()
         let projected = PokemonChecklistReviewedProjection.addingAdditionalVariants(to: [base], registry: registry)
-        XCTAssertEqual(Set(projected.compactMap(\.masterSetVariant)), [.normal, .holo])
-        XCTAssertTrue(projected.allSatisfy { !$0.isExpandedMasterSetVariant && !$0.isSoleSlotForCard })
+        XCTAssertEqual(projected.map(\.masterSetVariant), [.holo])
+        XCTAssertTrue(projected.allSatisfy { !$0.isExpandedMasterSetVariant && $0.isSoleSlotForCard })
         XCTAssertEqual(PokemonChecklistReviewedProjection.addingAdditionalVariants(to: projected, registry: registry), projected)
+        XCTAssertEqual(PokemonChecklistReviewedProjection.addingAdditionalVariants(to: [base],
+            registry: try ordinaryCorrectionRegistry(includeCorrections: false)), [base])
         let energy = CatalogCardSummary(game: .pokemon, providerID: "sve-002", setID: .init(game: .pokemon, providerID: "sve"),
             setName: "SV Energy", setCode: "SVE", name: "Fire Energy", collectorNumber: "002", thumbnailURL: nil, imageURL: nil)
         XCTAssertEqual(PokemonChecklistReviewedProjection.addingAdditionalVariants(to: [energy], registry: registry), [energy])
+    }
+
+    @MainActor
+    func testBrowseWriterRejectsDisputedNormalAndUnavailableMachampEdition() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let registry = try ordinaryCorrectionRegistry()
+        let previousRegistry = try ordinaryCorrectionRegistry(includeCorrections: false)
+        let coordinator = PokemonCatalogCoordinator()
+        await coordinator.overrideRegistry(previousRegistry, revision: 1)
+        CollectionStore.configureCatalogAdapters(try .init(adapters: []), legacyCorrectionGames: [.pokemon],
+            pokemonCatalogCoordinator: coordinator, for: container)
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        let rawPromo = try ordinaryPromo()
+        let promo = IdentifiedCard.pokemon(rawPromo.applyingAdditionalVariants(from: registry), setCode: "XY")
+        let machampPayload = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
+        {"id":"base1-8","localId":"8","name":"Machamp","set":{"id":"base1","name":"Base Set",
+        "cardCount":{"total":102,"official":102}},"variants":{"holo":true,"normal":false,"reverse":false,"firstEdition":true}}
+        """#.utf8))
+        let machamp = IdentifiedCard.pokemon(machampPayload.applyingAdditionalVariants(from: registry), setCode: "BS")
+        func details(_ card: IdentifiedCard, id: String, name: String, code: String) -> CatalogCardDetails {
+            .init(card: card, set: CatalogSet(catalogID: .init(game: .pokemon, providerID: id),
+                name: name, code: code, logoURL: nil, symbolURL: nil, cardCount: nil, releaseDate: nil, sortRank: 0))
+        }
+        let promoDetails = details(promo, id: "xyp", name: "XY Promos", code: "XY")
+        let machampDetails = details(machamp, id: "base1", name: "Base Set", code: "BS")
+        let previousDetails = details(.pokemon(rawPromo.applyingAdditionalVariants(from: previousRegistry), setCode: "XY"),
+            id: "xyp", name: "XY Promos", code: "XY")
+        await coordinator.overrideRegistry(registry, revision: 2)
+        do {
+            _ = try await writer.addCatalog(previousDetails, resolved: .init(variant: .normal, resolution: .userConfirmed),
+                pokemonPrintRun: nil, shouldContinue: { true })
+            XCTFail("A choice made before the catalog update must be resolved again")
+        } catch CatalogLookupError.staleCatalog {}
+        XCTAssertEqual(PokemonMasterSetDefinition.printRuns(for: machamp), [.firstEdition, .shadowless])
+        for (details, finish, run) in [(promoDetails, PhysicalVariant.normal, nil), (machampDetails, .holo, PokemonPrintRun.unlimited)] {
+            do {
+                _ = try await writer.addCatalog(details, resolved: .init(variant: finish, resolution: .userConfirmed),
+                    pokemonPrintRun: run, shouldContinue: { true })
+                XCTFail("Unexpected collection write for \(details.card.providerID) \(finish) \(String(describing: run))")
+            } catch let error as CollectionStoreError {
+                XCTAssertEqual(error, .unverifiedPokemonPrinting)
+            }
+        }
+        XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 0)
+        XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<CollectionActivity>()), 0)
+        XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<InventoryEvent>()), 0)
+        _ = try await writer.addCatalog(promoDetails, resolved: .init(variant: .holo, resolution: .userConfirmed),
+            pokemonPrintRun: nil, shouldContinue: { true })
+        _ = try await writer.addCatalog(machampDetails, resolved: .init(variant: .holo, resolution: .userConfirmed),
+            pokemonPrintRun: .shadowless, shouldContinue: { true })
+        let rows = try container.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(rows.map(\.variantID), ["holo", "holo"])
+        XCTAssertTrue(rows.contains { $0.collectionKey.contains("@shadowless") })
     }
 
     func testEnergyExclusionBlocksWrongHandleAndQuoteWithoutAffectingThe010Printing() throws {

@@ -40,6 +40,8 @@ public struct PokemonCatalogRelease: Codable, Equatable, Sendable {
     public let generatedAt: Date
     public let sets: [PokemonCatalogSetDescriptor]
     public let englishExclusions: PokemonCatalogEnglishExclusions?
+    /// Authenticates the checklist inputs hosted with this immutable revision.
+    public let checklistInputSHA256: String?
 
     public init(
         schemaVersion: Int = PokemonCatalogRelease.currentSchemaVersion,
@@ -47,7 +49,8 @@ public struct PokemonCatalogRelease: Codable, Equatable, Sendable {
         revision: Int,
         generatedAt: Date,
         sets: [PokemonCatalogSetDescriptor],
-        englishExclusions: PokemonCatalogEnglishExclusions? = nil
+        englishExclusions: PokemonCatalogEnglishExclusions? = nil,
+        checklistInputSHA256: String? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.catalogKind = catalogKind
@@ -55,6 +58,7 @@ public struct PokemonCatalogRelease: Codable, Equatable, Sendable {
         self.generatedAt = generatedAt
         self.sets = sets
         self.englishExclusions = englishExclusions
+        self.checklistInputSHA256 = checklistInputSHA256
     }
 }
 
@@ -181,6 +185,8 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     /// `nil` is meaningful: a legacy schema-1 release predates signed
     /// provider fingerprints and must not be treated as an empty target.
     public let providerFingerprint: String?
+    /// Changes when the provider's numbered identities or finish evidence change.
+    public let providerAcquisitionFingerprint: String?
     /// Optional publisher-resolved artwork relationship. This is protected
     /// configuration, not an automatic provider-content field.
     public let parentProviderSetID: String?
@@ -229,6 +235,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         logoURL: String?,
         symbolURL: String?,
         providerFingerprint: String? = nil,
+        providerAcquisitionFingerprint: String? = nil,
         parentProviderSetID: String? = nil,
         bundledArtworkSourceID: String? = nil,
         artworkFallbackURLs: [String]? = nil,
@@ -239,6 +246,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     ) {
         self.providerSetID = providerSetID
         self.providerFingerprint = providerFingerprint
+        self.providerAcquisitionFingerprint = providerAcquisitionFingerprint
         self.parentProviderSetID = parentProviderSetID
         self.displayName = displayName
         self.releaseDate = releaseDate
@@ -263,6 +271,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     private enum CodingKeys: String, CodingKey {
         case providerSetID
         case providerFingerprint
+        case providerAcquisitionFingerprint
         case parentProviderSetID
         case displayName
         case releaseDate
@@ -292,6 +301,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         let container = try decoder.container(keyedBy: CodingKeys.self)
         providerSetID = try container.decode(String.self, forKey: .providerSetID)
         providerFingerprint = try container.decodeIfPresent(String.self, forKey: .providerFingerprint)
+        providerAcquisitionFingerprint = try container.decodeIfPresent(String.self, forKey: .providerAcquisitionFingerprint)
         parentProviderSetID = try container.decodeIfPresent(String.self, forKey: .parentProviderSetID)
         displayName = try container.decodeIfPresent(String.self, forKey: .displayName)
         releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
@@ -354,6 +364,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
 
     public func withProviderFingerprint(
         _ providerFingerprint: String?,
+        providerAcquisitionFingerprint: String? = nil,
         artworkFallbackURLs: [String]?,
         cardArtwork: [PokemonCatalogCardArtwork]?
     ) -> PokemonCatalogSetDescriptor {
@@ -372,6 +383,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
             logoURL: logoURL,
             symbolURL: symbolURL,
             providerFingerprint: providerFingerprint,
+            providerAcquisitionFingerprint: providerAcquisitionFingerprint ?? self.providerAcquisitionFingerprint,
             parentProviderSetID: parentProviderSetID,
             bundledArtworkSourceID: bundledArtworkSourceID,
             artworkFallbackURLs: artworkFallbackURLs,

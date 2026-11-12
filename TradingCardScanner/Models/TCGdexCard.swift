@@ -1,6 +1,14 @@
 import Foundation
 import PokemonCatalogCore
 
+extension PokemonCatalogAdditionalVariant {
+    func matchesCard(setID: String, cardID: String, localID: String, name: String) -> Bool {
+        providerCardID == cardID && cardID == setID + "-" + localID
+            && CatalogIdentityNormalization.canonicalText(canonicalName)
+                == CatalogIdentityNormalization.canonicalText(name)
+    }
+}
+
 struct TCGdexCard: Decodable, Identifiable, Sendable {
     let id: String
     let localId: String
@@ -19,7 +27,7 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     let variantsDetailed: [TCGdexDetailedVariant]?
     /// Physical slots reconstructed from a checklist or resolved cache.
     /// Provider responses derive their slots from the original detail and prices.
-    let projectedCatalogVariants: [PhysicalVariant]?
+    var projectedCatalogVariants: [PhysicalVariant]?
     /// Device-local supplemental pricing; never decoded as TCGdex evidence.
     var supplementalTCGCSV: PokemonTCGCSVSnapshot? = nil
     /// Validated CDN evidence, kept out of the raw provider fingerprint.
@@ -27,9 +35,14 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// Installed by the catalog adapter from its verified registry, never
     /// decoded from a provider response or trusted from a disk cache.
     var reviewedAdditionalVariants: [PokemonCatalogAdditionalVariant] = []
+    /// Runtime authority for this card. Provider and resolved-cache bytes never supply it.
+    var acquisitionCatalog: PokemonCatalogRegistry?
+    private var hasPlainHoloLane = false
+    private var hasPlainReverseLane = false
 
     func applyingAdditionalVariants(from registry: PokemonCatalogRegistry) -> Self {
         var card = self
+        card.acquisitionCatalog = registry
         card.reviewedAdditionalVariants = registry.descriptor(forProviderSetID: set.id)?
             .additionalVariants?.filter { $0.providerCardID == id } ?? []
         return card
@@ -41,7 +54,10 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
               url.host != nil, !url.path.isEmpty else { return nil }
         return image
     }
-    var storedArtworkURL: String? { providerArtworkURL ?? recoveredArtwork?.imageURL }
+    var storedArtworkURL: String? {
+        PokemonReviewedArtworkCatalog.printing(for: self)?.imageURL?.absoluteString
+            ?? providerArtworkURL ?? recoveredArtwork?.imageURL
+    }
 
     enum CodingKeys: String, CodingKey {
         case id, localId, name, image, rarity, set, variants, pricing
@@ -85,7 +101,9 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         variants: TCGdexVariants?,
         pricing: TCGdexPricing?,
         variantsDetailed: [TCGdexDetailedVariant]?,
-        projectedCatalogVariants: [PhysicalVariant]? = nil
+        projectedCatalogVariants: [PhysicalVariant]? = nil,
+        hasPlainHoloLane: Bool = false,
+        hasPlainReverseLane: Bool = false
     ) {
         self.id = id
         self.localId = localId
@@ -97,6 +115,8 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         self.pricing = pricing
         self.variantsDetailed = variantsDetailed
         self.projectedCatalogVariants = projectedCatalogVariants
+        self.hasPlainHoloLane = hasPlainHoloLane
+        self.hasPlainReverseLane = hasPlainReverseLane
     }
 
     var highImageURL: URL? {
@@ -106,6 +126,7 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     }
 
     var lowImageURL: URL? {
+        if let printing = PokemonReviewedArtworkCatalog.printing(for: self) { return printing.thumbnailURL }
         if providerArtworkURL == nil, let recoveredArtwork {
             return URL(string: recoveredArtwork.thumbnailURL)
         }
@@ -126,6 +147,12 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// The supplemental rules layer may still widen this for sets whose parallel
     /// patterns TCGdex does not model at all; no *rule* is applied here.
     var catalogVariantsWithoutCertification: [PhysicalVariant] {
+        if let printing = PokemonReviewedArtworkCatalog.printing(for: self) {
+            return addingReviewedVariants(to: printing.variants)
+        }
+        if let printing = PokemonReviewedEnergyCatalog.unnumberedPrinting(for: self) {
+            return addingReviewedVariants(to: printing.variants)
+        }
         if let reviewed = PokemonVariantRules.reviewedVariants(cardID: id) { return addingReviewedVariants(to: reviewed) }
         // Reviewed exact products in both 30th sets are Holofoil. The upstream
         // generated Normal flag is incorrect; unrelated/unknown cards keep it.
@@ -164,13 +191,14 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
             result.append(PokemonReviewedParallelCatalog.variant)
         }
         let prices = pricing?.tcgplayer
-        if variants?.holo == true, prices?.holo == nil, prices?.holofoil == nil {
+        if variants?.holo == true, !hasPlainHoloLane, prices?.holo == nil, prices?.holofoil == nil {
             let holoDetails = standardEnglishDetails(type: "holo")
             if !holoDetails.isEmpty, holoDetails.allSatisfy({ $0.foil?.lowercased() == "cosmos" }) {
                 result.removeAll { $0 == .holo }
             }
         }
-        if set.id == "me02.5", variants?.reverse == true, prices?.reverse == nil, prices?.reverseHolofoil == nil {
+        if set.id == "me02.5", variants?.reverse == true, !hasPlainReverseLane,
+           prices?.reverse == nil, prices?.reverseHolofoil == nil {
             let patterns = Set(standardEnglishDetails(type: "reverse").map { $0.physicalVariant?.id ?? "" })
             if patterns.count == 2, patterns.contains("energy"),
                patterns.isSubset(of: PokemonFinishMinimumCatalog.ascendedHeroesReversePatterns) {
@@ -193,9 +221,7 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
 
     var authorizedAdditionalVariants: [PokemonCatalogAdditionalVariant] {
         reviewedAdditionalVariants.filter {
-            $0.providerCardID == id && id == set.id + "-" + localId
-                && CatalogIdentityNormalization.canonicalText($0.canonicalName)
-                    == CatalogIdentityNormalization.canonicalText(name)
+            $0.matchesCard(setID: set.id, cardID: id, localID: localId, name: name)
         }
     }
 
@@ -384,6 +410,13 @@ struct TCGdexCardBrief: Decodable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case id, localId, name, image
+    }
+
+    init(id: String, localId: String, name: String, image: String?) {
+        self.id = id
+        self.localId = localId
+        self.name = name
+        self.image = image
     }
 
     init(from decoder: Decoder) throws {

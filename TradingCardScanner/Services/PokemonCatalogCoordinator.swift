@@ -20,6 +20,7 @@ actor PokemonCatalogCoordinator {
     // MARK: - Dependencies
 
     private let store: PokemonCatalogReleaseStore
+    private let checklistStore: PokemonChecklistStore
     private let client: PokemonCatalogUpdateClient
     private let keys: [PokemonCatalogSignatureVerifier.PinnedKey]
     private let rolloutMode: PokemonCatalogRolloutMode
@@ -28,7 +29,11 @@ actor PokemonCatalogCoordinator {
 
     // MARK: - State
 
-    private var activeRegistry: PokemonCatalogRegistry
+    private nonisolated let registrySnapshot = OSAllocatedUnfairLock(initialState: PokemonCatalogRegistry.bundledSeed)
+    private var activeRegistry: PokemonCatalogRegistry {
+        get { registrySnapshot.withLock { $0 } }
+        set { registrySnapshot.withLock { $0 = newValue } }
+    }
     private var activeRevision: Int?
     private var continuations: [UUID: AsyncStream<ActivationEvent>.Continuation] = [:]
     private var didPerformInitialLoad = false
@@ -41,6 +46,7 @@ actor PokemonCatalogCoordinator {
 
     init(
         store: PokemonCatalogReleaseStore = PokemonCatalogReleaseStore(),
+        checklistStore: PokemonChecklistStore = .shared,
         client: PokemonCatalogUpdateClient = PokemonCatalogUpdateClient(),
         keys: [PokemonCatalogSignatureVerifier.PinnedKey] = PokemonCatalogSignatureVerifier.pinnedKeys,
         rolloutMode: PokemonCatalogRolloutMode = .configured,
@@ -48,18 +54,45 @@ actor PokemonCatalogCoordinator {
         now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.store = store
+        self.checklistStore = checklistStore
         self.client = client
         self.keys = keys
         self.rolloutMode = rolloutMode
         self.diagnostics = diagnostics
         self.now = now
-        self.activeRegistry = PokemonCatalogRegistry.bundledSeed
         self.activeRevision = nil
     }
 
     // MARK: - Public interface
 
     var registry: PokemonCatalogRegistry { activeRegistry }
+    var activeCatalog: (registry: PokemonCatalogRegistry, revision: Int?) { (activeRegistry, activeRevision) }
+
+    nonisolated func acceptsAcquisition(_ card: TCGdexCard, automaticIdentifier: ScanIdentifier?) -> Bool {
+        guard let captured = card.acquisitionCatalog else { return false }
+        return registrySnapshot.withLock { registry in
+            let descriptor = registry.descriptor(forProviderSetID: card.set.id)
+            guard descriptor == captured.descriptor(forProviderSetID: card.set.id),
+                  registry.resolvedCardCacheFingerprint(forProviderSetID: card.set.id)
+                    == captured.resolvedCardCacheFingerprint(forProviderSetID: card.set.id) else { return false }
+            guard let automaticIdentifier else { return true }
+            // The header and year only identify a family. Saving one Energy
+            // type requires the user's explicit printing selection.
+            guard automaticIdentifier.namespace != PokemonUnnumberedEnergyEvidence.namespace else { return false }
+            switch automaticIdentifier.legacyIdentity {
+            case let .pokemon(code, _, total, definition):
+                return descriptor?.scanEnabled == true && descriptor?.recognitionKind == .expansion
+                    && descriptor?.printedCode == code && descriptor?.officialCount == total
+                    && descriptor?.providerSetID == definition.tcgdexSetID
+            case let .pokemonPromo(prefix, _, definition):
+                return descriptor?.scanEnabled == true && registry.pokemonPromoSetDefinition(forPrefix: prefix) == definition
+            case let .pokemonEnergy(code, _, definition):
+                return descriptor?.scanEnabled == true && registry.energyDefinition(forCode: code) == definition
+            default:
+                return true
+            }
+        }
+    }
 
     var revision: Int? { activeRevision }
 
@@ -121,27 +154,26 @@ actor PokemonCatalogCoordinator {
         }
 
         await store.load(keys: keys)
-        if let stored = await store.activeRelease {
-            if activeRevision.map({ stored.release.revision > $0 }) ?? true {
-                activeRegistry = stored.registry
-                activeRevision = stored.release.revision
-            }
+        let current = await store.activeRelease
+        let previous = await store.previousRelease
+        for stored in [current, previous].compactMap({ $0 }) {
+            if stored.release.checklistInputSHA256 != nil,
+               !(await checklistStore.activateSignedSnapshot(for: stored.release)) { continue }
+            activeRegistry = stored.registry
+            activeRevision = stored.release.revision
             await diagnostics.recordLaunchLoad(
                 mode: rolloutMode,
                 duration: Date().timeIntervalSince(start),
                 usedPersistedRelease: true
             )
             Self.logger.info("Loaded persisted registry revision \(self.activeRevision ?? 0)")
-        } else {
-            activeRegistry = store.recoverFromBundledSeed()
-            activeRevision = nil
-            await diagnostics.recordLaunchLoad(
-                mode: rolloutMode,
-                duration: Date().timeIntervalSince(start),
-                usedPersistedRelease: false
-            )
-            Self.logger.info("Using bundled seed registry")
+            return
         }
+        activeRegistry = store.recoverFromBundledSeed()
+        activeRevision = nil
+        await diagnostics.recordLaunchLoad(mode: rolloutMode, duration: Date().timeIntervalSince(start),
+            usedPersistedRelease: false)
+        Self.logger.info("Using bundled seed registry")
     }
 
     enum RefreshResult: Sendable {
@@ -276,10 +308,19 @@ actor PokemonCatalogCoordinator {
 
         let result: PokemonCatalogReleaseStore.ActivationResult
         do {
+            if release.checklistInputSHA256 != nil,
+               !checklistStore.hasStagedSignedSnapshot(for: release) {
+                let inputs = try await client.fetchChecklistInputs(for: release)
+                let snapshot = try PokemonMasterSetChecklistBuilder.buildSigned(
+                    inputs, registry: newRegistry, generatedAt: release.generatedAt)
+                try await checklistStore.stageSignedSnapshot(snapshot, for: release)
+            }
+            try Task.checkCancellation()
             result = try await store.activate(
                 envelope: envelope,
                 release: release,
-                registry: newRegistry
+                registry: newRegistry,
+                checklistStore: checklistStore
             )
         } catch {
             await diagnostics.recordRejection(error)
@@ -287,14 +328,25 @@ actor PokemonCatalogCoordinator {
             return .rejected(error)
         }
 
-        switch result {
-        case .alreadyCurrent:
-            await diagnostics.recordNotModified()
-            return .notModified
+        if case .alreadyCurrent = result {
+            let persisted = await store.activeRelease
+            if activeRevision == release.revision || persisted?.envelope != envelope {
+                await diagnostics.recordNotModified()
+                return .notModified
+            }
+        }
 
-        case .activated(let rev, _):
+        do {
             // Actor reentrancy allows a newer activation to publish while the
             // store is awaited. Never reinstall an older registry afterward.
+            let rev = release.revision
+            guard activeRevision.map({ rev > $0 }) ?? true else { return .notModified }
+            if release.checklistInputSHA256 != nil || activeRegistry.checklistInputSHA256 != nil {
+                guard await checklistStore.activateSignedSnapshot(for: release) else {
+                    if let activeRevision, activeRevision > rev { return .notModified }
+                    return .rejected(PokemonChecklistError.malformedSnapshot)
+                }
+            }
             guard activeRevision.map({ rev > $0 }) ?? true else { return .notModified }
             let prev = activeRevision
             let changedCounts = officialCountChanges(
@@ -308,7 +360,6 @@ actor PokemonCatalogCoordinator {
             )
             activeRegistry = newRegistry
             activeRevision = rev
-
             let event = ActivationEvent(
                 revision: rev,
                 previousRevision: prev,
@@ -318,6 +369,10 @@ actor PokemonCatalogCoordinator {
             )
             for (_, continuation) in continuations {
                 continuation.yield(event)
+            }
+            if release.checklistInputSHA256 != nil {
+                let previous = await store.previousRelease
+                await checklistStore.removeStagedRevisions(olderThan: previous?.release.revision ?? rev)
             }
             Self.logger.info(
                 "Activated catalog revision \(rev) (previous: \(prev.map(String.init) ?? "none"), changed counts: \(changedCounts.count), changed content: \(changedContent.count))"

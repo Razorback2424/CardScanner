@@ -88,7 +88,9 @@ enum LegacyResolvedCard: Identifiable, Sendable {
 
     var name: String {
         switch self {
-        case let .pokemon(card, _): return card.name
+        case let .pokemon(card, _):
+            guard let printing = PokemonReviewedArtworkCatalog.printing(for: card) else { return card.name }
+            return "\(card.name) · \(printing.label)"
         case let .magic(card): return card.name
         }
     }
@@ -117,6 +119,7 @@ enum LegacyResolvedCard: Identifiable, Sendable {
     var displayCardNumber: String {
         switch self {
         case let .pokemon(card, _):
+            if PokemonFinishMinimumCatalog.isUnnumbered(cardID: card.id) { return "Unnumbered" }
             if let printed = ReviewedPokemonProductIdentity.printedNumber(for: card) { return printed }
             if PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: card.set.id)?.recognitionKind == .energy {
                 return card.localId

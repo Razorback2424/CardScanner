@@ -67,7 +67,8 @@ def name_key(value):
 
 def local_number(value):
     number = value.split("/", 1)[0].strip().lower()
-    return str(int(number)) if re.fullmatch(r"[0-9]+", number) else number
+    match = re.fullmatch(r"([0-9]+)([a-z]*)", number)
+    return f"{int(match[1])}{match[2]}" if match else number
 
 
 def without_number_suffix(name, number):
@@ -102,12 +103,17 @@ def write_json(path, value):
             temp.unlink(missing_ok=True)
 
 
-def checklist(root, set_id, *, aggregate_evidence=None, snapshot=None):
-    snapshot = snapshot or root / SNAPSHOT
+def checklist_entries(snapshot, set_id):
     manifest = read_json(snapshot / "manifest.json")
     entries = [entry for entry in manifest["entries"] if entry["providerID"] == set_id]
     if not entries:
         raise ValueError(f"Set {set_id} is absent from the bundled manifest")
+    return entries
+
+
+def checklist(root, set_id, *, aggregate_evidence=None, snapshot=None):
+    snapshot = snapshot or root / SNAPSHOT
+    entries = checklist_entries(snapshot, set_id)
     cards, sources = {}, {}
     for entry in entries:
         resource = entry["resource"]
@@ -255,17 +261,23 @@ def product_finishes(card, product):
         return None
     name = without_number_suffix(product["name"], product["number"])
     title, separator, qualifier = name.removesuffix(")").rpartition(" (") if name.endswith(")") else (name, "", "")
-    pattern = PATTERNS.get(name_key(qualifier).removesuffix(" pattern")) if separator else None
+    qualifier_key = name_key(qualifier)
+    pattern = PATTERNS.get(qualifier_key.removesuffix(" pattern")) if separator else None
     if pattern:
         name = without_number_suffix(title, product["number"])
     expected_name = name_key(card["name"])
-    if separator and name_key(qualifier) in {
+    labeled_lane = {"holo": "holofoil", "holofoil": "holofoil", "non holo": "normal"}.get(qualifier_key)
+    if labeled_lane:
+        if {name_key(value) for value in product["subtypes"]} != {labeled_lane}:
+            return None
+        name = without_number_suffix(title, product["number"])
+    if separator and qualifier_key in {
         "full art", "alternate full art", "shiny full art", "secret", "secret rare",
     }:
         name = without_number_suffix(title, product["number"])
-    elif separator and name_key(qualifier) == "basic" and expected_name.endswith(" energy"):
+    elif separator and qualifier_key == "basic" and expected_name.endswith(" energy"):
         name = without_number_suffix(title, product["number"])
-    elif separator and name_key(qualifier) in {"left", "right"} and expected_name.startswith("legendary "):
+    elif separator and qualifier_key in {"left", "right"} and expected_name.startswith("legendary "):
         name = without_number_suffix(title, product["number"])
     if name.endswith("]"):
         title, separator, character = name.removesuffix("]").rpartition(" [")
@@ -512,6 +524,20 @@ def certify(root, set_id, *, revision=FIRST_REVISION):
             or report_value.get("captureRevision") != revision or type(group_id) is not int or group_id < 1):
         raise ValueError("Evidence does not identify this capture revision")
     verify_receipt(capture / "receipt.json", report_value)
+    print_runs = {entry["set"].get("catalogID", {}).get("pokemonPrintRun")
+                  for entry in checklist_entries(root / SNAPSHOT, set_id)}
+    if len(print_runs) > 1:
+        raise ValueError(f"{set_id} has multiple print runs. Schema 1 certificates are keyed by provider card ID.")
+    reviewed_artwork = root / SNAPSHOT / "reviewed-artwork-printings.json"
+    if reviewed_artwork.is_file() and any(
+        family["providerSetID"] == set_id for family in read_json(reviewed_artwork)["families"]
+    ):
+        raise ValueError(f"{set_id} has reviewed artwork printings outside the captured checklist.")
+    reviewed_energy = root / SNAPSHOT / "reviewed-unnumbered-energy.json"
+    if reviewed_energy.is_file() and any(
+        family["providerSetID"] == set_id for family in read_json(reviewed_energy)["families"]
+    ):
+        raise ValueError(f"{set_id} has reviewed unnumbered Energy outside the numbered comparison.")
     audited = ledger()
     cards, sources, _, evidence = current_inputs(root, set_id, minimum_table(audited, set()))
     if report_value["checklistSources"] != sources:

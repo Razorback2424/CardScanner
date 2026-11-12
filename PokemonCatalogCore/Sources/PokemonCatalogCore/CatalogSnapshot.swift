@@ -1,7 +1,9 @@
+import CryptoKit
 import Foundation
 
 public struct PokemonCatalogSnapshot: Codable, Equatable, Sendable {
     public static let currentSchemaVersion = PokemonCatalogCoreContract.snapshotSchemaVersion
+    public static let maximumPublishedBytes = 24 * 1024 * 1024
 
     public let schemaVersion: Int
     public let rulesVersion: Int
@@ -9,6 +11,7 @@ public struct PokemonCatalogSnapshot: Codable, Equatable, Sendable {
     public let directoryFingerprint: String
     public let entries: [PokemonCatalogSnapshotEntry]
     public let checklists: [String: [PokemonCatalogCardSummary]]
+    public let checklistInputs: [String: PokemonCatalogChecklistInput]?
 
     public init(
         schemaVersion: Int = PokemonCatalogSnapshot.currentSchemaVersion,
@@ -16,7 +19,8 @@ public struct PokemonCatalogSnapshot: Codable, Equatable, Sendable {
         generatedAt: Date,
         directoryFingerprint: String,
         entries: [PokemonCatalogSnapshotEntry],
-        checklists: [String: [PokemonCatalogCardSummary]]
+        checklists: [String: [PokemonCatalogCardSummary]],
+        checklistInputs: [String: PokemonCatalogChecklistInput]? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.rulesVersion = rulesVersion
@@ -24,6 +28,49 @@ public struct PokemonCatalogSnapshot: Codable, Equatable, Sendable {
         self.directoryFingerprint = directoryFingerprint
         self.entries = entries
         self.checklists = checklists
+        self.checklistInputs = checklistInputs
+    }
+
+    public func verifiedChecklistInputs(for release: PokemonCatalogRelease) throws -> [String: PokemonCatalogChecklistInput] {
+        guard let checklistInputs, !checklistInputs.isEmpty,
+              let expected = release.checklistInputSHA256,
+              try PokemonCatalogChecklistInput.digest(checklistInputs) == expected else {
+            throw PokemonCatalogCandidateValidationError.checklistInputsMismatch
+        }
+        let descriptors = Dictionary(release.sets.map { ($0.providerSetID.lowercased(), $0) },
+                                     uniquingKeysWith: { first, _ in first })
+        guard Set(checklistInputs.keys) == Set(entries.map(\.providerSetID)) else {
+            throw PokemonCatalogCandidateValidationError.checklistInputsMismatch
+        }
+        for (id, input) in checklistInputs {
+            let details = Dictionary(input.cards.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+            guard let descriptor = descriptors[id], id == input.providerSet.id.lowercased(),
+                  details.count == input.cards.count, details.count == input.providerSet.cards.count,
+                  Set(input.providerSet.cards.map(\.id)) == Set(details.keys),
+                  let fingerprint = PokemonCatalogProviderFingerprint.v1(providerSet: input.providerSet, cardDetails: details),
+                  fingerprint == descriptor.providerFingerprint else {
+                throw PokemonCatalogCandidateValidationError.checklistInputsMismatch
+            }
+            if let acquisitionFingerprint = descriptor.providerAcquisitionFingerprint,
+               acquisitionFingerprint != PokemonCatalogProviderFingerprint.acquisitionV1(providerSet: input.providerSet, cardDetails: details) {
+                throw PokemonCatalogCandidateValidationError.checklistInputsMismatch
+            }
+        }
+        return checklistInputs
+    }
+}
+
+public struct PokemonCatalogChecklistInput: Codable, Equatable, Sendable {
+    public let providerSet: PokemonCatalogProviderSet
+    public let cards: [PokemonCatalogProviderCard]
+
+    public init(providerSet: PokemonCatalogProviderSet, cards: [PokemonCatalogProviderCard]) {
+        self.providerSet = providerSet
+        self.cards = cards
+    }
+
+    public static func digest(_ inputs: [String: Self]) throws -> String {
+        try SHA256.hash(data: PokemonCatalogJSON.encode(inputs)).map { String(format: "%02x", $0) }.joined()
     }
 }
 

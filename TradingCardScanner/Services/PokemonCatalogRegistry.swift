@@ -4,6 +4,7 @@ import os
 struct PokemonCatalogRegistry: Sendable {
     let revision: Int
     let descriptors: [PokemonCatalogSetDescriptor]
+    let checklistInputSHA256: String?
 
     private let byPrintedCode: [String: PokemonCatalogSetDescriptor]
     private let byPromoPrefix: [String: PokemonCatalogSetDescriptor]
@@ -17,6 +18,7 @@ struct PokemonCatalogRegistry: Sendable {
 
     init(release: PokemonCatalogRelease) {
         self.revision = release.revision
+        self.checklistInputSHA256 = release.checklistInputSHA256
         let supported = release.sets.filter(Self.isSupported)
         self.descriptors = supported
         var codes: [String: PokemonCatalogSetDescriptor] = [:]
@@ -57,6 +59,11 @@ struct PokemonCatalogRegistry: Sendable {
 
     func descriptor(forProviderSetID id: String) -> PokemonCatalogSetDescriptor? {
         byProviderSetID[id.lowercased()]
+    }
+
+    func resolvedCardCacheFingerprint(forProviderSetID id: String) -> String? {
+        guard let fingerprint = descriptor(forProviderSetID: id)?.providerFingerprint else { return nil }
+        return checklistInputSHA256 ?? fingerprint
     }
 
     func membershipRecognition(forProviderSetID id: String) -> PokemonCatalogMembershipRecognition? {
