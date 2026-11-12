@@ -4,6 +4,34 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 
+**English numbered catalog coverage — 2026-11-12, dirty `7daef56`.** The
+signed owner bundle is revision 6. The unsigned production revision 2
+validates as a continuation of signed production revision 1. The same registry
+joins 3,811 of 4,946 official rows across 61 series to verified printings.
+Since owner revision 4, the EB-05, booster, named promo and starter batches
+added 738 verified printing IDs and verified seven finishes under their
+existing IDs. All 2,367 market mappings carry forward.
+
+The [replay procedure](../../OnePieceCatalogCore/README.md#english-card-list-coverage)
+uses exact Bandai product evidence and retailer listings tied to unique
+artwork. All 906 official rows without an exact printing join have read-only
+Browse evidence indexed by official product label. Another 229 rows have held
+printings. The largest queues are Promotion (253), Other
+Product (143), PRB-01 (138), PRB-02 (93) and OP-01 (89, including 62 holds).
+Continue by product and review every visually confusable sibling together.
+Use physical copies or explicit product specifications to settle stamp, footer,
+treatment and finish disagreements. DON!! and other languages require separate
+inventories.
+
+The signed owner bundle, unsigned production candidate and coverage audit are
+on T7 under `CodexBuilds/OnePieceCatalogFix-20261112-Resume2/FinalWithStarters`.
+Both production pointers returned HTTP 404 on November 12. Publishing the
+already signed revision 1 is the prerequisite for a revision 2 continuation.
+The [protected publication steps](../release/one-piece-production-setup-2026-10-23.md)
+and device acceptance remain open. The owner build can display exact recorded
+Bandai artwork. The candidate has zero approved production artwork URLs, so
+production artwork access remains a separate acceptance dependency.
+
 **Intermittent game availability repair — 2026-10-18:** the ProfileLocal scheme
 runs `ReleaseLocal`, while the signed bundled owner runtime was compiled only
 under `DEBUG && LOCAL_ONLY_SIGNING`. Installing that build over Debug used the
