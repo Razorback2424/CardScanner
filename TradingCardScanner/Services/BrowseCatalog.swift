@@ -107,9 +107,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
         // reviewed Holofoil products. Correct presentation locally without
         // modifying the signed payload or its provider fingerprint.
         var seenReviewedIDs: Set<String> = []
-        let summaries = augmented.compactMap { summary -> CatalogCardSummary? in
+        let corrected = augmented.compactMap { summary -> CatalogCardSummary? in
             guard summary.game == .pokemon, summary.pokemonPrintRun == nil,
                   PokemonTCGCSVMapping.byCardID[summary.providerID]?.setID == set.providerID else { return summary }
+            if let deck = PokemonBattleDeckFinishCatalog.entry(for: summary),
+               summary.masterSetVariant?.id == deck.variant.id { return summary }
             guard seenReviewedIDs.insert(summary.providerID).inserted else { return nil }
             var corrected = summary
             corrected.masterSetVariant = .holo
@@ -117,6 +119,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             corrected.isSoleSlotForCard = true
             return corrected
         }
+        let summaries = PokemonBattleDeckFinishCatalog.projecting(corrected)
         guard let artwork = set.cardArtwork, !artwork.isEmpty else { return summaries }
         return summaries.map { summary in
             guard summary.thumbnailURL == nil,

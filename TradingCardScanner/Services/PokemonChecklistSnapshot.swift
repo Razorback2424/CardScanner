@@ -54,6 +54,7 @@ enum PokemonChecklistReviewedProjection {
     static let setIDs: Set<String> = Set(["me02.5", "sma", "xya", "me05", "me03", "sv04.5", "swsh10.5", "sv03.5"])
         .union(PokemonFinishMinimumCatalog.setIDs)
         .union(PokemonFinishCoverage.sets.keys)
+        .union(PokemonBattleDeckFinishCatalog.setIDs)
 
     /// Only the bundle reader calls this with the original resource bytes.
     fileprivate static func removingBundledAggregates(
@@ -122,8 +123,8 @@ enum PokemonChecklistReviewedProjection {
     }
 
     private static func finishingChecklist(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
-        PokemonMasterSetDefinition.checklist(
-            PokemonReviewedEnergyCatalog.projectingUnnumbered(PokemonReviewedArtworkCatalog.projecting(cards)))
+        let reviewed = PokemonReviewedEnergyCatalog.projectingUnnumbered(PokemonReviewedArtworkCatalog.projecting(cards))
+        return PokemonMasterSetDefinition.checklist(PokemonBattleDeckFinishCatalog.projecting(reviewed))
     }
 
     private static func needsProjection(_ card: CatalogCardSummary) -> Bool {

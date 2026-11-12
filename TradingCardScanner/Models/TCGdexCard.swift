@@ -135,10 +135,15 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     }
 
     var catalogVariants: [PhysicalVariant] {
+        let variants: [PhysicalVariant]
         if let certified = PokemonFinishCoverage.variants(cardID: id) {
-            return addingReviewedVariants(to: certified)
+            variants = addingReviewedVariants(to: certified)
+        } else {
+            variants = PokemonFinishMinimumCatalog.projectingLegacy(cardID: id, variants: catalogVariantsWithoutCertification)
         }
-        return PokemonFinishMinimumCatalog.projectingLegacy(cardID: id, variants: catalogVariantsWithoutCertification)
+        guard let deck = PokemonBattleDeckFinishCatalog.entry(for: self),
+              !variants.contains(where: { $0.id == deck.variant.id }) else { return variants }
+        return variants + [deck.variant]
     }
 
     /// Merge the provider's broad flags with its individual objects. A broad
