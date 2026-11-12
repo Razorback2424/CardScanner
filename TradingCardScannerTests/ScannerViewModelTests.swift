@@ -319,8 +319,41 @@ private struct ScannerPrintingCatalogFixture: GameCatalogAdapter {
     }
 }
 
+private struct ProvisionalPokemonCatalogFixture: GameCatalogAdapter {
+    let game = CardGame.pokemon
+    let generation = "provisional-fixture"
+    let card: IdentifiedCard
+
+    func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome {
+        .resolved(.init(card, path: .offlineFallback))
+    }
+
+    func resolve(_ candidate: PhysicalPrintingCandidate, for identifier: ScanIdentifier) async throws -> CardCatalog.CatalogResolution {
+        throw CatalogLookupError.invalidPrintingChoice
+    }
+}
+
 @MainActor
 final class ScannerViewModelTests: XCTestCase {
+    func testProvisionalPokemonFinishIsFiledForReviewWithoutWriting() async throws {
+        let card = IdentifiedCard.pokemon(catalogCard(variants: [.normal], localID: "001"), setCode: "TST")
+        let adapter = ProvisionalPokemonCatalogFixture(card: card)
+        let model = try makeModel(variants: [.normal], printingCatalog: adapter)
+        defer { model.viewDisappeared() }
+        let original = scannerIdentifier()
+        let identifier = try ScanIdentifier(game: original.game, namespace: original.namespace, fields: original.fields,
+            displayIdentifier: original.displayIdentifier, suppressionIdentity: original.suppressionIdentity,
+            catalogGeneration: adapter.generation)
+        confirm(model, identifier, encounterID: UUID())
+        await assertEventually { model.unresolvedScans.count == 1 }
+        XCTAssertEqual(model.unresolvedScans.first?.candidateHints.first?.providerID, card.providerID)
+        XCTAssertNil(model.unresolvedScans.first?.pendingCommit)
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertTrue(model.sessionScans.isEmpty)
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<CollectedCard>()), 0)
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<InventoryEvent>()), 0)
+    }
+
     func testOfflineScanUsesConfiguredFallbackAfterCatalogFailureOrEmptyPricing() async throws {
         let previousKey = PriceVendorCredentials.key
         let previousFallback = UserDefaults.standard.object(forKey: "usesPriceFallback")
@@ -624,6 +657,39 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.pendingChoice?.identityResolution, .userSelectedPrinting)
         XCTAssertNil(model.pendingIdentityChoice)
         model.viewDisappeared()
+    }
+
+    func testUnnumberedEnergyScanSavesOnlyTheChosenTypeAndFinish() async throws {
+        let model = try makeModel(variants: [.normal], fallbackQuoteOverride: { _, _, _ in .lookup(.unavailable(nil)) })
+        defer { model.viewDisappeared() }
+        let copyright = RecognizedLine(text: "©2017 Pokémon")
+        let recognition = RecognitionProfile.pokemonOnly.identify(footerLines: [copyright],
+            fullCardLines: [.init(text: "ENERGY"), copyright])
+        guard case let .identified(subject) = recognition else { return XCTFail("Expected the Energy choice") }
+        confirm(model, subject.identifier, encounterID: UUID())
+        await assertEventually { model.pendingIdentityChoice != nil }
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<CollectedCard>()), 0)
+        let choice = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first { $0.id == "sm1-165" })
+        model.choose(choice)
+        await assertEventually { model.pendingChoice != nil }
+        XCTAssertEqual(model.pendingChoice?.card.providerID, "sm1-165")
+        XCTAssertEqual(Set(model.pendingChoice?.options ?? []), [.normal, .reverse, .waveFoil])
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<CollectedCard>()), 0)
+        model.choose(.waveFoil)
+        await assertEventually { model.successCount == 1 }
+        let rows = try context().fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.map(\.providerID), ["sm1-165"])
+        XCTAssertEqual(rows.map(\.variantID), [PhysicalVariant.waveFoil.id])
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        let saved = try XCTUnwrap(rows.first)
+        XCTAssertEqual(saved.cardNumber, "165")
+        XCTAssertEqual(saved.displayCardNumber, "Unnumbered")
+        XCTAssertEqual(CardShareIdentity(collectedCard: saved).number?.text, "Unnumbered")
+        let projection = CollectionProjectionStore()
+        await projection.rebuild(container: context().container)
+        let projected = try XCTUnwrap(projection.snapshot?.rows.first)
+        XCTAssertEqual(projected.cardNumber, "165")
+        XCTAssertEqual(projected.displayCardNumber, "Unnumbered")
     }
 
     func testClassicPhotoFootersOfferBothPrintingsBeforeFinishOrCollectionWrite() async throws {
@@ -5178,7 +5244,8 @@ final class ScannerViewModelTests: XCTestCase {
             InventoryEvent.self,
             ReferenceQuote.self,
             PriceObservation.self,
-            PriceCheckDay.self
+            PriceCheckDay.self,
+            LocalArtworkOverride.self
         ])
         let container = try ModelContainer(
             for: schema,

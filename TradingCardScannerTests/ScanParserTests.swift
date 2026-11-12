@@ -2,6 +2,51 @@ import XCTest
 @testable import TradingCardScanner
 
 final class ScanParserTests: XCTestCase {
+    func testUnnumberedEnergyRequiresMatchingHeaderAndCopyrightInTheSameFrame() throws {
+        let profile = RecognitionProfile.pokemonOnly
+        let title = RecognizedLine(text: "ENERGY", boundingBox: .init(x: 0.04, y: 0.94, width: 0.30, height: 0.03))
+        for (year, footer, fullFooter) in [
+            (2013, "©2013 Pokémon", "©2013 Pokémon"),
+            (2017, "C2017 Pokémon", "©2017 Pokémon"),
+            (2019, "©2019 Pokémon", "©2019 Pokémon"),
+            (2020, "©2020 Pokémon / Nintendo / Creatures / GAME FREAK", "©2020 Pokémon / Nintendo / Creatures / GAME FREAK"),
+            (2022, "©2022 Pokémon / Nintendo / Creatures / GAME FREAK", "02022 Pokémon / Nintendo / Creatures / GAME FREAK")
+        ] {
+            let original = [RecognizedLine(text: footer)]
+            let full = [title, .init(text: fullFooter, boundingBox: .init(x: 0.03, y: 0.01, width: 0.42, height: 0.015))]
+            XCTAssertTrue(profile.needsFullCardText(afterFooterLines: original, outcome: profile.identify(original)))
+            guard case let .identified(subject) = profile.identify(footerLines: original, fullCardLines: full) else {
+                return XCTFail("Expected an explicit Energy choice for \(year)")
+            }
+            XCTAssertEqual(subject.identifier.fields, [.init(key: "year", value: String(year))])
+            XCTAssertEqual(subject.identifier.displayIdentifier, "\(year) Energy")
+            XCTAssertEqual(subject.identifier.catalogGeneration, PokemonCatalogAdapter.generation(for: .bundledSeed))
+            XCTAssertEqual(profile.identify(footerLines: original, fullCardLines: full + [.init(text: "163/149")]), .fallbackBlocked)
+            XCTAssertEqual(profile.identify(footerLines: original, fullCardLines: Array(full.dropFirst())), .fallbackBlocked)
+        }
+        let numbered = [RecognizedLine(text: "163/149"), .init(text: "©2017 Pokémon")]
+        XCTAssertFalse(profile.needsFullCardText(afterFooterLines: numbered, outcome: profile.identify(numbered)))
+        let modernFooter = RecognizedLine(text: "©2022 Pokémon / Nintendo / Creatures / GAME FREAK")
+        let icon = RecognizedLine(text: "©", boundingBox: .init(x: 0.35, y: 0.41, width: 0.28, height: 0.19))
+        guard case .identified = profile.identify(footerLines: [modernFooter], fullCardLines: [title, icon, modernFooter])
+        else { return XCTFail("The Vision reading of the central Psychic icon does not change the footer") }
+        XCTAssertEqual(profile.identify(footerLines: [modernFooter],
+            fullCardLines: [title, icon, modernFooter, .init(text: "152/159")]), .fallbackBlocked)
+        let league = [RecognizedLine(text: "©2009 Pokémon")]
+        XCTAssertFalse(profile.needsFullCardText(afterFooterLines: league, outcome: .nothing))
+        XCTAssertFalse(profile.needsFullCardText(afterFooterLines: [.init(text: "©2017 Pokémon / Nintendo / Creatures / GAME FREAK")], outcome: .nothing))
+        let copyright = [RecognizedLine(text: "©2019 Pokémon")]
+        XCTAssertEqual(profile.identify(footerLines: copyright,
+            fullCardLines: [.init(text: "ENERGY", boundingBox: .init(x: 0.04, y: 0.45, width: 0.3, height: 0.03)), copyright[0]]), .fallbackBlocked)
+        XCTAssertEqual(profile.identify(footerLines: copyright,
+            fullCardLines: [title, .init(text: "©2017 Pokémon")]), .fallbackBlocked)
+    }
+
+    func testFooterGuideContainsTheReviewedSwordShieldEnergyCopyright() {
+        let copyright = CardFramingRegion.cardRelativeRect(x: 0.29, y: 0.011, width: 0.42, height: 0.013)
+        XCTAssertTrue(CardFramingRegion.visionRect.contains(copyright))
+    }
+
     func testProductionSVEAuthorityRegistersAll24EnergyFootersWithoutChangingSeed() throws {
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "catalog-input", withExtension: "json"))
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
@@ -545,6 +590,45 @@ final class ScanParserTests: XCTestCase {
                     in: snapshot, evidence: evidence)?.providerID, card.providerID, footer)
             }
         }
+    }
+
+    func testAllReviewedStandalonePokemonNumbersResolveAgainstTheBundledCatalog() async throws {
+        let bundled = await PokemonChecklistStore().bundledSnapshot()
+        let snapshot = try XCTUnwrap(bundled)
+        let reviewed: [String: [String]] = [
+            "pl4": (1...9).map { "AR\($0)" } + ["SH10", "SH11", "SH12"],
+            "dp7": ["SH1", "SH2", "SH3"], "pl1": ["SH4", "SH5", "SH6"],
+            "pl3": ["SH7", "SH8", "SH9"], "pl2": (1...6).map { "RT\($0)" },
+            "col1": (1...11).map { "SL\($0)" },
+            "hgss1": ["ONE"], "hgss2": ["TWO"], "hgss3": ["THREE"], "hgss4": ["FOUR"]
+        ]
+        XCTAssertEqual(reviewed.values.flatMap { $0 }.count, 42)
+        for (setID, numbers) in reviewed {
+            let entry = try XCTUnwrap(snapshot.entry(forProviderID: setID))
+            let cards = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID))
+            for number in numbers {
+                let card = try XCTUnwrap(cards.first { $0.collectorNumber.uppercased() == number }, number)
+                let identifier = try XCTUnwrap(PokemonHistoricalScanParser.parse(
+                    numberLines: [number], titleLines: [card.name]), number)
+                guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
+                    return XCTFail("Expected standalone Pokémon identity for \(number)")
+                }
+                XCTAssertEqual(evidence.number.scheme, .standalone)
+                XCTAssertNil(evidence.number.denominator)
+                XCTAssertEqual(identifier.displayIdentifier, number)
+                XCTAssertEqual(PokemonHistoricalIdentityResolver.candidateSetIDs(for: evidence, in: []), [setID])
+                XCTAssertEqual(PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence)?.providerID,
+                               card.providerID, "\(setID) \(number)")
+            }
+        }
+        for footer in ["AR10", "AR1/99", "© 2004", "ONE of four", "RT7", "SL12", "DP03-EN001"] {
+            XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: [footer]), footer)
+        }
+        XCTAssertEqual(PokemonHistoricalScanParser.numberEvidence(in: ["AR I"])?.localID, "AR1")
+        XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: ["AR1", "AR2"]))
+        let wrongTitle = try XCTUnwrap(PokemonHistoricalScanParser.parse(numberLines: ["AR1"], titleLines: ["Pikachu"]))
+        guard case let .pokemonHistorical(evidence) = wrongTitle.legacyIdentity else { return XCTFail("Expected historical evidence") }
+        XCTAssertNil(PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence))
     }
 
     func testShinyVaultSubsetEvidenceDoesNotAuthorizeOtherNumberingSchemes() throws {
@@ -1174,6 +1258,17 @@ final class ScanParserTests: XCTestCase {
 
     func testMagicDoesNotTreatAdjacentCopyrightYearAsCollectorNumber() {
         XCTAssertNil(magicProfile.parse(["ECL • EN", "© 2026 WIZARDS"]))
+    }
+
+    func testMagicSecretLairYearShapedCollectorRequiresLeadingRarity() {
+        let profile = MagicScanProfile(definitions: [.init(code: "SLD", printedSize: nil)])
+        XCTAssertEqual(profile.parse(["R 2060", "SLD • EN"])?.displayIdentifier, "SLD 2060 EN")
+        XCTAssertEqual(profile.parse(["R 2063 SLD • EN"])?.displayIdentifier, "SLD 2063 EN")
+        XCTAssertEqual(profile.parse(["M 2O63", "SLD", "EN"])?.displayIdentifier, "SLD 2063 EN")
+        for lines in [["2025", "SLD • EN"], ["© 2025 WIZARDS", "SLD • EN"],
+                      ["C 2025", "SLD • EN"], ["R 2025 WIZARDS SLD • EN"]] {
+            XCTAssertNil(profile.parse(lines), "Copyright text must not become a collector: \(lines)")
+        }
     }
 
     func testMagicRequiresEnglishFooterMarker() {

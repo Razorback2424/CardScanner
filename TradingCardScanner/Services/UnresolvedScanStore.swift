@@ -385,17 +385,12 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
                       let localID = pokemonLocalID {
                 identifier = .pokemonPromo(prefix: prefix, localID: localID, setDefinition: definition)
             } else if let localID = pokemonLocalID,
-                      let denominator = pokemonDenominator {
-                let scheme: PokemonPrintedNumberScheme = pokemonSubsetPrefix.map {
-                    .subset(prefix: $0)
-                } ?? .officialSet
+                      pokemonDenominator != nil || (setPrintedCode == nil && providerSetID == nil),
+                      let number = PokemonPrintedNumberEvidence(localID: localID,
+                          storedDenominator: pokemonDenominator, subsetPrefix: pokemonSubsetPrefix) {
                 identifier = .pokemonHistorical(
                     PokemonHistoricalScanEvidence(
-                        number: PokemonPrintedNumberEvidence(
-                            localID: localID,
-                            denominator: denominator,
-                            scheme: scheme
-                        ),
+                        number: number,
                         titleCandidates: titleReadings
                     )
                 )

@@ -127,7 +127,7 @@ extension CardShareIdentity {
             name: card.name,
             setCode: isSealed ? nil : card.setCode,
             setName: card.setName,
-            number: isSealed ? nil : CardShareNumber(card.cardNumber),
+            number: isSealed ? nil : CardShareNumber(card.displayCardNumber),
             badge: badge,
             rarity: isSealed ? nil : CardShareRarity(raw: card.rarity, game: card.cardGame,
                 pokemonSetID: card.catalogProviderID ?? card.providerID),

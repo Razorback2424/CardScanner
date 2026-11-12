@@ -203,7 +203,7 @@ actor CardCatalog {
             guard resolution.card.game == identifier.game else { throw CatalogLookupError.invalidAdapterOutcome }
             // A later lookup must be able to see an exact checklist published
             // while this shared lookup was in flight.
-            if resolution.path == .offlineFallback { return outcome }
+            if resolution.path == .offlineFallback || !adapter.cachesResolvedLookup(for: prepared) { return outcome }
         case let .needsPrintingChoice(canonical, candidates):
             guard canonical.game == identifier.game, !candidates.isEmpty,
                   Set(candidates.map(\.id)).count == candidates.count,
@@ -224,22 +224,29 @@ actor CardCatalog {
                                for identifier: ScanIdentifier) async throws -> CatalogResolution {
         guard let adapter = gameCatalogAdapters.adapter(for: identifier.game),
               candidate.game == identifier.game,
-              candidate.catalogGeneration == adapter.generation,
-              identifier.catalogGeneration == adapter.generation else { throw CatalogLookupError.staleCatalog }
+              candidate.catalogGeneration == adapter.generation else { throw CatalogLookupError.staleCatalog }
+        // A modern Magic footer carries printed evidence without a catalog
+        // generation. Other choices must still match the captured generation.
+        let prepared = if identifier.game == .magic && identifier.namespace == "card" {
+            try adapter.prepareLookupIdentifier(identifier)
+        } else {
+            identifier
+        }
+        guard prepared.catalogGeneration == adapter.generation else { throw CatalogLookupError.staleCatalog }
         // The live Magic adapter checks exact family membership and candidate
         // equality in resolve(). Repeating discovery here adds another full
         // paginated provider search without adding identity evidence.
         if identifier.game != .magic || identifier.namespace != "historical-live" {
             let outcome: CatalogLookupOutcome
-            if let choices = try await adapter.lookupPrintingChoices(identifier) {
+            if let choices = try await adapter.lookupPrintingChoices(prepared) {
                 outcome = choices
             } else {
-                outcome = try await lookupOutcome(for: identifier)
+                outcome = try await lookupOutcome(for: prepared)
             }
             switch outcome {
             case let .needsPrintingChoice(canonical, candidates):
                 guard candidates.contains(where: { $0.matchesPersistedChoice(candidate) }),
-                      Self.choiceBelongsToSummary(candidate, canonical: canonical, identifier: identifier) else {
+                      Self.choiceBelongsToSummary(candidate, canonical: canonical, identifier: prepared) else {
                     throw CatalogLookupError.invalidPrintingChoice
                 }
             case let .resolved(resolution):
@@ -254,8 +261,8 @@ actor CardCatalog {
                 throw CatalogLookupError.invalidPrintingChoice
             }
         }
-        let resolution = try await adapter.resolve(candidate, for: identifier)
-        try await adapter.validateLookupContext(identifier)
+        let resolution = try await adapter.resolve(candidate, for: prepared)
+        try await adapter.validateLookupContext(prepared)
         guard gameCatalogAdapters.adapter(for: identifier.game)?.generation == adapter.generation else {
             throw CatalogLookupError.staleCatalog
         }
@@ -282,11 +289,19 @@ actor CardCatalog {
         return true
     }
 
-    func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {
+    func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool,
+                             resolvedCard: IdentifiedCard? = nil) async throws {
         guard let adapter = gameCatalogAdapters.adapter(for: identifier.game) else { throw CatalogLookupError.staleCatalog }
         let prepared = try identifier.game == .onePiece
             ? adapter.identifierForRetry(identifier) : adapter.prepareLookupIdentifier(identifier)
-        try await adapter.validateAcquisition(prepared, printingID: printingID, automatic: automatic)
+        if let resolvedCard {
+            guard resolvedCard.game == identifier.game, resolvedCard.physicalPrintingID == printingID else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+            try await adapter.validateAcquisition(prepared, resolvedCard: resolvedCard, automatic: automatic)
+        } else {
+            try await adapter.validateAcquisition(prepared, printingID: printingID, automatic: automatic)
+        }
     }
 
     /// A local authority check for the write retry boundary. Provider validation

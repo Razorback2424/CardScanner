@@ -112,11 +112,11 @@ struct ScanIdentifier: Hashable, Sendable {
             namespace = "historical"
             let prefix: String
             switch evidence.number.scheme {
-            case .officialSet: prefix = ""
+            case .officialSet, .standalone: prefix = ""
             case let .subset(value): prefix = value
             }
             values = ["localID": evidence.number.localID,
-                      "denominator": String(evidence.number.denominator), "subsetPrefix": prefix]
+                      "denominator": evidence.number.denominator.map(String.init) ?? "", "subsetPrefix": prefix]
             suppressionValues = values
             let titleBytes = try! JSONEncoder().encode(evidence.titleCandidates)
             values["titleReadings"] = String(decoding: titleBytes, as: UTF8.self)
@@ -189,12 +189,14 @@ struct ScanIdentifier: Hashable, Sendable {
                                                       catalogLocalIDPrefix: catalogPrefix, localIDPadWidth: width))
         }
         if game == .pokemon, namespace == "historical",
-           let localID = values["localID"], let total = values["denominator"].flatMap(Int.init),
+           let localID = values["localID"], let total = values["denominator"],
            let prefix = values["subsetPrefix"],
+           total.isEmpty || Int(total) != nil,
+           let number = PokemonPrintedNumberEvidence(
+               localID: localID, storedDenominator: Int(total), subsetPrefix: prefix.isEmpty ? nil : prefix),
            let titleText = values["titleReadings"],
            let titles = try? JSONDecoder().decode([String].self, from: Data(titleText.utf8)) {
-            return .pokemonHistorical(.init(number: .init(localID: localID, denominator: total,
-                scheme: prefix.isEmpty ? .officialSet : .subset(prefix: prefix)), titleCandidates: titles))
+            return .pokemonHistorical(.init(number: number, titleCandidates: titles))
         }
         if game == .magic, namespace == "card",
            let code = values["setCode"], let number = values["collectorNumber"],
@@ -652,19 +654,39 @@ enum ScanText {
 enum PokemonPrintedNumberScheme: Equatable, Hashable, Sendable {
     case officialSet
     case subset(prefix: String)
+    case standalone
 }
 
 struct PokemonPrintedNumberEvidence: Equatable, Hashable, Sendable {
     let localID: String
-    let denominator: Int
+    let denominator: Int?
     let scheme: PokemonPrintedNumberScheme
 
+    init(localID: String, denominator: Int?, scheme: PokemonPrintedNumberScheme) {
+        self.localID = localID
+        self.denominator = denominator
+        self.scheme = scheme
+    }
+
+    init?(localID: String, storedDenominator: Int?, subsetPrefix: String?) {
+        if let storedDenominator {
+            self.init(localID: localID, denominator: storedDenominator,
+                scheme: subsetPrefix.map(PokemonPrintedNumberScheme.subset(prefix:)) ?? .officialSet)
+        } else {
+            guard subsetPrefix == nil, PokemonHistoricalIdentityResolver.standaloneSetID(for: localID) != nil else { return nil }
+            self.init(localID: localID, denominator: nil, scheme: .standalone)
+        }
+    }
+
     var displayIdentifier: String {
+        guard let denominator else { return localID }
         switch scheme {
         case .officialSet:
             return "\(localID)/\(denominator)"
         case let .subset(prefix):
             return "\(localID)/\(prefix)\(denominator)"
+        case .standalone:
+            return localID
         }
     }
 }
@@ -685,6 +707,9 @@ enum PokemonHistoricalScanParser {
     private static let numberRegex = try! NSRegularExpression(
         pattern: #"(?<![A-Z0-9])((?:TG|GG|RC|SV|H)?)\s*([0-9OIL]{1,3})([AB]?)\s*/\s*((?:TG|GG|RC|SV|H)?)\s*([0-9OIL]{1,3})(?![A-Z0-9])"#,
         options: []
+    )
+    private static let standaloneNumberRegex = try! NSRegularExpression(
+        pattern: #"^(AR|SH|RT|SL)\s*([0-9OIL]{1,2})$"#
     )
 
     static func parse(numberLines: [String], titleLines: [String]) -> ScanIdentifier? {
@@ -716,7 +741,20 @@ enum PokemonHistoricalScanParser {
 
     static func numberEvidence(in lines: [String]) -> PokemonPrintedNumberEvidence? {
         let readings = ScanText.unique(lines.flatMap(numberReadings))
-        return readings.count == 1 ? readings[0] : nil
+        if !readings.isEmpty { return readings.count == 1 ? readings[0] : nil }
+        let standalone = ScanText.unique(lines.compactMap(standaloneNumber))
+        return standalone.count == 1 ? standalone[0] : nil
+    }
+
+    private static func standaloneNumber(in raw: String) -> PokemonPrintedNumberEvidence? {
+        let text = raw.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        var localID = text
+        if let match = standaloneNumberRegex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+           let prefix = Range(match.range(at: 1), in: text), let digits = Range(match.range(at: 2), in: text),
+           let number = ScanText.normalizedInteger(String(text[digits])) {
+            localID = String(text[prefix]) + String(number)
+        }
+        return .init(localID: localID, storedDenominator: nil, subsetPrefix: nil)
     }
 
     private static func numberReadings(in raw: String) -> [PokemonPrintedNumberEvidence] {
@@ -942,8 +980,9 @@ struct PokemonScanProfile: Sendable {
 
     func inferredIdentifier(from number: PokemonPrintedNumberEvidence) -> ScanIdentifier? {
         guard case .officialSet = number.scheme,
+              let denominator = number.denominator,
               PokemonHistoricalIdentityResolver.membershipIdentities(for: number, in: registry).isEmpty,
-              let definition = inferableDefinitions[number.denominator] else { return nil }
+              let definition = inferableDefinitions[denominator] else { return nil }
         let digits = String(number.localID.prefix { $0.isNumber })
         let suffix = String(number.localID.dropFirst(digits.count))
         guard let localID = ScanText.pokemonLocalID(
@@ -1219,6 +1258,9 @@ struct MagicScanProfile: Sendable {
     private static let unambiguousSeparatedRarityMarkers: Set<Character> = [
         "U", "R", "M", "S", "L", "P"
     ]
+    private static let yearShapedSecretLairCollector = try! NSRegularExpression(
+        pattern: #"^[URMSLP]\s+[0-9OIL]{4}(?=\s*(?:$|SLD\b))"#
+    )
 
     init(definitions: [MagicSetDefinition]) {
         let keyed = Dictionary(
@@ -1361,6 +1403,7 @@ struct MagicScanProfile: Sendable {
         /// explicitly recognized collector token.
         let numericCard: Int?
         let denominator: Int?
+        let hasYearShapedCollectorPrefix: Bool
         /// The printed content marker, when one led the number.
         var marker: MagicPrintedMarker?
         /// Observation-level geometry. If Vision merges several textual pieces,
@@ -1526,10 +1569,14 @@ struct MagicScanProfile: Sendable {
         }
         let denominator = Range(match.range(at: denominatorGroup), in: text)
             .flatMap { ScanText.normalizedInteger(String(text[$0])) }
+        let hasYearShapedCollectorPrefix = numericCard.map { Self.plausibleCopyrightYears.contains($0) } == true
+            && Self.yearShapedSecretLairCollector.firstMatch(in: text,
+                range: NSRange(text.startIndex..., in: text))?.range.upperBound == match.range(at: numberGroup).upperBound
         return CollectorNumberReading(
             collectorNumber: collectorNumber,
             numericCard: numericCard,
             denominator: denominator,
+            hasYearShapedCollectorPrefix: hasYearShapedCollectorPrefix,
             marker: marker,
             sourceBounds: sourceBounds
         )
@@ -1558,6 +1605,7 @@ struct MagicScanProfile: Sendable {
         // bare copyright year.
         return !Self.plausibleCopyrightYears.contains(card)
             || number.collectorNumber != String(card)
+            || (definition.code == "SLD" && number.hasYearShapedCollectorPrefix)
     }
 
     private static func canonicalCollectorNumber(_ token: String) -> (String, Int?)? {

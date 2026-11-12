@@ -90,6 +90,23 @@ final class UnresolvedScanStoreTests: XCTestCase {
         XCTAssertFalse(loaded.first?.isReadOnly ?? true)
     }
 
+    func testStandaloneHistoricalNumberSurvivesRelaunch() async throws {
+        let (directory, store) = makeStore()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let identifier = try XCTUnwrap(PokemonHistoricalScanParser.parse(numberLines: ["AR1"], titleLines: ["Arceus"]))
+        let scan = UnresolvedScan(subject: ScanSubject(identifier: identifier), reason: .interrupted)
+        let saved = await store.save([scan])
+        XCTAssertTrue(saved)
+        let loaded = await UnresolvedScanStore(fileURL: store.fileURL).load()
+        XCTAssertEqual(loaded.first?.identifier, identifier)
+        XCTAssertFalse(loaded.first?.isReadOnly ?? true)
+        guard case let .pokemonHistorical(evidence) = loaded.first?.identifier.legacyIdentity else {
+            return XCTFail("Expected recoverable historical evidence")
+        }
+        XCTAssertEqual(evidence.number.scheme, .standalone)
+        XCTAssertNil(evidence.number.denominator)
+    }
+
     func testInterruptedAdditionalCopyMarkerSurvivesRelaunch() async throws {
         let (directory, store) = makeStore()
         defer { try? FileManager.default.removeItem(at: directory) }

@@ -31,7 +31,9 @@ enum CardFramingRegion {
 
     /// Insets are card-relative so every overlay stays aligned when the guide is
     /// resized. Vision uses a bottom-left origin: footer is low Y, title high Y.
-    static let visionRect = cardRelativeRect(x: 0.025, y: 0.015, width: 0.95, height: 0.15)
+    // The unnumbered Sword & Shield Energy copyright begins about 1.1%
+    // above the card edge. Keep the existing upper edge of the footer band.
+    static let visionRect = cardRelativeRect(x: 0.025, y: 0.005, width: 0.95, height: 0.16)
     static let titleVisionRect = cardRelativeRect(x: 0.035, y: 0.79, width: 0.93, height: 0.16)
 
     static let fullFrameRect = CGRect(x: 0, y: 0, width: 1, height: 1)

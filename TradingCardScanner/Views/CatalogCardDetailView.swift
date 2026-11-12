@@ -216,6 +216,8 @@ struct CatalogCardDetailView: View {
                     Text("Add the physical version you own.")
                 }
                 .disabled(isWritePending || !catalog.gameRegistry.supports(summary.game, .collectionWrite)
+                    || !PokemonVariantPolicy.allowsAcquisition(of: details.card, finish: summary.masterSetVariant,
+                        printRun: summary.pokemonPrintRun)
                     || details.collectionWriteUnavailableReason != nil)
 
                 if catalog.gameRegistry.supports(summary.game, [.collectionWrite, .gradedPricing]) {
@@ -225,7 +227,7 @@ struct CatalogCardDetailView: View {
                             .frame(maxWidth: .infinity, minHeight: 50)
                     }
                     .buttonStyle(.bordered)
-                    .disabled(isWritePending)
+                    .disabled(isWritePending || details.collectionWriteUnavailableReason != nil)
                 }
             }
         }
@@ -486,6 +488,11 @@ struct CatalogCardDetailView: View {
             addFailure = "Collection saving is not available for this game yet."
             return
         }
+        guard PokemonVariantPolicy.allowsAcquisition(of: card, finish: summary.masterSetVariant,
+            printRun: summary.pokemonPrintRun) else {
+            addFailure = "Scan Stash couldn't verify this printing."
+            return
+        }
         if let required = summary.masterSetVariant {
             commit(ResolvedVariant(variant: required, resolution: .userConfirmed))
             return
@@ -545,6 +552,12 @@ struct CatalogCardDetailView: View {
                     if !Task.isCancelled, pendingMutation == receipt.mutation { pendingMutation = nil }
                 }
             } catch is CancellationError {
+            } catch CatalogLookupError.staleCatalog where summary.game == .pokemon {
+                guard generation.isCurrent(token) else { return }
+                self.details = nil
+                addAlertTitle = "Catalog updated"
+                addFailure = "Choose the printing again to add it to your collection."
+                await load()
             } catch {
                 guard generation.isCurrent(token) else { return }
                 addAlertTitle = "Couldn't add card"
@@ -701,10 +714,16 @@ struct CatalogCardDetailView: View {
         isLoading = true
         error = nil
         defer { isLoading = false }
+        if details == nil, let installed = await catalog.installedDetails(for: summary) {
+            guard !Task.isCancelled else { return }
+            details = installed
+        }
         do {
             let needsRefresh = OwnedCatalogPrice(rows: ownership.matchingRows(for: summary)).entries
                 .contains { $0.selectedPrice.state() == .stale }
-            details = try await catalog.details(for: summary, refreshingPrices: needsRefresh || priceRetryID > 0)
+            let refreshed = try await catalog.details(for: summary, refreshingPrices: needsRefresh || priceRetryID > 0)
+            guard !Task.isCancelled else { return }
+            details = refreshed
         }
         catch is CancellationError { return }
         catch { self.error = CatalogFailurePresentation(error: error) }

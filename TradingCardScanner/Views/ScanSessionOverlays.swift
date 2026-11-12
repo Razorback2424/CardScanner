@@ -715,7 +715,9 @@ struct PrintingChoiceBar: View {
     var onChooseEnglish: ((PhysicalPrintingCandidate) -> Void)? = nil
     @State private var showingDetails = false
     @State private var englishConfirmed = false
-    private var requiresEnglish: Bool { choice.identifier.needsMagicEnglishConfirmation }
+    private var requiresEnglish: Bool {
+        choice.identifier.needsMagicEnglishConfirmation || choice.identifier.needsOnePieceEnglishConfirmation
+    }
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var sharedRelease: String? {
@@ -776,7 +778,7 @@ struct PrintingChoiceBar: View {
             if requiresEnglish {
                 Toggle("This card is in English", isOn: $englishConfirmed)
                     .font(.subheadline)
-                    .accessibilityIdentifier("magic-english-confirmation")
+                    .accessibilityIdentifier("\(choice.identifier.game.rawValue)-english-confirmation")
             }
             if candidates.count <= 2 && !dynamicTypeSize.isAccessibilitySize {
                 HStack(spacing: 10) {
@@ -802,6 +804,14 @@ struct PrintingChoiceBar: View {
             if candidates.count > 8 {
                 Text("Filter by set or collector number in Details.")
                     .font(.caption).foregroundStyle(.white.opacity(0.75))
+            }
+            if choice.identifier.game == .onePiece {
+                Button(action: onDismiss) {
+                    Text("My printing isn’t listed")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(minHeight: 44)
+                }
+                .buttonStyle(.plain)
             }
         }
         .foregroundStyle(.white)
@@ -898,7 +908,7 @@ struct PrintingChoiceDetails: View {
             return List {
                 if requiresEnglishConfirmation {
                     Toggle("This card is in English", isOn: englishBinding)
-                        .accessibilityIdentifier("magic-english-confirmation")
+                        .accessibilityIdentifier("\(candidates.first?.game.rawValue ?? "magic")-english-confirmation")
                 }
                 if filteredCandidates.isEmpty {
                     Text("No printings match this search.").foregroundStyle(.secondary)

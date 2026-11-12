@@ -16,7 +16,9 @@ struct UnresolvedScanDetailView: View {
     @State private var englishConfirmed = false
     @State private var isPreparingResolution = false
     @State private var resolutionTask: Task<Void, Never>?
-    private var requiresEnglish: Bool { scan.identifier.needsMagicEnglishConfirmation }
+    private var requiresEnglish: Bool {
+        scan.identifier.needsMagicEnglishConfirmation || scan.identifier.needsOnePieceEnglishConfirmation
+    }
 
     private var canChooseCard: Bool {
         scan.game == .pokemon && scan.pokemonNumber != nil
@@ -53,7 +55,7 @@ struct UnresolvedScanDetailView: View {
                     Section("Choose printing") {
                         if requiresEnglish {
                             Toggle("This card is in English", isOn: $englishConfirmed)
-                                .accessibilityIdentifier("magic-english-confirmation")
+                                .accessibilityIdentifier("\(scan.game.rawValue)-english-confirmation")
                         }
                         ForEach(scan.printingCandidates) { candidate in
                             Button(labels[candidate.id] ?? candidate.choiceLabel) {
