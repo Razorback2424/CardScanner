@@ -89,6 +89,13 @@ def scope_from_repo(repo):
     mapping = (repo / "TradingCardScanner/Services/PokemonTCGCSVMapping.swift").read_text()
     for group, product in re.findall(r"Entry\(cardID: [^\n]+?groupID: (\d+), productID: (\d+),", mapping):
         add(3, int(group), int(product), "Holofoil")
+    battle_decks = json.loads((repo / "publisher/pokemon-battle-deck-finishes.json").read_bytes())
+    if battle_decks["schemaVersion"] != 1:
+        raise ValueError("Unsupported Pokémon Battle Deck finish catalog")
+    for printing in battle_decks["entries"]:
+        if (printing["groupID"], printing["printing"]) not in {(1840, "Reverse Holofoil"), (24461, "Holofoil")}:
+            raise ValueError("Invalid Pokémon Battle Deck market lane")
+        add(3, printing["groupID"], printing["productID"], printing["printing"])
     lorcana = json.loads((repo / "TradingCardScanner/LorcanaCatalogSeed/market.json").read_bytes())
     for printing in lorcana["physicalPrintings"]:
         if printing["status"] != "verified":

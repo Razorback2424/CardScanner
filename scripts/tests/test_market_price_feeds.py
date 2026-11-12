@@ -14,6 +14,22 @@ import market_price_feeds as feeds
 
 
 class MarketPriceFeedTests(unittest.TestCase):
+    def test_battle_deck_products_enter_scope_with_their_exact_lanes(self):
+        repo = Path(__file__).resolve().parents[2]
+        scope = feeds.scope_from_repo(repo)
+        manifest = json.loads((repo / "publisher/pokemon-battle-deck-finishes.json").read_bytes())
+        entries = manifest["entries"]
+        self.assertEqual(len(entries), 34)
+        self.assertEqual(len({entry["cardID"] for entry in entries}), 34)
+        self.assertEqual(len({entry["productID"] for entry in entries}), 34)
+        self.assertEqual(len(scope[(3, 1840)]), 30)
+        self.assertEqual(scope[(3, 1840)][729924], {"Reverse Holofoil"})
+        self.assertEqual(scope[(3, 1840)][729923], {"Reverse Holofoil"})
+        self.assertEqual({entry["productID"] for entry in entries if entry["groupID"] == 24461},
+                         {729815, 729816, 729817, 729818})
+        for entry in entries:
+            self.assertEqual(scope[(3, entry["groupID"])][entry["productID"]], {entry["printing"]})
+
     marker = "2026-10-29T07:00:00Z"
     captured = "2026-10-29T08:00:00+00:00"
 

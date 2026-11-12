@@ -4,6 +4,7 @@ on:
     paths:
       - "scripts/market_price_feeds.py"
       - "scripts/tests/test_market_price_feeds.py"
+      - "publisher/pokemon-battle-deck-finishes.json"
       - "scripts/restore_catalog_hosting_site.sh"
       - "scripts/tests/test_catalog_hosting_restore.py"
       - ".github/workflows/yugioh-catalog.yml"
@@ -13,6 +14,7 @@ on:
     paths:
       - "scripts/market_price_feeds.py"
       - "scripts/tests/test_market_price_feeds.py"
+      - "publisher/pokemon-battle-deck-finishes.json"
       - "scripts/restore_catalog_hosting_site.sh"
       - "scripts/tests/test_catalog_hosting_restore.py"
       - ".github/workflows/yugioh-catalog.yml"
