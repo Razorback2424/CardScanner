@@ -158,6 +158,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
 struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     var catalogGeneration: String? = nil
     var collectionAvailabilityNotice: String? = nil
+    var searchFields: CatalogCardSearchFields? = nil
     let game: CardGame
     let providerID: String
     let setID: CatalogSetID
@@ -178,6 +179,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     /// Reviewed treatment qualifiers (for example a Neon Ink color) travel with
     /// the summary so the Browse grid can describe the exact catalog evidence.
     var magicTreatmentQualifiers: [String: String] = [:]
+    /// Finish membership belongs to the printing. Older cached summaries may lack it.
+    var magicFinishIDs: [String]? = nil
     /// Pokémon set pages expand one numbered card into the pack-pulled
     /// variations required by a master set. Search and Magic summaries leave
     /// this nil because they still represent a printing rather than a slot.
@@ -189,6 +192,21 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     /// counted rather than shown as missing next to a card the user owns.
     var isSoleSlotForCard = false
     var pokemonPrintRun: PokemonPrintRun? { setID.pokemonPrintRun }
+    var displayName: String {
+        guard game == .pokemon else { return name }
+        if let label = PokemonReviewedArtworkCatalog.printingLabel(for: providerID, setID: setID.providerID) {
+            return "\(name) · \(label)"
+        }
+        if let year = PokemonReviewedEnergyCatalog.printingYear(providerID: providerID) {
+            return "\(name) · \(year)"
+        }
+        return name
+    }
+    var printedCollectorNumber: String? {
+        if game == .pokemon, PokemonFinishMinimumCatalog.isUnnumbered(cardID: providerID) { return nil }
+        return collectorNumber
+    }
+    var setAndCollectorLabel: String { "\(setCode) \(printedCollectorNumber ?? "Unnumbered")" }
 
     init(
         game: CardGame,
@@ -205,9 +223,11 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         isSoleSlotForCard: Bool = false,
         magicTreatmentIDsRaw: [String] = [],
         magicTreatmentQualifiers: [String: String] = [:],
+        magicFinishIDs: [String]? = nil,
         limitlessArtworkAuthorized: Bool? = nil,
         catalogGeneration: String? = nil,
-        collectionAvailabilityNotice: String? = nil
+        collectionAvailabilityNotice: String? = nil,
+        searchFields: CatalogCardSearchFields? = nil
     ) {
         self.game = game
         self.providerID = providerID
@@ -221,12 +241,14 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         self.limitlessArtworkAuthorized = limitlessArtworkAuthorized
         self.catalogGeneration = catalogGeneration
         self.collectionAvailabilityNotice = collectionAvailabilityNotice
+        self.searchFields = searchFields
         let storedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDsRaw)
         self.magicTreatmentIDsRaw = storedTreatmentIDs
         let treatmentIDSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: storedTreatmentIDs))
         self.magicTreatmentQualifiers = MagicTreatmentKeyCodec.storedQualifiers(
             from: magicTreatmentQualifiers
         ).filter { treatmentIDSet.contains($0.key) }
+        self.magicFinishIDs = magicFinishIDs
         self.masterSetVariant = masterSetVariant
         self.isExpandedMasterSetVariant = isExpandedMasterSetVariant
         self.isSoleSlotForCard = isSoleSlotForCard
@@ -248,9 +270,11 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             isSoleSlotForCard: isSoleSlotForCard,
             magicTreatmentIDsRaw: magicTreatmentIDsRaw,
             magicTreatmentQualifiers: magicTreatmentQualifiers,
+            magicFinishIDs: magicFinishIDs,
             limitlessArtworkAuthorized: limitlessArtworkAuthorized,
             catalogGeneration: catalogGeneration,
-            collectionAvailabilityNotice: collectionAvailabilityNotice
+            collectionAvailabilityNotice: collectionAvailabilityNotice,
+            searchFields: searchFields
         )
     }
 
@@ -259,8 +283,9 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         case thumbnailURL, imageURL
         case catalogGeneration
         case collectionAvailabilityNotice
+        case searchFields
         case limitlessArtworkAuthorized
-        case magicTreatmentIDsRaw, magicTreatmentQualifiers
+        case magicTreatmentIDsRaw, magicTreatmentQualifiers, magicFinishIDs
         case masterSetVariant, isExpandedMasterSetVariant, isSoleSlotForCard
     }
 
@@ -268,6 +293,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         catalogGeneration = try container.decodeIfPresent(String.self, forKey: .catalogGeneration)
         collectionAvailabilityNotice = try container.decodeIfPresent(String.self, forKey: .collectionAvailabilityNotice)
+        searchFields = try container.decodeIfPresent(CatalogCardSearchFields.self, forKey: .searchFields)
         game = try container.decode(CardGame.self, forKey: .game)
         providerID = try container.decode(String.self, forKey: .providerID)
         setID = try container.decode(CatalogSetID.self, forKey: .setID)
@@ -293,6 +319,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         magicTreatmentQualifiers = MagicTreatmentKeyCodec.storedQualifiers(
             from: rawQualifiers
         ).filter { treatmentIDSet.contains($0.key) }
+        magicFinishIDs = try container.decodeIfPresent([String].self, forKey: .magicFinishIDs)
         masterSetVariant = try container.decodeIfPresent(
             PhysicalVariant.self,
             forKey: .masterSetVariant
@@ -311,6 +338,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(catalogGeneration, forKey: .catalogGeneration)
         try container.encodeIfPresent(collectionAvailabilityNotice, forKey: .collectionAvailabilityNotice)
+        try container.encodeIfPresent(searchFields, forKey: .searchFields)
         try container.encode(game, forKey: .game)
         try container.encode(providerID, forKey: .providerID)
         try container.encode(setID, forKey: .setID)
@@ -332,6 +360,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         if !magicTreatmentQualifiers.isEmpty {
             try container.encode(magicTreatmentQualifiers, forKey: .magicTreatmentQualifiers)
         }
+        try container.encodeIfPresent(magicFinishIDs, forKey: .magicFinishIDs)
         try container.encodeIfPresent(masterSetVariant, forKey: .masterSetVariant)
         try container.encode(isExpandedMasterSetVariant, forKey: .isExpandedMasterSetVariant)
         try container.encode(isSoleSlotForCard, forKey: .isSoleSlotForCard)
@@ -390,7 +419,7 @@ enum CatalogSearchResult: Identifiable, Hashable, Sendable {
 
     var name: String {
         switch self {
-        case let .card(summary): return summary.name
+        case let .card(summary): return summary.displayName
         case let .sealed(_, product): return product.name
         }
     }
@@ -760,6 +789,12 @@ struct CatalogCardDetails: Sendable {
 struct CatalogPage<Element: Sendable>: Sendable {
     let items: [Element]
     let nextCursor: String?
+}
+
+extension CatalogCardSearchQuery {
+    static func isEligible(_ normalized: String, for game: CardGame) -> Bool {
+        normalized.count >= 2 || (game == .pokemon && !normalized.isEmpty)
+    }
 }
 
 /// Prices returned by pokemontcg.io's set query. The raw key map stays Codable
@@ -1333,12 +1368,14 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
     /// checklist index is loading. This is deliberately not variation progress.
     func directoryProgress(for set: CatalogSet) -> SetCompletion {
         if let ids = set.physicalPrintingIDs {
+            guard !ids.isEmpty else { return .init(owned: 0, total: nil, unit: "reviewed printings") }
             let owned = ids.filter { id in
                 (byProviderID[id.lowercased()] ?? []).contains {
                     $0.game == set.game && $0.quantity > 0 && $0.itemKind.countsTowardSetCompletion
                 }
             }
-            return .init(owned: owned.count, total: ids.count, unit: "printings")
+            let unit = set.collectionAvailabilityNotice == nil ? "printings" : "reviewed printings"
+            return .init(owned: owned.count, total: ids.count, unit: unit)
         }
         let codeKey = DirectoryKey(game: set.game, value: Self.normalized(set.code),
             printRun: set.game == .pokemon ? set.pokemonPrintRun : nil,
@@ -1455,9 +1492,13 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
         let targetNumber = SetCompletionCalculator.canonicalNumber(summary.collectorNumber)
         if card.game == .pokemon, let setID = knownPokemonSetID(card),
            setID != summary.setID.providerID.lowercased() { return false }
-        let identityMatches = card.providerID.caseInsensitiveCompare(summary.providerID) == .orderedSame
+        let exactIdentityMatches = card.providerID.caseInsensitiveCompare(summary.providerID) == .orderedSame
             || card.catalogProviderID?.caseInsensitiveCompare(summary.providerID) == .orderedSame
-            || (summary.catalogGeneration == nil && SetCompletionCalculator.canonicalNumber(card.cardNumber) == targetNumber
+        let hasExactMagicIdentity = card.game == .magic
+            && (UUID(uuidString: card.providerID) != nil || card.catalogProviderID.flatMap(UUID.init(uuidString:)) != nil)
+        let identityMatches = exactIdentityMatches
+            || (summary.catalogGeneration == nil && !hasExactMagicIdentity
+                && SetCompletionCalculator.canonicalNumber(card.cardNumber) == targetNumber
                 && (card.game == .pokemon
                     ? normalized(card.setCode) == normalized(summary.setCode)
                         && pokemonSetName(card.setName, run: summary.pokemonPrintRun)
@@ -1465,6 +1506,16 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
                     : normalized(card.setCode) == normalized(summary.setCode)
                         || normalized(card.setName) == normalized(summary.setName)))
         guard identityMatches else { return false }
+        if let finishes = summary.magicFinishIDs, let ownedFinish = card.variant {
+            let finish = ownedFinish.id == PhysicalVariant.normal.id ? .nonfoil : ownedFinish
+            guard finishes.contains(where: { $0.caseInsensitiveCompare(finish.id) == .orderedSame }),
+                  summary.masterSetVariant.map({ $0.id.caseInsensitiveCompare(finish.id) == .orderedSame }) ?? true else {
+                return false
+            }
+            let treatments = summary.magicTreatmentEvidence.applicableTreatments(for: finish)
+            let required = Set(treatments.map(\.id))
+            return summary.magicTreatmentIDsRaw.isEmpty || treatmentIDs(for: card) == required
+        }
         let required = Set(MagicTreatmentKeyCodec.canonicalIDs(from: summary.magicTreatmentIDsRaw))
         guard treatmentIDs(for: card) == required || required.isEmpty else { return false }
         guard let variant = summary.masterSetVariant else { return true }
@@ -1665,6 +1716,8 @@ protocol BrowseCatalogProviding: Sendable {
     var gameRegistry: CardGameRegistry { get }
     func sets(for game: CardGame) async throws -> [CatalogSet]
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary>
+    /// A small, complete local set can be searched without loading provider pages.
+    func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]?
     /// Decorative artwork only; does not fetch prices or alter set membership.
     func artwork(for set: CatalogSet) async throws -> CatalogSetArtwork
     func searchCards(
@@ -1675,6 +1728,8 @@ protocol BrowseCatalogProviding: Sendable {
     ) async throws -> CatalogPage<CatalogCardSummary>
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails
     func details(for summary: CatalogCardSummary, refreshingPrices: Bool) async throws -> CatalogCardDetails
+    /// Immediately available card details backed by an installed checklist.
+    func installedDetails(for summary: CatalogCardSummary) async -> CatalogCardDetails?
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]>
     nonisolated func sortPriceUpdates(for cards: [CatalogCardSummary]) -> AsyncStream<CatalogPriceUpdate>
@@ -1690,6 +1745,8 @@ protocol BrowseCatalogProviding: Sendable {
 
 extension BrowseCatalogProviding {
     var gameRegistry: CardGameRegistry { .standard }
+    func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]? { nil }
+    func installedDetails(for summary: CatalogCardSummary) async -> CatalogCardDetails? { nil }
     func refreshCatalogNow() async { await prepareCatalog() }
 
     func details(for summary: CatalogCardSummary, refreshingPrices: Bool) async throws -> CatalogCardDetails {

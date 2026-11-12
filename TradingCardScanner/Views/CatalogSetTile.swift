@@ -127,14 +127,15 @@ struct CatalogSetTile: View {
     }
 
     private var accessibilityLabel: String {
-        let unitSingular = completion.unit == "variations" ? "variation" : "card"
-        let unitPlural = completion.unit == "variations" ? "variations" : "cards"
+        let unitPlural = completion.unit
+        let unitSingular = String(unitPlural.dropLast())
         let owned = countLabel(completion.owned, singular: unitSingular, plural: unitPlural)
         let progress = completion.total.map { "\(owned) of \($0) \(unitPlural) collected" }
             ?? "\(owned) collected"
         let art = (artworkPhase == .failed || artworkSource.candidates.isEmpty) ? ", artwork unavailable" : ""
         let availability = set.collectionAvailabilityNotice.map { ", \($0)" } ?? ""
-        return "\(set.name), \(progress), set code \(set.code)\(art)\(availability)"
+        let progressLabel = set.physicalPrintingIDs?.isEmpty == true ? "" : ", \(progress)"
+        return "\(set.name)\(progressLabel), set code \(set.code)\(art)\(availability)"
     }
 
     private var artworkBox: some View {

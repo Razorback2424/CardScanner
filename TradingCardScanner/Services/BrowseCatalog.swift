@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import UIKit
 import PokemonCatalogCore
+import MagicCatalogCore
 
 enum BrowseCatalogError: LocalizedError {
     case invalidURL
@@ -38,6 +39,7 @@ enum BrowseRequestBuilder {
         components?.queryItems = [
             URLQueryItem(name: "q", value: query),
             URLQueryItem(name: "unique", value: "prints"),
+            URLQueryItem(name: "include_variations", value: "true"),
             URLQueryItem(name: "order", value: "released"),
             URLQueryItem(name: "dir", value: "desc")
         ]
@@ -177,7 +179,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var liveMagicDirectoryStoredAt: Date?
     private var detailCache: [String: CatalogCardDetails] = [:]
     private var detailTasks: [String: DetailTaskState] = [:]
-    private var magicPageRefreshTasks: [String: Task<Void, Never>] = [:]
+    private var magicPageTasks: [String: Task<CatalogPage<CatalogCardSummary>, Error>] = [:]
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
     private var pokemonSetTasks: [String: Task<TCGdexSetCatalog, Error>] = [:]
     private struct PokemonPayloadTaskState {
@@ -191,6 +193,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var pokemonSnapshotEntries: [PokemonChecklistSnapshotEntry] = []
     private var pokemonBundledRanks: [String: Int] = [:]
     private var pokemonSnapshotLoaded = false
+    private var pokemonSnapshotGeneration = 0
     /// The read is shared across re-entrant actor calls. It is intentionally
     /// unstructured: cancelling one Browse caller must not cancel the snapshot
     /// load that another caller may still need.
@@ -273,7 +276,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     deinit {
         for task in gameBrowseTasks.values { task.cancel() }
-        for task in magicPageRefreshTasks.values { task.cancel() }
+        for task in magicPageTasks.values { task.cancel() }
         catalogEventTask?.cancel()
         catalogAuthorityRefreshTask?.cancel()
         reconciliationTask?.cancel()
@@ -330,7 +333,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
         if let saved = await cache.sets(for: game, now: now()) {
             setCache[game] = saved.value
-            if game == .magic { liveMagicDirectoryStoredAt = saved.storedAt }
+            if game == .magic { liveMagicDirectoryStoredAt = saved.isFresh ? saved.storedAt : nil }
             if !saved.isFresh { scheduleSetDirectoryRefresh(for: game) }
             return saved.value
         }
@@ -537,10 +540,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private func synchronizeCatalogAuthority() async {
         guard let coordinator = catalogCoordinator else { return }
         await coordinator.loadPersistedOrBundled()
-        applyCatalogRegistry(
-            await coordinator.registry,
-            revision: await coordinator.revision
-        )
+        let active = await coordinator.activeCatalog
+        applyCatalogRegistry(active.registry, revision: active.revision)
     }
 
     private func usesRemoteMagicAuthority() async -> Bool {
@@ -560,6 +561,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         _ registry: PokemonCatalogRegistry,
         revision: Int?
     ) {
+        if let catalogRevision, (revision ?? 0) < catalogRevision { return }
         guard catalogRevision != revision
             || catalogRegistry.descriptors != registry.descriptors else { return }
         catalogRegistry = registry
@@ -570,7 +572,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     private func startTargetedReconciliationIfNeeded() async {
         guard wantsCatalogRefresh else { return }
-        let desired = signedProviderFingerprints()
+        let desired = await pendingProviderFingerprints()
         let targets = await checklistStore.synchronizeReconciliationTargets(
             desiredFingerprints: desired
         )
@@ -603,12 +605,17 @@ actor BrowseCatalog: BrowseCatalogProviding {
         )
     }
 
+    private func pendingProviderFingerprints() async -> [String: String] {
+        let installed = await checklistStore.signedProviderFingerprints()
+        return signedProviderFingerprints().filter { installed[$0.key] != $0.value }
+    }
+
     /// Reconciliation is state-derived and may be called from either the
     /// foreground preparation path or the activation-event fast path. The
     /// durable queue is re-derived first so lost in-memory events self-heal.
     private func reconcilePokemonProviderContent() async {
         guard !Task.isCancelled else { return }
-        let desired = signedProviderFingerprints()
+        let desired = await pendingProviderFingerprints()
         guard !desired.isEmpty else { return }
         _ = await checklistStore.synchronizeReconciliationTargets(
             desiredFingerprints: desired
@@ -685,30 +692,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         guard let descriptor = catalogRegistry.descriptor(forProviderSetID: providerSetID) else {
             throw BrowseCatalogError.unknownSet
         }
-        let code = descriptor.printedCode
-            ?? descriptor.printedPrefix
-            ?? providerSetID.uppercased()
-        return CatalogSet(
-            catalogID: CatalogSetID(game: .pokemon, providerID: providerSetID),
-            name: descriptor.displayName ?? provider.name,
-            code: code,
-            logoURL: descriptor.logoURL.flatMap(URL.init(string:))
-                ?? provider.logo.flatMap { URL(string: $0 + ".png") },
-            symbolURL: descriptor.symbolURL.flatMap(URL.init(string:))
-                ?? provider.symbol.flatMap { URL(string: $0 + ".png") },
-            cardCount: provider.cardCount.map {
-                PokemonMasterSetDefinition.masterCount(
-                    cardCount: $0,
-                    setName: provider.name,
-                    printRun: nil
-                )
-            },
-            releaseDate: descriptor.releaseDate.flatMap(FlexibleDate.parse),
-            sortRank: descriptor.releaseOrder ?? 0,
-            artworkFallbackURLs: descriptor.artworkFallbackURLs?.compactMap(URL.init(string:)),
-            limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion,
-            cardArtwork: BrowseCatalogArtworkSelection.cardArtworkMap(descriptor: descriptor)
-        )
+        return PokemonMasterSetChecklistBuilder.signedBaseSet(provider: provider, descriptor: descriptor)
     }
 
     private func applyMagicCatalogRegistry(
@@ -733,6 +717,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func resetPokemonSnapshotCache() {
+        pokemonSnapshotGeneration &+= 1
         setCache[.pokemon] = nil
         pokemonSnapshotLoaded = false
         pokemonSnapshotEntries = []
@@ -761,11 +746,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private func visibleSnapshotEntries(
         _ entries: [PokemonChecklistSnapshotEntry]
     ) async -> [PokemonChecklistSnapshotEntry] {
-        var visible: [PokemonChecklistSnapshotEntry] = []
-        for entry in entries where await pokemonSetIsAuthorized(entry.providerID) {
-            visible.append(entry)
+        guard catalogCoordinator != nil else { return entries }
+        let bundled = await checklistStore.bundledProviderIDs()
+        return entries.filter {
+            catalogRegistry.descriptor(forProviderSetID: $0.providerID) != nil || bundled.contains($0.providerID.lowercased())
         }
-        return visible
     }
 
     private func pokemonSetIsAuthorized(_ providerID: String) async -> Bool {
@@ -880,6 +865,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
     }
 
+    func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]? {
+        await synchronizeGameBrowseAuthority(for: set.game)
+        guard let adapter = gameBrowseAdapters.adapter(for: set.game) else { return nil }
+        let cards = try await adapter.completeLocalCards(in: set)
+        try validateBrowseGeneration(adapter)
+        return cards
+    }
+
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         await synchronizeGameBrowseAuthority(for: set.game)
         if let adapter = gameBrowseAdapters.adapter(for: set.game) {
@@ -891,7 +884,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
         if set.game == .pokemon {
             await synchronizeCatalogAuthority()
         }
-        let page: CatalogPage<CatalogCardSummary>
         switch set.game {
         case .pokemon:
             await loadPokemonSnapshotIfNeeded()
@@ -906,8 +898,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     nextCursor: nil
                 )
             }
-            let summaries = try await livePokemonSummaries(for: set)
-            page = CatalogPage(items: summaries, nextCursor: nil)
+            return CatalogPage(items: try await livePokemonSummaries(for: set), nextCursor: nil)
         case .magic:
             let cacheKey = CatalogCacheStore.cardPageKey(for: set, cursor: cursor)
             if let saved = await cache.cardPage(for: cacheKey) {
@@ -922,52 +913,64 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 let hasHistoryMetadata = savedPrices?.value.values.allSatisfy {
                     $0.historyMetadataVersion >= CatalogCachedPrice.currentHistoryMetadataVersion
                 } == true
-                if saved.isFresh,
-                   savedPrices?.isFresh == true,
-                   hasHistoryMetadata {
-                    return saved.value
+                if !saved.isFresh || savedPrices?.isFresh != true || !hasHistoryMetadata {
+                    _ = startMagicPageLoad(set: set, cursor: cursor, cacheKey: cacheKey, publishUpdate: true)
                 }
-                refreshMagicPage(set: set, cursor: cursor, cacheKey: cacheKey)
                 return saved.value
             }
-            let loaded = try await magicCards(
-                query: "e:\(set.providerID) lang:en game:paper",
-                cursor: cursor
-            )
-            page = loaded.page
-            await cache.storeCardPage(loaded.page, for: cacheKey)
-            await cache.storeMagicPrices(loaded.prices, for: cacheKey)
-            installMagicPrices(loaded.prices, for: loaded.page.items)
-            return page
+            do {
+                let page = try await startMagicPageLoad(
+                    set: set, cursor: cursor, cacheKey: cacheKey, publishUpdate: false
+                ).value
+                try Task.checkCancellation()
+                return page
+            } catch {
+                try Task.checkCancellation()
+                guard cursor == nil else { throw error }
+                let legacyKey = CatalogCacheStore.legacyMagicInitialPageKey(for: set)
+                guard let saved = await cache.cardPage(for: legacyKey) else { throw error }
+                let savedPrices = await cache.magicPrices(for: legacyKey)
+                installMagicPrices(
+                    savedPrices?.value,
+                    for: saved.value.items, asOf: savedPrices?.storedAt ?? .distantPast
+                )
+                // The legacy first page is still usable offline. Its cursor
+                // belongs to the older query that omitted provider variations.
+                return .init(items: saved.value.items, nextCursor: nil)
+            }
         default: throw CardGameSupportError.unsupportedGame(set.game)
         }
-        let cacheKey = CatalogCacheStore.cardPageKey(for: set, cursor: cursor)
-        await cache.storeCardPage(page, for: cacheKey)
-        return page
     }
 
-    private func refreshMagicPage(set: CatalogSet, cursor: String?, cacheKey: String) {
-        guard magicPageRefreshTasks[cacheKey] == nil else { return }
-        magicPageRefreshTasks[cacheKey] = Task { [weak self] in
-            await self?.revalidateMagicPage(set: set, cursor: cursor, cacheKey: cacheKey)
-        }
-    }
-
-    private func revalidateMagicPage(set: CatalogSet, cursor: String?, cacheKey: String) async {
-        defer { magicPageRefreshTasks[cacheKey] = nil }
-        do {
-            let refreshed = try await magicCards(
-                query: "e:\(set.providerID) lang:en game:paper", cursor: cursor
+    private func startMagicPageLoad(
+        set: CatalogSet, cursor: String?, cacheKey: String, publishUpdate: Bool
+    ) -> Task<CatalogPage<CatalogCardSummary>, Error> {
+        if let pending = magicPageTasks[cacheKey] { return pending }
+        let task = Task { [weak self] in
+            guard let self else { throw CancellationError() }
+            return try await self.loadMagicPage(
+                set: set, cursor: cursor, cacheKey: cacheKey, publishUpdate: publishUpdate
             )
-            guard !Task.isCancelled else { return }
-            await cache.storeCardPage(refreshed.page, for: cacheKey)
-            await cache.storeMagicPrices(refreshed.prices, for: cacheKey)
-            installMagicPrices(refreshed.prices, for: refreshed.page.items)
-            yieldUpdate(game: .magic, revision: magicCatalogRevision, providerSetID: set.providerID)
-        } catch {
-            // Leave the original cache timestamp intact so a later visit
-            // can retry, while the current page stays useful offline.
         }
+        magicPageTasks[cacheKey] = task
+        return task
+    }
+
+    private func loadMagicPage(
+        set: CatalogSet, cursor: String?, cacheKey: String, publishUpdate: Bool
+    ) async throws -> CatalogPage<CatalogCardSummary> {
+        defer { magicPageTasks[cacheKey] = nil }
+        let loaded = try await magicCards(
+            query: "e:\(set.providerID) lang:en game:paper", cursor: cursor
+        )
+        try Task.checkCancellation()
+        await cache.storeMagicPrices(loaded.prices, for: cacheKey)
+        await cache.storeCardPage(loaded.page, for: cacheKey)
+        installMagicPrices(loaded.prices, for: loaded.page.items)
+        if publishUpdate {
+            yieldUpdate(game: .magic, revision: magicCatalogRevision, providerSetID: set.providerID)
+        }
+        return loaded.page
     }
 
     func searchCards(
@@ -979,11 +982,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
         installMemoryWarningObserverIfNeeded()
         let providerQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         let normalized = CardNameSearch.normalize(providerQuery)
-        guard normalized.count >= 2 else { return CatalogPage(items: [], nextCursor: nil) }
+        guard CatalogCardSearchQuery.isEligible(normalized, for: game) else {
+            return CatalogPage(items: [], nextCursor: nil)
+        }
 
         await synchronizeGameBrowseAuthority(for: game)
         if let adapter = gameBrowseAdapters.adapter(for: game) {
-            let page = try await adapter.search(query: normalized, setIDs: setIDs, cursor: cursor)
+            let page = try await adapter.search(query: providerQuery, setIDs: setIDs, cursor: cursor)
             try validateBrowseGeneration(adapter)
             return page
         }
@@ -991,19 +996,24 @@ actor BrowseCatalog: BrowseCatalogProviding {
         switch game {
         case .pokemon:
             let selected = setIDs.filter { $0.game == .pokemon }
-            if !selected.isEmpty {
-                let directory = try await sets(for: .pokemon)
-                var results: [CatalogCardSummary] = []
-                for id in selected {
-                    guard let set = directory.first(where: { $0.catalogID == id }) else { continue }
-                    let page = try await cards(in: set, cursor: nil)
-                    results.append(contentsOf: page.items.filter {
-                        CardNameSearch.normalize($0.name).contains(normalized)
-                    })
-                }
-                return CatalogPage(items: deduplicated(results), nextCursor: nil)
+            let directory = try await sets(for: .pokemon)
+            if pokemonSnapshotEntries.isEmpty, catalogCoordinator == nil, selected.isEmpty, normalized.count >= 2 {
+                return try await searchPokemon(query: providerQuery, cursor: cursor)
             }
-            return try await searchPokemon(query: providerQuery, cursor: cursor)
+            let sets = CatalogSetOrdering.newestFirst(directory.filter { selected.isEmpty || selected.contains($0.catalogID) })
+            let offset = max(0, Int(cursor ?? "") ?? 0)
+            let revision = catalogRevision
+            let page = try await checklistStore.search(normalized, sets: sets, offset: offset, limit: 60)
+            try Task.checkCancellation()
+            guard revision == catalogRevision else { throw CatalogLookupError.staleCatalog }
+            let setsByID = Dictionary(sets.map { ($0.catalogID, $0) }, uniquingKeysWith: { first, _ in first })
+            let items = page.items.compactMap { summary -> CatalogCardSummary? in
+                guard let set = setsByID[summary.setID] else { return nil }
+                var identity = Self.applyingSignedCardArtwork([summary], set: set).first ?? summary
+                identity.masterSetVariant = nil
+                return identity
+            }
+            return .init(items: items, nextCursor: page.nextCursor)
 
         case .magic:
             let selected = setIDs.filter { $0.game == .magic }.map(\.providerID).sorted()
@@ -1020,6 +1030,24 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
         try await details(for: summary, refreshingPrices: false)
+    }
+
+    func installedDetails(for summary: CatalogCardSummary) async -> CatalogCardDetails? {
+        guard summary.game == .pokemon else { return nil }
+        await synchronizeCatalogAuthority()
+        await loadPokemonSnapshotIfNeeded()
+        guard await pokemonSetIsAuthorized(summary.setID.providerID) else { return nil }
+        let registry = catalogRegistry
+        let fingerprint = registry.descriptor(forProviderSetID: summary.setID.providerID)?.providerFingerprint
+        guard let local = try? await checklistStore.loadedChecklist(for: summary.setID, registry: registry),
+              let card = PokemonOfflineCardFactory.card(in: local, providerCardID: summary.providerID),
+              !Task.isCancelled, registry.revision == catalogRegistry.revision,
+              registry.descriptors == catalogRegistry.descriptors else { return nil }
+        let set = pokemonSets(from: [local.entry])[0]
+        let provisional = fingerprint != nil && local.entry.providerFingerprint != fingerprint
+        return .init(card: .pokemon(card.applyingAdditionalVariants(from: registry), setCode: set.code), set: set,
+            retrievedAt: local.entry.set.releaseDate ?? .distantPast,
+            collectionWriteUnavailableReason: provisional ? "This printing is waiting for a catalog update." : nil)
     }
 
     func details(for summary: CatalogCardSummary, refreshingPrices: Bool) async throws -> CatalogCardDetails {
@@ -1158,19 +1186,35 @@ actor BrowseCatalog: BrowseCatalogProviding {
         switch summary.game {
         case .pokemon:
             let revision = catalogRevision
+            let registry = catalogRegistry
             let context = try await authorizedPokemonDetailSet(for: summary)
-            if summary.setID.providerID == "mee",
-               let card = PokemonReviewedEnergyCatalog.card(providerID: summary.providerID) {
+            if let card = PokemonReviewedEnergyCatalog.card(providerID: summary.providerID),
+               card.set.id == summary.setID.providerID {
                 return CatalogCardDetails(
-                    card: .pokemon(card, setCode: "MEE"), set: context, retrievedAt: now())
+                    card: .pokemon(card.applyingAdditionalVariants(from: catalogRegistry), setCode: context.code),
+                    set: context, retrievedAt: now())
+            }
+            if summary.providerID.hasPrefix("tcgplayer:"),
+               let card = PokemonReviewedArtworkCatalog.card(providerID: summary.providerID), card.set.id == summary.setID.providerID {
+                return CatalogCardDetails(card: .pokemon(card.applyingAdditionalVariants(from: catalogRegistry), setCode: context.code),
+                    set: context, retrievedAt: now())
             }
             let catalog = try await pokemonSet(id: summary.setID.providerID)
             guard let brief = catalog.cards.first(where: { $0.id == summary.providerID }) else { throw BrowseCatalogError.unknownSet }
             let set = PokemonMasterSetChecklistBuilder.enrichedSet(context, providerSet: catalog)
-            let card = try await pokemonDetailPayload(id: summary.providerID, ignoringCache: ignoringCache)
+            var card = try await pokemonDetailPayload(id: summary.providerID, ignoringCache: ignoringCache)
             guard card.id == summary.providerID,
                   card.localId == brief.localId,
                   card.set.id.caseInsensitiveCompare(set.providerID) == .orderedSame else { throw BrowseCatalogError.unknownSet }
+            if registry.descriptor(forProviderSetID: set.providerID)?.providerFingerprint != nil,
+               let loaded = try await checklistStore.loadedChecklist(for: set.catalogID, registry: registry,
+                    requiresExactFingerprint: true), loaded.source == .signed,
+               let installed = PokemonOfflineCardFactory.card(in: loaded, providerCardID: card.id) {
+                guard CardNameSearch.normalize(card.name) == CardNameSearch.normalize(installed.name) else {
+                    throw CatalogLookupError.staleCatalog
+                }
+                card.projectedCatalogVariants = installed.projectedCatalogVariants
+            }
             _ = try await authorizedPokemonDetailSet(for: summary)
             _ = try await pokemonSet(id: summary.setID.providerID)
             guard revision == catalogRevision else { throw CatalogLookupError.staleCatalog }
@@ -1222,7 +1266,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
         let provider = try await pokemonSet(id: summary.setID.providerID)
         guard provider.cards.contains(where: { $0.id == summary.providerID })
-            || PokemonReviewedEnergyCatalog.card(providerID: summary.providerID)?.set.id == provider.id else {
+            || PokemonReviewedEnergyCatalog.card(providerID: summary.providerID)?.set.id == provider.id
+            || PokemonReviewedArtworkCatalog.hasAnchor(for: summary.providerID, in: provider) else {
             throw BrowseCatalogError.unknownSet
         }
         if catalogRegistry.descriptor(forProviderSetID: provider.id) != nil {
@@ -2134,9 +2179,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         guard let url = URL(string: "https://api.scryfall.com/sets") else { throw BrowseCatalogError.invalidURL }
         let (data, response) = try await magicSession.data(for: request(url, scryfall: true))
         try validate(response)
-        let excluded: Set<String> = ["token", "memorabilia", "minigame", "art_series"]
         let rows = try JSONDecoder().decode(ScryfallBrowseSetList.self, from: data).data.filter {
-            !$0.digital && !excluded.contains($0.setType ?? "")
+            MagicCatalogPolicy.isBrowseEligible(code: $0.code, setType: $0.setType ?? "", digital: $0.digital)
         }
         let sets = rows.sorted { ($0.releasedAt ?? "") > ($1.releasedAt ?? "") }.enumerated().map { index, row in
             CatalogSet(
@@ -2233,7 +2277,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 magicTreatmentIDsRaw: MagicTreatmentKeyCodec.storedIDs(
                     from: evidence.treatments
                 ),
-                magicTreatmentQualifiers: evidence.qualifiers
+                magicTreatmentQualifiers: evidence.qualifiers,
+                magicFinishIDs: card.finishes
             )
             detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(
                 card: .magic(card), set: set, retrievedAt: retrievedAt
@@ -2321,7 +2366,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 displayedCards = summaries
             }
         }
-        return PokemonChecklistReviewedProjection.addingAdditionalVariants(to: displayedCards, registry: catalogRegistry)
+        return PokemonChecklistReviewedProjection.addingAdditionalVariants(
+            to: PokemonReviewedArtworkCatalog.projecting(displayedCards), registry: catalogRegistry)
     }
 
     private func pokemonCardDetails(
@@ -2359,39 +2405,37 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func loadPokemonSnapshotIfNeeded() async {
-        guard !pokemonSnapshotLoaded else { return }
-        let loadTask: Task<[PokemonChecklistSnapshotEntry], Never>
-        if let existing = pokemonSnapshotLoadTask {
-            loadTask = existing
-        } else {
-            let checklistStore = checklistStore
-            let task = Task<[PokemonChecklistSnapshotEntry], Never> {
-                await checklistStore.mergedEntries()
+        while !pokemonSnapshotLoaded {
+            let generation = pokemonSnapshotGeneration
+            let registry = catalogRegistry
+            let loadTask: Task<[PokemonChecklistSnapshotEntry], Never>
+            if let existing = pokemonSnapshotLoadTask {
+                loadTask = existing
+            } else {
+                let task = Task { [checklistStore] in await checklistStore.mergedEntries() }
+                pokemonSnapshotLoadTask = task
+                loadTask = task
             }
-            pokemonSnapshotLoadTask = task
-            loadTask = task
-        }
 
-        var entries = await loadTask.value
-        for index in entries.indices {
-            let entry = entries[index]
-            guard catalogRegistry.descriptor(forProviderSetID: entry.providerID)?.additionalVariants?.isEmpty == false,
-                  let cards = await checklistStore.mergedChecklist(for: entry.set.catalogID) else { continue }
-            entries[index] = PokemonChecklistReviewedProjection.entry(entry, cards:
-                PokemonChecklistReviewedProjection.addingAdditionalVariants(to: cards, registry: catalogRegistry))
-        }
-        pokemonBundledRanks = await checklistStore.bundledSetRanks()
-        // Do not turn a cancelled or unsuccessful request into a completed
-        // latch. A nil result must remain retryable if both snapshot sources
-        // were temporarily unavailable.
-        guard !Task.isCancelled else { return }
-        pokemonSnapshotLoadTask = nil
-        let visibleEntries = await visibleSnapshotEntries(entries)
-        pokemonSnapshotLoaded = !visibleEntries.isEmpty
-        pokemonSnapshotEntries = visibleEntries
-        if !visibleEntries.isEmpty {
-            let sets = pokemonSets(from: visibleEntries)
-            setCache[.pokemon] = sets
+            var entries = await loadTask.value
+            for index in entries.indices {
+                let entry = entries[index]
+                guard registry.descriptor(forProviderSetID: entry.providerID)?.additionalVariants?.isEmpty == false,
+                      let cards = await checklistStore.mergedChecklist(for: entry.set.catalogID) else { continue }
+                entries[index] = PokemonChecklistReviewedProjection.entry(entry, cards:
+                    PokemonChecklistReviewedProjection.addingAdditionalVariants(to: cards, registry: registry))
+            }
+            let ranks = await checklistStore.bundledSetRanks()
+            let visibleEntries = await visibleSnapshotEntries(entries)
+            guard !Task.isCancelled else { return }
+            guard generation == pokemonSnapshotGeneration else { continue }
+            pokemonSnapshotLoadTask = nil
+            guard !pokemonSnapshotLoaded else { return }
+            pokemonBundledRanks = ranks
+            pokemonSnapshotLoaded = !visibleEntries.isEmpty
+            pokemonSnapshotEntries = visibleEntries
+            if !visibleEntries.isEmpty { setCache[.pokemon] = pokemonSets(from: visibleEntries) }
+            return
         }
     }
 
@@ -2423,11 +2467,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     private func performPokemonSnapshotRefresh() async -> PokemonSnapshotRefreshOutcome {
         do {
+            let installed = await checklistStore.signedProviderFingerprints()
+            let desired = signedProviderFingerprints()
+            if !desired.isEmpty, desired.count == catalogRegistry.descriptors.count,
+               desired.allSatisfy({ installed[$0.key] == $0.value }) { return .sweptCleanly }
             let rows = try await pokemonTransport.fetchSetDirectory()
             // Filter before deriving display metadata: provider-only discovery
             // rows never enter this refresh and must not report placeholder gaps.
             let authorizedRows = rows.filter {
-                catalogCoordinator == nil || catalogRegistry.descriptor(forProviderSetID: $0.id) != nil
+                guard catalogCoordinator != nil else { return true }
+                let id = $0.id.lowercased()
+                guard let descriptor = catalogRegistry.descriptor(forProviderSetID: id) else { return false }
+                return installed[id] == nil || installed[id] != descriptor.providerFingerprint
             }
             let authorizedSets = PokemonMasterSetChecklistBuilder.baseSets(
                 from: authorizedRows,
@@ -2685,7 +2736,12 @@ actor CatalogCacheStore {
     }
 
     func sets(for game: CardGame, now: Date = .now) -> Cached<[CatalogSet]>? {
-        load([CatalogSet].self, from: setDirectoryURL(for: game), maxAge: Self.setDirectoryMaxAge, now: now)
+        if let current = load([CatalogSet].self, from: setDirectoryURL(for: game), maxAge: Self.setDirectoryMaxAge, now: now) {
+            return current
+        }
+        guard game == .magic, let legacy = load([CatalogSet].self, from: legacyMagicSetDirectoryURL,
+                                                maxAge: Self.setDirectoryMaxAge, now: now) else { return nil }
+        return Cached(value: legacy.value, storedAt: legacy.storedAt, isFresh: false)
     }
 
     func storeSets(_ sets: [CatalogSet], for game: CardGame, at date: Date = .now) {
@@ -2707,6 +2763,7 @@ actor CatalogCacheStore {
 
     func removeSets(for game: CardGame) {
         try? FileManager.default.removeItem(at: setDirectoryURL(for: game))
+        if game == .magic { try? FileManager.default.removeItem(at: legacyMagicSetDirectoryURL) }
     }
 
     func cardPage(for key: String) -> Cached<CatalogPage<CatalogCardSummary>>? {
@@ -2901,7 +2958,12 @@ actor CatalogCacheStore {
     }
 
     static func cardPageKey(for set: CatalogSet, cursor: String?) -> String {
-        "cards|schema:\(PokemonChecklistSnapshotVersion.schema)|rules:\(PokemonChecklistSnapshotVersion.masterSetRules)|\(set.id)|\(cursor ?? "initial")"
+        if set.game == .magic { return "magic-printings-v2|\(set.id)|\(cursor ?? "initial")" }
+        return "cards|schema:\(PokemonChecklistSnapshotVersion.schema)|rules:\(PokemonChecklistSnapshotVersion.masterSetRules)|\(set.id)|\(cursor ?? "initial")"
+    }
+
+    static func legacyMagicInitialPageKey(for set: CatalogSet) -> String {
+        "cards|schema:1|rules:1|\(set.id)|initial"
     }
 
     static func sealedPageKey(game: CardGame, setID: String?, query: String?, offset: Int) -> String {
@@ -2917,9 +2979,10 @@ actor CatalogCacheStore {
     }
     private var sealedPagesDirectory: URL { root.appendingPathComponent("SealedPages", isDirectory: true) }
     private var sortPricesDirectory: URL { root.appendingPathComponent("SortPrices", isDirectory: true) }
+    private var legacyMagicSetDirectoryURL: URL { root.appendingPathComponent("Sets-magic.json") }
 
     private func setDirectoryURL(for game: CardGame) -> URL {
-        root.appendingPathComponent("Sets-\(game.rawValue).json")
+        root.appendingPathComponent(game == .magic ? "Sets-magic-v2.json" : "Sets-\(game.rawValue).json")
     }
 
     private func sealedSetDirectoryURL(for game: CardGame) -> URL {
@@ -3078,6 +3141,13 @@ enum PokemonMasterSetDefinition {
         return []
     }
 
+    static func printRuns(for card: IdentifiedCard) -> [PokemonPrintRun] {
+        guard case let .pokemon(payload, _) = card.legacyIdentity else { return [] }
+        return printRuns(forSetProviderID: payload.set.id).filter {
+            !excludes(localID: payload.localId, setProviderID: payload.set.id, printRun: $0)
+        }
+    }
+
     static func includesInSetDirectory(_ set: TCGdexBrowseSet) -> Bool {
         let name = CatalogIdentityNormalization.canonicalText(set.name)
         let id = set.id.lowercased()
@@ -3117,7 +3187,7 @@ enum PokemonMasterSetDefinition {
     }
 
     static func excludes(
-        card: TCGdexCardBrief,
+        localID: String,
         setProviderID: String,
         printRun: PokemonPrintRun?
     ) -> Bool {
@@ -3125,7 +3195,7 @@ enum PokemonMasterSetDefinition {
         // Unlimited printing, so it cannot complete the Unlimited run.
         setProviderID.caseInsensitiveCompare("base1") == .orderedSame
             && printRun == .unlimited
-            && CatalogIdentityNormalization.localNumber(card.localId) == "8"
+            && CatalogIdentityNormalization.localNumber(localID) == "8"
     }
 
     /// The required physical slots for one numbered card. Edition is carried

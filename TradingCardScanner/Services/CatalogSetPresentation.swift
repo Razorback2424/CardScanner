@@ -8,7 +8,7 @@ struct CatalogSetPresentationInputs: Equatable, Sendable {
     let setID: CatalogSetID
     let contentGeneration: UUID
     let cards: [CatalogCardSummary]
-    let search: String
+    let search: CatalogCardSearchQuery
     let sort: CatalogSetSort
     let ownership: CatalogOwnershipFilter
     let ownershipRevision: UInt
@@ -21,7 +21,7 @@ struct CatalogSetPresentationInputs: Equatable, Sendable {
         self.setID = setID
         self.contentGeneration = contentGeneration
         self.cards = cards
-        self.search = CardNameSearch.normalize(search)
+        self.search = CatalogCardSearchQuery(search)
         self.sort = sort
         self.ownership = ownership
         self.ownershipRevision = ownershipRevision
@@ -52,8 +52,8 @@ private struct CatalogSetPreparedPresentation: Sendable {
         defer { PerformanceSignpost.signposter.endInterval("Browse.prepare", interval) }
         let rows = cards.map { card in
             Row(summary: card, id: card.id,
-                name: CardNameSearch.normalize(card.name),
-                number: CardNameSearch.normalize(card.collectorNumber),
+                name: CardNameSearch.normalize(card.displayName),
+                number: card.printedCollectorNumber.map(CardNameSearch.normalize) ?? "",
                 numberKey: CollectorNumber.key(for: card.collectorNumber),
                 identity: CatalogCardDisplayIdentity(
                     game: card.game, setID: card.setID, providerID: card.providerID,
@@ -149,8 +149,13 @@ actor CatalogSetPresentationBuilder: CatalogSetPresentationBuilding {
             let row = prepared.rows[index]
             if row.summary.game == .pokemon, inputs.tier == .standard,
                row.summary.isExpandedMasterSetVariant { continue }
-            if !inputs.search.isEmpty,
-               !row.name.contains(inputs.search), !row.number.contains(inputs.search) { continue }
+            if !inputs.search.normalized.isEmpty {
+                if let fields = row.summary.searchFields {
+                    guard inputs.search.matches(fields) else { continue }
+                } else if !row.name.contains(inputs.search.normalized), !row.number.contains(inputs.search.normalized) {
+                    continue
+                }
+            }
             if inputs.ownership != .all {
                 let isOwned = ownedFlags?.flags[index] ?? false
                 if (inputs.ownership == .owned) != isOwned { continue }
@@ -196,7 +201,7 @@ final class CatalogSetPresentationStore: ObservableObject {
                 if self.groups != candidate { self.groups = candidate }
                 self.isProjecting = false
                 PerformanceSignpost.emitEvent("Browse.presentationPublished",
-                    "groups=\(candidate.count) queryLength=\(inputs.search.count)")
+                    "groups=\(candidate.count) queryLength=\(inputs.search.normalized.count)")
             } catch {
                 guard let self, self.generation == generation else { return }
                 self.isProjecting = false

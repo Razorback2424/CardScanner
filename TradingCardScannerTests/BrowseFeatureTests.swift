@@ -31,6 +31,114 @@ private actor DetailImageLoadGate {
 }
 
 final class BrowseLoadingRefinementTests: XCTestCase {
+    func testMagicBrowseCanFindCollectibleEditionBySetAndByName() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        BrowseRefinementURLProtocol.setHandler { loader in
+            if loader.request.url?.path == "/sets" {
+                loader.respond(Data(#"{"data":[{"code":"30a","name":"30th Anniversary Edition","card_count":594,"digital":false,"set_type":"memorabilia"},{"code":"oecl","name":"Art Series","card_count":20,"digital":false,"set_type":"memorabilia"}]}"#.utf8))
+                return
+            }
+            let items = loader.request.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: false)?.queryItems }
+            XCTAssertEqual(items?.first { $0.name == "include_variations" }?.value, "true")
+            loader.respond(Data(#"{"has_more":false,"data":[{"id":"00000000-0000-4000-8000-000000000030","name":"Black Lotus","set":"30a","set_name":"30th Anniversary Edition","collector_number":"232","lang":"en","digital":false,"finishes":["nonfoil"]}]}"#.utf8))
+        }
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root), magicSession: session)
+        let directory = try await catalog.sets(for: .magic)
+        XCTAssertEqual(directory.map(\.providerID), ["30a"])
+        let page = try await catalog.cards(in: XCTUnwrap(directory.first), cursor: nil)
+        let search = try await catalog.searchCards(named: "Black Lotus", game: .magic, setIDs: [], cursor: nil)
+        XCTAssertEqual(page.items.map(\.id), search.items.map(\.id))
+        XCTAssertEqual(search.items.first?.magicFinishIDs, ["nonfoil"])
+    }
+
+    func testMagicPageUpgradeReturnsCurrentCursorOnFirstLoad() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let cache = CatalogCacheStore(root: root)
+        let set = set()
+        await storeLegacyMagicPage(for: set, in: cache)
+        let nextCursor = "https://api.scryfall.com/cards/search?include_variations=true&page=2"
+        var payload = try XCTUnwrap(JSONSerialization.jsonObject(with: pageJSON) as? [String: Any])
+        payload["has_more"] = true
+        payload["next_page"] = nextCursor
+        let firstPage = try JSONSerialization.data(withJSONObject: payload)
+        let secondPage = Data(#"{"has_more":false,"data":[{"id":"3f0a1f52-0000-4000-8000-000000000002","name":"Elvish Mystic","set":"ecl","set_name":"Eclipse","collector_number":"219","lang":"en","digital":false,"finishes":["nonfoil"]}]}"#.utf8)
+        let requests = BrowseRefinementRequestCount()
+        BrowseRefinementURLProtocol.setHandler { loader in
+            requests.increment()
+            let query = loader.request.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: false)?.queryItems }
+            XCTAssertEqual(query?.first { $0.name == "include_variations" }?.value, "true")
+            if query?.contains(where: { $0.name == "page" }) == true {
+                XCTAssertEqual(loader.request.url?.absoluteString, nextCursor)
+                loader.respond(secondPage)
+            } else {
+                loader.respond(firstPage)
+            }
+        }
+        let catalog = BrowseCatalog(cache: cache, magicSession: session)
+        let current = try await catalog.cards(in: set, cursor: nil)
+        XCTAssertEqual(current.items.map(\.name), ["Llanowar Elves"])
+        XCTAssertEqual(current.items.first?.magicFinishIDs, ["nonfoil", "foil"])
+        XCTAssertEqual(current.nextCursor, nextCursor)
+        let next = try await catalog.cards(in: set, cursor: XCTUnwrap(current.nextCursor))
+        XCTAssertEqual(next.items.map(\.name), ["Elvish Mystic"])
+        XCTAssertNil(next.nextCursor)
+
+        let cached = try await catalog.cards(in: set, cursor: nil)
+        XCTAssertEqual(cached.nextCursor, nextCursor)
+        XCTAssertEqual(requests.value, 2)
+    }
+
+    func testMagicPageUpgradeKeepsLegacyCardsOffline() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let cache = CatalogCacheStore(root: root)
+        let set = set()
+        await storeLegacyMagicPage(for: set, in: cache)
+        BrowseRefinementURLProtocol.setHandler { loader in
+            loader.client?.urlProtocol(loader, didFailWithError: URLError(.notConnectedToInternet))
+        }
+        let catalog = BrowseCatalog(cache: cache, magicSession: session)
+        let fallback = try await catalog.cards(in: set, cursor: nil)
+        XCTAssertEqual(fallback.items.map(\.name), ["Saved Card"])
+        XCTAssertNil(fallback.nextCursor)
+        let currentKey = CatalogCacheStore.cardPageKey(for: set, cursor: nil)
+        let current = await cache.cardPage(for: currentKey)
+        XCTAssertNil(current)
+    }
+
+    private func storeLegacyMagicPage(for set: CatalogSet, in cache: CatalogCacheStore) async {
+        await cache.storeSets([set], for: .magic)
+        let summary = CatalogCardSummary(game: .magic, providerID: "cached", setID: set.catalogID,
+            setName: set.name, setCode: set.code, name: "Saved Card", collectorNumber: "1",
+            thumbnailURL: nil, imageURL: nil)
+        let legacyKey = CatalogCacheStore.legacyMagicInitialPageKey(for: set)
+        await cache.storeCardPage(
+            .init(items: [summary], nextCursor: "https://api.scryfall.com/cards/search?page=2"), for: legacyKey
+        )
+    }
+
+    func testMagicSetDirectoryUpgradeCanReadLegacyRowsAndMarksThemStale() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cache = CatalogCacheStore(root: root)
+        let storedAt = Date.now
+        await cache.storeSets([set()], for: .magic, at: storedAt)
+        try FileManager.default.moveItem(at: root.appendingPathComponent("Sets-magic-v2.json"),
+            to: root.appendingPathComponent("Sets-magic.json"))
+        let legacy = await cache.sets(for: .magic, now: storedAt)
+        XCTAssertEqual(legacy?.value.map(\.providerID), ["ecl"])
+        XCTAssertEqual(legacy?.storedAt, storedAt)
+        XCTAssertEqual(legacy?.isFresh, false)
+    }
+
     func testMagicConfirmedPriceGapSurvivesDiskPageReplayWithoutDetailRequest() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
@@ -1492,6 +1600,7 @@ final class BrowseFeatureTests: XCTestCase {
         let values = Dictionary(uniqueKeysWithValues: items.map { ($0.name, $0.value ?? "") })
         XCTAssertEqual(values["q"], query)
         XCTAssertEqual(values["unique"], "prints")
+        XCTAssertEqual(values["include_variations"], "true")
     }
 
     func testSetDirectoryCacheSurvivesANewStoreInstance() async throws {
@@ -3058,6 +3167,24 @@ final class BrowseFeatureTests: XCTestCase {
     }
 
     @MainActor
+    func testBrowseSingleCharacterRunsOnlyThePokemonCardSearch() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let provider = HeldBrowseSearchProvider()
+        let sealed = SealedBrowseModel(client: provider, gameRegistry: provider.gameRegistry,
+                                       cache: CatalogCacheStore(root: root), isConfigured: { true })
+        let model = BrowseViewModel(catalog: provider, sealedModel: sealed)
+        model.searchText = "N"
+        let started = await waitUntil { await provider.requestCount > 0 }
+        XCTAssertTrue(started)
+        let requests = await provider.pendingRequestDescriptions
+        XCTAssertEqual(requests, ["pokemon:card:first"])
+        await provider.finish(query: "N")
+        let loaded = await waitUntil { model.searchResults.count == 1 }
+        XCTAssertTrue(loaded)
+    }
+
+    @MainActor
     func testBrowseRapidTypingStartsOnlyTheFinalQuery() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -4433,6 +4560,31 @@ final class BrowseCollectionTests: XCTestCase {
         )
     }
 
+    func testMagicBrowseCountsTheFinishThatWasActuallySaved() throws {
+        let id = "019615fa-4bec-41e8-9c4c-2c6f91bdefb2"
+        let summary = magicSummary(id: id, number: "98", treatments: ["surgefoil"], finishes: ["nonfoil", "foil"])
+        let replayed = try JSONDecoder().decode(CatalogCardSummary.self, from: JSONEncoder().encode(summary))
+        XCTAssertEqual(replayed.magicFinishIDs, ["nonfoil", "foil"])
+
+        let nonfoil = magicCompletionCard(number: "98", variant: .nonfoil)
+        nonfoil.providerID = id
+        let surge = magicCompletionCard(number: "98", variant: .foil, treatments: [.surgeFoil])
+        surge.providerID = id
+        let otherPrinting = magicCompletionCard(number: "98", variant: .nonfoil)
+        otherPrinting.providerID = "00000000-0000-4000-8000-000000000098"
+        otherPrinting.collectionKey = "another-printing"
+        let ownership = CatalogOwnershipIndex([nonfoil, surge, otherPrinting])
+        XCTAssertTrue(CatalogOwnershipIndex([nonfoil]).owns(replayed))
+        XCTAssertEqual(ownership.quantity(of: replayed), 2)
+        XCTAssertFalse(CatalogOwnershipIndex([otherPrinting]).owns(replayed))
+
+        var foil = replayed
+        foil.masterSetVariant = .foil
+        XCTAssertEqual(ownership.matchingRows(for: foil).map(\.variantID), ["foil"])
+        let foilOnly = magicSummary(id: id, number: "98", treatments: ["surgefoil"], finishes: ["foil"])
+        XCTAssertFalse(CatalogOwnershipIndex([nonfoil]).owns(foilOnly))
+    }
+
     func testSetCompletionDoesNotCreateATreatmentSlotAndKeepsSuffixesDistinct() {
         let set = CatalogSet(
             catalogID: CatalogSetID(game: .magic, providerID: "fic"),
@@ -4510,7 +4662,8 @@ final class BrowseCollectionTests: XCTestCase {
         id: String,
         number: String,
         treatments: [String] = [],
-        qualifiers: [String: String] = [:]
+        qualifiers: [String: String] = [:],
+        finishes: [String]? = nil
     ) -> CatalogCardSummary {
         CatalogCardSummary(
             game: .magic,
@@ -4523,7 +4676,8 @@ final class BrowseCollectionTests: XCTestCase {
             thumbnailURL: nil,
             imageURL: nil,
             magicTreatmentIDsRaw: treatments,
-            magicTreatmentQualifiers: qualifiers
+            magicTreatmentQualifiers: qualifiers,
+            magicFinishIDs: finishes
         )
     }
 
@@ -4659,6 +4813,238 @@ final class BrowseCollectionTests: XCTestCase {
 }
 
 final class PokemonChecklistBrowseTests: XCTestCase {
+    func testReviewedFinishReplacesIdentityOnlyChecklistRow() throws {
+        let setID = CatalogSetID(game: .pokemon, providerID: "future")
+        let identity = CatalogCardSummary(game: .pokemon, providerID: "future-001", setID: setID,
+            setName: "Future Set", setCode: "FTR", name: "Pikachu", collectorNumber: "001",
+            thumbnailURL: nil, imageURL: nil)
+        let supplement = PokemonCatalogAdditionalVariant(
+            providerCardID: identity.providerID, canonicalName: identity.name,
+            variantID: "holo", providerType: "holo",
+            evidenceURLs: ["https://example.com/card", "https://example.org/card"]
+        )
+        let descriptor = PokemonCatalogSetDescriptor(
+            providerSetID: setID.providerID, displayName: identity.setName, releaseDate: nil, releaseOrder: nil,
+            recognitionKind: .notScannable, printedCode: nil, officialCount: nil, printedPrefix: nil,
+            catalogLocalIDPrefix: nil, localIDPadWidth: nil, scanEnabled: false, logoURL: nil, symbolURL: nil,
+            additionalVariants: [supplement]
+        )
+        let registry = PokemonCatalogRegistry(release: .init(revision: 1, generatedAt: .now, sets: [descriptor]))
+        let projected = PokemonChecklistReviewedProjection.addingAdditionalVariants(to: [identity], registry: registry)
+
+        XCTAssertEqual(projected.count, 1)
+        let slot = try XCTUnwrap(projected.first)
+        XCTAssertEqual(slot.providerID, identity.providerID)
+        XCTAssertEqual(slot.masterSetVariant, .holo)
+        XCTAssertFalse(slot.isExpandedMasterSetVariant)
+        XCTAssertTrue(slot.isSoleSlotForCard)
+
+        let withdrawn = PokemonCatalogRegistry(release: .init(revision: 2, generatedAt: .now, sets: []))
+        XCTAssertEqual(PokemonChecklistReviewedProjection.addingAdditionalVariants(to: [identity], registry: withdrawn), [identity])
+    }
+
+    func testInstalledBrowseSearchFindsExactShortNamesAndCollectorNumbersOffline() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: transport, checklistStore: store)
+
+        let names = try await catalog.searchCards(named: "N", game: .pokemon, setIDs: [], cursor: nil)
+        XCTAssertEqual(Set(names.items.filter { $0.name == "N" }.map(\.providerID)),
+                       ["bw3-101", "bw3-92", "bw5-96", "xy10-105", "xy10-105a"])
+        XCTAssertEqual(names.items.filter { $0.name != "N" }.map(\.providerID), ["exu-N"])
+        let scope = CatalogSetID(game: .pokemon, providerID: "pl4")
+        let number = try await catalog.searchCards(named: "AR1", game: .pokemon, setIDs: [scope], cursor: nil)
+        XCTAssertEqual(number.items.map(\.providerID), ["pl4-AR1"])
+        let card = try XCTUnwrap(number.items.first)
+        let installed = await catalog.installedDetails(for: card)
+        XCTAssertEqual(installed?.card.providerID, card.providerID)
+        XCTAssertEqual(installed?.set.catalogID, scope)
+        XCTAssertNil(installed?.collectionWriteUnavailableReason)
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set + counts.card, 0)
+    }
+
+    func testUnnumberedSunMoonEnergyUsesNamesAndKeepsWaveFoilDistinct() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: transport, checklistStore: store)
+        let setID = CatalogSetID(game: .pokemon, providerID: "sm1")
+        let identities = Set((164...172).map { "sm1-\($0)" })
+        let waveProducts = Dictionary(uniqueKeysWithValues: zip(164...172,
+            [662712, 662711, 662714, 208685, 208684, 662710, 662708, 662713, 662709]))
+        let page = try await catalog.searchCards(named: "Energy", game: .pokemon, setIDs: [setID], cursor: nil)
+        let unnumbered = page.items.filter { identities.contains($0.providerID) }
+        XCTAssertEqual(Set(unnumbered.map(\.providerID)), identities)
+        for summary in unnumbered {
+            XCTAssertNil(summary.printedCollectorNumber)
+            XCTAssertTrue(summary.setAndCollectorLabel.hasSuffix(" Unnumbered"))
+            let detail = await catalog.installedDetails(for: summary)
+            let resolved = try XCTUnwrap(detail).card
+            XCTAssertEqual(resolved.providerID, summary.providerID)
+            XCTAssertEqual(resolved.cardNumber, summary.collectorNumber)
+            XCTAssertEqual(resolved.displayCardNumber, "Unnumbered")
+            XCTAssertEqual(Set(VariantResolver.options(for: resolved.variantEvidence)), [.normal, .reverse, .waveFoil])
+            let wave = CardPricing.tcgplayerProductID(for: resolved, variant: .waveFoil, printRun: nil)
+            let localID = try XCTUnwrap(Int(summary.collectorNumber))
+            XCTAssertEqual(wave, try XCTUnwrap(waveProducts[localID]))
+            XCTAssertNotEqual(wave, CardPricing.tcgplayerProductID(for: resolved, variant: .reverse, printRun: nil))
+        }
+        let numeric = try await catalog.searchCards(named: "164/149", game: .pokemon, setIDs: [setID], cursor: nil)
+        XCTAssertTrue(numeric.items.isEmpty)
+        let numbered = try await catalog.searchCards(named: "163/149", game: .pokemon, setIDs: [setID], cursor: nil)
+        XCTAssertEqual(numbered.items.map(\.providerID), ["sm1-163"])
+
+        let inputs = CatalogSetPresentationInputs(setID: setID, contentGeneration: UUID(), cards: page.items,
+            search: "164", sort: .numberLowToHigh, ownership: .all, ownershipRevision: 0, tier: .standard, prices: [:])
+        let setSearch = try await CatalogSetPresentationBuilder().groups(for: inputs, owned: CatalogOwnershipIndex(rows: []))
+        XCTAssertTrue(setSearch.isEmpty)
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set + counts.card, 0)
+    }
+
+    func testUnnumberedExpansionEnergyCanBeFoundAndOpenedOffline() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: transport, checklistStore: store)
+        let families = [("sm9", "2019", Array(184424...184432)),
+                        ("swsh1", "2020", Array(208031...208038) + [209565]),
+                        ("tcgplayer:2948:2022", "2022", Array(264247...264254))]
+        for (providerSet, year, products) in families {
+            let setID = CatalogSetID(game: .pokemon, providerID: providerSet)
+            let page = try await catalog.searchCards(named: "Energy \(year)", game: .pokemon, setIDs: [setID], cursor: nil)
+            XCTAssertEqual(Set(page.items.map(\.providerID)), Set(products.map { "tcgplayer:\($0)" }))
+            for summary in page.items {
+                XCTAssertNil(summary.printedCollectorNumber)
+                XCTAssertTrue(summary.displayName.hasSuffix(year))
+                let installed = await catalog.installedDetails(for: summary)
+                let card = try XCTUnwrap(installed).card
+                XCTAssertEqual(card.displayCardNumber, "Unnumbered")
+                XCTAssertEqual(card.providerID, summary.providerID)
+                XCTAssertEqual(Set(VariantResolver.options(for: card.variantEvidence)), [.normal, .reverse])
+                let expectedProduct = try XCTUnwrap(Int(summary.providerID.dropFirst("tcgplayer:".count)))
+                for variant in [PhysicalVariant.normal, .reverse] {
+                    XCTAssertTrue(PokemonVariantPolicy.allowsAcquisition(of: card, finish: variant, printRun: nil))
+                    XCTAssertEqual(CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: nil), expectedProduct)
+                }
+                XCTAssertNil(CardPricing.tcgplayerProductID(for: card, variant: .waveFoil, printRun: nil))
+            }
+            let first = try XCTUnwrap(page.items.first)
+            let coldDetails = try await catalog.details(for: first)
+            XCTAssertEqual(coldDetails.card.providerID, first.providerID)
+            let numeric = try await catalog.searchCards(named: first.collectorNumber, game: .pokemon, setIDs: [setID], cursor: nil)
+            XCTAssertTrue(numeric.items.isEmpty)
+        }
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set + counts.card, 0)
+        let brilliantStars = CatalogSetID(game: .pokemon, providerID: "swsh9")
+        let brilliantStarsChecklist = await store.mergedChecklist(for: brilliantStars)
+        XCTAssertFalse(try XCTUnwrap(brilliantStarsChecklist).contains { $0.providerID == "tcgplayer:264247" })
+    }
+
+    func testUnnumberedDeckExclusivesAppearAsTheirOwnOfflineBrowseSet() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let coordinator = PokemonCatalogCoordinator(checklistStore: store, rolloutMode: .bundledValidationOnly)
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: transport, checklistStore: store, catalogCoordinator: coordinator)
+        let setID = CatalogSetID(game: .pokemon, providerID: "tcgplayer:1840:2013")
+        let sets = try await catalog.sets(for: .pokemon)
+        XCTAssertEqual(sets.first { $0.catalogID == setID }?.name, "2013 Basic Energy (Deck Exclusives)")
+        let expected = [126301, 126302, 126303, 126304, 126305, 127167, 135027, 135028, 135029]
+        let page = try await catalog.searchCards(named: "Energy 2013", game: .pokemon, setIDs: [setID], cursor: nil)
+        XCTAssertEqual(Set(page.items.map(\.providerID)), Set(expected.map { "tcgplayer:\($0)" }))
+        let checklist = await store.mergedChecklist(for: setID)
+        XCTAssertEqual(checklist?.count, 18)
+        for summary in page.items {
+            XCTAssertNil(summary.printedCollectorNumber)
+            let detail = try await catalog.details(for: summary)
+            XCTAssertEqual(detail.card.displayCardNumber, "Unnumbered")
+            XCTAssertEqual(detail.card.providerID, summary.providerID)
+            XCTAssertEqual(Set(VariantResolver.options(for: detail.card.variantEvidence)), [.normal, .holo])
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: detail.card, variant: .holo, printRun: nil), Int(summary.collectorNumber))
+        }
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set + counts.card, 0)
+    }
+
+    func testUnnumberedLeagueEnergyUsesItsOwnPrintingAndFinishOffline() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let coordinator = PokemonCatalogCoordinator(checklistStore: store, rolloutMode: .bundledValidationOnly)
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: transport, checklistStore: store, catalogCoordinator: coordinator)
+        let sets = try await catalog.sets(for: .pokemon)
+        let families: [(Int, Int, Int, PhysicalVariant)] = [
+            (2005, 6, 178489, .normal), (2006, 6, 220260, .normal),
+            (2009, 8, 153249, .holo), (2010, 8, 145559, .normal)
+        ]
+        for (year, count, grassProduct, finish) in families {
+            let setID = CatalogSetID(game: .pokemon, providerID: "tcgplayer:1539:\(year)")
+            let set = try XCTUnwrap(sets.first { $0.catalogID == setID })
+            if year == 2009 { XCTAssertTrue(set.name.contains("Crosshatch")) }
+            let page = try await catalog.searchCards(named: "Energy \(year)", game: .pokemon, setIDs: [setID], cursor: nil)
+            XCTAssertEqual(page.items.count, count)
+            let grass = try XCTUnwrap(page.items.first { $0.name == "Grass Energy" })
+            XCTAssertNil(grass.printedCollectorNumber)
+            XCTAssertNotNil(grass.imageURL)
+            let detail = try await catalog.details(for: grass)
+            XCTAssertEqual(detail.card.providerID, "tcgplayer:\(grassProduct)")
+            XCTAssertEqual(detail.card.displayCardNumber, "Unnumbered")
+            XCTAssertEqual(VariantResolver.options(for: detail.card.variantEvidence), [finish])
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: detail.card, variant: finish, printRun: nil), grassProduct)
+            XCTAssertNil(CardPricing.tcgplayerProductID(for: detail.card, variant: .reverse, printRun: nil))
+        }
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set + counts.card, 0)
+    }
+
+    func testVivillonArtworkPrintingsStaySeparateInBrowseAndHaveExactMarketHandles() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: transport, checklistStore: store)
+        let setID = CatalogSetID(game: .pokemon, providerID: "xy1")
+        let page = try await catalog.searchCards(named: "XY 17/146", game: .pokemon, setIDs: [setID], cursor: nil)
+        XCTAssertEqual(Set(page.items.map(\.providerID)), ["xy1-17", "tcgplayer:90395"])
+        XCTAssertEqual(Set(page.items.map(\.displayName)), ["Vivillon · Meadow", "Vivillon · High Plains"])
+        let meadowOnly = try await catalog.searchCards(named: "Vivillon Meadow", game: .pokemon, setIDs: [setID], cursor: nil)
+        XCTAssertEqual(meadowOnly.items.map(\.providerID), ["xy1-17"])
+
+        let checklist = await store.mergedChecklist(for: setID)
+        let cards = try XCTUnwrap(checklist).filter { $0.name == "Vivillon" }
+        let groups = CatalogCardDisplayGrouping.groups(for: cards)
+        XCTAssertEqual(groups.count, 2)
+        XCTAssertEqual(groups.reduce(0) { $0 + $1.summaries.count }, 5)
+        XCTAssertEqual(cards.filter(\.isExpandedMasterSetVariant).compactMap(\.masterSetVariant), [.pokemonFoilPattern("cosmos")])
+        let highPlains = try XCTUnwrap(page.items.first { $0.providerID == "tcgplayer:90395" })
+        let loaded = try await catalog.details(for: highPlains)
+        XCTAssertEqual(loaded.card.providerID, "tcgplayer:90395")
+        let meadowDetails = await catalog.installedDetails(for: try XCTUnwrap(meadowOnly.items.first))
+        let meadow = try XCTUnwrap(meadowDetails).card
+        for variant in [PhysicalVariant.holo, .reverse] {
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: meadow, variant: variant, printRun: nil), 91249)
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: loaded.card, variant: variant, printRun: nil), 90395)
+        }
+        XCTAssertNil(CardPricing.tcgplayerProductID(for: meadow, variant: .pokemonFoilPattern("cosmos"), printRun: nil))
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set + counts.card, 0)
+    }
+
     /// The same bundled, offline workload is used before and after the repair.
     /// These timings describe projection work, not device frame/hang acceptance.
     func testDestinedRivalsEntryAndTypingWorkload() async throws {
@@ -4816,7 +5202,8 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(current.path, .cacheHit)
         XCTAssertEqual(current.card.variantEvidence.catalogVariants, [.holo])
         let counts = await fixture.source.requestCounts()
-        XCTAssertEqual(counts.primary + counts.fallback, 0)
+        XCTAssertEqual(counts.primary, 1)
+        XCTAssertEqual(counts.fallback, 1)
     }
 
     func testExactBundledChecklistBeatsUnknownDownloadedChecklistAndDiskFingerprint() async throws {
@@ -4828,11 +5215,10 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             providerSetID: fixture.set.providerID, localID: "001", expectedOfficialCount: 100))
         await fixture.disk.store(card: old, setCode: fixture.set.code, key: fixture.key)
 
-        let selected = await PokemonOfflineCatalog(store: fixture.store).cardWithSource(
-            providerSetID: fixture.set.providerID, localID: "001", expectedOfficialCount: 100,
-            providerFingerprint: fixture.currentFingerprint, requiresExactFingerprint: false)
+        let selected = await fixture.store.loadedChecklist(for: fixture.set.catalogID,
+            providerFingerprint: fixture.currentFingerprint)
         XCTAssertEqual(selected?.source, .bundled)
-        XCTAssertEqual(selected?.providerFingerprint, fixture.currentFingerprint)
+        XCTAssertEqual(selected?.entry.providerFingerprint, fixture.currentFingerprint)
         let current = try await fixture.catalog.resolution(for: fixture.identifier)
         XCTAssertEqual(current.path, .cacheHit)
         XCTAssertEqual(current.card.variantEvidence.catalogVariants, [.holo])
@@ -6604,7 +6990,11 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let store = PokemonChecklistStore(root: root, bundle: Bundle.main)
         let optionalSnapshot = await store.bundledSnapshot()
         let snapshot = try XCTUnwrap(optionalSnapshot)
-        XCTAssertEqual(snapshot.manifest.entries.count, 157)
+        XCTAssertEqual(snapshot.manifest.entries.filter { !$0.providerID.hasPrefix("tcgplayer:") }.count, 157)
+        XCTAssertEqual(
+            Set(snapshot.manifest.entries.filter { $0.providerID.hasPrefix("tcgplayer:") }.map(\.providerID)),
+            Set(PokemonReviewedEnergyCatalog.standaloneEntries.map(\.providerID))
+        )
         XCTAssertTrue(
             snapshot.manifest.entries.allSatisfy {
                 $0.standardSlotCount != nil && $0.expandedSlotCount != nil

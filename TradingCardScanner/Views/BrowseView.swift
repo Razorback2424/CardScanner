@@ -72,6 +72,7 @@ final class BrowseViewModel: ObservableObject {
     var normalizedQuery: String { CardNameSearch.normalize(searchText) }
     private var providerQuery: String { searchText.trimmingCharacters(in: .whitespacesAndNewlines) }
     var isSearching: Bool { !normalizedQuery.isEmpty }
+    var canSearch: Bool { normalizedQuery.count >= 2 || !queryCardGames.isEmpty }
 
     var searchGames: [CardGame] {
         selectedGame.map { [$0] } ?? gameRegistry.games(supporting: .browse)
@@ -80,6 +81,11 @@ final class BrowseViewModel: ObservableObject {
     var cardSearchGames: [CardGame] {
         guard selectedGame == nil, !selectedSets.isEmpty else { return searchGames }
         return searchGames.filter { game in selectedSets.contains { $0.game == game } }
+    }
+
+    private var queryCardGames: [CardGame] {
+        let query = normalizedQuery
+        return cardSearchGames.filter { CatalogCardSearchQuery.isEligible(query, for: $0) }
     }
 
     /// A single deterministic stream assembled from the independently paged
@@ -114,9 +120,9 @@ final class BrowseViewModel: ObservableObject {
     }
 
     var searchState: CatalogSearchState {
-        guard normalizedQuery.count >= 2 else { return .idle }
+        guard canSearch else { return .idle }
         let games = searchGames
-        var statuses: [CatalogSearchLaneStatus] = cardSearchGames.map { game in
+        var statuses: [CatalogSearchLaneStatus] = queryCardGames.map { game in
             guard let lane = lanes[game] else {
                 return CatalogSearchLaneStatus(isLoading: true)
             }
@@ -126,7 +132,7 @@ final class BrowseViewModel: ObservableObject {
             )
         }
 
-        let sealedWasSkipped = includesSealedProducts && games.contains {
+        let sealedWasSkipped = normalizedQuery.count >= 2 && includesSealedProducts && games.contains {
             gameRegistry.supports($0, .sealed) && !sealedModel.isConfigured(for: $0)
                 && !sealedLaneIsRequested(for: $0)
         }
@@ -152,7 +158,7 @@ final class BrowseViewModel: ObservableObject {
     }
 
     var hasSearchPagination: Bool {
-        guard normalizedQuery.count >= 2 else { return false }
+        guard canSearch else { return false }
         return searchGames.contains { game in
             if cardSearchGames.contains(game), let lane = lanes[game], lane.cursor != nil, lane.error == nil {
                 return true
@@ -172,9 +178,9 @@ final class BrowseViewModel: ObservableObject {
     func suspendSearch() {
         guard !searchIsSuspended else { return }
         searchIsSuspended = true
-        needsSearchOnResume = searchTask != nil && normalizedQuery.count >= 2
+        needsSearchOnResume = searchTask != nil && canSearch
         cardGamesToResume = needsSearchOnResume
-            ? cardSearchGames.filter { lanes[$0]?.isLoading != false }
+            ? queryCardGames.filter { lanes[$0]?.isLoading != false }
             : nil
         searchTask?.cancel()
         searchTask = nil
@@ -192,10 +198,10 @@ final class BrowseViewModel: ObservableObject {
         searchIsSuspended = false
         guard needsSearchOnResume else { return }
         needsSearchOnResume = false
-        guard normalizedQuery.count >= 2 else { return }
+        guard canSearch else { return }
         let query = providerQuery
         let token = generation
-        let cardGames = (cardGamesToResume ?? cardSearchGames).filter { cardSearchGames.contains($0) }
+        let cardGames = (cardGamesToResume ?? queryCardGames).filter { queryCardGames.contains($0) }
         cardGamesToResume = nil
         for game in cardGames { lanes[game] = Lane(isLoading: true) }
         searchTask = Task { [weak self] in
@@ -253,7 +259,7 @@ final class BrowseViewModel: ObservableObject {
             let retainedSelection = selectedSets.intersection(available)
             if retainedSelection != selectedSets {
                 selectedSets = retainedSelection
-            } else if normalizedQuery.count >= 2 && cardSearchGames.contains(where: { game in
+            } else if queryCardGames.contains(where: { game in
                 affectedGames.contains(game) && shouldRestartSearch(for: update, game: game,
                     previousDirectory: previousDirectories[game] ?? [])
             }) {
@@ -289,8 +295,7 @@ final class BrowseViewModel: ObservableObject {
         let requestedQuery = providerQuery
         let requestedGeneration = generation
         let requestedSetIDs = effectiveSetIDs(for: game)
-        guard !Task.isCancelled, !searchIsSuspended, normalizedQuery.count >= 2,
-              cardSearchGames.contains(game),
+        guard !Task.isCancelled, !searchIsSuspended, queryCardGames.contains(game),
               var lane = lanes[game],
               let cursor = lane.cursor,
               !lane.isLoading, lane.error == nil else { return }
@@ -365,7 +370,7 @@ final class BrowseViewModel: ObservableObject {
         generation = UUID()
         let token = generation
         let query = providerQuery
-        guard normalizedQuery.count >= 2 else {
+        guard canSearch else {
             lanes = [:]
             sealedModel.clearSearch()
             recomputeSearchResults()
@@ -389,7 +394,8 @@ final class BrowseViewModel: ObservableObject {
 
     private func runSearch(query: String, token: UUID, cardGames: [CardGame]? = nil) async {
         let selectedGames = searchGames
-        let games = (cardGames ?? cardSearchGames).filter { cardSearchGames.contains($0) }
+        let eligible = queryCardGames
+        let games = (cardGames ?? eligible).filter { eligible.contains($0) }
         for game in games { lanes[game] = Lane(isLoading: true) }
         for game in gameRegistry.games(supporting: .browse) where !cardSearchGames.contains(game) { lanes[game] = nil }
         recomputeSearchResults()
@@ -399,7 +405,7 @@ final class BrowseViewModel: ObservableObject {
         // keep their lifetimes independent of an async-let stack frame.
         let cardSearch = Task { await searchCardLanes(games: games, query: query, token: token) }
         await withTaskCancellationHandler {
-            if includesSealedProducts {
+            if includesSealedProducts && normalizedQuery.count >= 2 {
                 await sealedModel.search(query: CardNameSearch.normalize(query),
                                          games: selectedGames.filter { gameRegistry.supports($0, .sealed) })
             }
@@ -410,7 +416,7 @@ final class BrowseViewModel: ObservableObject {
     }
 
     private func sealedLaneIsRequested(for game: CardGame) -> Bool {
-        includesSealedProducts && gameRegistry.supports(game, .sealed)
+        normalizedQuery.count >= 2 && includesSealedProducts && gameRegistry.supports(game, .sealed)
             && (sealedModel.isConfigured(for: game) || !(sealedModel.searchLanes[game]?.products.isEmpty ?? true))
     }
 
@@ -894,7 +900,7 @@ struct BrowseView: View {
     }
 
     @ViewBuilder private var searchBody: some View {
-        if model.normalizedQuery.count < 2 {
+        if !model.canSearch {
             ContentUnavailableView(
                 "Keep typing",
                 systemImage: "text.cursor",
@@ -1045,7 +1051,7 @@ private struct CatalogSearchResultRow: View {
     private var secondaryText: String {
         switch result {
         case let .card(summary):
-            return "\(summary.setName) · \(summary.setCode) \(summary.collectorNumber)"
+            return "\(summary.setName) · \(summary.setAndCollectorLabel)"
         case let .sealed(_, product):
             return product.setName ?? "Vendor catalog"
         }
@@ -1257,8 +1263,8 @@ private enum CatalogGameContentKind: String, CaseIterable, Identifiable {
 enum CatalogGameCardSearchPolicy {
     /// `normalizedQuery` is expected to have already been normalized by the
     /// owning view, so this remains a cheap gate on the task's hot path.
-    static func shouldRequest(isActive: Bool, normalizedQuery: String) -> Bool {
-        isActive && normalizedQuery.count >= 2
+    static func shouldRequest(isActive: Bool, normalizedQuery: String, game: CardGame = .magic) -> Bool {
+        isActive && CatalogCardSearchQuery.isEligible(normalizedQuery, for: game)
     }
 }
 
@@ -1529,7 +1535,7 @@ struct CatalogGameCardsView: View {
     }
 
     private var hasSearchText: Bool { !normalizedSearch.isEmpty }
-    private var isSearchQuery: Bool { normalizedSearch.count >= 2 }
+    private var isSearchQuery: Bool { CatalogCardSearchQuery.isEligible(normalizedSearch, for: game) }
     private var hasMoreSets: Bool {
         activeSet != nil || nextSetIndex < orderedSets.count
     }
@@ -1582,7 +1588,8 @@ struct CatalogGameCardsView: View {
         .task(id: "\(isActive)-\(providerSearch)-\(searchRevision)") {
             guard CatalogGameCardSearchPolicy.shouldRequest(
                 isActive: isActive,
-                normalizedQuery: normalizedSearch
+                normalizedQuery: normalizedSearch,
+                game: game
             ) else {
                 searchCards = []
                 searchCursor = nil
@@ -1714,7 +1721,7 @@ struct CatalogGameCardsView: View {
             ContentUnavailableView(
                 "No matching cards",
                 systemImage: "magnifyingglass",
-                description: Text("Try another card name.")
+                description: Text(game == .pokemon ? "Try a card name or collector number." : "Try another card name.")
             )
         } else {
             CatalogCardGrid(
@@ -2291,10 +2298,12 @@ struct CatalogSetCardsView: View {
                     ContentUnavailableView("Couldn't load this set", systemImage: "wifi.exclamationmark", description: Text(error))
                     Button("Retry") { Task { await load(reset: true) } }.buttonStyle(.borderedProminent)
                 } else {
-                    completionHeader
-                        .padding(.horizontal, 16)
-                        .padding(.top, 12)
-                        .contentWidthLimit(.standard)
+                    if set.physicalPrintingIDs?.isEmpty != true {
+                        completionHeader
+                            .padding(.horizontal, 16)
+                            .padding(.top, 12)
+                            .contentWidthLimit(.standard)
+                    }
                     priceStatusBanner
                     if visibleGroups.isEmpty {
                         ContentUnavailableView(
@@ -2620,7 +2629,12 @@ struct CatalogSetCardsView: View {
                 guard contentGeneration == requestID, !Task.isCancelled else { return }
                 refreshedSet = current
             }
-            var page = try await catalog.cards(in: set, cursor: reset ? nil : cursor)
+            var page: CatalogPage<CatalogCardSummary>
+            if reset, let localCards = try await catalog.completeLocalCards(in: set) {
+                page = .init(items: localCards, nextCursor: nil)
+            } else {
+                page = try await catalog.cards(in: set, cursor: reset ? nil : cursor)
+            }
             var refreshedCards = page.items
             var pagesLoaded = 1
             while reset, pagesLoaded < pagesToLoad, let nextCursor = page.nextCursor {
@@ -2917,7 +2931,7 @@ private struct CatalogCardDisplayGroupTile: View {
                     }
                 }
 
-            Text(preferred.name)
+            Text(preferred.displayName)
                 .font(.headline)
                 .lineLimit(2)
 
@@ -2939,7 +2953,7 @@ private struct CatalogCardDisplayGroupTile: View {
             }
 
             HStack {
-                Text("\(preferred.setCode) \(preferred.collectorNumber)")
+                Text(preferred.setAndCollectorLabel)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -3002,7 +3016,8 @@ private struct CatalogCardDisplayGroupTile: View {
         let variant = summary.masterSetVariantLabel.map { ", \($0) variation" } ?? ""
         let treatment = summary.magicTreatmentDisplayLabel.map { ", \($0) treatment" } ?? ""
         let availability = summary.collectionAvailabilityNotice.map { ", \($0)" } ?? ""
-        return "\(summary.name), \(summary.setName), card \(summary.collectorNumber)\(variant)\(treatment)\(price)\(ownedQuantity > 0 ? ", owned quantity \(ownedQuantity)" : ", missing")\(availability)"
+        let number = summary.printedCollectorNumber.map { "card \($0)" } ?? "unnumbered card"
+        return "\(summary.displayName), \(summary.setName), \(number)\(variant)\(treatment)\(price)\(ownedQuantity > 0 ? ", owned quantity \(ownedQuantity)" : ", missing")\(availability)"
     }
 }
 
