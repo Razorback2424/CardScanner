@@ -9,7 +9,7 @@ The most serious confirmed defect was Pokémon's Normal-only data. It could feed
 | Area | Evidence reviewed | Release position |
 |---|---|---|
 | Pokémon identity, recognition, and Browse | Bundled manifest and checklist resources, resolver and acquisition rules, installed cache paths, live TCGdex, TCGCSV, independently pinned Pokémon TCG Data, and production revision 22 | Scoped finish and cache fixes implemented. Delta Reign and part of the promo scope still depend on a successful signed publication. |
-| Pokémon finish review and marketplace products | 24 retained reports, 48 matching raw market hashes, identity and product attribution, certification receipts, signed additional variants, and live flat and detailed lanes | The exact-set table has zero of 146 bundled provider sets certified. Whole-set review remains open. |
+| Pokémon finish review and marketplace products | 24 retained reports, 48 matching raw market hashes, identity and product attribution, certification receipts, signed additional variants, and live flat and detailed lanes | The Poké Card Creator Pack has an exact finish certificate. Whole-set review for the other sets remains open. |
 | Browse across games | Both name-search entry points, provider text, local matching, independent cursors, directory invalidation, pagination, and failed-set recovery | Preserves punctuation for provider requests, allows continuation after filtered empty pages, and supports skipping a failed set. |
 | Magic | Production `legacy-live` rollout, Scryfall printing and name lookup, signed-only child routing, historical fallback, and the treatment catalog | The known ordinary finish list is per-printing provider evidence. Special treatments and historical identity keep their existing admission requirements. |
 | Disney Lorcana | Production bootstrap and bundled discovery and physical catalogs. Discovery has 3,582 card rows. The reviewed catalog has 1,749 physical printings across sets 1–8. | Sets 9–14 contribute 1,460 discovery card rows and remain Browse-only under the current production policy. |
@@ -47,6 +47,14 @@ The 24 retained certification captures contain **4,433 card rows, including 622 
 
 **Reperform.** Compare Ascended Heroes Erika's Oddish against the exact market products for Normal, Poké Ball and Energy Symbol. Verify the separate plain Reverse controls above and the separate plain Holo control `sv06-060`. Inspect Prismatic Evolutions entries with “number (Poke Ball Pattern)” and Professor's Research entries with named bracketed qualifiers. Review `retained-comparison-final.json` for the other market products. A certificate still requires a capture-bound comparison with every unresolved row addressed and compatible signed membership.
 
+### Pokémon unnumbered Basic Energy
+
+The replay verifies 72 English printing identities and 125 finish slots from exact product records, English SKUs, and retained card images. It preserves the existing 2017 Sun & Moon identities and keeps the nine Wave Foil market products separate from ordinary Reverse. Browse can find the reviewed 2005, 2006, 2009, 2010, 2013, 2017, 2019, 2020, and 2022 families by Energy name and copyright year. The 2022 design is shared across releases. It has its own Browse group and does not alter the Brilliant Stars Master Set. [Evidence producer](../../scripts/derive_pokemon_unnumbered_energy.py), [reviewed printings](../../TradingCardScanner/PokemonChecklistSnapshot/reviewed-unnumbered-energy.json), [TCGplayer League & Championship listings](https://www.tcgplayer.com/categories/trading-and-collectible-card-games/pokemon/price-guides/league-and-championship-cards).
+
+Scan uses the copyright and header from one frame to offer a printing choice for the 2013, 2017, 2019, 2020, and 2022 layouts. The choice identifies the Energy type before the existing finish and save flow. Both Vision passes met the recognition rule on 35 of 35 retained images from 2017 through 2022 and three of nine 2013 images. The other six 2013 images yielded no copyright reading. Physical-camera recall and latency remain open. Browse supports the four older reviewed groups. Collection and share display “Unnumbered” for the known identities. [Recognition](../../TradingCardScanner/Games/Pokemon/PokemonRecognitionAdapter.swift), [native coverage](../../TradingCardScannerTests/ScannerViewModelTests.swift).
+
+The Espeon ex and Umbreon ex Battle Deck inventory and weekly provider recheck live in the [30th Celebration Battle Deck coverage audit](pokemon-30th-battle-deck-coverage-2026-11-12.md).
+
 ### Browse search and background updates
 
 Both Browse entry points passed punctuation-stripped input to the providers. The exact live Pokémon names returned 43 results for “Ho-Oh,” 40 for “Mr. Mime,” and 21 for “Farfetch'd.” The stripped requests returned one, zero, and zero respectively. Scryfall returned eight results for the escaped exact phrase “Urza's Saga.” The corrected flow preserves the trimmed input for transport and uses normalization for local matching and minimum length. [Browse service](../../TradingCardScanner/Services/BrowseCatalog.swift), [Browse view and model](../../TradingCardScanner/Views/BrowseView.swift).
@@ -60,6 +68,8 @@ The bundle stores the current probe-key spelling on 10 raw entries. All 157 entr
 ### Pokémon signed scope, cache, and delivery
 
 The public pointer verified with the production pin as revision 22 with 75 descriptors. Delta Reign released November 6. TCGdex lists `me06` with 141 total cards and an official denominator of 103. The bundle and the verified pointer omit its checklist or descriptor respectively. The scheduled live publisher now emits a warning for a released, discovery-eligible set still absent from a verified active release after 48 hours. The chosen interval allows an ordinary ingestion and approval cycle. The first live attempt returned HTTP 503 on the directory. The second emitted the `me06` warning before a card-detail HTTP 503. With two bounded transient GET retries, the live publisher validated and staged unsigned revision 23. [Pokémon announcement](https://www.pokemon.com/uk/news/the-pokemon-tcg-mega-evolution-delta-reign-expansion-is-available-now), [provider set](https://api.tcgdex.net/v2/en/sets/me06), [production pointer](https://catalog.scan-stash.com/v1/current.json), [publisher](../../PokemonCatalogCore/Sources/pokemon-catalog-publisher/main.swift).
+
+On November 12 both production hosts advanced to signed revision 23. Both serve the same registry and snapshot, with 76 sets and 6,850 cards. The snapshot includes all 141 Delta Reign cards. The published payload has no checklist-input digest, so the app uses the legacy registry and provider reconciliation path. A higher signed revision is required to activate a registry with its verified offline checklist. [Signed publication](https://catalog.scan-stash.com/v1/releases/23/catalog-release.json), [production snapshot](https://catalog.scan-stash.com/v1/releases/23/pokemon-catalog-snapshot.json), [activation](../../TradingCardScanner/Services/PokemonCatalogCoordinator.swift).
 
 The ordinary directory crawl filters several non-expansion categories. Signed promo reconciliation runs independently of that filter. Revision 22 contains eight promo descriptors with fingerprints, and the bundle contains zero of those eight. A hosted fixture confirms that a signed promo missing from both the directory and bundle becomes visible after an exact fingerprint match. The completed live publisher replay reproduces six current fingerprints. The current `mep` and `svp` fingerprints differ from revision 22. First-install Browse visibility for those two sets still depends on exact reconciliation after publication. [Reconciliation and authority](../../TradingCardScanner/Services/BrowseCatalog.swift), [hosted fixture](../../TradingCardScannerTests/PokemonCatalogSliceDTests.swift).
 
@@ -94,11 +104,16 @@ Evidence, logs, and simulator results are retained on the external SSD under `Co
 Derivation can replay from a shallow checkout while the bundle matches the
 reviewed `aggregateChecklistSources` hashes in `legacy-finish-evidence.json`.
 If the bundle has changed, point `--aggregate-baseline` to the original
-checklist directory.
+checklist directory. Use the `HistoricalAlternates` capture retained under
+`CodexBuilds/PokemonCatalogFix-RxLf6u` and the exact card responses in
+`LegacyDetailedEvidence`. The Creator Pack finish certificate has its own
+[retained comparison and SKU review](../research/pokemon-finish-coverage/captures/ex5.5/2026-11-12/report.json).
 
 ```sh
 run="${CATALOG_REVIEW_ROOT:?Set this to an external SSD output directory}"
 prior="${CATALOG_SOURCE_ROOT:?Set this to the external SSD containing retained captures}/launch-findings-2026-11-10"
+alternates="${POKEMON_HISTORICAL_ALTERNATE_CAPTURE:?Set this to the retained HistoricalAlternates directory}"
+energy="${POKEMON_UNNUMBERED_ENERGY_CAPTURE:?Set this to the retained UnnumberedEnergyEvidence directory}"
 PYTHONDONTWRITEBYTECODE=1 python3 scripts/certify_pokemon_finish_coverage.py replay \
   --reports "$prior/FinishCoverageReview/docs/research/pokemon-finish-coverage" \
   --market-cache "$prior/TCGCSV" \
@@ -108,9 +123,15 @@ PYTHONDONTWRITEBYTECODE=1 python3 scripts/derive_pokemon_legacy_finishes.py \
   --foil-evidence "$run/FoilPatternEvidence" \
   --reverse-evidence "$run/ReversePatternEvidence" \
   --released-evidence "$run/DeltaReignEvidence" --candidate "$run/PokemonCandidate" \
+  --alternate-market-evidence "$alternates" \
+  --provider-detail-evidence "$run/LegacyDetailedEvidence" \
   --output "$run/replayed-finish-evidence.json" \
   --report "$run/replayed-finish-review.json"
 cmp "$run/replayed-finish-evidence.json" TradingCardScanner/PokemonChecklistSnapshot/legacy-finish-evidence.json
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/derive_pokemon_unnumbered_energy.py \
+  --capture "$energy" --legacy-evidence "$run/replayed-finish-evidence.json" \
+  --output "$run/replayed-unnumbered-energy.json"
+cmp "$run/replayed-unnumbered-energy.json" TradingCardScanner/PokemonChecklistSnapshot/reviewed-unnumbered-energy.json
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_*pokemon*'
 
 replay="$run/YuGiOhReleasedReplay"

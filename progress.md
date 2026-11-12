@@ -1,3 +1,239 @@
+# 2026-11-12 — Lorcana catalog verification
+
+The bundle now includes 3,426 reviewed printings. The published gallery
+matched 3,556 card identities and 6,436 finish declarations. The scoped price
+publisher replay verified all 6,288 mapped lanes across 20 groups. The Floodborn
+errata pairs use separate artwork, finish, and price records. The 103 numbered
+Quest cards, both Curator’s Collections, released C2 prizes, and the reviewed
+D23 and prerelease runs are addable. Nine Challenge Year 1 cards now include
+their reviewed finishes. D23 import accepts the literal and normalized
+footers. The live mirror still lists the original eight groups.
+The focused app run passed 458 tests with three live skips. All 46 offline
+catalog and audit tests passed, and the final resource replay matched byte
+for byte.
+[Coverage audit](docs/audits/lorcana-coverage-2026-11-11.md).
+
+# 2026-11-12 — Yu-Gi-Oh! marketplace editions and printed passcodes
+
+The working-tree replay at `7daef56` adds selection for 205 printings.
+Scan and Browse now share 47,483 selectable printings out of 47,521. The
+full Thank You Pack and Winner's Pack cohorts have edition support. All 731
+original Duel Terminal rows show the printed stamp and retain their existing
+ownership IDs. Five contradicted marketplace editions and their prices were
+withdrawn with the original observations retained. Exact rarity corrections
+cover six Duel Terminal cards and Gold Sarcophagus. Dark Magician and
+Polymerization now accept their verified printed passcodes. The
+[catalog notes](docs/plans/yugioh_code_implementation.md) record the remaining
+Browse-only rows and source disagreements.
+
+The final ProfileLocal run passed 110 tests and skipped the opt-in live
+pricing test. It exercised Scan, Browse, CSV, pricing authority and recovery.
+All 48 builder and five publisher tests passed. The offline replay, bundled
+and packaged resources, and local signed revision 5 export matched SHA-256
+`178abedfba8d70b68b19c6513a79ad917edb10422797a063c73624f32c3f6928`.
+The result bundle `ReviewedCatalog.xcresult` and coverage report are under
+`CodexBuilds/YuGiOhCatalogGoal-20261112/edition-continuation` on T7.
+Physical-camera acceptance and production publication remain open.
+
+# 2026-11-12 — Yu-Gi-Oh! edition evidence and release chronology
+
+The retained source replay on the working tree at `7daef56` verified
+selectable editions for 903 more printings, including 226 Australian-English
+additions. Browse gained 163 verified set dates and all six unnumbered Duel
+Overload display cards. The coverage report
+now checks the exact Beyond the Brave premiere promo inside the booster
+group and classifies 90 provider-identified field center accessories. All
+six checked Konami inventories and 16 regional inventories matched. The
+catalog has 47,521 printings, with existing IDs, quotes and 262 automatic
+families preserved. [Catalog workflow and scope](docs/plans/yugioh_code_implementation.md).
+
+All 45 builder tests and five signed-publisher fixtures passed. The earlier
+simulator run passed 102 Yu-Gi-Oh! tests with one live-feed skip. The final
+Australian-inclusive bundle passed seven focused simulator tests after
+restarting the test device. Its app resource, repeated build and locally
+approved export matched byte for byte. The final result is
+`CodexBuilds/YuGiOhCatalogGoal-20261112/VerifiedRegionalFlows.xcresult` on T7.
+
+# 2026-11-12 — Pokémon revision 23 catalog verification
+
+The historical finish replay on the local `7daef56` worktree added 18
+alternate printings and two Plasma Freeze holos. All nine unnumbered Sun &
+Moon Energy cards have Normal and Reverse Holofoil entries and appear by name
+in Browse. The five Poké Card Creator Pack cards have an exact Normal finish
+certificate. Scan offers an artwork choice for the two Vivillon cards with
+the same printed footer. Browse uses separate identities and market products.
+
+The selected ProfileLocal run had 659 passes and one opt-in live pricing
+skip. It exercised the prepared 76-set revision 23 candidate, historical
+finish and artwork choices, and offline Scan and Browse. Results are under
+`CodexBuilds/PokemonCatalogFix-RxLf6u/PokemonCatalogHistoricalFinal23.xcresult`
+on T7. Both production hosts served signed revision 22 during readback.
+Physical-camera and production release acceptance are pending.
+
+A two-revision fixture reproduced Scan using a newer signed checklist with an
+older registry when both revisions had the same provider fingerprint. Scan
+and Browse detail reads now check the captured signed revision and digest.
+The focused rerun passed all three checks on a fresh simulator after the
+earlier simulator lost its connection during startup. The tests exercised the
+revision transition, candidate installation, and offline restart and rollback.
+The T7 result is `CodexBuilds/PokemonCatalogFix-RxLf6u/PokemonCatalogAuthorityFresh23.xcresult`.
+
+The unnumbered Basic Energy replay covers 72 English printings in nine
+copyright-year groups, with 125 exact finish slots. It preserves the nine
+existing Sun & Moon identities and maps nine Wave Foils separately from
+Reverse. Browse finds all nine groups offline. Scan offers a printing and
+finish choice for five newer layouts. Collection and share display
+“Unnumbered” after saving. A placed-image Vision replay read both regions on
+all 35 specimens from 2017 through 2022 and three of nine 2013 specimens.
+Physical-camera verification remains open. The final ProfileLocal selection
+passed 789 tests with one opt-in live pricing skip. All 43 Pokémon script tests
+passed and the evidence generator reproduced the bundled bytes.
+
+Both production hosts now serve signed revision 23 with 76 sets, 6,850 cards,
+and the full Delta Reign checklist. The live release uses the legacy format
+without a checklist-input digest. The local revision 24 rehearsal validated
+against that signed baseline as a baseline migration and preserved the
+published checklist, card IDs, and artwork. The rehearsal remains unsigned.
+Results are under `CodexBuilds/PokemonCatalogFix-RxLf6u` on T7, in
+`PokemonCatalogScopeVerified23.xcresult` and
+`Revision24Rehearsal.40GHUX/PresentationPreserved`.
+[Audit and replay commands](docs/audits/catalog-follow-up-2026-11-10.md#pokémon-unnumbered-basic-energy).
+
+The English 30th Celebration Battle Deck audit joined all 38 distinct deck
+entries to production revision 23 and verified the exact English marketplace
+SKUs. TCGdex lacks the 30 deck Reverse entries and four stamped Energy
+entries. The two photographed variants have separate marketplace products.
+[Deck inventory and weekly provider recheck](docs/audits/pokemon-30th-battle-deck-coverage-2026-11-12.md).
+
+# 2026-11-12 — One Piece product batches and owner revision 6
+
+Signed and verified owner revision 6 on the dirty `7daef56` tree. Against
+revision 4, retained EB-05, booster, named promo and starter captures replay
+738 new verified printing IDs and seven exact finish confirmations. All 2,367
+market mappings carry forward. The Bandai audit joins 3,811 of 4,946 official
+numbered rows across 61 series, with 906 read-only discoveries searchable by
+official product label and 229 held rows.
+
+ProfileLocal / DebugRemoteLocal passed 159 selected simulator tests and
+skipped the opt-in live-provider check. The app packaged the exact signed
+revision 6 bytes. The bundled catalog test confirmed separate Normal and Foil
+P-101 printings by named pack, ST21-016 Foil under its retained ID, and read-only
+EB05-001 discovery. All 49 publisher tests and 87 Python tests passed.
+
+The unsigned production revision 2 candidate validated against signed
+production revision 1. Its continuation signature was exercised with a test
+key. Both production pointers returned HTTP 404. The signed owner bundle,
+replayed candidates, coverage audit and test results are on T7 under
+`CodexBuilds/OnePieceCatalogFix-20261112-Resume2/`. The
+[One Piece ledger](docs/plans/one_piece_code_implementation.md) tracks the open
+evidence and release steps.
+
+# 2026-11-12 — One Piece English catalog reconciliation
+
+Signed owner catalog revision 4 and verified its chain with owner-only review
+pins. Production revision 2 is an unsigned continuation candidate. Its audit
+joins 3,066 of 4,946 Bandai rows across 61 series to verified printings. The
+batch adds 556 physical IDs, verifies finishes for 18 existing IDs, and
+preserves all 2,367 market mappings. It leaves 1,644 discovery rows and 236
+held rows. Both production pointers returned HTTP 404.
+
+The dirty `7daef56` tree passed 49 One Piece publisher tests and 83 selected
+Python tests. The fixed-product additions, retailer additions, and canonical
+candidate each replayed byte for byte. The unsigned candidate and coverage
+report are under `CodexBuilds/OnePieceCatalogFix-20261112/Final` on T7.
+The [One Piece ledger](docs/plans/one_piece_code_implementation.md) records
+the remaining evidence and publication steps.
+
+The earlier ProfileLocal run on the iOS 27.0 catalog verification simulator
+passed 158 selected tests and skipped the opt-in live-provider check. The
+final build packaged the exact owner revision 4 bytes. The simulator exited
+before XCTest connected on the final build and on focused retry. Its ordinary
+app process launched and stayed running. A later ProfileLocal rerun passed
+159 tests and skipped the opt-in live-provider check. The original attempts
+are under `CodexBuilds/OnePieceCatalogFix-20261112`.
+
+# 2026-11-11 — Centering warnings and confirmation during guide edits
+
+The centering panel shows the detector’s photo warnings through confirmation
+and while a guide is selected. The red-frame proportions message asks the
+user to check the outline. Confirm is available beside the guide controls.
+
+ProfileLocal / DebugRemoteLocal ran 65 tests with no failures or skips on the
+iPhone 17 / iOS 27.0 `Centering Review 2026-11-11` simulator from the dirty
+`7daef56` tree. The local Collector Tools build showed the angled-photo warning
+before and after confirming repaired guides. Confirm enabled Share from the
+selected-line panel at standard and maximum accessibility text sizes. Results
+and captures are under `CodexBuilds/ScanStash-CenteringWarnings-20261111` on T7.
+
+# 2026-11-11 — Live centering preview and one-step confirmation
+
+Valid guides show live ratios marked Unconfirmed. Confirm records both frames
+and enables export. Registered references carry through to the report, and
+unidentified references produce a neutral geometric estimate. Undo is visible
+in both editing panels. The More menu contains four actions, and the tilt row
+holds Square.
+
+On the dirty `7daef56` tree, ProfileLocal / DebugRemoteLocal ran the five
+requested suites and the analyzer warning regression on the iPhone 17 / iOS
+27.0 `Centering Review 2026-11-11` simulator. The run had 123 passes, no failures,
+and one opt-in benchmark skip. The T7 result is
+`CodexBuilds/ScanStash-CenteringWorkflow-20261111/Focused.xcresult`.
+
+The local Collector Tools build captured pending, confirmed, tilted, invalid,
+missing, and selected-guide states at standard and maximum accessibility text
+sizes. Simulator interactions verified live corner edits, one-tap Undo, corner
+tap selection, the four menu actions, and Share gating after Confirm and photo
+rotation. The captures are in the `Render/` directory beside the result bundle.
+
+# 2026-11-11 — Direct corner and edge adjustment in Card Centering
+
+The red card outline and cyan inner frame have independent corner handles.
+Each corner moves in two axes with the drag magnifier and Undo. Edge slides and
+turns use manual placement. Removed photo-edge and near-square snapping.
+
+The isolated centering patch on `7daef56` passed all 58 selected tests in
+`CenteringExportTests` and `CenteringReviewTests` using
+`TradingCardScanner-ProfileLocal`, DebugRemoteLocal, and an iOS 27.0 simulator.
+The T7 result bundle is `CodexBuild/CenteringManualDrag-20261111/VerifiedCentering.xcresult`.
+Using the Simulator-only Collector Tools path in the isolated copy, dragged a
+red corner, cyan corner and red edge on a retained photo fixture. Inspected the
+magnifier during corner and edge drags and verified the guide positions after
+release. The T7 captures are under `CodexBuild/CenteringManualDrag-20261111/Render/`.
+
+Corner drag follow-up on the dirty `7daef56` tree: corners slide along the
+photo bounds, keep the selected line active, and record Undo on the first
+accepted change. On the iPhone 17 / iOS 27.0 simulator, dragged a red corner
+past the left edge with the cyan right guide selected. Dragging farther past
+the edge left the frame unchanged; one Undo restored the original and then
+disabled. Inspected the synthetic fixture captures in
+`CodexBuilds/ScanStash-CenteringCornerDragFollowup-20261111/Render/` on T7.
+ProfileLocal / DebugRemoteLocal: 105 passed, zero failed, and one opt-in
+benchmark skipped across `CenteringExportTests`, `CenteringNativePrecisionTests`,
+and `CenteringReviewTests`. The result is `Focused.xcresult` beside `Render/`.
+
+# 2026-11-11 — Lorcana catalog coverage
+
+The English publisher census matched all 3,556 LorcanaJSON card IDs and
+printed identifiers. The updated app bundle contains 3,251 reviewed printings
+and 6,120 exact price mappings. All 1,749 original printing records survived
+unchanged. The audit now checks known release numbers, source siblings,
+finish declarations, and existing physical identity. See the
+[Lorcana coverage audit](docs/audits/lorcana-coverage-2026-11-11.md).
+
+# 2026-11-11 — Yu-Gi-Oh! catalog coverage and release verification
+
+Replayed the bundled catalog from retained source and price captures on the
+working tree at `7daef56`. The seed now contains 47,289 printings and 262
+automatic families. It includes 696 European-English additions, 22 with
+verified First Edition evidence, and the unnumbered Kaiba display promo.
+Replay retained the prior printing identities and edition authority. Five
+Konami checklists and the 13 regional inventories matched the regenerated
+catalog within their checked scope. The 41 Python builder tests passed.
+
+Browse now indexes search order once and cancels obsolete searches. The
+publisher validates full catalog snapshots and signs their approval ancestry.
+See the [catalog coverage workflow and evidence boundaries](docs/plans/yugioh_code_implementation.md#yu-gi-oh-implementation-and-verification).
+
 # 2026-11-11 — Follow-up to the seven-commit review
 
 Pokémon finish certification now rejects signed names that disagree with the
@@ -8198,3 +8434,26 @@ Corrected the visibly swapped game categories for IMG_0797 and IMG_0803, recordi
 the changes in the manifest. All 44 file hashes and holdout assignments remain
 unchanged. The [current ledger](docs/audits/centering-guided-repair.md#bowed-printed-borders--2026-11-05)
 records the approximation, remaining accuracy gaps and retained evidence.
+
+# 2026-11-11 — Centering review follow-up
+
+The selected panel was 123 pt shorter on the retained angled fixture. Confirm
+shares the nudge row at standard text size. The card refit after a guide drag,
+confirmation and deselection at fit zoom. The angled-photo warning persisted
+after confirmation, and the guide-check-only warning cleared. The cyan end
+grips cleared the corner grips.
+
+The first corner capture stacked decimal coordinates at standard text size.
+The revised Exact Values sheet shows X and Y side by side at standard size and
+stacks them at the largest accessibility size. Simulator accessibility controls
+incremented X and Y by 1 px. The tilt captures show 0.03°, under 0.01°, and Square
+after the explicit Square action. VoiceOver operation and physical-device
+behavior are unverified.
+
+The six requested test classes passed on Centering Review 2026-11-11 with
+`TradingCardScanner-ProfileLocal` and `DebugRemoteLocal`, at `7daef56` plus the
+working tree. The result bundle records 159 passed, one opt-in native refinement
+benchmark skipped, and zero failures. Captures used the existing local
+Collector Tools build flag. The build, `Verified.xcresult`, and captures are
+under `CodexBuilds/ScanStash-CenteringReviewClosure-20261111` on the external SSD.
+See the [centering workflow plan](docs/plans/centering-boundary-evidence-plan.md).

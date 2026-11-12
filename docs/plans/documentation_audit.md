@@ -8,6 +8,13 @@ history.
 
 ## Current authority boundary — updated 2026-11-10
 
+**Lorcana English catalog — 2026-11-12 local time.** The working-tree bundle
+contains 3,417 reviewed printings and 6,280 exact finish mappings. The November
+coverage audit supersedes the older eight-set scope and the finding that sets
+9–14 are Browse-only. The configured production mirror still lists eight
+Lorcana groups. The local price-publisher verification covers all 20 groups
+used by the new bundle. [Lorcana coverage audit](../audits/lorcana-coverage-2026-11-11.md).
+
 **Catalog and accessibility follow-up — 2026-11-10 local time.** The catalog follow-up
 records the working-tree fixes for historical and Delta Reign finish placeholders,
 duplicate foil flags, Browse search and recovery, Pokémon cache authority, the
@@ -412,8 +419,9 @@ for every new measurement; automatic reporting remains disabled. The
 records implementation and simulator evidence. The authorized second slice now
 adds native candidate/input provenance, explicit reference definitions and
 side-only candidate repair; its newer receipt in that ledger supersedes the
-first-slice deferral of boundary identity. Unsupported designs require a deliberate
-reference choice, and default inner frames remain placement aids. Headline
+first-slice deferral of boundary identity. The [November 11 confirmation workflow](centering-boundary-evidence-plan.md)
+replaces the separate reference choice with one confirmation of valid frames.
+Default inner frames remain placement aids until review. Headline
 aggregation and acceptance tolerances are unchanged. Slice 3 now has a tested
 research evaluator and a retained 36-setting development comparison; its
 identity/accuracy exit failed, so no setting is promoted. This supersedes the
