@@ -128,6 +128,36 @@ struct UnverifiedReportReconciler: Sendable {
     }
 }
 
+extension UnverifiedReportReconciler {
+    /// Lookups against the live Pokémon catalog. A lookup that cannot name the
+    /// exact printing returns nothing, which leaves the report waiting.
+    static func catalogBacked(writer: ScannerCollectionWriter, registry: PokemonCatalogRegistry,
+                              catalog: CardCatalog) -> Self {
+        Self(writer: writer, baseCard: { providerID in
+            guard let dash = providerID.lastIndex(of: "-"),
+                  let identifier = scanIdentifier(registry: registry, setID: String(providerID[..<dash]),
+                                                  number: String(providerID[providerID.index(after: dash)...])),
+                  let card = try? await catalog.card(for: identifier),
+                  card.providerID == providerID else { return nil }
+            return card
+        }, unknownSetMatch: { observed in
+            guard let descriptor = registry.expansion(forPrintedCode: observed.setCode),
+                  let identifier = scanIdentifier(registry: registry, setID: descriptor.providerSetID,
+                                                  number: observed.number) else { return nil }
+            return try? await catalog.card(for: identifier)
+        })
+    }
+
+    static func scanIdentifier(registry: PokemonCatalogRegistry, setID: String, number: String) -> ScanIdentifier? {
+        guard let descriptor = registry.descriptor(forProviderSetID: setID),
+              descriptor.recognitionKind == .expansion,
+              let code = descriptor.printedCode, let total = descriptor.officialCount else { return nil }
+        return .pokemon(setCode: code, cardNumber: number, printedTotal: total,
+                        setDefinition: .init(printedCode: code, tcgdexSetID: descriptor.providerSetID,
+                                             officialCount: total, releaseIndex: descriptor.releaseOrder ?? 0))
+    }
+}
+
 private extension Optional {
     func asyncFlatMap<U>(_ transform: (Wrapped) async -> U?) async -> U? {
         guard let self else { return nil }

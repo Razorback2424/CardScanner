@@ -266,6 +266,8 @@ struct CardGameRuntimeContainer: Sendable {
 
     /// Keep finish-correction authority current even while the scanner is not
     /// visible. Each release revision is installed monotonically per game.
+    var pokemonCatalogCoordinator: PokemonCatalogCoordinator? { legacyBindings.pokemon }
+
     func observeCollectionCatalogActivations(for container: ModelContainer) async {
         let sources = runtimes.values
             .filter { $0.descriptor.capabilities.contains(.collectionWrite) }

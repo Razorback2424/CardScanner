@@ -293,6 +293,7 @@ struct ContentView: View {
                 completionSignal: refreshCompletionSignal
             )
         )
+        .background(UnverifiedReportReconciliationMonitor(coordinator: runtimes?.pokemonCatalogCoordinator))
         .background(
             StoreRevisionHistoryMonitor(
                 portfolio: portfolio,

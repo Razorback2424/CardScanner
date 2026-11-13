@@ -3914,35 +3914,9 @@ final class ScannerViewModel: ObservableObject {
     /// printing return nothing, which leaves the report waiting.
     private func reconcileUnverifiedReports(registry: PokemonCatalogRegistry) async {
         guard UnverifiedReportsFeature.isEnabled, isStorageGenerationCurrent, let collectionWriter else { return }
-        let catalog = self.catalog
-        let identifier = { @Sendable (setID: String, number: String) in
-            Self.reportScanIdentifier(registry: registry, setID: setID, number: number)
-        }
         let writer = await collectionWriter.value
-        let reconciler = UnverifiedReportReconciler(writer: writer, baseCard: { providerID in
-            guard let dash = providerID.lastIndex(of: "-") else { return nil }
-            guard let scanIdentifier = identifier(String(providerID[..<dash]),
-                                                  String(providerID[providerID.index(after: dash)...])),
-                  let card = try? await catalog.card(for: scanIdentifier),
-                  card.providerID == providerID else { return nil }
-            return card
-        }, unknownSetMatch: { observed in
-            guard let descriptor = registry.expansion(forPrintedCode: observed.setCode),
-                  let scanIdentifier = identifier(descriptor.providerSetID, observed.number) else { return nil }
-            return try? await catalog.card(for: scanIdentifier)
-        })
-        _ = try? await reconciler.run(catalogRevision: registry.revision)
-    }
-
-    nonisolated private static func reportScanIdentifier(
-        registry: PokemonCatalogRegistry, setID: String, number: String
-    ) -> ScanIdentifier? {
-        guard let descriptor = registry.descriptor(forProviderSetID: setID),
-              descriptor.recognitionKind == .expansion,
-              let code = descriptor.printedCode, let total = descriptor.officialCount else { return nil }
-        return .pokemon(setCode: code, cardNumber: number, printedTotal: total,
-                        setDefinition: .init(printedCode: code, tcgdexSetID: descriptor.providerSetID,
-                                             officialCount: total, releaseIndex: descriptor.releaseOrder ?? 0))
+        _ = try? await UnverifiedReportReconciler.catalogBacked(writer: writer, registry: registry, catalog: catalog)
+            .run(catalogRevision: registry.revision)
     }
 
     /// Manual entry for a card from a set the catalog does not have yet.

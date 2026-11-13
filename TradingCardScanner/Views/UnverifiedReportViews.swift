@@ -280,3 +280,43 @@ struct UnverifiedReportsListView: View {
         .buttonStyle(.plain)
     }
 }
+
+/// Evaluates unverified reports for the whole app, not only while the scanner
+/// is open: at launch, after every Pokémon catalog activation, and when synced
+/// rows arrive from another device.
+struct UnverifiedReportReconciliationMonitor: View {
+    @Environment(\.modelContext) private var modelContext
+    let coordinator: PokemonCatalogCoordinator?
+    @State private var remoteChanges: UInt = 0
+
+    var body: some View {
+        Color.clear
+            .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
+                .receive(on: RunLoop.main)) { _ in remoteChanges &+= 1 }
+            .task(id: remoteChanges) {
+                // Coalesce a burst of synced rows into one pass.
+                if remoteChanges > 0 { try? await Task.sleep(for: .seconds(2)) }
+                guard !Task.isCancelled, let coordinator else { return }
+                await coordinator.loadPersistedOrBundled()
+                await reconcile(registry: await coordinator.registry)
+            }
+            .task {
+                guard let coordinator else { return }
+                for await event in await coordinator.activationEvents() {
+                    guard !Task.isCancelled else { return }
+                    await reconcile(registry: event.registry)
+                }
+            }
+    }
+
+    private func reconcile(registry: PokemonCatalogRegistry) async {
+        guard UnverifiedReportsFeature.isEnabled else { return }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: modelContext.container)
+        guard generation.isCurrent(token) else { return }
+        _ = try? await UnverifiedReportReconciler.catalogBacked(writer: writer, registry: registry,
+                                                                catalog: CardCatalog(registry: registry))
+            .run(catalogRevision: registry.revision)
+    }
+}

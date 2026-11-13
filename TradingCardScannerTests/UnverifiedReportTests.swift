@@ -683,6 +683,21 @@ final class UnverifiedReportTests: XCTestCase {
         XCTAssertEqual(nextRevision.needsReview, [report.reportID])
     }
 
+    func testCatalogLookupBuildsTheExactScanIdentifierFromTheRegistry() throws {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        let descriptor = try XCTUnwrap(registry.descriptor(forProviderSetID: "sv08.5"))
+        let identifier = try XCTUnwrap(UnverifiedReportReconciler.scanIdentifier(
+            registry: registry, setID: "sv08.5", number: "074"))
+        guard case let .pokemon(setCode, cardNumber, total, definition) = identifier.legacyIdentity else {
+            return XCTFail("Expected a numbered Pokémon identifier")
+        }
+        XCTAssertEqual(setCode, descriptor.printedCode)
+        XCTAssertEqual(cardNumber, "074")
+        XCTAssertEqual(total, descriptor.officialCount)
+        XCTAssertEqual(definition.tcgdexSetID, "sv08.5")
+        XCTAssertNil(UnverifiedReportReconciler.scanIdentifier(registry: registry, setID: "no-such-set", number: "1"))
+    }
+
     // MARK: - Helpers
 
     private func eeveeWithHolo() throws -> IdentifiedCard {
