@@ -604,6 +604,54 @@ final class UnverifiedReportTests: XCTestCase {
         XCTAssertFalse(try context.fetch(FetchDescriptor<CollectedCard>()).contains(where: \.hasReport))
     }
 
+    func testPortfolioReplayValuesLinkedCopiesOnlyBetweenLinkAndUndo() throws {
+        // The full schema: replay values history from price observations.
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let store = CollectionStore(context: context)
+        let utc = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = utc
+        let day0 = try XCTUnwrap(calendar.date(byAdding: .day, value: -4, to: calendar.startOfDay(for: .now)))
+        func at(day: Int) throws -> Date {
+            try XCTUnwrap(calendar.date(byAdding: .hour, value: 24 * day + 6, to: day0))
+        }
+
+        let base = try ProductionRowFixtures.pokemonCard()
+        let report = knownReport(for: base, stamps: [])
+        let key = try store.addUnverified(report: report, baseCard: base, quantity: 2).collectionKey
+        // The acquisition happened on day 0.
+        for event in try context.fetch(FetchDescriptor<InventoryEvent>()) where event.collectionKey == key {
+            event.occurredAt = try at(day: 0)
+            event.recordedAt = try at(day: 0)
+        }
+        let prices = PriceStore(context: context)
+        XCTAssertTrue(prices.store(.price(NormalizedPrice(unitMarketPriceUSD: 10, currencyCode: "USD", source: .tcgplayer,
+            sourceVariantID: "reverse-holofoil", sourceUpdatedAt: day0, fetchedAt: day0)),
+            game: .pokemon, printingID: base.providerID, variantID: PhysicalVariant.reverse.id, at: day0))
+        XCTAssertTrue(prices.save())
+
+        let json = try XCTUnwrap(store.card(forKey: key)?.unverifiedReportJSON)
+        _ = try store.linkUnverified(reportID: report.reportID, expectedReportJSON: json, to: base, variant: .reverse,
+            resolution: .userConfirmed, setReleaseOrder: 0, linkedAt: try at(day: 1))
+        try store.unlinkReport(reportID: report.reportID, unlinkedAt: try at(day: 2))
+
+        let computation = PortfolioReplaySnapshotBuilder.compute(context: ModelContext(container),
+            epoch: day0, through: .now, timeZone: utc)
+        XCTAssertTrue(computation.defects.isEmpty, "\(computation.defects)")
+        let days = Dictionary(computation.replay.days.map { (calendar.startOfDay(for: $0.displayDay), $0) },
+                              uniquingKeysWith: { first, _ in first })
+        let acquired = try XCTUnwrap(days[day0])
+        let linked = try XCTUnwrap(days[try XCTUnwrap(calendar.date(byAdding: .day, value: 1, to: day0))])
+        let undone = try XCTUnwrap(days[try XCTUnwrap(calendar.date(byAdding: .day, value: 2, to: day0))])
+        XCTAssertEqual(acquired.closeValue, .zero, "Unverified copies are unpriced")
+        XCTAssertEqual(linked.closeValue, Money(rounding: 20), "Priced as the verified card from the link")
+        XCTAssertEqual(linked.market, .zero, "Linking is not market movement")
+        XCTAssertEqual(undone.closeValue, .zero, "Unpriced again from the undo")
+        XCTAssertEqual(undone.market, .zero)
+    }
+
     // MARK: - Evaluation
 
     func testEvaluatorLinksOnlyOnGenuinelyNewUnambiguousEvidence() throws {
