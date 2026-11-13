@@ -5439,3 +5439,146 @@ final class ScannerViewModelTests: XCTestCase {
         )
     }
 }
+
+private actor OutageSourceCounter {
+    private(set) var primary = 0
+    private(set) var fallback = 0
+    func notePrimary() { primary += 1 }
+    func noteFallback() { fallback += 1 }
+}
+
+private struct OutageClassificationSource: PokemonCardSource {
+    enum Primary: Sendable { case confirmedMiss, serverError }
+    let primary: Primary
+    let fallbackCard: PokemonTCGAPICard?
+    let counter: OutageSourceCounter
+
+    func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
+        await counter.notePrimary()
+        switch primary {
+        case .confirmedMiss: throw TCGdexError.cardNotFound
+        case .serverError: throw TCGdexError.badResponse
+        }
+    }
+
+    func fetchPokemonTCGCard(setID: String, cardNumber: String) async throws -> PokemonTCGAPICard? {
+        await counter.noteFallback()
+        return fallbackCard
+    }
+}
+
+/// An unavailable primary catalog with an empty fallback is not evidence that
+/// a card is missing, and must not invite a missing-card report.
+final class PokemonCatalogOutageClassificationTests: XCTestCase {
+    private let footer = "PFL EN 001/094"
+
+    private func makeAdapter(
+        primary: OutageClassificationSource.Primary,
+        fallbackCard: PokemonTCGAPICard? = nil,
+        breaker: TCGdexCircuitBreaker,
+        counter: OutageSourceCounter
+    ) -> PokemonCatalogAdapter {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        addTeardownBlock { try? FileManager.default.removeItem(at: root) }
+        return PokemonCatalogAdapter(
+            source: OutageClassificationSource(primary: primary, fallbackCard: fallbackCard, counter: counter),
+            offline: PokemonOfflineCatalog(store: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil)),
+            resolvedDiskCache: ResolvedPokemonCardCache(root: root.appendingPathComponent("resolved"), appVersion: "outage-tests"),
+            tcgdexBreaker: breaker,
+            registry: .bundledSeed
+        )
+    }
+
+    private func identifier() throws -> ScanIdentifier {
+        try XCTUnwrap(PokemonScanProfile(registry: .bundledSeed).parse(footer))
+    }
+
+    private func lookupError(_ adapter: PokemonCatalogAdapter, _ identifier: ScanIdentifier) async -> Error? {
+        do { _ = try await adapter.lookup(identifier); return nil } catch { return error }
+    }
+
+    func testOpenBreakerWithEmptyFallbackIsProviderUnavailableAndDoesNotRetryPrimary() async throws {
+        let breaker = TCGdexCircuitBreaker(cooldown: 600)
+        await breaker.recordFailure(.unreachable)
+        let counter = OutageSourceCounter()
+        let adapter = makeAdapter(primary: .serverError, breaker: breaker, counter: counter)
+        let identifier = try identifier()
+
+        for _ in 0..<2 {
+            let thrown = await lookupError(adapter, identifier)
+            let error = try XCTUnwrap(thrown)
+            XCTAssertEqual(CardCatalog.classify(error), .providerUnavailable)
+            XCTAssertFalse(CardCatalog.isProviderNotFound(error))
+            let reason = UnresolvedReason.reason(for: identifier, error: error)
+            XCTAssertEqual(reason, .providerUnavailable)
+            XCTAssertFalse(reason.offersUnverifiedReport)
+        }
+        let primaryCalls = await counter.primary
+        XCTAssertEqual(primaryCalls, 0, "An open breaker must not send TCGdex requests during its cooldown")
+    }
+
+    func testPrimaryFailureWithEmptyFallbackIsProviderUnavailableAndOpensBreaker() async throws {
+        let breaker = TCGdexCircuitBreaker(cooldown: 600)
+        let counter = OutageSourceCounter()
+        let adapter = makeAdapter(primary: .serverError, breaker: breaker, counter: counter)
+        let identifier = try identifier()
+
+        let thrown = await lookupError(adapter, identifier)
+        let error = try XCTUnwrap(thrown)
+        XCTAssertEqual(CardCatalog.classify(error), .providerUnavailable)
+        XCTAssertEqual(UnresolvedReason.reason(for: identifier, error: error), .providerUnavailable)
+        let primaryCalls = await counter.primary
+        let fallbackCalls = await counter.fallback
+        XCTAssertEqual(primaryCalls, 1)
+        XCTAssertEqual(fallbackCalls, 1)
+        let permits = await breaker.permitsRequest()
+        XCTAssertFalse(permits, "A failed primary request still opens the shared breaker")
+    }
+
+    func testConfirmedPrimaryMissRemainsNotInCatalogAndOffersReport() async throws {
+        let counter = OutageSourceCounter()
+        let adapter = makeAdapter(primary: .confirmedMiss, breaker: TCGdexCircuitBreaker(cooldown: 600), counter: counter)
+        let identifier = try identifier()
+
+        let thrown = await lookupError(adapter, identifier)
+        let error = try XCTUnwrap(thrown)
+        guard case TCGdexError.cardNotFound = error else { return XCTFail("Expected a confirmed miss, got \(error)") }
+        XCTAssertEqual(CardCatalog.classify(error), .notInCatalog)
+        let reason = UnresolvedReason.reason(for: identifier, error: error)
+        XCTAssertEqual(reason, .noCatalogEntry)
+        XCTAssertTrue(reason.offersUnverifiedReport)
+        let fallbackCalls = await counter.fallback
+        XCTAssertEqual(fallbackCalls, 0, "A confirmed TCGdex miss is authoritative; no fallback is consulted")
+    }
+
+    func testOpenBreakerWithFallbackCardResolvesFromFallback() async throws {
+        let breaker = TCGdexCircuitBreaker(cooldown: 600)
+        await breaker.recordFailure(.unreachable)
+        let fallback = try JSONDecoder().decode(PokemonTCGAPICard.self, from: Data(#"""
+        {"id":"me2-1","name":"Test Fallback","number":"1",
+         "set":{"id":"me02","name":"Phantasmal Flames","printedTotal":94},
+         "images":{"small":"https://images.example.com/s.png","large":"https://images.example.com/l.png"}}
+        """#.utf8))
+        let counter = OutageSourceCounter()
+        let adapter = makeAdapter(primary: .serverError, fallbackCard: fallback, breaker: breaker, counter: counter)
+        let identifier = try identifier()
+        let providerSetID = try XCTUnwrap(identifier.fields.first { $0.key == "providerSetID" }?.value)
+        XCTAssertEqual(providerSetID, "me02", "Fixture must match the parsed footer's provider set")
+
+        guard case let .resolved(result) = try await adapter.lookup(identifier) else {
+            return XCTFail("Expected the fallback card")
+        }
+        XCTAssertEqual(result.path, .historicalFallback)
+        XCTAssertFalse(result.isPersistable)
+        let primaryCalls = await counter.primary
+        XCTAssertEqual(primaryCalls, 0)
+    }
+
+    func testOnlyLookupOutagesWithholdTheUnverifiedReportOffer() {
+        XCTAssertFalse(UnresolvedReason.lookupFailed.offersUnverifiedReport)
+        XCTAssertFalse(UnresolvedReason.providerUnavailable.offersUnverifiedReport)
+        XCTAssertTrue(UnresolvedReason.noCatalogEntry.offersUnverifiedReport)
+        XCTAssertTrue(UnresolvedReason.noConfirmedMatch.offersUnverifiedReport)
+        XCTAssertTrue(UnresolvedReason.interrupted.offersUnverifiedReport)
+    }
+}

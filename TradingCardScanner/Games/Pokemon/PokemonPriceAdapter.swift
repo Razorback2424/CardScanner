@@ -93,7 +93,7 @@ struct PokemonPriceAdapter: GamePriceAdapter {
             switch error {
             case .cardNotFound, .identityMismatch, .invalidURL:
                 throw error
-            case .badResponse:
+            case .badResponse, .providerUnavailable:
                 await tcgdexCircuit.recordFailure(.serverError)
                 throw error
             }
@@ -138,7 +138,7 @@ struct PokemonPriceAdapter: GamePriceAdapter {
             switch tcgdexError {
             case .cardNotFound, .identityMismatch, .invalidURL:
                 return false
-            case .badResponse:
+            case .badResponse, .providerUnavailable:
                 return true
             }
         }

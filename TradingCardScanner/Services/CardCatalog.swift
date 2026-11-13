@@ -342,7 +342,8 @@ actor CardCatalog {
              ScryfallError.cardNotFound, ScryfallError.identityMismatch,
              ScryfallError.unsupportedPrinting, ScryfallError.invalidURL:
             return .notInCatalog
-        case ScryfallError.endpointNotFound,
+        case TCGdexError.providerUnavailable,
+             ScryfallError.endpointNotFound,
              ScryfallError.rateLimited,
              ScryfallError.providerUnavailable:
             return .providerUnavailable

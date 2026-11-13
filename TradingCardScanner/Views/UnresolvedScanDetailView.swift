@@ -140,7 +140,13 @@ struct UnresolvedScanDetailView: View {
                     }
                 }
 
-                if UnverifiedReportsFeature.isEnabled, scan.game == .pokemon {
+                if UnverifiedReportsFeature.isEnabled, scan.game == .pokemon, !scan.reason.offersUnverifiedReport {
+                    Section {
+                        Text("Scan Stash couldn't check the catalog, so it can't tell yet whether this card is listed. Retry the lookup when you're back online.")
+                            .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("recovery-unverified-unavailable")
+                    }
+                } else if UnverifiedReportsFeature.isEnabled, scan.game == .pokemon {
                     Section {
                         Button("Add unverified card", systemImage: "questionmark.diamond") {
                             isAddingUnverified = true
