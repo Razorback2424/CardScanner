@@ -6,6 +6,9 @@ enum TCGdexError: LocalizedError, Sendable {
     case cardNotFound
     case badResponse
     case identityMismatch
+    /// TCGdex was skipped (circuit open) or failed, and no fallback supplied
+    /// the card. Nothing authoritative says the card is missing.
+    case providerUnavailable
 
     var errorDescription: String? {
         switch self {
@@ -13,6 +16,7 @@ enum TCGdexError: LocalizedError, Sendable {
         case .cardNotFound: return "That identifier did not match a card in TCGdex."
         case .badResponse: return "TCGdex returned an unexpected response."
         case .identityMismatch: return "TCGdex returned a different card identity."
+        case .providerUnavailable: return "The card catalog is temporarily unavailable."
         }
     }
 }

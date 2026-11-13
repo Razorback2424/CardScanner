@@ -214,7 +214,7 @@ packages, seeds, publishers, `Config`.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| S04.01 | The distribution build enables the exact games and acquisition capabilities in the support manifest. | **Fail** — One Piece production rollout and writes disabled |
+| S04.01 | The distribution build enables the exact games and acquisition capabilities in the support manifest. | Configured 2026-11-12: Release bundles signed One Piece production revision 2 with rollout `remote-authority` and writes `YES`; installed-device acceptance pending |
 | S04.02 | Missing, corrupt, incompatible, stale or badly signed updates keep the last approved catalog or show an honest unavailable state. | Not verified |
 | S04.03 | Activation makes recognition, Browse, printing choices and ownership admission agree; stale responses cannot authorize writes under an obsolete generation. | Not verified |
 | S04.04 | Catalog changes never silently rewrite owned identities; any needed review is explicit. | Not verified |
@@ -568,7 +568,7 @@ bug census.
 | --- | --- |
 | Broad regression | 3,174 passed, 2 failed, 21 skipped across 3,197 cases; two long research classes not rerun wholesale; six centering gates unmet. Complete target uncertified ([progress](../../progress.md)). |
 | Centering | Some failures concern default guide usefulness/accuracy, some DEBUG research. Disposition each against shipped behavior; neither six proven customer bugs nor all research. |
-| Production vs local | One Piece production rollout/writes disabled. The `ReleaseLocal` configuration defines `LOCAL_COLLECTOR_TOOLS` (with `LOCAL_ONLY_SIGNING`), which marks the user owned; `Release` does not. Both need real release-configuration acceptance. |
+| Production vs local | One Piece production rollout is `remote-authority` with writes `YES` from 2026-11-12. The `ReleaseLocal` configuration defines `LOCAL_COLLECTOR_TOOLS` (with `LOCAL_ONLY_SIGNING`), which marks the user owned; `Release` does not. Both need real release-configuration acceptance. |
 | Owned prices | Code and simulator evidence address owned-price selection and stale evidence but do not certify the physical Mega Gengar case or live coverage. Reproduce on the candidate. |
 | Commercial pricing | JustTCG history, graded listings and provider-backed sealed prices currently require a customer's Settings key. Paid JustTCG was selected 2026-11-10; active plan, rights/exports review, quota/cost budget and no-key production integration remain open launch prerequisites (S09.07/G07). |
 | Runtime and providers | Physical camera, omitted-artwork intake/enrichment, delayed-price Browse, sealed-add Undo, device performance and native export/purchase checks remain evidence work. |
@@ -583,7 +583,7 @@ no averaging a broken paid tool against unrelated passes.
 
 | Gate | Pass condition | Status |
 | --- | --- | --- |
-| G01 Scope matches reality | Manifest, code, installed Release build and marketing agree; no undeclared production/local difference. | **Fail** — One Piece; manifest unfilled |
+| G01 Scope matches reality | Manifest, code, installed Release build and marketing agree; no undeclared production/local difference. | **Fail** — manifest unfilled; One Piece Release configuration enabled, device acceptance pending |
 | G02 No known customer defects | All confirmed user-visible violations closed; any owner exception is visible and changes the claim. | **Fail** — S12.05, S15.05, S17.03 |
 | G03 Integrity checks pass | Ownership, identity, durability, import replay, currency, chronology, arithmetic and output invariants pass with no unexplained failures. | Not verified |
 | G04 Every critical journey passes | J01–J12 complete and reconcile on the actual candidate, including recovery and delivered output. | Not verified |
@@ -621,7 +621,7 @@ Every concrete reference in the contract was checked against the working tree.
 | Named test suites (36) | All exist in `TradingCardScannerTests`. |
 | Platforms | `IPHONEOS_DEPLOYMENT_TARGET = 18.0`, `TARGETED_DEVICE_FAMILY = 1,2`; phone portrait only; four iPad orientations in `Info.plist`. |
 | Broad rerun 3,174 / 2 / 21 and six centering gates | Match `progress.md` and the centering ledger. |
-| One Piece disabled | `Config/OnePieceCatalogProduction.xcconfig`: rollout `disabled`, writes `NO`. |
+| One Piece enabled | `Config/OnePieceCatalogProduction.xcconfig`: rollout `remote-authority`, writes `YES` (2026-11-12). |
 | Local purchase bypass | `LOCAL_COLLECTOR_TOOLS` is defined only in `ReleaseLocal`, alongside `LOCAL_ONLY_SIGNING`; `Release` does not define it. |
 | Privacy/support URLs empty | Confirmed in `Config/PokemonCatalogProduction.xcconfig`. |
 | Price-feed URL configured | Confirmed (`TCGCSV_PRICE_BASE_URL`). Three documents still describe it as empty and are stale on that point: [feature-completeness review](../audits/feature-completeness-review-2026-10-29.md), [catalog pricing cases](../audits/catalog-pricing-cases-2026-11-01.md) and a dated [documentation audit](../plans/documentation_audit.md) entry. |

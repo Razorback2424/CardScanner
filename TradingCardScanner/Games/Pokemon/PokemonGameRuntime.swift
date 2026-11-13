@@ -13,7 +13,7 @@ struct PokemonGameRuntime: Sendable {
         capabilities: [.scan, .browse, .pricing, .sealed, .collectionWrite, .gradedPricing]
     )
 
-    init(coordinator: PokemonCatalogCoordinator = PokemonCatalogCoordinator()) {
+    init(coordinator: PokemonCatalogCoordinator = PokemonCatalogCoordinator(bundledRelease: .packaged())) {
         self.coordinator = coordinator
     }
 

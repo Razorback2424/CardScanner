@@ -245,6 +245,7 @@ struct CollectionView: View {
         case browse
         case card(String)
         case movement(String)
+        case unverifiedReports
     }
 
     init(
@@ -542,6 +543,10 @@ struct CollectionView: View {
                     description: Text("This card was removed from your collection.")
                 )
             }
+        case .unverifiedReports:
+            UnverifiedReportsListView { collectionKey in
+                navigationPath.append(Destination.card(collectionKey))
+            }
         case let .movement(id):
             if let entry = entry(for: id, in: snapshot) {
                 CollectionMovementDestination(row: entry.row, history: history)
@@ -604,6 +609,7 @@ struct CollectionView: View {
         return ScrollView {
             LazyVStack(spacing: 14) {
                 collectionHeader(snapshot)
+                unverifiedReportsRow(snapshot)
 
                 if snapshot.entries.isEmpty {
                     noMatches
@@ -653,6 +659,25 @@ struct CollectionView: View {
         .animation(.easeOut(duration: 0.2), value: filters)
         .animation(.easeOut(duration: 0.2), value: sort)
         .animation(.easeOut(duration: 0.2), value: searchQuery)
+    }
+
+    /// Unverified cards are unpriced and may need the collector's review, so
+    /// they always have a way in, even while creation is switched off.
+    @ViewBuilder
+    private func unverifiedReportsRow(_ snapshot: Snapshot) -> some View {
+        let count = snapshot.all.filter { UnverifiedReportKey.isUnverified($0.id) }.count
+        if count > 0 {
+            Button { select(.unverifiedReports) } label: {
+                Label("\(count) unverified card\(count == 1 ? "" : "s") · not priced", systemImage: "questionmark.diamond")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.orange)
+            .padding(.horizontal)
+            .accessibilityIdentifier("collection-unverified-reports")
+        }
     }
 
     private func collectionHeader(_ snapshot: Snapshot) -> some View {

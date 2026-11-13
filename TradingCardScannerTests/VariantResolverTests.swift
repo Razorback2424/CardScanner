@@ -784,7 +784,17 @@ final class RetailVariantTests: XCTestCase {
         let source = RetailVariantSource(cards: [card.id: card])
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
-        let adapter = PokemonCatalogAdapter(source: source, resolvedDiskCache: .init(root: root), registry: registry)
+        // Isolate from process-wide state: other tests activate signed catalog
+        // revisions in the shared checklist store (which then rejects this
+        // registry as stale) and may open the shared TCGdex breaker.
+        let checklistStore = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil)
+        let adapter = PokemonCatalogAdapter(
+            source: source,
+            offline: PokemonOfflineCatalog(store: checklistStore, registry: registry),
+            resolvedDiskCache: .init(root: root.appendingPathComponent("resolved")),
+            tcgdexBreaker: TCGdexCircuitBreaker(),
+            registry: registry
+        )
         let identifier = try XCTUnwrap(PokemonScanProfile(registry: registry).parse("30C EN 116/128"))
         for _ in 0..<2 {
             guard case let .resolved(result) = try await adapter.lookup(identifier) else { return XCTFail("Expected exact printing") }

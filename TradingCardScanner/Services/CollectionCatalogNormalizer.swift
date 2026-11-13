@@ -269,6 +269,9 @@ final class CollectionCatalogNormalizer: ObservableObject {
     nonisolated static func needsNormalization(
         _ card: CollectedCard, now: Date = .now, retryFailedSealed: Bool = false
     ) -> Bool {
+        // An unverified report keeps the identity and artwork the collector
+        // confirmed until a validated link replaces them.
+        guard !card.isUnverified else { return false }
         guard hasUnresolvedCatalogMetadata(card) else { return false }
         if card.itemKind == .sealedProduct,
            card.justTCGCardID == nil,

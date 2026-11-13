@@ -747,7 +747,7 @@ enum PortfolioDebugFixtures {
                 wPromo: nil
             )
             selected = .reverse
-        case .userConfirmed:
+        case .userConfirmed, .linkedFromReport:
             variants = TCGdexVariants(
                 firstEdition: false,
                 holo: true,

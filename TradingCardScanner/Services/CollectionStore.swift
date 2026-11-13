@@ -1079,6 +1079,150 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         }
     }
 
+    /// Saves copies the collector confirmed but the catalog cannot verify.
+    /// A known base printing still has to pass the same catalog authority as a
+    /// scan, with no finish: the finish is exactly what is being reported.
+    func addUnverified(
+        report: UnverifiedReport,
+        baseCard: IdentifiedCard?,
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        quantity: Int = 1,
+        source: CollectionActivitySource = .scan,
+        shouldContinue: @escaping StorageGenerationContinuation = { true }
+    ) throws -> CollectionMutation {
+        try performOwnershipWrite { context in
+            guard shouldContinue() else { throw CancellationError() }
+            var report = report
+            // The positive-evidence rule depends on these, so they come from
+            // the catalog this write validated against, never from the caller.
+            report.catalogRevisionAtCreation = CollectionStoreSessionRegistry.shared
+                .pokemonCatalogCoordinator(for: context.container)?.activeRevisionSnapshot
+            report.knownVariantIDsAtCreation = []
+            if report.kind == .knownCard, let baseCard {
+                try validatePokemonAcquisition(baseCard, finish: nil, printRun: pokemonPrintRun, in: context)
+                report.knownVariantIDsAtCreation = UnverifiedReportEvaluator.knownVariantIDs(for: baseCard).sorted()
+            }
+            return try CollectionStore(context: context).addUnverified(
+                report: report,
+                baseCard: baseCard,
+                pokemonPrintRun: pokemonPrintRun,
+                quantity: quantity,
+                source: source
+            )
+        }
+    }
+
+    /// "Report a different variant" from a scan receipt or collection history.
+    func moveAcquisitionToReport(activityID: UUID, report: UnverifiedReport, baseCard: IdentifiedCard,
+                                 shouldContinue: @escaping StorageGenerationContinuation = { true }) throws -> CollectionMutation {
+        try performOwnershipWrite { context in
+            guard shouldContinue() else { throw CancellationError() }
+            var report = report
+            report.catalogRevisionAtCreation = CollectionStoreSessionRegistry.shared
+                .pokemonCatalogCoordinator(for: context.container)?.activeRevisionSnapshot
+            try validatePokemonAuthority(baseCard, in: context)
+            report.knownVariantIDsAtCreation = UnverifiedReportEvaluator.knownVariantIDs(for: baseCard).sorted()
+            return try CollectionStore(context: context).moveAcquisitionToReport(
+                activityID: activityID, report: report, baseCard: baseCard)
+        }
+    }
+
+    /// Every report row still waiting for the catalog, with its exact JSON so
+    /// a later write can prove nothing changed in between.
+    func pendingReports() throws -> [(reportID: String, reportJSON: String)] {
+        try performOwnershipWrite { context in
+            let marker = UnverifiedReportKey.unverifiedMarker
+            let rows = try context.fetch(FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey.contains(marker) }))
+            return rows.compactMap { row in
+                row.unverifiedReportJSON.map { (UnverifiedReportKey.reportToken(in: row.collectionKey) ?? "", $0) }
+            }
+        }
+    }
+
+    /// Links a report under catalog authority. The active revision, the
+    /// report's bytes and, for an automatic link, the evaluator's decision are
+    /// all re-checked inside the serialized write.
+    func linkUnverified(
+        reportID: UUID,
+        expectedReportJSON: String,
+        catalogRevision: Int,
+        to card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        resolution: VariantResolution,
+        setReleaseOrder: Int,
+        linkedAt: Date = .now
+    ) throws -> CollectionMutation {
+        try performOwnershipWrite { context in
+            let coordinator = CollectionStoreSessionRegistry.shared.pokemonCatalogCoordinator(for: context.container)
+            guard coordinator?.activeRevisionSnapshot ?? catalogRevision == catalogRevision else {
+                throw CollectionStoreError.staleReport
+            }
+            let store = CollectionStore(context: context)
+            let rows = try store.reportRows(reportID: reportID)
+            guard rows.count == 1, let row = rows.first else {
+                throw CollectionStoreError.reportLinkUnavailable("the report has no single row")
+            }
+            if row.isUnverified {
+                guard let report = row.unverifiedReport, row.unverifiedReportJSON == expectedReportJSON else {
+                    throw CollectionStoreError.staleReport
+                }
+                if resolution == .linkedFromReport {
+                    guard UnverifiedReportEvaluator.evaluate(report, catalogRevision: catalogRevision, baseCard: card)
+                            == .autoLink(variant ?? .normal), variant != nil else {
+                        throw CollectionStoreError.staleReport
+                    }
+                }
+                try validatePokemonAcquisition(card, finish: variant,
+                    printRun: row.pokemonPrintRunRaw.flatMap(PokemonPrintRun.init(rawValue:)), in: context)
+            }
+            return try store.linkUnverified(reportID: reportID, expectedReportJSON: expectedReportJSON, to: card,
+                variant: variant, resolution: resolution, setReleaseOrder: setReleaseOrder, linkedAt: linkedAt)
+        }
+    }
+
+    /// The collector's own confirmation of which verified card a report is.
+    /// The collector, not new catalog evidence, is the authority, so this
+    /// needs no newer revision; the target must still be a valid catalog
+    /// printing and finish.
+    func confirmReportLink(reportID: UUID, expectedReportJSON: String, to card: IdentifiedCard,
+                           variant: PhysicalVariant?, setReleaseOrder: Int,
+                           shouldContinue: @escaping StorageGenerationContinuation = { true }) throws -> CollectionMutation {
+        try performOwnershipWrite { context in
+            guard shouldContinue() else { throw CancellationError() }
+            let store = CollectionStore(context: context)
+            let rows = try store.reportRows(reportID: reportID)
+            guard rows.count == 1, let row = rows.first, row.isUnverified else { throw CollectionStoreError.staleReport }
+            try validatePokemonAcquisition(card, finish: variant,
+                printRun: row.pokemonPrintRunRaw.flatMap(PokemonPrintRun.init(rawValue:)), in: context)
+            return try store.linkUnverified(reportID: reportID, expectedReportJSON: expectedReportJSON, to: card,
+                variant: variant, resolution: .userConfirmed, setReleaseOrder: setReleaseOrder)
+        }
+    }
+
+    func keepReportUnverified(reportID: UUID, expectedReportJSON: String,
+                              shouldContinue: @escaping StorageGenerationContinuation = { true }) throws {
+        try performOwnershipWrite { context in
+            guard shouldContinue() else { throw CancellationError() }
+            try CollectionStore(context: context).keepReportUnverified(reportID: reportID,
+                                                                         expectedReportJSON: expectedReportJSON)
+        }
+    }
+
+    func unlinkReport(reportID: UUID) throws -> CollectionMutation {
+        try performOwnershipWrite { context in
+            try CollectionStore(context: context).unlinkReport(reportID: reportID)
+        }
+    }
+
+    func recordReportEvaluation(reportID: UUID, expectedReportJSON: String, catalogRevision: Int,
+                                state: UnverifiedReport.ReviewState) throws {
+        try performOwnershipWrite { context in
+            try CollectionStore(context: context).recordReportEvaluation(reportID: reportID,
+                expectedReportJSON: expectedReportJSON, catalogRevision: catalogRevision, state: state)
+        }
+    }
+
     private func validateScanAcquisition(_ candidate: CollectionCommitCandidate, in context: ModelContext) throws {
         try validatePokemonAcquisition(candidate.card, finish: candidate.resolved.variant,
             printRun: candidate.pokemonPrintRun,
@@ -1385,6 +1529,14 @@ enum CollectionStoreError: Error, Equatable {
     case restoreConflict(String)
     case staleQuantityDefect(String)
     case unverifiedPokemonPrinting
+    /// The report stays unverified: this build cannot move its history.
+    case reportLinkUnavailable(String)
+    /// The report or catalog changed after it was evaluated.
+    case staleReport
+    /// Only the report flow may change a report row's identity or finish.
+    case reportRowProtected
+    /// An imported report would duplicate or contradict the collection.
+    case reportImportConflict(String)
 }
 
 extension CollectionStoreError: LocalizedError {
@@ -1422,6 +1574,14 @@ extension CollectionStoreError: LocalizedError {
             return "The quantity mismatch for \(key) is no longer current."
         case .unverifiedPokemonPrinting:
             return "Scan Stash couldn't verify this printing."
+        case let .reportLinkUnavailable(detail):
+            return "This unverified card can't be linked yet: \(detail)."
+        case .staleReport:
+            return "This unverified card changed. Review it again."
+        case .reportRowProtected:
+            return "Cards from an unverified report change only through that report."
+        case let .reportImportConflict(detail):
+            return "This unverified card report wasn't imported: \(detail)."
         }
     }
 }
@@ -1688,6 +1848,10 @@ actor CollectionDetailWriter: BackgroundModelActor {
             guard shouldContinue() else { throw CancellationError() }
             return try body(context)
         }
+    }
+
+    func unlinkReport(reportID: UUID, shouldContinue: StorageGenerationContinuation) throws {
+        _ = try perform(shouldContinue: shouldContinue) { try CollectionStore(context: $0).unlinkReport(reportID: reportID) }
     }
 
     /// Preparation and file ownership stay on this executor. Once the mapping
@@ -2595,6 +2759,14 @@ struct CollectionStore {
 
         let sourceKeys = Set(rows.map(\.collectionKey))
         let priceKeys = Set(rows.map(\.priceKey))
+        // Physical duplicates of one report row (same key, e.g. CloudKit) may
+        // still consolidate. A report row never merges with another identity:
+        // only an explicit user action or a validated link may change it.
+        if sourceKeys.count > 1, rows.contains(where: \.hasReport) {
+            throw CollectionStoreError.ledgerConflict(
+                "a reported collection row cannot be merged with another identity"
+            )
+        }
         if sourceKeys.count > 1, rows.contains(where: { $0.itemKind == .gradedCard }) {
             // A treatment-qualified graded key can describe a different slab
             // when the certificate/market handle is incomplete. Exact duplicate
@@ -2765,6 +2937,7 @@ struct CollectionStore {
         representative.magicTreatmentQualifiers = finalQualifiers
 
         if representative.itemKind == .rawCard,
+           !representative.hasReport,
            representative.variantID == nil,
            let finishID = MagicTreatmentKeyCodec.collectionKeyParts(from: canonicalKey)?.finishID {
             representative.variantID = finishID
@@ -3056,6 +3229,16 @@ struct CollectionStore {
         treatmentQualifiers suppliedTreatmentQualifiers: [String: String] = [:]
     ) throws {
         let oldKey = row.collectionKey
+        // A report row has no legacy identity to repair, and its marker-bearing
+        // key must never be replaced or have a finish inferred automatically.
+        if row.hasReport {
+            guard canonicalKey == oldKey else {
+                throw CollectionStoreError.ledgerConflict(
+                    "a reported collection row cannot be rekeyed automatically"
+                )
+            }
+            return
+        }
         let existingTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
             from: row.magicTreatmentIDsRaw
         )
@@ -4771,6 +4954,530 @@ struct CollectionStore {
         }
     }
 
+    /// Records copies of a Pokémon card the catalog cannot verify yet.
+    ///
+    /// The row is an ordinary synced ownership position with its own activity
+    /// and an unpriced ledger acquisition, but its identity is synthetic: the
+    /// key carries the report marker and `providerID` is `unverified:<id>`.
+    /// No path that matches rows by catalog identity or price key can reach it,
+    /// so the copies stay unpriced and untouched until a validated link.
+    ///
+    /// Catalog authority for a `.knownCard` base printing is the caller's job
+    /// (`ScannerCollectionWriter.addUnverified`); this method validates only the
+    /// report's own shape. Another copy of the same report increments its row.
+    @discardableResult
+    func addUnverified(
+        report: UnverifiedReport,
+        baseCard: IdentifiedCard?,
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        quantity: Int = 1,
+        source: CollectionActivitySource = .scan,
+        savesChanges: Bool = true
+    ) throws -> CollectionMutation {
+        guard quantity > 0, quantity <= CollectionQuantityLimits.maximum else {
+            throw CollectionStoreError.insufficientQuantity(report.reportID.uuidString)
+        }
+        do {
+            try requireWritableGame(.pokemon)
+            try Self.validateUnverifiedReportShape(report, baseCard: baseCard)
+            let (stored, didInsert) = try unverifiedRow(for: report, baseCard: baseCard,
+                                                         pokemonPrintRun: pokemonPrintRun, quantity: quantity)
+            let mutation = CollectionMutation(collectionKey: stored.collectionKey, activityID: nil, didInsert: didInsert)
+            let operationID = UUID()
+            try requireAppended(
+                ledger.record(
+                    stored,
+                    kind: inventoryKind(for: source),
+                    source: source,
+                    deltaQuantity: quantity,
+                    operationID: operationID
+                )
+            )
+            let activity = try appendActivity(
+                stored,
+                source: source,
+                kind: .added,
+                deltaQuantity: quantity,
+                ledgerOperationIDs: [operationID]
+            )
+            if savesChanges { try commit() }
+            return CollectionMutation(
+                collectionKey: mutation.collectionKey,
+                activityID: activity.id,
+                didInsert: mutation.didInsert,
+                ledgerOperationIDs: [operationID]
+            )
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// The report's row, inserted or incremented. Writes no ledger event or
+    /// activity; the caller records how the copies arrived.
+    private func unverifiedRow(
+        for report: UnverifiedReport, baseCard: IdentifiedCard?, pokemonPrintRun: PokemonPrintRun?, quantity: Int
+    ) throws -> (CollectedCard, Bool) {
+        let key = Self.unverifiedCollectionKey(for: report.reportID)
+        let reportJSON = try report.encodedJSON()
+        if let existing = LogicalCollection.chooseRepresentative(from: try cards(forKey: key)) {
+            // The marker is the identity; the JSON must describe the same
+            // report or the increment would attach copies to another claim.
+            guard let existingReport = existing.unverifiedReport,
+                  existingReport.reportID == report.reportID else {
+                throw CollectionStoreError.ledgerConflict(
+                    "an unverified row does not carry the report its key names"
+                )
+            }
+            existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, quantity)
+            existing.dateAdded = .now
+            return (existing, false)
+        }
+        let observed = report.observed
+        let inserted = CollectedCard(
+            collectionKey: key,
+            game: .pokemon,
+            providerID: UnverifiedReportKey.providerID(reportID: report.reportID),
+            name: baseCard?.name ?? observed?.name ?? "",
+            setName: baseCard?.setName ?? observed?.setName ?? observed?.setCode ?? "",
+            setCode: baseCard?.setCode ?? observed?.setCode ?? "",
+            cardNumber: baseCard?.cardNumber ?? observed?.number ?? "",
+            rarity: baseCard?.rarity,
+            imageURL: baseCard?.storedImageURL,
+            thumbnailURL: baseCard?.thumbnailImageURL?.absoluteString,
+            variant: nil,
+            // Non-automatic, and understood by every shipped build, so an
+            // older client's finish backfill leaves the row alone.
+            variantResolution: .userConfirmed,
+            identityResolution: baseCard == nil ? .userSelectedPrinting : .catalogSelected,
+            setReleaseOrder: baseCard?.setReleaseOrder ?? 0,
+            quantity: quantity
+        )
+        inserted.variantLabel = report.label
+        inserted.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
+        inserted.unverifiedReportJSON = reportJSON
+        context.insert(inserted)
+        return (inserted, true)
+    }
+
+    /// "Report a different variant": moves one intact acquisition out of a
+    /// verified row into a new unverified report row, through a dated
+    /// correction. A partly consumed acquisition cannot move.
+    @discardableResult
+    func moveAcquisitionToReport(
+        activityID: UUID, report: UnverifiedReport, baseCard: IdentifiedCard, movedAt: Date = .now,
+        savesChanges: Bool = true
+    ) throws -> CollectionMutation {
+        do {
+            try requireWritableGame(.pokemon)
+            try Self.validateUnverifiedReportShape(report, baseCard: baseCard)
+            guard try cards(forKey: Self.unverifiedCollectionKey(for: report.reportID)).isEmpty else {
+                throw CollectionStoreError.ledgerConflict("this report already has a row")
+            }
+            let claim = try activity(id: activityID)
+            guard claim.kind.hasQuantityClaim, claim.signedQuantity > 0 else {
+                throw CollectionStoreError.invalidActivity(activityID)
+            }
+            guard claim.resolvedQuantity == 0, !claim.ledgerOperationIDs.isEmpty else {
+                throw CollectionStoreError.insufficientQuantity(claim.collectionKey)
+            }
+            guard let source = try uniqueCard(forKey: claim.collectionKey), !source.hasReport,
+                  source.itemKind == .rawCard, source.cardGame == .pokemon,
+                  (source.catalogProviderID ?? source.providerID) == baseCard.providerID,
+                  source.quantity >= claim.claimedQuantity else {
+                throw CollectionStoreError.invalidActivity(activityID)
+            }
+            let quantity = claim.claimedQuantity
+            let sourceKey = source.collectionKey
+            _ = try preflightLineage(claim.ledgerOperationIDs, expectedCollectionKey: sourceKey,
+                                     expectedQuantity: quantity)
+            let fromPriceKey = ledger.priceStorageKey(for: source)
+            let printRun = source.pokemonPrintRun
+            if source.quantity == quantity {
+                context.delete(source)
+            } else {
+                source.quantity -= quantity
+            }
+            let (row, _) = try unverifiedRow(for: report, baseCard: baseCard, pokemonPrintRun: printRun,
+                                             quantity: quantity)
+            let operationID = UUID()
+            let legs = ledger.recordCorrection(fromCollectionKey: sourceKey, fromPriceStorageKey: fromPriceKey,
+                toCard: row, source: .correction, quantity: quantity, occurredAt: movedAt, operationID: operationID)
+            try requireAppended(legs.from)
+            try requireAppended(legs.to)
+            claim.collectionKey = row.collectionKey
+            claim.name = row.name
+            claim.setName = row.setName
+            claim.setCode = row.setCode
+            claim.cardNumber = row.cardNumber
+            claim.variantID = row.variantID
+            claim.variantLabel = row.variantLabel
+            claim.pokemonPrintRunRaw = row.pokemonPrintRunRaw
+            claim.correctedAt = movedAt
+            claim.ledgerOperationIDs += [operationID]
+            _ = try appendActivity(row, source: .correction, kind: .corrected, deltaQuantity: 0,
+                                   ledgerOperationIDs: [operationID], occurredAt: movedAt)
+            if savesChanges { try commit() }
+            return CollectionMutation(collectionKey: row.collectionKey, activityID: claim.id, didInsert: true,
+                                      ledgerOperationIDs: claim.ledgerOperationIDs)
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// Restores an exported report row (unverified or linked) as its own row.
+    /// Returns `nil` when this exact report is already in the collection. A
+    /// report already present with other data, or one removed earlier, is a
+    /// conflict: it is never merged or resurrected by an import.
+    func restoreImportedReport(entry: CollectionCSVEntry, report: UnverifiedReport, operationID: UUID,
+                               recordedAt: Date) throws -> CollectedCard? {
+        try requireWritableGame(.pokemon)
+        guard entry.quantity > 0, entry.quantity <= CollectionQuantityLimits.maximum else {
+            throw CollectionStoreError.quantityOutOfRange(entry.collectionKey)
+        }
+        if !(try ledger.events(forOperationID: operationID)).isEmpty { return nil }
+        let existing = try reportRows(reportID: report.reportID)
+        if let row = existing.first {
+            guard existing.count == 1, row.collectionKey == entry.collectionKey, row.quantity == entry.quantity,
+                  row.providerID == entry.providerID,
+                  // An unverified row exports its report label as the finish name.
+                  row.isUnverified || row.variantID == entry.variant?.id else {
+                throw CollectionStoreError.reportImportConflict("it's already in your collection with other details")
+            }
+            return nil
+        }
+        let token = report.reportID.uuidString.lowercased()
+        let history = try context.fetch(FetchDescriptor<CollectionActivity>(
+            predicate: #Predicate { $0.collectionKey.contains(token) }))
+        guard history.isEmpty else {
+            throw CollectionStoreError.reportImportConflict("it was removed earlier; restore it from history instead")
+        }
+        let isLinked = report.linkedAt != nil
+        let row = CollectedCard(
+            collectionKey: entry.collectionKey, game: .pokemon, providerID: entry.providerID,
+            name: entry.name, setName: entry.setName, setCode: entry.setCode, cardNumber: entry.cardNumber,
+            rarity: entry.rarity, imageURL: entry.imageURL, thumbnailURL: entry.thumbnailURL,
+            variant: isLinked ? entry.variant : nil,
+            variantResolution: isLinked && entry.variant != nil ? .linkedFromReport : .userConfirmed,
+            identityResolution: .imported, quantity: entry.quantity, dateAdded: entry.dateAdded)
+        if !isLinked { row.variantLabel = report.label }
+        row.pokemonPrintRunRaw = entry.pokemonPrintRun?.rawValue
+        row.unverifiedReportJSON = entry.unverifiedReportJSON
+        context.insert(row)
+        try requireAppended(ledger.record(row, kind: .recordExisting, source: .csvImport,
+                                          deltaQuantity: entry.quantity, operationID: operationID,
+                                          occurredAt: recordedAt, acquiredAt: entry.dateAdded))
+        _ = try appendActivity(row, source: .csvImport, kind: .added, deltaQuantity: entry.quantity,
+                               ledgerOperationIDs: [operationID], occurredAt: recordedAt)
+        return row
+    }
+
+    /// One namespace for every report row, so history attributes it to Pokémon
+    /// even after the row itself is gone.
+    static func unverifiedCollectionKey(for reportID: UUID) -> String {
+        UnverifiedReportKey.unverifiedKey(base: "\(CardGame.pokemon.rawValue):report", reportID: reportID)
+    }
+
+    static func validateUnverifiedReportShape(_ report: UnverifiedReport, baseCard: IdentifiedCard?) throws {
+        guard report.isUnderstood, report.linkedAt == nil else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+        switch report.kind {
+        case .knownCard:
+            guard let baseCard,
+                  baseCard.game == .pokemon,
+                  report.baseProviderID == baseCard.providerID,
+                  report.reportedFinishID != nil || report.note != nil else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+        case .unknownSet:
+            guard baseCard == nil,
+                  report.baseProviderID == nil,
+                  let observed = report.observed,
+                  !observed.setCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  !observed.number.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+        }
+    }
+
+    // MARK: - Report links
+
+    /// Every row whose key names this report, unverified or linked. The report
+    /// ID lives in the key permanently, so this finds the row in either state.
+    func reportRows(reportID: UUID) throws -> [CollectedCard] {
+        let token = reportID.uuidString.lowercased()
+        let unverified = UnverifiedReportKey.unverifiedMarker + token
+        let linked = UnverifiedReportKey.linkedMarker + token
+        return try context.fetch(FetchDescriptor<CollectedCard>(
+            predicate: #Predicate { $0.collectionKey.contains(unverified) || $0.collectionKey.contains(linked) }
+        ))
+    }
+
+    /// The acquisition claims a report row can move as a whole.
+    ///
+    /// Beta rule: a report links (or unlinks) only when every acquisition claim
+    /// is intact, each claim's ledger lineage validates under the row's key,
+    /// and the claims account for exactly the row's quantity. Anything else (a
+    /// removed or undone copy, a stepper adjustment, a missing ledger event)
+    /// leaves the report where it is, with linking unavailable.
+    func intactReportClaims(for row: CollectedCard) throws -> [CollectionActivity] {
+        guard row.hasReport, row.itemKind == .rawCard, row.cardGame == .pokemon else {
+            throw CollectionStoreError.reportLinkUnavailable("not a Pokémon report row")
+        }
+        let key = row.collectionKey
+        let history = try activities(forKey: key)
+        let claims = history.filter { $0.kind.hasQuantityClaim && $0.signedQuantity != 0 }
+        guard history.allSatisfy({ $0.kind.hasQuantityClaim || $0.signedQuantity == 0 }) else {
+            throw CollectionStoreError.reportLinkUnavailable("the quantity was changed outside an acquisition")
+        }
+        guard !claims.isEmpty,
+              claims.allSatisfy({ $0.signedQuantity > 0 && $0.resolvedQuantity == 0 && !$0.ledgerOperationIDs.isEmpty }),
+              claims.reduce(0, { $0 + $1.claimedQuantity }) == row.quantity else {
+            throw CollectionStoreError.reportLinkUnavailable("not every acquisition is intact")
+        }
+        for claim in claims {
+            do {
+                _ = try preflightLineage(claim.ledgerOperationIDs, expectedCollectionKey: key,
+                                         expectedQuantity: claim.claimedQuantity)
+            } catch {
+                throw CollectionStoreError.reportLinkUnavailable("an acquisition's ledger history does not validate")
+            }
+        }
+        let ledgerNet = try ledger.events(collectionKey: key).reduce(0) { $0 + $1.deltaQuantity }
+        guard ledgerNet == row.quantity else {
+            throw CollectionStoreError.reportLinkUnavailable("the ledger does not reconcile to the quantity")
+        }
+        return claims.sorted { $0.occurredAt < $1.occurredAt }
+    }
+
+    /// Links an unverified report to the catalog identity it turned out to be.
+    ///
+    /// The row is rekeyed in place to `<verifiedKey>~report=<id>` and is never
+    /// merged into an ordinary holding. Ownership moves through dated ledger
+    /// corrections, one per acquisition claim, so the copies are unpriced
+    /// before `linkedAt` and priced as the verified card after it. No existing
+    /// ledger event is edited. Catalog authority for the target is the caller's
+    /// job (`ScannerCollectionWriter.linkUnverified`).
+    @discardableResult
+    func linkUnverified(
+        reportID: UUID,
+        expectedReportJSON: String,
+        to card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        resolution: VariantResolution,
+        setReleaseOrder: Int,
+        linkedAt: Date = .now,
+        savesChanges: Bool = true
+    ) throws -> CollectionMutation {
+        do {
+            try requireWritableGame(.pokemon)
+            guard card.game == .pokemon,
+                  resolution == .userConfirmed || (resolution == .linkedFromReport && variant != nil) else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+            let rows = try reportRows(reportID: reportID)
+            guard rows.count == 1, let row = rows.first else {
+                throw CollectionStoreError.reportLinkUnavailable(rows.isEmpty ? "the report is gone" : "the report has duplicate rows")
+            }
+            guard var report = row.unverifiedReport, report.isUnderstood, report.reportID == reportID else {
+                throw CollectionStoreError.reportLinkUnavailable("the report cannot be read")
+            }
+            if row.isUnverified == false, report.linkedAt != nil,
+               row.providerID == card.providerID, row.variantID == variant?.id {
+                // Applying the same link twice is a no-op.
+                return CollectionMutation(collectionKey: row.collectionKey, activityID: nil, didInsert: false,
+                                          ledgerOperationIDs: report.linkOperationIDs)
+            }
+            guard row.isUnverified, report.linkedAt == nil,
+                  row.unverifiedReportJSON == expectedReportJSON else {
+                throw CollectionStoreError.staleReport
+            }
+            let claims = try intactReportClaims(for: row)
+            let oldKey = row.collectionKey
+            let printRunSuffix = row.pokemonPrintRunRaw.map { "@\($0)" } ?? ""
+            let newKey = UnverifiedReportKey.linkedKey(
+                base: card.collectionKey(variant: variant) + printRunSuffix, reportID: reportID)
+            guard try cards(forKey: newKey).isEmpty else {
+                throw CollectionStoreError.ledgerConflict("a row already uses the linked key")
+            }
+            let fromPriceKey = ledger.priceStorageKey(for: row)
+            let preLink = UnverifiedReport.PreLinkIdentity(row)
+
+            row.collectionKey = newKey
+            row.providerID = card.providerID
+            row.catalogProviderID = nil
+            row.name = card.name
+            row.setName = card.setName
+            row.setCode = card.setCode
+            row.cardNumber = card.cardNumber
+            row.rarity = card.rarity
+            row.imageURL = card.storedImageURL
+            row.thumbnailURL = card.thumbnailImageURL?.absoluteString
+            row.variantID = variant?.id
+            row.variantLabel = variant?.label
+            row.variantResolutionRaw = resolution.rawValue
+            row.identityResolutionRaw = IdentityResolution.catalogSelected.rawValue
+            row.setReleaseOrder = setReleaseOrder
+            clearPendingCatalogFinish(on: row)
+            try LocalArtworkOverrideRekeyer.rekey(from: oldKey, to: newKey, destinationPolicy: .preserveExisting, in: context)
+
+            let operationIDs = try moveReportClaims(claims, from: oldKey, fromPriceKey: fromPriceKey,
+                                                    to: row, at: linkedAt)
+            report.linkedAt = linkedAt
+            report.unlinkedAt = nil
+            report.preLinkIdentity = preLink
+            report.linkOperationIDs = operationIDs
+            report.reviewStateRaw = UnverifiedReport.ReviewState.waiting.rawValue
+            row.unverifiedReportJSON = try report.encodedJSON()
+            let activity = try appendActivity(row, source: .correction, kind: .corrected, deltaQuantity: 0,
+                                              ledgerOperationIDs: operationIDs, occurredAt: linkedAt)
+            if savesChanges { try commit() }
+            return CollectionMutation(collectionKey: newKey, activityID: activity.id, didInsert: false,
+                                      ledgerOperationIDs: operationIDs)
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// Undoes a link: the row returns to its exact pre-link identity and key,
+    /// and the copies move back through new dated corrections, so they are
+    /// unpriced again from `unlinkedAt` on. A linked row whose report cannot be
+    /// read stays verified and offers no undo.
+    @discardableResult
+    func unlinkReport(reportID: UUID, unlinkedAt: Date = .now, savesChanges: Bool = true) throws -> CollectionMutation {
+        do {
+            try requireWritableGame(.pokemon)
+            let rows = try reportRows(reportID: reportID)
+            guard rows.count == 1, let row = rows.first, !row.isUnverified else {
+                throw CollectionStoreError.reportLinkUnavailable("the report is not linked")
+            }
+            guard var report = row.unverifiedReport, report.isUnderstood, report.reportID == reportID,
+                  report.linkedAt != nil, let preLink = report.preLinkIdentity,
+                  preLink.collectionKey == Self.unverifiedCollectionKey(for: reportID) else {
+                throw CollectionStoreError.reportLinkUnavailable("the link cannot be undone")
+            }
+            guard try cards(forKey: preLink.collectionKey).isEmpty else {
+                throw CollectionStoreError.ledgerConflict("a row already uses the unverified key")
+            }
+            let claims = try intactReportClaims(for: row)
+            let linkedKey = row.collectionKey
+            let fromPriceKey = ledger.priceStorageKey(for: row)
+
+            row.collectionKey = preLink.collectionKey
+            row.providerID = preLink.providerID
+            row.catalogProviderID = preLink.catalogProviderID
+            row.name = preLink.name
+            row.setName = preLink.setName
+            row.setCode = preLink.setCode
+            row.cardNumber = preLink.cardNumber
+            row.rarity = preLink.rarity
+            row.imageURL = preLink.imageURL
+            row.thumbnailURL = preLink.thumbnailURL
+            row.variantID = preLink.variantID
+            row.variantLabel = preLink.variantLabel
+            row.variantResolutionRaw = preLink.variantResolutionRaw
+            row.identityResolutionRaw = preLink.identityResolutionRaw
+            row.setReleaseOrder = preLink.setReleaseOrder
+            row.pokemonPrintRunRaw = preLink.pokemonPrintRunRaw
+            clearPendingCatalogFinish(on: row)
+            try LocalArtworkOverrideRekeyer.rekey(from: linkedKey, to: preLink.collectionKey,
+                                                  destinationPolicy: .preserveExisting, in: context)
+
+            let operationIDs = try moveReportClaims(claims, from: linkedKey, fromPriceKey: fromPriceKey,
+                                                    to: row, at: unlinkedAt)
+            report.linkedAt = nil
+            report.unlinkedAt = unlinkedAt
+            report.preLinkIdentity = nil
+            report.linkOperationIDs = []
+            // A collector who undid a link decides what happens next.
+            report.reviewStateRaw = UnverifiedReport.ReviewState.needsReview.rawValue
+            row.unverifiedReportJSON = try report.encodedJSON()
+            let activity = try appendActivity(row, source: .correction, kind: .corrected, deltaQuantity: 0,
+                                              ledgerOperationIDs: operationIDs, occurredAt: unlinkedAt)
+            if savesChanges { try commit() }
+            return CollectionMutation(collectionKey: row.collectionKey, activityID: activity.id, didInsert: false,
+                                      ledgerOperationIDs: operationIDs)
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// Records what the evaluator decided, so the same revision is not
+    /// evaluated again. Only the report JSON changes; identity never does.
+    func recordReportEvaluation(reportID: UUID, expectedReportJSON: String, catalogRevision: Int,
+                                state: UnverifiedReport.ReviewState) throws {
+        do {
+            let rows = try reportRows(reportID: reportID)
+            guard rows.count == 1, let row = rows.first, row.isUnverified,
+                  row.unverifiedReportJSON == expectedReportJSON,
+                  var report = row.unverifiedReport, report.isUnderstood else {
+                throw CollectionStoreError.staleReport
+            }
+            report.lastEvaluatedCatalogRevision = catalogRevision
+            report.reviewStateRaw = state.rawValue
+            row.unverifiedReportJSON = try report.encodedJSON()
+            try commit()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// The collector reviewed the report and chose to keep it unverified. It
+    /// waits for the next catalog revision instead of asking again.
+    func keepReportUnverified(reportID: UUID, expectedReportJSON: String) throws {
+        do {
+            let rows = try reportRows(reportID: reportID)
+            guard rows.count == 1, let row = rows.first, row.isUnverified,
+                  row.unverifiedReportJSON == expectedReportJSON,
+                  var report = row.unverifiedReport, report.isUnderstood else {
+                throw CollectionStoreError.staleReport
+            }
+            report.reviewStateRaw = UnverifiedReport.ReviewState.waiting.rawValue
+            report.reviewDismissedAt = .now
+            row.unverifiedReportJSON = try report.encodedJSON()
+            try commit()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// One dated two-leg correction per claim, appended to that claim's
+    /// lineage so later removals and undo validate under the new key. Every
+    /// activity on the old key follows the row; the ledger is only appended to.
+    private func moveReportClaims(
+        _ claims: [CollectionActivity], from oldKey: String, fromPriceKey: String,
+        to row: CollectedCard, at date: Date
+    ) throws -> [UUID] {
+        var operationIDs: [UUID] = []
+        for claim in claims {
+            let operationID = UUID()
+            let legs = ledger.recordCorrection(fromCollectionKey: oldKey, fromPriceStorageKey: fromPriceKey,
+                                               toCard: row, source: .correction, quantity: claim.claimedQuantity,
+                                               occurredAt: date, operationID: operationID)
+            try requireAppended(legs.from)
+            try requireAppended(legs.to)
+            claim.ledgerOperationIDs += [operationID]
+            operationIDs.append(operationID)
+        }
+        for activity in try activities(forKey: oldKey) {
+            activity.collectionKey = row.collectionKey
+            activity.name = row.name
+            activity.setName = row.setName
+            activity.setCode = row.setCode
+            activity.cardNumber = row.cardNumber
+            activity.variantID = row.variantID
+            activity.variantLabel = row.variantLabel
+            activity.pokemonPrintRunRaw = row.pokemonPrintRunRaw
+        }
+        return operationIDs
+    }
+
     /// Imported entries retain a synthetic storage key after catalog
     /// normalization. The real provider id is still authoritative for deciding
     /// whether a catalog selection is another copy of that same physical object.
@@ -4794,7 +5501,10 @@ struct CollectionStore {
                 }
             )
         ).filter {
-            $0.variantID == variantID
+            // A report row is a different, unverified object even when its
+            // fields resemble this printing.
+            !$0.hasReport
+                && $0.variantID == variantID
                 && (pokemonPrintRun == .unlimited
                     ? ($0.pokemonPrintRun == .unlimited || $0.pokemonPrintRun == nil)
                     : $0.pokemonPrintRun == pokemonPrintRun)
@@ -5697,6 +6407,8 @@ struct CollectionStore {
         source: CollectionActivitySource = .correction
     ) throws -> CollectionMutation? {
         guard quantity > 0, corrected.variant != card.variant else { return nil }
+        // A report's identity changes only through its link or undo.
+        guard !card.hasReport else { throw CollectionStoreError.reportRowProtected }
 
         do {
             try requireMaintainableGame(card.cardGame)
@@ -5791,7 +6503,7 @@ struct CollectionStore {
                 existing.variantLabel = corrected.variant?.label
                 let provenanceRank: (VariantResolution) -> Int = { resolution in
                     switch resolution {
-                    case .userConfirmed, .imported: return 3
+                    case .userConfirmed, .imported, .linkedFromReport: return 3
                     case .finishLock, .printedLabel: return 2
                     case .uniqueInCatalog, .deterministicSetRule: return 1
                     case .catalogSilent: return 0
@@ -5953,6 +6665,7 @@ struct CollectionStore {
         mode: CollectionVariantCorrectionMode
     ) throws -> CollectionMutation? {
         guard !claims.isEmpty, corrected.variant != card.variant else { return nil }
+        guard !card.hasReport else { throw CollectionStoreError.reportRowProtected }
         try requireMaintainableGame(card.cardGame)
         guard claims.allSatisfy({
             $0.quantity > 0 && $0.quantity <= CollectionQuantityLimits.maximum
@@ -6144,7 +6857,7 @@ struct CollectionStore {
                 existing.variantLabel = corrected.variant?.label
                 let provenanceRank: (VariantResolution) -> Int = { resolution in
                     switch resolution {
-                    case .userConfirmed, .imported: return 3
+                    case .userConfirmed, .imported, .linkedFromReport: return 3
                     case .finishLock, .printedLabel: return 2
                     case .uniqueInCatalog, .deterministicSetRule: return 1
                     case .catalogSilent: return 0
@@ -6351,6 +7064,9 @@ struct RemovedCardSnapshot: Identifiable, Codable, Sendable {
     let variantResolution: VariantResolution
     let identityResolution: IdentityResolution
     let setReleaseOrder: Int
+    /// Optional so snapshots written before unverified reports existed decode.
+    /// A restored unverified copy keeps its report and its marker-bearing key.
+    var unverifiedReportJSON: String?
 
     init(card: CollectedCard, quantity: Int? = nil) {
         collectionKey = card.collectionKey
@@ -6390,6 +7106,7 @@ struct RemovedCardSnapshot: Identifiable, Codable, Sendable {
         variantResolution = card.variantResolution ?? .catalogSilent
         identityResolution = card.identityResolution ?? .printedIdentifier
         setReleaseOrder = card.setReleaseOrder
+        unverifiedReportJSON = card.unverifiedReportJSON
     }
 
     /// Re-materialises the collection row. Ownership accounting is
@@ -6420,6 +7137,9 @@ struct RemovedCardSnapshot: Identifiable, Codable, Sendable {
                let magicContentKindRaw,
                magicContentKindRaw != MagicContentKind.regular.rawValue {
                 existing.magicContentKindRaw = magicContentKindRaw
+            }
+            if existing.unverifiedReportJSON == nil {
+                existing.unverifiedReportJSON = unverifiedReportJSON
             }
             for row in rows where row !== existing {
                 context.delete(row)
@@ -6467,6 +7187,7 @@ struct RemovedCardSnapshot: Identifiable, Codable, Sendable {
             restored.certificationNumber = certificationNumber
             restored.marketRegionRaw = marketRegionRaw
             restored.magicContentKindRaw = magicContentKindRaw ?? MagicContentKind.regular.rawValue
+            restored.unverifiedReportJSON = unverifiedReportJSON
             context.insert(restored)
         }
 

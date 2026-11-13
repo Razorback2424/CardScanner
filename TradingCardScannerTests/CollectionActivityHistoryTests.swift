@@ -543,7 +543,16 @@ final class CollectionActivityHistoryTests: XCTestCase {
     func testCatalogAcquisitionRetainsEditionAndRejectsInvalidQuoteWithoutLosingCopy() async throws {
         let context = try makeDetailMetadataContext()
         let writer = await ScannerCollectionWriter.makeBackground(modelContainer: context.container)
-        let details = rawCatalogDetails()
+        // 1st Edition exists only for WotC-era sets; Base Set Alakazam is a real 1st Edition holo.
+        let payload = """
+        {"id":"base1-1","localId":"1","name":"Alakazam",
+         "set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},
+         "variants":{"normal":false,"holo":true,"reverse":false,"firstEdition":true}}
+        """
+        let details = CatalogCardDetails(
+            card: .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(payload.utf8)), setCode: "BS"),
+            set: CatalogSet(catalogID: .init(game: .pokemon, providerID: "base1"), name: "Base Set",
+                code: "BS", logoURL: nil, symbolURL: nil, cardCount: nil, releaseDate: nil, sortRank: 1))
         let receipt = try await writer.addCatalog(details, resolved: .init(variant: .holo, resolution: .userConfirmed),
             pokemonPrintRun: .firstEdition, shouldContinue: { true })
         XCTAssertFalse(receipt.catalogLookup.hasObservation)

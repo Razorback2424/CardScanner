@@ -20,6 +20,7 @@
 		F35A00000000000000000009 /* pokemon-delta-reign-printings.json in Resources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000009; };
 		D704E6EDC8D949928AA039F1 /* OnePieceAvailabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D704E6EDC8D949928AA039F2; };
 		F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */ = {isa = PBXBuildFile; fileRef = F11D00000000000000000091 /* OnePieceOwnerCatalog */; };
+		F11D00000000000000000094 /* PokemonCatalogRelease in Resources */ = {isa = PBXBuildFile; fileRef = F11D00000000000000000095 /* PokemonCatalogRelease */; };
 		F11D00000000000000000092 /* one-piece-catalog-release.json in Resources */ = {isa = PBXBuildFile; fileRef = F11D00000000000000000093 /* one-piece-catalog-release.json */; };
 		C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */ = {isa = PBXBuildFile; fileRef = E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */; settings = {COMPILER_FLAGS = "-O2 -ffp-contract=off"; }; };
 		A0010070 /* CollectionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010070 /* CollectionActivity.swift */; };
@@ -80,6 +81,7 @@
 		A0010191 /* UnresolvedScanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010191 /* UnresolvedScanStore.swift */; };
 		A0090901 /* ScanSessionMetricsLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090901 /* ScanSessionMetricsLog.swift */; };
 		A0010192 /* UnresolvedScanDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010192 /* UnresolvedScanDetailView.swift */; };
+		E7A0F00D00000000000000A4 /* UnverifiedReportViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A0F00D00000000000000B4 /* UnverifiedReportViews.swift */; };
 		A0010006 /* TCGdexService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010006 /* TCGdexService.swift */; };
 		A0090301 /* PokemonTCGCSVMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090301 /* PokemonTCGCSVMapping.swift */; };
 		A0090302 /* PokemonTCGCSVPriceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090302 /* PokemonTCGCSVPriceService.swift */; };
@@ -105,6 +107,7 @@
 		A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F1 /* HistoricalCatalogRequestTests.swift */; };
 		A0020004 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0020002 /* XCTest.framework */; };
 		A0010020 /* CardVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010020 /* CardVariant.swift */; };
+		E7A0F00D00000000000000A1 /* UnverifiedReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A0F00D00000000000000B1 /* UnverifiedReport.swift */; };
 		F10A00000000000000000001 /* CardGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00000000000000000001 /* CardGame.swift */; };
 		F10A00000000000000000002 /* CardGameRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00000000000000000002 /* CardGameRegistry.swift */; };
 		F11A00000000000000000001 /* GameRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11B00000000000000000001; };
@@ -155,6 +158,7 @@
 		A00300B1 /* CameraRotationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300B1 /* CameraRotationTests.swift */; };
 		A0020011 /* VariantResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020011 /* VariantResolverTests.swift */; };
 		A0020012 /* CollectionKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020012 /* CollectionKeyTests.swift */; };
+		E7A0F00D00000000000000A2 /* UnverifiedReportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A0F00D00000000000000B2 /* UnverifiedReportTests.swift */; };
 		F10A00000000000000000003 /* CardGameForwardCompatibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00000000000000000003 /* CardGameForwardCompatibilityTests.swift */; };
 		A0010030 /* PriceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010030 /* PriceRecord.swift */; };
 		A0010031 /* PriceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010031 /* PriceProvider.swift */; };
@@ -166,6 +170,7 @@
 		A00100F1 /* CollectionProjectionActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F1 /* CollectionProjectionActor.swift */; };
 		A00100F2 /* StoreRevisionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F2 /* StoreRevisionMonitor.swift */; };
 		A00100D0 /* PriceRefreshTargets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D0 /* PriceRefreshTargets.swift */; };
+		E7A0F00D00000000000000A3 /* UnverifiedReportEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A0F00D00000000000000B3 /* UnverifiedReportEvaluator.swift */; };
 		AC181001 /* CardMarketHistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC181001 /* CardMarketHistoryService.swift */; };
 		A00100D1 /* BackgroundPriceRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D1 /* BackgroundPriceRefresh.swift */; };
 		A00100D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D2 /* AppDelegate.swift */; };
@@ -404,6 +409,7 @@
 		F35B00000000000000000009 /* pokemon-delta-reign-printings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/pokemon-delta-reign-printings.json; sourceTree = SOURCE_ROOT; };
 		D704E6EDC8D949928AA039F2 /* OnePieceAvailabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceAvailabilityTests.swift; sourceTree = "<group>"; };
 		F11D00000000000000000091 /* OnePieceOwnerCatalog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = OnePieceOwnerCatalog; sourceTree = "<group>"; };
+		F11D00000000000000000095 /* PokemonCatalogRelease */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PokemonCatalogRelease; sourceTree = "<group>"; };
 		F11D00000000000000000093 /* one-piece-catalog-release.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "OnePieceCatalogSeed/one-piece-catalog-release.json"; sourceTree = "<group>"; };
 		E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CardCenteringPixelKernels.c; sourceTree = "<group>"; };
 		86E86CDA24A14713B91EEEB7 /* CardCenteringPixelKernels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CardCenteringPixelKernels.h; sourceTree = "<group>"; };
@@ -465,6 +471,7 @@
 		B0010191 /* UnresolvedScanStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnresolvedScanStore.swift; sourceTree = "<group>"; };
 		B0090901 /* ScanSessionMetricsLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSessionMetricsLog.swift; sourceTree = "<group>"; };
 		B0010192 /* UnresolvedScanDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnresolvedScanDetailView.swift; sourceTree = "<group>"; };
+		E7A0F00D00000000000000B4 /* UnverifiedReportViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnverifiedReportViews.swift; sourceTree = "<group>"; };
 		B0010006 /* TCGdexService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGdexService.swift; sourceTree = "<group>"; };
 		B0090301 /* PokemonTCGCSVMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonTCGCSVMapping.swift; sourceTree = "<group>"; };
 		B0090302 /* PokemonTCGCSVPriceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonTCGCSVPriceService.swift; sourceTree = "<group>"; };
@@ -493,6 +500,7 @@
 		B0020002 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
 		B0020099 /* TradingCardScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TradingCardScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0010020 /* CardVariant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardVariant.swift; sourceTree = "<group>"; };
+		E7A0F00D00000000000000B1 /* UnverifiedReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnverifiedReport.swift; sourceTree = "<group>"; };
 		F10B00000000000000000001 /* CardGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGame.swift; sourceTree = "<group>"; };
 		F10B00000000000000000002 /* CardGameRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGameRegistry.swift; sourceTree = "<group>"; };
 		F11B00000000000000000001 /* GameRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GameRecognitionAdapter.swift; sourceTree = "<group>"; };
@@ -543,6 +551,7 @@
 		B00300B1 /* CameraRotationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationTests.swift; sourceTree = "<group>"; };
 		B0020011 /* VariantResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantResolverTests.swift; sourceTree = "<group>"; };
 		B0020012 /* CollectionKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionKeyTests.swift; sourceTree = "<group>"; };
+		E7A0F00D00000000000000B2 /* UnverifiedReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnverifiedReportTests.swift; sourceTree = "<group>"; };
 		F10B00000000000000000003 /* CardGameForwardCompatibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGameForwardCompatibilityTests.swift; sourceTree = "<group>"; };
 		B0010030 /* PriceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRecord.swift; sourceTree = "<group>"; };
 		B0010031 /* PriceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceProvider.swift; sourceTree = "<group>"; };
@@ -554,6 +563,7 @@
 		B00100F1 /* CollectionProjectionActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionProjectionActor.swift; sourceTree = "<group>"; };
 		B00100F2 /* StoreRevisionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreRevisionMonitor.swift; sourceTree = "<group>"; };
 		B00100D0 /* PriceRefreshTargets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshTargets.swift; sourceTree = "<group>"; };
+		E7A0F00D00000000000000B3 /* UnverifiedReportEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnverifiedReportEvaluator.swift; sourceTree = "<group>"; };
 		BC181001 /* CardMarketHistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardMarketHistoryService.swift; sourceTree = "<group>"; };
 		B00100D1 /* BackgroundPriceRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundPriceRefresh.swift; sourceTree = "<group>"; };
 		B00100D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -834,6 +844,7 @@
 				B0010128 /* MagicCatalogSeed */,
 				B001019B /* MagicHistoricalPilot */,
 				F11D00000000000000000091 /* OnePieceOwnerCatalog */,
+				F11D00000000000000000095 /* PokemonCatalogRelease */,
 				F11D00000000000000000093 /* one-piece-catalog-release.json */,
 			);
 			path = TradingCardScanner;
@@ -921,6 +932,7 @@
 				B0010002 /* CollectedCard.swift */,
 				B0010003 /* TCGdexCard.swift */,
 				B0010020 /* CardVariant.swift */,
+				E7A0F00D00000000000000B1 /* UnverifiedReport.swift */,
 				F15B00000000000000000002,
 				F10B00000000000000000001 /* CardGame.swift */,
 				F10B00000000000000000002 /* CardGameRegistry.swift */,
@@ -1022,6 +1034,7 @@
 				B00100F1 /* CollectionProjectionActor.swift */,
 				B00100F2 /* StoreRevisionMonitor.swift */,
 				B00100D0 /* PriceRefreshTargets.swift */,
+				E7A0F00D00000000000000B3 /* UnverifiedReportEvaluator.swift */,
 				BC181001 /* CardMarketHistoryService.swift */,
 				B00100D1 /* BackgroundPriceRefresh.swift */,
 				B0010034 /* CollectionQuery.swift */,
@@ -1084,6 +1097,7 @@
 				B0010009 /* ScannerViewModel.swift */,
 				B0010010 /* ScannerView.swift */,
 				B0010192 /* UnresolvedScanDetailView.swift */,
+				E7A0F00D00000000000000B4 /* UnverifiedReportViews.swift */,
 				B0010017 /* ScannerSettingsView.swift */,
 				B0010012 /* CollectionView.swift */,
 				B0010013 /* CollectionCardDetailView.swift */,
@@ -1154,6 +1168,7 @@
 				B00300B1 /* CameraRotationTests.swift */,
 				B0020011 /* VariantResolverTests.swift */,
 				B0020012 /* CollectionKeyTests.swift */,
+				E7A0F00D00000000000000B2 /* UnverifiedReportTests.swift */,
 				F10B00000000000000000003 /* CardGameForwardCompatibilityTests.swift */,
 				F18B00000000000000000004,
 				F17B00000000000000000006,
@@ -1382,6 +1397,7 @@
 				F30A00000000000000000014 /* LorcanaCatalogSeed in Resources */,
 				A001019B /* MagicHistoricalPilot in Resources */,
 				F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */,
+				F11D00000000000000000094 /* PokemonCatalogRelease in Resources */,
 				F11D00000000000000000092 /* one-piece-catalog-release.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1491,6 +1507,7 @@
 				A0010009 /* ScannerViewModel.swift in Sources */,
 				A0010010 /* ScannerView.swift in Sources */,
 				A0010192 /* UnresolvedScanDetailView.swift in Sources */,
+				E7A0F00D00000000000000A4 /* UnverifiedReportViews.swift in Sources */,
 				A0010012 /* CollectionView.swift in Sources */,
 				A0010013 /* CollectionCardDetailView.swift in Sources */,
 				A0010014 /* ContentView.swift in Sources */,
@@ -1503,6 +1520,7 @@
 				A00300A1 /* CameraRotationTracker.swift in Sources */,
 				A0010016 /* ScannerSettingsView.swift in Sources */,
 				A0010020 /* CardVariant.swift in Sources */,
+				E7A0F00D00000000000000A1 /* UnverifiedReport.swift in Sources */,
 				F10A00000000000000000001 /* CardGame.swift in Sources */,
 				F10A00000000000000000002 /* CardGameRegistry.swift in Sources */,
 				F11A00000000000000000001 /* GameRecognitionAdapter.swift in Sources */,
@@ -1591,6 +1609,7 @@
 				A00100F1 /* CollectionProjectionActor.swift in Sources */,
 				A00100F2 /* StoreRevisionMonitor.swift in Sources */,
 				A00100D0 /* PriceRefreshTargets.swift in Sources */,
+				E7A0F00D00000000000000A3 /* UnverifiedReportEvaluator.swift in Sources */,
 				AC181001 /* CardMarketHistoryService.swift in Sources */,
 				A00100D1 /* BackgroundPriceRefresh.swift in Sources */,
 				A0010034 /* CollectionQuery.swift in Sources */,
@@ -1686,6 +1705,7 @@
 				A00300B1 /* CameraRotationTests.swift in Sources */,
 				A0020011 /* VariantResolverTests.swift in Sources */,
 				A0020012 /* CollectionKeyTests.swift in Sources */,
+				E7A0F00D00000000000000A2 /* UnverifiedReportTests.swift in Sources */,
 				F10A00000000000000000003 /* CardGameForwardCompatibilityTests.swift in Sources */,
 				F18A00000000000000000004,
 				F17A00000000000000000006,
@@ -1988,7 +2008,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) LOCAL_ONLY_SIGNING NO_CLOUDKIT LOCAL_COLLECTOR_TOOLS";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) LOCAL_ONLY_SIGNING NO_CLOUDKIT LOCAL_COLLECTOR_TOOLS UNVERIFIED_REPORTS_LOCAL_BETA";
 				SWIFT_VERSION = 5.0;
 				SWIFT_OBJC_BRIDGING_HEADER = TradingCardScanner/Services/CardCenteringPixelKernels.h;
 				TARGETED_DEVICE_FAMILY = "1,2";

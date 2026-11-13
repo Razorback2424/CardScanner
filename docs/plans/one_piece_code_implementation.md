@@ -1,8 +1,21 @@
 # One Piece implementation and verification ledger
 
-**Status:** implementation in progress; no One Piece production support enabled.
+**Status:** Release enables One Piece from signed production revision 2
+(rollout `remote-authority`, collection writes on). Device acceptance is open.
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
+
+**Production revision 2 — 2026-11-12.** The owner revision 10 inputs were
+rebuilt as production revision 2 on signed production revision 1. The payload
+differs from owner revision 10 only in its revision number, and all 4,383
+printing IDs match. GitHub run `43348336714` signed it with
+`one-piece-production-2026-10-23-01`; the local verification against the app
+pin and revision 1 matched the workflow manifest. Payload SHA-256
+`888c0a69a85b163681db78ae486f20ddaa2266e494a9f34b296498fdb85c7d90`, envelope
+SHA-256 `afff30b896bcbb72854e0557aa9781496e3e7999477861601679916697505c36`.
+The app bundles this envelope in `OnePieceCatalogSeed`. This supersedes the
+earlier unsigned production revision 2 plan built on the revision 8 registry.
+Artifacts are on T7 under `CodexBuilds/OnePieceProductionR2-20261112`.
 
 **EB-05 set listing — 2026-11-12.** Owner revision 10 changes only the
 EB-05 product record. Revision 9 listed EB-05 under its raw Bandai series

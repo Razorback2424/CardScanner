@@ -1,7 +1,9 @@
-// Disabled until reviewed catalog data, a dedicated public key and a hosted
-// signed release are approved. No Pokémon/Magic key is inherited here.
-ONE_PIECE_CATALOG_ROLLOUT_MODE = disabled
+// The app bundles the signed production release from OnePieceCatalogSeed and
+// accepts newer releases from the hosted pointer only when they verify against
+// this dedicated pin. No Pokémon/Magic key is inherited here.
+ONE_PIECE_CATALOG_ROLLOUT_MODE = remote-authority
 ONE_PIECE_CATALOG_BASE_URL = https:/$()/catalog.scan-stash.com
 ONE_PIECE_CATALOG_PINNED_KEYS = one-piece-production-2026-10-23-01:DS0obpkWKBur/m9zFvZxRz6hdZFXGTsAqtAUI780hbA=
-// Enable only after retiring all older private installs and recording sync acceptance.
-ONE_PIECE_COLLECTION_WRITES = NO
+// Owner-approved on 2026-11-12. The Release configuration is on-device only
+// (NO_CLOUDKIT), so no older synced client receives One Piece rows there.
+ONE_PIECE_COLLECTION_WRITES = YES

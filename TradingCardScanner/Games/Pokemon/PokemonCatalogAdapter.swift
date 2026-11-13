@@ -532,7 +532,7 @@ actor PokemonCatalogEngine {
                 switch error {
                 case .cardNotFound, .identityMismatch, .invalidURL:
                     throw error
-                case .badResponse:
+                case .badResponse, .providerUnavailable:
                     await breaker.recordFailure(.serverError)
                 }
             } catch {
@@ -541,11 +541,14 @@ actor PokemonCatalogEngine {
             }
         }
 
+        // Reaching the fallback means TCGdex was skipped by its open circuit or
+        // failed; a confirmed TCGdex miss already threw above. An empty
+        // fallback is therefore not evidence that the card is missing.
         guard let fallback = try await source.fetchPokemonTCGCard(
             setID: setDefinition.tcgdexSetID,
             cardNumber: cardNumber
         ) else {
-            throw TCGdexError.cardNotFound
+            throw TCGdexError.providerUnavailable
         }
         let card = try fallbackPokemonCard(
             fallback,
@@ -586,7 +589,7 @@ actor PokemonCatalogEngine {
                 switch error {
                 case .cardNotFound, .identityMismatch, .invalidURL:
                     throw error
-                case .badResponse:
+                case .badResponse, .providerUnavailable:
                     await breaker.recordFailure(.serverError)
                 }
             } catch {
@@ -595,11 +598,12 @@ actor PokemonCatalogEngine {
             }
         }
 
+        // See `resolveModernPokemon`: an empty fallback is not a catalog miss.
         guard let fallback = try await source.fetchPokemonTCGCard(
             setID: setDefinition.tcgdexSetID,
             cardNumber: localID
         ) else {
-            throw TCGdexError.cardNotFound
+            throw TCGdexError.providerUnavailable
         }
         let card = try fallbackPokemonCard(
             fallback,

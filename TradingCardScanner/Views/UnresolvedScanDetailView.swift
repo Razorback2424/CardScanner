@@ -16,6 +16,7 @@ struct UnresolvedScanDetailView: View {
     @State private var englishConfirmed = false
     @State private var isPreparingResolution = false
     @State private var resolutionTask: Task<Void, Never>?
+    @State private var isAddingUnverified = false
     private var requiresEnglish: Bool {
         scan.identifier.needsMagicEnglishConfirmation || scan.identifier.needsOnePieceEnglishConfirmation
     }
@@ -138,6 +139,25 @@ struct UnresolvedScanDetailView: View {
                         isShowingCatalogSearch = true
                     }
                 }
+
+                if UnverifiedReportsFeature.isEnabled, scan.game == .pokemon, scan.reason.isCatalogLookupOutage {
+                    Section {
+                        Text("Scan Stash couldn't check the catalog, so it can't tell yet whether this card is listed. Retry the lookup when you're back online.")
+                            .foregroundStyle(.secondary)
+                            .accessibilityIdentifier("recovery-unverified-unavailable")
+                    }
+                } else if UnverifiedReportsFeature.isEnabled, scan.game == .pokemon, scan.reason.offersUnverifiedReport {
+                    Section {
+                        Button("Add unverified card", systemImage: "questionmark.diamond") {
+                            isAddingUnverified = true
+                        }
+                        .accessibilityIdentifier("recovery-add-unverified")
+                    } header: {
+                        Text("Not in the catalog yet")
+                    } footer: {
+                        Text("For a card from a set Scan Stash doesn't list yet. It's saved without a price.")
+                    }
+                }
             }
 
             Section {
@@ -155,6 +175,16 @@ struct UnresolvedScanDetailView: View {
             if !exists { dismiss() }
         }
         .onDisappear { resolutionTask?.cancel() }
+        .sheet(isPresented: $isAddingUnverified) {
+            UnverifiedReportForm(mode: .unknownSet(observedIdentity), allowsQuantity: true) { report, quantity in
+                let failure = await model.addUnverifiedCard(report, quantity: quantity)
+                if failure == nil {
+                    onDismissRow()
+                    dismiss()
+                }
+                return failure
+            }
+        }
         .sheet(isPresented: $isShowingPrintingDetails) {
             PrintingChoiceDetails(candidates: scan.printingCandidates, onChoose: { selected in
                 isShowingPrintingDetails = false
@@ -192,6 +222,14 @@ struct UnresolvedScanDetailView: View {
                     }
             }
         }
+    }
+
+    /// The set code and number exactly as the scan read them.
+    private var observedIdentity: UnverifiedReport.ObservedIdentity {
+        if case let .pokemon(setCode, cardNumber, _, _) = scan.identifier.legacyIdentity {
+            return .init(setCode: setCode, setName: nil, number: cardNumber, name: nil)
+        }
+        return .init(setCode: "", setName: nil, number: scan.pokemonNumber?.localID ?? "", name: nil)
     }
 
     private func resolve(_ choice: UnresolvedResolutionChoice) {

@@ -19,6 +19,8 @@ struct ScanReviewSheet: View {
     @State private var isConfirmingDelete = false
     @State private var correctionFailure: String?
     @State private var isUpdatingCorrection = false
+    @State private var isReportingVariant = false
+    @State private var didReportVariant = false
 
     init(
         scan: RecentScan,
@@ -52,6 +54,15 @@ struct ScanReviewSheet: View {
                     identity
                     if scan.subject.slab == nil {
                         variantSection
+                        if canReportVariant {
+                            Button("Not listed? Report a different variant", systemImage: "questionmark.diamond") {
+                                isReportingVariant = true
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .frame(minHeight: 44)
+                            .disabled(isUpdatingCorrection)
+                            .accessibilityIdentifier("scan-report-variant")
+                        }
                     }
                     scanPrice
                     if let destination = TCGplayerLinkBuilder.destination(
@@ -85,6 +96,16 @@ struct ScanReviewSheet: View {
                     Button("Done") { dismiss() }
                 }
             }
+            .sheet(isPresented: $isReportingVariant, onDismiss: {
+                if didReportVariant { dismiss() }
+            }) {
+                UnverifiedReportForm(mode: .knownCard(baseProviderID: scan.card.providerID, cardName: scan.card.name),
+                                     allowsQuantity: false) { report, _ in
+                    let failure = await model.reportDifferentVariant(scanID: scan.id, report: report)
+                    if failure == nil { didReportVariant = true }
+                    return failure
+                }
+            }
             .confirmationDialog(
                 "Undo this scan?",
                 isPresented: $isConfirmingDelete,
@@ -100,6 +121,12 @@ struct ScanReviewSheet: View {
                 Button("Cancel", role: .cancel) {}
             }
         }
+    }
+
+    /// Moving the copy needs its own acquisition; a duplicate-copy receipt
+    /// without one keeps using the ordinary finish correction.
+    private var canReportVariant: Bool {
+        UnverifiedReportsFeature.isEnabled && scan.card.game == .pokemon && scan.mutation.activityID != nil
     }
 
     private var currentScan: RecentScan {
