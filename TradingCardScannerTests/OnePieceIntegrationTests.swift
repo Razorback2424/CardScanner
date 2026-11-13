@@ -698,6 +698,39 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertFalse(container.registry.supports(.onePiece, .collectionWrite))
         XCTAssertNotNil(runtime.activationSource)
     }
+
+    /// The distribution configuration enables One Piece from the bundled
+    /// production release, which carries the same reviewed records as the
+    /// owner catalog, including the dated EB-05 set.
+    func testProductionConfigurationEnablesTheBundledSignedRelease() async throws {
+        let configuration = try OnePieceCatalogBootstrapConfiguration.configured(bundle: .main)
+        XCTAssertEqual(configuration.mode, .remoteAuthority)
+        XCTAssertTrue(configuration.collectionWrites)
+        XCTAssertEqual(configuration.endpoint?.absoluteString, "https://catalog.scan-stash.com/one-piece/v1/current.json")
+        let url = try XCTUnwrap(Bundle.main.url(forResource: "one-piece-catalog-release", withExtension: "json"))
+        let seed = try Data(contentsOf: url)
+        let envelope = try JSONDecoder().decode(OnePieceCatalogReleaseEnvelope.self, from: seed)
+        XCTAssertEqual(envelope.keyID, "one-piece-production-2026-10-23-01")
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceProduction-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.runtime(configuration: configuration, seed: seed, root: root))
+        XCTAssertTrue(runtime.descriptor.capabilities.isSuperset(of: [.scan, .browse, .collectionWrite]))
+        let container = try CardGameRuntimeContainer(runtimes: [runtime])
+        XCTAssertTrue(container.registry.supports(.onePiece, .collectionWrite))
+
+        let sets = try await XCTUnwrap(runtime.browse).sets()
+        let eb05 = try XCTUnwrap(sets.first { $0.providerID == "product:bandai-series:569205" })
+        XCTAssertEqual(eb05.name, "Extra Booster: One Piece Heroines Edition Vol. 2 · EB05")
+        XCTAssertEqual(eb05.releaseDate, OnePieceTextNormalization.releaseDate("2026-10-30"))
+
+        // The production release keeps every owner printing identity, so an
+        // existing collection keeps its links when the owner build moves to it.
+        let production = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter).registry
+        let owner = try XCTUnwrap(XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime()).catalog as? OnePieceCatalogAdapter).registry
+        XCTAssertEqual(production.verifiedRelease.release.revision, 2)
+        XCTAssertEqual(Set(production.printingByID.keys), Set(owner.printingByID.keys))
+        XCTAssertEqual(production.printingByID.count, 4383)
+    }
     private var now: Date { ISO8601DateFormatter().date(from: date)! }
 
     func testNoChangeRecoveryRetainsExistingActivationSource() async throws {
