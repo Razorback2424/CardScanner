@@ -1320,8 +1320,114 @@ final class LorcanaPricingTests: XCTestCase {
         _ = await worker.run(.init(usesPriceFallback: false,includeImported: true,forceUnsupportedRetry: true,
             sortOldestFirst: false,maximumTargetCount: nil,markRecentlyCheckedIfEmpty: false),progress:{_ in},shouldContinue:nil)
         XCTAssertEqual(try ModelContext(host).fetch(FetchDescriptor<PriceRecord>()).filter { $0.effectiveUnitMarketPriceUSD != nil }.count,8)
-        try JSONSerialization.data(withJSONObject:["catalogGeneration":catalog.generation,"observations":observations],options:[.prettyPrinted,.sortedKeys])
+        let scanAndBrowse = try await verifyLiveBundledScanAndBrowse(bound, host: host, catalog: catalog)
+        try JSONSerialization.data(withJSONObject: ["catalogGeneration": catalog.generation, "observations": observations,
+            "scanAndBrowse": scanAndBrowse], options: [.prettyPrinted, .sortedKeys])
             .write(to:documents.appendingPathComponent("lorcana-normal-live-results.json"),options:.atomic)
+    }
+
+    private func verifyLiveBundledScanAndBrowse(
+        _ bound: CardGameRuntimeContainer, host: ModelContainer, catalog: LorcanaDiscoveryCatalog
+    ) async throws -> [[String: Any]] {
+        struct Sample {
+            let footer: String
+            let search: String
+            let printingID: String
+            let finish: LorcanaPhysicalFinish
+            let lane: String?
+            var choiceLabel: String? = nil
+        }
+        let samples = [
+            Sample(footer: "4B/204 EN 3", search: "Dalmatian Puppy 4B/204",
+                printingID: "0166bc51-ce5d-4c13-b963-581376b2a987", finish: .foil, lane: "tcgplayer:532868:Cold Foil"),
+            Sample(footer: "39/204 EN 2", search: "Elsa 39/204",
+                printingID: "5aef8e27-00d3-4e9c-9416-fb3c758f2e83", finish: .foil, lane: "tcgplayer:618771:Cold Foil",
+                choiceLabel: "Continuous branch"),
+            Sample(footer: "57/204 EN 14", search: "Merlin 57/204",
+                printingID: "475e8a6d-ca55-4265-b9e8-d7b9bd269a96", finish: .rainbowPillarsFoil, lane: "tcgplayer:722407:Holofoil"),
+            Sample(footer: "10/C1 EN 1", search: "A Whole New World 10/C1",
+                printingID: "2f83238e-2f46-4605-8856-c0dbf3b3581f", finish: .foil, lane: nil)
+        ]
+        let browse = bound.makeBrowseCatalog()
+        let model = bound.makeScannerModel()
+        let recognizer = LorcanaDiscoveryRecognizer(catalog: catalog)
+        let formatter = ISO8601DateFormatter()
+        model.start(context: host.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+        defer { model.viewDisappeared() }
+        var observations: [[String: Any]] = []
+        for sample in samples {
+            let page = try await browse.searchCards(named: sample.search, game: .lorcana, setIDs: [], cursor: nil)
+            let summary = try XCTUnwrap(page.items.first { $0.providerID == sample.printingID }, sample.search)
+            let details = try await browse.details(for: summary)
+            let finish = sample.finish.variant
+            XCTAssertEqual(details.card.identifier, sample.footer)
+            XCTAssertNil(details.collectionWriteUnavailableReason)
+            XCTAssertTrue(details.card.variantEvidence.catalogVariants.contains(finish))
+            let browseQuote: PriceLookup
+            do {
+                browseQuote = try await browse.price(for: summary, variant: finish)
+            } catch PriceQuoteError.mappingUnavailable where sample.lane == nil {
+                // Browse's price panel presents this explicit mapping gap as unavailable.
+                browseQuote = .unavailable(nil)
+            } catch {
+                XCTFail("Browse quote for \(sample.footer) / \(finish.label) failed: \(error)")
+                return observations
+            }
+
+            guard case let .identified(subject) = recognizer.identify([.init(text: sample.footer)]) else {
+                XCTFail("Scan must recognize \(sample.footer)")
+                return observations
+            }
+            model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+            if let label = sample.choiceLabel {
+                let choiceReady = await waitUntil { model.pendingIdentityChoice != nil && !model.isIdentificationProcessingForTesting }
+                XCTAssertTrue(choiceReady, sample.footer)
+                let choices = try XCTUnwrap(model.pendingIdentityChoice).displayCandidates
+                XCTAssertEqual(choices.count, 2)
+                let candidate = try XCTUnwrap(choices.first { $0.treatmentLabel == label })
+                XCTAssertEqual(candidate.id, sample.printingID)
+                model.choose(candidate)
+            }
+            let finishReady = await waitUntil { model.pendingChoice != nil }
+            XCTAssertTrue(finishReady, sample.footer)
+            let choice = try XCTUnwrap(model.pendingChoice)
+            XCTAssertEqual(choice.card.physicalPrintingID, sample.printingID)
+            XCTAssertEqual(Set(choice.options), Set(details.card.variantEvidence.catalogVariants))
+            model.choose(finish)
+            let receiptReady = await waitUntil {
+                model.sessionScans.first?.card.physicalPrintingID == sample.printingID
+                    && model.receipt?.isPricePending == false
+            }
+            XCTAssertTrue(receiptReady, sample.footer)
+            let scan = try XCTUnwrap(model.sessionScans.first)
+            let receipt = try XCTUnwrap(model.receipt)
+            XCTAssertEqual(scan.card.physicalPrintingID, details.card.physicalPrintingID)
+            XCTAssertEqual(scan.card.identifier, details.card.identifier)
+            XCTAssertEqual(scan.resolved.variant, finish)
+            XCTAssertEqual(receipt.name, details.card.name)
+            XCTAssertEqual(receipt.identifier, sample.footer)
+            XCTAssertEqual(receipt.variantLabel, finish.label)
+            XCTAssertEqual(receipt.price, browseQuote)
+
+            var observation: [String: Any] = ["footer": sample.footer, "name": receipt.name,
+                "printingID": sample.printingID, "finish": finish.id, "finishLabel": receipt.variantLabel]
+            if let lane = sample.lane {
+                guard case let .price(price) = browseQuote else {
+                    XCTFail("Missing live quote for \(sample.footer) / \(finish.label)")
+                    return observations
+                }
+                XCTAssertEqual(price.sourceVariantID, lane)
+                XCTAssertEqual(price.currencyCode, "USD")
+                observation["lane"] = price.sourceVariantID
+                observation["amountUSD"] = price.unitMarketPriceUSD
+                observation["fetchedAt"] = formatter.string(from: price.fetchedAt)
+            } else {
+                XCTAssertEqual(browseQuote, .unavailable(nil))
+                observation["unavailable"] = true
+            }
+            observations.append(observation)
+        }
+        return observations
     }
 
     /// Revalidates every enabled lane using fresh group feeds through the shared
@@ -1336,7 +1442,6 @@ final class LorcanaPricingTests: XCTestCase {
               options["marketCatalogSHA256"] as? String == SHA256.hash(data: try Data(contentsOf: seed)).map({ String(format: "%02x", $0) }).joined()
         else { throw XCTSkip("All-mapping live acceptance requires a seed-bound opt-in") }
 
-        let startedAt = Date.now
         let root = documents.appendingPathComponent("LorcanaAllMappedLive-" + UUID().uuidString)
         let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
         let printings = try XCTUnwrap(catalog.registry.physicalCatalog).manifest.physicalPrintings
@@ -1347,6 +1452,7 @@ final class LorcanaPricingTests: XCTestCase {
             cacheDirectory: root.appendingPathComponent("feed")))
         let bound = try await runtimes(catalog.registry, source: source).bound(to: container())
         let service = bound.makePriceQuoteService()
+        let formatter = ISO8601DateFormatter()
         var observations: [[String: Any]] = []
         var priced = 0, unavailable = 0
         for printing in printings {
@@ -1363,9 +1469,12 @@ final class LorcanaPricingTests: XCTestCase {
                     XCTAssertEqual(price.catalogIdentity, LorcanaPriceAdapter.mappingIdentity(mapping))
                     XCTAssertEqual(price.source, .tcgCSV)
                     XCTAssertEqual(price.currencyCode, "USD")
-                    XCTAssertGreaterThanOrEqual(price.fetchedAt, startedAt)
+                    // A fresh HTTP request preserves the publisher's capture time.
+                    let captureAge = Date.now.timeIntervalSince(price.fetchedAt)
+                    XCTAssertTrue((0..<86_400).contains(captureAge))
                     XCTAssertTrue(price.unitMarketPriceUSD.isFinite && price.unitMarketPriceUSD >= 0)
                     observation["amountUSD"] = price.unitMarketPriceUSD
+                    observation["fetchedAt"] = formatter.string(from: price.fetchedAt)
                     priced += 1
                 case let .unavailable(provider):
                     XCTAssertEqual(provider, .tcgCSV)

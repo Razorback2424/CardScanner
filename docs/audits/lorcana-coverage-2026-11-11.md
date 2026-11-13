@@ -67,13 +67,40 @@ discovery-only rows, which include promos and unnumbered Quest components.
 [Publisher gallery](https://cards.disneylorcana.com/en-US/?set=set10),
 [Whispers in the Well market feed](https://tcgcsv.com/tcgplayer/71/24414/products).
 
-On November 12, both production origins listed eight of the 20 category 71
-groups used by the bundle. The existing price publisher derives its scope from
-the reviewed manifest. Its local verification produced 20 complete group
-pairs with zero missing products. The new quotes require the production feed
-workflow to publish from the updated bundle and a live readback of the group
-pairs. The local scope verification is retained with the evidence.
-[Production price index](https://catalog.scan-stash.com/market-prices/v1/index.json).
+The November 12 price deployment from `03fcf38` expanded Lorcana from eight
+to 20 production groups. The readback matched all 6,288 reviewed product
+names, collector numbers, finish lanes, and quote values to the same TCGCSV
+build. The provider returned an amount for 6,278 lanes and null for ten.
+[Production workflow](https://github.com/Razorback2424/CardScanner/actions/runs/43305432065),
+[production price index](https://catalog.scan-stash.com/market-prices/v1/index.json).
+
+All 1,373 indexed files matched on both production hosts. The shared mirror
+served six Pokémon, 48 One Piece, and 612 Yu-Gi-Oh! groups and preserved every
+previously published group and product. The Yu-Gi-Oh! differences matched
+reviewed edition corrections and the vendor's absent or null quote rows.
+The verification receipts are in
+`CodexBuilds/LorcanaCatalogGoal-20261111/ProductionPriceFeed-20261112`
+on the external SSD.
+
+## Live simulator acceptance
+
+All three live pricing acceptance tests passed with zero skips on the
+November 12 working tree at `c52d16f`, using `TradingCardScanner-ProfileLocal`
+Debug on iOS 27.1. The all-mapping test used a fresh feed cache. A separate
+production readback matched all 6,288 product and finish pairs, amounts,
+and server capture times. The test now checks the capture time against the
+app's freshness window.
+
+The normal app's Scan receipt and Browse detail agreed on the lettered
+Dalmatian Puppy `4B/204 EN 3` foil, corrected Elsa `39/204 EN 2` foil,
+Merlin `57/204 EN 14` Rainbow Pillars foil, and the unmapped foil of
+A Whole New World `10/C1 EN 1`. The public Hades review also exercised
+the size choice, mapped foil, unpriced oversized printing, and ownership
+relaunch. Scan tests start with supplied footer text on the simulator.
+
+The result bundle and verified receipts are in
+`CodexBuilds/LorcanaCatalogGoal-20261111/LorcanaLiveAcceptance-20261112`
+on the external SSD.
 
 ## Replay and release check
 
