@@ -373,9 +373,9 @@ final class CollectionItemKindTests: XCTestCase {
     func testBackgroundGradedPickerStaysResponsiveAndSavesSelectedIdentityAndPrice() async throws {
         for amount: Double? in [50, nil] {
             let container = try makePickerContainer()
-            let card = try identifiedPokemonCard()
+            let card = try firstEditionPokemonCard()
             _ = try CollectionStore(context: container.mainContext).add(card,
-                resolved: .init(variant: .normal, resolution: .userConfirmed))
+                resolved: .init(variant: .holo, resolution: .userConfirmed))
             let selected = pickerVariant(amount: amount, printing: "1st Edition Holofoil")
             let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
             XCTAssertTrue(writer.modelExecutor is BackgroundSerialModelExecutor)
@@ -1725,6 +1725,22 @@ final class CollectionItemKindTests: XCTestCase {
         return .pokemon(
             try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)),
             setCode: "PRE"
+        )
+    }
+
+    /// 1st Edition exists only for WotC-era sets; Base Set Alakazam is a real 1st Edition holo.
+    private func firstEditionPokemonCard() throws -> IdentifiedCard {
+        let json = """
+        {
+          "id": "base1-1", "localId": "1", "name": "Alakazam",
+          "set": { "id": "base1", "name": "Base Set",
+                   "cardCount": { "total": 102, "official": 102 } },
+          "variants": { "firstEdition": true, "holo": true, "normal": false, "reverse": false }
+        }
+        """
+        return .pokemon(
+            try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)),
+            setCode: "BS"
         )
     }
 

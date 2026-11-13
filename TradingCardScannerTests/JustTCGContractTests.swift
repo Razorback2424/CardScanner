@@ -1163,7 +1163,14 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(page.items.first?.marketPriceUSD, 99.25)
         XCTAssertFalse(page.hasMore)
         let lorcanaSets = try await client.sealedSets(game: .lorcana)
-        XCTAssertEqual(lorcanaSets.reduce(0) { $0 + $1.sealedCount }, 177)
+        // Pinned to the bundled dataset, read independently of the app decoder,
+        // so a reviewed catalog regeneration does not masquerade as a transport change.
+        let discoveryURL = try XCTUnwrap(Bundle.main.url(forResource: "discovery", withExtension: "json",
+            subdirectory: "LorcanaCatalogSeed"))
+        let discovery = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: discoveryURL)) as? [String: Any])
+        let bundledSealed = try XCTUnwrap(discovery["sealed"] as? [Any])
+        XCTAssertFalse(bundledSealed.isEmpty)
+        XCTAssertEqual(lorcanaSets.reduce(0) { $0 + $1.sealedCount }, bundledSealed.count)
         XCTAssertEqual(RecordingURLProtocol.recorded().count, 1,
                        "Bundled Lorcana discovery must not use JustTCG transport")
         do { _ = try await client.sealedSets(game: CardGame(rawValue: "future-unsupported-game")); XCTFail("Unsupported game must fail before transport") }

@@ -2529,7 +2529,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
         do {
             let installed = await checklistStore.signedProviderFingerprints()
             let desired = signedProviderFingerprints()
-            if !desired.isEmpty, desired.count == catalogRegistry.descriptors.count,
+            // The bundled reviewed M26 set has no provider set to crawl or sign,
+            // so it must not keep an otherwise fully installed catalog online.
+            let crawlableCount = catalogRegistry.descriptors.filter {
+                $0.providerSetID.caseInsensitiveCompare(PokemonM26Catalog.setID) != .orderedSame
+            }.count
+            if !desired.isEmpty, desired.count == crawlableCount,
                desired.allSatisfy({ installed[$0.key] == $0.value }) { return .sweptCleanly }
             let rows = try await pokemonTransport.fetchSetDirectory()
             // Filter before deriving display metadata: provider-only discovery

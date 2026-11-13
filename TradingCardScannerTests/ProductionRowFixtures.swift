@@ -48,6 +48,7 @@ enum ProductionRowFixtures {
           "image": "https://assets.tcgdex.net/en/sv/sv08.5/074",
           "set": { "id": "sv08.5", "name": "Prismatic Evolutions",
                    "cardCount": { "total": 180, "official": 131 } },
+          "variants": { "firstEdition": false, "holo": false, "normal": true, "reverse": true },
           "pricing": { "tcgplayer": {
             "normal": { "marketPrice": 0.42 },
             "reverse-holofoil": { "marketPrice": 3.75 }

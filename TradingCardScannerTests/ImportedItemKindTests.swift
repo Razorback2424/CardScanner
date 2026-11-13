@@ -357,9 +357,10 @@ final class ImportedItemKindTests: XCTestCase {
         }
         let envelope = try decoder.decode(OnePieceCatalogReleaseEnvelope.self,
             from: Data(contentsOf: directory.appendingPathComponent("one-piece-owner-catalog.json")))
-        let now = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-11-01T00:00:00Z"))
+        // Verify the bundled release as the app does, against the real clock:
+        // a fixed date goes stale every time the owner catalog is re-signed.
         return OnePieceCatalogRegistry(verifiedRelease: try OnePieceCatalogSignature.verify(
-            envelope, trustedKeys: keys, now: now))
+            envelope, trustedKeys: keys, now: .now))
     }
 
     // MARK: - Grade parsing
