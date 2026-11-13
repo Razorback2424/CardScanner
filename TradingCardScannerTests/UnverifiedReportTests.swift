@@ -824,3 +824,31 @@ final class UnverifiedReportTests: XCTestCase {
         )
     }
 }
+
+/// The on-device beta flag for report creation may appear only in the app's
+/// `ReleaseLocal` configuration, which has no CloudKit entitlement. Release
+/// (TestFlight/App Store) and DebugProduction must never carry it.
+final class UnverifiedReportsFeatureFlagTests: XCTestCase {
+    func testLocalBetaFlagIsConfinedToReleaseLocal() throws {
+        let projectURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("TradingCardScanner.xcodeproj/project.pbxproj")
+        let contents = try String(contentsOf: projectURL, encoding: .utf8)
+        let flag = "UNVERIFIED_REPORTS_LOCAL_BETA"
+        // Each XCBuildConfiguration object: "<id> /* <name> */ = { ... name = <name>; };"
+        var carriers: [String] = []
+        for object in contents.components(separatedBy: "isa = XCBuildConfiguration;").dropFirst() {
+            let body = object.components(separatedBy: "\n\t\t};").first ?? object
+            guard body.contains(flag) else { continue }
+            let name = body.components(separatedBy: "name = ").last?
+                .components(separatedBy: ";").first ?? "?"
+            carriers.append(name)
+            XCTAssertTrue(body.contains("LOCAL_ONLY_SIGNING") && body.contains("NO_CLOUDKIT"),
+                          "\(name) sets \(flag) without the local-only conditions")
+            XCTAssertTrue(body.contains("TradingCardScanner-Local.entitlements"),
+                          "\(name) sets \(flag) on a configuration with iCloud entitlements")
+        }
+        XCTAssertEqual(carriers, ["ReleaseLocal"])
+        XCTAssertEqual(contents.components(separatedBy: flag).count - 1, 1)
+    }
+}

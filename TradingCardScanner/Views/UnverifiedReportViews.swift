@@ -5,9 +5,17 @@ import SwiftUI
 /// until the CloudKit schema is deployed and the two-device and pre-feature
 /// build acceptance in the plan pass. Existing report rows are always
 /// displayed and protected, whatever this says.
+///
+/// Besides DEBUG builds, only the optimized on-device `ReleaseLocal`
+/// configuration (ProfileLocal) turns it on, through
+/// `UNVERIFIED_REPORTS_LOCAL_BETA`. That flag also requires the local-only
+/// signing and no-CloudKit conditions, so it cannot take effect in a
+/// CloudKit-entitled or distributed build even if set by mistake.
 enum UnverifiedReportsFeature {
     static var isEnabled: Bool {
         #if DEBUG
+        return true
+        #elseif UNVERIFIED_REPORTS_LOCAL_BETA && LOCAL_ONLY_SIGNING && NO_CLOUDKIT
         return true
         #else
         return false
