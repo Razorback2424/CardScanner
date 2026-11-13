@@ -229,13 +229,15 @@ def applying_reviewed_additions(release, additions):
         return list(records.values())
 
     keys = {"artworks", "printings", "observations", "inventories"}
-    if not keys <= additions.keys() or additions.keys() - keys - {"products", "finishUpdates"}:
+    if not keys <= additions.keys() or additions.keys() - keys - {"products", "finishUpdates", "productUpdates"}:
         raise ValueError("Invalid reviewed additions fields")
     registry = dict(release["registry"])
     for key in ("artworks", "printings"):
         registry[key] = merge(registry[key], additions[key], lambda row: row["id"].lower())
     if "products" in additions:
         registry["products"] = merge(registry["products"], additions["products"], lambda row: row["id"])
+    if additions.get("productUpdates"):
+        registry["products"] = apply_product_updates(registry["products"], additions["productUpdates"])
     observations = merge(release["observations"], additions["observations"], lambda row: row["id"])
     if additions.get("finishUpdates"):
         registry["printings"] = apply_finish_updates(registry, observations, additions["finishUpdates"])
@@ -243,6 +245,27 @@ def applying_reviewed_additions(release, additions):
                 observations=observations,
                 inventories=merge(release["inventories"], additions["inventories"],
                                   lambda row: (row["provider"], row["snapshotID"])))
+
+
+def apply_product_updates(products, updates):
+    """Name and date a retained product from its official Bandai product page.
+
+    A card-list discovery only knows the raw series label and no release date,
+    so Browse cannot order it. The product ID, and every printing's release
+    reference to it, stays the same.
+    """
+    by_id = {row["id"]: row for row in products}
+    for update in updates:
+        if set(update) != {"id", "label", "releaseDate", "sourceURL"} or update["id"] not in by_id:
+            raise ValueError("Product updates must name a retained product: " + str(update.get("id")))
+        source = urlsplit(update["sourceURL"])
+        if (source.scheme, source.netloc) != ("https", "en.onepiece-cardgame.com") or \
+                not source.path.startswith("/products/"):
+            raise ValueError("Product updates require an official English Bandai product page")
+        if not update["label"].strip() or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", update["releaseDate"]):
+            raise ValueError("Product updates require a label and an ISO release date")
+        by_id[update["id"]] = {"id": update["id"], "label": update["label"], "releaseDate": update["releaseDate"]}
+    return [by_id[row["id"]] for row in products]
 
 
 def apply_finish_updates(registry, observations, updates):

@@ -74,3 +74,51 @@ class OnePieceFixedFoilProductsTests(unittest.TestCase):
             rules = self.fixture(root, contents="・Card x 1")
             with self.assertRaisesRegex(ValueError, "fixed foil quantity"):
                 reconcile(rules, root, root)
+
+    def test_event_finish_requires_the_exact_featured_artwork_and_finish_note(self):
+        from PIL import Image
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            rules = self.fixture(root)
+            manifest = root / "capture-manifest.json"
+            records = json.loads(manifest.read_text())["captures"]
+            event_url = "https://en.onepiece-cardgame.com/events/finalist.php"
+            featured_url = "https://en.onepiece-cardgame.com/images/prize/finalist/01.png"
+            event = f'''<section id="finalist"><h5 class="smallTit">Finalist Pack</h5>
+            <ul class="cardPopupWrap"><li><a class="js_modalOpenImage" href="{featured_url}"></a></li></ul>
+            <ul class="commonNoticeList"><li>*Holo+Textured foil</li></ul></section>'''
+
+            def record(filename, url):
+                raw = (root / filename).read_bytes()
+                entry = {"sourceURL": url, "rawFile": filename, "byteCount": len(raw),
+                         "payloadSHA256": hashlib.sha256(raw).hexdigest(), "observedAt": "2026-11-12T00:00:00Z"}
+                records[:] = [r for r in records if r["rawFile"] != filename] + [entry]
+                manifest.write_text(json.dumps({"captures": records}))
+                return entry["payloadSHA256"]
+
+            (root / "spec.html").write_text(event)
+            artwork = Image.new("RGB", (6, 8), (30, 60, 90))
+            artwork.save(root / "render.png", compress_level=0)
+            artwork.save(root / "featured.png", compress_level=9)
+            record("render.png", self.image_url)
+            record("featured.png", featured_url)
+            rule = rules["products"][0]
+            rule.update(eventSectionID="finalist", artworkAliases=["OP01-004_p1"], specificationURL=event_url,
+                        specificationTitle="Finalist Pack", specificationSHA256=record("spec.html", event_url))
+            output = reconcile(rules, root, root)
+            [printing] = output["printings"]
+            self.assertEqual(printing["distributionLabel"], "Fixed Product")
+            self.assertEqual(printing["supportedVariantIDs"], ["foil"])
+            self.assertFalse(output["inventories"][0]["paginationComplete"])
+
+            artwork.putpixel((3, 4), (31, 60, 90))
+            artwork.save(root / "featured.png")
+            record("featured.png", featured_url)
+            with self.assertRaisesRegex(ValueError, "exact Bandai event artwork"):
+                reconcile(rules, root, root)
+
+            (root / "spec.html").write_text(event.replace("*Holo+Textured foil", "*Legal Date"))
+            rule["specificationSHA256"] = record("spec.html", event_url)
+            with self.assertRaisesRegex(ValueError, "does not specify holo and textured foil"):
+                reconcile(rules, root, root)

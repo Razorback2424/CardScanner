@@ -65,7 +65,15 @@ Use `--offline` to replay retained captures and a fresh output path. The
 generated registry, observations and inventories feed the publisher's
 `build` command with the previous candidate. Browse discoveries have no
 collection identity or finish. Supply exact physical evidence through
-`--reviewed-additions` once per accepted batch. The reviewed revision 2
+`--reviewed-additions` once per accepted batch.
+
+A release first found only in a Bandai card list gets a placeholder product
+with the raw series label and no release date, so Browse lists it under
+"Earlier". Its `productUpdates` entry sets the label and the release date from
+the official English product page. The product ID and printing references stay
+the same. Pass the retained
+[product updates](../publisher/one-piece/product-updates.json) as another
+`--reviewed-additions` file. The reviewed revision 2
 inputs include the stamped `OP09-020` and two fixed products whose contents
 Bandai explicitly identifies as holo and textured foil.
 [Stamped printing](../publisher/one-piece/production/revision-2/printing-additions.json)
@@ -92,17 +100,42 @@ python3 scripts/reconcile_one_piece_retail_printings.py \
 The retailer replay requires Pillow, paginated CoreTCG product receipts, and
 a complete TCGCSV snapshot with product and price data for those groups.
 It compares each listing with all official artwork siblings for the same
-number in that product. The retailer supplies the explicit English finish.
-The marketplace check holds conflicting titles and finish lanes for review.
+number in that product. When the three-region comparison ties, matching digital
+renders must agree on the pixels that distinguish each sibling, including
+stamps and small footer differences. PRB-01 retries this same comparison at
+higher resolution when small finish details disappear in the thumbnail. Its
+manga reprints require the exact English Foil listing and a marketplace
+reprint specification that distinguishes them from the original textured foil.
+For named promos, the photo comparison
+also checks the design after normalizing contrast. It holds same-art siblings
+for exact digital evidence. The retailer supplies the explicit English finish,
+and the marketplace check holds conflicting titles and finish lanes for review.
+Inventory IDs include the reviewed observation membership, so later batches can
+reuse the same captured page while retaining the earlier evidence.
 
-For EB-05, pass `--eb05-retail-captures` for each retained Cardboard Colosseum
-or Rocket City Toys capture directory. The comparison uses marketplace group
+For EB-05, pass `--eb05-retail-captures` for each retained Cardboard Colosseum,
+Rocket City Toys or Weird Wolf Games capture directory. The comparison uses marketplace group
 24820 and accepts only a product page with a matching reference image and an
 explicit English finish. For named promos, pass `--promo-retail-captures` with
 all pages of CoreTCG group 17675 and its marketplace snapshot. A promo needs a
-single Bandai distribution, the exact name in both listings, and an artwork
-match across the Promotion Card and Other Product Card lists. These options can
-run without the booster product manifest.
+single Bandai distribution, agreement on the distribution in both listings,
+and an artwork match across the Promotion Card and Other Product Card lists.
+Reviewed title aliases preserve the exact product, edition, and prize tier.
+These options can run without the booster product manifest.
+
+For reflective promo photographs that need visual review, pass
+`--reviewed-promo-photos` with entries keyed by marketplace image product ID.
+Each entry pins `number`, `series`, `alias`, `distribution`, `finish`,
+`retailerImageSHA256` and `bandaiImageSHA256`. The English retailer lane,
+official distribution and marketplace checks still apply. A changed photo
+or official reference requires a fresh review.
+
+For an official event with a finish note scoped to its featured card list,
+the fixed foil reconciler accepts `eventSectionID` and reviewed
+`artworkAliases` in the rule. The retained specification must name the exact
+event product and explicitly specify holo and textured foil. Each accepted
+alias must match one featured Bandai image pixel for pixel. The rule can
+cover a subset of the cards when others already have verified printings.
 
 Use `--fetch-missing-artwork` to extend an artwork capture with the missing
 references from the retained product pages. Keep captures private. Review the

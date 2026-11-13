@@ -1,3 +1,4 @@
+import json
 import unittest
 from pathlib import Path
 import sys
@@ -94,6 +95,30 @@ class OnePieceCoverageTests(unittest.TestCase):
         self.assertEqual(next_release["registry"]["printings"], [printing])
         self.assertEqual({row["id"] for row in next_release["observations"]}, {"bandai-browse:1:EB05-001", "reviewed"})
         self.assertEqual(next_release["inventories"][0]["observationIDs"], ["bandai-browse:1:EB05-001"])
+
+    def test_product_update_names_and_dates_a_discovered_release_in_place(self):
+        product_id = "product:bandai-series:569205"
+        printing = {"id": "physical-id", "releaseID": product_id}
+        baseline = {"registry": {"products": [{"id": product_id, "label": "EXTRA BOOSTER [EB-05]"}],
+                                 "artworks": [], "printings": [printing]},
+                    "observations": [], "inventories": []}
+        update = {"id": product_id, "label": "Extra Booster: One Piece Heroines Edition Vol. 2 · EB05",
+                  "releaseDate": "2026-10-30", "sourceURL": "https://en.onepiece-cardgame.com/products/eb05.html"}
+        additions = {"artworks": [], "printings": [], "observations": [], "inventories": [],
+                     "productUpdates": [update]}
+        updated = applying_reviewed_additions(baseline, additions)
+        self.assertEqual(applying_reviewed_additions(updated, additions), updated)
+        self.assertEqual(updated["registry"]["products"],
+                         [{"id": product_id, "label": update["label"], "releaseDate": "2026-10-30"}])
+        self.assertEqual(updated["registry"]["printings"], [printing])
+        self.assertEqual(baseline["registry"]["products"][0]["label"], "EXTRA BOOSTER [EB-05]")
+        for invalid in ({**update, "id": "product:unknown"}, {**update, "sourceURL": "https://example.com/products/eb05"},
+                        {**update, "releaseDate": "October 30, 2026"}, {**update, "label": " "}):
+            with self.assertRaises(ValueError):
+                applying_reviewed_additions(baseline, {**additions, "productUpdates": [invalid]})
+
+        retained = json.loads((Path(__file__).resolve().parents[2] / "publisher/one-piece/product-updates.json").read_bytes())
+        self.assertEqual(retained["productUpdates"][0]["id"], product_id)
 
     def test_verified_finish_promotes_the_same_provisional_printing(self):
         printing = {"id": "existing", "artworkID": "art", "language": "en", "releaseID": "product",

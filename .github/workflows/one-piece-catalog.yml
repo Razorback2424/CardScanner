@@ -143,7 +143,11 @@ jobs:
       - name: Test fixed product finish evidence
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_fixed_foil_products.py -v
       - name: Test exact retailer finish and artwork comparison
-        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_retail_printings.py -v
+        run: |
+          python3 -m venv "$RUNNER_TEMP/one-piece-image-tests"
+          "$RUNNER_TEMP/one-piece-image-tests/bin/python" -m pip install Pillow==11.3.0
+          PYTHONDONTWRITEBYTECODE=1 "$RUNNER_TEMP/one-piece-image-tests/bin/python" \
+            -m unittest discover -s scripts/tests -p test_one_piece_retail_printings.py -v
       - name: Test exact base market mapping review
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_base_market_mappings.py -v
       - name: Test catalog core and publisher CLI

@@ -71,6 +71,9 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                 let qualifiers = [printing.treatment, printing.distributionLabel, printing.stamp]
                     .compactMap { $0 }.filter { !$0.isEmpty }
                 let name = qualifiers.isEmpty ? canonical.name : canonical.name + " · " + qualifiers.joined(separator: " · ")
+                let finishSearchTerms = printing.status == .verified ? printing.supportedVariantIDs.compactMap { id in
+                    registry.variantsByID[id].map { "\(canonical.name) \($0.label)" }
+                } : []
                 return CatalogCardSummary(game: .onePiece, providerID: printing.id.uuidString.lowercased(),
                     setID: setID, setName: set.name,
                     setCode: OnePieceTextNormalization.prefix(of: canonical.printedNumber) ?? "",
@@ -78,7 +81,7 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                     collectorNumber: canonical.printedNumber, thumbnailURL: image, imageURL: image,
                     catalogGeneration: registry.generation,
                     collectionAvailabilityNotice: printing.status == .verified ? nil : "Browse only",
-                    searchFields: Self.searchFields(name: name, number: canonical.printedNumber))
+                    searchFields: Self.searchFields(name: name, number: canonical.printedNumber, additionalText: finishSearchTerms))
             }
             let discoveryRows = unresolvedNumbers.compactMap { number, labels -> CatalogCardSummary? in
                 guard let card = registry.canonicalByPrintedNumber[number] else { return nil }
@@ -86,7 +89,7 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                     setName: set.name, setCode: OnePieceTextNormalization.prefix(of: number) ?? "",
                     name: card.name, collectorNumber: number, thumbnailURL: nil, imageURL: nil,
                     catalogGeneration: registry.generation, collectionAvailabilityNotice: "Printing needs review",
-                    searchFields: Self.searchFields(name: card.name, number: number, productLabels: labels))
+                    searchFields: Self.searchFields(name: card.name, number: number, additionalText: labels.sorted()))
             }
             cards[setID] = (physicalRows + discoveryRows).sorted {
                 $0.collectorNumber == $1.collectorNumber ? $0.providerID < $1.providerID
@@ -125,14 +128,15 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
         return cardsBySetID[set.catalogID] ?? []
     }
 
-    private static func searchFields(name: String, number: String, productLabels: Set<String> = []) -> CatalogCardSearchFields {
+    private static func searchFields(name: String, number: String, additionalText: [String]) -> CatalogCardSearchFields {
+        let text = ([name, number] + additionalText).joined(separator: " ")
         let parts = number.lowercased().split(separator: "-", maxSplits: 1)
-        guard parts.count == 2 else { return .init(collectorNumber: number, denominator: nil, text: name) }
+        guard parts.count == 2 else { return .init(collectorNumber: number, denominator: nil, text: text) }
         let prefix = parts[0], digits = parts[1]
         let letters = prefix.prefix(while: \.isLetter)
         let splitPrefix = "\(letters) \(prefix.dropFirst(letters.count))"
         return .init(collectorNumber: number, denominator: nil,
-            text: ([name, number] + productLabels.sorted()).joined(separator: " "),
+            text: text,
             collectorNumberAliases: ["\(prefix) \(digits)", "\(prefix)\(digits)",
                                      "\(splitPrefix) \(digits)", "\(splitPrefix)\(digits)"].map(CardNameSearch.normalize))
     }

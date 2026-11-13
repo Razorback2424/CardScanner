@@ -448,12 +448,119 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(dawnWhip.card.cardNumber, "ST21-016")
         XCTAssertEqual(dawnWhip.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
 
+        guard case let .identified(shanks) = profile.identify([.init(text: "P-083")]),
+              case let .needsPrintingChoice(_, shanksPrintings) = try await catalog.lookup(shanks.identifier) else {
+            return XCTFail("Shanks has multiple verified printings of the same collector number")
+        }
+        let pirateFoil = try XCTUnwrap(shanksPrintings.first { $0.treatmentLabel == "Pirate foil" })
+        let standard = try XCTUnwrap(shanksPrintings.first {
+            $0.treatmentLabel == "Standard artwork" && $0.releaseLabel?.contains("PRB02") == true
+        })
+        let pirateFoilDetails = try await catalog.resolve(pirateFoil, for: shanks.identifier)
+        let standardDetails = try await catalog.resolve(standard, for: shanks.identifier)
+        XCTAssertEqual(pirateFoilDetails.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
+        XCTAssertEqual(standardDetails.card.variantEvidence.catalogVariants.map(\.id), ["normal"])
+        XCTAssertNotEqual(pirateFoilDetails.card.physicalPrintingID, standardDetails.card.physicalPrintingID)
+
+        let finalist = try await browse.search(query: "CS 25-26 Event Pack Finalist Ver. P-070", setIDs: [], cursor: nil)
+        let finalistDetails = try await browse.details(for: XCTUnwrap(finalist.items.first))
+        XCTAssertEqual(finalistDetails.card.physicalPrintingID, "fff2e907-5ec6-5ce3-96ed-9c7eeb5fa220")
+        XCTAssertEqual(finalistDetails.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
+
         let bonney = try await browse.search(query: "EB05 001", setIDs: [], cursor: nil)
-        let officialRow = try XCTUnwrap(bonney.items.first)
+        let baseBonney = try XCTUnwrap(bonney.items.first { $0.collectionAvailabilityNotice == nil })
+        let bonneyDetails = try await browse.details(for: baseBonney)
+        XCTAssertEqual(bonneyDetails.card.physicalPrintingID, "9c03125b-4870-5c72-9523-563fdbea4c4b")
+        XCTAssertEqual(bonneyDetails.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
+        XCTAssertNil(bonneyDetails.collectionWriteUnavailableReason)
+
+        let officialRow = try XCTUnwrap(bonney.items.first { $0.collectionAvailabilityNotice != nil })
         let preview = try await browse.details(for: officialRow)
         XCTAssertEqual(preview.card.name, "Jewelry Bonney")
         XCTAssertNotNil(preview.collectionWriteUnavailableReason)
         XCTAssertTrue(preview.card.variantEvidence.catalogVariants.isEmpty)
+
+        let foilQuery = "Jewelry Bonney EB05-001 foil"
+        let foilSearch = try await browse.search(query: foilQuery, setIDs: [], cursor: nil)
+        XCTAssertEqual(foilSearch.items.map(\.providerID), [baseBonney.providerID])
+        XCTAssertTrue(CatalogCardSearchQuery(foilQuery).matches(try XCTUnwrap(baseBonney.searchFields)))
+        XCTAssertFalse(CatalogCardSearchQuery(foilQuery).matches(try XCTUnwrap(officialRow.searchFields)))
+        let normalSearch = try await browse.search(query: "EB05-001 normal", setIDs: [], cursor: nil)
+        XCTAssertTrue(normalSearch.items.isEmpty)
+    }
+
+    func testBundledOwnerCatalogListsEB05AsADatedBoosterSet() async throws {
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime())
+        let catalog = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter)
+        let browse = try XCTUnwrap(runtime.browse)
+        let sets = try await browse.sets()
+        let eb05 = try XCTUnwrap(sets.first { $0.providerID == "product:bandai-series:569205" })
+        XCTAssertEqual(eb05.name, "Extra Booster: One Piece Heroines Edition Vol. 2 · EB05")
+        let releaseDate = try XCTUnwrap(eb05.releaseDate)
+        XCTAssertEqual(releaseDate, OnePieceTextNormalization.releaseDate("2026-10-30"))
+        XCTAssertEqual(Calendar.current.component(.year, from: releaseDate), 2026)
+
+        // Newest-first Browse lists it among dated releases, not in "Earlier".
+        let groups = CatalogSetListGrouping.groups(for: sets, sort: .newestFirst)
+        let group = try XCTUnwrap(groups.first { $0.sets.contains(eb05) })
+        XCTAssertEqual(group.title, "2026")
+        let eb03 = try XCTUnwrap(sets.firstIndex { $0.providerID == "product:eb03-extra-booster-one-piece-heroines-edition-2026" })
+        XCTAssertLessThan(try XCTUnwrap(sets.firstIndex(of: eb05)), eb03)
+        let setSearch = sets.filter { CardNameSearch.normalize($0.name).contains(CardNameSearch.normalize("EB05")) }
+        XCTAssertEqual(setSearch, [eb05])
+
+        let localCards = try await browse.completeLocalCards(in: eb05)
+        let cards = try XCTUnwrap(localCards)
+        XCTAssertEqual(cards.filter { $0.collectionAvailabilityNotice == nil }.count, 64)
+        let profile = OnePieceScanProfile(registry: catalog.registry, languageConfirmation: .userConfirmedEnglish)
+        guard case let .identified(monet) = profile.identify([.init(text: "EB05-007")]) else {
+            return XCTFail("The scanner recognizes the EB05 prefix")
+        }
+        let scanned: ResolvedCatalogCard
+        switch try await catalog.lookup(monet.identifier) {
+        case let .resolved(resolution): scanned = resolution.card
+        case let .needsPrintingChoice(_, candidates):
+            XCTAssertEqual(candidates.count, 1)
+            scanned = try await catalog.resolve(XCTUnwrap(candidates.first), for: monet.identifier).card
+        case .catalogIncomplete: return XCTFail("EB05-007 has a verified printing")
+        }
+        XCTAssertEqual(scanned.setName, eb05.name)
+        XCTAssertTrue(cards.contains { $0.providerID == scanned.physicalPrintingID.lowercased() })
+    }
+
+    func testBundledOwnerCatalogResolvesPromoAndPRB01FinishesInScanAndBrowse() async throws {
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime())
+        let catalog = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter)
+        let browse = try XCTUnwrap(runtime.browse)
+        let profile = OnePieceScanProfile(registry: catalog.registry, languageConfirmation: .userConfirmedEnglish)
+        let samples: [(number: String, search: String, id: String, finish: String)] = [
+            ("OP01-120", "Manga artwork non-textured foil", "cb1c8524-9036-5d05-91be-b54c8ef3b4ff", "foil"),
+            ("OP01-052", "Raizo normal", "e3e66f6e-dace-576c-ac6a-736462460b81", "normal"),
+            ("ST01-014", "Jolly Roger foil", "acb0b99d-7de8-5594-b58d-74b0e8b87000", "foil"),
+            ("ST01-014", "Textured foil", "525e1e60-8d16-51c6-b9ff-5542a1236645", "foil"),
+            ("P-061", "ST-11 Uta Deck Battle Participation Pack", "17124519-7c84-5642-ac30-f29f14c22674", "normal"),
+            ("P-069", "CS 25-26 Event Pack Finalist Ver.", "22417200-5204-5741-801b-fe702fe060aa", "foil"),
+            ("EB01-007", "Best Selection Vol.4", "f2ee387c-b419-577f-999c-1016241507c0", "foil")
+        ]
+        for sample in samples {
+            guard case let .identified(scan) = profile.identify([.init(text: sample.number)]),
+                  case let .needsPrintingChoice(_, choices) = try await catalog.lookup(scan.identifier) else {
+                return XCTFail("\(sample.number) needs an explicit printing choice")
+            }
+            let choice = try XCTUnwrap(choices.first { $0.id == sample.id }, sample.number)
+            let scanned = try await catalog.resolve(choice, for: scan.identifier)
+            XCTAssertEqual(scanned.card.variantEvidence.catalogVariants.map(\.id), [sample.finish], sample.number)
+
+            let query = "\(sample.search) \(sample.number)"
+            let page = try await browse.search(query: query, setIDs: [], cursor: nil)
+            let row = try XCTUnwrap(page.items.first { $0.providerID == sample.id }, query)
+            let details = try await browse.details(for: row)
+            XCTAssertEqual(details.card.physicalPrintingID, scanned.card.physicalPrintingID)
+            XCTAssertEqual(details.card.variantEvidence.catalogVariants.map(\.id), [sample.finish])
+            XCTAssertNil(details.collectionWriteUnavailableReason)
+            let otherFinish = sample.finish == "foil" ? "normal" : "foil"
+            XCTAssertThrowsError(try catalog.validateBrowseAcquisition(printingID: row.providerID, variantID: otherFinish))
+        }
     }
 
     func testLocalOwnerReviewRotationRequiresAnExplicitMatchingPublicPin() throws {

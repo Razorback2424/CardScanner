@@ -11,14 +11,38 @@ import math
 import re
 import time
 from datetime import datetime, timezone
+from http.client import IncompleteRead
 from pathlib import Path
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 MAX_BYTES = 32 * 1024 * 1024
+BUILD_MARKER_URL = "https://tcgcsv.com/last-updated.txt"
 
 
 def timestamp() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def fetch_response(url: str, user_agent: str, delay: float) -> bytes:
+    request = Request(url, headers={"User-Agent": user_agent, "Accept": "application/json,text/plain"})
+    for attempt in range(3):
+        time.sleep(delay)
+        try:
+            with urlopen(request, timeout=45) as response:
+                if response.geturl() != url:
+                    raise ValueError("Unexpected capture redirect")
+                raw = response.read(MAX_BYTES + 1)
+            if len(raw) > MAX_BYTES:
+                raise ValueError(f"Response exceeds capture byte limit: {url}")
+            return raw
+        except HTTPError as error:
+            if error.code not in (429, 500, 502, 503, 504) or attempt == 2:
+                raise
+        except (URLError, TimeoutError, ConnectionError, IncompleteRead):
+            if attempt == 2:
+                raise
+        time.sleep(2 ** attempt)
 
 
 def validate_document(doc: object, url: str) -> dict:
@@ -41,12 +65,16 @@ def validate_document(doc: object, url: str) -> dict:
 
 
 class TCGCSVSnapshot:
-    def __init__(self, directory: Path, user_agent: str, delay: float, offline: bool = False):
+    def __init__(self, directory: Path, user_agent: str, delay: float, offline: bool = False,
+                 *, category_id: int = 68):
         if not math.isfinite(delay) or delay < 0.10:
             raise ValueError("TCGCSV requests must be paced at least 100 ms apart")
         if not user_agent.strip() or "/" not in user_agent or "\n" in user_agent or "\r" in user_agent:
             raise ValueError("A custom versioned User-Agent is required")
+        if category_id not in (3, 68):
+            raise ValueError("Only Pokémon and One Piece captures are supported")
         self.directory = directory
+        self.category_id = category_id
         self.user_agent = user_agent
         self.delay = delay
         self.offline = offline
@@ -59,7 +87,7 @@ class TCGCSVSnapshot:
                 raise ValueError("Unsupported retained capture manifest")
         else:
             self.manifest = {"schemaVersion": 1, "startedAt": timestamp(), "complete": False, "captures": {}}
-        start = self._bytes("https://tcgcsv.com/last-updated.txt", "last-updated-start.txt")
+        start = self._bytes(BUILD_MARKER_URL, "last-updated-start.txt")
         self.upstream_build = start.decode("utf-8").strip()
         if not self.upstream_build or len(self.upstream_build) > 100:
             raise ValueError("Invalid upstream daily-build marker")
@@ -91,17 +119,9 @@ class TCGCSVSnapshot:
         if path.exists():
             raise ValueError(f"Untracked response file would be overwritten: {filename}")
         if self.request_count >= 1_000:
-            raise ValueError("One Piece capture exceeded its request budget")
-        # Sleep before every request, including marker/first-product requests.
-        time.sleep(self.delay)
+            raise ValueError("TCGCSV capture exceeded its request budget")
         self.request_count += 1
-        request = Request(url, headers={"User-Agent": self.user_agent, "Accept": "application/json,text/plain"})
-        with urlopen(request, timeout=45) as response:
-            if response.geturl() != url:
-                raise ValueError("Unexpected capture redirect")
-            raw = response.read(MAX_BYTES + 1)
-        if len(raw) > MAX_BYTES:
-            raise ValueError(f"Response exceeds capture byte limit: {url}")
+        raw = fetch_response(url, self.user_agent, self.delay)
         path.write_bytes(raw)
         self.manifest["captures"][key] = {"sourceURL": url, "rawFile": filename,
             "payloadSHA256": hashlib.sha256(raw).hexdigest(), "byteCount": len(raw), "observedAt": timestamp()}
@@ -110,15 +130,15 @@ class TCGCSVSnapshot:
         return raw
 
     def fetch_json(self, url: str) -> dict:
-        if not re.fullmatch(r"https://tcgcsv\.com/tcgplayer/68/(?:groups|[1-9][0-9]*/(?:products|prices))", url):
-            raise ValueError("Only One Piece category 68 on the documented TCGCSV origin is allowed")
+        if not re.fullmatch(rf"https://tcgcsv\.com/tcgplayer/{self.category_id}/(?:groups|[1-9][0-9]*/(?:products|prices))", url):
+            raise ValueError(f"Only category {self.category_id} on the documented TCGCSV origin is allowed")
         filename = url.removeprefix("https://tcgcsv.com/tcgplayer/").replace("/", "-") + ".json"
         raw = self._bytes(url, filename)
         return validate_document(json.loads(raw), url)
 
     def finish(self) -> None:
         # Retain both marker responses without overwriting the starting bytes.
-        url = "https://tcgcsv.com/last-updated.txt"
+        url = BUILD_MARKER_URL
         end = self._bytes(url, "last-updated-end.txt", key=url + "#end")
         if end.decode("utf-8").strip() != self.upstream_build:
             raise ValueError("Upstream daily build changed during capture; do not treat mixed responses as one inventory")

@@ -27,12 +27,17 @@ ORIGINS = {"en.onepiece-cardgame.com", "coretcg.com"}
 TCGPLAYER_ARTWORK_URL = re.compile(r"https://product-images\.tcgplayer\.com/fit-in/600x600/([1-9][0-9]*)\.jpg")
 CARDBOARD_ARTWORK_URL = re.compile(r"https://sortswift\.nyc3\.cdn\.digitaloceanspaces\.com/cards/([1-9][0-9]*)\.jpg")
 ROCKET_ARTWORK_URL = re.compile(r"https://cdn\.shopify\.com/s/files/1/0801/4423/6835/files/([1-9][0-9]*)\.jpg\?v=[0-9]+")
+WEIRDWOLF_ARTWORK_URL = re.compile(
+    r"https://cdn\.shopify\.com/s/files/1/1032/2562/2862/files/([1-9][0-9]*)-(normal|foil)"
+    r"-disc-[0-9a-f]{8}-s[0-9a-f]{10}-c[0-9a-f]{8}-u1000\.jpg\?v=[0-9]+"
+)
 
 
 def checked_url(value, host=None):
     url = urlsplit(value)
     known_origin = url.netloc in ORIGINS or any(
-        pattern.fullmatch(value) for pattern in (TCGPLAYER_ARTWORK_URL, CARDBOARD_ARTWORK_URL, ROCKET_ARTWORK_URL)
+        pattern.fullmatch(value) for pattern in (
+            TCGPLAYER_ARTWORK_URL, CARDBOARD_ARTWORK_URL, ROCKET_ARTWORK_URL, WEIRDWOLF_ARTWORK_URL)
     )
     if url.scheme != "https" or not known_origin or url.fragment or (host and url.netloc != host):
         raise ValueError("unexpected product capture origin: " + value)

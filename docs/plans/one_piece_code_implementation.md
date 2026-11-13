@@ -4,27 +4,41 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 
-**English numbered catalog coverage — 2026-11-12, dirty `7daef56`.** The
-signed owner bundle is revision 6. The unsigned production revision 2
-validates as a continuation of signed production revision 1. The same registry
-joins 3,811 of 4,946 official rows across 61 series to verified printings.
-Since owner revision 4, the EB-05, booster, named promo and starter batches
-added 738 verified printing IDs and verified seven finishes under their
-existing IDs. All 2,367 market mappings carry forward.
+**EB-05 set listing — 2026-11-12.** Owner revision 10 changes only the
+EB-05 product record. Revision 9 listed EB-05 under its raw Bandai series
+label with no release date, so Browse placed it in "Earlier" among undated
+promos. Revision 10 names it "Extra Booster: One Piece Heroines Edition Vol. 2
+· EB05" and dates it October 30, 2026, from Bandai's English product page.
+Its 64 verified printings, IDs and mappings are unchanged. Revision 10 and its
+inputs are on T7 under `CodexBuilds/OnePieceCatalogFix-20261112-EB05`.
+
+**English numbered catalog coverage — 2026-11-12, dirty `c52d16f`.** The
+signed owner bundle is revision 9 and joins 4,152 of 4,946 official rows
+across 61 series to verified printings. It adds 41 PRB-01 printings and 80
+promo and other-product printings. All 4,262 revision 8 printing records
+and 2,367 market mappings carry forward. The separate unsigned production
+revision 2 uses the revision 8 registry and validates as a continuation of
+signed production revision 1.
 
 The [replay procedure](../../OnePieceCatalogCore/README.md#english-card-list-coverage)
 uses exact Bandai product evidence and retailer listings tied to unique
-artwork. All 906 official rows without an exact printing join have read-only
+artwork. All 565 official rows without an exact printing join have read-only
 Browse evidence indexed by official product label. Another 229 rows have held
-printings. The largest queues are Promotion (253), Other
-Product (143), PRB-01 (138), PRB-02 (93) and OP-01 (89, including 62 holds).
+printings. The largest queues are Promotion (167), OP-01 (89, including 62
+holds), PRB-01 (67), EB-05 (32), Other Product (29) and PRB-02 (27).
 Continue by product and review every visually confusable sibling together.
 Use physical copies or explicit product specifications to settle stamp, footer,
-treatment and finish disagreements. DON!! and other languages require separate
-inventories.
+treatment and finish disagreements. All 15 available Season 1 regional vendor
+images remained ambiguous, with five also failing the marketplace finish check.
+The official numbered inventory contains no DON!! rows. The retained
+marketplace snapshot contains 151 DON!! listings
+across eight groups, each without a collector number. DON!! and other languages
+require separate inventories.
 
-The signed owner bundle, unsigned production candidate and coverage audit are
-on T7 under `CodexBuilds/OnePieceCatalogFix-20261112-Resume2/FinalWithStarters`.
+The signed owner bundle, reviewed photo pairs and coverage audit are on T7
+under `CodexBuilds/OnePieceCatalogFix-20261112-Resume4/VerifiedR9`.
+The unsigned production candidate is under
+`CodexBuilds/OnePieceCatalogFix-20261112-Resume3/VerifiedR8Combined`.
 Both production pointers returned HTTP 404 on November 12. Publishing the
 already signed revision 1 is the prerequisite for a revision 2 continuation.
 The [protected publication steps](../release/one-piece-production-setup-2026-10-23.md)

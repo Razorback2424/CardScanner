@@ -2,6 +2,8 @@
 """Build physical printing additions from retained Bandai fixed foil products."""
 
 import argparse
+from hashlib import sha256
+from io import BytesIO
 import json
 from pathlib import Path
 import re
@@ -39,6 +41,31 @@ def fixed_foil_count(raw, rule):
     return int(foil[1] or foil[2])
 
 
+def event_artwork_urls(raw, rule):
+    section = one((node for node in Document(raw).root.nodes("section")
+                   if node.attrs.get("id") == rule["eventSectionID"]), "Bandai event section")
+    heading = one(section.nodes("h5", "smallTit"), "Bandai event product title")
+    if heading.text() != rule["specificationTitle"]:
+        raise ValueError("Bandai event specification is for a different title")
+    notes = [node.text() for block in section.nodes("ul", "commonNoticeList") for node in block.nodes("li")]
+    if notes.count("*Holo+Textured foil") != 1:
+        raise ValueError("Bandai event section does not specify holo and textured foil")
+    featured = one(section.nodes("ul", "cardPopupWrap"), "Bandai featured card list")
+    urls = [urljoin(rule["specificationURL"], link.attrs["href"]) for link in featured.nodes("a", "js_modalOpenImage")]
+    if not urls or len(urls) != len(set(urls)):
+        raise ValueError("Bandai event card images are missing or duplicated")
+    return urls
+
+
+def png_pixels(raw):
+    from PIL import Image
+
+    with Image.open(BytesIO(raw)) as image:
+        if image.format != "PNG":
+            raise ValueError("Expected a Bandai PNG reference")
+        return image.size, image.convert("RGB").tobytes()
+
+
 def reconcile(rules, cardlist_root, specification_root):
     def captures(root):
         records = json.loads((root / "capture-manifest.json").read_bytes())["captures"]
@@ -71,12 +98,23 @@ def reconcile(rules, cardlist_root, specification_root):
     reviewed_aliases = set()
     for product_id, rule in sorted(products.items()):
         specification_url = rule["specificationURL"]
-        if not urlsplit(specification_url).path.startswith("/products/"):
-            raise ValueError("Expected a Bandai product specification page")
+        event = "eventSectionID" in rule
+        if not urlsplit(specification_url).path.startswith("/events/" if event else "/products/"):
+            raise ValueError("Expected a Bandai specification page for the reviewed release")
         spec_source, spec_bytes = retained(specification_root, specifications, specification_url,
                                            rule["specificationSHA256"])
         selected = [row for row in rows if rule["label"] in row["productLabels"]]
-        if len(selected) != fixed_foil_count(spec_bytes, rule) or not selected:
+        if event:
+            if len({row["number"] for row in selected}) != len(selected):
+                raise ValueError("Bandai event needs distinct collector numbers within the distribution")
+            aliases = set(rule["artworkAliases"])
+            selected = [row for row in selected if row["artworkAlias"] in aliases]
+            if not aliases or len(selected) != len(aliases):
+                raise ValueError("Bandai event aliases do not match the official distribution")
+            event_images = [retained(specification_root, specifications, image_url)
+                            for image_url in event_artwork_urls(spec_bytes, rule)]
+            event_images = [(source, png_pixels(png)) for source, png in event_images]
+        elif len(selected) != fixed_foil_count(spec_bytes, rule) or not selected:
             raise ValueError("Official card list does not match the fixed foil quantity")
         result["products"].append({"id": product_id, "label": rule["label"]})
         observation_ids = []
@@ -98,17 +136,27 @@ def reconcile(rules, cardlist_root, specification_root):
             artwork_id = str(uuid5(NAMESPACE_URL, f"{url}#{source_id}/artwork")).upper()
             printing_id = str(uuid5(NAMESPACE_URL, f"{url}#{source_id}/printing")).upper()
             evidence = []
-            for role, source, fields, claims in (
+            sources = [
                 ("list", list_source, {"productLabel": rule["label"]},
                  {"printedIdentity": "Exact alias in the English card list.", "language": "English card list.",
-                  "release": "The card list identifies this exact fixed product."}),
+                  "release": "The card list identifies this exact release." if event else
+                  "The card list identifies this exact fixed product."}),
                 ("render", art_source, {"sourceRole": "watermarked-digital-render"},
                  {"artwork": "Captured Bandai artwork fingerprint for the exact alias."}),
                 ("specification", spec_source, {"sourceRole": "manufacturer-physical-product-specification",
                   "treatment": TREATMENT, "finishVariantID": "foil"},
-                 {"finish": "Bandai lists the full numbered product contents as holo and textured foil.",
+                 {"finish": "Bandai specifies holo and textured foil for this event's featured card list." if event else
+                  "Bandai lists the full numbered product contents as holo and textured foil.",
                   "treatment": "Bandai specifies holo and textured foil for this product."}),
-            ):
+            ]
+            if event:
+                pixels = png_pixels(png)
+                featured = one((source for source, event_pixels in event_images if event_pixels == pixels),
+                               "exact Bandai event artwork")
+                sources.append(("event-artwork", featured, {"sourceRole": "event-featured-card",
+                                "distribution": rule["label"]},
+                                {"distribution": "Bandai's featured card has identical pixels to this card-list alias."}))
+            for role, source, fields, claims in sources:
                 observation_id = f"{source_id}:{role}"
                 observation = {"id": observation_id, "kind": "catalog", "language": "en", "alias": source_alias,
                                "sourceURL": source["sourceURL"], "observedAt": source["observedAt"],
@@ -127,8 +175,14 @@ def reconcile(rules, cardlist_root, specification_root):
                                         "treatment": TREATMENT, "status": "verified", "supportedVariantIDs": ["foil"],
                                         "sourceAliases": [source_alias], "marketMappings": [], "supersedes": [],
                                         "review": {"reference": specification_url, "evidence": evidence}})
-        result["inventories"].append({"provider": "bandai", "snapshotID": product_id + ":fixed-foil",
-                                      "paginationComplete": True, "observationIDs": observation_ids})
+            if event:
+                result["printings"][-1]["distributionLabel"] = rule["label"]
+        inventory_id = product_id + ":fixed-foil"
+        if event:
+            membership = sha256(json.dumps(observation_ids, separators=(",", ":")).encode()).hexdigest()
+            inventory_id = product_id + ":event-foil:" + membership
+        result["inventories"].append({"provider": "bandai", "snapshotID": inventory_id,
+                                      "paginationComplete": not event, "observationIDs": observation_ids})
     return result
 
 
