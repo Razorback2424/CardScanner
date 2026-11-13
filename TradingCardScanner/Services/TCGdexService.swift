@@ -88,7 +88,17 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         ignoringCache: Bool = false,
         recoversArtwork: Bool
     ) async throws -> TCGdexCard {
+        if locale == .en, setID == PokemonM26Catalog.setID {
+            guard let entry = PokemonM26Catalog.entry(localID: localID), let card = PokemonM26Catalog.card(for: entry) else {
+                throw TCGdexError.cardNotFound
+            }
+            return card
+        }
         if locale == .en, let reviewed = PokemonReviewedEnergyCatalog.card(setID: setID, localID: localID) {
+            return reviewed
+        }
+        if locale == .en, setID == PokemonDeltaReignCatalog.promoSetID,
+           let reviewed = PokemonDeltaReignCatalog.promoPayload(cardID: "\(setID)-\(localID)") {
             return reviewed
         }
         guard let encodedSetID = setID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
@@ -125,7 +135,9 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
         timeout: TimeInterval = 8,
         recoversArtwork: Bool = true
     ) async throws -> TCGdexCard {
-        if locale == .en, let reviewed = PokemonReviewedEnergyCatalog.card(providerID: id) {
+        if locale == .en, let reviewed = PokemonM26Catalog.card(providerID: id)
+            ?? PokemonDeltaReignCatalog.promoPayload(cardID: id)
+            ?? PokemonReviewedEnergyCatalog.card(providerID: id) {
             return reviewed
         }
         if locale == .en, id.hasPrefix("tcgplayer:"), let reviewed = PokemonReviewedArtworkCatalog.card(providerID: id) {

@@ -692,6 +692,32 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(projected.displayCardNumber, "Unnumbered")
     }
 
+    func testM26FootersSaveTheVerifiedSingleFinishAndProduct() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let offline = PokemonOfflineCatalog(store: PokemonChecklistStore(root: root, bundle: .main))
+        let profile = PokemonScanProfile(registry: .bundledSeed)
+        for (footer, productID, finish) in [
+            ("H M26 EN 004/015", "730419", PhysicalVariant.holo),
+            ("M26 EN 013/015", "730430", PhysicalVariant.normal)
+        ] {
+            let model = try makeModel(variants: [.reverse], offline: offline,
+                fallbackQuoteOverride: { _, _, _ in .lookup(.unavailable(nil)) })
+            defer { model.viewDisappeared() }
+            confirm(model, try XCTUnwrap(profile.parse(footer)), encounterID: UUID())
+            await assertEventually { model.successCount == 1 }
+            XCTAssertNil(model.pendingChoice)
+            let rows = try context().fetch(FetchDescriptor<CollectedCard>())
+            let saved = try XCTUnwrap(rows.first)
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(saved.providerID, "tcgplayer:\(productID)")
+            XCTAssertEqual(saved.setCode, "M26")
+            XCTAssertEqual(saved.variantID, finish.id)
+            XCTAssertEqual(saved.tcgplayerProductID, productID)
+            XCTAssertEqual(try context().fetchCount(FetchDescriptor<InventoryEvent>()), 1)
+        }
+    }
+
     func testBattleDeckFootersOfferStampedFinishAndSaveExactMarketplaceProduct() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
@@ -864,11 +890,14 @@ final class ScannerViewModelTests: XCTestCase {
         let unsupported = await UnresolvedScanStore(fileURL: fileURL).load()
         XCTAssertTrue(try XCTUnwrap(unsupported.first).isReadOnly)
         XCTAssertEqual(unsupported.first?.printingCandidates, row.printingCandidates)
-        model.resolveUnresolved(id: row.id, choice: .printing(row.printingCandidates[0]))
+        let restoredCandidate = try XCTUnwrap(restored.first?.printingCandidates.first)
+        XCTAssertFalse(model.canResolveUnresolved(id: row.id, choice: .printing(restoredCandidate)))
+        model.resolveUnresolved(id: row.id, choice: .englishPrinting(restoredCandidate))
         let finishAppeared = await waitUntil { model.pendingChoice != nil }
         XCTAssertTrue(finishAppeared)
         XCTAssertEqual(model.pendingChoice?.card.physicalPrintingID, "first-uuid")
         XCTAssertEqual(model.pendingChoice?.request.unresolvedScanID, row.id)
+        XCTAssertEqual(model.pendingChoice?.request.identifier.needsOnePieceEnglishConfirmation, false)
         XCTAssertEqual(model.pendingChoice?.catalogRetrievedAt, adapter.retrievedAt)
         model.viewDisappeared()
     }

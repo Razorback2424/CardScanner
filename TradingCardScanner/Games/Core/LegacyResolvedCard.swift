@@ -120,6 +120,8 @@ enum LegacyResolvedCard: Identifiable, Sendable {
         switch self {
         case let .pokemon(card, _):
             if PokemonFinishMinimumCatalog.isUnnumbered(cardID: card.id) { return "Unnumbered" }
+            if let m26 = PokemonM26Catalog.entry(for: card) { return m26.number }
+            if let promo = PokemonDeltaReignCatalog.card(for: card), promo.isPromo { return promo.number }
             if let printed = ReviewedPokemonProductIdentity.printedNumber(for: card) { return printed }
             if PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: card.set.id)?.recognitionKind == .energy {
                 return card.localId

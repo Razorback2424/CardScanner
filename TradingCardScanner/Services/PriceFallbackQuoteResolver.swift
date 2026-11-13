@@ -230,6 +230,15 @@ final class PriceFallbackQuoteResolver {
     ) async -> PriceFallbackQuoteResolution {
         // This free exact-product path is independent of the paid vendor setting/key.
         guard gameRegistry.supports(game, .pricing) else { return .failed(.unsupportedGame) }
+        let cardID = catalogID ?? printingID
+        if game == .pokemon, PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: cardID)
+            || (variant == .normal
+                && PokemonReviewedMarketProduct.entry(cardID: cardID, variantID: variant?.id) != nil) {
+            guard pokemonPrintRun == nil,
+                  let product = PokemonReviewedMarketProduct.entry(cardID: cardID, variantID: variant?.id),
+                  product.matches(name: name, number: cardNumber), exactPhysicalProductID == String(product.productID)
+            else { return .failed(.notMatched) }
+        }
         if game == .pokemon, let variant {
             guard !PokemonVariantRules.requiresPhysicalReview(cardID: catalogID ?? printingID, variant: variant),
                   ProductFinish.printing(for: variant) != nil || exactPhysicalProductID != nil else {
@@ -372,11 +381,12 @@ final class PriceFallbackQuoteResolver {
         card: IdentifiedCard,
         variant: PhysicalVariant?
     ) -> [JustTCGBatchLookup] {
-        if let deck = PokemonBattleDeckFinishCatalog.entry(cardID: card.providerID, variantID: variant?.id) {
+        if PokemonReviewedMarketProduct.entry(cardID: card.providerID, variantID: variant?.id) != nil {
             guard case let .pokemon(payload, _) = card.legacyIdentity,
-                  PokemonBattleDeckFinishCatalog.entry(for: payload) != nil else { return [] }
-            return [.tcgplayerID(String(deck.productID))]
+                  let product = PokemonReviewedMarketProduct.entry(for: payload, variantID: variant?.id) else { return [] }
+            return [.tcgplayerID(String(product.productID))]
         }
+        if PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: card.providerID) { return [] }
         return verifiedLookups(catalogID: card.providerID, variant: variant)
     }
 
@@ -389,7 +399,7 @@ final class PriceFallbackQuoteResolver {
         pokemonPrintRun: PokemonPrintRun? = nil
     ) -> [JustTCGBatchLookup] {
         if pokemonPrintRun != nil,
-           PokemonBattleDeckFinishCatalog.entry(cardID: card.providerID, variantID: variant?.id) != nil { return [] }
+           PokemonReviewedMarketProduct.entry(cardID: card.providerID, variantID: variant?.id) != nil { return [] }
         var lookups = verifiedLookups(card: card, variant: variant)
         if let productID = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun) {
             lookups.append(.tcgplayerID(String(productID)))
@@ -406,8 +416,8 @@ final class PriceFallbackQuoteResolver {
         catalogID: String,
         variant: PhysicalVariant?
     ) -> [JustTCGBatchLookup] {
-        if let deck = PokemonBattleDeckFinishCatalog.entry(cardID: catalogID, variantID: variant?.id) {
-            return [.tcgplayerID(String(deck.productID))]
+        if let product = PokemonReviewedMarketProduct.entry(cardID: catalogID, variantID: variant?.id) {
+            return [.tcgplayerID(String(product.productID))]
         }
         guard let variant,
               let stamped = PokemonStampedReleaseCatalog.entries(providerID: catalogID)

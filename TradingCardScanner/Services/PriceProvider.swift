@@ -137,9 +137,11 @@ enum CardPricing {
         guard case let .pokemon(pokemon, _) = card.legacyIdentity, let variant,
               printRun != .shadowless else { return nil }
         guard !signedPriceIsBlocked(on: pokemon, variant: variant) else { return nil }
-        if let deck = PokemonBattleDeckFinishCatalog.entry(cardID: pokemon.id, variantID: variant.id) {
-            return printRun == nil && PokemonBattleDeckFinishCatalog.entry(for: pokemon) != nil ? deck.productID : nil
+        if PokemonReviewedMarketProduct.entry(cardID: pokemon.id, variantID: variant.id) != nil {
+            guard printRun == nil else { return nil }
+            return PokemonReviewedMarketProduct.entry(for: pokemon, variantID: variant.id)?.productID
         }
+        guard !PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: pokemon.id, setID: pokemon.set.id) else { return nil }
         if variant == .jumbo || hasSignedProduct(on: pokemon, variant: variant) {
             guard printRun == nil || printRun == .unlimited else { return nil }
             return reviewedAdditionalProductID(on: pokemon, variant: variant)
@@ -354,7 +356,8 @@ enum CardPricing {
         case .none:
             return .unavailable(nil)
         case let .pokemon(pokemon, _):
-            if PokemonBattleDeckFinishCatalog.entry(cardID: pokemon.id, variantID: variant?.id) != nil {
+            if PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: pokemon.id, setID: pokemon.set.id)
+                || PokemonReviewedMarketProduct.entry(cardID: pokemon.id, variantID: variant?.id) != nil {
                 // The reviewed listing is served by the exact-product feed.
                 // Expansion prices describe the ordinary printing.
                 return .unavailable(nil)

@@ -16,10 +16,20 @@ struct PokemonCatalogRegistry: Sendable {
         descriptor.rulesVersion <= 2 && (descriptor.recognitionKind != .energy || descriptor.rulesVersion >= 2)
     }
 
-    init(release: PokemonCatalogRelease) {
+    init(release: PokemonCatalogRelease, includingBundledReviewedSets: Bool = false) {
         self.revision = release.revision
         self.checklistInputSHA256 = release.checklistInputSHA256
-        let supported = release.sets.filter(Self.isSupported)
+        var supported = release.sets.filter(Self.isSupported)
+        // The reviewed bundle covers M26 while the provider has no set to sign.
+        // An explicit signed descriptor can take over its code or set ID.
+        if includingBundledReviewedSets, let reviewed = PokemonM26Catalog.descriptor,
+           !supported.contains(where: {
+               $0.providerSetID.lowercased() == reviewed.providerSetID
+                   || $0.printedCode?.uppercased() == PokemonM26Catalog.setCode
+                   || $0.printedPrefix?.uppercased() == PokemonM26Catalog.setCode
+           }) {
+            supported.append(reviewed)
+        }
         self.descriptors = supported
         var codes: [String: PokemonCatalogSetDescriptor] = [:]
         var promos: [String: PokemonCatalogSetDescriptor] = [:]
@@ -320,7 +330,7 @@ struct PokemonCatalogRegistry: Sendable {
             generatedAt: Date(timeIntervalSince1970: 0),
             sets: expansions + promos + [classic, Self.energyDescriptor]
         )
-        return PokemonCatalogRegistry(release: release)
+        return PokemonCatalogRegistry(release: release, includingBundledReviewedSets: true)
     }()
 }
 

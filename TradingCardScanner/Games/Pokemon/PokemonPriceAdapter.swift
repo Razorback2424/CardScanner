@@ -25,12 +25,19 @@ struct PokemonPriceAdapter: GamePriceAdapter {
         let variant = request.variant
         let pokemonPrintRun = request.pokemonPrintRun
         guard card.game == game else { throw PriceQuoteError.identityMismatch }
-        if let deck = PokemonBattleDeckFinishCatalog.entry(cardID: card.printingID, variantID: variant?.id) {
-            guard pokemonPrintRun == nil, card.language == "en", card.setID == deck.setID,
-                  ProductCatalogIdentity.numbersMatch(deck.printedNumber, card.cardNumber) else {
+        if let product = PokemonReviewedMarketProduct.entry(cardID: card.printingID, variantID: variant?.id) {
+            guard pokemonPrintRun == nil, card.language == "en", card.setID == product.setID,
+                  ProductCatalogIdentity.numbersMatch(product.number, card.cardNumber) else {
                 throw PriceQuoteError.identityMismatch
             }
-            return try await marketPrices.quote(for: deck, minimumFetchedAt: request.minimumFetchedAt)
+            return try await marketPrices.quote(for: product, minimumFetchedAt: request.minimumFetchedAt)
+        }
+        if PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: card.printingID, setID: card.setID) {
+            if let promo = PokemonDeltaReignCatalog.card(card.printingID), promo.isPromo, pokemonPrintRun == nil,
+               card.language == "en", promo.setID == card.setID,
+               ProductCatalogIdentity.numbersMatch(promo.number, card.cardNumber),
+               promo.printings.contains(where: { $0.variant.id == variant?.id }) { return .unavailable(nil) }
+            throw PriceQuoteError.identityMismatch
         }
         let catalog: PriceLookup
         do {

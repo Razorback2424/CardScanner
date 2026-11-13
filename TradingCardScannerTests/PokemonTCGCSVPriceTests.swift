@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import SwiftData
 import XCTest
@@ -5,12 +6,268 @@ import XCTest
 
 final class PokemonTCGCSVPriceTests: XCTestCase {
     @MainActor
-    func testBattleDeckChoicesAndLinksCoverEveryReviewedPrinting() async throws {
+    func testDeltaReignPrintingsUseTheirOwnScanBrowseChoicesAndMarketProducts() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); TCGCSVTestURLProtocol.server = nil }
+        let prerelease = try XCTUnwrap(PokemonCatalogStampVariant.make(base: .holo, stamps: ["set-logo"]))
+        let staff = try XCTUnwrap(PokemonCatalogStampVariant.make(base: .holo, stamps: ["set-logo", "staff"]))
+        let center = try XCTUnwrap(PokemonCatalogStampVariant.make(base: .holo, stamps: ["pokemon-center"]))
+        let cosmos = PhysicalVariant.pokemonFoilPattern("cosmos")
+        let expected: [(id: String, name: String, number: String, choices: [(PhysicalVariant, Int?, String?)])] = [
+            ("me06-021", "Magmortar", "021/103", [(.normal, 732417, "Magmortar - 021/103")]),
+            ("me06-075", "Kommo-o", "075/103", [(.normal, 732418, "Kommo-o")]),
+            ("mep-111", "Masquerain", "111", [(prerelease, 730455, "Masquerain - 111"), (staff, 730456, "Masquerain - 111 [Staff]")]),
+            ("mep-112", "Magmortar", "112", [(prerelease, 730453, "Magmortar - 112"), (staff, 730454, "Magmortar - 112 [Staff]")]),
+            ("mep-113", "Enamorus", "113", [(prerelease, 730451, "Enamorus - 113"), (staff, 730452, "Enamorus - 113 [Staff]")]),
+            ("mep-114", "Kommo-o", "114", [(prerelease, 730130, "Kommo-o - 114"), (staff, nil, nil)]),
+            ("mep-115", "Spritzee", "115", [(cosmos, 732591, "Spritzee - 115 (Cosmos Holo)")]),
+            ("mep-116", "Seel", "116", [(cosmos, 731807, "Seel - 116 (Cosmos Holo)")]),
+            ("mep-117", "Kyogre", "117", [(.holo, 731799, "Kyogre - 117"), (center, 732872, "Kyogre - 117 (Pokemon Center Exclusive)")]),
+        ]
+        let now = Date()
+        let build = ISO8601DateFormatter().string(from: now.addingTimeInterval(-60))
+        var routes = ["/last-updated.txt": Data(build.utf8)]
+        for (prefix, group, lane) in [("me06-", 1840, "Normal"), ("mep-", 24451, "Holofoil")] {
+            var products: [[String: Any]] = []
+            var prices: [[String: Any]] = []
+            for card in expected where card.id.hasPrefix(prefix) {
+                for (_, productID, marketName) in card.choices {
+                    guard let productID, let marketName else { continue }
+                    let fields = productID == 732872 ? [] : [["name": "Number", "value": card.number]]
+                    products.append(["productId": productID, "categoryId": 3, "groupId": group, "name": marketName,
+                                     "extendedData": fields])
+                    if productID != 732872 {
+                        prices.append(["productId": productID, "subTypeName": lane, "marketPrice": Double(productID) / 1000])
+                    }
+                    prices.append(["productId": productID, "subTypeName": "Reverse Holofoil", "marketPrice": 999])
+                }
+            }
+            for (resource, rows) in [("products", products), ("prices", prices)] {
+                routes["/tcgplayer/3/\(group)/\(resource)"] = try JSONSerialization.data(withJSONObject:
+                    ["success": true, "errors": [], "results": rows])
+            }
+        }
+        TCGCSVTestURLProtocol.server = TCGCSVTestServer(routes: routes, now: now)
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let prices = TCGCSVProductPriceSource(baseURL: URL(string: "https://price-fixture.example"), session: session,
+            cacheDirectory: root.appendingPathComponent("prices"))
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let delta = CatalogSet(catalogID: .init(game: .pokemon, providerID: "me06"), name: "Delta Reign", code: "DLR",
+            logoURL: nil, symbolURL: nil, cardCount: 103, releaseDate: nil, sortRank: 29)
+        let promo = try XCTUnwrap(PokemonCatalogRegistry.bundledSeed.promo(forPrefix: "MEP"))
+        let descriptor = PokemonCatalogSetDescriptor(providerSetID: "me06", displayName: "Delta Reign", releaseDate: nil,
+            releaseOrder: 29, recognitionKind: .expansion, printedCode: "DLR", officialCount: 103,
+            printedPrefix: nil, catalogLocalIDPrefix: nil, localIDPadWidth: nil, scanEnabled: true, logoURL: nil, symbolURL: nil)
+        let registry = PokemonCatalogRegistry(release: .init(revision: 1, generatedAt: now, sets: [descriptor, promo]))
+        let baseRows: [CatalogCardSummary] = expected.prefix(2).flatMap { card -> [CatalogCardSummary] in
+            [PhysicalVariant.holo, .reverse].map { finish in
+                CatalogCardSummary(game: .pokemon, providerID: card.id, setID: delta.catalogID,
+                    setName: delta.name, setCode: delta.code, name: card.name, collectorNumber: String(card.number.prefix(3)),
+                    thumbnailURL: nil, imageURL: nil, masterSetVariant: finish)
+            }
+        }
+        try await store.replace(.init(manifest: .init(schemaVersion: 1, rulesVersion: 1, generatedAt: now,
+            directoryFingerprint: "delta-reign-test", entries: [
+                .init(set: delta, providerID: "me06", officialCount: 103, standardSlotCount: 4,
+                    expandedSlotCount: 4, resource: "sets/me06.json"),
+            ]), checklists: [delta.id: baseRows]))
+        let transport = UnavailablePokemonTransport()
+        let scanner = CardCatalog(source: transport, offline: .init(store: store, registry: registry),
+            resolvedDiskCache: .init(root: root.appendingPathComponent("scan")), registry: registry)
+        let browse = BrowseCatalog(cache: .init(root: root.appendingPathComponent("browse")), pokemonTransport: transport,
+            pokemonProductPriceSource: prices, checklistStore: store)
+        let directory = try await browse.sets(for: .pokemon)
+        let promoSet = try XCTUnwrap(directory.first { $0.providerID == "mep" })
+        let profile = PokemonScanProfile(registry: registry)
+        let adapter = PokemonPriceAdapter(productPriceSource: prices)
+
+        for card in expected {
+            let isDeck = card.id.hasPrefix("me06-")
+            let set = isDeck ? delta : promoSet
+            let input = try XCTUnwrap(profile.parse("\(set.code) EN \(card.number)"), card.id)
+            let scanned = try await scanner.card(for: input)
+            let page = try await browse.cards(in: set, cursor: nil)
+            let slots = page.items.filter { $0.providerID == card.id }
+            var finishes = Set(card.choices.map(\.0))
+            if isDeck { finishes.formUnion([.holo, .reverse]) }
+            XCTAssertEqual(scanned.providerID, card.id)
+            XCTAssertEqual(scanned.displayCardNumber, card.number)
+            XCTAssertEqual(Set(VariantResolver.options(for: scanned.variantEvidence)), finishes)
+            XCTAssertEqual(Set(slots.compactMap(\.masterSetVariant)), finishes)
+            XCTAssertEqual(slots.count, finishes.count)
+            for (variant, productID, _) in card.choices {
+                let summary = try XCTUnwrap(slots.first { $0.masterSetVariant == variant }, card.id)
+                if isDeck { XCTAssertTrue(summary.isExpandedMasterSetVariant) }
+                let installed = await browse.installedDetails(for: summary)
+                let detailed = try XCTUnwrap(installed?.card, card.id)
+                XCTAssertTrue(PokemonVariantPolicy.allowsAcquisition(of: scanned, finish: variant, printRun: nil))
+                XCTAssertEqual(CardPricing.tcgplayerProductID(for: scanned, variant: variant, printRun: nil), productID)
+                let collected = CollectedCard(card: scanned, resolved: .init(variant: variant, resolution: .userConfirmed))
+                XCTAssertEqual(collected.tcgplayerProductID, productID.map(String.init))
+                let quote = try await browse.price(for: summary, variant: variant)
+                let refreshed = try await adapter.refresh(.init(identity: .legacy(scanned), variant: variant,
+                    pokemonPrintRun: nil, catalogRefreshOverride: { throw PriceQuoteError.identityMismatch }))
+                XCTAssertEqual(refreshed, quote)
+                if let productID {
+                    let lane = isDeck ? "Normal" : "Holofoil"
+                    let url = "https://www.tcgplayer.com/product/\(productID)?Printing=\(lane)"
+                    XCTAssertEqual(TCGplayerLinkBuilder.destination(for: detailed, summary: summary)?.url.absoluteString, url)
+                    XCTAssertEqual(CardMarketHistoryRequest(card: collected).providerPrinting, lane)
+                    if productID == 732872 { XCTAssertEqual(quote, .unavailable(.tcgCSV)) }
+                    else {
+                        guard case let .price(amount) = quote else { return XCTFail("Missing exact quote \(productID)") }
+                        XCTAssertEqual(amount.sourceVariantID, "tcgplayer:\(productID):\(lane)")
+                        XCTAssertEqual(amount.unitMarketPriceUSD, Double(productID) / 1000)
+                    }
+                } else {
+                    XCTAssertEqual(quote, .unavailable(nil))
+                    XCTAssertNil(summary.imageURL)
+                    XCTAssertEqual(summary.limitlessArtworkAuthorized, false)
+                    XCTAssertNil(TCGplayerLinkBuilder.destination(for: detailed, summary: summary))
+                    collected.tcgplayerProductID = "730130"
+                    XCTAssertNil(TCGplayerLinkBuilder.destination(for: collected))
+                }
+            }
+        }
+        for query in ["MEP EN 117", "Kyogre"] {
+            let search = try await browse.searchCards(named: query, game: .pokemon, setIDs: [promoSet.catalogID], cursor: nil)
+            XCTAssertEqual(search.items.map(\.providerID), ["mep-117"])
+            let summary = try XCTUnwrap(search.items.first)
+            let details = try await browse.details(for: summary)
+            XCTAssertNil(summary.masterSetVariant)
+            XCTAssertEqual(TCGplayerLinkBuilder.destinations(for: details.card, summary: summary).map(\.url.path),
+                ["/product/731799", "/product/732872"])
+        }
+    }
+
+    @MainActor
+    func testM26ScanBrowseAndMarketUseTheSameVerifiedPrintings() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); TCGCSVTestURLProtocol.server = nil }
+        let productIDs = [730416, 730417, 730418, 730419, 730420, 730421, 730422, 730423,
+                          730424, 730426, 730427, 730429, 730430, 730431, 730432]
+        let names = ["Decidueye", "Chandelure", "Palafin", "Pikachu", "Mimikyu", "Lucario", "Hawlucha", "Tyranitar",
+                     "Absol", "Zoroark", "Metagross", "Jirachi", "Eevee", "Snorlax", "Wooloo"]
+        let holos: Set<Int> = [2, 3, 4, 5, 6, 8, 12]
+        var products: [[String: Any]] = []
+        var prices: [[String: Any]] = []
+        for (index, productID) in productIDs.enumerated() {
+            let number = index + 1
+            products.append(["productId": productID, "categoryId": 3, "groupId": 24938, "name": names[index],
+                "extendedData": [["name": "Number", "value": String(format: "%03d/015", number)]]])
+            prices.append(["productId": productID, "subTypeName": holos.contains(number) ? "Holofoil" : "Normal",
+                "marketPrice": Double(number)])
+            prices.append(["productId": productID, "subTypeName": holos.contains(number) ? "Normal" : "Holofoil",
+                "marketPrice": 999])
+        }
+        let now = Date()
+        let build = ISO8601DateFormatter().string(from: now.addingTimeInterval(-60))
+        let server = TCGCSVTestServer(routes: [
+            "/last-updated.txt": Data(build.utf8),
+            "/tcgplayer/3/24938/products": try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": products]),
+            "/tcgplayer/3/24938/prices": try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": prices])
+        ], now: now)
+        TCGCSVTestURLProtocol.server = server
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let priceSource = TCGCSVProductPriceSource(baseURL: URL(string: "https://price-fixture.example"), session: session,
+            cacheDirectory: root.appendingPathComponent("prices"))
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let transport = UnavailablePokemonTransport()
+        let key = Curve25519.Signing.PrivateKey()
+        let pinned = PokemonCatalogSignatureVerifier.PinnedKey(id: "m26-test", publicKey: key.publicKey)
+        let releaseRoot = root.appendingPathComponent("releases")
+        let coordinator = PokemonCatalogCoordinator(store: .init(root: releaseRoot),
+            checklistStore: store, keys: [pinned], rolloutMode: .remoteAuthority)
+        let mega = try XCTUnwrap(PokemonCatalogRegistry.bundledSeed.expansion(forPrintedCode: "MEG"))
+        let envelope = try PokemonCatalogSignatureVerifier.sign(
+            release: .init(revision: 24, generatedAt: .now, sets: [mega]), privateKey: key, keyID: pinned.id)
+        guard case let .activated(event) = await coordinator.activateEnvelope(envelope) else {
+            return XCTFail("Expected the signed catalog to activate")
+        }
+        XCTAssertEqual(event.registry.printedCode(forProviderSetID: "tcgplayer:24938"), "M26")
+        let reopened = PokemonCatalogCoordinator(store: .init(root: releaseRoot),
+            checklistStore: store, keys: [pinned], rolloutMode: .remoteAuthority)
+        await reopened.loadPersistedOrBundled()
+        let registry = await reopened.registry
+        XCTAssertEqual(registry.revision, 24)
+        let profile = PokemonScanProfile(registry: registry, knownOfficialCounts: ["tcgplayer:24938": 15])
+        XCTAssertNil(profile.parse("M26 FR 004/015"))
+        XCTAssertNil(profile.parse("M26 EN 004/016"))
+        XCTAssertNil(profile.parse("M26 EN 016/015"))
+        XCTAssertNil(profile.inferredIdentifier(from: .init(localID: "004", denominator: 15, scheme: .officialSet)))
+        let scanner = CardCatalog(source: transport, offline: .init(store: store, registry: registry),
+            resolvedDiskCache: .init(root: root.appendingPathComponent("scanner")), registry: registry)
+        let browse = BrowseCatalog(cache: .init(root: root.appendingPathComponent("browse")), pokemonTransport: transport,
+            pokemonProductPriceSource: priceSource, checklistStore: store, catalogCoordinator: reopened)
+        let sets = try await browse.sets(for: .pokemon)
+        let set = try XCTUnwrap(sets.first { $0.code == "M26" })
+        let page = try await browse.cards(in: set, cursor: nil)
+        XCTAssertEqual(page.items.count, 15)
+        XCTAssertEqual(set.cardCount, 15)
+        let priceAdapter = PokemonPriceAdapter(productPriceSource: priceSource)
+        for (index, productID) in productIDs.enumerated() {
+            let name = names[index]
+            let number = String(format: "%03d", index + 1)
+            let finish: PhysicalVariant = holos.contains(index + 1) ? .holo : .normal
+            let printing = finish == .holo ? "Holofoil" : "Normal"
+            let wrong: PhysicalVariant = finish == .holo ? .normal : .holo
+            let identifier = try XCTUnwrap(profile.parse("M26 EN \(number)/015"))
+            let scanned = try await scanner.card(for: identifier)
+            let summary = try XCTUnwrap(page.items.first { $0.collectorNumber == number })
+            XCTAssertEqual(summary.masterSetVariant, finish, name)
+            XCTAssertTrue(summary.isSoleSlotForCard, name)
+            let details = try await browse.details(for: summary)
+            for card in [scanned, details.card] {
+                XCTAssertEqual(card.providerID, "tcgplayer:\(productID)")
+                XCTAssertEqual(card.name, name)
+                XCTAssertEqual(card.displayCardNumber, "\(number)/015")
+                XCTAssertEqual(VariantResolver.options(for: card.variantEvidence), [finish])
+                XCTAssertTrue(PokemonVariantPolicy.allowsAcquisition(of: card, finish: finish, printRun: nil))
+                XCTAssertNil(TCGplayerLinkBuilder.destination(for: card, variant: wrong))
+            }
+            let url = "https://www.tcgplayer.com/product/\(productID)?Printing=\(printing)"
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: details.card, summary: summary)?.url.absoluteString, url)
+            let saved = CollectedCard(card: scanned, resolved: .init(variant: finish, resolution: .uniqueInCatalog))
+            XCTAssertEqual(saved.tcgplayerProductID, String(productID))
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: saved)?.url.absoluteString, url)
+            let quoted = try await browse.price(for: summary, variant: finish)
+            guard case let .price(quote) = quoted else { return XCTFail("Missing exact price for \(name)") }
+            XCTAssertEqual(quote.sourceVariantID, "tcgplayer:\(productID):\(printing)")
+            XCTAssertEqual(quote.unitMarketPriceUSD, Double(index + 1))
+            let refreshed = try await priceAdapter.refresh(.init(identity: .legacy(scanned), variant: finish,
+                pokemonPrintRun: nil, catalogRefreshOverride: { throw PriceQuoteError.identityMismatch }))
+            XCTAssertEqual(refreshed, quoted)
+        }
+        for query in ["Pikachu", "M26 EN 004/015"] {
+            let found = try await browse.searchCards(named: query, game: .pokemon, setIDs: [set.catalogID], cursor: nil)
+            let summary = try XCTUnwrap(found.items.first)
+            XCTAssertEqual(found.items.map(\.providerID), ["tcgplayer:730419"])
+            let details = try await browse.details(for: summary)
+            XCTAssertEqual(TCGplayerLinkBuilder.destination(for: details.card, summary: summary)?.url.absoluteString,
+                "https://www.tcgplayer.com/product/730419?Printing=Holofoil")
+            do {
+                _ = try await browse.price(for: summary, variant: .normal)
+                XCTFail("Pikachu has no Normal printing in M26")
+            } catch PriceQuoteError.identityMismatch {}
+        }
+        XCTAssertEqual(Set(server.requests.compactMap { $0.url?.path }),
+            ["/tcgplayer/3/24938/products", "/tcgplayer/3/24938/prices"])
+        XCTAssertEqual(server.requests.count, 2)
+    }
+
+    @MainActor
+    func testDeckExclusiveChoicesAndLinksCoverEveryReviewedPrinting() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
         let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
-        let entries = PokemonBattleDeckFinishCatalog.entries
-        XCTAssertEqual(entries.count, 34)
+        let entries = PokemonBattleDeckFinishCatalog.entries + PokemonBattleDeckFinishCatalog.normalEntries
+        XCTAssertEqual(entries.filter { $0.printing == .normal }.count, 41)
         XCTAssertEqual(entries.filter { $0.printing == .reverse }.count, 30)
         XCTAssertEqual(entries.filter { $0.printing == .holo }.count, 4)
         let mainSet = CatalogSet(catalogID: .init(game: .pokemon, providerID: "30th"),
@@ -42,6 +299,9 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
                 if entry.setID == "30th" {
                     XCTAssertEqual(Set(slots.compactMap(\.masterSetVariant)), [.holo, entry.variant])
                 }
+                if entry.printing == .normal {
+                    XCTAssertTrue(slots.contains { $0.masterSetVariant == .holo && !$0.isExpandedMasterSetVariant }, entry.cardID)
+                }
                 let installed = await catalog.installedDetails(for: summary)
                 let card = try XCTUnwrap(installed?.card, entry.cardID)
                 XCTAssertTrue(VariantResolver.options(for: card.variantEvidence).contains(entry.variant), entry.cardID)
@@ -61,7 +321,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
                 XCTAssertEqual(history.providerPrinting, entry.printing.rawValue)
             }
         }
-        for entry in entries where [729923, 729924].contains(entry.productID) {
+        for entry in entries where [546428, 685652, 729923, 729924].contains(entry.productID) {
             let page = try await catalog.searchCards(named: entry.name, game: .pokemon,
                 setIDs: [.init(game: .pokemon, providerID: entry.setID)], cursor: nil)
             let summary = try XCTUnwrap(page.items.first { $0.providerID == entry.cardID }, entry.cardID)
@@ -75,23 +335,26 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         }
     }
 
-    func testBattleDeckPricesUseTheExactGroupProductAndFinish() async throws {
+    func testDeckExclusivePricesUseTheExactGroupProductAndFinish() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root); TCGCSVTestURLProtocol.server = nil }
         let now = Date(timeIntervalSince1970: floor(Date.now.timeIntervalSince1970))
         let build = ISO8601DateFormatter().string(from: now.addingTimeInterval(-60))
-        let entries = PokemonBattleDeckFinishCatalog.entries
-        XCTAssertEqual(entries.count, 34)
+        let entries = PokemonBattleDeckFinishCatalog.entries + PokemonBattleDeckFinishCatalog.normalEntries
+        XCTAssertEqual(entries.count, 75)
+        let unpriced: Set<Int> = [725079, 725081, 725082, 725084, 725085]
         var routes = ["/last-updated.txt": Data(build.utf8)]
         for (groupID, group) in Dictionary(grouping: entries, by: \.groupID) {
             let products: [[String: Any]] = group.map { entry in
                 ["productId": entry.productID, "categoryId": 3, "groupId": groupID, "name": entry.marketName,
                  "extendedData": [["name": "Number", "value": entry.printedNumber]]]
             }
-            let prices: [[String: Any]] = group.flatMap { entry in
-                [["productId": entry.productID, "subTypeName": entry.printing.rawValue,
-                  "marketPrice": Double(entry.productID % 1_000) / 100],
-                 ["productId": entry.productID, "subTypeName": "Normal", "marketPrice": 500]]
+            let prices: [[String: Any]] = group.flatMap { entry -> [[String: Any]] in
+                let otherLane = entry.printing == .normal ? "Holofoil" : "Normal"
+                let wrongPrice: [String: Any] = ["productId": entry.productID, "subTypeName": otherLane, "marketPrice": 500]
+                guard !unpriced.contains(entry.productID) else { return [wrongPrice] }
+                return [["productId": entry.productID, "subTypeName": entry.printing.rawValue,
+                         "marketPrice": Double(entry.productID % 1_000) / 100], wrongPrice]
             }
             routes["/tcgplayer/3/\(groupID)/products"] = try JSONSerialization.data(
                 withJSONObject: ["success": true, "errors": [], "results": products])
@@ -109,6 +372,10 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         let market = PokemonMarketPriceResolver(productSource: source)
         for entry in entries {
             let lookup = try await market.fallback(cardID: entry.cardID, game: .pokemon, variant: entry.variant, printRun: nil)
+            if unpriced.contains(entry.productID) {
+                XCTAssertEqual(lookup, .unavailable(.tcgCSV), entry.cardID)
+                continue
+            }
             guard case let .price(quote) = lookup else { return XCTFail("Missing \(entry.cardID)") }
             XCTAssertEqual(quote.source, .tcgCSV)
             XCTAssertEqual(quote.sourceVariantID, "tcgplayer:\(entry.productID):\(entry.printing.rawValue)")
@@ -1741,10 +2008,12 @@ private struct BrowseSupplementSource: PokemonTCGCSVPriceSource {
     }
 }
 
-private struct UnavailablePokemonTransport: PokemonBrowseTransport {
+private struct UnavailablePokemonTransport: PokemonBrowseTransport, PokemonCardSource {
     func fetchSetDirectory() async throws -> [TCGdexBrowseSet] { throw URLError(.notConnectedToInternet) }
     func fetchSet(id: String) async throws -> TCGdexSetCatalog { throw URLError(.notConnectedToInternet) }
     func fetchCard(id: String) async throws -> TCGdexCard { throw URLError(.notConnectedToInternet) }
+    func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard { throw URLError(.notConnectedToInternet) }
+    func fetchPokemonTCGCard(setID: String, cardNumber: String) async throws -> PokemonTCGAPICard? { throw URLError(.notConnectedToInternet) }
 }
 
 private final class TCGCSVTestServer: @unchecked Sendable {

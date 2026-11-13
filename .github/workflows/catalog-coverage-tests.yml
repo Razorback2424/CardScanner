@@ -10,6 +10,8 @@ on:
       - "Config/*Catalog*.xcconfig"
       - "TestFixtures/TradingCards/**"
       - "publisher/catalog-input.json"
+      - "publisher/pokemon-mcdonalds-2026.json"
+      - "publisher/pokemon-delta-reign-printings.json"
       - "scripts/**"
       - ".github/workflows/catalog-coverage-tests.yml"
 
@@ -125,6 +127,7 @@ jobs:
             -only-testing:TradingCardScannerTests/ScannerViewModelTests/testProvisionalPokemonFinishIsFiledForReviewWithoutWriting \
             -only-testing:TradingCardScannerTests/ScannerViewModelTests/testUnnumberedEnergyScanSavesOnlyTheChosenTypeAndFinish \
             -only-testing:TradingCardScannerTests/ScannerViewModelTests/testBattleDeckFootersOfferStampedFinishAndSaveExactMarketplaceProduct \
+            -only-testing:TradingCardScannerTests/ScannerViewModelTests/testM26FootersSaveTheVerifiedSingleFinishAndProduct \
             -only-testing:TradingCardScannerTests/UnresolvedScanStoreTests/testStandaloneHistoricalNumberSurvivesRelaunch \
             -only-testing:TradingCardScannerTests/PokemonTCGCSVPriceTests \
             -only-testing:TradingCardScannerTests/CollectionKeyTests \

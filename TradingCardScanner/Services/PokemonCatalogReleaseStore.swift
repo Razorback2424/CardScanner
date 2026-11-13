@@ -32,7 +32,8 @@ actor PokemonCatalogReleaseStore {
         await core.load(decodeAndVerify: { bytes in
             let envelope = try JSONDecoder().decode(PokemonCatalogReleaseEnvelope.self, from: bytes)
             let release = try PokemonCatalogSignatureVerifier.verify(envelope: envelope, currentRevision: nil, keys: keys)
-            return .init(envelope: envelope, release: release, registry: PokemonCatalogRegistry(release: release))
+            return .init(envelope: envelope, release: release,
+                         registry: PokemonCatalogRegistry(release: release, includingBundledReviewedSets: true))
         }, rejectedSlot: { slot in
             Self.logger.warning("Failed to load or verify \(slot)")
         })

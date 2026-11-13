@@ -76,10 +76,10 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
               let catalogID else { return }
         let productID: String
         let printing: String
-        if printRun == nil, let deck = PokemonBattleDeckFinishCatalog.entry(cardID: catalogID, variantID: variantID),
-           deck.matches(name: name, number: number) {
-            productID = String(deck.productID)
-            printing = deck.printing.rawValue
+        if printRun == nil, let product = PokemonReviewedMarketProduct.entry(cardID: catalogID, variantID: variantID),
+           product.matches(name: name, number: number) {
+            productID = String(product.productID)
+            printing = product.printing
         } else if let stamped = PokemonStampedReleaseCatalog.entries(providerID: catalogID)
             .first(where: { $0.variant.id == variantID }) {
             productID = stamped.tcgplayerProductID
@@ -88,7 +88,14 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
                   let product = PokemonTCGCSVMapping.byCardID[catalogID] {
             productID = String(product.productID)
             printing = "Holofoil"
-        } else { return }
+        } else {
+            if PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: catalogID) {
+                exactProductID = nil
+                lookups = []
+                marketVariantID = nil
+            }
+            return
+        }
         exactProductID = productID
         lookups = [.tcgplayerID(productID)]
         marketVariantID = nil
@@ -372,6 +379,10 @@ actor CardMarketHistoryService {
             return (Self.points(from: variant), nil)
         }
 
+        if request.game == .pokemon, let catalogID = request.catalogID,
+           PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: catalogID), request.providerPrinting == nil {
+            throw HistoryError.noListing
+        }
         var lookups = request.lookups
         if !request.requiresCatalogMapping, let catalogID = request.catalogID {
             lookups.insert(contentsOf: PriceFallbackQuoteResolver.verifiedLookups(

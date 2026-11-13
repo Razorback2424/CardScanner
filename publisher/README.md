@@ -1,8 +1,8 @@
 # Pokémon catalog publisher
 
-The publisher is the automatic-preparation and approval-gated boundary for the
-signed catalog. TCGdex supplies evidence; only a validated signed release can
-authorize scanner recognition.
+The publisher prepares the signed catalog for review and publication. TCGdex
+supplies evidence. The app ships a bundled registry, and a validated signed
+release authorizes remote recognition updates.
 `PokemonCatalogCore` is the reusable macOS library and
 `pokemon-catalog-publisher` is the command-line entry point.
 
@@ -44,6 +44,15 @@ remain explicit here.
 MEE Basic Energy is an explicit denominator-free Energy override. Its reviewed
 secondary printings and maintenance boundary are documented in
 [MEE onboarding evidence](mee-energy-evidence.md).
+
+The [English McDonald's 2026 set](pokemon-mcdonalds-2026.json) is bundled
+with the app while TCGdex has no M26 entry. Its 15 cards keep the printed
+`M26` numbers and use `tcgplayer:<productID>` as stable card identities. The
+price publisher reads the same table to scope group `24938` to the eight
+Normal and seven Holofoil listings. If TCGdex adds the set, reconcile the
+provider IDs with these existing holdings before enabling a signed entry for
+the same printed code. [TCGCSV products](https://tcgcsv.com/tcgplayer/3/24938/products),
+[market price lanes](https://tcgcsv.com/tcgplayer/3/24938/prices).
 
 The proposed revision 10 Classic Collection membership was checked against
 public provider names and marketplace printed numbers on 2026-09-30. See the
@@ -117,3 +126,42 @@ The earlier Slice F validation-only rehearsal used the production hostname and
 discarded the candidate without changing production authority. The committed
 production configuration now uses `remote-authority`; the remaining physical-
 device/offline acceptance evidence is tracked in the current update plan.
+
+## Daily TCGCSV coverage audit
+
+The local audit retains every Pokémon TCGCSV group and its product and price
+files. It reuses the One Piece capture code to verify the upstream build and
+retained bytes. The app test uses the signed production catalog and local
+app sources to export installed Browse slots, supported Scan lookups, and
+exact pricing and card-detail bindings. The audit also checks the hosted
+price mirror for the reviewed product and finish pairs.
+
+Run from the repository root with an available iOS simulator and DerivedData
+on the external SSD.
+
+```sh
+python3 scripts/audit_pokemon_tcgcsv.py run \
+  --root .codex_build_pokemon_tcgcsv \
+  --destination 'platform=iOS Simulator,id=<audit-simulator-id>' \
+  --derived-data '/Volumes/<external-ssd>/<audit-derived-data>'
+```
+
+Follow `.codex_build_pokemon_tcgcsv/latest-run.txt` to the latest successful
+run. `summary.json` records the source and catalog versions, source changes,
+and coverage changes. `review-queue.csv` prioritizes Deck Exclusives, promos,
+and Prize Packs. `comparison.json` retains the exact matches and candidate
+matches behind the review queue. A name or number match only suggests which
+card to inspect. Hosted price checks cover the reviewed TCGCSV mirror scope.
+
+The daily Codex automation runs on the local Mac after the scheduled market
+refresh. It reuses an export when the app inputs and signed catalog bytes are
+the same. A ProfileLocal `.xctestrun` can also be supplied with `--compiled-test`
+when it has a matching app source fingerprint in its companion `.sha256` file.
+Otherwise Xcode builds the audit test from the checkout. The audit writes its
+reports to the ignored local directory. See the
+[first comparison](../docs/audits/pokemon-tcgcsv-first-pass-2026-11-12.md).
+
+The app and price publisher share the
+[Delta Reign printing table](pokemon-delta-reign-printings.json). The
+[evidence ledger](pokemon-delta-reign-evidence.md) records the deck finishes,
+the MEP 111–117 variants, and the pending Staff Kommo-o market binding.

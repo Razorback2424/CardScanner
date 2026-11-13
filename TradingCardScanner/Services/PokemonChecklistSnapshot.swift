@@ -55,6 +55,7 @@ enum PokemonChecklistReviewedProjection {
         .union(PokemonFinishMinimumCatalog.setIDs)
         .union(PokemonFinishCoverage.sets.keys)
         .union(PokemonBattleDeckFinishCatalog.setIDs)
+        .union(PokemonDeltaReignCatalog.setIDs)
 
     /// Only the bundle reader calls this with the original resource bytes.
     fileprivate static func removingBundledAggregates(
@@ -77,9 +78,9 @@ enum PokemonChecklistReviewedProjection {
         }
     }
 
-    static func cards(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
+    static func cards(_ cards: [CatalogCardSummary], set: CatalogSet? = nil) -> [CatalogCardSummary] {
         guard cards.contains(where: needsProjection) else {
-            return finishingChecklist(cards)
+            return finishingChecklist(cards, set: set)
         }
         let cardsByProviderID = Dictionary(grouping: cards, by: \.providerID)
         var emitted = Set<String>()
@@ -119,12 +120,13 @@ enum PokemonChecklistReviewedProjection {
                 return value
             }
         }
-        return finishingChecklist(reviewed)
+        return finishingChecklist(reviewed, set: set)
     }
 
-    private static func finishingChecklist(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
+    private static func finishingChecklist(_ cards: [CatalogCardSummary], set: CatalogSet?) -> [CatalogCardSummary] {
         let reviewed = PokemonReviewedEnergyCatalog.projectingUnnumbered(PokemonReviewedArtworkCatalog.projecting(cards))
-        return PokemonMasterSetDefinition.checklist(PokemonBattleDeckFinishCatalog.projecting(reviewed))
+        let checklist = PokemonMasterSetDefinition.checklist(PokemonBattleDeckFinishCatalog.projecting(reviewed))
+        return set.map { PokemonDeltaReignCatalog.projecting(checklist, set: $0) } ?? checklist
     }
 
     private static func needsProjection(_ card: CatalogCardSummary) -> Bool {
@@ -338,7 +340,7 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                     entriesByID[entry.set.id] = entry
                 }
                 if let cards = snapshot.checklists[entry.set.id] {
-                    checklists[entry.set.id] = PokemonChecklistReviewedProjection.cards(cards)
+                    checklists[entry.set.id] = PokemonChecklistReviewedProjection.cards(cards, set: entry.set)
                 }
             }
         }
@@ -1875,7 +1877,8 @@ actor PokemonChecklistStore {
         decoder.dateDecodingStrategy = .iso8601
         var validEntries: [PokemonChecklistSnapshotEntry] = []
         var checklists: [String: [CatalogCardSummary]] = [:]
-        let entries = source == .bundled ? manifest.entries + reviewedBundleEntries(in: directory) : manifest.entries
+        let entries = source == .bundled
+            ? manifest.entries + reviewedBundleEntries(in: directory, existing: manifest.entries) : manifest.entries
         for entry in entries {
             guard case let .loaded(cards) = loadChecklist(
                 for: entry,
@@ -1928,16 +1931,25 @@ actor PokemonChecklistStore {
 
     private func bundledValidEntries() -> [PokemonChecklistSnapshotEntry] {
         if let bundledValidEntriesCache { return bundledValidEntriesCache }
-        let entries = validEntries(from: bundledManifest(), directory: bundledRoot)
-            + (bundledRoot.map { reviewedBundleEntries(in: $0) } ?? [])
+        let fileEntries = validEntries(from: bundledManifest(), directory: bundledRoot)
+        let entries = fileEntries + (bundledRoot.map { reviewedBundleEntries(in: $0, existing: fileEntries) } ?? [])
         bundledValidEntriesCache = entries
         return entries
     }
 
-    private func reviewedBundleEntries(in directory: URL) -> [PokemonChecklistSnapshotEntry] {
+    private func reviewedBundleEntries(in directory: URL, existing: [PokemonChecklistSnapshotEntry]) -> [PokemonChecklistSnapshotEntry] {
         let file = directory.appendingPathComponent(PokemonReviewedEnergyCatalog.unnumberedResource)
-        guard FileManager.default.fileExists(atPath: file.path) else { return [] }
-        return PokemonReviewedEnergyCatalog.standaloneEntries
+        var entries = FileManager.default.fileExists(atPath: file.path) ? PokemonReviewedEnergyCatalog.standaloneEntries : []
+        if let m26 = PokemonM26Catalog.checklistEntry,
+           FileManager.default.fileExists(atPath: directory.deletingLastPathComponent().appendingPathComponent(m26.resource).path) {
+            entries.append(m26)
+        }
+        if let promos = PokemonDeltaReignCatalog.bundledPromoEntry,
+           !existing.contains(where: { $0.set.catalogID == promos.set.catalogID }),
+           FileManager.default.fileExists(atPath: directory.deletingLastPathComponent().appendingPathComponent(promos.resource).path) {
+            entries.append(promos)
+        }
+        return entries
     }
 
     private nonisolated func validEntries(
@@ -1986,8 +1998,14 @@ actor PokemonChecklistStore {
         source: ChecklistSource,
         decoder: JSONDecoder = JSONDecoder()
     ) -> ChecklistLoadOutcome {
-        if source == .bundled, let reviewed = PokemonReviewedEnergyCatalog.standaloneChecklist(for: entry) {
-            return .loaded(reviewed)
+        if source == .bundled {
+            if entry == PokemonDeltaReignCatalog.bundledPromoEntry {
+                return .loaded(PokemonDeltaReignCatalog.projecting([], set: entry.set))
+            }
+            if let reviewed = PokemonM26Catalog.checklist(for: entry)
+                ?? PokemonReviewedEnergyCatalog.standaloneChecklist(for: entry) {
+                return .loaded(reviewed)
+            }
         }
         let file = directory.appendingPathComponent(entry.resource)
         let data: Data
@@ -2002,7 +2020,7 @@ actor PokemonChecklistStore {
                 cards = PokemonChecklistReviewedProjection.removingBundledAggregates(
                     from: cards, resource: entry.resource, bytes: data)
             }
-            return .loaded(PokemonChecklistReviewedProjection.cards(cards))
+            return .loaded(PokemonChecklistReviewedProjection.cards(cards, set: entry.set))
         } catch {
             return .undecodable
         }

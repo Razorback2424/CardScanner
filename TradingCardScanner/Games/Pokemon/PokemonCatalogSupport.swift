@@ -168,6 +168,14 @@ enum PokemonOfflineCardFactory {
         if let reviewed = PokemonReviewedArtworkCatalog.card(providerID: summaries[0].providerID),
            reviewed.set.id == providerSetID, reviewed.name == summaries[0].name,
            reviewed.localId == summaries[0].collectorNumber { return reviewed }
+        if let reviewed = PokemonM26Catalog.entry(for: summaries[0]), providerSetID == PokemonM26Catalog.setID,
+           officialCount == PokemonM26Catalog.officialCount, let card = PokemonM26Catalog.card(for: reviewed) {
+            return card
+        }
+        if PokemonDeltaReignCatalog.card(for: summaries[0])?.isPromo == true,
+           let card = PokemonDeltaReignCatalog.promoPayload(cardID: summaries[0].providerID) {
+            return card
+        }
         if let reviewed = PokemonReviewedEnergyCatalog.card(providerID: summaries[0].providerID),
            reviewed.set.id == providerSetID, reviewed.name == summaries[0].name,
            reviewed.localId == summaries[0].collectorNumber {

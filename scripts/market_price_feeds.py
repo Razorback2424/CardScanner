@@ -96,6 +96,14 @@ def scope_from_repo(repo):
         if (printing["groupID"], printing["printing"]) not in {(1840, "Reverse Holofoil"), (24461, "Holofoil")}:
             raise ValueError("Invalid Pokémon Battle Deck market lane")
         add(3, printing["groupID"], printing["productID"], printing["printing"])
+    deck_normals = json.loads((repo / "publisher/pokemon-deck-exclusive-normals.json").read_bytes())
+    if deck_normals["schemaVersion"] != 1:
+        raise ValueError("Unsupported Pokémon Deck Exclusives catalog")
+    for printing in deck_normals["entries"]:
+        if ((printing["groupID"], printing["printing"]) != (1840, "Normal")
+                or printing["productID"] in scope.get((3, 1840), {})):
+            raise ValueError("Invalid Pokémon Deck Exclusives market lane")
+        add(3, 1840, printing["productID"], "Normal")
     m26 = json.loads((repo / "publisher/pokemon-mcdonalds-2026.json").read_bytes())
     cards = m26["cards"]
     if (m26["schemaVersion"] != 1 or m26["groupID"] != 24938 or m26["setCode"] != "M26"

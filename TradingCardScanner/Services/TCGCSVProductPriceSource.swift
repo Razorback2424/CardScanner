@@ -99,7 +99,7 @@ actor TCGCSVProductPriceSource {
     }
 
     func quote(category: Int, group: Int, productID: Int, name: String, number: String?,
-               lane: String, generation: String?, minimumFetchedAt: Date?) async throws -> PriceLookup {
+               lane: String, generation: String?, minimumFetchedAt: Date?, allowsMissingNumber: Bool = false) async throws -> PriceLookup {
         guard category > 0, group > 0, productID > 0, !name.isEmpty, number != "",
               ["Normal", "Foil", "Cold Foil", "Holofoil", "Reverse Holofoil", "1st Edition", "Unlimited", "Limited"]
                 .contains(lane) else { throw PriceQuoteError.identityMismatch }
@@ -108,8 +108,11 @@ actor TCGCSVProductPriceSource {
         try Task.checkCancellation()
         let products = snapshot.products.filter { $0.productId == productID }
         guard products.count == 1, let product = products.first,
-              product.categoryId == category, product.groupId == group, product.name == name,
-              product.extendedData.filter({ $0.name == "Number" }).map(\.value) == number.map({ [$0] }) ?? [] else {
+              product.categoryId == category, product.groupId == group, product.name == name else {
+            throw PriceQuoteError.identityMismatch
+        }
+        let numbers = product.extendedData.filter { $0.name == "Number" }.map(\.value)
+        guard numbers == (number.map { [$0] } ?? []) || (allowsMissingNumber && numbers.isEmpty) else {
             throw PriceQuoteError.identityMismatch
         }
         let rows = snapshot.prices.filter { $0.productId == productID && $0.subTypeName == lane }

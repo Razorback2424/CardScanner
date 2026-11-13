@@ -15,6 +15,9 @@
 		A00904E2 /* mee-reviewed-products.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E2; };
 		A00904E3 /* catalog-input.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E3; };
 		A00904E4 /* pokemon-battle-deck-finishes.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E4; };
+		A00904E5 /* pokemon-deck-exclusive-normals.json in Resources */ = {isa = PBXBuildFile; fileRef = B00904E5; };
+		F35A00000000000000000007 /* pokemon-mcdonalds-2026.json in Resources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000007; };
+		F35A00000000000000000009 /* pokemon-delta-reign-printings.json in Resources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000009; };
 		D704E6EDC8D949928AA039F1 /* OnePieceAvailabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D704E6EDC8D949928AA039F2; };
 		F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */ = {isa = PBXBuildFile; fileRef = F11D00000000000000000091 /* OnePieceOwnerCatalog */; };
 		F11D00000000000000000092 /* one-piece-catalog-release.json in Resources */ = {isa = PBXBuildFile; fileRef = F11D00000000000000000093 /* one-piece-catalog-release.json */; };
@@ -240,6 +243,8 @@
 		A0010047 /* CollectionCatalogNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010047 /* CollectionCatalogNormalizer.swift */; };
 		A0010048 /* CardCenteringExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010048 /* CardCenteringExport.swift */; };
 		A0010050 /* BrowseCatalogModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010050 /* BrowseCatalogModels.swift */; };
+		A0F17E01 /* CatalogBrowseFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F17E01 /* CatalogBrowseFilters.swift */; };
+		A0F17E03 /* CatalogBrowseFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F17E03 /* CatalogBrowseFilterSheet.swift */; };
 		A0010051 /* BrowseCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010051 /* BrowseCatalog.swift */; };
 		A0010152 /* BrowsePriceObservationDayResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010152 /* BrowsePriceObservationDayResolver.swift */; };
 		FACE2001 /* OwnedCatalogPrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACE2002 /* OwnedCatalogPrice.swift */; };
@@ -248,6 +253,7 @@
 		A00100C4 /* CatalogSetCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C4 /* CatalogSetCompletion.swift */; };
 		ABC10001 /* CatalogSetPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC10001 /* CatalogSetPresentation.swift */; };
 		ABC10002 /* BrowsePresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC10002 /* BrowsePresentationTests.swift */; };
+		A0F17E02 /* BrowseFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F17E02 /* BrowseFilterTests.swift */; };
 		A00100C2 /* CatalogSetTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C2 /* CatalogSetTile.swift */; };
 		A0010053 /* CatalogCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010053 /* CatalogCardDetailView.swift */; };
 		A00100C0 /* PokemonChecklistSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C0 /* PokemonChecklistSnapshot.swift */; };
@@ -333,6 +339,8 @@
 		F35A00000000000000000004 /* TCGdexCircuitBreaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000004; };
 		F35A00000000000000000005 /* BoundedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000005; };
 		F35A00000000000000000006 /* PokemonBattleDeckFinishCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000006; };
+		F35A00000000000000000008 /* PokemonM26Catalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000008; };
+		F35A0000000000000000000A /* PokemonDeltaReignCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B0000000000000000000A; };
 		F30A00000000000000000015 /* LorcanaPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000015; };
 		F30A00000000000000000016 /* LorcanaPricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000016; };
 		F30A00000000000000000017 /* TCGCSVProductPriceSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000017; };
@@ -391,6 +399,9 @@
 		B00904E2 /* mee-reviewed-products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/fixtures/mee-reviewed-products.json; sourceTree = SOURCE_ROOT; };
 		B00904E3 /* catalog-input.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/catalog-input.json; sourceTree = SOURCE_ROOT; };
 		B00904E4 /* pokemon-battle-deck-finishes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/pokemon-battle-deck-finishes.json; sourceTree = SOURCE_ROOT; };
+		B00904E5 /* pokemon-deck-exclusive-normals.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/pokemon-deck-exclusive-normals.json; sourceTree = SOURCE_ROOT; };
+		F35B00000000000000000007 /* pokemon-mcdonalds-2026.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/pokemon-mcdonalds-2026.json; sourceTree = SOURCE_ROOT; };
+		F35B00000000000000000009 /* pokemon-delta-reign-printings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = publisher/pokemon-delta-reign-printings.json; sourceTree = SOURCE_ROOT; };
 		D704E6EDC8D949928AA039F2 /* OnePieceAvailabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceAvailabilityTests.swift; sourceTree = "<group>"; };
 		F11D00000000000000000091 /* OnePieceOwnerCatalog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = OnePieceOwnerCatalog; sourceTree = "<group>"; };
 		F11D00000000000000000093 /* one-piece-catalog-release.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "OnePieceCatalogSeed/one-piece-catalog-release.json"; sourceTree = "<group>"; };
@@ -622,6 +633,8 @@
 		B0010047 /* CollectionCatalogNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCatalogNormalizer.swift; sourceTree = "<group>"; };
 		B0010048 /* CardCenteringExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringExport.swift; sourceTree = "<group>"; };
 		B0010050 /* BrowseCatalogModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCatalogModels.swift; sourceTree = "<group>"; };
+		B0F17E01 /* CatalogBrowseFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogBrowseFilters.swift; sourceTree = "<group>"; };
+		B0F17E03 /* CatalogBrowseFilterSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogBrowseFilterSheet.swift; sourceTree = "<group>"; };
 		B0010051 /* BrowseCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCatalog.swift; sourceTree = "<group>"; };
 		B0010152 /* BrowsePriceObservationDayResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceObservationDayResolver.swift; sourceTree = "<group>"; };
 		FACE2002 /* OwnedCatalogPrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnedCatalogPrice.swift; sourceTree = "<group>"; };
@@ -630,6 +643,7 @@
 		B00100C4 /* CatalogSetCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetCompletion.swift; sourceTree = "<group>"; };
 		BBC10001 /* CatalogSetPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetPresentation.swift; sourceTree = "<group>"; };
 		BBC10002 /* BrowsePresentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePresentationTests.swift; sourceTree = "<group>"; };
+		B0F17E02 /* BrowseFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseFilterTests.swift; sourceTree = "<group>"; };
 		B00100C2 /* CatalogSetTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetTile.swift; sourceTree = "<group>"; };
 		B0010053 /* CatalogCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogCardDetailView.swift; sourceTree = "<group>"; };
 		B00100C0 /* PokemonChecklistSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonChecklistSnapshot.swift; sourceTree = "<group>"; };
@@ -718,6 +732,8 @@
 		F35B00000000000000000004 /* TCGdexCircuitBreaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/TCGdexCircuitBreaker.swift; sourceTree = "<group>"; };
 		F35B00000000000000000005 /* BoundedCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/BoundedCache.swift; sourceTree = "<group>"; };
 		F35B00000000000000000006 /* PokemonBattleDeckFinishCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonBattleDeckFinishCatalog.swift; sourceTree = "<group>"; };
+		F35B00000000000000000008 /* PokemonM26Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonM26Catalog.swift; sourceTree = "<group>"; };
+		F35B0000000000000000000A /* PokemonDeltaReignCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonDeltaReignCatalog.swift; sourceTree = "<group>"; };
 		F30B00000000000000000015 /* LorcanaPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaPriceAdapter.swift; sourceTree = "<group>"; };
 		F30B00000000000000000016 /* LorcanaPricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaPricingTests.swift; sourceTree = "<group>"; };
 		F30B00000000000000000017 /* TCGCSVProductPriceSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGCSVProductPriceSource.swift; sourceTree = "<group>"; };
@@ -881,7 +897,12 @@
 				F35B00000000000000000004,
 				F35B00000000000000000005,
 				F35B00000000000000000006,
+				F35B00000000000000000008 /* PokemonM26Catalog.swift */,
+				F35B0000000000000000000A /* PokemonDeltaReignCatalog.swift */,
 				B00904E4 /* pokemon-battle-deck-finishes.json */,
+				B00904E5 /* pokemon-deck-exclusive-normals.json */,
+				F35B00000000000000000007 /* pokemon-mcdonalds-2026.json */,
+				F35B00000000000000000009 /* pokemon-delta-reign-printings.json */,
 				F15B00000000000000000001,
 				F14B00000000000000000001,
 				F14B00000000000000000002,
@@ -896,6 +917,7 @@
 			children = (
 				B0010070 /* CollectionActivity.swift */,
 				B0010050 /* BrowseCatalogModels.swift */,
+				B0F17E01 /* CatalogBrowseFilters.swift */,
 				B0010002 /* CollectedCard.swift */,
 				B0010003 /* TCGdexCard.swift */,
 				B0010020 /* CardVariant.swift */,
@@ -1078,6 +1100,7 @@
 				B0010027 /* ScanReviewSheet.swift */,
 				B00100B3 /* PriceCheckResultView.swift */,
 				B0010035 /* CollectionFilters.swift */,
+				B0F17E03 /* CatalogBrowseFilterSheet.swift */,
 				B0010043 /* CardCenteringView.swift */,
 				CCB50004 /* CardCenteringReviewSheet.swift */,
 				B00C0E02 /* CardCenteringCanvas.swift */,
@@ -1176,6 +1199,7 @@
 				B0020024 /* BrowseFeatureTests.swift */,
 				C2A55E9A34B6491AA7E72302 /* PokemonClassicCollectionArtworkTests.swift */,
 				BBC10002 /* BrowsePresentationTests.swift */,
+				B0F17E02 /* BrowseFilterTests.swift */,
 				B0090303 /* PokemonTCGCSVPriceTests.swift */,
 				B0090304 /* TCGCSV30th.json */,
 				B00904E1 /* mee-primary.json */,
@@ -1349,6 +1373,9 @@
 				A0010072 /* PrivacyInfo.xcprivacy in Resources */,
 				A00100C1 /* PokemonChecklistSnapshot in Resources */,
 				A00904E4 /* pokemon-battle-deck-finishes.json in Resources */,
+				A00904E5 /* pokemon-deck-exclusive-normals.json in Resources */,
+				F35A00000000000000000007 /* pokemon-mcdonalds-2026.json in Resources */,
+				F35A00000000000000000009 /* pokemon-delta-reign-printings.json in Resources */,
 				A00100E4 /* MagicTreatmentCatalog in Resources */,
 				A0010128 /* MagicCatalogSeed in Resources */,
 				F40A00000000000000000008 /* YuGiOhCatalogSeed in Resources */,
@@ -1538,6 +1565,8 @@
 				F35A00000000000000000004 /* TCGdexCircuitBreaker.swift in Sources */,
 				F35A00000000000000000005 /* BoundedCache.swift in Sources */,
 				F35A00000000000000000006 /* PokemonBattleDeckFinishCatalog.swift in Sources */,
+				F35A00000000000000000008 /* PokemonM26Catalog.swift in Sources */,
+				F35A0000000000000000000A /* PokemonDeltaReignCatalog.swift in Sources */,
 				F14A00000000000000000002 /* PokemonPriceAdapter.swift in Sources */,
 				F14A00000000000000000003 /* MagicPriceAdapter.swift in Sources */,
 				F13A00000000000000000001 /* CardGameRuntime.swift in Sources */,
@@ -1609,6 +1638,8 @@
 				A0010047 /* CollectionCatalogNormalizer.swift in Sources */,
 				A0010048 /* CardCenteringExport.swift in Sources */,
 				A0010050 /* BrowseCatalogModels.swift in Sources */,
+				A0F17E01 /* CatalogBrowseFilters.swift in Sources */,
+				A0F17E03 /* CatalogBrowseFilterSheet.swift in Sources */,
 				A0010051 /* BrowseCatalog.swift in Sources */,
 				A0010152 /* BrowsePriceObservationDayResolver.swift in Sources */,
 				FACE2001 /* OwnedCatalogPrice.swift in Sources */,
@@ -1697,6 +1728,7 @@
 				A0020024 /* BrowseFeatureTests.swift in Sources */,
 				C2A55E9A34B6491AA7E72301 /* PokemonClassicCollectionArtworkTests.swift in Sources */,
 				ABC10002 /* BrowsePresentationTests.swift in Sources */,
+				A0F17E02 /* BrowseFilterTests.swift in Sources */,
 				A0090303 /* PokemonTCGCSVPriceTests.swift in Sources */,
 				A0020150 /* BrowsePriceHistoryTests.swift in Sources */,
 				A0020151 /* SwiftDataConcurrencyCharacterizationTests.swift in Sources */,

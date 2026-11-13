@@ -457,6 +457,113 @@ final class PokemonCatalogUpdateClientTests: XCTestCase {
 // MARK: - PokemonCatalogCoordinator tests
 
 final class PokemonCatalogCoordinatorTests: XCTestCase {
+    /// Exports the installed catalog through the same Browse and Scan entry points as the app.
+    @MainActor
+    func testExportPokemonTCGCSVAuditInventoryWhenRequested() async throws {
+        guard let path = ProcessInfo.processInfo.environment["POKEMON_TCGCSV_AUDIT_ROOT"], !path.isEmpty else {
+            throw XCTSkip("Set POKEMON_TCGCSV_AUDIT_ROOT to the retained audit input directory")
+        }
+        let input = URL(fileURLWithPath: path, isDirectory: true)
+        let envelope = try JSONDecoder().decode(PokemonCatalogReleaseEnvelope.self,
+            from: Data(contentsOf: input.appendingPathComponent("current.json")))
+        let snapshot = try Data(contentsOf: input.appendingPathComponent("pokemon-catalog-snapshot.json"))
+        let release = try PokemonCatalogSignatureVerifier.verify(envelope: envelope, currentRevision: nil,
+            keys: PokemonCatalogSignatureVerifier.pinnedKeys)
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel(); MockURLProtocol.handler = nil }
+        MockURLProtocol.handler = { request in
+            let url = try XCTUnwrap(request.url)
+            XCTAssertEqual(url.path, "/v1/releases/\(release.revision)/pokemon-catalog-snapshot.json")
+            return (try XCTUnwrap(HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)), snapshot)
+        }
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let coordinator = PokemonCatalogCoordinator(store: .init(root: root.appendingPathComponent("releases")),
+            checklistStore: store, client: .init(session: session), rolloutMode: .remoteAuthority)
+        guard case let .activated(event) = await coordinator.activateEnvelope(envelope) else {
+            return XCTFail("Could not activate the retained production Pokémon catalog")
+        }
+
+        let transport = PokemonTCGCSVAuditTransport()
+        let registry = event.registry
+        let browse = BrowseCatalog(cache: .init(root: root.appendingPathComponent("browse")),
+            pokemonTransport: transport, checklistStore: store, catalogCoordinator: coordinator)
+        let adapter = PokemonCatalogAdapter(source: transport, offline: .init(store: store, registry: registry),
+            resolvedDiskCache: .init(root: root.appendingPathComponent("scan")),
+            tcgdexBreaker: TCGdexCircuitBreaker(), registry: registry)
+        let scan = CardCatalog(gameCatalogAdapters: try .init(adapters: [adapter]))
+        let profile = PokemonScanProfile(registry: registry)
+        let counts = Dictionary((await store.mergedEntries()).compactMap { entry in
+            entry.officialCount.map { (entry.set.id, $0) }
+        }, uniquingKeysWith: { first, _ in first })
+
+        var sets: [PokemonTCGCSVAuditInventory.SetEntry] = []
+        for set in try await browse.sets(for: .pokemon) {
+            let count = counts[set.id]
+            let descriptor = registry.descriptor(forProviderSetID: set.providerID)
+            let page = try await browse.cards(in: set, cursor: nil)
+            let byCard = Dictionary(grouping: page.items, by: \.providerID)
+            var cards: [PokemonTCGCSVAuditInventory.Card] = []
+            for cardID in byCard.keys.sorted() {
+                let slots = try XCTUnwrap(byCard[cardID])
+                let summary = try XCTUnwrap(slots.first)
+                let details = await browse.installedDetails(for: summary)
+                var scanResult = "notTested"
+                var scanFinishes: [String] = []
+                var scanCard: IdentifiedCard?
+                if let identifier = PokemonTCGCSVAuditInventory.identifier(
+                    for: summary, descriptor: descriptor, profile: profile, generation: adapter.generation
+                ) {
+                    do {
+                        let scanned: IdentifiedCard
+                        if identifier.namespace == PokemonUnnumberedEnergyEvidence.namespace,
+                           case let .needsPrintingChoice(_, choices) = try await scan.lookupOutcome(for: identifier),
+                           let choice = choices.first(where: { $0.id == cardID }) {
+                            scanned = try await scan.resolvePrintingChoice(choice, for: identifier).card
+                        } else {
+                            scanned = try await scan.card(for: identifier)
+                        }
+                        scanResult = scanned.providerID == cardID ? "resolved" : "differentPrinting"
+                        if scanResult == "resolved" {
+                            scanCard = scanned
+                            scanFinishes = VariantResolver.options(for: scanned.variantEvidence).map(\.id).sorted()
+                        }
+                    } catch {
+                        scanResult = "unresolved"
+                    }
+                }
+                var finishes = Set(slots.compactMap(\.masterSetVariant))
+                if let details {
+                    var identity = summary
+                    identity.masterSetVariant = nil
+                    finishes.formUnion(CatalogCardDetailView.priceVariants(for: details.card, summary: identity))
+                }
+                let markets = finishes.sorted { $0.id < $1.id }.compactMap { finish -> PokemonTCGCSVAuditInventory.Market? in
+                    guard let details,
+                          let product = CardPricing.tcgplayerProductID(for: details.card, variant: finish,
+                            printRun: summary.pokemonPrintRun) else { return nil }
+                    let url = TCGplayerLinkBuilder.destination(for: details.card, variant: finish,
+                        pokemonPrintRun: summary.pokemonPrintRun)?.url
+                    let scanProductID = scanCard.flatMap {
+                        CardPricing.tcgplayerProductID(for: $0, variant: finish, printRun: nil)
+                    }
+                    return .init(variant: finish.id, productID: product, scanProductID: scanProductID, url: url)
+                }
+                cards.append(.init(id: cardID, name: summary.name, number: summary.printedCollectorNumber,
+                    browseFinishes: finishes.map(\.id).sorted(), scanResult: scanResult, scanFinishes: scanFinishes,
+                    market: markets))
+            }
+            sets.append(.init(id: set.providerID, name: set.name, code: set.code, printRun: set.pokemonPrintRun?.rawValue,
+                officialCount: count, cards: cards))
+        }
+        XCTAssertFalse(sets.isEmpty)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        let inventory = PokemonTCGCSVAuditInventory(revision: event.revision, sets: sets)
+        try encoder.encode(inventory).write(to: input.appendingPathComponent("app-inventory.json"), options: .atomic)
+    }
+
     func testUnnumberedEnergyAlwaysRequiresExplicitPrintingAndRevalidatesTheFamily() async throws {
         let registry = PokemonCatalogRegistry.bundledSeed
         let adapter = PokemonCatalogAdapter(source: OfflinePokemonCatalogTransport(), registry: registry)
@@ -725,12 +832,15 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
             ?? Bundle.main.object(forInfoDictionaryKey: "POKEMON_CATALOG_CANDIDATE_ROOT") as? String
         guard let configured, !configured.isEmpty else { throw XCTSkip("Provide the prepared revision 23 candidate directory") }
         let candidate = URL(fileURLWithPath: configured)
+        let expectedRevision = Int(ProcessInfo.processInfo.environment["POKEMON_CATALOG_EXPECTED_REVISION"]
+            ?? Bundle.main.object(forInfoDictionaryKey: "POKEMON_CATALOG_EXPECTED_REVISION") as? String ?? "23")
+        let revision = try XCTUnwrap(expectedRevision, "Expected catalog revision must be an integer")
         let release = try PokemonCatalogJSON.decode(PokemonCatalogRelease.self,
             from: Data(contentsOf: candidate.appendingPathComponent("catalog-payload.json")))
         let bytes = try Data(contentsOf: candidate.appendingPathComponent("pokemon-catalog-snapshot.json"))
         let snapshot = try PokemonCatalogJSON.decode(PokemonCatalogCore.PokemonCatalogSnapshot.self, from: bytes)
         let inputs = try snapshot.verifiedChecklistInputs(for: release)
-        XCTAssertEqual(release.revision, 23)
+        XCTAssertEqual(release.revision, revision)
         XCTAssertEqual(inputs.count, 76)
         XCTAssertEqual(inputs.values.reduce(0) { $0 + $1.cards.count }, 6_850)
 
@@ -740,7 +850,7 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
         defer { session.invalidateAndCancel(); MockURLProtocol.handler = nil }
         MockURLProtocol.handler = { request in
             let url = try XCTUnwrap(request.url)
-            XCTAssertEqual(url.path, "/v1/releases/23/pokemon-catalog-snapshot.json")
+            XCTAssertEqual(url.path, "/v1/releases/\(revision)/pokemon-catalog-snapshot.json")
             return (try XCTUnwrap(HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)), bytes)
         }
         let releaseRoot = root.appendingPathComponent("releases")
@@ -757,7 +867,7 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
             client: .init(session: session), keys: [SliceBFixture.pinnedKey], rolloutMode: .remoteAuthority)
         await reopened.loadPersistedOrBundled()
         let registry = await reopened.registry
-        XCTAssertEqual(registry.revision, 23)
+        XCTAssertEqual(registry.revision, revision)
         let transport = OfflinePokemonCatalogTransport()
         let browse = BrowseCatalog(cache: .init(root: root.appendingPathComponent("browse")),
             pokemonTransport: transport, checklistStore: store, catalogCoordinator: reopened)
@@ -1109,6 +1219,66 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
             return XCTFail("Expected rejected")
         }
     }
+}
+
+private struct PokemonTCGCSVAuditInventory: Encodable {
+    let revision: Int
+    let sets: [SetEntry]
+
+    struct SetEntry: Encodable {
+        let id: String
+        let name: String
+        let code: String
+        let printRun: String?
+        let officialCount: Int?
+        let cards: [Card]
+    }
+
+    struct Card: Encodable {
+        let id: String
+        let name: String
+        let number: String?
+        let browseFinishes: [String]
+        let scanResult: String
+        let scanFinishes: [String]
+        let market: [Market]
+    }
+
+    struct Market: Encodable {
+        let variant: String
+        let productID: Int
+        let scanProductID: Int?
+        let url: URL?
+    }
+
+    static func identifier(for card: CatalogCardSummary, descriptor: PokemonCatalogSetDescriptor?,
+                           profile: PokemonScanProfile, generation: String) -> ScanIdentifier? {
+        guard card.pokemonPrintRun == nil else { return nil }
+        if let year = PokemonReviewedEnergyCatalog.printingYear(providerID: card.providerID),
+           PokemonReviewedEnergyCatalog.unnumberedFamily(year: year) != nil {
+            return PokemonUnnumberedEnergyEvidence.identifier(year: year, generation: generation)
+        }
+        guard let number = card.printedCollectorNumber, let descriptor, descriptor.scanEnabled else { return nil }
+        switch descriptor.recognitionKind {
+        case .expansion:
+            guard let code = descriptor.printedCode, let total = descriptor.officialCount else { return nil }
+            return profile.parse("\(code) EN \(number)/\(total)")
+        case .promo, .energy:
+            guard let prefix = descriptor.printedPrefix else { return nil }
+            let numberOnly = number.uppercased().hasPrefix(prefix) ? String(number.dropFirst(prefix.count)) : number
+            return profile.parse("\(prefix) \(numberOnly)")
+        case .notScannable:
+            return nil
+        }
+    }
+}
+
+private struct PokemonTCGCSVAuditTransport: PokemonBrowseTransport, PokemonCardSource {
+    func fetchSetDirectory() async throws -> [TCGdexBrowseSet] { throw URLError(.notConnectedToInternet) }
+    func fetchSet(id: String) async throws -> TCGdexSetCatalog { throw URLError(.notConnectedToInternet) }
+    func fetchCard(id: String) async throws -> TCGdexCard { throw URLError(.notConnectedToInternet) }
+    func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard { throw URLError(.notConnectedToInternet) }
+    func fetchPokemonTCGCard(setID: String, cardNumber: String) async throws -> PokemonTCGAPICard? { nil }
 }
 
 // MARK: - Consumer invalidation tests

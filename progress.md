@@ -1,3 +1,21 @@
+# 2026-11-12 — One Piece EB-05 set listing
+
+EB-05 had 64 verified printings in owner revision 9, and Scan and card search
+already resolved them. Its product was a card-list placeholder with the raw
+Bandai label and no release date, so Browse listed it under "Earlier" among
+the undated promos. Owner revision 10 changes only that product record. It is
+named "Extra Booster: One Piece Heroines Edition Vol. 2 · EB05" and dated
+October 30, 2026, from Bandai's English product page. The
+[reviewed product update](publisher/one-piece/product-updates.json) is
+retained for later replays.
+
+The revision 10 payload matches the revision 9 inputs except for that product.
+It was signed with a fresh owner key and verified against revision 9. On the
+working tree based on `c52d16f`, the ProfileLocal run of
+`OnePieceIntegrationTests` and `BrowseFeatureTests` passed 201 tests with one
+skip. All six coverage script tests passed. The signed artifact and inputs are
+under `CodexBuilds/OnePieceCatalogFix-20261112-EB05` on T7.
+
 # 2026-11-12 — Lorcana catalog verification
 
 The bundle now includes 3,426 reviewed printings. The published gallery
@@ -7,11 +25,40 @@ errata pairs use separate artwork, finish, and price records. The 103 numbered
 Quest cards, both Curator’s Collections, released C2 prizes, and the reviewed
 D23 and prerelease runs are addable. Nine Challenge Year 1 cards now include
 their reviewed finishes. D23 import accepts the literal and normalized
-footers. The live mirror still lists the original eight groups.
+footers.
 The focused app run passed 458 tests with three live skips. All 46 offline
 catalog and audit tests passed, and the final resource replay matched byte
 for byte.
+
+The later production readback verified all 20 Lorcana groups and matched all
+6,288 finish lanes to the upstream daily build. All 1,373 indexed files
+matched on both production hosts, with every previously published game group
+and product still present.
+All three live simulator acceptance tests later passed without skips. The
+20-group readback matched all 6,288 lanes, and the normal app's Scan and
+Browse agreed on three priced edge cases and an unmapped foil.
 [Coverage audit](docs/audits/lorcana-coverage-2026-11-11.md).
+
+# 2026-11-12 — Yu-Gi-Oh! regional, prize and Magnificent Maestros coverage
+
+The replay on the working tree based on `c52d16f` added 435 printings and
+preserved all 47,521 prior printing IDs and 262 automatic Scan families.
+Scan and Browse share 47,917 selectable printings out of 47,956. Magnificent
+Maestros matches all 248 official name and rarity pairs. The replay adds 146
+European-English printings across two complete releases, corrects 29 printed
+passcodes, and withdraws the unverified Ancient Gear Golem Mattel edition
+while keeping the Browse entry and its prior evidence.
+
+The final ProfileLocal selection passed 141 simulator tests with one opt-in
+live price check skipped. All 52 builder and five publisher tests passed.
+The deterministic replay, bundled and packaged resources, and local signed
+revision 6 export matched SHA-256
+`2fb9afd42b1e37cfb31586fafb77dec6918622d37e7d5d6bb624455002ea5407`.
+`ReconciledVerified.xcresult` and `reconciled-final.md` are under
+`CodexBuilds/YuGiOhCatalogGoal-20261112/reconciliation-continuation` on T7.
+Physical-camera acceptance and production publication remain open. The
+missing Anotherverse Stratios prize variants and disputed Duel Terminal
+finishes are recorded in the [catalog plan](docs/plans/yugioh_code_implementation.md).
 
 # 2026-11-12 — Yu-Gi-Oh! marketplace editions and printed passcodes
 
@@ -113,6 +160,126 @@ A replay of the November 11 TCGCSV feed supplied 34 exact deck prices and
 preserved the eight existing anniversary Energy products. Production price
 publication is pending. The simulator result is
 `CodexBuilds/PokemonCatalogFix-RxLf6u/BattleDeckFinalRevision23.xcresult` on T7.
+
+# 2026-11-12 — English McDonald's 2026 set
+
+The app bundles all 15 M26 cards while TCGdex lacks the set. Scan matches
+the printed M26 code and fraction. Browse lists the set with eight Normal
+and seven Holofoil cards. Card detail and the price publisher use the exact
+TCGplayer products in group `24938`.
+[Shared M26 catalog](publisher/pokemon-mcdonalds-2026.json).
+
+All 15 product IDs and finishes matched direct English TCGplayer SKUs. A
+local replay of the November 12 `20:06:19 UTC` TCGCSV build returned all 15
+market prices from the exact product and finish rows. All 30 price feed and
+hosting script tests passed. The scoped replay is under
+`CodexBuilds/PokemonCatalogFix-RxLf6u/M26PriceReplay.Fk61Br` on T7.
+
+The ProfileLocal simulator run on the working tree based on `03fcf38`
+passed 307 tests, with one opt-in live pricing test skipped. It reopened a
+signed test catalog, matched all 15 M26 Scan and Browse results to their exact
+marketplace records, and saved one card of each finish from Scan. The result
+is `CodexBuilds/PokemonCatalogFix-RxLf6u/M26CatalogVerified.xcresult` on T7.
+The November 12 `20:40 UTC` production readback still returned HTTP 404 for
+both M26 price files. The updated app build and price publication are pending.
+
+# 2026-11-12 — Daily Pokémon TCGCSV comparison
+
+Captured 221 groups, 33,100 products, and 45,773 price rows. A ProfileLocal
+simulator export verified signed revision 24 on the working tree based on
+`03fcf38`. All 34 reviewed Battle Deck and 15 M26 products matched Scan,
+Browse, and the exact detail links. The updated hosted feed had the 34 deck
+quotes and lacked all 15 M26 quotes. A repeat run reused the source and app
+export and found no coverage changes. The daily local Codex run is active.
+The [first-pass report](docs/audits/pokemon-tcgcsv-first-pass-2026-11-12.md)
+records the new deck, promo, and Prize Pack gaps and verification scope.
+
+# 2026-11-12 — Delta Reign printings and M26 price publication
+
+Added two Normal deck reprints and twelve English MEP 111–117 printings to
+Scan and Browse. The signed revision 24 simulator export matched all fourteen
+choices and thirteen exact TCGplayer product IDs. Staff Kommo-o is a separate
+choice with a pending product ID. Pokémon Center Kyogre has a product link
+while its price is pending. [Printing evidence](publisher/pokemon-delta-reign-evidence.md).
+
+Published the November 12 `20:06:19 UTC` price build with 15 M26 quotes and
+12 Delta Reign quotes. Readback on both production hosts matched the new
+price files, the signed revision 24 pointer, and the revision 23 and 24
+checklists. The Firebase deployment used the preserved production site and
+the validated local price scope. GitHub's scheduled publisher still uses
+the earlier scope until the price-feed changes reach `main`.
+
+The final ProfileLocal regression run on the `03fcf38` working tree passed
+186 tests with one opt-in live check skipped. It covered exact promo search,
+the bundled promo checklist, all reviewed quotes and marketplace links,
+and the neighboring Browse and compatibility cases. The result bundle is
+`CodexBuilds/PokemonCatalogFix-RxLf6u/DeltaReignMarketFinal.xcresult` on T7.
+The 22 price-publisher, 10 hosting-restore, and 13 capture and audit tests passed.
+
+# 2026-11-12 — One Piece PRB-01 and promo finish batches
+
+Signed and verified local owner revision 9 on dirty `c52d16f`. The retained
+Bandai inventory joins 4,152 of 4,946 English numbered rows across 61 series
+to verified printings. It includes 41 new PRB-01 printings and 80 new promo
+and other-product printings. All 4,262 revision 8 printing records and 2,367
+market mappings carry forward. The unsigned candidate and all three source
+batches replayed exactly.
+
+Higher-resolution comparisons distinguish Jolly Roger and textured foil from
+closely related PRB-01 designs. Exact English listings and marketplace reprint
+specifications identify the nine manga foil reissues. The promo batch verifies
+21 printings from named products, including all eight Uta Deck Battle
+participation cards as Normal, and 56 visually reviewed foil photos pinned to
+their exact captured references. Bandai's featured images and finish note
+verify three further finalist printings as holo and textured foil.
+
+The audit leaves 167 Promotion, 29 Other Product and 67 PRB-01 rows open.
+Among the 58 unresolved PRB-01 reprint aliases, 54 lack an exact Reprint title
+in the retained marketplace group. Four have such a listing and still need
+exact finish or artwork reconciliation. The public finalist section lists
+six designs. Shanks P-083 is absent from those images and remains open.
+
+The ProfileLocal / DebugRemoteLocal iOS 27.1 simulator run passed 160 selected
+tests with one opt-in live-provider skip. Its packaged catalog and pins matched
+the signed revision 9 artifacts. The new integration test resolves the same
+physical IDs and exact finishes in Scan and Browse for seven printings,
+including both Guard Point foils and the Uta participation Normal. It rejects
+the alternate finish for each verified printing. All 49 publisher and 95 Python
+tests passed.
+
+The bundle, audited inputs and review sheets are on T7 under
+`CodexBuilds/OnePieceCatalogFix-20261112-Resume4/VerifiedR9`. The simulator result
+is `App-r9-regression.xcresult` in the parent directory.
+[Catalog ledger](docs/plans/one_piece_code_implementation.md).
+
+# 2026-11-12 — One Piece stamp and finish reconciliation
+
+Signed and verified owner revision 8 on the dirty `03fcf38` tree. Replayed
+the source captures against the earlier catalog to add 220 verified printing
+IDs across PRB-01/02, ST-30, named promos and EB-05. The combined audit matches
+4,031 of 4,946 official numbered rows across 61 series. All 4,042 retained
+printing records and 2,367 market mappings carry forward from revision 6.
+
+The digital comparison checks the pixels that distinguish each sibling,
+including stamps obscured in the earlier comparison. The photo comparison
+checks a distinct design after normalizing lighting. Each accepted retailer
+listing identifies the exact English finish and agrees with the marketplace.
+Membership-specific inventory IDs let later batches reuse a retained source
+without replacing an earlier inventory.
+
+ProfileLocal / DebugRemoteLocal on the iPhone Duo iOS 27.1 simulator passed
+159 selected tests with one opt-in live-provider skip. The app packaged the
+exact signed revision 8 bytes. Tests verified P-083 Normal and Pirate Foil,
+P-070 Finalist Foil, and EB05-001 Foil with its parallel available for read-only
+discovery. Finish-qualified Browse searches match the verified printing in
+global and set search. All 49 publisher and 91 Python tests passed.
+
+The unsigned production revision 2 candidate validated against signed
+production revision 1 with a test-only continuation signature. Both
+production pointers returned HTTP 404. Captures, exact replays, audit,
+signed owner bundle and test results are on T7 under
+`CodexBuilds/OnePieceCatalogFix-20261112-Resume3/`.
+[Remaining evidence and publication steps](docs/plans/one_piece_code_implementation.md).
 
 # 2026-11-12 — One Piece product batches and owner revision 6
 

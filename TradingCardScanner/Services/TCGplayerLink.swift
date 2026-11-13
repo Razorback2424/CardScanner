@@ -51,6 +51,16 @@ enum TCGplayerLinkBuilder {
         return selected
     }
 
+    static func destinations(for card: IdentifiedCard, summary: CatalogCardSummary) -> [Destination] {
+        if let exact = destination(for: card, summary: summary) { return [exact] }
+        guard summary.masterSetVariant == nil, let reviewed = PokemonDeltaReignCatalog.card(for: summary) else { return [] }
+        return reviewed.printings.compactMap { printing in
+            guard var exact = destination(for: card, variant: printing.variant) else { return nil }
+            exact.printingLabel = printing.variant.label
+            return exact
+        }
+    }
+
     /// Persist the same exact product Browse can open, including its ambiguity
     /// and physical-review guards. A product handle never comes from a search.
     static func productID(for card: IdentifiedCard, variant: PhysicalVariant?,
@@ -82,10 +92,12 @@ enum TCGplayerLinkBuilder {
     /// button: it looks authoritative and is silently wrong, and the whole
     /// point of this link is letting someone check the price we showed them.
     static func url(for card: CollectedCard) -> URL? {
-        if card.cardGame == .pokemon, let cardID = card.underlyingPrintingID,
-           let deck = PokemonBattleDeckFinishCatalog.entry(cardID: cardID, variantID: card.variantID) {
-            guard card.pokemonPrintRun == nil, deck.matches(name: card.name, number: card.cardNumber) else { return nil }
-            return productURL(productID: String(deck.productID), variantID: card.variantID, game: .pokemon)
+        if card.cardGame == .pokemon, let cardID = card.underlyingPrintingID {
+            if let reviewed = PokemonReviewedMarketProduct.entry(cardID: cardID, variantID: card.variantID) {
+                guard card.pokemonPrintRun == nil, reviewed.matches(name: card.name, number: card.cardNumber) else { return nil }
+                return productURL(productID: String(reviewed.productID), variantID: card.variantID, game: .pokemon)
+            }
+            if PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: cardID) { return nil }
         }
         if let product = productURL(
             productID: card.tcgplayerProductID,
@@ -127,6 +139,11 @@ enum TCGplayerLinkBuilder {
                 game: .magic
             ) ?? providerURL(magic.tcgplayerPurchaseURI(for: variant)?.absoluteString)
         case let .pokemon(pokemon, _):
+            if let m26 = PokemonM26Catalog.entry(cardID: pokemon.id) {
+                let selected = variant ?? m26.variant
+                return CardPricing.tcgplayerProductID(for: card, variant: selected, printRun: pokemonPrintRun)
+                    .flatMap { productURL(productID: String($0), variantID: selected.id, game: .pokemon) }
+            }
             // TCGdex's ordinary product identity must not be used for a
             // Shadowless virtual set, whose marketplace identity is distinct.
             guard pokemonPrintRun != .shadowless else { return nil }
@@ -174,10 +191,10 @@ enum TCGplayerLinkBuilder {
         // Only printings with an exact, known name. An unrecognised finish
         // drops the filter rather than inventing one — the product page is
         // still the right card, just unfiltered.
-        let deckPrinting = game == .pokemon ? Int(id).flatMap {
-            PokemonBattleDeckFinishCatalog.entry(productID: $0, variantID: variantID)?.printing.rawValue
+        let reviewedPrinting = game == .pokemon ? Int(id).flatMap {
+            PokemonReviewedMarketProduct.printing(productID: $0, variantID: variantID)
         } : nil
-        if let printing = deckPrinting ?? printingName(variantID: variantID, game: game) {
+        if let printing = reviewedPrinting ?? printingName(variantID: variantID, game: game) {
             components.queryItems = [URLQueryItem(name: "Printing", value: printing)]
         }
         return components.url

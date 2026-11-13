@@ -516,11 +516,11 @@ struct JustTCGRefreshCoordinator {
         guard let owner = owners.first,
               owners.allSatisfy({ $0.variantID == owner.variantID && $0.pokemonPrintRun == owner.pokemonPrintRun
                 && $0.isJapanese == owner.isJapanese }) else { return nil }
-        let deck = owner.game == .pokemon ? owner.exactPhysicalProductID.flatMap(Int.init).flatMap {
-            PokemonBattleDeckFinishCatalog.entry(productID: $0, variantID: owner.variantID)
+        let reviewedPrinting = owner.game == .pokemon ? owner.exactPhysicalProductID.flatMap(Int.init).flatMap {
+            PokemonReviewedMarketProduct.printing(productID: $0, variantID: owner.variantID)
         } : nil
-        guard deck.map({ card.tcgplayerId == String($0.productID) }) ?? true else { return nil }
-        let requirement = deck.map { ProductFinish.Requirement.printings([$0.printing.rawValue]) }
+        guard reviewedPrinting == nil || card.tcgplayerId == owner.exactPhysicalProductID else { return nil }
+        let requirement = reviewedPrinting.map { ProductFinish.Requirement.printings([$0]) }
             ?? ProductFinish.requirement(for: owner.variantID.map(PhysicalVariant.resolving),
                 printRun: owner.game == .pokemon ? owner.pokemonPrintRun : nil, isJapanese: owner.isJapanese)
         let nearMint = variants.filter {

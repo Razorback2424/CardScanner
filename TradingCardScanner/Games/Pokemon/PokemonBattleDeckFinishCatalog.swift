@@ -1,14 +1,16 @@
 import Foundation
 
-/// Reviewed English printings from the two 30th Celebration Battle Decks.
+/// Reviewed English deck-exclusive printings, including the 30th Celebration Battle Decks.
 /// Each entry belongs to the card's original catalog identity and names its own market product.
 enum PokemonBattleDeckFinishCatalog {
     enum Printing: String, Decodable, Sendable {
+        case normal = "Normal"
         case reverse = "Reverse Holofoil"
         case holo = "Holofoil"
 
         var variant: PhysicalVariant {
             switch self {
+            case .normal: .normal
             case .reverse: PokemonBattleDeckFinishCatalog.reverse
             case .holo: PokemonBattleDeckFinishCatalog.holo
             }
@@ -43,64 +45,86 @@ enum PokemonBattleDeckFinishCatalog {
     static let reverse = PokemonCatalogStampVariant.make(base: .reverse, stamps: ["30th-anniversary"])!
     static let holo = PokemonCatalogStampVariant.make(base: .holo, stamps: ["30th-anniversary"])!
 
-    static let entries: [Entry] = {
-        guard let url = Bundle.main.url(forResource: "pokemon-battle-deck-finishes", withExtension: "json"),
+    static let entries = load("pokemon-battle-deck-finishes", printings: [.reverse, .holo])
+    static let normalEntries = load("pokemon-deck-exclusive-normals", printings: [.normal])
+
+    private static func load(_ name: String, printings: [Printing]) -> [Entry] {
+        guard let url = Bundle.main.url(forResource: name, withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let resource = try? JSONDecoder().decode(Resource.self, from: data),
               resource.schemaVersion == 1,
               Set(resource.entries.map(\.cardID)).count == resource.entries.count,
               Set(resource.entries.map(\.productID)).count == resource.entries.count,
               resource.entries.allSatisfy({ entry in
-                  !entry.setID.isEmpty && !entry.name.isEmpty && !entry.marketName.isEmpty
-                      && Int(entry.localID) != nil && entry.cardID == entry.setID + "-" + entry.localID
-                      && entry.productID > 0 && (entry.printing == .reverse
-                          ? entry.groupID == 1840 && entry.officialCount != nil && entry.setID != "mee"
-                          : entry.groupID == 24461 && entry.printedNumber == entry.localID && entry.setID == "mee")
+                  guard !entry.setID.isEmpty && !entry.name.isEmpty && !entry.marketName.isEmpty,
+                        Int(entry.localID) != nil, entry.cardID == entry.setID + "-" + entry.localID,
+                        entry.productID > 0, printings.contains(entry.printing) else { return false }
+                  switch entry.printing {
+                  case .normal, .reverse:
+                      return entry.groupID == 1840 && entry.officialCount != nil && entry.setID != "mee"
+                  case .holo:
+                      return entry.groupID == 24461 && entry.printedNumber == entry.localID && entry.setID == "mee"
+                  }
               }) else { return [] }
         return resource.entries
-    }()
+    }
 
-    private static let byCardID = Dictionary(uniqueKeysWithValues: entries.map { ($0.cardID, $0) })
-    private static let byProductID = Dictionary(uniqueKeysWithValues: entries.map { ($0.productID, $0) })
-    static let setIDs = Set(entries.map(\.setID))
+    private static let byCardID = Dictionary(grouping: entries + normalEntries, by: \.cardID)
+    private static let byProductID = Dictionary(grouping: entries + normalEntries, by: \.productID)
+    static let setIDs = Set((entries + normalEntries).map(\.setID))
 
     static func entry(cardID: String, variantID: String?) -> Entry? {
-        guard let entry = byCardID[cardID], entry.variant.id == variantID else { return nil }
-        return entry
+        byCardID[cardID]?.first { $0.variant.id == variantID }
     }
 
     static func entry(productID: Int, variantID: String?) -> Entry? {
-        guard let entry = byProductID[productID], entry.variant.id == variantID else { return nil }
+        guard let matches = byProductID[productID], matches.count == 1,
+              let entry = matches.first, entry.variant.id == variantID else { return nil }
         return entry
     }
 
-    static func entry(for card: TCGdexCard) -> Entry? {
-        guard let entry = byCardID[card.id], entry.setID == card.set.id, entry.localID == card.localId,
-              entry.officialCount.map({ $0 == card.set.cardCount.official }) ?? true,
-              entry.matches(name: card.name, number: card.localId) else { return nil }
-        return entry
+    static func entries(for card: TCGdexCard) -> [Entry] {
+        byCardID[card.id, default: []].filter { entry in
+            entry.setID == card.set.id && entry.localID == card.localId
+                && (entry.officialCount.map { $0 == card.set.cardCount.official } ?? true)
+                && entry.matches(name: card.name, number: card.localId)
+        }
     }
 
-    static func entry(for summary: CatalogCardSummary) -> Entry? {
-        guard summary.game == .pokemon, summary.pokemonPrintRun == nil,
-              let entry = byCardID[summary.providerID], entry.setID == summary.setID.providerID,
-              entry.matches(name: summary.name, number: summary.collectorNumber) else { return nil }
-        return entry
+    private static func entries(for summary: CatalogCardSummary) -> [Entry] {
+        guard summary.game == .pokemon, summary.pokemonPrintRun == nil else { return [] }
+        return byCardID[summary.providerID, default: []].filter {
+            $0.setID == summary.setID.providerID && $0.matches(name: summary.name, number: summary.collectorNumber)
+        }
+    }
+
+    static func entry(for summary: CatalogCardSummary, variantID: String? = nil) -> Entry? {
+        let matches = entries(for: summary)
+        if let selected = variantID ?? summary.masterSetVariant?.id {
+            return matches.first { $0.variant.id == selected }
+        }
+        return matches.count == 1 ? matches.first : nil
     }
 
     static func projecting(_ cards: [CatalogCardSummary]) -> [CatalogCardSummary] {
         guard cards.contains(where: { byCardID[$0.providerID] != nil }) else { return cards }
         var emitted = Set(cards.map(\.id))
         return cards.flatMap { original -> [CatalogCardSummary] in
-            guard let entry = entry(for: original) else { return [original] }
+            let matches = entries(for: original)
+            guard !matches.isEmpty else { return [original] }
             var base = original
-            var deck = original
-            deck.masterSetVariant = entry.variant
-            deck.isExpandedMasterSetVariant = true
-            deck.isSoleSlotForCard = false
-            if base.masterSetVariant?.id == entry.variant.id { return [deck] }
             base.isSoleSlotForCard = false
-            return emitted.insert(deck.id).inserted ? [base, deck] : [base]
+            let additions = matches.compactMap { entry -> CatalogCardSummary? in
+                if base.masterSetVariant?.id == entry.variant.id {
+                    base.isExpandedMasterSetVariant = true
+                    return nil
+                }
+                var slot = base
+                slot.masterSetVariant = entry.variant
+                slot.isExpandedMasterSetVariant = true
+                return emitted.insert(slot.id).inserted ? slot : nil
+            }
+            return [base] + additions
         }
     }
 }

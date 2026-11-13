@@ -302,6 +302,96 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     }
 }
 
+/// Exact TCGplayer bindings from the bundled Pokémon product catalogs.
+struct PokemonReviewedMarketProduct: Sendable {
+    let setID: String
+    let groupID: Int
+    let productID: Int
+    let cardName: String
+    let marketName: String
+    let number: String
+    let variant: PhysicalVariant
+    let printing: String
+    let allowsMissingMarketNumber: Bool
+
+    static let setIDs = PokemonBattleDeckFinishCatalog.setIDs.union([PokemonM26Catalog.setID])
+        .union(PokemonDeltaReignCatalog.setIDs)
+
+    static func usesReviewedVariantsOnly(cardID: String, setID: String? = nil) -> Bool {
+        setID == PokemonM26Catalog.setID || PokemonM26Catalog.entry(cardID: cardID) != nil
+            || PokemonDeltaReignCatalog.card(cardID)?.isPromo == true
+    }
+
+    static func entry(cardID: String, variantID: String?) -> Self? {
+        if let m26 = PokemonM26Catalog.entry(cardID: cardID), m26.variant.id == variantID { return .init(m26) }
+        if let card = PokemonDeltaReignCatalog.card(cardID) { return .init(card, variantID: variantID) }
+        return PokemonBattleDeckFinishCatalog.entry(cardID: cardID, variantID: variantID).map(Self.init)
+    }
+
+    static func entry(for summary: CatalogCardSummary, variantID: String? = nil) -> Self? {
+        if let m26 = PokemonM26Catalog.entry(for: summary) { return .init(m26) }
+        if let card = PokemonDeltaReignCatalog.card(for: summary) {
+            return .init(card, variantID: variantID ?? summary.masterSetVariant?.id)
+        }
+        return PokemonBattleDeckFinishCatalog.entry(for: summary, variantID: variantID).map(Self.init)
+    }
+
+    static func entry(for card: TCGdexCard, variantID: String?) -> Self? {
+        if let m26 = PokemonM26Catalog.entry(for: card), m26.variant.id == variantID { return .init(m26) }
+        if let delta = PokemonDeltaReignCatalog.card(for: card) { return .init(delta, variantID: variantID) }
+        return PokemonBattleDeckFinishCatalog.entries(for: card)
+            .first { $0.variant.id == variantID }.map(Self.init)
+    }
+
+    static func printing(productID: Int, variantID: String?) -> String? {
+        PokemonDeltaReignCatalog.printing(productID: productID, variantID: variantID)?.finish.printing
+            ?? PokemonBattleDeckFinishCatalog.entry(productID: productID, variantID: variantID)?.printing.rawValue
+    }
+
+    func matches(name: String, number: String) -> Bool {
+        CatalogIdentityNormalization.canonicalText(name) == CatalogIdentityNormalization.canonicalText(cardName)
+            && ProductCatalogIdentity.numbersMatch(self.number, number)
+    }
+
+    private init(_ m26: PokemonM26Catalog.Entry) {
+        setID = PokemonM26Catalog.setID
+        groupID = PokemonM26Catalog.groupID
+        productID = m26.productID
+        cardName = m26.name
+        marketName = m26.name
+        number = m26.number
+        variant = m26.variant
+        printing = m26.printing.rawValue
+        allowsMissingMarketNumber = false
+    }
+
+    private init(_ deck: PokemonBattleDeckFinishCatalog.Entry) {
+        setID = deck.setID
+        groupID = deck.groupID
+        productID = deck.productID
+        cardName = deck.name
+        marketName = deck.marketName
+        number = deck.printedNumber
+        variant = deck.variant
+        printing = deck.printing.rawValue
+        allowsMissingMarketNumber = false
+    }
+
+    private init?(_ card: PokemonDeltaReignCatalog.Card, variantID: String?) {
+        guard let finish = card.printings.first(where: { $0.variant.id == variantID }),
+              let productID = finish.productID, let marketName = finish.marketName else { return nil }
+        setID = card.setID
+        groupID = card.groupID
+        self.productID = productID
+        cardName = card.name
+        self.marketName = marketName
+        number = card.number
+        variant = finish.variant
+        printing = finish.finish.printing
+        allowsMissingMarketNumber = finish.marketNumberMayBeMissing == true
+    }
+}
+
 /// Exact-identity fallback policy shared by all price surfaces. No recognition work.
 struct PokemonMarketPriceResolver: Sendable {
     let source: any PokemonTCGCSVPriceSource
@@ -324,8 +414,8 @@ struct PokemonMarketPriceResolver: Sendable {
         retry: Bool = false
     ) async throws -> PriceLookup? {
         guard game == .pokemon else { return nil }
-        if printRun == nil, let deck = PokemonBattleDeckFinishCatalog.entry(cardID: cardID, variantID: variant?.id) {
-            return try await quote(for: deck)
+        if printRun == nil, let product = PokemonReviewedMarketProduct.entry(cardID: cardID, variantID: variant?.id) {
+            return try await quote(for: product)
         }
         guard variant == .holo, printRun == nil || printRun == .unlimited,
               let mapping = PokemonTCGCSVMapping.byCardID[cardID] else { return nil }
@@ -334,10 +424,10 @@ struct PokemonMarketPriceResolver: Sendable {
         return snapshot.quote(cardID: cardID, variant: variant, printRun: printRun)
     }
 
-    func quote(for deck: PokemonBattleDeckFinishCatalog.Entry, minimumFetchedAt: Date? = nil) async throws -> PriceLookup {
-        try await productSource.quote(category: 3, group: deck.groupID, productID: deck.productID,
-            name: deck.marketName, number: deck.printedNumber, lane: deck.printing.rawValue,
-            generation: nil, minimumFetchedAt: minimumFetchedAt)
+    func quote(for product: PokemonReviewedMarketProduct, minimumFetchedAt: Date? = nil) async throws -> PriceLookup {
+        try await productSource.quote(category: 3, group: product.groupID, productID: product.productID,
+            name: product.marketName, number: product.number, lane: product.printing,
+            generation: nil, minimumFetchedAt: minimumFetchedAt, allowsMissingNumber: product.allowsMissingMarketNumber)
     }
 
     func price(for card: IdentifiedCard, variant: PhysicalVariant?, printRun: PokemonPrintRun?) async -> PriceLookup {

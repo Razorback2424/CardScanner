@@ -30,7 +30,7 @@ class MarketPriceFeedTests(unittest.TestCase):
         self.assertEqual(len(entries), 34)
         self.assertEqual(len({entry["cardID"] for entry in entries}), 34)
         self.assertEqual(len({entry["productID"] for entry in entries}), 34)
-        self.assertEqual(len(scope[(3, 1840)]), 32)
+        self.assertEqual(sum(lanes == {"Reverse Holofoil"} for lanes in scope[(3, 1840)].values()), 30)
         self.assertEqual(scope[(3, 1840)][729924], {"Reverse Holofoil"})
         self.assertEqual(scope[(3, 1840)][729923], {"Reverse Holofoil"})
         self.assertEqual({entry["productID"] for entry in entries if entry["groupID"] == 24461},
@@ -40,9 +40,23 @@ class MarketPriceFeedTests(unittest.TestCase):
 
     def test_delta_reign_uses_exact_normal_and_holofoil_products(self):
         scope = feeds.scope_from_repo(Path(__file__).resolve().parents[2])
-        self.assertEqual({pid for pid, lanes in scope[(3, 1840)].items() if lanes == {"Normal"}}, {732417, 732418})
+        for product in (732417, 732418):
+            self.assertEqual(scope[(3, 1840)][product], {"Normal"})
         self.assertEqual(scope[(3, 24451)], {pid: {"Holofoil"} for pid in
                          (730455, 730456, 730453, 730454, 730451, 730452, 730130, 732591, 731807, 731799, 732872)})
+
+    def test_deck_exclusives_scope_only_the_verified_normal_products(self):
+        scope = feeds.scope_from_repo(Path(__file__).resolve().parents[2])
+        normal = {
+            494096, 494950, 494952, 494955, 494956, 494957, 497055, 498187, 501480, 505053, 505059,
+            505065, 505070, 505071, 528306, 528307, 528308, 528309, 528428, 528430, 543958, 546428,
+            547649, 547650, 547651, 547652, 583519, 583730, 583734, 591109, 598050, 604895, 604896,
+            604897, 685652, 725079, 725080, 725081, 725082, 725084, 725085,
+        }
+        expected = normal | {732417, 732418}
+        group = scope[(3, 1840)]
+        self.assertEqual({product for product, lanes in group.items() if "Normal" in lanes}, expected)
+        self.assertTrue(all(group[product] == {"Normal"} for product in expected))
 
     marker = "2026-10-29T07:00:00Z"
     captured = "2026-10-29T08:00:00+00:00"

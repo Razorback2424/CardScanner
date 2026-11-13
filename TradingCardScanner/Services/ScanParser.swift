@@ -942,6 +942,7 @@ struct PokemonScanProfile: Sendable {
         for (denominator, owners) in ownersByDenominator where owners.count == 1 {
             guard let descriptor = registry.descriptor(forProviderSetID: owners[0].0),
                   descriptor.recognitionKind == .expansion,
+                  descriptor.providerSetID != PokemonM26Catalog.setID,
                   descriptor.scanEnabled,
                   let printedCode = descriptor.printedCode,
                   let definition = registry.pokemonSetDefinition(forPrintedCode: printedCode),
@@ -1101,6 +1102,8 @@ struct PokemonScanProfile: Sendable {
                   registry.isScanEnabled(forProviderSetID: definition.tcgdexSetID) else { continue }
 
             for number in numbers where number.total == definition.officialCount {
+                if definition.tcgdexSetID == PokemonM26Catalog.setID,
+                   PokemonM26Catalog.entry(localID: number.localID) == nil { continue }
                 // Collector number zero is never valid. Avoid an unnecessary /000
                 // network lookup, but do not impose an arbitrary upper multiplier:
                 // some legitimate Pokémon sets have unusually large secret ranges.

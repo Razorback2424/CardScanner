@@ -434,7 +434,7 @@ actor PokemonCatalogCoordinator {
             let validation = PokemonCatalogRolloutValidation(
                 revision: verified.release.revision,
                 descriptorCount: verified.release.sets.count,
-                supportedDescriptorCount: verified.registry.descriptors.count,
+                supportedDescriptorCount: verified.release.sets.filter(PokemonCatalogRegistry.isSupported).count,
                 payloadBytes: Base64URL.decode(envelope.payload)?.count
             )
             await diagnostics.recordValidation(
@@ -463,7 +463,7 @@ actor PokemonCatalogCoordinator {
             keys: keys
         )
         try PokemonCatalogRegistry.validate(release)
-        return (release, PokemonCatalogRegistry(release: release))
+        return (release, PokemonCatalogRegistry(release: release, includingBundledReviewedSets: true))
     }
 
     private func officialCountChanges(
