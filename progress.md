@@ -1,3 +1,37 @@
+# 2026-11-12 — Latest catalogs in the Release build
+
+Release now enables One Piece. It bundles production revision 2, which holds
+the same 4,383 printings as owner revision 10, including the dated EB-05 set.
+GitHub run `43348336714` signed it with the production key after owner
+approval. A local check against the app pin and revision 1 matched the
+workflow manifest. The production configuration uses `remote-authority` and
+allows collection writes, as the owner approved. Release builds have no
+CloudKit sync. The CI change runs the fixed-foil test with Pillow; validation
+had failed before signing without it.
+
+Pokémon Release builds also bundle signed revision 24 and its checklist
+snapshot. Both files match the bytes served by both production hosts. An
+offline first launch, or an install with an older stored release, installs
+them through the existing signature, checklist digest and two-slot
+activation. Revision 24 includes the Scarlet & Violet, Mega Evolution and
+promo sets that the older compiled seed lacks.
+
+The ProfileLocal simulator run passed 277 of 278 focused tests with one
+opt-in live skip, across Pokémon, One Piece, Browse and forward-compatibility
+suites. All 12 One Piece script suites and 49 catalog package tests passed.
+The unsigned Release simulator build packages both releases and omits the
+owner catalog. Its plist reports One Piece `remote-authority` with writes
+`YES`.
+
+Publication remains open. Run `43349372499` verified and staged production
+revision 1, then stopped before deploying because the
+`one-piece-catalog-production` environment lacks `FIREBASE_SERVICE_ACCOUNT`.
+Nothing was deployed, and the One Piece pointer still returns 404. The app
+uses its bundled release until revisions 1 and 2 are published. Physical
+device acceptance is still pending. Artifacts are on T7 under
+`CodexBuilds/OnePieceProductionR2-20261112` and
+`CodexBuilds/PokemonBundledFallback-20261112`.
+
 # 2026-11-12 — One Piece EB-05 set listing
 
 EB-05 had 64 verified printings in owner revision 9, and Scan and card search

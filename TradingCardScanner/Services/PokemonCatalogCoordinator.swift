@@ -1,6 +1,23 @@
 import Foundation
 import os
 
+/// The signed release packaged with the app and its published checklist.
+/// Offline first launches start from it instead of the much older compiled
+/// seed. It is installed through the same signature, checklist digest and
+/// two-slot activation checks as a downloaded release.
+struct PokemonBundledCatalogRelease: Sendable {
+    let envelopeURL: URL
+    let checklistURL: URL?
+
+    static func packaged(in bundle: Bundle = .main) -> Self? {
+        guard let envelope = bundle.url(forResource: "catalog-release", withExtension: "json",
+                                        subdirectory: "PokemonCatalogRelease") else { return nil }
+        return .init(envelopeURL: envelope,
+                     checklistURL: bundle.url(forResource: "pokemon-catalog-snapshot", withExtension: "json",
+                                              subdirectory: "PokemonCatalogRelease"))
+    }
+}
+
 actor PokemonCatalogCoordinator {
     private static let logger = Logger(
         subsystem: "com.scan-stash.TradingCardScanner",
@@ -25,6 +42,7 @@ actor PokemonCatalogCoordinator {
     private let keys: [PokemonCatalogSignatureVerifier.PinnedKey]
     private let rolloutMode: PokemonCatalogRolloutMode
     private let diagnostics: PokemonCatalogRolloutDiagnostics
+    private let bundledRelease: PokemonBundledCatalogRelease?
     private let now: @Sendable () -> Date
 
     // MARK: - State
@@ -51,6 +69,7 @@ actor PokemonCatalogCoordinator {
         keys: [PokemonCatalogSignatureVerifier.PinnedKey] = PokemonCatalogSignatureVerifier.pinnedKeys,
         rolloutMode: PokemonCatalogRolloutMode = .configured,
         diagnostics: PokemonCatalogRolloutDiagnostics = .shared,
+        bundledRelease: PokemonBundledCatalogRelease? = nil,
         now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.store = store
@@ -59,6 +78,7 @@ actor PokemonCatalogCoordinator {
         self.keys = keys
         self.rolloutMode = rolloutMode
         self.diagnostics = diagnostics
+        self.bundledRelease = bundledRelease
         self.now = now
         self.activeRevision = nil
     }
@@ -156,24 +176,46 @@ actor PokemonCatalogCoordinator {
         await store.load(keys: keys)
         let current = await store.activeRelease
         let previous = await store.previousRelease
+        var usedPersistedRelease = false
         for stored in [current, previous].compactMap({ $0 }) {
             if stored.release.checklistInputSHA256 != nil,
                !(await checklistStore.activateSignedSnapshot(for: stored.release)) { continue }
             activeRegistry = stored.registry
             activeRevision = stored.release.revision
-            await diagnostics.recordLaunchLoad(
-                mode: rolloutMode,
-                duration: Date().timeIntervalSince(start),
-                usedPersistedRelease: true
-            )
+            usedPersistedRelease = true
             Self.logger.info("Loaded persisted registry revision \(self.activeRevision ?? 0)")
-            return
+            break
         }
-        activeRegistry = store.recoverFromBundledSeed()
-        activeRevision = nil
+        if !usedPersistedRelease {
+            activeRegistry = store.recoverFromBundledSeed()
+            activeRevision = nil
+            Self.logger.info("Using bundled seed registry")
+        }
+        await installBundledReleaseIfNewer()
         await diagnostics.recordLaunchLoad(mode: rolloutMode, duration: Date().timeIntervalSince(start),
-            usedPersistedRelease: false)
-        Self.logger.info("Using bundled seed registry")
+            usedPersistedRelease: usedPersistedRelease)
+    }
+
+    /// Activates the packaged signed release when nothing newer is persisted.
+    /// A failure leaves the persisted release or compiled seed in place.
+    private func installBundledReleaseIfNewer() async {
+        guard let bundledRelease, !keys.isEmpty else { return }
+        do {
+            let data = try Data(contentsOf: bundledRelease.envelopeURL)
+            let envelope = try JSONDecoder().decode(PokemonCatalogReleaseEnvelope.self, from: data)
+            let verified = try verifyAndBuildRegistry(envelope)
+            guard activeRevision.map({ verified.release.revision > $0 }) ?? true else { return }
+            let checklistURL = bundledRelease.checklistURL
+            let result = await activate(envelope: envelope, verified: verified) { release in
+                guard let checklistURL else { throw PokemonChecklistError.malformedSnapshot }
+                return try PokemonCatalogUpdateClient.checklistInputs(from: Data(contentsOf: checklistURL), for: release)
+            }
+            if case .rejected(let error) = result {
+                Self.logger.warning("Bundled catalog release was not installed: \(error)")
+            }
+        } catch {
+            Self.logger.warning("Bundled catalog release was rejected: \(error)")
+        }
     }
 
     enum RefreshResult: Sendable {
@@ -248,7 +290,6 @@ actor PokemonCatalogCoordinator {
         // persisted-state path as refresh(). Without this, activeRevision can
         // still be nil when the monotonicity check runs.
         await loadPersistedOrBundled()
-        let activationStart = Date()
         let activationState = PerformanceSignpost.beginInterval(
             "pokemonCatalogActivation",
             id: PerformanceSignpost.makeID(),
@@ -269,7 +310,18 @@ actor PokemonCatalogCoordinator {
             Self.logger.warning("Catalog verification failed: \(error)")
             return .rejected(error)
         }
+        let client = client
+        return await activate(envelope: envelope, verified: verified) { release in
+            try await client.fetchChecklistInputs(for: release)
+        }
+    }
 
+    private func activate(
+        envelope: PokemonCatalogReleaseEnvelope,
+        verified: (release: PokemonCatalogRelease, registry: PokemonCatalogRegistry),
+        checklistInputs: @Sendable (PokemonCatalogRelease) async throws -> [String: PokemonCatalogChecklistInput]
+    ) async -> RefreshResult {
+        let activationStart = Date()
         let release = verified.release
         let newRegistry = verified.registry
 
@@ -310,7 +362,7 @@ actor PokemonCatalogCoordinator {
         do {
             if release.checklistInputSHA256 != nil,
                !checklistStore.hasStagedSignedSnapshot(for: release) {
-                let inputs = try await client.fetchChecklistInputs(for: release)
+                let inputs = try await checklistInputs(release)
                 let snapshot = try PokemonMasterSetChecklistBuilder.buildSigned(
                     inputs, registry: newRegistry, generatedAt: release.generatedAt)
                 try await checklistStore.stageSignedSnapshot(snapshot, for: release)

@@ -10,3 +10,4 @@ typealias PokemonCatalogSetDescriptor = PokemonCatalogCore.PokemonCatalogSetDesc
 typealias CatalogCardArtwork = PokemonCatalogCore.PokemonCatalogCardArtwork
 typealias PokemonCatalogMembershipRecognition = PokemonCatalogCore.PokemonCatalogMembershipRecognition
 typealias Base64URL = PokemonCatalogCore.PokemonCatalogBase64URL
+typealias PokemonCatalogChecklistInput = PokemonCatalogCore.PokemonCatalogChecklistInput

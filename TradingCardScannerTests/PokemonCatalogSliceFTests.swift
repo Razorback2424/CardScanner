@@ -679,3 +679,78 @@ final class PokemonCatalogSliceFTests: XCTestCase {
         )
     }
 }
+
+/// The app packages the signed production release so an offline first launch
+/// starts from it rather than the much older compiled seed.
+final class PokemonBundledCatalogReleaseTests: XCTestCase {
+    private func temporaryRoot() throws -> URL {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: root) }
+        return root
+    }
+
+    private func coordinator(root: URL, keys: [PokemonCatalogSignatureVerifier.PinnedKey],
+                             bundled: PokemonBundledCatalogRelease?) -> PokemonCatalogCoordinator {
+        PokemonCatalogCoordinator(
+            store: PokemonCatalogReleaseStore(root: root.appendingPathComponent("releases")),
+            checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil),
+            keys: keys, rolloutMode: .remoteAuthority,
+            diagnostics: PokemonCatalogRolloutDiagnostics(), bundledRelease: bundled)
+    }
+
+    func testOfflineFirstLaunchInstallsThePackagedSignedRelease() async throws {
+        let packaged = try XCTUnwrap(PokemonBundledCatalogRelease.packaged())
+        let keys = PokemonCatalogSignatureVerifier.pinnedKeys
+        XCTAssertFalse(keys.isEmpty)
+        let root = try temporaryRoot()
+
+        let first = coordinator(root: root, keys: keys, bundled: packaged)
+        await first.loadPersistedOrBundled()
+        let installed = await first.activeCatalog
+        XCTAssertEqual(installed.revision, 24)
+        XCTAssertNotNil(installed.registry.descriptor(forProviderSetID: "me06"))
+        XCTAssertNotNil(installed.registry.descriptor(forProviderSetID: "sv01"))
+        XCTAssertNil(PokemonCatalogRegistry.bundledSeed.checklistInputSHA256)
+        XCTAssertNotNil(installed.registry.checklistInputSHA256)
+
+        // A relaunch reads the persisted release; the packaged copy is not
+        // reinstalled over it.
+        let relaunch = coordinator(root: root, keys: keys, bundled: packaged)
+        await relaunch.loadPersistedOrBundled()
+        let persisted = await relaunch.activeCatalog
+        XCTAssertEqual(persisted.revision, 24)
+        let store = PokemonCatalogReleaseStore(root: root.appendingPathComponent("releases"))
+        await store.load(keys: keys)
+        let stored = await store.activeRevision
+        XCTAssertEqual(stored, 24)
+    }
+
+    func testPackagedReleaseReplacesAnOlderPersistedRelease() async throws {
+        let packaged = try XCTUnwrap(PokemonBundledCatalogRelease.packaged())
+        let keys = PokemonCatalogSignatureVerifier.pinnedKeys + [SliceFFixture.pinnedKey]
+        let root = try temporaryRoot()
+
+        let older = coordinator(root: root, keys: keys, bundled: nil)
+        guard case .activated = await older.activateEnvelope(try SliceFFixture.envelope()) else {
+            return XCTFail("Expected the older fixture release to activate")
+        }
+        let olderRevision = await older.revision
+        XCTAssertLessThan(try XCTUnwrap(olderRevision), 24)
+
+        let upgraded = coordinator(root: root, keys: keys, bundled: packaged)
+        await upgraded.loadPersistedOrBundled()
+        let revision = await upgraded.revision
+        XCTAssertEqual(revision, 24)
+    }
+
+    func testUntrustedPackagedReleaseLeavesTheCompiledSeed() async throws {
+        let packaged = try XCTUnwrap(PokemonBundledCatalogRelease.packaged())
+        let root = try temporaryRoot()
+        let untrusted = coordinator(root: root, keys: [SliceFFixture.pinnedKey], bundled: packaged)
+        await untrusted.loadPersistedOrBundled()
+        let catalog = await untrusted.activeCatalog
+        XCTAssertNil(catalog.revision)
+        XCTAssertNil(catalog.registry.descriptor(forProviderSetID: "me06"))
+    }
+}

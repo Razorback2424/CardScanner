@@ -200,10 +200,17 @@ actor PokemonCatalogUpdateClient {
         guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
             throw UpdateError.badResponse(statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
         }
+        try Task.checkCancellation()
+        return try Self.checklistInputs(from: data, for: release)
+    }
+
+    /// Decodes a published checklist snapshot and checks it against the
+    /// release's signed digest. Downloaded and bundled snapshots share this.
+    static func checklistInputs(from data: Data,
+                                for release: PokemonCatalogRelease) throws -> [String: PokemonCatalogChecklistInput] {
         guard data.count <= PokemonCatalogCore.PokemonCatalogSnapshot.maximumPublishedBytes else {
             throw UpdateError.payloadTooLarge(bytes: data.count)
         }
-        try Task.checkCancellation()
         return try PokemonCatalogJSON.decode(PokemonCatalogCore.PokemonCatalogSnapshot.self, from: data)
             .verifiedChecklistInputs(for: release)
     }
