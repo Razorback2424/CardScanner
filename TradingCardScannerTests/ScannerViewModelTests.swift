@@ -5574,11 +5574,16 @@ final class PokemonCatalogOutageClassificationTests: XCTestCase {
         XCTAssertEqual(primaryCalls, 0)
     }
 
-    func testOnlyLookupOutagesWithholdTheUnverifiedReportOffer() {
-        XCTAssertFalse(UnresolvedReason.lookupFailed.offersUnverifiedReport)
-        XCTAssertFalse(UnresolvedReason.providerUnavailable.offersUnverifiedReport)
+    func testOnlyACompletedCatalogMissOffersAnUnverifiedReport() {
         XCTAssertTrue(UnresolvedReason.noCatalogEntry.offersUnverifiedReport)
         XCTAssertTrue(UnresolvedReason.noConfirmedMatch.offersUnverifiedReport)
-        XCTAssertTrue(UnresolvedReason.interrupted.offersUnverifiedReport)
+        for reason: UnresolvedReason in [.lookupFailed, .providerUnavailable, .interrupted,
+                                         .saveFailed(inMemoryCandidateID: nil)] {
+            XCTAssertFalse(reason.offersUnverifiedReport, "\(reason)")
+        }
+        XCTAssertTrue(UnresolvedReason.lookupFailed.isCatalogLookupOutage)
+        XCTAssertTrue(UnresolvedReason.providerUnavailable.isCatalogLookupOutage)
+        XCTAssertFalse(UnresolvedReason.interrupted.isCatalogLookupOutage)
+        XCTAssertFalse(UnresolvedReason.saveFailed(inMemoryCandidateID: nil).isCatalogLookupOutage)
     }
 }

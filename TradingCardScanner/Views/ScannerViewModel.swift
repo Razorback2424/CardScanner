@@ -942,13 +942,24 @@ enum UnresolvedReason: Equatable, Sendable {
     case providerUnavailable
     case saveFailed(inMemoryCandidateID: UUID?)
 
-    /// A failed or unavailable lookup says nothing about whether the catalog
-    /// lists the card, so it must not steer the collector to a missing-card
-    /// report. Retrying the lookup comes first.
+    /// Only a completed lookup that found no confirmed catalog printing is
+    /// evidence the catalog may lack this card. A failed, unavailable or
+    /// interrupted lookup says nothing either way, and a failed save means the
+    /// card was identified, so none of those may steer the collector to a
+    /// missing-card report; their retry actions come first.
     var offersUnverifiedReport: Bool {
         switch self {
-        case .lookupFailed, .providerUnavailable: return false
-        case .interrupted, .noCatalogEntry, .noConfirmedMatch, .saveFailed: return true
+        case .noCatalogEntry, .noConfirmedMatch: return true
+        case .interrupted, .lookupFailed, .providerUnavailable, .saveFailed: return false
+        }
+    }
+
+    /// The catalog could not be consulted at all, so the screen explains why
+    /// it offers no unverified report.
+    var isCatalogLookupOutage: Bool {
+        switch self {
+        case .lookupFailed, .providerUnavailable: return true
+        case .interrupted, .noCatalogEntry, .noConfirmedMatch, .saveFailed: return false
         }
     }
 
