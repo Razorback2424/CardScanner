@@ -484,33 +484,78 @@ final class UnverifiedReportTests: XCTestCase {
         XCTAssertEqual(try store.card(forKey: link.collectionKey)?.quantity, 1)
     }
 
-    func testCSVKeepsTheReportOnExportAndNeverMergesItOnImport() throws {
-        let container = try ProductionRowFixtures.makeContainer()
-        let context = container.mainContext
-        let store = CollectionStore(context: context)
+    func testCSVRoundTripRestoresReportsWithoutMergingOrDuplicating() throws {
+        let source = try ProductionRowFixtures.makeContainer()
+        let store = CollectionStore(context: source.mainContext)
+        let base = try ProductionRowFixtures.pokemonCard()
+        let waiting = knownReport(for: base, stamps: [])
+        let unverifiedKey = try store.addUnverified(report: waiting, baseCard: base, quantity: 2).collectionKey
+        let linked = knownReport(for: base, stamps: [])
+        let linkedSource = try store.addUnverified(report: linked, baseCard: base).collectionKey
+        let json = try XCTUnwrap(store.card(forKey: linkedSource)?.unverifiedReportJSON)
+        let linkedKey = try store.linkUnverified(reportID: linked.reportID, expectedReportJSON: json,
+            to: base, variant: .reverse, resolution: .userConfirmed, setReleaseOrder: 0).collectionKey
+        let document = CollectionCSV.export(try source.mainContext.fetch(FetchDescriptor<CollectedCard>()))
+        XCTAssertTrue(document.text.split(separator: "\n")[0].hasSuffix(",unverified_report"))
+
+        // Into a fresh collection: both reports come back as their own rows.
+        let destination = try ProductionRowFixtures.makeContainer()
+        let restoredContext = destination.mainContext
+        let restored = try CollectionCSV.apply(try CollectionCSV.parse(Data(document.text.utf8)), to: restoredContext)
+        XCTAssertTrue(restored.failedRows.isEmpty, "\(restored.failedRows.map(\.detail))")
+        XCTAssertEqual(restored.importedQuantity, 3)
+        let restoredStore = CollectionStore(context: restoredContext)
+        let unverified = try XCTUnwrap(restoredStore.card(forKey: unverifiedKey))
+        XCTAssertTrue(unverified.isUnverified)
+        XCTAssertEqual(unverified.quantity, 2)
+        XCTAssertEqual(unverified.unverifiedReport?.reportID, waiting.reportID)
+        XCTAssertTrue(unverified.priceStorageID.hasPrefix(UnverifiedReportKey.providerPrefix))
+        let relinked = try XCTUnwrap(restoredStore.card(forKey: linkedKey))
+        XCTAssertFalse(relinked.isUnverified)
+        XCTAssertEqual(relinked.providerID, base.providerID)
+        XCTAssertEqual(relinked.variantID, PhysicalVariant.reverse.id)
+        XCTAssertNotNil(relinked.unverifiedReport?.linkedAt)
+        XCTAssertEqual(try restoredContext.fetchCount(FetchDescriptor<CollectedCard>()), 2)
+
+        // The same file again into the original collection changes nothing.
+        let eventsBefore = try source.mainContext.fetchCount(FetchDescriptor<InventoryEvent>())
+        let again = try CollectionCSV.apply(try CollectionCSV.parse(Data(document.text.utf8)), to: source.mainContext)
+        XCTAssertTrue(again.failedRows.isEmpty, "\(again.failedRows.map { "\($0.collectionKey): \($0.detail)" })")
+        XCTAssertEqual(again.importedQuantity, 0)
+        XCTAssertEqual(try source.mainContext.fetchCount(FetchDescriptor<InventoryEvent>()), eventsBefore)
+        XCTAssertEqual(try store.card(forKey: unverifiedKey)?.quantity, 2)
+
+        // A different quantity for a report already present is a conflict.
+        let edited = document.text.replacingOccurrences(of: ",2,", with: ",5,")
+        let conflict = try CollectionCSV.apply(try CollectionCSV.parse(Data(edited.utf8)), to: source.mainContext)
+        XCTAssertEqual(conflict.failedRows.count, 1)
+        XCTAssertEqual(try store.card(forKey: unverifiedKey)?.quantity, 2)
+        XCTAssertEqual(try source.mainContext.fetchCount(FetchDescriptor<InventoryEvent>()), eventsBefore)
+    }
+
+    func testCSVRefusesAReportThatDoesNotMatchItsRowOrWasRemoved() throws {
+        let source = try ProductionRowFixtures.makeContainer()
+        let store = CollectionStore(context: source.mainContext)
         let base = try ProductionRowFixtures.pokemonCard()
         let report = knownReport(for: base, stamps: [])
-        let unverified = try store.addUnverified(report: report, baseCard: base).collectionKey
-        let other = knownReport(for: base, stamps: [])
-        let otherKey = try store.addUnverified(report: other, baseCard: base).collectionKey
-        let otherJSON = try XCTUnwrap(store.card(forKey: otherKey)?.unverifiedReportJSON)
-        let linkedKey = try store.linkUnverified(reportID: other.reportID, expectedReportJSON: otherJSON,
-            to: try eeveeWithHolo(), variant: .holo, resolution: .linkedFromReport, setReleaseOrder: 0).collectionKey
+        let key = try store.addUnverified(report: report, baseCard: base).collectionKey
+        let document = CollectionCSV.export(try source.mainContext.fetch(FetchDescriptor<CollectedCard>()))
 
-        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
-        let document = CollectionCSV.export(rows)
-        XCTAssertTrue(document.text.split(separator: "\n")[0].hasSuffix(",unverified_report"))
-        XCTAssertTrue(document.text.contains(report.reportID.uuidString.lowercased()))
+        // The report JSON names another report than the row's key.
+        let other = UUID().uuidString.lowercased()
+        let tampered = document.text.replacingOccurrences(
+            of: report.reportID.uuidString, with: other.uppercased())
+        let fresh = try ProductionRowFixtures.makeContainer()
+        let rejected = try CollectionCSV.apply(try CollectionCSV.parse(Data(tampered.utf8)), to: fresh.mainContext)
+        XCTAssertEqual(rejected.failedRows.count, 1)
+        XCTAssertEqual(try fresh.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 0)
 
-        let eventsBefore = try context.fetchCount(FetchDescriptor<InventoryEvent>())
-        let plan = try CollectionCSV.parse(Data(document.text.utf8))
-        let result = try CollectionCSV.apply(plan, to: context)
-        XCTAssertEqual(result.importedQuantity, 0)
-        XCTAssertEqual(result.failedRows.count, 2)
-        XCTAssertEqual(try store.card(forKey: unverified)?.quantity, 1)
-        XCTAssertEqual(try store.card(forKey: linkedKey)?.quantity, 1)
-        XCTAssertEqual(try context.fetchCount(FetchDescriptor<CollectedCard>()), 2)
-        XCTAssertEqual(try context.fetchCount(FetchDescriptor<InventoryEvent>()), eventsBefore)
+        // A report removed from the collection is restored from history, not
+        // resurrected by an import.
+        _ = try store.remove(try XCTUnwrap(store.card(forKey: key)))
+        let removed = try CollectionCSV.apply(try CollectionCSV.parse(Data(document.text.utf8)), to: source.mainContext)
+        XCTAssertEqual(removed.failedRows.count, 1)
+        XCTAssertNil(try store.card(forKey: key))
     }
 
     func testReportADifferentVariantMovesOneIntactAcquisition() throws {

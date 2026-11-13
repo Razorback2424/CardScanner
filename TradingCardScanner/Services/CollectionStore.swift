@@ -1535,6 +1535,8 @@ enum CollectionStoreError: Error, Equatable {
     case staleReport
     /// Only the report flow may change a report row's identity or finish.
     case reportRowProtected
+    /// An imported report would duplicate or contradict the collection.
+    case reportImportConflict(String)
 }
 
 extension CollectionStoreError: LocalizedError {
@@ -1578,6 +1580,8 @@ extension CollectionStoreError: LocalizedError {
             return "This unverified card changed. Review it again."
         case .reportRowProtected:
             return "Cards from an unverified report change only through that report."
+        case let .reportImportConflict(detail):
+            return "This unverified card report wasn't imported: \(detail)."
         }
     }
 }
@@ -5120,6 +5124,53 @@ struct CollectionStore {
             context.rollback()
             throw error
         }
+    }
+
+    /// Restores an exported report row (unverified or linked) as its own row.
+    /// Returns `nil` when this exact report is already in the collection. A
+    /// report already present with other data, or one removed earlier, is a
+    /// conflict: it is never merged or resurrected by an import.
+    func restoreImportedReport(entry: CollectionCSVEntry, report: UnverifiedReport, operationID: UUID,
+                               recordedAt: Date) throws -> CollectedCard? {
+        try requireWritableGame(.pokemon)
+        guard entry.quantity > 0, entry.quantity <= CollectionQuantityLimits.maximum else {
+            throw CollectionStoreError.quantityOutOfRange(entry.collectionKey)
+        }
+        if !(try ledger.events(forOperationID: operationID)).isEmpty { return nil }
+        let existing = try reportRows(reportID: report.reportID)
+        if let row = existing.first {
+            guard existing.count == 1, row.collectionKey == entry.collectionKey, row.quantity == entry.quantity,
+                  row.providerID == entry.providerID,
+                  // An unverified row exports its report label as the finish name.
+                  row.isUnverified || row.variantID == entry.variant?.id else {
+                throw CollectionStoreError.reportImportConflict("it's already in your collection with other details")
+            }
+            return nil
+        }
+        let token = report.reportID.uuidString.lowercased()
+        let history = try context.fetch(FetchDescriptor<CollectionActivity>(
+            predicate: #Predicate { $0.collectionKey.contains(token) }))
+        guard history.isEmpty else {
+            throw CollectionStoreError.reportImportConflict("it was removed earlier; restore it from history instead")
+        }
+        let isLinked = report.linkedAt != nil
+        let row = CollectedCard(
+            collectionKey: entry.collectionKey, game: .pokemon, providerID: entry.providerID,
+            name: entry.name, setName: entry.setName, setCode: entry.setCode, cardNumber: entry.cardNumber,
+            rarity: entry.rarity, imageURL: entry.imageURL, thumbnailURL: entry.thumbnailURL,
+            variant: isLinked ? entry.variant : nil,
+            variantResolution: isLinked && entry.variant != nil ? .linkedFromReport : .userConfirmed,
+            identityResolution: .imported, quantity: entry.quantity, dateAdded: entry.dateAdded)
+        if !isLinked { row.variantLabel = report.label }
+        row.pokemonPrintRunRaw = entry.pokemonPrintRun?.rawValue
+        row.unverifiedReportJSON = entry.unverifiedReportJSON
+        context.insert(row)
+        try requireAppended(ledger.record(row, kind: .recordExisting, source: .csvImport,
+                                          deltaQuantity: entry.quantity, operationID: operationID,
+                                          occurredAt: recordedAt, acquiredAt: entry.dateAdded))
+        _ = try appendActivity(row, source: .csvImport, kind: .added, deltaQuantity: entry.quantity,
+                               ledgerOperationIDs: [operationID], occurredAt: recordedAt)
+        return row
     }
 
     /// One namespace for every report row, so history attributes it to Pokémon

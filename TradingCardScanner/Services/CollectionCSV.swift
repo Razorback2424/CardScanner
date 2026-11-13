@@ -156,9 +156,11 @@ final class CollectionCSVImportStopFlag: @unchecked Sendable {
 }
 
 struct CollectionCSVEntry: Sendable, Equatable {
-    let collectionKey: String
+    var collectionKey: String
     let game: CardGame
     let providerID: String
+    /// An exported unverified report, restored only through the report flow.
+    var unverifiedReportJSON: String? = nil
     /// Keep the synthetic/local provider id separate from the catalog identity
     /// discovered later. Re-exporting one as the other can create a second
     /// price lineage on the next import.
@@ -247,7 +249,7 @@ enum CollectionCSVError: LocalizedError, Sendable {
         case let .importInterrupted(completedEntries, totalEntries):
             return "Added \(completedEntries) of \(totalEntries) entries before stopping. Import the same file again to add only the remaining entries."
         case .unverifiedReportImport:
-            return "This row is an unverified card report. Importing reports isn't supported yet, so it was left out rather than merged."
+            return "This unverified card report is incomplete or doesn't match its row, so it was left out rather than merged."
         }
     }
 }
@@ -1051,7 +1053,28 @@ enum CollectionCSV {
                         // never merged into or enriched by an import.
                         if UnverifiedReportKey.hasReport(entry.collectionKey)
                             || entry.providerID.hasPrefix(UnverifiedReportKey.providerPrefix) {
-                            throw CollectionCSVError.unverifiedReportImport
+                            let report = try validatedImportedReport(entry, adapters: gameImportAdapters)
+                            let restored = try collectionStore.restoreImportedReport(
+                                entry: entry, report: report, operationID: plan.operationID(for: entry),
+                                recordedAt: recordedAt)
+                            guard let restored else {
+                                alreadyImportedEntries += 1
+                                completedEntries += 1
+                                context.rollback()
+                                continue
+                            }
+                            guard shouldContinue?() ?? true else {
+                                throw CollectionCSVError.importInterrupted(
+                                    completedEntries: completedEntries, totalEntries: plan.entries.count)
+                            }
+                            try collectionStore.validatePendingGameWrites()
+                            try context.save()
+                            collectionStore.invalidateIdentityAliasCache()
+                            claimedKeys.insert(restored.collectionKey)
+                            inserted += 1
+                            importedQuantity += entry.quantity
+                            completedEntries += 1
+                            continue
                         }
                         try gameImportAdapters.validate(entry)
                         let localMetadata = try gameImportAdapters.adapter(for: entry.game)?.localMetadata(for: entry)
@@ -1501,7 +1524,42 @@ enum CollectionCSV {
                 magicTreatmentQualifiers: treatmentQualifiers,
                 magicContentKindRaw: contentKindRaw
             )
+        }.map { entry in
+            var entry = entry
+            entry.unverifiedReportJSON = nonempty(value(["unverified_report"], in: row))
+            return entry
         }
+    }
+
+    /// A report row must carry a readable report that names the same report
+    /// as its key, in the state its key says it is in. A linked row's verified
+    /// identity must also be a valid catalog printing and finish.
+    static func validatedImportedReport(
+        _ entry: CollectionCSVEntry, adapters: GameImportAdapterRegistry
+    ) throws -> UnverifiedReport {
+        guard entry.game == .pokemon, entry.itemKind == .rawCard,
+              let json = entry.unverifiedReportJSON,
+              let report = UnverifiedReport.decode(json), report.isUnderstood,
+              UnverifiedReportKey.reportToken(in: entry.collectionKey) == report.reportID.uuidString.lowercased() else {
+            throw CollectionCSVError.unverifiedReportImport
+        }
+        if UnverifiedReportKey.isUnverified(entry.collectionKey) {
+            guard report.linkedAt == nil,
+                  entry.collectionKey == CollectionStore.unverifiedCollectionKey(for: report.reportID),
+                  entry.providerID == UnverifiedReportKey.providerID(reportID: report.reportID) else {
+                throw CollectionCSVError.unverifiedReportImport
+            }
+        } else {
+            guard report.linkedAt != nil, !entry.providerID.hasPrefix(UnverifiedReportKey.providerPrefix),
+                  let marker = entry.collectionKey.range(of: UnverifiedReportKey.linkedMarker, options: .backwards) else {
+                throw CollectionCSVError.unverifiedReportImport
+            }
+            var verified = entry
+            verified.collectionKey = String(entry.collectionKey[..<marker.lowerBound])
+            verified.unverifiedReportJSON = nil
+            try adapters.validate(verified)
+        }
+        return report
     }
 
     private static func importedGame(_ value: String) -> CardGame {
