@@ -75,11 +75,16 @@ These refine revision 5 and are what the code does.
    linked row's verified identity passes the normal import catalog check. An
    exact re-import is skipped; a report already present with other details,
    or one removed earlier, is a conflict.
+7. **Finish correction refuses report rows** (`reportRowProtected`). Only the
+   report flow changes a report row's identity or finish.
 8. **Collector-confirmed links** (`confirmReportLink`) need no newer catalog
    revision, because the collector is the authority, but the target must pass
    the same catalog acquisition check. They use `.userConfirmed`.
-7. **Finish correction refuses report rows** (`reportRowProtected`). Only the
-   report flow changes a report row's identity or finish.
+9. **The failed-scan offer needs a completed catalog miss.** "Add unverified
+   card" appears only for "no catalog entry" and "no confirmed match". A
+   failed or unavailable lookup (including an open TCGdex circuit with an
+   empty fallback, now classified as provider unavailable rather than a miss),
+   an interrupted scan and a failed save never offer it.
 
 ## Design (revision 5)
 
