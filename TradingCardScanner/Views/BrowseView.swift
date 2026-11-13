@@ -1373,6 +1373,11 @@ private struct CatalogGameBrowseView: View {
 
     @State private var contentKind: CatalogGameContentKind = .cards
     @State private var search = ""
+    @State private var filters = CatalogBrowseFilters.none
+    @State private var isShowingFilters = false
+    @State private var facets = CatalogBrowseFacets()
+
+    private var orderedSets: [CatalogSet] { CatalogSetOrdering.newestFirst(sets) }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -1396,7 +1401,10 @@ private struct CatalogGameBrowseView: View {
                     sets: sets,
                     catalog: catalog,
                     isActive: contentKind == .cards,
-                    search: $search
+                    search: $search,
+                    filters: filters,
+                    onClearFilters: { filters = .none },
+                    onCardsLoaded: { facets.record($0) }
                 )
                 .opacity(contentKind == .cards ? 1 : 0)
                 .allowsHitTesting(contentKind == .cards)
@@ -1416,13 +1424,34 @@ private struct CatalogGameBrowseView: View {
         .navigationBarTitleDisplayMode(.inline)
         .scrollDismissesKeyboard(.interactively)
         .safeAreaInset(edge: .top, spacing: 0) {
-            CatalogSearchField(
-                text: $search,
-                prompt: "Search \(game.label) \(contentKind == .cards ? "cards" : "sets")"
-            )
+            VStack(spacing: 0) {
+                CatalogSearchField(
+                    text: $search,
+                    prompt: "Search \(game.label) \(contentKind == .cards ? "cards" : "sets")"
+                )
+                if contentKind == .cards, filters.isActive {
+                    CatalogBrowseFilterChips(filters: $filters, sets: orderedSets)
+                }
+            }
         }
+        .modifier(CollectionFilterPresentation(
+            isPresented: $isShowingFilters,
+            filters: CatalogBrowseFilterSheet(
+                isPresented: $isShowingFilters,
+                filters: $filters,
+                game: game,
+                sets: orderedSets,
+                finishOptions: facets.finishOptions(
+                    base: PhysicalVariant.selectable(for: game, registry: catalog.gameRegistry)
+                ),
+                treatmentIDs: game == .magic ? facets.treatmentIDs : []
+            )
+        ))
         .toolbar {
             if contentKind == .cards {
+                ToolbarItem(placement: .topBarTrailing) {
+                    CatalogBrowseFilterButton(activeCount: filters.activeCount) { isShowingFilters = true }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
                         CatalogSetListView(game: game, sets: sets, catalog: catalog)
@@ -1502,8 +1531,18 @@ struct CatalogGameCardsView: View {
     let catalog: any BrowseCatalogProviding
     let isActive: Bool
     @Binding var search: String
+    var filters: CatalogBrowseFilters = .none
+    var onClearFilters: () -> Void = {}
+    /// Every page the grid receives, so the owner can learn which finishes exist.
+    var onCardsLoaded: ([CatalogCardSummary]) -> Void = { _ in }
 
     @State private var cards: [CatalogCardSummary] = []
+    /// The filtered walk runs over `filteredSets`, not `orderedSets`, so it
+    /// keeps its own position. `nil` means every chosen set has been read.
+    @State private var filteredPosition: CatalogSetWalkPosition? = .start
+    @State private var filteredStoppedAtLimit = false
+    @State private var filteredScannedCount = 0
+    @State private var searchStoppedAtLimit = false
     @State private var nextSetIndex = 0
     @State private var activeSet: CatalogSet?
     @State private var refreshedSets: [CatalogSet]?
@@ -1524,6 +1563,12 @@ struct CatalogGameCardsView: View {
 
     private var orderedSets: [CatalogSet] {
         CatalogSetOrdering.newestFirst(refreshedSets ?? sets)
+    }
+
+    private var filteredSets: [CatalogSet] { filters.restrictedSets(orderedSets) }
+
+    private var ownershipIndex: CatalogOwnershipIndex {
+        projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
     }
 
     private var normalizedSearch: String {
@@ -1611,9 +1656,15 @@ struct CatalogGameCardsView: View {
         }
         .onChange(of: cards) { _, newCards in
             cardGroups = CatalogCardDisplayGrouping.groups(for: newCards)
+            onCardsLoaded(newCards)
         }
         .onChange(of: searchCards) { _, newSearchCards in
             searchCardGroups = CatalogCardDisplayGrouping.groups(for: newSearchCards)
+            onCardsLoaded(newSearchCards)
+        }
+        .onChange(of: filters) { _, _ in
+            // A filter change is a new question: start both walks over.
+            resetContent()
         }
         .safeAreaPadding(.bottom, 24)
     }
@@ -1623,7 +1674,7 @@ struct CatalogGameCardsView: View {
         if cards.isEmpty && isLoading {
             VStack(spacing: 12) {
                 ProgressView()
-                Text("Loading \(game.label) cards…")
+                Text(filters.isActive ? "Finding matching cards…" : "Loading \(game.label) cards…")
                     .font(.headline)
             }
             .padding(.horizontal, 32)
@@ -1644,7 +1695,17 @@ struct CatalogGameCardsView: View {
                     .foregroundStyle(.secondary)
                     .padding(.horizontal, 16)
             }
-            if cards.isEmpty {
+            if cards.isEmpty, filters.isActive {
+                ContentUnavailableView(
+                    filteredPosition == nil ? "No cards match these filters" : "No matches yet",
+                    systemImage: "line.3.horizontal.decrease.circle",
+                    description: Text(filteredPosition == nil
+                        ? "Try removing a filter."
+                        : "Checked \(filteredScannedCount) cards in the newest sets.")
+                )
+                Button("Clear Filters", action: onClearFilters)
+                    .buttonStyle(.bordered)
+            } else if cards.isEmpty {
                 ContentUnavailableView(
                     "No cards found",
                     systemImage: "rectangle.on.rectangle.slash",
@@ -1663,15 +1724,45 @@ struct CatalogGameCardsView: View {
                 Button("Retry") { Task { await loadDefaultMore() } }
                     .buttonStyle(.bordered)
                 skipFailedSetButton
+            } else if filters.isActive {
+                filteredFooter
             } else if hasMoreSets, nextSetIndex > 0 || !cards.isEmpty {
                 CatalogPaginationFooter(requestID: defaultPaginationKey, viewport: viewport) { await loadDefaultMore() }
             }
         }
     }
 
+    /// A selective filter pauses after a bounded batch rather than reading the
+    /// whole catalog behind the user's back.
+    @ViewBuilder
+    private var filteredFooter: some View {
+        if filteredPosition != nil {
+            if filteredStoppedAtLimit {
+                Button("Keep Searching Older Sets") { Task { await loadDefaultMore() } }
+                    .buttonStyle(.bordered)
+                    .padding(.bottom, 8)
+            } else if !cards.isEmpty {
+                CatalogPaginationFooter(
+                    requestID: "\(contentRevision)-filtered-\(filteredScannedCount)", viewport: viewport
+                ) { await loadDefaultMore() }
+            }
+        }
+    }
+
     @ViewBuilder
     private var skipFailedSetButton: some View {
-        if indexAfterFailedSet != nil {
+        if filters.isActive {
+            if error != nil, let next = filteredPosition?.skippingSet(setCount: filteredSets.count) {
+                Button("Skip this set") {
+                    Task {
+                        filteredPosition = next
+                        error = nil
+                        await loadDefaultMore()
+                    }
+                }
+                .buttonStyle(.bordered)
+            }
+        } else if indexAfterFailedSet != nil {
             Button("Skip this set") {
                 Task {
                     guard let index = indexAfterFailedSet else { return }
@@ -1717,6 +1808,14 @@ struct CatalogGameCardsView: View {
         } else if searchCards.isEmpty, searchCursor != nil {
             Button("Continue search") { Task { await loadMoreSearch(query: providerSearch) } }
                 .buttonStyle(.borderedProminent)
+        } else if searchCards.isEmpty, filters.isActive {
+            ContentUnavailableView(
+                "No matching cards",
+                systemImage: "line.3.horizontal.decrease.circle",
+                description: Text("Nothing matches this search with your filters.")
+            )
+            Button("Clear Filters", action: onClearFilters)
+                .buttonStyle(.bordered)
         } else if searchCards.isEmpty {
             ContentUnavailableView(
                 "No matching cards",
@@ -1735,6 +1834,9 @@ struct CatalogGameCardsView: View {
                 Text(searchError).font(.footnote).foregroundStyle(.secondary)
                 Button("Retry") { Task { await loadMoreSearch(query: providerSearch) } }
                     .buttonStyle(.bordered)
+            } else if searchCursor != nil, searchStoppedAtLimit {
+                Button("Keep Searching") { Task { await loadMoreSearch(query: providerSearch) } }
+                    .buttonStyle(.bordered)
             } else if searchCursor != nil {
                 CatalogPaginationFooter(
                     requestID: "\(searchRequestKey ?? "")-\(searchCursor ?? "")", viewport: viewport
@@ -1744,6 +1846,10 @@ struct CatalogGameCardsView: View {
     }
 
     private func loadDefaultMore() async {
+        if filters.isActive {
+            await loadFilteredMore()
+            return
+        }
         guard isActive, !isLoading, !hasSearchText, hasMoreSets else { return }
         let revision = contentRevision
         let set = activeSet ?? orderedSets[nextSetIndex]
@@ -1765,6 +1871,95 @@ struct CatalogGameCardsView: View {
         }
     }
 
+    private func loadFilteredMore() async {
+        guard isActive, !isLoading, !hasSearchText, let start = filteredPosition else { return }
+        let sets = filteredSets
+        guard start.setIndex < sets.count else {
+            filteredPosition = nil
+            return
+        }
+        let revision = contentRevision
+        let catalog = catalog
+        let owned = ownershipIndex
+        isLoading = true
+        error = nil
+        defer { if revision == contentRevision { isLoading = false } }
+        let fill = await CatalogFilteredPager.fill(
+            from: start,
+            filters: filters,
+            loadPage: CatalogFilteredPager.setWalkLoader(sets: sets) { set, cursor in
+                try await catalog.cards(in: set, cursor: cursor)
+            },
+            isOwned: { owned.owns($0) },
+            resolvePrices: { await CatalogPriceResolution.resolve($0, from: catalog.sortPriceUpdates(for: $0)) },
+            isCurrent: { revision == contentRevision }
+        )
+        guard let fill, !Task.isCancelled, revision == contentRevision else { return }
+        cards = deduplicated(cards + fill.matches)
+        cardGroups = CatalogCardDisplayGrouping.groups(for: cards)
+        filteredPosition = fill.position
+        filteredStoppedAtLimit = fill.stoppedAtPageLimit
+        filteredScannedCount += fill.scannedCount
+        if let failure = fill.error { error = failure.localizedDescription }
+    }
+
+    /// One step of search: a provider page, or a filtered fill over pages.
+    private struct SearchStep {
+        var items: [CatalogCardSummary]
+        var nextCursor: String?
+        var error: Error?
+        var stoppedAtLimit = false
+    }
+
+    private func searchStep(query: String, cursor: String?, isCurrent: () -> Bool) async throws -> SearchStep? {
+        guard filters.isActive else {
+            let page = try await catalog.searchCards(named: query, game: game, setIDs: [], cursor: cursor)
+            return SearchStep(items: page.items, nextCursor: page.nextCursor)
+        }
+        let catalog = catalog
+        let game = game
+        let filters = filters
+        let expands = CatalogSearchFinishExpansion.needsExpansion(game: game, filters: filters)
+        let setsByID = Dictionary(orderedSets.map { ($0.catalogID, $0) }, uniquingKeysWith: { first, _ in first })
+        let owned = ownershipIndex
+        let fill = await CatalogFilteredPager.fill(
+            from: CatalogSearchPosition(cursor: cursor),
+            filters: filters,
+            loadPage: CatalogFilteredPager.searchLoader { cursor in
+                let page = try await catalog.searchCards(
+                    named: query, game: game, setIDs: filters.setIDs, cursor: cursor
+                )
+                guard expands else { return page }
+                let items = try await CatalogSearchFinishExpansion.expand(page.items, setsByID: setsByID) { set in
+                    try await Self.allCards(in: set, catalog: catalog)
+                }
+                return CatalogPage(items: items, nextCursor: page.nextCursor)
+            },
+            isOwned: { owned.owns($0) },
+            resolvePrices: { await CatalogPriceResolution.resolve($0, from: catalog.sortPriceUpdates(for: $0)) },
+            isCurrent: isCurrent
+        )
+        guard let fill else { return nil }
+        return SearchStep(
+            items: fill.matches,
+            nextCursor: fill.position?.cursor,
+            error: fill.error,
+            stoppedAtLimit: fill.stoppedAtPageLimit
+        )
+    }
+
+    /// A Pokémon set page is local and normally one page; follow any cursor anyway.
+    private static func allCards(in set: CatalogSet, catalog: any BrowseCatalogProviding) async throws -> [CatalogCardSummary] {
+        var items: [CatalogCardSummary] = []
+        var cursor: String?
+        repeat {
+            let page = try await catalog.cards(in: set, cursor: cursor)
+            items += page.items
+            cursor = page.nextCursor
+        } while cursor != nil
+        return items
+    }
+
     private func resetContent() {
         resetDefaultContent()
         resetSearchContent()
@@ -1779,6 +1974,9 @@ struct CatalogGameCardsView: View {
         cursor = nil
         isLoading = false
         error = nil
+        filteredPosition = .start
+        filteredStoppedAtLimit = false
+        filteredScannedCount = 0
     }
 
     private func resetSearchContent() {
@@ -1788,6 +1986,7 @@ struct CatalogGameCardsView: View {
         searchCursor = nil
         searchError = nil
         searchIsLoading = false
+        searchStoppedAtLimit = false
         searchRevision += 1
     }
 
@@ -1801,7 +2000,10 @@ struct CatalogGameCardsView: View {
         let pending = activeSet == nil && (isLoading || error != nil) ? 1 : 0
         let prefixCount = nextSetIndex + pending
         let prefix = oldOrder.prefix(prefixCount)
-        if !prefix.elementsEqual(newOrder.prefix(prefixCount))
+        // The filtered walk indexes a narrowed directory, so any directory
+        // change restarts it rather than reasoning about a stable prefix.
+        if filters.isActive
+            || !prefix.elementsEqual(newOrder.prefix(prefixCount))
             || (oldOrder.isEmpty && !newOrder.isEmpty)
             || prefix.contains(where: { publication?.affects(game: game, providerSetID: $0.providerID) == true }) {
             resetDefaultContent()
@@ -1868,18 +2070,17 @@ struct CatalogGameCardsView: View {
             }
         }
         do {
-            let page = try await catalog.searchCards(
-                named: query,
-                game: game,
-                setIDs: [],
-                cursor: nil
-            )
+            guard let step = try await searchStep(query: query, cursor: nil, isCurrent: {
+                providerSearch == query && searchRequestKey == requestKey
+            }) else { return }
             guard !Task.isCancelled,
                   providerSearch == query,
                   searchRequestKey == requestKey else { return }
-            searchCards = deduplicated(page.items)
+            searchCards = deduplicated(step.items)
             searchCardGroups = CatalogCardDisplayGrouping.groups(for: searchCards)
-            searchCursor = page.nextCursor
+            searchCursor = step.nextCursor
+            searchStoppedAtLimit = step.stoppedAtLimit
+            if let failure = step.error { searchError = failure.localizedDescription }
         } catch {
             guard !Task.isCancelled,
                   providerSearch == query,
@@ -1904,18 +2105,17 @@ struct CatalogGameCardsView: View {
             }
         }
         do {
-            let page = try await catalog.searchCards(
-                named: query,
-                game: game,
-                setIDs: [],
-                cursor: cursor
-            )
+            guard let step = try await searchStep(query: query, cursor: cursor, isCurrent: {
+                providerSearch == query && searchRequestKey == requestKey
+            }) else { return }
             guard !Task.isCancelled,
                   providerSearch == query,
                   searchRequestKey == requestKey else { return }
-            searchCards = deduplicated(searchCards + page.items)
+            searchCards = deduplicated(searchCards + step.items)
             searchCardGroups = CatalogCardDisplayGrouping.groups(for: searchCards)
-            searchCursor = page.nextCursor
+            searchCursor = step.nextCursor
+            searchStoppedAtLimit = step.stoppedAtLimit
+            if let failure = step.error { searchError = failure.localizedDescription }
         } catch {
             guard !Task.isCancelled,
                   providerSearch == query,

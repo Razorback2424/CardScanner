@@ -229,6 +229,10 @@ struct CollectionFilterSheet: View {
             }
             .contentShape(Rectangle())
         }
+        // The default list button style tints the whole label, overriding
+        // `.primary`; these are choices, not actions, so they match the
+        // neighbouring Game and Details rows.
+        .buttonStyle(.plain)
         .accessibilityValue(isSelected ? "Selected" : "Not selected")
     }
 
@@ -326,6 +330,8 @@ struct MultiSelectFilterView: View {
     let title: String
     let options: [FilterOption]
     @Binding var selection: Set<String>
+    /// Catalog filters have no meaningful count before a whole game is loaded.
+    var showsCounts = true
 
     private var groups: [String] {
         var seen: [String] = []
@@ -381,9 +387,11 @@ struct MultiSelectFilterView: View {
                     .foregroundStyle(selection.contains(option.id) ? Color.accentColor : Color.secondary)
                 Text(option.label)
                 Spacer()
-                Text("\(option.count)")
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
+                if showsCounts {
+                    Text("\(option.count)")
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                }
             }
         }
         .buttonStyle(.plain)

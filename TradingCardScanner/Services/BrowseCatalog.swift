@@ -124,6 +124,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         return summaries.map { summary in
             guard summary.thumbnailURL == nil,
                   summary.imageURL == nil,
+                  PokemonDeltaReignCatalog.printing(for: summary) == nil,
                   let value = artwork[
                     summary.collectorNumber
                         .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -175,7 +176,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private let pokemonTransport: any PokemonBrowseTransport
     private let pokemonPriceSource: (any PokemonBulkPriceSource)?
     private let tcgCSVSource: (any PokemonTCGCSVPriceSource)?
-    private let pokemonDeckPrices: PokemonMarketPriceResolver?
+    private let pokemonReviewedPrices: PokemonMarketPriceResolver?
     private var tcgCSVRetrySetIDs: Set<String> = []
     private let pokemonSecondarySetSource: (any PokemonSecondarySetSource)?
     private let checklistStore: PokemonChecklistStore
@@ -269,7 +270,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         self.pokemonPriceSource = effectivePriceSource
         self.tcgCSVSource = tcgCSVSource
             ?? (pokemonTransport is TCGdexBrowseTransport ? PokemonTCGCSVPriceService.shared : nil)
-        self.pokemonDeckPrices = (pokemonProductPriceSource
+        self.pokemonReviewedPrices = (pokemonProductPriceSource
             ?? (pokemonTransport is TCGdexBrowseTransport ? TCGCSVProductPriceSource.shared : nil))
             .map { PokemonMarketPriceResolver(productSource: $0) }
         self.pokemonSecondarySetSource = pokemonSecondarySetSource
@@ -804,7 +805,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     descriptor: descriptor,
                     snapshotURLs: entry.set.artworkFallbackURLs
                 ),
-                limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion,
+                limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion && entry.providerID != PokemonM26Catalog.setID,
                 cardArtwork: BrowseCatalogArtworkSelection.cardArtworkMap(descriptor: descriptor)
             )
         }
@@ -1196,10 +1197,16 @@ actor BrowseCatalog: BrowseCatalogProviding {
             let revision = catalogRevision
             let registry = catalogRegistry
             let context = try await authorizedPokemonDetailSet(for: summary)
-            if let card = PokemonReviewedEnergyCatalog.card(providerID: summary.providerID),
+            if let card = PokemonM26Catalog.entry(for: summary).flatMap(PokemonM26Catalog.card(for:))
+                ?? PokemonReviewedEnergyCatalog.card(providerID: summary.providerID),
                card.set.id == summary.setID.providerID {
                 return CatalogCardDetails(
                     card: .pokemon(card.applyingAdditionalVariants(from: catalogRegistry), setCode: context.code),
+                    set: context, retrievedAt: now())
+            }
+            if PokemonDeltaReignCatalog.card(for: summary)?.isPromo == true,
+               let card = PokemonDeltaReignCatalog.promoPayload(cardID: summary.providerID) {
+                return CatalogCardDetails(card: .pokemon(card.applyingAdditionalVariants(from: registry), setCode: context.code),
                     set: context, retrievedAt: now())
             }
             if summary.providerID.hasPrefix("tcgplayer:"),
@@ -1275,6 +1282,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let provider = try await pokemonSet(id: summary.setID.providerID)
         guard provider.cards.contains(where: { $0.id == summary.providerID })
             || PokemonReviewedEnergyCatalog.card(providerID: summary.providerID)?.set.id == provider.id
+            || PokemonDeltaReignCatalog.card(for: summary)?.isPromo == true
             || PokemonReviewedArtworkCatalog.hasAnchor(for: summary.providerID, in: provider) else {
             throw BrowseCatalogError.unknownSet
         }
@@ -1327,14 +1335,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
-        if let deck = PokemonBattleDeckFinishCatalog.entry(for: summary), deck.variant.id == variant.id {
+        if let product = PokemonReviewedMarketProduct.entry(for: summary, variantID: variant.id), product.variant.id == variant.id {
             await synchronizeCatalogAuthority()
             _ = try await authorizedPokemonDetailSet(for: summary)
             let revision = catalogRevision
-            let quote = try await pokemonDeckPrices?.quote(for: deck) ?? .unavailable(nil)
+            let quote = try await pokemonReviewedPrices?.quote(for: product) ?? .unavailable(nil)
             try Task.checkCancellation()
             guard revision == catalogRevision else { throw CatalogLookupError.staleCatalog }
             return quote
+        }
+        if summary.setID == PokemonM26Catalog.catalogSetID {
+            throw PriceQuoteError.identityMismatch
+        }
+        if let promo = PokemonDeltaReignCatalog.card(for: summary), promo.isPromo {
+            guard promo.printings.contains(where: { $0.variant.id == variant.id }) else { throw PriceQuoteError.identityMismatch }
+            return .unavailable(nil)
         }
         let details = await addingTCGCSVPrices(to: try await details(for: summary))
         try Task.checkCancellation()
@@ -1765,15 +1780,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
         for summaries: [CatalogCardSummary]
     ) async -> SortPriceGroupResult {
         guard let setID = summaries.first?.setID.providerID,
-              PokemonBattleDeckFinishCatalog.setIDs.contains(setID) else {
+              PokemonReviewedMarketProduct.setIDs.contains(setID) else {
             return await sortPokemonCatalogPriceGroup(for: summaries)
         }
         var regular: [CatalogCardSummary] = []
         var slots: [SortPriceSlot] = []
         for summary in summaries {
-            guard let variant = summary.masterSetVariant,
-                  PokemonBattleDeckFinishCatalog.entry(for: summary)?.variant.id == variant.id else {
-                regular.append(summary)
+            guard let product = PokemonReviewedMarketProduct.entry(for: summary),
+                  let variant = summary.masterSetVariant ?? (setID == PokemonM26Catalog.setID ? product.variant : nil),
+                  product.variant.id == variant.id else {
+                if PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: summary.providerID, setID: setID) {
+                    slots.append(.init(id: summary.id, resolution: .unresolved))
+                } else { regular.append(summary) }
                 continue
             }
             let lookup = try? await price(for: summary, variant: variant)
@@ -2393,7 +2411,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         )
         var displayedCards: [CatalogCardSummary] = []
         for value in built {
-            let summaries = Self.applyingSignedCardArtwork(value.cards, set: value.set)
+            let projected = PokemonDeltaReignCatalog.projecting(value.cards, set: value.set)
+            let summaries = Self.applyingSignedCardArtwork(projected, set: value.set)
             for summary in summaries {
                 guard let card = details.cards[summary.providerID],
                       let retrievedAt = details.retrievedAt[summary.providerID] else { continue }
@@ -3327,8 +3346,10 @@ enum PokemonMasterSetDefinition {
             var card = original
             card.isExpandedMasterSetVariant = !(isPackVariant(variant, setProviderID: card.setID.providerID)
                 || rarityFinishAliasesHolo(variant.id, cardID: card.providerID))
-            // This non-holo Lugia is a stamped product printing, not a pack ex.
-            if card.providerID == "sv08.5-082", variant == .normal { card.isExpandedMasterSetVariant = true }
+            if variant == .normal, card.providerID == "sv08.5-082"
+                || PokemonBattleDeckFinishCatalog.entry(for: card) != nil {
+                card.isExpandedMasterSetVariant = true
+            }
             let retained = certified ? siblings : siblings.filter {
                 let rarityAlias = rarityFinishAliasesHolo($0.masterSetVariant?.id, cardID: original.providerID)
                     && siblings.contains(where: { $0.masterSetVariant == .holo })

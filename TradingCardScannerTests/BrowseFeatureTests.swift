@@ -6829,9 +6829,9 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let examples: [(String, Int, Int)] = [
             // GO removes Pikachu 027's aggregate Holo, in addition to the
             // existing gold/rainbow aliases and distinct Ditto adjustment.
-            ("sv03.5", 360, 379), ("sv08.5", 447, 472), ("swsh10.5", 148, 153),
+            ("sv03.5", 360, 382), ("sv08.5", 447, 472), ("swsh10.5", 148, 153),
             ("cel25", 25, 25), ("cel25cc", 25, 25),
-            ("sv10", 414, 435), ("swsh9", 310, 315)
+            ("sv10", 414, 437), ("swsh9", 310, 315)
         ]
         for (id, masterCount, grandCount) in examples {
             let entry = try XCTUnwrap(entries.first { $0.providerID == id })
@@ -6990,10 +6990,13 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let store = PokemonChecklistStore(root: root, bundle: Bundle.main)
         let optionalSnapshot = await store.bundledSnapshot()
         let snapshot = try XCTUnwrap(optionalSnapshot)
-        XCTAssertEqual(snapshot.manifest.entries.filter { !$0.providerID.hasPrefix("tcgplayer:") }.count, 157)
+        XCTAssertEqual(snapshot.manifest.entries.filter { !$0.providerID.hasPrefix("tcgplayer:") }.count, 158)
+        let deltaPromos = try XCTUnwrap(snapshot.manifest.entries.first { $0.providerID == "mep" })
+        XCTAssertEqual(deltaPromos.standardSlotCount, 7)
+        XCTAssertEqual(deltaPromos.expandedSlotCount, 12)
         XCTAssertEqual(
             Set(snapshot.manifest.entries.filter { $0.providerID.hasPrefix("tcgplayer:") }.map(\.providerID)),
-            Set(PokemonReviewedEnergyCatalog.standaloneEntries.map(\.providerID))
+            Set(PokemonReviewedEnergyCatalog.standaloneEntries.map(\.providerID)).union(["tcgplayer:24938"])
         )
         XCTAssertTrue(
             snapshot.manifest.entries.allSatisfy {
@@ -8496,7 +8499,9 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let bundledSnapshot = await store.bundledSnapshot()
         let snapshot = try XCTUnwrap(bundledSnapshot)
         let imageURLLessCodes = snapshot.manifest.entries.compactMap { entry -> String? in
-            guard snapshot.checklist(for: entry.set.catalogID)?.contains(where: { $0.imageURL == nil }) == true
+            guard snapshot.checklist(for: entry.set.catalogID)?.contains(where: {
+                $0.imageURL == nil && $0.limitlessArtworkAuthorized != false
+            }) == true
             else { return nil }
             return entry.set.code.uppercased()
         }

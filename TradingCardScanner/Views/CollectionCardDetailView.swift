@@ -1972,28 +1972,38 @@ private struct CardDetailRangeSelector: View {
 }
 
 struct CardDetailMarketplaceButton: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let destination: TCGplayerLinkBuilder.Destination
 
     var body: some View {
+        // A plain outbound row: it leaves the app, so it reads as a link with
+        // an external arrow rather than competing with in-app actions.
         Link(destination: destination.url) {
-            HStack(spacing: 8) {
+            HStack(spacing: 12) {
+                // At accessibility sizes the brand name needs the whole width
+                // or it hyphenates; the icon is decoration and gives way.
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Image(systemName: "cart.fill")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 24)
+                }
                 Text(destination.title)
-                Image(systemName: "arrow.up.right")
-                    .imageScale(.small)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.leading)
+                Spacer(minLength: 0)
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Image(systemName: "arrow.up.right")
+                        .font(.footnote.weight(.bold))
+                        .foregroundStyle(.tertiary)
+                }
             }
-            .font(.headline)
-            .foregroundStyle(PortfolioPalette.money)
-            .padding(.horizontal, 12)
+            .padding(.horizontal, dynamicTypeSize.isAccessibilitySize ? 12 : 16)
             .padding(.vertical, 10)
-            .frame(maxWidth: .infinity, minHeight: 50)
-            .background(
-                Color.white.opacity(0.07),
-                in: RoundedRectangle(cornerRadius: 14, style: .continuous)
-            )
-            .overlay {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(PortfolioPalette.money.opacity(0.28), lineWidth: 1)
-            }
+            .frame(maxWidth: .infinity, minHeight: 52)
+            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
         .accessibilityLabel(destination.accessibilityLabel)
         .accessibilityHint("Opens TCGplayer in your browser.")
@@ -2001,7 +2011,7 @@ struct CardDetailMarketplaceButton: View {
     }
 }
 
-private struct CollectionDispositionTarget: Identifiable {
+struct CollectionDispositionTarget: Identifiable {
     let id = UUID()
     let collectionKey: String
     let treatments: [String]
@@ -2010,7 +2020,7 @@ private struct CollectionDispositionTarget: Identifiable {
     let kind: CollectionDispositionKind
 }
 
-private struct CollectionDispositionSheet: View {
+struct CollectionDispositionSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     let target: CollectionDispositionTarget
@@ -2732,6 +2742,9 @@ struct CardMarketHistoryPanel: View {
     @Environment(\.cardGameRuntimes) private var runtimes
     let request: CardMarketHistoryRequest
     var currentPrice: PriceDisplay? = nil
+    /// Chooses which finish the chart shows; sits under the title so the
+    /// control reads as part of the chart rather than a stray menu above it.
+    var variantPicker: AnyView? = nil
     @State private var points: [JustTCGHistoryPoint] = []
     @State private var range: PortfolioHistoryRange = .threeMonths
     @State private var selection = PriceHistorySelection()
@@ -2750,6 +2763,9 @@ struct CardMarketHistoryPanel: View {
             Text("JustTCG historical prices · Today uses the current quote")
                 .font(.caption).foregroundStyle(.secondary).padding(.horizontal, 16)
                 .fixedSize(horizontal: false, vertical: true)
+            if let variantPicker {
+                variantPicker.padding(.horizontal, 16)
+            }
             CardMarketHistoryReadout(selection: selection)
             MarketHistoryChartContent(model: model, hasHistory: !points.isEmpty, isLoading: isLoading,
                                       error: error, direction: direction, range: $range,
