@@ -32,7 +32,35 @@ CODE = re.compile(r"^(?:[A-Z0-9]{2,4}-(?:(?:EN|E)[A-Z0-9]{3}|[0-9]{3})|IOC-SE[1-
 POLICY = "yugioh-provider-membership-v1-2026-10-21"
 INVALID_RARITIES = {"new", "2", "3", "new artwork"}
 PRICE_FIELDS = ("marketPrice", "lowPrice", "midPrice", "highPrice", "directLowPrice")
+PACKAGING_NAME = re.compile(
+    r"\b(?:booster (?:box|pack|case)|blister|starter deck|structure deck|playmat|sleeves|binder|sealed|"
+    r"collector.?s? tins?|collection tin|anniversary tin|tin of|egyptian god deck|ingot set|"
+    r"(?:special|deluxe|super|advance|advanced) edition|(?:mini[- ]|tuck |value )box|"
+    r"mega[- ](?:pack|tin)|portfolio|gameboard edition|collector.?s? set|box set)\b"
+    r"|\b(?:tin|display|box|pack|case|bundle|deck|briefcase|starter set)(?: \[[^\]]+\]| \([^()]*\)| - Set of \d+)*$"
+    r"|\b(?:Astral Pack \d+|Speed Duel: Tournament Pack \d+|Elemental Hero Collection [12]|Duel Master['’]s Guide)$"
+    r"|^(?:Primal Origin -Plus-|Stainless Steel Egyptian God Cards)$",
+    re.I,
+)
 CORRESPONDENCE_RULES = json.loads((ROOT / 'yugioh_correspondence_rules.json').read_text())
+
+
+def excluded_product_reason(product, foreign):
+    ext = {field["name"]: field["value"] for field in product.get("extendedData", [])}
+    code = ext.get("Number", "").strip().upper()
+    name = product["name"]
+    if foreign:
+        return code, "foreignLanguage"
+    if not code:
+        if "This card is only printed in Japanese" in ext.get("Description", ""):
+            return code, "foreignLanguage"
+        if ext.get("Card Type") == "Field Center" or (
+                product.get("groupId") == 1322 and name.startswith("Field Center Token: ") and ext.keys() <= {"Rarity", "Description"}):
+            return code, "fieldCenterAccessory"
+        if ext.keys() <= {"Description", "UPC"} and PACKAGING_NAME.search(name):
+            return code, "sealedOrAccessoryName"
+    return code, "missingPrintedIdentity"
+
 
 def grade_prices(rows):
     """Exact product rows only. Identical repeats share this response's provenance."""
@@ -285,22 +313,28 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
             code, rarity = ext.get("Number", "").strip().upper(), ext.get("Rarity", "").strip()
             prior = (previous or {}).get(pid)
             physical_rarity = None
+            unverified_release = False
             correction = (rarity_corrections or {}).get(str(pid))
             if (correction and not conflicting_fields and product.get("categoryId") == 2
                     and product.get("groupId") == gid == correction["groupID"]
                     and code == correction["code"] and product["name"] == correction["productName"]
-                    and rarity in (correction["providerRarity"], correction["physicalRarity"])):
-                if not code and (display_id := correction.get("unnumberedDisplayCardID")) in by_id:
+                    and rarity in (correction["providerRarity"], correction.get("physicalRarity"))):
+                if correction.get("language") == "ja":
+                    exceptions["foreignLanguage"].append(pid)
+                    continue
+                display_rarity = rarity or correction.get("physicalRarity")
+                if not code and display_rarity and (display_id := correction.get("unnumberedDisplayCardID")) in by_id:
                     source = by_id[display_id]
                     card_id = stable("yugioh-card:", f"ygoprodeck:{display_id}")
                     canonical[card_id] = {"id": card_id, "n": source["name"], "pc": [display_id],
                         "sourceID": display_id, "imageIDs": [i["id"] for i in source.get("card_images", [])]}
                     display_cards.append({"id": stable("yugioh-printing:", f"tcgplayer:2:{pid}"),
-                        "c": "", "g": gid, "k": card_id, "r": rarity, "art": None,
+                        "c": "", "g": gid, "k": card_id, "r": display_rarity, "art": None,
                         "p": pid, "pn": product["name"], "e": [], "ec": False, "ee": None, "pe": [],
                         "img": product.get("imageUrl"), "m": [], "ir": "unnumberedDisplay", "canonicalLink": "linked"})
                     continue
-                physical_rarity = correction["physicalRarity"]
+                physical_rarity = correction.get("physicalRarity")
+                unverified_release = correction.get("unverifiedRelease") is True
                 if prior and prior["r"] in (correction["providerRarity"], physical_rarity):
                     # A known provider correction keeps the admitted product binding.
                     rarity = prior["r"]
@@ -322,11 +356,19 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                 if suffix.upper() not in RARITIES and suffix.lower() != rarity.lower(): art.insert(0, suffix)
             matches = {cid for cid in identity_entries[code] if norm(name) in names[cid]}
             cid = next(iter(matches)) if len(matches) == 1 else None
+            same_prior_product = prior and (prior["g"], prior["c"], prior["r"], prior["pn"]) == (gid, code, rarity, product["name"])
+            valid_market_binding = not conflicting_fields and product.get("categoryId") == 2 and product.get("groupId") == gid
+            retained_card = None
+            if not identity_entries[code] and same_prior_product and prior.get("canonicalLink") == "linked" and valid_market_binding:
+                # An omitted secondary row cannot invalidate a previously linked exact product.
+                if retained_card := prior.get("priorCanonical"):
+                    cid = retained_card["sourceID"]
+                    exceptions["retainedCanonicalLink"].append(pid)
             # Some exact marketplace titles omit the printed stars entirely.
             # Recover the name only when the release, code, rarity and full
             # title after star elision identify one secondary record.
             official_name = None
-            if not matches and not conflicting_fields and product.get("categoryId") == 2 and product.get("groupId") == gid:
+            if not matches and valid_market_binding:
                 symbol_matches = {candidate for candidate, release, finish in entries[code]
                     if norm(release) == norm(group["name"]) and norm(finish) == norm(physical_rarity or rarity)
                     and ("★" in by_id[candidate]["name"] or "☆" in by_id[candidate]["name"])
@@ -334,20 +376,24 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                 if len(symbol_matches) == 1:
                     official_name = by_id[next(iter(symbol_matches))]["name"]
             key = "ygoprodeck:" + str(cid) if cid is not None else "name:" + norm(name)
-            card_id = stable("yugioh-card:", key)
+            card_id = retained_card["id"] if retained_card else stable("yugioh-card:", key)
             source = by_id.get(cid, {})
-            canonical[card_id] = {"id": card_id, "n": source.get("name", name),
-                "pc": [cid] if cid is not None and 0 < cid <= 99999999 else [],
-                "sourceID": cid, "imageIDs": [i["id"] for i in source.get("card_images", [])]}
+            if retained_card and not source:
+                canonical.setdefault(card_id, dict(retained_card))
+            else:
+                canonical[card_id] = {"id": card_id, "n": source.get("name", name),
+                    "pc": [cid] if cid is not None and 0 < cid <= 99999999 else [],
+                    "sourceID": cid, "imageIDs": [i["id"] for i in source.get("card_images", [])]}
             if cid is None: incomplete[code].add("nameMismatch")
-            elif norm(name) != norm(source["name"]): exceptions["aliasMatch"].append(pid)
-            review = reviews.get(str(pid))
+            elif norm(name) != norm(canonical[card_id]["n"]): exceptions["aliasMatch"].append(pid)
+            review = None if unverified_release else reviews.get(str(pid))
             if review and (binding := review.get("printing")) is not None and binding != {
                     "groupID": gid, "code": code, "productName": product["name"], "rarity": rarity}:
                 exceptions["printingEditionEvidenceDrift"].append(pid)
                 review = None
             membership, membership_reasons = grade_prices(product_prices[pid])
-            editions, rejected, complete, evidence = [], set(), False, None
+            editions, complete, evidence = [], False, None
+            rejected = set(LANES.values()) if unverified_release else set()
             if review:
                 assert review.get("evidence") and set(review["editions"]) <= set(LANES.values()) and review["editions"]
                 editions = sorted(set(review["editions"]))
@@ -369,7 +415,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                             'h':hashlib.sha256(packed(review)).hexdigest(), 's':review.get('reviewedAt', captured_at), 'st':'reviewedAt'})
             # Historical support survives absence, but explicit conflicting rows
             # retract only their affected lane. No edition transfer across products.
-            if prior and (prior["g"], prior["c"], prior["r"], prior["pn"]) == (gid, code, rarity, product["name"]):
+            if same_prior_product:
                 for m in prior.get("m", []):
                     if m["e"] not in {x["e"] for x in membership} | blocked and m.get("h") and m.get("s"):
                         membership.append({**m, "q": None})
@@ -382,6 +428,9 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
             if blocked: complete = False
             if membership: evidence = POLICY
             identity_reason = "contradictoryProductFields" if conflicting_fields else "invalidProductAssociation" if product.get("categoryId") != 2 or product.get("groupId") != gid else "invalidRarity" if rarity.lower() in INVALID_RARITIES else "ambiguousCanonicalIdentity" if len(matches) > 1 else None
+            if unverified_release:
+                exceptions["unverifiedRelease"].append(pid)
+                identity_reason = "unverifiedRelease"
             if unsupported_code:
                 exceptions['unparsedCode'].append(pid)
                 identity_reason = 'unsupportedCode'
@@ -764,8 +813,10 @@ def main():
     timestamp = max(timestamp, reference_editions["capturedAt"],
                     *(source["capturedAt"] for source in reference_editions.get("galleryEvidence", {}).get("sources", [])),
                     *(review.get("reviewedAt", timestamp) for review in physical_editions.values()))
+    prior_products = {p["p"]: {**p, "priorCanonical": previous["cards"][p["k"]]}
+                      for p in all_printings(previous) if "p" in p} if previous else None
     seed, stats, exceptions, incomplete = build(groups, products, prices, cards, json.loads((ROOT / "yugioh_name_aliases.json").read_text()), physical_editions, timestamp,
-        price_provenance=price_provenance, previous={x["p"]: x for x in all_printings(previous) if "p" in x} if previous else None,
+        price_provenance=price_provenance, previous=prior_products,
         taxonomy_scopes=taxonomy_scopes, printing_inventory=inventories, release_calendar=calendar["releases"],
         rarity_corrections=printing_corrections["products"], reference_inventory=reference_inventory, reference_editions=reference_editions,
         previous_references={x["id"]: x for x in previous.get("referencePrintings", [])} if previous else None,
@@ -802,26 +853,16 @@ def main():
     for gid in sorted(products):
         for p in products[gid]:
             if p['productId'] in retained: continue
-            ext = {x['name']: x['value'] for x in p.get('extendedData', [])}
-            code = ext.get('Number', '').strip().upper()
-            # Bounded product-name evidence. Ambiguous missing-code singles are
-            # kept in this ledger for review, never called foreign or sealed.
-            sealed = not code and re.search(r'\b(?:booster (?:box|pack)|blister pack|starter deck|structure deck|playmat|sleeves|binder|sealed|collector.?s? tin)\b', p['name'], re.I)
-            if p['productId'] in exceptions['foreignLanguage']:
-                reason = 'foreignLanguage'
-            elif not code and ext.get('Card Type') == 'Field Center':
-                reason = 'fieldCenterAccessory'
-            elif sealed:
-                reason = 'sealedOrAccessoryName'
-            else:
-                reason = 'missingPrintedIdentity'
+            code, reason = excluded_product_reason(p, p['productId'] in exceptions['foreignLanguage'])
             excluded.append({'productID':p['productId'], 'groupID':gid, 'name':p['name'], 'code':code, 'reason':reason,
                 'status':'legitimatelyExcluded' if reason != 'missingPrintedIdentity' else 'discoveryPendingIdentity'})
     stats['upstreamDisposition'] = dict(collections.Counter(x['status'] for x in excluded))
     stats['legitimatelyExcluded'] = stats['upstreamDisposition'].get('legitimatelyExcluded', 0)
     stats['excludedPendingClassification'] = {'missingPrintedIdentity':stats['upstreamDisposition'].get('discoveryPendingIdentity', 0)}
-    stats['sourceProductStatusPartition'] = {**stats['productStatusPartition'], 'legitimatelyExcluded':stats['legitimatelyExcluded']}
-    stats['sourceProductStatusPartition']['discoveryOnly'] += stats['upstreamDisposition'].get('discoveryPendingIdentity', 0)
+    stats['sourceProductStatusPartition'] = {
+        **stats['productStatusPartition'], 'legitimatelyExcluded': stats['legitimatelyExcluded'],
+        'discoveryPendingIdentity': stats['upstreamDisposition'].get('discoveryPendingIdentity', 0),
+    }
     assert sum(stats['sourceProductStatusPartition'].values()) == stats['products']
     report = "# Yu-Gi-Oh catalog build report\n\nPolicy: " + POLICY + ". Raw offline source replay; cross-snapshot audit projection is not an input.\n\nCaptured through " + timestamp + ". All groups read successfully.\n\nPositive exact-product observations support explicit edition choices; they do not establish physical coverage or current prices. No group unions authorize editions. Product-status precedence is contradiction, discovery without membership, automatic eligibility, then explicit choice. Unsupported grammar remains discovery-only. The separate exclusions ledger preserves every upstream omitted product and its reason.\n\n```json\n" + json.dumps(stats, indent=2) + "\n```\n"
     for reason, examples in sorted(exceptions.items()): report += f"\n## {reason}: {len(examples)}\n\n{examples[:50]}\n"

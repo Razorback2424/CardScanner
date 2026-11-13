@@ -18,6 +18,19 @@ class BuilderTests(unittest.TestCase):
             {"12206212": ["Harpie's Brother"]}, reviews or {}, "2026-10-20T00:00:00Z", floor=1,
             price_provenance={1:{'h':'a'*64, 's':'2026-10-20T00:00:00Z', 'st':'capturedAt'}}, **options)
 
+    def test_exclusions_distinguish_packaging_and_field_centers_from_unknown_singles(self):
+        def reason(name, group, **fields):
+            return builder.excluded_product_reason({
+                "name": name, "groupId": group,
+                "extendedData": [{"name": key, "value": value} for key, value in fields.items()],
+            }, False)[1]
+
+        self.assertEqual(reason("Magnificent Maestros Display [1st Edition]", 24808, UPC="000"), "sealedOrAccessoryName")
+        self.assertEqual(reason("Field Center Token: Red Dragon Archfiend", 1322, Rarity="Promo"), "fieldCenterAccessory")
+        self.assertEqual(reason("Field Center Token: Red Dragon Archfiend", 1, Rarity="Promo"), "missingPrintedIdentity")
+        self.assertEqual(reason("Dark Magician (Sealed)", 1, Rarity="Ultra Rare"), "missingPrintedIdentity")
+        self.assertEqual(reason("Black Luster Soldier", 1, Rarity="Parallel Rare"), "missingPrintedIdentity")
+
     def test_verified_metadata_keeps_the_original_printing_binding(self):
         f = self.fixture
         product = f["products"][0]
@@ -40,6 +53,24 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(after["on"], "Sky★Scout")
         self.assertEqual(after["dn"], "Sky★Scout (Ultra Rare)")
         self.assertEqual(builder.catalog_regressions(new, old), {})
+
+    def test_unverified_release_preserves_browse_identity_and_withdraws_edition(self):
+        old = self.build()[0]
+        before = next(p for p in old["printings"] if p["p"] == 1)
+        corrections = {"1": {"groupID": before["g"], "code": before["c"], "productName": before["pn"],
+                             "providerRarity": before["r"], "unverifiedRelease": True, "evidence": "https://example.com/checklist"}}
+        new, _, exceptions, _ = self.build(rarity_corrections=corrections, previous={1: before})
+        after = next(p for p in new["printings"] if p["p"] == 1)
+        self.assertEqual(after["id"], before["id"])
+        self.assertEqual(after["ir"], "unverifiedRelease")
+        self.assertEqual(after["e"], [])
+        self.assertEqual(after["m"], [])
+        self.assertEqual(after["historicalContradictions"], before["m"])
+        self.assertEqual(exceptions["unverifiedRelease"], [1])
+        self.assertEqual(len(builder.catalog_regressions(new, old)["withdrawnEditions"]), 1)
+        corrections["1"]["code"] = "PSV-EN001"
+        unchanged = self.build(rarity_corrections=corrections, previous={1: before})[0]
+        self.assertEqual(unchanged, old)
 
     def test_release_report_flags_an_expected_variant_missing_from_a_populated_parent(self):
         seed = self.build()[0]
@@ -118,6 +149,12 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual((row["p"], row["c"], row["ir"]), (100, "", "unnumberedDisplay"))
         self.assertEqual((row["e"], row["pe"], row["m"]), ([], [], []))
         self.assertNotIn("", seed["autoEligibleCodes"])
+        product["extendedData"] = []
+        correction["100"]["providerRarity"] = ""
+        correction["100"]["physicalRarity"] = "Platinum-colored silver"
+        display = self.build(rarity_corrections=correction)[0]["referencePrintings"][0]
+        self.assertEqual(display["r"], "Platinum-colored silver")
+        self.assertEqual(display["id"], row["id"])
         product["name"] += " different product"
         self.assertNotIn("referencePrintings", self.build(rarity_corrections=correction)[0])
 
@@ -237,6 +274,23 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(exceptions["printingEditionEvidenceDrift"], [1])
         self.assertTrue(all(not p["e"] for p in drifted["printings"]))
 
+    def test_set_gallery_distinguishes_extended_art_and_ordinary_prints(self):
+        f = self.fixture
+        f["prices"] = []
+        extended = copy.deepcopy(f["products"][0])
+        extended["productId"] = 3
+        extended["name"] = "Harpie's Brother (Extended Art)"
+        f["products"].append(extended)
+        catalog = self.build()[0]
+        release = f["groups"][0]["name"]
+        contents = "{{Set gallery|rarity=UR|\nPSV-EN049; Sky Scout;; EA\nPSV-FR049; Sky Scout\n}}"
+        pages = [{"title": f"Set Card Galleries:{release} (TCG-EN-1E)", "revisions": [
+            {"revid": 42, "slots": {"main": {"content": contents}}},
+        ]}]
+        reviews = galleries.project_market(catalog, [(json.dumps({"query": {"pages": pages}}).encode(), "2026-10-20T00:00:00Z")])
+        self.assertEqual(set(reviews), {"3"})
+        self.assertEqual(reviews["3"]["editions"], ["yugioh1stEdition"])
+
     def test_bound_edition_correction_never_transfers_the_rejected_quote(self):
         prior = self.build()[0]
         before = next(p for p in prior["printings"] if p["p"] == 1)
@@ -271,6 +325,22 @@ class BuilderTests(unittest.TestCase):
         self.fixture["products"][0]["name"] = "Sky Scout (UR)"
         renamed = self.build()[0]
         self.assertEqual(seed["cards"], renamed["cards"])
+
+    def test_missing_secondary_row_preserves_only_an_exact_prior_canonical_link(self):
+        old = self.build()[0]
+        printing = next(r for r in old["printings"] if r["p"] == 1)
+        prior = {1: {**printing, "priorCanonical": old["cards"][printing["k"]]}}
+        self.fixture["cards"][0]["card_sets"].clear()
+        new, _, exceptions, _ = self.build(previous=prior)
+        self.assertEqual(exceptions["retainedCanonicalLink"], [1])
+        self.assertEqual(builder.catalog_regressions(new, old), {})
+        self.assertIn(printing["c"], new["incompleteCodes"])
+        self.fixture["cards"][1]["card_sets"].append({
+            "set_code": printing["c"], "set_name": self.fixture["groups"][0]["name"], "set_rarity": printing["r"],
+        })
+        conflicting, _, exceptions, _ = self.build(previous=prior)
+        self.assertEqual(exceptions["retainedCanonicalLink"], [])
+        self.assertEqual(builder.catalog_regressions(conflicting, old)["changedPrintingIdentities"][0]["id"], printing["id"])
 
     def test_reviewed_passcodes_replace_provider_ids_without_changing_identity(self):
         old = self.build()[0]

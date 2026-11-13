@@ -50,7 +50,7 @@
     }
   ],
   "galleryEvidence": {
-    "inventorySHA256": "8e088c6022844b58db6d80dd3ed0c5744e384fa2dae8bf6cb2ed582c5ab54479",
+    "inventorySHA256": "abedb83c9ff9f2883df37e96235795ff697d8438981d3b146b93adbe87d8dfd4",
     "sources": [
       {
         "url": "https://yugipedia.com/index.php?oldid=4954082",
@@ -2058,6 +2058,334 @@
           "MRL-E128",
           "MRL-E129",
           "MRL-E130"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=4680283",
+        "sha256": "2ac241ef0b0653d74abfb72e01d3f60d8de230663604fd48ba546184546ba4e3",
+        "capturedAt": "2026-11-12T22:04:22.921365+00:00",
+        "groupID": -18,
+        "edition": "1st Edition",
+        "codes": [
+          "YS15-END00",
+          "YS15-END01",
+          "YS15-END02",
+          "YS15-END03",
+          "YS15-END04",
+          "YS15-END05",
+          "YS15-END06",
+          "YS15-END07",
+          "YS15-END08",
+          "YS15-END09",
+          "YS15-END10",
+          "YS15-END11",
+          "YS15-END12",
+          "YS15-END13",
+          "YS15-END14",
+          "YS15-END15",
+          "YS15-END16",
+          "YS15-END17",
+          "YS15-END18",
+          "YS15-END19",
+          "YS15-END20",
+          "YS15-ENY00",
+          "YS15-ENY01",
+          "YS15-ENY02",
+          "YS15-ENY03",
+          "YS15-ENY04",
+          "YS15-ENY05",
+          "YS15-ENY06",
+          "YS15-ENY07",
+          "YS15-ENY08",
+          "YS15-ENY09",
+          "YS15-ENY10",
+          "YS15-ENY11",
+          "YS15-ENY12",
+          "YS15-ENY13",
+          "YS15-ENY14",
+          "YS15-ENY15",
+          "YS15-ENY16",
+          "YS15-ENY17",
+          "YS15-ENY18",
+          "YS15-ENY19",
+          "YS15-ENY20"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=4956580",
+        "sha256": "83827ef9a6b33392855d23d5a0dda68e0fb18264c9fc37d195bb63cc028452ce",
+        "capturedAt": "2026-11-12T22:04:22.921365+00:00",
+        "groupID": -17,
+        "edition": "Limited",
+        "codes": [
+          "WGRT-EN001",
+          "WGRT-EN002",
+          "WGRT-EN003",
+          "WGRT-EN004",
+          "WGRT-EN005",
+          "WGRT-EN006",
+          "WGRT-EN007",
+          "WGRT-EN008",
+          "WGRT-EN009",
+          "WGRT-EN010",
+          "WGRT-EN011",
+          "WGRT-EN012",
+          "WGRT-EN013",
+          "WGRT-EN014",
+          "WGRT-EN015",
+          "WGRT-EN016",
+          "WGRT-EN017",
+          "WGRT-EN018",
+          "WGRT-EN019",
+          "WGRT-EN020",
+          "WGRT-EN021",
+          "WGRT-EN022",
+          "WGRT-EN023",
+          "WGRT-EN024",
+          "WGRT-EN025",
+          "WGRT-EN026",
+          "WGRT-EN027",
+          "WGRT-EN028",
+          "WGRT-EN029",
+          "WGRT-EN030",
+          "WGRT-EN031",
+          "WGRT-EN032",
+          "WGRT-EN033",
+          "WGRT-EN034",
+          "WGRT-EN035",
+          "WGRT-EN036",
+          "WGRT-EN037",
+          "WGRT-EN038",
+          "WGRT-EN039",
+          "WGRT-EN040",
+          "WGRT-EN041",
+          "WGRT-EN042",
+          "WGRT-EN043",
+          "WGRT-EN044",
+          "WGRT-EN045",
+          "WGRT-EN046",
+          "WGRT-EN047",
+          "WGRT-EN048",
+          "WGRT-EN049",
+          "WGRT-EN050",
+          "WGRT-EN051",
+          "WGRT-EN052",
+          "WGRT-EN053",
+          "WGRT-EN054",
+          "WGRT-EN055",
+          "WGRT-EN056",
+          "WGRT-EN057",
+          "WGRT-EN058",
+          "WGRT-EN059",
+          "WGRT-EN060",
+          "WGRT-EN061",
+          "WGRT-EN062",
+          "WGRT-EN063",
+          "WGRT-EN064",
+          "WGRT-EN065",
+          "WGRT-EN066",
+          "WGRT-EN067",
+          "WGRT-EN068",
+          "WGRT-EN069",
+          "WGRT-EN070",
+          "WGRT-EN071",
+          "WGRT-EN072",
+          "WGRT-EN073",
+          "WGRT-EN074",
+          "WGRT-EN075",
+          "WGRT-EN076",
+          "WGRT-EN077",
+          "WGRT-EN078",
+          "WGRT-EN079",
+          "WGRT-EN080",
+          "WGRT-EN081",
+          "WGRT-EN082",
+          "WGRT-EN083",
+          "WGRT-EN084",
+          "WGRT-EN085",
+          "WGRT-EN086",
+          "WGRT-EN087",
+          "WGRT-EN088",
+          "WGRT-EN089",
+          "WGRT-EN090",
+          "WGRT-EN091",
+          "WGRT-EN092",
+          "WGRT-EN093",
+          "WGRT-EN094",
+          "WGRT-EN095",
+          "WGRT-EN096",
+          "WGRT-EN097",
+          "WGRT-EN098",
+          "WGRT-EN099",
+          "WGRT-EN100",
+          "WGRT-EN101",
+          "WGRT-EN102",
+          "WGRT-EN103",
+          "WGRT-EN104"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=4972087",
+        "sha256": "3e3e3488d9312dd1dcbe755699b0ba6a84b4631bb46f1a78169b67ecdb8cd2b9",
+        "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+        "groupID": -22,
+        "edition": "Unlimited",
+        "codes": [
+          "TYL-EN001"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5659670",
+        "sha256": "13c90715ba2c1f69fd825b87901c2b00058b44d322015bb8def85f65775ef839",
+        "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+        "groupID": -21,
+        "edition": "Limited",
+        "codes": [
+          "WQ11-EN001"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5067774",
+        "sha256": "b4311eb14bb469f4dc64b8910078505ec7f758f11eb30bd0d43eb74d54f524e5",
+        "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+        "groupID": -21,
+        "edition": "Limited",
+        "codes": [
+          "WQ11-EN002"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5672049",
+        "sha256": "355e030381ebb459c3a3acb0f02edd88c405d04436e48de5725ae7dc856a549b",
+        "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+        "groupID": -21,
+        "edition": "Limited",
+        "codes": [
+          "WQ11-EN003"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5830581",
+        "sha256": "37aa09a51b848648552a346de1f024d6e5cc00507d1f2b000e9951f1fdc3b600",
+        "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+        "groupID": -20,
+        "edition": "Unlimited",
+        "codes": [
+          "DL2-EN001"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5990872",
+        "sha256": "652ae847f7deb27a167dc28baa640784dd2a157a9d3de45cc11699430e969583",
+        "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+        "groupID": -20,
+        "edition": "Unlimited",
+        "codes": [
+          "DL2-EN002"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5698812",
+        "sha256": "ba050ac0f37b91bd2beb78258d817bf75498c6d394147fb57f7e1a5f31ac9950",
+        "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+        "groupID": -19,
+        "edition": "Unlimited",
+        "codes": [
+          "YDB1-EN001"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5774916",
+        "sha256": "dbae84b3fd1e4fcb4fb7a17dc5f14158de6d4d0e3f0c4a6706c9b0f6012556fd",
+        "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+        "groupID": -19,
+        "edition": "Unlimited",
+        "codes": [
+          "YDB1-EN003"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5400278",
+        "sha256": "d62f837987de4d92d5fe6d60c1435d9b1b7f5e3c6c3d5965caa19185ca24b4ff",
+        "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+        "groupID": -19,
+        "edition": "Unlimited",
+        "codes": [
+          "YDB1-EN002"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=6027875",
+        "sha256": "039e96f4faac97a2e4a602e9d1b73d3da7c13353b8c8de0cd5365c85107bf574",
+        "capturedAt": "2026-11-12T22:33:31.162327+00:00",
+        "groupID": -24,
+        "edition": "Limited",
+        "codes": [
+          "JMP-EN002"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=6023837",
+        "sha256": "4fbc0edf829e5990b0c3baec276f931469fab02fba12d4b54c9597dec0f23e21",
+        "capturedAt": "2026-11-12T22:33:31.162327+00:00",
+        "groupID": -23,
+        "edition": "Limited",
+        "codes": [
+          "JMP-EN001"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5844933",
+        "sha256": "c19105ef97319ee489f65b8e92273244c67898f5dba9527ca1bfe977e6bccad1",
+        "capturedAt": "2026-11-12T22:33:31.162327+00:00",
+        "groupID": -25,
+        "edition": "Unlimited",
+        "codes": [
+          "WCS-EN401",
+          "WCS-EN402"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5844933",
+        "sha256": "c19105ef97319ee489f65b8e92273244c67898f5dba9527ca1bfe977e6bccad1",
+        "capturedAt": "2026-11-12T22:33:31.162327+00:00",
+        "groupID": -26,
+        "edition": "Unlimited",
+        "codes": [
+          "WCS-EN501",
+          "WCS-EN502"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5844933",
+        "sha256": "c19105ef97319ee489f65b8e92273244c67898f5dba9527ca1bfe977e6bccad1",
+        "capturedAt": "2026-11-12T22:33:31.162327+00:00",
+        "groupID": -27,
+        "edition": "Unlimited",
+        "codes": [
+          "2017-EN001",
+          "2017-EN002"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=5844933",
+        "sha256": "c19105ef97319ee489f65b8e92273244c67898f5dba9527ca1bfe977e6bccad1",
+        "capturedAt": "2026-11-12T22:33:31.162327+00:00",
+        "groupID": -28,
+        "edition": "Unlimited",
+        "codes": [
+          "2018-EN001",
+          "2018-EN002"
+        ]
+      },
+      {
+        "url": "https://yugipedia.com/index.php?oldid=6014594",
+        "sha256": "03f676c2083333aaa3bdd1485b3fefa6287629f104038b74bc6de5a41890ea36",
+        "capturedAt": "2026-11-12T22:04:22.921365+00:00",
+        "groupID": 2197,
+        "edition": "Limited",
+        "codes": [
+          "MF03-EN001"
         ]
       }
     ]

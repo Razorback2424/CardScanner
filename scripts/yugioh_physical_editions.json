@@ -1258,25 +1258,6 @@
         }
       }
     },
-    "158246": {
-      "printing": {
-        "groupID": 2197,
-        "code": "MF03-EN008",
-        "productName": "Ancient Gear Golem",
-        "rarity": "Parallel Rare"
-      },
-      "editions": [
-        "yugiohLimited"
-      ],
-      "reviewedAt": "2026-11-12T14:43:15.576672+00:00",
-      "evidence": {
-        "yugiohLimited": {
-          "url": "https://yugipedia.com/index.php?oldid=5902408",
-          "sha256": "2a1ae20e8e5a5f37ea56ed806f921a033c2f2b346a422713b6fc8e9cf500692a",
-          "capturedAt": "2026-11-12T14:43:15.576672+00:00"
-        }
-      }
-    },
     "158248": {
       "printing": {
         "groupID": 2197,
@@ -3872,6 +3853,390 @@
       "rejectProviderEditions": [
         "yugioh1stEdition"
       ]
+    },
+    "731472": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN001",
+        "productName": "Blue-Eyes White Dragon, the White Phantom Beast (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731476": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN002",
+        "productName": "Deep-Eyes White Dragon, the Blue Abyss (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731480": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN003",
+        "productName": "The Guiding Flute of Summoning Dragons (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731484": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN004",
+        "productName": "Cyber End Dragon, the Final Strike Dragon (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731488": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN005",
+        "productName": "Cyber Dragon, the Luminous Mech Dragon (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731492": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN006",
+        "productName": "Future Fusion Nova (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731496": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN007",
+        "productName": "Crimson Dragon Quetzalcoatl (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731500": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN008",
+        "productName": "Red Nova Dragon - Burning Soul (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731504": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN009",
+        "productName": "Red Dragon Archfiend's Chains (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731508": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN010",
+        "productName": "Neo Galaxy-Eyes Photon Dragon - Photon Howling (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731512": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN011",
+        "productName": "Galaxy-Eyes Photon Change Dragon (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731516": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN012",
+        "productName": "Galaxy Defense Robot Orbital 7 (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731520": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN013",
+        "productName": "Starving Venom Fusion Dragon, Four Heavenly Dragons (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731524": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN014",
+        "productName": "Clear Wing Synchro Dragon, Four Heavenly Dragons (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731528": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN015",
+        "productName": "Dark Rebellion Xyz Dragon, Four Heavenly Dragons (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731532": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN016",
+        "productName": "Borreload Liberator Dragon (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731536": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN017",
+        "productName": "Rokket Barrage (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "731540": {
+      "printing": {
+        "groupID": 24808,
+        "code": "MAMS-EN018",
+        "productName": "Triple Borrel Launch (GMR)",
+        "rarity": "Grand Master Rare"
+      },
+      "editions": [
+        "yugioh1stEdition"
+      ],
+      "reviewedAt": "2026-11-12T22:04:22.921365+00:00",
+      "evidence": {
+        "yugioh1stEdition": {
+          "url": "https://yugipedia.com/index.php?oldid=6033328",
+          "sha256": "3edd0b76b39664c71198cddf13e412ba0bb3d96a742786cda6e751e059776d3b",
+          "capturedAt": "2026-11-12T22:04:22.921365+00:00"
+        }
+      }
+    },
+    "721768": {
+      "printing": {
+        "groupID": 351,
+        "code": "2023-EN001",
+        "productName": "Masterful Magician, Servant of the Sanctuary",
+        "rarity": "Secret Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T22:15:29.508337+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5719953",
+          "sha256": "6faf4e46ce739730ae73aa65298be771fc99743a813e9a6b1dd080d91c91b8c3",
+          "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+          "specimenURL": "https://ms.yugipedia.com/1/19/MasterfulMagicianServantoftheSanctuary-2023-EN-EScR-UE.png",
+          "specimenSHA256": "4e49f94515ccc2b63768553d23ce0b5b4459f4d5c34c60f283a16a4c77591f89"
+        }
+      }
+    },
+    "721769": {
+      "printing": {
+        "groupID": 351,
+        "code": "2023-EN002",
+        "productName": "Gatebridgeo the Waterfront Warbeast",
+        "rarity": "Secret Rare"
+      },
+      "editions": [
+        "yugiohUnlimited"
+      ],
+      "reviewedAt": "2026-11-12T22:15:29.508337+00:00",
+      "evidence": {
+        "yugiohUnlimited": {
+          "url": "https://yugipedia.com/index.php?oldid=5719954",
+          "sha256": "a228a083c62d4ee57136887a1fc2eec8feafbd2d03f1f4a9df2695eecf805a08",
+          "capturedAt": "2026-11-12T22:15:29.508337+00:00",
+          "specimenURL": "https://ms.yugipedia.com/8/83/GatebridgeotheWaterfrontWarbeast-2023-EN-EScR-UE.png",
+          "specimenSHA256": "9c77b33b406161b4e0744af6ff3215c280b4c6ff6846c8b93a4782c6d83ba407"
+        }
+      }
     }
   }
 }

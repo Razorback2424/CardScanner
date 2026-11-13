@@ -116,7 +116,7 @@ struct YuGiOhBrowseAdapter: GameBrowseAdapter {
               index.cardsBySetID[summary.setID]?.contains(summary) == true, let set = index.setsByID[summary.setID],
               let id = UUID(uuidString: summary.providerID), let p = catalog.printingByID[id] else { throw CatalogLookupError.staleCatalog }
         let resolved = try YuGiOhCatalogAdapter(catalog: catalog).discoveryResolution(id)
-        let referenceNotice = p.code.isEmpty ? "This unnumbered display card is available for reference." : nil
+        let referenceNotice = p.code.isEmpty ? "Reference display card without a printed set code." : nil
         let reason = referenceNotice ?? p.identityReason.map { "This printing needs identity review (\($0))." }
             ?? (p.editions.isEmpty ? "No supported edition is recorded for this product." : nil)
             ?? ((try? YuGiOhCatalogAdapter(catalog: catalog).resolution(forPrintingID: id)) == nil

@@ -19,6 +19,307 @@
         "https://tcgplayer-cdn.tcgplayer.com/product/22308_in_1000x1000.jpg",
         "https://tcgplayer-cdn.tcgplayer.com/product/264902_in_1000x1000.jpg"
       ]
+    },
+    "83764719": {
+      "name": "Monster Reborn",
+      "passcodes": [
+        83764718
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6027750",
+      "evidenceSHA256": "f252f4f3303276b8f9db2e9fec7fe1a3b2628a0b8af7bb43ac6ba056114c9102",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/22233_in_1000x1000.jpg"
+      ]
+    },
+    "18144507": {
+      "name": "Harpie's Feather Duster",
+      "passcodes": [
+        18144506
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6001487",
+      "evidenceSHA256": "e332f87264ac41009cd5949f1c7de76a4622a78e443844a174cd7577d647513e",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/22959_in_1000x1000.jpg"
+      ]
+    },
+    "74677427": {
+      "name": "Red-Eyes Black Dragon",
+      "passcodes": [
+        74677422
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6027713",
+      "evidenceSHA256": "4e8230f6cbed8fdaea1d7de1dfb04b90cbaf2c5c7c471afca26850795646ec91",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/564158_in_1000x1000.jpg"
+      ]
+    },
+    "45231178": {
+      "name": "Flame Swordsman",
+      "passcodes": [
+        45231177
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=5820475",
+      "evidenceSHA256": "1d3611cac7646cc8cb54077e7e4ece9222a05832a34819bd27b6764911cf7709",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/564149_in_1000x1000.jpg"
+      ]
+    },
+    "27911550": {
+      "name": "Parasite Paracide",
+      "passcodes": [
+        27911549
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6017543",
+      "evidenceSHA256": "a44c39fc3c1225a3e61219df19d2aebced5a29335ac59783692d2d50f69d68b3",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/649812_in_1000x1000.jpg"
+      ]
+    },
+    "23995348": {
+      "name": "Blue-Eyes Ultimate Dragon",
+      "passcodes": [
+        23995346
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6025946",
+      "evidenceSHA256": "863fdf26ef8b77070e53496b57839db90d1221e45d7253db49c323961c03ff32"
+    },
+    "81480461": {
+      "name": "Barrel Dragon",
+      "passcodes": [
+        81480460
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6016916",
+      "evidenceSHA256": "6566505c377fef54c7408f03c4bc64c391e8d5c2dc85013aede109116c0f2f47",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/564191_in_1000x1000.jpg"
+      ]
+    },
+    "68540059": {
+      "name": "Metalmorph",
+      "passcodes": [
+        68540058
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6023904",
+      "evidenceSHA256": "19a179bf501136b3fb8b1968207ef54749647aeec7bca91971c3d89e4409e44a",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/22956_in_1000x1000.jpg"
+      ]
+    },
+    "84080939": {
+      "name": "The Forgiving Maiden",
+      "passcodes": [
+        84080938
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6017204",
+      "evidenceSHA256": "89d975bfb8ba79e87326a3ac775da76de9e00437909632d5766a94631dc59b87",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/476510_in_1000x1000.jpg"
+      ]
+    },
+    "35686188": {
+      "name": "Tragedy",
+      "passcodes": [
+        35686187
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6014108",
+      "evidenceSHA256": "87dc1eb5b58c89cdd318ccdaba04db2cc65ea64e96bc7d0a5019ec2fd4c92f5b",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/23462_in_1000x1000.jpg"
+      ]
+    },
+    "39751094": {
+      "name": "Otohime",
+      "passcodes": [
+        39751093
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=5680868",
+      "evidenceSHA256": "531bca51275e6a872bd8012d9e6054e779b46504ab9ecfe21a258a3d56d62997",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/22284_in_1000x1000.jpg"
+      ]
+    },
+    "84257640": {
+      "name": "Dian Keto the Cure Master",
+      "passcodes": [
+        84257639
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6017103",
+      "evidenceSHA256": "f35a6d7b1ada34150ec7950c3a75b587e7b06473be1991e9bc24b06c00f6c152"
+    },
+    "19230408": {
+      "name": "Offerings to the Doomed",
+      "passcodes": [
+        19230407
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6017527",
+      "evidenceSHA256": "4515461c62ece11876eae767bcf2dfe5b3ae2ac8ed783a1ae0ee968320a88cd5",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/22275_in_1000x1000.jpg"
+      ]
+    },
+    "4376659": {
+      "name": "Familiar-Possessed - Hiita",
+      "passcodes": [
+        4376658
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6008205",
+      "evidenceSHA256": "fc1f69fc7404082a48e5b62b18c46bbb631266f93ef6f0ee6746ad0bc85e2eef",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/225007_in_1000x1000.jpg"
+      ]
+    },
+    "31764354": {
+      "name": "Familiar-Possessed - Wynn",
+      "passcodes": [
+        31764353
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6008210",
+      "evidenceSHA256": "aeebc0fa7c0d12733925ced829290702f0a998885d7db48ecc2862304d70639d",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/225009_in_1000x1000.jpg"
+      ]
+    },
+    "43892409": {
+      "name": "Dark Magician Girl the Dragon Knight",
+      "passcodes": [
+        43892408
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=5806061",
+      "evidenceSHA256": "523d0cf31f9e2d085531fd684c367dfc9205296206ff43bbf123296a7eacc67a"
+    },
+    "80193356": {
+      "name": "Dramatic Rescue",
+      "passcodes": [
+        80193355
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6014923",
+      "evidenceSHA256": "a9d13ec6a00e5d61dc73a3e9ab882ccb8de34751d9abc92c739a96319f6684b5",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/21929_in_1000x1000.jpg"
+      ]
+    },
+    "56043447": {
+      "name": "Viser Des",
+      "passcodes": [
+        56043446
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6024583",
+      "evidenceSHA256": "33474b2e44027f81a595eaefee5af4af8b715d2a2692c05c45a885cba3406971",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/214029_in_1000x1000.jpg"
+      ]
+    },
+    "64335805": {
+      "name": "Red-Eyes Black Metal Dragon",
+      "passcodes": [
+        64335804
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6017591",
+      "evidenceSHA256": "69f55b6c5318eda8dba2df8dc9811c007ede6140b0c10ef38a7d24089f84a9ed",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/22954_in_1000x1000.jpg"
+      ]
+    },
+    "10443958": {
+      "name": "Cyber Dragon Infinity",
+      "passcodes": [
+        10443957
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=5980107",
+      "evidenceSHA256": "af44c2b968580177c782fb98480eaef4302bfea610c3147a2b553f66014d84e1",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/111193_in_1000x1000.jpg"
+      ]
+    },
+    "16178683": {
+      "name": "Odd-Eyes Pendulum Dragon",
+      "passcodes": [
+        16178681
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=5629469",
+      "evidenceSHA256": "d0d678e2cd334c11bac8dc603dbbb3c2ae280478bd3f3019f15e51a9297fdd64"
+    },
+    "20366275": {
+      "name": "El Shaddoll Construct",
+      "passcodes": [
+        20366274
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=5909490",
+      "evidenceSHA256": "2a53fd4b19770799979ddebc52edfb48bcdcc1c26a8aaab614102e9b85f78a61",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/248923_in_1000x1000.jpg"
+      ]
+    },
+    "82044280": {
+      "name": "Clear Wing Synchro Dragon",
+      "passcodes": [
+        82044279
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=5976791",
+      "evidenceSHA256": "288c3a07148e32cbadd59f27b761f00d0efeffc28afe33d51ad1278b75ad52ce",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/708372_in_1000x1000.jpg"
+      ]
+    },
+    "62015409": {
+      "name": "Ghost Reaper & Winter Cherries",
+      "passcodes": [
+        62015408
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=5896682",
+      "evidenceSHA256": "138a03b29c06833c55d0a9bd07c77a699f1808c2b7abfac4af0eaef4be2169df"
+    },
+    "86120752": {
+      "name": "Aleister the Invoker",
+      "passcodes": [
+        86120751
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=5955065",
+      "evidenceSHA256": "d90f9353704ceefe6ffafe8e290c8b5c741c57ab1d6d6b27f2262ee79b2193b8",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/127817_in_1000x1000.jpg"
+      ]
+    },
+    "18807109": {
+      "name": "Spellbinding Circle",
+      "passcodes": [
+        18807108
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6017745",
+      "evidenceSHA256": "034ee65a51a532b0ef9fc02909ab9d09484339a8a55f93013c00601f7f54998f",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/22432_in_1000x1000.jpg"
+      ]
+    },
+    "73134082": {
+      "name": "Final Flame",
+      "passcodes": [
+        73134081
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6017190",
+      "evidenceSHA256": "13ade51247ffedb0f62603213db37048f9bfd4c591ed400951ffaba5540d0448",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/486178_in_1000x1000.jpg"
+      ]
+    },
+    "80604092": {
+      "name": "Ultimate Offering",
+      "passcodes": [
+        80604091
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6021950",
+      "evidenceSHA256": "0583761175a226199222490e695f443d81af758010613e563a767fbbf792c1a0"
+    },
+    "83011278": {
+      "name": "Mystic Tomato",
+      "passcodes": [
+        83011277
+      ],
+      "evidence": "https://yugipedia.com/index.php?oldid=6016429",
+      "evidenceSHA256": "7e0c6f60e65b8d6d275b5004f5b25a4d372604564b66f21668ca96a68c461b74",
+      "specimens": [
+        "https://tcgplayer-cdn.tcgplayer.com/product/564223_in_1000x1000.jpg"
+      ]
     }
   },
   "products": {
@@ -160,6 +461,64 @@
       "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=17701011&request_locale=en&rp=99999",
       "evidenceSHA256": "46524780af9a133ebb11f8f8f255b78899c7f3b4a1cd36741d4f545c80537708",
       "corroboratingEvidence": "https://yugipedia.com/index.php?oldid=5915773"
+    },
+    "158246": {
+      "groupID": 2197,
+      "code": "MF03-EN008",
+      "productName": "Ancient Gear Golem",
+      "providerRarity": "Parallel Rare",
+      "unverifiedRelease": true,
+      "evidence": "https://yugipedia.com/index.php?oldid=5684204",
+      "evidenceSHA256": "cb9548541f9241035f579c4dc7498921d84288f4094efbb07e5566134035be43"
+    },
+    "721768": {
+      "groupID": 351,
+      "code": "2023-EN001",
+      "productName": "Masterful Magician, Servant of the Sanctuary",
+      "providerRarity": "Secret Rare",
+      "physicalRarity": "Platinum Secret Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=19391&request_locale=en",
+      "evidenceSHA256": "324714dd3d1f70f26d0af45198da8aa320fa3ff71fff28c986993618eeda9ba3"
+    },
+    "721769": {
+      "groupID": 351,
+      "code": "2023-EN002",
+      "productName": "Gatebridgeo the Waterfront Warbeast",
+      "providerRarity": "Secret Rare",
+      "physicalRarity": "Platinum Secret Rare",
+      "evidence": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=19392&request_locale=en",
+      "evidenceSHA256": "37eae36e251c5b64ce5e644d0ba6176e1121b4fd15bd99b5635a94e892abe96c"
+    },
+    "247327": {
+      "groupID": 2718,
+      "code": "",
+      "productName": "Masterpiece Series: Platinum Blue-Eyes White Dragon",
+      "providerRarity": "",
+      "physicalRarity": "Platinum-colored silver",
+      "unnumberedDisplayCardID": 89631139,
+      "evidence": "https://www.yugioh-card.com/en/products/ms_bewd_platinum/",
+      "specimenURL": "https://tcgplayer-cdn.tcgplayer.com/product/247327_in_1000x1000.jpg",
+      "specimenSHA256": "0593f24ef05e5d7d3f6266795cf6298d13cc76afc686fd3ab84abbb64a82e3fb"
+    },
+    "528671": {
+      "groupID": 2718,
+      "code": "",
+      "productName": "Masterpiece Series: Platinum Dark Magician",
+      "providerRarity": "",
+      "physicalRarity": "Platinum-colored silver",
+      "unnumberedDisplayCardID": 46986420,
+      "evidence": "https://www.yugioh-card.com/en/products/ms_dm_platinum/",
+      "specimenURL": "https://tcgplayer-cdn.tcgplayer.com/product/528671_in_1000x1000.jpg",
+      "specimenSHA256": "08f15a639777a1717663e943543ed1de3a03c15540030add4457df409e299e67"
+    },
+    "247494": {
+      "groupID": 2718,
+      "code": "",
+      "productName": "Special Card: Dark Magician Girl",
+      "providerRarity": "",
+      "language": "ja",
+      "evidence": "https://tcgplayer-cdn.tcgplayer.com/product/247494_in_1000x1000.jpg",
+      "evidenceSHA256": "a4503c1661c1672ec2ef320519ddd0a2bd63a895c548a25c0bd3f1e84d5063ce"
     }
   }
 }

@@ -52,7 +52,7 @@ def inventory_hash(inventory):
 def gallery_rows(block):
     for line in block.splitlines():
         fields = [value.strip() for value in line.split("//", 1)[0].split(";")]
-        if len(fields) > 1 and re.fullmatch(r"[A-Z0-9]{2,4}-[EA][0-9]{3}", fields[0]):
+        if len(fields) > 1 and re.fullmatch(r"[A-Z0-9]{2,4}-(?:[EA][0-9]{3}|EN[A-Z0-9]{3})", fields[0]):
             yield fields
 
 
@@ -61,14 +61,14 @@ def project(inventory, captures):
     titles = {}
     by_code = {}
     for release in inventory["releases"]:
-        region = "AU" if release.get("suffix") == "A" else "EU"
+        region = release.get("galleryRegion", "AU" if release.get("suffix") == "A" else "EU")
         title = release["name"].removesuffix(" (European English)").removesuffix(" (Australian English)")
         if title == "Magic Ruler":
             title = "Spell Ruler"
         titles[(region, title)] = release["groupID"]
         for code, _, name, rarity in release["rows"]:
             assert code not in by_code, f"duplicate regional inventory code {code}"
-            by_code[code] = (release["groupID"], title, norm(name), rarity)
+            by_code[code] = (release["groupID"], title, norm(name), rarity, region)
 
     sources, supplements = [], []
     for raw, captured_at in captures:
@@ -81,40 +81,45 @@ def project(inventory, captures):
             content = revision["slots"]["main"]["content"]
             receipt = {"url": f"https://yugipedia.com/index.php?oldid={revision['revid']}",
                        "sha256": hashlib.sha256(content.encode()).hexdigest(), "capturedAt": captured_at}
-            if match := re.fullmatch(r"Set Card Galleries:(.*) \(TCG-(EU|AU)-(1E|UE|LE)\)", title):
+            if match := re.fullmatch(r"Set Card Galleries:(.*) \(TCG-(EN|EU|AU)-(1E|UE|LE)\)", title):
                 release, region, edition = match.groups()
                 group = titles.get((region, release))
                 if group is None:
                     continue
-                gallery = GALLERY.search(content)
-                assert gallery and gallery[1] == "Set gallery", f"missing edition inventory {title}"
-                default = re.search(r"(?:^|\|)rarity=([^|]+)", gallery[2])
+                galleries = [gallery for gallery in GALLERY.finditer(content) if gallery[1] == "Set gallery"]
+                assert galleries, f"missing edition inventory {title}"
                 rows = collections.defaultdict(set)
-                for code, name, *rarities in gallery_rows(gallery[3]):
-                    if len(rarities) > 1 or not (rarities or default):
-                        continue
-                    rarity = rarities[0] if rarities else default[1]
-                    if code == "LOB-A070" and name == "Red-Eyes B. Dragon":
-                        name = "Red-Eyes Black Dragon"
-                    rows[code].add((norm(name), RARITIES.get(rarity, rarity)))
+                for gallery in galleries:
+                    default = re.search(r"(?:^|\|)rarity=([^|]+)", gallery[2])
+                    for code, name, *rarities in gallery_rows(gallery[3]):
+                        # The two UK half-decks also repeat their code's letter as an image tag.
+                        if code.startswith(("YS15-END", "YS15-ENY")) and len(rarities) == 2 and rarities[1] == code[-3]:
+                            rarities.pop()
+                        if len(rarities) > 1 or not (rarities or default):
+                            continue
+                        rarity = rarities[0] if rarities else default[1]
+                        if code == "LOB-A070" and name == "Red-Eyes B. Dragon":
+                            name = "Red-Eyes Black Dragon"
+                        rows[code].add((norm(name), RARITIES.get(rarity, rarity)))
                 codes = sorted(code for code, values in rows.items()
-                               if code in by_code and by_code[code][0] == group and values == {by_code[code][2:]})
+                               if code in by_code and by_code[code][0] == group and values == {by_code[code][2:4]})
                 if codes:
                     sources.append({**receipt, "groupID": group, "edition": EDITIONS[edition], "codes": codes})
             elif title.startswith("Card Gallery:"):
                 name = norm(title.removeprefix("Card Gallery:"))
                 for gallery in GALLERY.finditer(content):
-                    if gallery[1] != "Card gallery" or "region=EU" not in gallery[2].split("|"):
+                    region = next((field[7:] for field in gallery[2].split("|") if field.startswith("region=")), "")
+                    if gallery[1] != "Card gallery" or region not in ("EN", "EU", "AU"):
                         continue
                     for fields in gallery_rows(gallery[3]):
-                        if len(fields) != 4 or fields[0][-4] != "E" or fields[0] not in by_code or fields[3] not in EDITIONS:
+                        if len(fields) != 4 or fields[0] not in by_code or fields[3] not in EDITIONS:
                             continue
                         code, release, rarity, edition = fields
-                        group, expected_release, expected_name, expected_rarity = by_code[code]
+                        group, expected_release, expected_name, expected_rarity, expected_region = by_code[code]
                         # The published promo grouping includes Kuriboh from the collector's release.
                         collector_promo = code == "PCY-E005" and release == expected_release.removesuffix(
                             " promotional cards") + " Limited Collector's Edition"
-                        if ((release == expected_release or collector_promo) and name == expected_name
+                        if (region == expected_region and (release == expected_release or collector_promo) and name == expected_name
                                 and RARITIES.get(rarity, rarity) == expected_rarity):
                             supplements.append({**receipt, "groupID": group, "edition": EDITIONS[edition], "codes": [code]})
     proved = {(code, source["edition"]) for source in sources for code in source["codes"]}
@@ -136,13 +141,30 @@ def project_market(catalog, captures):
     for raw, captured_at in captures:
         assert datetime.datetime.fromisoformat(captured_at).utcoffset() == datetime.timedelta(0)
         for page in json.loads(raw)["query"]["pages"]:
-            if "missing" in page or not page["title"].startswith("Card Gallery:"):
+            title = page["title"]
+            scope = re.fullmatch(r"Set Card Galleries:(.*) \(TCG-(EN|NA|EU|AU|OC)-(1E|UE|LE)\)", title)
+            if "missing" in page or (scope is None and not title.startswith("Card Gallery:")):
                 continue
-            name = norm(page["title"].removeprefix("Card Gallery:"))
             revision, = page["revisions"]
             content = revision["slots"]["main"]["content"]
             receipt = {"url": f"https://yugipedia.com/index.php?oldid={revision['revid']}",
                        "sha256": hashlib.sha256(content.encode()).hexdigest(), "capturedAt": captured_at}
+            if scope is not None:
+                release, region, edition = scope.groups()
+                for gallery in GALLERY.finditer(content):
+                    if gallery[1] != "Set gallery":
+                        continue
+                    default = re.search(r"(?:^|\|)rarity=([^|]+)", gallery[2])
+                    for code, name, *fields in gallery_rows(gallery[3]):
+                        if code not in codes or len(fields) > 2:
+                            continue
+                        rarity = (fields[0] if fields else "") or (default[1] if default else "")
+                        variant = fields[1] if len(fields) == 2 else ""
+                        if rarity and variant in ("", "EA"):
+                            art = "extended art" if variant == "EA" else ""
+                            entries[(code, norm(name))].append((norm(release), rarity, edition, region, art, receipt))
+                continue
+            name = norm(title.removeprefix("Card Gallery:"))
             for gallery in GALLERY.finditer(content):
                 region = next((field[7:] for field in gallery[2].split("|") if field.startswith("region=")), "")
                 if gallery[1] != "Card gallery" or region not in ("EN", "NA", "EU", "AU", "OC"):

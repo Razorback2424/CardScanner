@@ -10,6 +10,9 @@
     }
   },
   "groups": {
+    "-19": {"name": "Yu-Gi-Oh! GX Card Almanac promotional cards (European English)", "abbreviation": "YDB1-EN", "date": "2007-11-30", "source": "https://yugipedia.com/index.php?oldid=5507987"},
+    "-18": {"name": "2-Player Starter Deck: Yuya & Declan (European English)", "abbreviation": "YS15-EN", "date": "2015-05-28", "source": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=13313000&request_locale=en&rp=99999", "officialReleaseID": "13313000"},
+    "-17": {"name": "War of the Giants Reinforcements (European English)", "abbreviation": "WGRT-EN", "date": "2014-01-17", "source": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11113001&request_locale=en&rp=99999", "officialReleaseID": "11113001"},
     "-12": {"name": "Yu-Gi-Oh! The Duelists of the Roses promotional cards (European English)", "abbreviation": "DOR-E", "date": "2003-09-26", "source": "https://yugipedia.com/index.php?oldid=5641255"},
     "-10": {"name": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny Limited Collector's Edition (European English)", "abbreviation": "PCY-E", "date": "2003-11-28", "source": "https://yugipedia.com/index.php?oldid=5358954"},
     "-9": {"name": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny promotional cards (European English)", "abbreviation": "PCY-E", "date": "2003-11-28", "source": "https://yugipedia.com/index.php?oldid=5358956"},

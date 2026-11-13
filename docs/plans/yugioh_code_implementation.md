@@ -1,6 +1,62 @@
 # Yu-Gi-Oh! implementation and verification
 
-**Catalog coverage follow-up — 2026-11-12.** The regenerated seed contains
+**Regional, prize and Magnificent Maestros reconciliation — 2026-11-12.**
+The bundle now contains 47,956 printings, of which 47,917 have a selectable
+edition. The 435 new entries include 267 Magnificent Maestros printings,
+166 independently documented numbered printings and two Masterpiece display
+cards. Konami's 124 Magnificent Maestros names and all 248 name and rarity
+pairs match the release in the bundle. The 18 Grand Master Rares have verified
+First Edition membership and no snapshot quotes. The marketplace currently
+groups the regional serials under a single product per card. The November 12
+production price index still lacks group `24808` for this release.
+[Konami checklist](https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001710000&request_locale=en&rp=99999).
+
+War of the Giants Reinforcements has all 104 European-English cards. Yuya &
+Declan has all 42 English half-deck printings across 40 distinct names.
+Their physical codes and editions remain distinct from the North American
+products. The verified reference entries also cover the Swedish Shonen Jump
+promos, GX Card Almanac, Duelist League Series 2, 2011 qualifier prizes, the
+four reviewed World Championship years, Tyler the Great Warrior, and
+Mattel's Elemental HERO Avian. [Regional and prize inventory](../../scripts/yugioh_legacy_inventory.json)
+and [edition evidence](../../scripts/yugioh_legacy_edition_evidence.json).
+
+The updated source retains the previously linked Red-Eyes Black Dragon
+printing when its exact marketplace record survives a secondary-source
+omission. The passcode audit corrected 29 additional cards, including
+Monster Reborn, Red-Eyes Black Dragon and Spellbinding Circle. The 2023
+World Championship prizes now use Konami's Platinum Secret Rare label and
+their verified unmarked edition. The Ancient Gear Golem Mattel listing
+remains discoverable with acquisition unavailable until a released specimen
+can be verified. Its earlier edition evidence remains in the audit.
+[Printing corrections](../../scripts/yugioh_printing_corrections.json).
+
+The exclusions ledger distinguishes the 39 Browse-only entries from products
+absent from the bundle. Two marketplace rows still lack a verified printed
+identity. Both are announced Mattel items, Winged Kuriboh LV10 and Black
+Luster Soldier. Soul Rope's listed reissue, the numbered oversized
+cards, and the Japanese qualifier replica remain Browse-only. The
+disputed Duel Terminal finishes still need readable physical specimens.
+
+The two pending marketplace rows count only products in that feed. Konami's
+2025 Championship checklist confirms Super Rare and Ultra Rare printings of
+`25YC-EN001` Anotherverse Stratios, both absent from the seed. The retained
+specimens also show distinct prize text for the standard and Latin America
+Team distributions. Reconcile the full release and its regional variants
+before assigning ownership IDs. The current reference evidence joins on code
+alone. Match by release, code, name, finish and any verified printed variant.
+Keep each verified Limited Edition choice available in Scan and Browse, with
+no market mapping until an exact product exists. Verify that the repeated
+replay preserves earlier IDs and keeps each choice distinct.
+[Konami card record](https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=21618&ope=2&request_locale=en)
+and [event prizing](https://www.yugioh-card.com/eu/ycs-bologna-2025-prizing/).
+
+Extend the existing official coverage report with retained checklist captures
+as releases age past its 45-day window. Start with the Championship Prize
+cohort. Report missing checklist entries even if the marketplace has no row
+for them. Keep the checklist comparison independent of automatic Scan
+eligibility and price authority.
+
+**Earlier catalog coverage checkpoint — 2026-11-12.** The replay contained
 47,521 printings. All 696 European-English reference printings across 13
 releases and 226 Australian-English printings from Legend of Blue Eyes and
 the Yugi and Kaiba starter decks have a verified edition users can select in
@@ -18,8 +74,8 @@ without a date include combined releases, month-only records and unresolved
 source conflicts. The date evidence binds each day to the intended group ID,
 title and set abbreviation. [Release date evidence](../../scripts/yugioh_release_date_evidence.json).
 
-**Marketplace edition and finish follow-up — 2026-11-12.** The bundle
-supports selection for 47,483 of 47,521 printings. The 205 additions include
+**Marketplace edition and finish checkpoint — 2026-11-12.** That replay
+supported selection for 47,483 of 47,521 printings. The 205 additions included
 all 60 Thank You Pack printings, the 25 outstanding Winner's Pack logo
 variants, nine redemption codes ending in `K` and ten Duel Terminal previews.
 The edition projection joins the release, printed code, card name, finish
@@ -38,12 +94,11 @@ preserve product IDs. The two verified printed passcodes for each of Dark
 Magician and Polymerization now corroborate their scan families.
 [Printing corrections](../../scripts/yugioh_printing_corrections.json).
 
-The 38 Browse-only rows include seven unnumbered display cards, 25 rows with
-unsupported codes, two numbered oversized cards, three prize cards and a
-Soul Rope reissue. Unsupported numbers stay in Browse and outside the scan
-index. The upstream report has 339 additional products awaiting printed
-identity classification. Reconcile those by release against official
-checklists and physical evidence. Conflicting Duel Terminal rarity sources
+That checkpoint's 38 Browse-only rows included seven unnumbered display cards,
+25 rows with unsupported codes, two numbered oversized cards, three prize cards
+and a Soul Rope reissue. Unsupported numbers stay in Browse and outside the
+scan index. That upstream report had 339 additional products awaiting printed
+identity classification. Conflicting Duel Terminal rarity sources
 still need specimen checks for `DT04-EN007`, `DT04-EN072`, `DT04-EN087`
 and `DT05-EN009`. The sources also disagree about a second preview finish
 for `DTP1-EN005`. Keep those open until a specimen distinguishes the finish.

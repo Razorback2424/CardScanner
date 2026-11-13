@@ -1,4 +1,4 @@
-"""Project numbered regional English TCG printings from retained checklists."""
+"""Project documented English TCG printings from retained checklists."""
 import argparse
 import collections
 import hashlib
@@ -25,7 +25,34 @@ RELEASES = (
     (-11, "pck-eu", "PCK", "Yu-Gi-Oh! Power of Chaos: Kaiba the Revenge promotional cards", 3),
     (-12, "dor-eu", "DOR", "Yu-Gi-Oh! The Duelists of the Roses promotional cards", 3),
     (-13, "dl1-eu", "DL1", "Duelist League Series 1 participation cards", 2),
+    (-17, "wgrt-eu", "WGRT", "War of the Giants Reinforcements", 104),
+    (-18, "ys15-eu", "YS15", "2-Player Starter Deck: Yuya & Declan", 42),
+    (-19, "ydb1-eu", "YDB1", "Yu-Gi-Oh! GX Card Almanac promotional cards", 3),
+    (-20, "dl2-english", "DL2", "Duelist League Series 2 participation cards", 2),
+    (-21, "wq11-english", "WQ11", "Yu-Gi-Oh! World Championship Qualifier National Championships 2011 prize cards", 3),
+    (-22, "tyl-english", "TYL", "Make-A-Wish Foundation promotional card", 1),
+    (-23, "jmp-se-2004-eu", "JMP", "Swedish Shonen Jump 2004, Issue 2 promotional card", 1),
+    (-24, "jmp-se-2005-eu", "JMP", "Swedish Shonen Jump 2005, Issue 12 promotional card", 1),
+    (-25, "world-championship-2004-english", "WCS", "Yu-Gi-Oh! World Championship 2004 prize cards", 2),
+    (-26, "world-championship-2005-english", "WCS", "Yu-Gi-Oh! World Championship 2005 prize cards", 2),
+    (-27, "world-championship-2017-english", "2017", "Yu-Gi-Oh! World Championship 2017 prize cards", 2),
+    (-28, "world-championship-2018-english", "2018", "Yu-Gi-Oh! World Championship 2018 prize cards", 2),
+    (2197, None, "MF03", "Mattel Action Figure promotional cards: Series 3", 1),
 )
+
+ENGLISH_NUMBERS = {
+    "WGRT": r"WGRT-EN[0-9]{3}",
+    "YS15": r"YS15-EN[DY][0-9]{2}",
+    "YDB1": r"YDB1-EN00[1-3]",
+    "DL2": r"DL2-EN00[12]",
+    "WQ11": r"WQ11-EN00[1-3]",
+    "TYL": r"TYL-EN001",
+    "JMP": r"JMP-EN00[12]",
+    "WCS": r"WCS-EN[45]0[12]",
+    "2017": r"2017-EN00[12]",
+    "2018": r"2018-EN00[12]",
+    "MF03": r"MF03-EN001",
+}
 
 AUSTRALIAN_RELEASES = (
     (-14, "lob-au", "LOB", "Legend of Blue Eyes White Dragon", 126),
@@ -71,11 +98,15 @@ def project(raw, australian_captures=()):
     for card in cards:
         for entry in card.get("card_sets", []):
             code = entry["set_code"]
-            if re.fullmatch(r"[A-Z0-9]{2,4}-E[0-9]{3}", code):
+            prefix = code.split("-", 1)[0]
+            pattern = ENGLISH_NUMBERS.get(prefix, r"[A-Z0-9]{2,4}-E[0-9]{3}")
+            if re.fullmatch(pattern, code):
                 rarity = entry["set_rarity"]
                 if rarity in ("Short Print", "Super Short Print"):
                     rarity = "Common"
-                key = (code.split("-")[0], entry["set_name"])
+                elif rarity == "Extra Secret":
+                    rarity = "Extra Secret Rare"
+                key = (prefix, entry["set_name"])
                 inventory.setdefault(key, set()).add((code, card["id"], card["name"], rarity))
     releases = []
     all_codes = set()
@@ -86,7 +117,9 @@ def project(raw, australian_captures=()):
         all_codes.update(codes)
         releases.append({
             "groupID": group, "referenceID": release_id, "code": prefix,
-            "name": title + (" (European English)" if release_id else ""), "rows": rows,
+            "name": title + (" (European English)" if release_id and release_id.endswith("-eu") else ""), "rows": rows,
+            **({"suffix": "EN"} if prefix in ENGLISH_NUMBERS else {}),
+            **({"galleryRegion": "EN"} if release_id and release_id.endswith("-english") else {}),
         })
     if australian_captures:
         releases.extend(australian_releases(cards, australian_captures))

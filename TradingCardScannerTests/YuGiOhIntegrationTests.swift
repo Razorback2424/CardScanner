@@ -200,8 +200,8 @@ final class YuGiOhCandidateDeliveryTests: XCTestCase {
         let key = Curve25519.Signing.PrivateKey()
         let candidate = try envelope(object, revision: 1, key: key)
         let (manifest, snapshot) = try YuGiOhCandidateVerifier.verify(candidate, keys: ["yugioh-fixture":key.publicKey], now: .now)
-        XCTAssertEqual(snapshot.catalog.printingByID.count, 47_521)
-        XCTAssertEqual(snapshot.catalog.printingByID.values.filter(\.explicitSelectionSupported).count, 47_483)
+        XCTAssertEqual(snapshot.catalog.printingByID.count, 47_956)
+        XCTAssertEqual(snapshot.catalog.printingByID.values.filter(\.explicitSelectionSupported).count, 47_917)
         XCTAssertEqual(manifest.generation, snapshot.catalog.generation)
     }
 
@@ -881,11 +881,15 @@ final class YuGiOhPricingTests: XCTestCase {
         guard case let .price(price) = fresh else { return XCTFail() }
         XCTAssertEqual(price.unitMarketPriceUSD, 12.34)
         XCTAssertEqual(price.catalogIdentity, "tcgcsv:2:23416:1:Unlimited")
+        for invalidVariant in [PhysicalVariant.yugiohLimited, .reverse] {
+            do {
+                _ = try await adapter.refreshStoredPrinting(p.idString, variant: invalidVariant)
+                XCTFail("Yu-Gi-Oh! pricing accepted \(invalidVariant.id)")
+            } catch PriceQuoteError.identityMismatch {}
+        }
         let calls = await source.calls
         XCTAssertEqual(calls, ["2:23416:1:Unlimited", "2:23416:1:Unlimited"])
         XCTAssertEqual(YuGiOhPriceAdapter.priceAuthority(catalog).identityByPriceKey.count, 2)
-        do { _ = try await adapter.refreshStoredPrinting(p.idString, variant: .yugiohLimited); XCTFail() }
-        catch PriceQuoteError.identityMismatch {}
     }
     func testTransportMissingNullAndLaterMarketQuoteNeverSubstitutes() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-prices-\(UUID())")
@@ -910,9 +914,12 @@ final class YuGiOhPricingTests: XCTestCase {
             else { guard case let .price(price) = quote else { return XCTFail() }; XCTAssertEqual(price.unitMarketPriceUSD, 42) }
             watermark = .now
         }
-        XCTAssertEqual(priceRequests, 3, "Each mode must be a newly fetched response, including the null lane")
-        do { _ = try await transport.quote(category: 2, group: 23416, productID: 1, name: "Fixture Card 1", number: "RA02-EN037", lane: "Reverse Holofoil", generation: nil, minimumFetchedAt: nil); XCTFail() }
-        catch PriceQuoteError.identityMismatch {}
+        do {
+            _ = try await transport.quote(category: 2, group: 23416, productID: 1, name: "Fixture Card 1",
+                number: "RA02-EN037", lane: "Unknown Finish", generation: nil, minimumFetchedAt: nil)
+            XCTFail("The shared transport accepted an unknown finish")
+        } catch PriceQuoteError.identityMismatch {}
+        XCTAssertEqual(priceRequests, 3, "Each valid mode must fetch once, including the null lane")
     }
 }
 
@@ -2278,18 +2285,18 @@ final class YuGiOhCatalogTests: XCTestCase {
     func testFullSeedPartitionAndIndependentFactsThroughRealLoader() throws {
         let catalog = try YuGiOhCatalog.bundled.get()
         let rows = Array(catalog.printingByID.values)
-        XCTAssertEqual(rows.count, 47_521)
-        XCTAssertEqual(rows.filter(\.explicitSelectionSupported).count, 47_483)
-        XCTAssertEqual(rows.filter { !$0.explicitSelectionSupported }.count, 38)
-        XCTAssertEqual(rows.filter(\.isReference).count, 929)
-        XCTAssertEqual(rows.filter { $0.isReference && $0.explicitSelectionSupported }.count, 922)
+        XCTAssertEqual(rows.count, 47_956)
+        XCTAssertEqual(rows.filter(\.explicitSelectionSupported).count, 47_917)
+        XCTAssertEqual(rows.filter { !$0.explicitSelectionSupported }.count, 39)
+        XCTAssertEqual(rows.filter(\.isReference).count, 1_097)
+        XCTAssertEqual(rows.filter { $0.isReference && $0.explicitSelectionSupported }.count, 1_088)
         XCTAssertEqual(catalog.autoEligibleCodes.count, 262)
         XCTAssertTrue(catalog.autoEligibleCodes.contains("MP24-EN372"))
         XCTAssertTrue(["DUNE-EN080", "PSV-013"].allSatisfy(catalog.autoEligibleCodes.contains))
         XCTAssertTrue(rows.allSatisfy { !$0.coverageVerified })
-        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.count }, 61_905)
-        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.filter { $0.q != nil }.count }, 58_312)
-        XCTAssertEqual(rows.flatMap(\.membership).filter { $0.t == "providerListing" }.count, 1_707)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.count }, 62_339)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.filter { $0.q != nil }.count }, 58_544)
+        XCTAssertEqual(rows.flatMap(\.membership).filter { $0.t == "providerListing" }.count, 1_724)
         XCTAssertTrue(catalog.printingByID.values.contains { $0.code == "IOC-SE1" && $0.editions == [.limited] })
         let blueEyes = rows.filter { $0.productID == 476160 || $0.productID == 486054 }
         XCTAssertEqual(Set(blueEyes.map(\.id)).count, 2)
@@ -2500,18 +2507,21 @@ final class GameRecognitionRegistrySupplementalTests: XCTestCase {
 }
 
 final class YuGiOhRecognitionTests: XCTestCase {
-    func testPrintedDarkMagicianAndPolymerizationPasscodesReachTheCatalog() throws {
+    func testPrintedPasscodesReachTheCatalogWithoutAcceptingArtworkIDs() throws {
         let recognizer = YuGiOhRecognitionAdapter(catalog: try YuGiOhCatalog.bundled.get())
         let cases = [("LOB-005", "46986414"), ("RA04-EN106", "36996508"),
-                     ("LOB-059", "24094653"), ("DT04-EN043", "27847700")]
+                     ("LOB-059", "24094653"), ("DT04-EN043", "27847700"),
+                     ("LOB-118", "83764718"), ("RP01-EN011", "74677422"),
+                     ("UP02-EN001", "74677422"), ("MRL-006", "18807108"), ("SDCH-EN039", "04376658")]
         for (code, passcode) in cases {
             guard case let .identified(subject) = recognizer.identify([.init(text: code), .init(text: passcode)]) else {
                 return XCTFail("The printed passcode \(passcode) blocked \(code)")
             }
             XCTAssertEqual(subject.identifier.displayIdentifier, code)
         }
-        for passcode in ["46986420", "89631139"] {
-            guard case let .rejected(rejection) = recognizer.identify([.init(text: "LOB-005"), .init(text: passcode)]) else {
+        for (code, passcode) in [("LOB-005", "46986420"), ("LOB-005", "89631139"),
+                                 ("LOB-118", "83764719"), ("RP01-EN011", "74677427")] {
+            guard case let .rejected(rejection) = recognizer.identify([.init(text: code), .init(text: passcode)]) else {
                 return XCTFail("A provider artwork ID or another card's passcode must not authorize the scan")
             }
             XCTAssertTrue(rejection.blocksFallbackRecognition)
@@ -2605,6 +2615,8 @@ final class YuGiOhResolutionTests: XCTestCase {
         let printing = try XCTUnwrap(catalog.printingsByCode["UP02-EN001"]?.first)
         XCTAssertEqual(printing.productID, 731109)
         XCTAssertEqual(printing.editions, [.limited])
+        XCTAssertEqual(printing.card.id, DeterministicUUID.make(namespace: "yugioh-card:", material: "ygoprodeck:74677422"))
+        XCTAssertEqual(printing.card.passcodes, [74_677_422])
         XCTAssertFalse(printing.coverageVerified)
         let identifier = try YuGiOhRecognitionAdapter.identifier(code: printing.code, generation: catalog.generation)
         guard case let .needsPrintingChoice(_, candidates) = try await adapter.lookup(identifier) else {
@@ -2665,6 +2677,131 @@ final class YuGiOhResolutionTests: XCTestCase {
         XCTAssertEqual(resolved.rarity, "Starlight Rare")
         XCTAssertEqual(resolved.marketProductIDsByVariant[YuGiOhEdition.first.rawValue], "696518")
         XCTAssertTrue(catalog.printingsByCode["SP18-EN031"]?.contains { $0.displayRarity == "Starfoil Rare" } == true)
+    }
+
+    func testDocumentedReferenceReleasesAreSelectableAndUnpriced() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let scan = YuGiOhCatalogAdapter(catalog: catalog)
+        let browse = YuGiOhBrowseAdapter(catalog: catalog)
+        let recognizer = YuGiOhRecognitionAdapter(catalog: catalog)
+        let cohorts: [(group: Int, count: Int, edition: YuGiOhEdition, samples: [String])] = [
+            (-17, 104, .limited, ["WGRT-EN001", "WGRT-EN104"]),
+            (-18, 42, .first, ["YS15-END00", "YS15-ENY12"]),
+            (-19, 3, .unlimited, ["YDB1-EN002"]),
+            (-20, 2, .unlimited, ["DL2-EN001"]),
+            (-21, 3, .limited, ["WQ11-EN002"]),
+            (-22, 1, .unlimited, ["TYL-EN001"]),
+            (-23, 1, .limited, ["JMP-EN001"]),
+            (-24, 1, .limited, ["JMP-EN002"]),
+            (-25, 2, .unlimited, ["WCS-EN401"]),
+            (-26, 2, .unlimited, ["WCS-EN502"]),
+            (-27, 2, .unlimited, ["2017-EN001"]),
+            (-28, 2, .unlimited, ["2018-EN002"]),
+            (2197, 1, .limited, ["MF03-EN001"]),
+        ]
+        for cohort in cohorts {
+            let printings = catalog.printingByID.values.filter { $0.set.groupID == cohort.group && $0.isReference }
+            XCTAssertEqual(printings.count, cohort.count)
+            XCTAssertTrue(printings.allSatisfy {
+                $0.productID == nil && $0.editions == [cohort.edition]
+                    && $0.membership.count == 1 && $0.membership.first?.q == nil
+            })
+            for code in cohort.samples {
+                guard case let .identified(subject) = recognizer.identify([.init(text: code)]),
+                      case let .needsPrintingChoice(_, choices) = try await scan.lookup(subject.identifier) else {
+                    return XCTFail("Missing regional scan choice for \(code)")
+                }
+                let choice = try XCTUnwrap(choices.first)
+                let scanned = try await scan.resolve(choice, for: subject.identifier).card
+                let group = try XCTUnwrap(catalog.setsByGroupID[cohort.group])
+                let set = CatalogSetID(game: .yuGiOh, providerID: group.providerID)
+                let result = try await browse.search(query: code, setIDs: [set], cursor: nil)
+                let summary = try XCTUnwrap(result.items.first { $0.providerID == scanned.physicalPrintingID })
+                let detail = try await browse.details(for: summary)
+                XCTAssertNil(detail.collectionWriteUnavailableReason)
+                XCTAssertEqual(scanned.variantEvidence, detail.card.variantEvidence)
+                XCTAssertEqual(scanned.variantEvidence.catalogVariants, [cohort.edition.variant])
+                XCTAssertTrue(scanned.marketProductIDsByVariant.isEmpty)
+            }
+        }
+    }
+
+    func testPrizeFinishesAndUnverifiedMattelPrintingUseReviewedAuthority() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let scan = YuGiOhCatalogAdapter(catalog: catalog)
+        let browse = YuGiOhBrowseAdapter(catalog: catalog)
+        let recognizer = YuGiOhRecognitionAdapter(catalog: catalog)
+        for (code, product) in [("2023-EN001", 721768), ("2023-EN002", 721769)] {
+            guard case let .identified(subject) = recognizer.identify([.init(text: code)]),
+                  case let .needsPrintingChoice(_, choices) = try await scan.lookup(subject.identifier) else {
+                return XCTFail("Missing prize printing \(code)")
+            }
+            let printing = try XCTUnwrap(catalog.printingsByCode[code]?.first)
+            XCTAssertEqual(printing.productID, product)
+            XCTAssertEqual(printing.rarity, "Secret Rare")
+            XCTAssertEqual(printing.displayRarity, "Platinum Secret Rare")
+            XCTAssertEqual(printing.editions, [.unlimited])
+            XCTAssertNil(printing.membership.first?.q)
+            let scanned = try await scan.resolve(XCTUnwrap(choices.first), for: subject.identifier).card
+            XCTAssertEqual(scanned.rarity, "Platinum Secret Rare")
+        }
+
+        let code = "MF03-EN008"
+        let golem = try XCTUnwrap(catalog.printingsByCode[code]?.first)
+        XCTAssertEqual(golem.productID, 158246)
+        XCTAssertEqual(golem.identityReason, "unverifiedRelease")
+        XCTAssertTrue(golem.editions.isEmpty)
+        let set = CatalogSetID(game: .yuGiOh, providerID: golem.set.providerID)
+        let results = try await browse.search(query: code, setIDs: [set], cursor: nil)
+        let summary = try XCTUnwrap(results.items.first { $0.providerID == golem.idString })
+        let detail = try await browse.details(for: summary)
+        XCTAssertNotNil(detail.collectionWriteUnavailableReason)
+        XCTAssertTrue(detail.card.marketProductIDsByVariant.isEmpty)
+        guard case let .identified(subject) = recognizer.identify([.init(text: code)]),
+              case .catalogIncomplete = try await scan.lookup(subject.identifier) else {
+            return XCTFail("An unverified release must have no selectable printing")
+        }
+    }
+
+    func testMagnificentMaestrosKeepsRarityArtworkAndQuoteLanesDistinct() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let scan = YuGiOhCatalogAdapter(catalog: catalog)
+        let browse = YuGiOhBrowseAdapter(catalog: catalog)
+        let release = catalog.printingByID.values.filter { $0.set.groupID == 24808 }
+        XCTAssertEqual(release.count, 267)
+        XCTAssertEqual(Set(release.map(\.code)).count, 125)
+        XCTAssertTrue(release.allSatisfy { $0.editions == [.first] && $0.canonicalLinkStatus == "linked" })
+        let grandMaster = release.filter { $0.displayRarity == "Grand Master Rare" }
+        XCTAssertEqual(grandMaster.count, 18)
+        XCTAssertTrue(grandMaster.allSatisfy { $0.pricedEditions.isEmpty && $0.membership.first?.t == "independentlyReviewed" })
+
+        let code = "MAMS-EN001"
+        guard case let .identified(subject) = YuGiOhRecognitionAdapter(catalog: catalog).identify([.init(text: code)]),
+              case let .needsPrintingChoice(_, choices) = try await scan.lookup(subject.identifier) else {
+            return XCTFail("Missing Magnificent Maestros printing choices")
+        }
+        let family = try XCTUnwrap(catalog.printingsByCode[code])
+        let products = Dictionary(uniqueKeysWithValues: family.compactMap { p in p.productID.map { ($0, p) } })
+        XCTAssertEqual(Set(products.keys), [731469, 731470, 731471, 731472])
+        XCTAssertEqual(products[731469]?.displayRarity, "Ultra Rare")
+        XCTAssertNil(products[731469]?.artLabel)
+        XCTAssertEqual(products[731470]?.displayRarity, "Ultra Rare")
+        XCTAssertEqual(products[731470]?.artLabel, "Extended Art")
+        XCTAssertEqual(products[731471]?.displayRarity, "Starlight Rare")
+        XCTAssertEqual(products[731472]?.displayRarity, "Grand Master Rare")
+        let set = CatalogSetID(game: .yuGiOh, providerID: "tcgplayer-group:24808")
+        let results = try await browse.search(query: code, setIDs: [set], cursor: nil)
+        XCTAssertEqual(Set(results.items.map(\.providerID)), Set(choices.map(\.id)))
+        for (product, printing) in products {
+            let choice = try XCTUnwrap(choices.first { $0.id == printing.idString })
+            let card = try await scan.resolve(choice, for: subject.identifier).card
+            XCTAssertEqual(card.marketProductIDsByVariant[YuGiOhEdition.first.rawValue], String(product))
+            if product == 731472 {
+                XCTAssertNil(printing.membership.first?.q)
+            } else {
+                XCTAssertEqual(printing.membership.first?.s, "2026-11-12T20:06:19+0000")
+            }
+        }
     }
 
     func testReviewedPromoFinishesStampsAndRedemptionCodesResolveInBrowseAndScan() async throws {
@@ -2796,6 +2933,18 @@ final class YuGiOhResolutionTests: XCTestCase {
         XCTAssertNotNil(details.collectionWriteUnavailableReason)
         XCTAssertTrue(details.card.variantEvidence.catalogVariants.isEmpty)
         XCTAssertTrue(details.card.marketProductIDsByVariant.isEmpty)
+
+        let masterpieceSet = CatalogSetID(game: .yuGiOh, providerID: "tcgplayer-group:2718")
+        for (name, product) in [("Platinum Blue-Eyes White Dragon", 247327), ("Platinum Dark Magician", 528671)] {
+            let result = try await browse.search(query: name, setIDs: [masterpieceSet], cursor: nil)
+            let item = try XCTUnwrap(result.items.first { $0.collectorNumber.isEmpty })
+            let id = try XCTUnwrap(UUID(uuidString: item.providerID))
+            XCTAssertEqual(catalog.printingByID[id]?.productID, product)
+            let display = try await browse.details(for: item)
+            XCTAssertEqual(display.card.rarity, "Platinum-colored silver")
+            XCTAssertNotNil(display.collectionWriteUnavailableReason)
+            XCTAssertTrue(display.card.marketProductIDsByVariant.isEmpty)
+        }
 
         let duelOverload = CatalogSetID(game: .yuGiOh, providerID: "tcgplayer-group:2610")
         let oversized = try await browse.search(query: "oversized", setIDs: [duelOverload], cursor: nil)
