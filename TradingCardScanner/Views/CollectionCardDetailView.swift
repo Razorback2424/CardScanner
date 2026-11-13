@@ -190,6 +190,9 @@ private struct CollectionCardDetailContent: View {
     @State private var artworkAccent: ArtworkAccent?
     @State private var quantityState = CollectionDetailQuantityState()
     @State private var isOwnershipWritePending = false
+    @State private var isPickingReportLink = false
+    @State private var isChoosingReportFinish = false
+    @State private var pendingReportLink: PendingReportLink?
     @State private var isSharing = false
     @State private var chartSelection = PriceHistorySelection()
     @State private var marketHistory: [JustTCGHistoryPoint] = []
@@ -597,7 +600,20 @@ private struct CollectionCardDetailContent: View {
             identityStatusRow
 
             if card.hasReport {
-                UnverifiedReportStatus(card: card, isWritePending: isOwnershipWritePending, onUndoLink: undoReportLink)
+                UnverifiedReportStatus(card: card, isWritePending: isOwnershipWritePending,
+                                       onUndoLink: undoReportLink,
+                                       onLink: { isPickingReportLink = true },
+                                       onKeepUnverified: keepReportUnverified)
+                    .sheet(isPresented: $isPickingReportLink, onDismiss: presentPendingReportFinishChoice) {
+                        reportLinkPicker
+                    }
+                    .confirmationDialog("Which finish is your card?", isPresented: $isChoosingReportFinish,
+                                        titleVisibility: .visible, presenting: pendingReportLink) { pending in
+                        ForEach(pending.options) { option in
+                            Button(option.label) { confirmReportLink(pending.details, variant: option) }
+                        }
+                        Button("Cancel", role: .cancel) { pendingReportLink = nil }
+                    }
             } else if card.itemKind == .gradedCard {
                 gradedVariantCorrectionBlock
             } else if card.itemKind == .rawCard, let activity = collectionActivities.first {
@@ -1582,6 +1598,95 @@ private struct CollectionCardDetailContent: View {
             collectionKey: card.collectionKey, treatments: card.magicTreatmentIDsRaw,
             cardName: card.name, quantity: displayedQuantity, kind: kind
         )
+    }
+
+    struct PendingReportLink: Identifiable {
+        let id = UUID()
+        let details: CatalogCardDetails
+        let options: [PhysicalVariant]
+    }
+
+    private var reportLinkPicker: some View {
+        NavigationStack {
+            BrowseView(catalog: sharedBrowseCatalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog(),
+                       recoveryGame: .pokemon)
+                .environment(\.catalogCardSelection, { details, summary in
+                    // The row the collector chose names its finish; otherwise ask
+                    // when the printing has more than one.
+                    let options = VariantResolver.options(for: details.card.variantEvidence)
+                    if let chosen = summary.masterSetVariant ?? (options.count == 1 ? options.first : nil) {
+                        isPickingReportLink = false
+                        confirmReportLink(details, variant: chosen)
+                    } else if options.isEmpty {
+                        isPickingReportLink = false
+                        confirmReportLink(details, variant: nil)
+                    } else {
+                        pendingReportLink = PendingReportLink(details: details, options: options)
+                        isPickingReportLink = false
+                    }
+                })
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel", role: .cancel) { isPickingReportLink = false }
+                    }
+                }
+        }
+    }
+
+    private func presentPendingReportFinishChoice() {
+        if pendingReportLink != nil { isChoosingReportFinish = true }
+    }
+
+    /// Links this unverified report to the card the collector chose. The row's
+    /// key changes, so this screen closes on success.
+    private func confirmReportLink(_ details: CatalogCardDetails, variant: PhysicalVariant?) {
+        pendingReportLink = nil
+        guard !isOwnershipWritePending, card.isUnverified,
+              let json = card.unverifiedReportJSON,
+              let token = UnverifiedReportKey.reportToken(in: card.collectionKey),
+              let reportID = UUID(uuidString: token) else { return }
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let storageToken = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: storageToken)
+        isOwnershipWritePending = true
+        Task { @MainActor in
+            defer { isOwnershipWritePending = false }
+            do {
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                _ = try await writer.confirmReportLink(reportID: reportID, expectedReportJSON: json, to: details.card,
+                    variant: variant, setReleaseOrder: details.set.releaseOrder, shouldContinue: shouldContinue)
+                guard generation.isCurrent(storageToken) else { return }
+                dismiss()
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(storageToken) else { return }
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+
+    private func keepReportUnverified() {
+        guard !isOwnershipWritePending, let json = card.unverifiedReportJSON,
+              let token = UnverifiedReportKey.reportToken(in: card.collectionKey),
+              let reportID = UUID(uuidString: token) else { return }
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let storageToken = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: storageToken)
+        isOwnershipWritePending = true
+        Task { @MainActor in
+            defer { isOwnershipWritePending = false }
+            do {
+                let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                try await writer.keepReportUnverified(reportID: reportID, expectedReportJSON: json,
+                                                      shouldContinue: shouldContinue)
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(storageToken) else { return }
+                errorMessage = error.localizedDescription
+            }
+        }
     }
 
     /// Puts a linked report back to unverified. The row's key changes, so

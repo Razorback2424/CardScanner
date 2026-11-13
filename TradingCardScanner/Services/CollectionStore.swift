@@ -1181,6 +1181,34 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         }
     }
 
+    /// The collector's own confirmation of which verified card a report is.
+    /// The collector, not new catalog evidence, is the authority, so this
+    /// needs no newer revision; the target must still be a valid catalog
+    /// printing and finish.
+    func confirmReportLink(reportID: UUID, expectedReportJSON: String, to card: IdentifiedCard,
+                           variant: PhysicalVariant?, setReleaseOrder: Int,
+                           shouldContinue: @escaping StorageGenerationContinuation = { true }) throws -> CollectionMutation {
+        try performOwnershipWrite { context in
+            guard shouldContinue() else { throw CancellationError() }
+            let store = CollectionStore(context: context)
+            let rows = try store.reportRows(reportID: reportID)
+            guard rows.count == 1, let row = rows.first, row.isUnverified else { throw CollectionStoreError.staleReport }
+            try validatePokemonAcquisition(card, finish: variant,
+                printRun: row.pokemonPrintRunRaw.flatMap(PokemonPrintRun.init(rawValue:)), in: context)
+            return try store.linkUnverified(reportID: reportID, expectedReportJSON: expectedReportJSON, to: card,
+                variant: variant, resolution: .userConfirmed, setReleaseOrder: setReleaseOrder)
+        }
+    }
+
+    func keepReportUnverified(reportID: UUID, expectedReportJSON: String,
+                              shouldContinue: @escaping StorageGenerationContinuation = { true }) throws {
+        try performOwnershipWrite { context in
+            guard shouldContinue() else { throw CancellationError() }
+            try CollectionStore(context: context).keepReportUnverified(reportID: reportID,
+                                                                         expectedReportJSON: expectedReportJSON)
+        }
+    }
+
     func unlinkReport(reportID: UUID) throws -> CollectionMutation {
         try performOwnershipWrite { context in
             try CollectionStore(context: context).unlinkReport(reportID: reportID)
@@ -5340,6 +5368,26 @@ struct CollectionStore {
             }
             report.lastEvaluatedCatalogRevision = catalogRevision
             report.reviewStateRaw = state.rawValue
+            row.unverifiedReportJSON = try report.encodedJSON()
+            try commit()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// The collector reviewed the report and chose to keep it unverified. It
+    /// waits for the next catalog revision instead of asking again.
+    func keepReportUnverified(reportID: UUID, expectedReportJSON: String) throws {
+        do {
+            let rows = try reportRows(reportID: reportID)
+            guard rows.count == 1, let row = rows.first, row.isUnverified,
+                  row.unverifiedReportJSON == expectedReportJSON,
+                  var report = row.unverifiedReport, report.isUnderstood else {
+                throw CollectionStoreError.staleReport
+            }
+            report.reviewStateRaw = UnverifiedReport.ReviewState.waiting.rawValue
+            report.reviewDismissedAt = .now
             row.unverifiedReportJSON = try report.encodedJSON()
             try commit()
         } catch {

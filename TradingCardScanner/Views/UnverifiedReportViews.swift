@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 /// Creating unverified reports stays off in TestFlight and App Store builds
@@ -157,6 +158,10 @@ struct UnverifiedReportStatus: View {
     let card: CollectedCard
     let isWritePending: Bool
     let onUndoLink: () -> Void
+    /// Opens the catalog to choose the verified card this report is.
+    let onLink: () -> Void
+    /// Dismisses a review and keeps the report waiting for the catalog.
+    let onKeepUnverified: () -> Void
 
     var body: some View {
         if card.isUnverified {
@@ -170,8 +175,21 @@ struct UnverifiedReportStatus: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
+                if let report = card.unverifiedReport, report.isUnderstood, report.reviewState != .linkUnavailable {
+                    Button("Link to verified card…", systemImage: "link", action: onLink)
+                        .font(.subheadline.weight(.semibold))
+                        .frame(minHeight: 44)
+                        .disabled(isWritePending)
+                        .accessibilityIdentifier("unverified-report-link")
+                    if report.reviewState == .needsReview {
+                        Button("Keep as unverified", action: onKeepUnverified)
+                            .font(.caption.weight(.semibold))
+                            .frame(minHeight: 44)
+                            .disabled(isWritePending)
+                    }
+                }
             }
-            .accessibilityElement(children: .combine)
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("unverified-report-status")
         } else if card.hasReport {
             VStack(spacing: 4) {
@@ -199,11 +217,66 @@ struct UnverifiedReportStatus: View {
         }
         switch report.reviewState {
         case .needsReview?:
-            return "The catalog changed. Review this card to link it."
+            return "The catalog changed. Choose the verified card to link it, or keep it unverified."
         case .linkUnavailable?:
             return "Not priced. Linking isn't available because some copies were removed or adjusted."
         case .waiting?, nil:
             return "Not priced. Waiting for the catalog to list it."
         }
+    }
+}
+
+/// Every unverified or linked report in the collection, so a report that
+/// needs the collector's confirmation is always reachable.
+struct UnverifiedReportsListView: View {
+    let onSelect: (String) -> Void
+    @Query private var rows: [CollectedCard]
+
+    init(onSelect: @escaping (String) -> Void) {
+        self.onSelect = onSelect
+        let unverified = UnverifiedReportKey.unverifiedMarker
+        _rows = Query(filter: #Predicate<CollectedCard> { $0.collectionKey.contains(unverified) },
+                      sort: \CollectedCard.dateAdded, order: .reverse)
+    }
+
+    private var needsReview: [CollectedCard] {
+        rows.filter { $0.unverifiedReport?.reviewState == .needsReview }
+    }
+
+    var body: some View {
+        List {
+            if !needsReview.isEmpty {
+                Section("Needs your review") { ForEach(needsReview) { row($0) } }
+            }
+            let others = rows.filter { $0.unverifiedReport?.reviewState != .needsReview }
+            if !others.isEmpty {
+                Section("Waiting for the catalog") { ForEach(others) { row($0) } }
+            }
+            if rows.isEmpty {
+                ContentUnavailableView("No unverified cards", systemImage: "checkmark.seal")
+            }
+        }
+        .navigationTitle("Unverified cards")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func row(_ card: CollectedCard) -> some View {
+        Button { onSelect(card.collectionKey) } label: {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(card.name.isEmpty ? "Unknown card" : card.name)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.primary)
+                Text([card.setCode, card.cardNumber, card.unverifiedReport?.label ?? card.variantLabel]
+                        .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · "))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("Quantity \(card.quantity)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }

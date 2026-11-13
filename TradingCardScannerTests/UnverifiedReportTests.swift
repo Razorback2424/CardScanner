@@ -627,6 +627,62 @@ final class UnverifiedReportTests: XCTestCase {
         XCTAssertEqual(rows.first { !$0.isUnverified }?.variantResolution, .linkedFromReport)
     }
 
+    // MARK: - Review
+
+    func testCollectorConfirmsALinkOnlyToAValidPrintingAndFinish() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        let report = UnverifiedReport(kind: .unknownSet,
+            observed: .init(setCode: "PRE", setName: nil, number: "074", name: "Eevee"))
+        let key = try await writer.addUnverified(report: report, baseCard: nil, quantity: 2).collectionKey
+        let json = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first?.unverifiedReportJSON)
+        let target = try ProductionRowFixtures.pokemonCard()
+
+        do {
+            _ = try await writer.confirmReportLink(reportID: report.reportID, expectedReportJSON: json, to: target,
+                                                   variant: .holo, setReleaseOrder: 0)
+            XCTFail("Eevee 074 has no Holo printing")
+        } catch {
+            XCTAssertEqual(error as? CollectionStoreError, .unverifiedPokemonPrinting)
+        }
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first?.collectionKey, key)
+
+        let link = try await writer.confirmReportLink(reportID: report.reportID, expectedReportJSON: json, to: target,
+                                                      variant: .reverse, setReleaseOrder: 0)
+        let row = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(row.collectionKey, link.collectionKey)
+        XCTAssertEqual(row.providerID, target.providerID)
+        XCTAssertEqual(row.variantID, PhysicalVariant.reverse.id)
+        XCTAssertEqual(row.variantResolution, .userConfirmed)
+        XCTAssertEqual(row.quantity, 2)
+    }
+
+    func testKeepingAReportUnverifiedEndsTheReviewUntilTheNextRevision() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        let base = try ProductionRowFixtures.pokemonCard()
+        let report = knownReport(for: base, stamps: [])
+        _ = try await writer.addUnverified(report: report, baseCard: base)
+        let reconciler = UnverifiedReportReconciler(writer: writer, baseCard: { _ in base }, unknownSetMatch: { _ in nil })
+        let first = try await reconciler.run(catalogRevision: 5)
+        XCTAssertEqual(first.needsReview, [report.reportID], "The catalog changed but still lacks the finish")
+
+        func stored() throws -> UnverifiedReport {
+            try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first?.unverifiedReport)
+        }
+        let json = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first?.unverifiedReportJSON)
+        try await writer.keepReportUnverified(reportID: report.reportID, expectedReportJSON: json)
+        XCTAssertEqual(try stored().reviewState, .waiting)
+        XCTAssertNotNil(try stored().reviewDismissedAt)
+        let sameRevision = try await reconciler.run(catalogRevision: 5)
+        XCTAssertEqual(sameRevision, .init())
+        XCTAssertEqual(try stored().reviewState, .waiting)
+        let nextRevision = try await reconciler.run(catalogRevision: 6)
+        XCTAssertEqual(nextRevision.needsReview, [report.reportID])
+    }
+
     // MARK: - Helpers
 
     private func eeveeWithHolo() throws -> IdentifiedCard {
