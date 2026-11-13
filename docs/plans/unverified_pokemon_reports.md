@@ -14,14 +14,12 @@ only; no device, CloudKit or TestFlight evidence yet.
 | Price isolation (unverified rows never priced) | Implemented, unit-tested |
 | Guards: merge, canonicalization, normalizer, finish repair, refresh targets, finish correction | Implemented, unit-tested |
 | `addUnverified`, `moveAcquisitionToReport` | Implemented, unit-tested |
-| Evaluator and reconciler | Implemented, unit-tested; runs on catalog load and activation while the scanner is active |
-| Link and undo (dated ledger corrections) | Implemented, unit-tested at ledger level |
+| Evaluator and reconciler | Implemented, unit-tested; runs at launch, after each catalog activation and on synced-row arrival (app-level monitor), and from the scanner |
+| Link and undo (dated ledger corrections) | Implemented; ledger-level tests plus a portfolio replay test through `PortfolioReplaySnapshotBuilder.compute` |
 | CSV export | Keeps the report in an `unverified_report` column (only when the export contains a report row) |
-| CSV import | **Temporary:** report rows are refused as failed entries, never merged. Restore is not built |
-| UI | Receipt "Report a different variant", failed-scan "Add unverified card", collection detail status and "Undo link". Not yet visually verified |
-| Review screen for reports needing confirmation | Not built — required before beta |
-| Reconciliation at launch and on synced-row arrival | Not built |
-| Portfolio replay verification of link chronology | Not built (ledger inputs are tested) |
+| CSV import | Restores unverified and linked report rows as their own rows; exact re-imports are skipped; conflicts and previously removed reports are refused. Checked against a real Collectr export |
+| UI | Receipt "Report a different variant", failed-scan "Add unverified card", collection detail status, review actions and "Undo link". Not yet visually verified on a simulator |
+| Review screen | Implemented: collection row and list (needs-review first), "Link to verified card…" through Browse, "Keep as unverified" |
 | Linked-row grouping, "+N unverified" note, 60-day flag | Not built (lower priority) |
 
 ## Context
@@ -70,10 +68,16 @@ These refine revision 5 and are what the code does.
    catalog the serialized write validated against.
 5. **Key markers** are `~unverified=<id>` and `~report=<id>`. `~` appears in no
    other collection-key grammar.
-6. **CSV import refuses report rows** (`CollectionCSVError.unverifiedReportImport`)
-   and excludes report rows from import alias indexing. This is a temporary
-   safety measure; restore through `addUnverified` / `restoreLinkedReport` is
-   still required.
+6. **CSV import restores report rows through the report flow**
+   (`CollectionStore.restoreImportedReport`), never through the ordinary
+   merge, and report rows are excluded from import alias indexing. The report
+   must name the same report as its key and be in the state the key says; a
+   linked row's verified identity passes the normal import catalog check. An
+   exact re-import is skipped; a report already present with other details,
+   or one removed earlier, is a conflict.
+8. **Collector-confirmed links** (`confirmReportLink`) need no newer catalog
+   revision, because the collector is the authority, but the target must pass
+   the same catalog acquisition check. They use `.userConfirmed`.
 7. **Finish correction refuses report rows** (`reportRowProtected`). Only the
    report flow changes a report row's identity or finish.
 
@@ -134,7 +138,8 @@ serialized write. Applying the same link twice is a no-op.
 
 ### Preservation
 - Removal snapshots carry `unverifiedReportJSON`; restore keeps the key.
-- CSV: see implementation decision 6.
+- CSV: see implementation decision 6. Exports gain an `unverified_report`
+  column only when they contain a report row.
 - Round trips through pre-feature builds lose the report (documented, not
   supported).
 
@@ -153,14 +158,15 @@ All required before the feature is enabled for beta users:
 4. A pre-feature build against the new build must not strip markers, set
    finishes or merge marked rows. Expire earlier TestFlight builds before
    enabling.
-5. The review screen, CSV restore and portfolio replay verification are
-   complete.
+5. Simulator end-to-end verification of the entry points and review flow.
 
 ## Verification so far
 
-`UnverifiedReportTests` (23 tests) covers the model, markers, price isolation,
+`UnverifiedReportTests` (28 tests) covers the model, markers, price isolation,
 acquisition, the automatic-processing guards, removal snapshots, link and undo
 with dated chronology at the ledger level, link eligibility, stale reports,
 unknown-set links, unreadable linked reports, CSV export and import refusal,
-"Report a different variant", the evaluator and the reconciler. Run results are
+"Report a different variant", the evaluator and the reconciler, the review
+actions, CSV restore and conflicts, and link chronology through portfolio
+replay. Run results are
 recorded in [`progress.md`](../../progress.md).
