@@ -1,3 +1,37 @@
+# 2026-11-13 — Test baseline, catalog fixes and unverified Pokémon reports
+
+**Baseline.** A full run of committed `1a2a662` in a separate worktree had
+3,379 passed, 15 failed and 23 skipped. Eight of the failures were stale
+tests or one production defect, fixed in `64042b5`: five acquisition tests
+used printings that cannot exist (finishes missing from the shared Eevee
+fixture; 1st Edition on Celebrations and Prismatic Evolutions), the Lorcana
+sealed count predated the reviewed regeneration, the One Piece owner catalog
+was verified at a date before its re-signing, and the Pokémon snapshot
+refresh fetched the provider directory on every run because the bundled M26
+descriptor has no fingerprint. Production validation was not relaxed.
+
+**Unverified Pokémon reports (DEBUG only).** Implemented per
+[`docs/plans/unverified_pokemon_reports.md`](docs/plans/unverified_pokemon_reports.md):
+synced report rows with fail-closed key markers and no price, guards on every
+automatic identity path, unverified acquisition and "Report a different
+variant", an evaluator and reconciler, and link and undo through dated ledger
+corrections that never edit existing events. Links require every acquisition
+claim to be intact and to reconcile exactly to the row's quantity. CSV export
+keeps the report; CSV import refuses report rows for now. The review screen,
+CSV restore, replay-engine verification, reconciliation at launch and on sync,
+and the CloudKit, two-device and pre-feature build gates remain open.
+`UnverifiedReportTests` passes 23 of 23.
+
+**Current tree.** Parallel runs with `scripts/run_app_tests.sh` (4 workers):
+`fast` mode passed 3,139, skipped 22 and failed only
+`RetailVariantTests/testAdapterAppliesSignedMembershipToLiveAndCachedReadsAndCanWithdrawIt`,
+which also fails at `1a2a662` and passes alone; its root cause is under
+separate investigation. `centering` mode passed 275, skipped 1 and failed the
+same six known centering tests as the baseline, with identical accuracy
+values. The latency case measured 2.90 s against its 1.5 s budget (1.59 s at
+baseline) while a second full suite ran concurrently, so that run is not a
+latency measurement. Simulator only; no device, CloudKit or release claim.
+
 # 2026-11-12 — Latest catalogs in the Release build
 
 Release now enables One Piece. It bundles production revision 2, which holds

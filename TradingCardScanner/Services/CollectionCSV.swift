@@ -228,6 +228,7 @@ enum CollectionCSVError: LocalizedError, Sendable {
     case quantityOutOfRange(String)
     case storageGenerationChanged
     case importInterrupted(completedEntries: Int, totalEntries: Int)
+    case unverifiedReportImport
 
     var errorDescription: String? {
         switch self {
@@ -245,6 +246,8 @@ enum CollectionCSVError: LocalizedError, Sendable {
             return "The collection changed while this import was running."
         case let .importInterrupted(completedEntries, totalEntries):
             return "Added \(completedEntries) of \(totalEntries) entries before stopping. Import the same file again to add only the remaining entries."
+        case .unverifiedReportImport:
+            return "This row is an unverified card report. Importing reports isn't supported yet, so it was left out rather than merged."
         }
     }
 }
@@ -344,6 +347,9 @@ enum CollectionCSV {
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
         let formatter = ISO8601DateFormatter()
+        // Only a collection holding reports gains the column, so every other
+        // export stays byte-identical to earlier builds.
+        let includesReports = cards.contains { $0.hasReport || $0.unverifiedReportJSON != nil }
         let rows = cards.sorted { left, right in
             if left.game != right.game { return left.game < right.game }
             if left.setCode != right.setCode { return left.setCode < right.setCode }
@@ -366,7 +372,7 @@ enum CollectionCSV {
                 }
                 return nil
             }()
-            return [
+            let row = [
                 card.game,
                 card.providerID,
                 card.name,
@@ -399,9 +405,12 @@ enum CollectionCSV {
                 exportedCollectionKey ?? "",
                 card.catalogProviderID ?? ""
             ]
+            // Keeps an unverified report in the file. Import does not yet
+            // restore it; such rows are refused rather than merged.
+            return includesReports ? row + [card.unverifiedReportJSON ?? ""] : row
         }
 
-        let text = ([exportHeaders] + rows)
+        let text = ([includesReports ? exportHeaders + ["unverified_report"] : exportHeaders] + rows)
             .map { $0.map(escape).joined(separator: ",") }
             .joined(separator: "\n") + "\n"
         return CollectionCSVDocument(text: text)
@@ -949,7 +958,7 @@ enum CollectionCSV {
                 // treatments sharing one legacy identity must not be guessed into
                 // one another.
                 var ambiguousLegacyKeys = Set<String>()
-                for position in storedProjection.positions {
+                for position in storedProjection.positions where !UnverifiedReportKey.hasReport(position.collectionKey) {
                     for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
                         for: position.collectionKey
                     ) {
@@ -972,7 +981,8 @@ enum CollectionCSV {
                 // those event keys as identity evidence too, otherwise a CSV
                 // entry using the legacy key would be written back under that
                 // key and split the ledger a second time.
-                for eventKey in Set(ledger.read().events.map(\.collectionKey)) {
+                for eventKey in Set(ledger.read().events.map(\.collectionKey))
+                    where !UnverifiedReportKey.hasReport(eventKey) {
                     for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
                         for: eventKey
                     ) {
@@ -1036,6 +1046,12 @@ enum CollectionCSV {
                         let entry = plan.entries[index]
                         guard gameRegistry.supports(entry.game, .collectionWrite) else {
                             throw CardGameSupportError.unsupportedGame(entry.game)
+                        }
+                        // A report row is restored only by the report flow,
+                        // never merged into or enriched by an import.
+                        if UnverifiedReportKey.hasReport(entry.collectionKey)
+                            || entry.providerID.hasPrefix(UnverifiedReportKey.providerPrefix) {
+                            throw CollectionCSVError.unverifiedReportImport
                         }
                         try gameImportAdapters.validate(entry)
                         let localMetadata = try gameImportAdapters.adapter(for: entry.game)?.localMetadata(for: entry)

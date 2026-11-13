@@ -596,7 +596,9 @@ private struct CollectionCardDetailContent: View {
 
             identityStatusRow
 
-            if card.itemKind == .gradedCard {
+            if card.hasReport {
+                UnverifiedReportStatus(card: card, isWritePending: isOwnershipWritePending, onUndoLink: undoReportLink)
+            } else if card.itemKind == .gradedCard {
                 gradedVariantCorrectionBlock
             } else if card.itemKind == .rawCard, let activity = collectionActivities.first {
                 NavigationLink {
@@ -1580,6 +1582,32 @@ private struct CollectionCardDetailContent: View {
             collectionKey: card.collectionKey, treatments: card.magicTreatmentIDsRaw,
             cardName: card.name, quantity: displayedQuantity, kind: kind
         )
+    }
+
+    /// Puts a linked report back to unverified. The row's key changes, so
+    /// this screen closes; the collection shows the row under its report.
+    private func undoReportLink() {
+        guard !isOwnershipWritePending,
+              let token = UnverifiedReportKey.reportToken(in: card.collectionKey),
+              let reportID = UUID(uuidString: token) else { return }
+        let container = modelContext.container
+        let generation = CollectionStorageGeneration.shared
+        guard let storageToken = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: storageToken)
+        isOwnershipWritePending = true
+        Task { @MainActor in
+            defer { isOwnershipWritePending = false }
+            do {
+                let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+                try await writer.unlinkReport(reportID: reportID, shouldContinue: shouldContinue)
+                guard generation.isCurrent(storageToken) else { return }
+                dismiss()
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(storageToken) else { return }
+                errorMessage = error.localizedDescription
+            }
+        }
     }
 
     private func removeCard() {

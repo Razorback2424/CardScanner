@@ -2283,7 +2283,8 @@ extension PokemonFinishReconciliation {
                 continue
             }
             for row in rows {
-                guard row.priceKey == target.id,
+                guard !row.isUnverified,
+                      row.priceKey == target.id,
                       row.providerID == card.providerID,
                       row.cardGame == .pokemon,
                       row.itemKind == .rawCard,
@@ -2361,7 +2362,8 @@ extension PokemonFinishReconciliation {
             && target.itemKind == .rawCard
             && target.importedIdentity == nil
             && target.printing.printingID == card.providerID {
-            for row in rows where row.priceKey == target.id
+            for row in rows where !row.isUnverified
+                && row.priceKey == target.id
                 && row.providerID == card.providerID
                 && row.cardGame == .pokemon
                 && row.itemKind == .rawCard
@@ -2522,6 +2524,7 @@ extension PokemonFinishReconciliation {
             ) { context in
         guard let row = CollectionStore(context: context).card(forKey: repair.collectionKey),
               row.collectionKey == repair.collectionKey,
+              !row.isUnverified,
               row.variantID == repair.storedVariantID,
               row.variantResolutionRaw == repair.storedResolutionRaw,
               !repair.requiresConfirmation

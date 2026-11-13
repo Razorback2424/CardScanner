@@ -86,6 +86,12 @@ final class CollectedCard {
     var pendingCatalogFinishFirstSeenAt: Date?
     var pendingCatalogFinishRefreshID: UUID?
 
+    /// The collector's report for a card the catalog cannot verify yet
+    /// (`UnverifiedReport`, JSON). Optional, so existing stores migrate
+    /// lightly. Whether the row is protected is decided by its collection key,
+    /// never by this field decoding — see `isUnverified`.
+    var unverifiedReportJSON: String?
+
     /// Position of this card's set in release order. Collectors group by set the
     /// way sets were released, not alphabetically. Compared only within a game.
     var setReleaseOrder: Int = 0
@@ -514,6 +520,13 @@ final class CollectedCard {
     /// The `PriceRecord` this entry reads its price from. Every owned copy of the
     /// same printing and variant shares one.
     var priceStorageID: String {
+        // An unverified report is its own unpriceable instrument. Derived from
+        // the key marker, not the report JSON, so it fails closed: no stored
+        // quote for the base printing can ever value these copies.
+        if isUnverified {
+            return UnverifiedReportKey.providerPrefix
+                + (UnverifiedReportKey.reportToken(in: collectionKey) ?? collectionKey)
+        }
         // Vendor-native products are already identified at the exact priceable
         // object level. In particular, a certificate distinguishes two owned
         // slabs but does not distinguish their market price, so it must never be
@@ -541,7 +554,7 @@ final class CollectedCard {
     /// scanner fallback quotes use the resolved catalog identity. The alias
     /// identifies the same printing only with the same finish and print run.
     var resolvedCatalogPriceKey: String? {
-        guard itemKind == .rawCard, cardGame == .pokemon,
+        guard !isUnverified, itemKind == .rawCard, cardGame == .pokemon,
               let catalogProviderID, !catalogProviderID.isEmpty,
               !catalogProviderID.hasPrefix("csv:"), catalogProviderID != providerID else { return nil }
         let catalogStorageID = pokemonPrintRun.map {
@@ -554,6 +567,8 @@ final class CollectedCard {
     /// print run and vendor-native prices were separated from ownership. These
     /// keep valid stored prices visible until this row receives its own quote.
     var legacyPriceKeys: [String] {
+        // No read-through alias may reintroduce a quote for an unverified row.
+        if isUnverified { return [] }
         var keys = [resolvedCatalogPriceKey].compactMap { $0 }
         // Treatment identity was added after price records already existed.
         // Read through to the same printing and finish until an exact provider
@@ -619,6 +634,19 @@ final class CollectedCard {
     var variantResolution: VariantResolution? {
         variantResolutionRaw.flatMap(VariantResolution.init(rawValue:))
     }
+
+    /// The catalog cannot verify this row yet. Read from the key marker so a
+    /// missing, damaged, or newer-format report still keeps the row unpriced
+    /// and out of every automatic identity, finish, and marketplace write.
+    var isUnverified: Bool { UnverifiedReportKey.isUnverified(collectionKey) }
+
+    /// The row carries a report, unverified or already linked. Automatic
+    /// processing must never merge or rekey such a row.
+    var hasReport: Bool { UnverifiedReportKey.hasReport(collectionKey) }
+
+    /// `nil` when absent or unreadable. Callers that act on a report must also
+    /// check `isUnderstood`; protection itself never depends on this value.
+    var unverifiedReport: UnverifiedReport? { UnverifiedReport.decode(unverifiedReportJSON) }
 
     var identityResolution: IdentityResolution? {
         IdentityResolution(rawValue: identityResolutionRaw)

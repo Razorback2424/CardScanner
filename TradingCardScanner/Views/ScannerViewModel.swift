@@ -2051,6 +2051,7 @@ final class ScannerViewModel: ObservableObject {
                     )
                     await catalog.updateRegistry(initialRegistry)
                     await self.reloadUnresolvedScans(registry: initialRegistry)
+                    await self.reconcileUnverifiedReports(registry: initialRegistry)
                 }
 
                 for await event in events {
@@ -2064,6 +2065,7 @@ final class ScannerViewModel: ObservableObject {
                     )
                     await catalog.updateRegistry(event.registry)
                     await self.reloadUnresolvedScans(registry: event.registry)
+                    await self.reconcileUnverifiedReports(registry: event.registry)
                 }
             }
         }
@@ -3866,6 +3868,98 @@ final class ScannerViewModel: ObservableObject {
                       self.unresolvedScans.contains(where: { $0.id == request.unresolvedScanID && !$0.isReadOnly }) else { return }
                 self.handleLookupFailure(request, error)
             }
+        }
+    }
+
+    // MARK: - Unverified reports
+
+    /// "Not listed": moves this scan's copy out of the verified row into an
+    /// unverified report. Returns an error message, or `nil` when saved.
+    func reportDifferentVariant(scanID: RecentScan.ID, report: UnverifiedReport) async -> String? {
+        guard UnverifiedReportsFeature.isEnabled, isStorageGenerationCurrent,
+              let collectionWriter,
+              let scan = sessionScans.first(where: { $0.id == scanID }),
+              scan.subject.slab == nil, scan.card.game == .pokemon,
+              let activityID = scan.mutation.activityID else {
+            return "This card can't be reported from here."
+        }
+        let writeSessionID = scannerSessionID
+        beginTrackedWrite(for: writeSessionID)
+        defer { endTrackedWrite(for: writeSessionID) }
+        do {
+            let writer = await collectionWriter.value
+            _ = try await writer.moveAcquisitionToReport(activityID: activityID, report: report,
+                                                         baseCard: scan.card, shouldContinue: writerContinuation)
+        } catch {
+            return (error as? LocalizedError)?.errorDescription ?? "The report could not be saved."
+        }
+        guard writeSessionID == scannerSessionID, isStorageGenerationCurrent else { return nil }
+        // The copy now lives in the report row. A receipt or banner still
+        // pointing at the verified row could only fail against it.
+        sessionScans.removeAll { $0.id == scanID }
+        recent.removeAll { $0.id == scanID }
+        removeCommittedHistory(for: scanID)
+        if receipt?.scanID == scanID {
+            receipt = nil
+            receiptTask?.cancel()
+        }
+        if pendingGradedVariantCorrection?.scanID == scanID { pendingGradedVariantCorrection = nil }
+        if pendingSlabConversionOffer?.scanID == scanID { dismissSlabConversionOffer() }
+        show(ScanNote(text: "Saved as unverified", tone: .info))
+        return nil
+    }
+
+    /// Evaluates every unverified report against the active catalog, at
+    /// launch and after each activation. Lookups that cannot name the exact
+    /// printing return nothing, which leaves the report waiting.
+    private func reconcileUnverifiedReports(registry: PokemonCatalogRegistry) async {
+        guard UnverifiedReportsFeature.isEnabled, isStorageGenerationCurrent, let collectionWriter else { return }
+        let catalog = self.catalog
+        let identifier = { @Sendable (setID: String, number: String) in
+            Self.reportScanIdentifier(registry: registry, setID: setID, number: number)
+        }
+        let writer = await collectionWriter.value
+        let reconciler = UnverifiedReportReconciler(writer: writer, baseCard: { providerID in
+            guard let dash = providerID.lastIndex(of: "-") else { return nil }
+            guard let scanIdentifier = identifier(String(providerID[..<dash]),
+                                                  String(providerID[providerID.index(after: dash)...])),
+                  let card = try? await catalog.card(for: scanIdentifier),
+                  card.providerID == providerID else { return nil }
+            return card
+        }, unknownSetMatch: { observed in
+            guard let descriptor = registry.expansion(forPrintedCode: observed.setCode),
+                  let scanIdentifier = identifier(descriptor.providerSetID, observed.number) else { return nil }
+            return try? await catalog.card(for: scanIdentifier)
+        })
+        _ = try? await reconciler.run(catalogRevision: registry.revision)
+    }
+
+    nonisolated private static func reportScanIdentifier(
+        registry: PokemonCatalogRegistry, setID: String, number: String
+    ) -> ScanIdentifier? {
+        guard let descriptor = registry.descriptor(forProviderSetID: setID),
+              descriptor.recognitionKind == .expansion,
+              let code = descriptor.printedCode, let total = descriptor.officialCount else { return nil }
+        return .pokemon(setCode: code, cardNumber: number, printedTotal: total,
+                        setDefinition: .init(printedCode: code, tcgdexSetID: descriptor.providerSetID,
+                                             officialCount: total, releaseIndex: descriptor.releaseOrder ?? 0))
+    }
+
+    /// Manual entry for a card from a set the catalog does not have yet.
+    func addUnverifiedCard(_ report: UnverifiedReport, quantity: Int) async -> String? {
+        guard UnverifiedReportsFeature.isEnabled, isStorageGenerationCurrent, let collectionWriter else {
+            return "This card can't be added right now."
+        }
+        let writeSessionID = scannerSessionID
+        beginTrackedWrite(for: writeSessionID)
+        defer { endTrackedWrite(for: writeSessionID) }
+        do {
+            let writer = await collectionWriter.value
+            _ = try await writer.addUnverified(report: report, baseCard: nil, quantity: quantity,
+                                               shouldContinue: writerContinuation)
+            return nil
+        } catch {
+            return (error as? LocalizedError)?.errorDescription ?? "The card could not be saved."
         }
     }
 
@@ -6588,7 +6682,7 @@ final class ScannerViewModel: ObservableObject {
             variantLabel = "Unknown finish"
         case .finishLock?:
             variantLabel = "Reverse Holo"
-        case .userConfirmed?:
+        case .userConfirmed?, .linkedFromReport?:
             variantLabel = "Holofoil"
         case .uniqueInCatalog?, .deterministicSetRule?, .printedLabel?:
             variantLabel = "Holofoil"

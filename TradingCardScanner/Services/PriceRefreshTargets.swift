@@ -28,6 +28,8 @@ enum PriceRefreshTargets {
 
         for position in projection.positions {
             let card = position.representative
+            // An unverified report has no catalog instrument to refresh.
+            if card.isUnverified { continue }
             if card.providerID.hasPrefix("csv:"), !includeImported { continue }
             guard seen.insert(card.priceKey).inserted else { continue }
             let record = recordsByKey[position.priceStorageKey]

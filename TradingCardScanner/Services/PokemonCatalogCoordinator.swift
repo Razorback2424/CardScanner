@@ -87,6 +87,9 @@ actor PokemonCatalogCoordinator {
 
     var registry: PokemonCatalogRegistry { activeRegistry }
     var activeCatalog: (registry: PokemonCatalogRegistry, revision: Int?) { (activeRegistry, activeRevision) }
+    /// The active registry's revision, readable inside a serialized collection
+    /// write. Unverified reports are stamped and re-checked against it.
+    nonisolated var activeRevisionSnapshot: Int { registrySnapshot.withLock { $0.revision } }
 
     nonisolated func acceptsAcquisition(_ card: TCGdexCard, automaticIdentifier: ScanIdentifier?) -> Bool {
         guard let captured = card.acquisitionCatalog else { return false }

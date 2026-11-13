@@ -365,6 +365,10 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
     /// The catalog exposes no variant information for this printing at all. The
     /// record honestly stores "unknown" rather than inventing a plausible finish.
     case catalogSilent
+    /// The collector reported this finish before the catalog listed it, and a
+    /// later catalog revision added exactly that variant. Never automatic: the
+    /// collector's report, not a rule, is the evidence.
+    case linkedFromReport
 
     var label: String {
         switch self {
@@ -375,6 +379,7 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
         case .userConfirmed: return "You confirmed"
         case .imported: return "Imported"
         case .catalogSilent: return "Unconfirmed"
+        case .linkedFromReport: return "Your report, now verified"
         }
     }
 
@@ -384,7 +389,7 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
             return .catalogCertain
         case .finishLock, .printedLabel:
             return .contextualEvidence
-        case .userConfirmed:
+        case .userConfirmed, .linkedFromReport:
             return .userConfirmed
         case .imported, .catalogSilent:
             return .unresolved
@@ -395,7 +400,7 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
         switch self {
         case .uniqueInCatalog, .deterministicSetRule:
             return .quiet
-        case .finishLock, .printedLabel, .userConfirmed, .imported, .catalogSilent:
+        case .finishLock, .printedLabel, .userConfirmed, .imported, .catalogSilent, .linkedFromReport:
             return .attention
         }
     }
@@ -407,7 +412,7 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
     /// imported records stay as supplied.
     var isAutomatic: Bool {
         switch self {
-        case .userConfirmed, .finishLock, .printedLabel, .imported: return false
+        case .userConfirmed, .finishLock, .printedLabel, .imported, .linkedFromReport: return false
         case .uniqueInCatalog, .deterministicSetRule, .catalogSilent: return true
         }
     }
