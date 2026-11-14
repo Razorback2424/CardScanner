@@ -2429,6 +2429,7 @@ struct CatalogSetCardsView: View {
     @State private var resolvedPriceSlotIDs: Set<String> = []
     @State private var unresolvedPriceSlotIDs: Set<String> = []
     @State private var missingMappingPriceSlotIDs: Set<String> = []
+    @State private var printingNeedsReviewPriceSlotIDs: Set<String> = []
     @State private var priceLoadState = CatalogPriceLoadState()
     @State private var contentGeneration = UUID()
     @StateObject private var presentation = CatalogSetPresentationStore()
@@ -2672,6 +2673,7 @@ struct CatalogSetCardsView: View {
             .intersection(ids)
             .subtracting(prices.keys)
             .subtracting(missingMappingPriceSlotIDs)
+            .subtracting(printingNeedsReviewPriceSlotIDs)
             .count
     }
 
@@ -2800,6 +2802,7 @@ struct CatalogSetCardsView: View {
             resolvedPriceSlotIDs.removeAll()
             unresolvedPriceSlotIDs.removeAll()
             missingMappingPriceSlotIDs.removeAll()
+            printingNeedsReviewPriceSlotIDs.removeAll()
         }
         isLoading = true
         defer {
@@ -2973,6 +2976,8 @@ struct CatalogSetCardsView: View {
             resolvedPriceSlotIDs.formUnion(update.resolvedIDs)
             missingMappingPriceSlotIDs.subtract(update.resolvedIDs.union(update.unresolvedIDs))
             missingMappingPriceSlotIDs.formUnion(update.missingMappingIDs)
+            printingNeedsReviewPriceSlotIDs.subtract(update.resolvedIDs.union(update.unresolvedIDs))
+            printingNeedsReviewPriceSlotIDs.formUnion(update.printingNeedsReviewIDs)
             unresolvedPriceSlotIDs.formUnion(update.unresolvedIDs)
             resolvedPriceSlotIDs.subtract(update.unresolvedIDs)
             unresolvedPriceSlotIDs.subtract(update.resolvedIDs)
@@ -2994,7 +2999,8 @@ struct CatalogSetCardsView: View {
         let retryIDs = Array(
             unresolvedPriceSlotIDs.union(
                 resolvedPriceSlotIDs.subtracting(prices.keys)
-            ).subtracting(missingMappingPriceSlotIDs).intersection(displayedIDs)
+            ).subtracting(missingMappingPriceSlotIDs)
+                .subtracting(printingNeedsReviewPriceSlotIDs).intersection(displayedIDs)
         )
         priceLoadTask?.cancel()
         priceLoadTask = nil
@@ -3003,6 +3009,7 @@ struct CatalogSetCardsView: View {
         resolvedPriceSlotIDs.removeAll()
         unresolvedPriceSlotIDs.removeAll()
         missingMappingPriceSlotIDs.removeAll()
+        printingNeedsReviewPriceSlotIDs.removeAll()
         priceLoadState.invalidate()
         Task { @MainActor in
             await catalog.resetPriceResolution(for: retryIDs)

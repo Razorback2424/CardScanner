@@ -54,6 +54,7 @@ enum CatalogSortPriceResolution: Equatable, Sendable {
     case noUSDQuote
     case unresolved
     case mappingMissing
+    case printingNeedsReview
 
     static func cachedPrice(_ value: Double?, asOf: Date) -> Self? {
         guard let value, PortfolioPriceEligibility.eligibleUnitPrice(amount: value, currencyCode: "USD") != nil else { return nil }

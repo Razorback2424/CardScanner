@@ -7,11 +7,14 @@ import XCTest
 @testable import TradingCardScanner
 
 private actor OnePieceTestPriceSource: OnePieceMarketPriceSource {
+    var fails = false
     var calls = 0
     var lastMinimumFetchedAt: Date?
+    func failRequests() { fails = true }
     func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?) async throws -> PriceLookup {
         calls += 1
         lastMinimumFetchedAt = minimumFetchedAt
+        if fails { throw URLError(.timedOut) }
         return .price(.init(unitMarketPriceUSD: 8.16, currencyCode: "USD", source: .tcgCSV,
             sourceVariantID: "tcgplayer:\(mapping.productID):\(mapping.providerVariantID!)",
             sourceUpdatedAt: nil, fetchedAt: .now))
@@ -1623,6 +1626,35 @@ final class OnePieceIntegrationTests: XCTestCase {
         let quote = try await catalog.price(for: summary, variant: .foil)
         guard case let .price(price) = quote else { return XCTFail("Details must use the same mapped foil") }
         XCTAssertEqual(price.unitMarketPriceUSD, prices[summary.id])
+    }
+
+    func testBrowseSortSeparatesPrintingReviewMappingGapAndNetworkFailure() async throws {
+        let registry = try registry(complete: false, multiProduct: true,
+                                    withMarketMapping: true, includeDiscovery: true)
+        let gameRegistry = try CardGameRuntimeContainer(runtimes: [OnePieceGameRuntime(registry: registry).runtime]).registry
+        let source = OnePieceTestPriceSource()
+        await source.failRequests()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root),
+            gameRegistry: gameRegistry,
+            gameBrowseAdapters: try .init(adapters: [OnePieceBrowseAdapter(registry: registry)]),
+            priceQuoteService: PriceQuoteService(registry: gameRegistry,
+                adapters: try .init(adapters: [OnePiecePriceAdapter(registry: registry, source: source)])))
+        var cards: [CatalogCardSummary] = []
+        for set in try await catalog.sets(for: .onePiece) where set.providerID != "fixture-bundle" {
+            cards.append(contentsOf: try await catalog.cards(in: set, cursor: nil).items)
+        }
+        let discovery = try XCTUnwrap(cards.first { $0.providerID.hasPrefix("one-piece-discovery:") })
+        let mapped = try XCTUnwrap(cards.first { $0.providerID == uuid(1).uuidString.lowercased() })
+        let unmapped = try XCTUnwrap(cards.first { $0.providerID == uuid(2).uuidString.lowercased() })
+        var result: CatalogPriceUpdate?
+        for await update in catalog.sortPriceUpdates(for: [discovery, mapped, unmapped]) { result = update }
+        XCTAssertEqual(result?.printingNeedsReviewIDs, [discovery.id])
+        XCTAssertEqual(result?.missingMappingIDs, [unmapped.id])
+        XCTAssertEqual(result?.unresolvedIDs, [mapped.id])
+        let calls = await source.calls
+        XCTAssertEqual(calls, 1)
     }
 
     func testOnePieceCollectionRefreshPersistsExactMappedQuoteWithoutVendorFallback() async throws {

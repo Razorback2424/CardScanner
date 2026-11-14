@@ -225,6 +225,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var resolvedSortPrices: Set<String> = []
     private var unresolvedSortPrices: Set<String> = []
     private var missingMappingSortPrices: Set<String> = []
+    private var printingReviewSortPrices: Set<String> = []
     private var sortPriceResolutionGeneration = UUID()
     private var sortPriceCheckedAt: [String: Date] = [:]
     private var pokemonBulkPriceCache: [String: PokemonBulkSnapshot] = [:]
@@ -1467,6 +1468,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         var pokemonSetIDs: Set<String> = []
         for id in ids {
             missingMappingSortPrices.remove(id)
+            printingReviewSortPrices.remove(id)
             resolvedSortPrices.remove(id)
             unresolvedSortPrices.remove(id)
             sortPriceCache.removeValue(forKey: id)
@@ -1551,6 +1553,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             guard age < 0 || age >= maxAge else { continue }
             resolvedSortPrices.remove(card.id)
             missingMappingSortPrices.remove(card.id)
+            printingReviewSortPrices.remove(card.id)
         }
 
         let cardsBySet = Dictionary(grouping: cards, by: \.setID.id)
@@ -1609,6 +1612,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     }
                     for slot in result.slots {
                         refreshedIDs.insert(slot.id)
+                        printingReviewSortPrices.remove(slot.id)
                         switch slot.resolution {
                         case let .priced(price, asOf):
                             missingMappingSortPrices.remove(slot.id)
@@ -1627,8 +1631,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
                             unresolvedSortPrices.remove(slot.id)
                             sortPriceCache.removeValue(forKey: slot.id)
                             sortPriceCheckedAt[slot.id] = .now
-                        case .mappingMissing:
-                            missingMappingSortPrices.insert(slot.id)
+                        case .mappingMissing, .printingNeedsReview:
+                            if slot.resolution == .mappingMissing {
+                                missingMappingSortPrices.insert(slot.id)
+                            } else {
+                                missingMappingSortPrices.remove(slot.id)
+                                printingReviewSortPrices.insert(slot.id)
+                            }
                             resolvedSortPrices.insert(slot.id)
                             unresolvedSortPrices.remove(slot.id)
                             sortPriceCache.removeValue(forKey: slot.id)
@@ -1727,7 +1736,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
             ),
             resolvedIDs: resolvedSortPrices.intersection(cardIDs),
             unresolvedIDs: unresolvedSortPrices.intersection(cardIDs),
-            missingMappingIDs: missingMappingSortPrices.intersection(cardIDs)
+            missingMappingIDs: missingMappingSortPrices.intersection(cardIDs),
+            printingNeedsReviewIDs: printingReviewSortPrices.intersection(cardIDs)
         )
     }
 
@@ -2114,6 +2124,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
         details: CatalogCardDetails
     ) async -> SortPriceSlot {
         if priceQuoteService.supportsStoredPrintingRefresh(for: summary.game) {
+            let evidence = details.card.variantEvidence
+            guard !evidence.catalogVariants.isEmpty else {
+                return SortPriceSlot(id: summary.id, resolution: .printingNeedsReview)
+            }
             var lookups: [PriceLookup] = []
             var hasMissingMapping = false
             do {
@@ -2216,6 +2230,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         resolvedSortPrices.removeAll()
         unresolvedSortPrices.removeAll()
         missingMappingSortPrices.removeAll()
+        printingReviewSortPrices.removeAll()
         sortPriceCheckedAt.removeAll()
         pokemonBulkPriceCache.removeAll()
     }
