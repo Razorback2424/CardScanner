@@ -998,6 +998,9 @@ actor StoreRevisionModelActor: BackgroundModelActor {
             cardHasher.combine(card.cardNumber)
             cardHasher.combine(card.variantID)
             cardHasher.combine(card.variantLabel)
+            // CollectionRow presents this provenance (including finish overlays).
+            // A provenance-only save must invalidate the cached projection.
+            cardHasher.combine(card.variantResolutionRaw)
             cardHasher.combine(card.magicTreatmentIDsRaw)
             cardHasher.combine(card.magicTreatmentQualifiersJSON)
             cardHasher.combine(card.itemKindRaw)
