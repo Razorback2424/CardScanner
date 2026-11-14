@@ -25,6 +25,9 @@ enum PriceCheckRefreshIssue: Equatable, Sendable {
     case gradedCardNotTracked
     case gradedCardHasNoPrices
     case gradedGradeNotTracked
+    case gradedFinishUnresolved
+    case gradedSearchIncomplete
+    case gradedIdentityUnresolved
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -51,6 +54,9 @@ enum PriceCheckQuoteState: Equatable, Sendable {
     case gradedCardNotTracked
     case gradedCardHasNoPrices
     case gradedGradeNotTracked
+    case gradedFinishUnresolved
+    case gradedSearchIncomplete
+    case gradedIdentityUnresolved
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -229,6 +235,16 @@ final class PriceCheckCoordinator {
         self.now = now
     }
 
+    private static func gradedIssue(for blocker: GradedLookupBlocker) -> PriceCheckRefreshIssue {
+        switch blocker {
+        case .unsupportedGame: return .unsupportedGame
+        case .missingCredentials: return .fallbackUnconfigured
+        case .unresolvedFinish: return .gradedFinishUnresolved
+        case .incompleteSearch: return .gradedSearchIncomplete
+        case .unresolvedIdentity: return .gradedIdentityUnresolved
+        }
+    }
+
     private func requiresPhysicalReview(_ scan: ResolvedScan) -> Bool {
         guard scan.card.game == .pokemon, let finish = scan.resolved.variant else { return false }
         return PokemonVariantRules.requiresPhysicalReview(cardID: scan.card.providerID, variant: finish)
@@ -245,17 +261,16 @@ final class PriceCheckCoordinator {
             switch resolvedScan.gradedOutcome {
             case let .bound(variant):
                 if let amount = variant.marketPriceUSD {
-                    quote = .price(
-                        NormalizedPrice(
-                            unitMarketPriceUSD: amount,
-                            currencyCode: "USD",
-                            source: .justTCG,
-                            sourceVariantID: variant.id,
-                            sourceUpdatedAt: variant.updatedAt,
-                            fetchedAt: .now
-                        )
+                    let price = NormalizedPrice(
+                        unitMarketPriceUSD: amount,
+                        currencyCode: "USD",
+                        source: .justTCG,
+                        sourceVariantID: variant.id,
+                        sourceUpdatedAt: variant.updatedAt,
+                        fetchedAt: .now
                     )
-                    state = .current
+                    quote = .price(price)
+                    state = PriceDisplay(price).state() == .stale ? .stale : .current
                 } else {
                     quote = .unavailable(.justTCG)
                     state = .gradedGradeNotPriced
@@ -272,9 +287,18 @@ final class PriceCheckCoordinator {
             case .none:
                 quote = .unavailable(PriceVendorCredentials.hasKey ? .justTCG : nil)
                 state = .checking
+            case let .blocked(reason):
+                quote = .unavailable(reason == .missingCredentials ? nil : .justTCG)
+                switch reason {
+                case .unsupportedGame: state = .unsupportedGame
+                case .missingCredentials: state = .fallbackUnconfigured
+                case .unresolvedFinish: state = .gradedFinishUnresolved
+                case .incompleteSearch: state = .gradedSearchIncomplete
+                case .unresolvedIdentity: state = .gradedIdentityUnresolved
+                }
             case .unavailable:
-                quote = .unavailable(PriceVendorCredentials.hasKey ? .justTCG : nil)
-                state = PriceVendorCredentials.hasKey ? .providerUnavailable : .fallbackUnconfigured
+                quote = .unavailable(.justTCG)
+                state = .providerUnavailable
             }
             let shouldAutoRefresh = state == .checking
                 || state == .providerUnavailable
@@ -436,10 +460,10 @@ final class PriceCheckCoordinator {
                 return .failed(.gradedCardHasNoPrices)
             case .gradeNotTracked:
                 return .failed(.gradedGradeNotTracked)
+            case let .blocked(reason):
+                return .failed(Self.gradedIssue(for: reason))
             case .unavailable:
-                return PriceVendorCredentials.hasKey
-                    ? .failed(.providerUnavailable)
-                    : .failed(.fallbackUnconfigured)
+                return .failed(.providerUnavailable)
             }
         }
 
