@@ -4981,10 +4981,12 @@ final class ScannerViewModel: ObservableObject {
             }
             do {
                 let collectionWriter = await collectionWriter.value
-                // The identity gate can wait for an entire refresh pass. Resolve
-                // the scan's current mutation only after that wait, then track
-                // just the actual ownership write so ending the scan session
-                // does not drain for the duration of background pricing.
+                // Once the vendor has supplied an exact graded variant, the
+                // user-initiated identity promotion takes priority over the
+                // background refresh. The existing suspension cancels and
+                // retains interrupted refresh work for replay after the
+                // structural write; it never skips the identity gate.
+                // Only track the actual ownership write, not vendor lookup.
                 let bindLatest: @MainActor () async throws -> GradedVariantBindingReceipt? = {
                     guard let collectionKey = currentCollectionKey() else { return nil }
 
@@ -4999,6 +5001,17 @@ final class ScannerViewModel: ObservableObject {
                         expectedIdentity: expectedIdentity
                     )
                 }
+                let bindingID = PerformanceSignpost.makeID()
+                let bindingState = PerformanceSignpost.beginInterval(
+                    "gradedPriceBindingCommit", id: bindingID,
+                    "scan=\(scanID.uuidString) encounter=\(encounterID)"
+                )
+                defer {
+                    PerformanceSignpost.endInterval(
+                        "gradedPriceBindingCommit", bindingState,
+                        "scan=\(scanID.uuidString) encounter=\(encounterID)"
+                    )
+                }
                 let resolvedBinding: GradedVariantBindingReceipt?
                 // This read is only an optimization. The serialized writer
                 // rechecks the current row and throws if a promotion became
@@ -5006,13 +5019,13 @@ final class ScannerViewModel: ObservableObject {
                 let preflightKey = currentCollectionKey()
                 if let preflightKey,
                    await collectionWriter.requiresGradedBindingPromotion(for: preflightKey) {
-                    resolvedBinding = try await CollectionExclusiveWrites.withPriceIdentityExclusivity(
-                        waitForActivePassToFinish: true
-                    ) { try await bindLatest() }
+                    resolvedBinding = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                        try await bindLatest()
+                    }
                 } else {
-                    resolvedBinding = try await CollectionExclusiveWrites.retryingIfRequired(
-                        waitForActivePassToFinish: true
-                    ) { try await bindLatest() }
+                    resolvedBinding = try await CollectionExclusiveWrites.retryingIfRequired {
+                        try await bindLatest()
+                    }
                 }
                 guard let binding = resolvedBinding else {
                     guard writeSessionID == self.scannerSessionID,
@@ -5862,7 +5875,9 @@ final class ScannerViewModel: ObservableObject {
             guard self.isStorageGenerationCurrent, case let .bound(variant) = outcome else { return }
             let writer = await collectionWriter.value
             do {
-                _ = try await CollectionExclusiveWrites.withPriceIdentityExclusivity(waitForActivePassToFinish: true) {
+                // A certified rescan is also an interactive identity correction.
+                // Preempt and replay refresh work rather than awaiting its full pass.
+                _ = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
                     guard self.isStorageGenerationCurrent else { return nil as GradedVariantBindingReceipt? }
                     return try await writer.bindScannedGraded(collectionKey: mutation.collectionKey,
                         variant: variant,
