@@ -29,8 +29,7 @@ struct PriceCheckResultView: View {
                     artwork
                     identity
                     quote
-                    if let destination = TCGplayerLinkBuilder.destination(
-                        for: result.card, variant: result.resolved.variant, pokemonPrintRun: result.pokemonPrintRun) {
+                    if let destination = TCGplayerLinkBuilder.destination(for: result.resolvedScan) {
                         CardDetailMarketplaceButton(destination: destination)
                     }
                 }
