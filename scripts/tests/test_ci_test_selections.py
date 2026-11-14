@@ -52,6 +52,35 @@ class CISelectorAuditTests(unittest.TestCase):
         self.assertEqual(count, 1)
         self.assertIn("method not declared", missing[0])
 
+    def test_method_in_another_class_cannot_satisfy_selected_class(self):
+        (self.tests_dir / "ExampleTests.swift").write_text(
+            "import XCTest\n"
+            "final class ExampleTests: XCTestCase {\n"
+            "    func testExpectedIdentity() {}\n"
+            "}\n"
+            "final class OtherTests: XCTestCase {\n"
+            "    func testOnlyInOtherClass() {}\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        missing, count = self.audit("ExampleTests/testOnlyInOtherClass")
+        self.assertEqual(count, 1)
+        self.assertIn("method not declared", missing[0])
+        self.assertEqual(self.audit("OtherTests/testOnlyInOtherClass"), ([], 1))
+
+    def test_methods_in_named_xctest_extension_are_supported(self):
+        (self.tests_dir / "ExampleTests.swift").write_text(
+            "import XCTest\n"
+            "final class ExampleTests: XCTestCase {\n"
+            "    func testExpectedIdentity() {}\n"
+            "}\n"
+            "extension ExampleTests {\n"
+            "    func testFromExtension() {}\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(self.audit("ExampleTests/testFromExtension"), ([], 1))
+
     def test_no_native_selections_is_an_error(self):
         self.workflow.write_text("name: no tests\n", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "No TradingCardScannerTests selectors"):
