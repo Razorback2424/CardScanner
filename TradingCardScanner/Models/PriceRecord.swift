@@ -324,7 +324,9 @@ final class PriceRecord {
         guard lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue else {
             return false
         }
-        return lastCheckedAt.map { $0 <= date } ?? true
+        // An unsuccessful retry advances lastCheckedAt, but does not change
+        // the successful null-price observation that withdrew the quote.
+        return (lastSuccessfulCheckAt ?? lastCheckedAt).map { $0 <= date } ?? true
     }
 
     func effectiveUnitMarketPriceUSD(at date: Date) -> Double? {
