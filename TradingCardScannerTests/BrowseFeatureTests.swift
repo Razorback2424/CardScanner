@@ -641,6 +641,51 @@ final class CatalogSetArtworkTests: XCTestCase {
 }
 
 final class BrowseFeatureTests: XCTestCase {
+    func testCollectionDetailLookupRequiresExactPrintingAndPrintRun() {
+        let lookup = CatalogDetailLookup(game: .pokemon, providerID: "base1-4",
+            printRun: .firstEdition, name: "Charizard", setCode: "BS")
+        func summary(_ id: String, set: String, run: PokemonPrintRun?) -> CatalogCardSummary {
+            .init(game: .pokemon, providerID: id, setID: .init(game: .pokemon, providerID: set, pokemonPrintRun: run),
+                setName: "Base Set", setCode: "BS", name: "Charizard", collectorNumber: "4",
+                thumbnailURL: nil, imageURL: nil)
+        }
+        let reprint = summary("base4-4", set: "base4", run: .firstEdition)
+        let unlimited = summary("base1-4", set: "base1", run: .unlimited)
+        let exact = summary("base1-4", set: "base1", run: .firstEdition)
+        XCTAssertNil(lookup.exactSummary(in: [reprint, unlimited]))
+        XCTAssertEqual(lookup.exactSummary(in: [reprint, unlimited, exact]), exact)
+        XCTAssertNil(lookup.exactSummary(in: [exact, summary("base1-4", set: "other", run: .firstEdition)]))
+    }
+
+    @MainActor
+    func testCatalogFinishOwnershipSeparatesFinishesAndDetectsSameKeyPriceConflicts() {
+        func snapshot(key: String, variant: PhysicalVariant?, quantity: Int, priceKey: String) -> CatalogOwnershipCardSnapshot {
+            let row = CollectedCard(collectionKey: key, game: .pokemon, providerID: "base1-4",
+                name: "Charizard", setName: "Base Set", setCode: "BS", cardNumber: "4", rarity: nil,
+                imageURL: nil, thumbnailURL: nil, variant: variant, variantResolution: .userConfirmed,
+                quantity: quantity)
+            return .init(row, selectedPriceKey: priceKey, selectedPrice: .init(amount: 10))
+        }
+        let holo = snapshot(key: "holo", variant: .holo, quantity: 1, priceKey: "price")
+        let syncedHolo = snapshot(key: "holo", variant: .holo, quantity: 2, priceKey: "price")
+        let reverse = snapshot(key: "reverse", variant: .reverse, quantity: 4, priceKey: "reverse-price")
+        let unknown = snapshot(key: "unknown", variant: nil, quantity: 8, priceKey: "unknown-price")
+        func slot(_ rows: [CatalogOwnershipCardSnapshot], finish: PhysicalVariant) -> CatalogFinishOwnership {
+            .init(rows: rows, variant: finish, treatments: [], qualifiers: [:], name: "Charizard", projection: nil)
+        }
+        let rows = [holo, syncedHolo, reverse, unknown]
+        XCTAssertEqual(slot(rows, finish: .holo).quantity, 3)
+        XCTAssertFalse(slot(rows, finish: .holo).hasConflict)
+        XCTAssertEqual(slot(rows, finish: .reverse).quantity, 4)
+        XCTAssertEqual(slot(rows, finish: .normal).quantity, 0)
+
+        let conflict = slot([holo, snapshot(key: "holo", variant: .holo, quantity: 2, priceKey: "other-price")],
+            finish: .holo)
+        XCTAssertEqual(conflict.quantity, 3)
+        XCTAssertFalse(conflict.price.entriesDisagree, "Equal displayed quotes do not establish identity")
+        XCTAssertTrue(conflict.hasConflict)
+    }
+
     func testFreshTCGCSVSortQuoteReplacesStaleDetailWithoutDisplacingFreshDetail() async throws {
         for (receiptAge, sourceAge) in [(172800.0, 172800.0), (0.0, 172800.0), (0.0, 0.0)] {
             let root = try makeTemporaryCacheDirectory()

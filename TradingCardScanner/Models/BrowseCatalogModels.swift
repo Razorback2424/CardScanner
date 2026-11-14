@@ -1224,6 +1224,8 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
     let magicTreatmentIDsRaw: [String]
 
     let selectedPriceKey: String
+    let storedPriceKey: String
+    let magicTreatmentQualifiers: [String: String]
     let selectedPrice: PriceDisplay
 
     var id: String { collectionKey }
@@ -1247,9 +1249,11 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
         variantID = card.variantID
         variantLabel = card.variantLabel
         gradedLabel = card.itemKind == .gradedCard ? card.itemKindLabel : nil
-        pokemonPrintRunRaw = card.pokemonPrintRunRaw
+        pokemonPrintRunRaw = card.pokemonPrintRun?.rawValue
         magicTreatmentIDsRaw = card.magicTreatmentIDsRaw
         self.selectedPriceKey = selectedPriceKey
+        storedPriceKey = card.priceKey
+        magicTreatmentQualifiers = card.magicTreatmentQualifiers
         self.selectedPrice = selectedPrice
         sealedProductID = card.justTCGCardID
         sealedVariantID = card.justTCGVariantID
@@ -1466,6 +1470,17 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
 
     func matchingRows(for summary: CatalogCardSummary) -> [CatalogOwnershipCardSnapshot] {
         candidates(for: summary).filter { Self.matches($0, summary: summary) }
+    }
+
+    /// Detail needs physical identity. Set completion intentionally accepts
+    /// some aliases and excludes stamped variants.
+    func exactPrintingRows(for summary: CatalogCardSummary) -> [CatalogOwnershipCardSnapshot] {
+        (byProviderID[summary.providerID.lowercased()] ?? []).filter {
+            $0.game == summary.game
+                && !UnverifiedReportKey.hasReport($0.collectionKey)
+                && ($0.catalogProviderID ?? $0.providerID).caseInsensitiveCompare(summary.providerID) == .orderedSame
+                && Self.pokemonPrintRunMatches($0, required: summary.pokemonPrintRun)
+        }
     }
 
     /// A match needs either the provider ID or the collector number, so nothing

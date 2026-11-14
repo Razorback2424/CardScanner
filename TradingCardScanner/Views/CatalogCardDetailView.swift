@@ -8,9 +8,103 @@ private struct CatalogCardSelectionKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
+    @Entry var catalogCopyHistory: PortfolioHistoryStore? = nil
+
     var catalogCardSelection: CatalogCardSelection? {
         get { self[CatalogCardSelectionKey.self] }
         set { self[CatalogCardSelectionKey.self] = newValue }
+    }
+}
+
+/// Search discovers catalog-issued summaries. Only exact printing and edition
+/// identity can choose a result. The saved name is just a retrieval hint.
+struct CatalogDetailLookup: Hashable {
+    let game: CardGame
+    let providerID: String
+    let printRun: PokemonPrintRun?
+    let name: String
+    let setCode: String
+
+    func summary(in catalog: any BrowseCatalogProviding, setIDs: Set<CatalogSetID> = []) async throws -> CatalogCardSummary? {
+        let directory = try await catalog.sets(for: game)
+        let candidateSets = directory.filter { set in
+            set.pokemonPrintRun == printRun && (setIDs.isEmpty
+                ? set.code.caseInsensitiveCompare(setCode) == .orderedSame
+                    || set.physicalPrintingIDs?.contains(providerID) == true
+                : setIDs.contains(set.catalogID))
+        }
+        let scope = candidateSets.isEmpty ? setIDs : Set(candidateSets.map(\.catalogID))
+        for set in candidateSets {
+            if let local = try await catalog.completeLocalCards(in: set),
+               let exact = exactSummary(in: local) { return exact }
+        }
+        var cursor: String?
+        var visited: Set<String> = []
+        repeat {
+            let page = try await catalog.searchCards(named: name, game: game, setIDs: scope, cursor: cursor)
+            try Task.checkCancellation()
+            if let exact = exactSummary(in: page.items) { return exact }
+            cursor = page.nextCursor
+        } while cursor.map({ visited.insert($0).inserted }) == true
+        return nil
+    }
+
+    func exactSummary(in summaries: [CatalogCardSummary]) -> CatalogCardSummary? {
+        let matches = summaries.filter {
+            $0.game == game && $0.pokemonPrintRun == printRun
+                && $0.providerID.caseInsensitiveCompare(providerID) == .orderedSame
+        }
+        guard let first = matches.first, matches.allSatisfy({ $0.setID == first.setID }) else { return nil }
+        return first
+    }
+
+    func matches(_ details: CatalogCardDetails, summary: CatalogCardSummary) -> Bool {
+        details.card.game == game && details.set.catalogID == summary.setID
+            && details.card.providerID.caseInsensitiveCompare(providerID) == .orderedSame
+    }
+}
+
+struct CollectionCatalogDestination<Fallback: View>: View {
+    let lookup: CatalogDetailLookup
+    let openingFinishID: String?
+    let catalog: any BrowseCatalogProviding
+    @ViewBuilder let fallback: () -> Fallback
+    @State private var resolvedSummary: CatalogCardSummary?
+    @State private var resolvedDetails: CatalogCardDetails?
+    @State private var didResolve = false
+
+    var body: some View {
+        Group {
+            if let resolvedSummary, let resolvedDetails {
+                CatalogCardDetailView(summary: resolvedSummary, catalog: catalog,
+                    openingFinishID: openingFinishID, initialDetails: resolvedDetails)
+            } else if didResolve {
+                fallback()
+            } else {
+                ProgressView("Loading card…")
+            }
+        }
+        .task {
+            guard !didResolve else { return }
+            defer { if !Task.isCancelled { didResolve = true } }
+            do {
+                guard let summary = try await lookup.summary(in: catalog) else { return }
+                let installed = await catalog.installedDetails(for: summary)
+                let details: CatalogCardDetails
+                if let installed, installed.collectionWriteUnavailableReason == nil {
+                    details = installed
+                } else {
+                    details = try await catalog.details(for: summary)
+                }
+                try Task.checkCancellation()
+                guard lookup.matches(details, summary: summary),
+                      details.collectionWriteUnavailableReason == nil else { return }
+                resolvedDetails = details
+                resolvedSummary = summary
+            } catch {
+                // A saved copy remains usable while its catalog is unavailable.
+            }
+        }
     }
 }
 
@@ -20,10 +114,15 @@ struct CatalogCardDetailView: View {
     @Environment(\.catalogCardSelection) private var catalogCardSelection
     @Environment(\.cardGameRuntimes) private var runtimes
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    let summary: CatalogCardSummary
+    @Environment(\.catalogCopyHistory) private var copyHistory
+    private let originalSummary: CatalogCardSummary
     let catalog: any BrowseCatalogProviding
+    private let openingFinishID: String?
+    @State private var updatedSummary: CatalogCardSummary?
+    private var summary: CatalogCardSummary { updatedSummary ?? originalSummary }
 
     @State private var details: CatalogCardDetails?
+    @State private var loadedFullDetails = false
     @State private var error: CatalogFailurePresentation?
     @State private var isLoading = false
     @State private var finishOptions: [PhysicalVariant] = []
@@ -43,7 +142,6 @@ struct CatalogCardDetailView: View {
     @State private var showsGradedPicker = false
     @State private var historyVariantID: String?
     @State private var mappedPrices: [String: PriceLookup] = [:]
-    @State private var mappedPriceCheckFinished = false
     @State private var failedPriceVariantIDs: Set<String> = []
     @State private var priceRetryID = 0
     @State private var ownedPriceChecks: [String: OwnedPriceRetentionReason] = [:]
@@ -54,25 +152,27 @@ struct CatalogCardDetailView: View {
     @State private var dispositionTarget: CollectionDispositionTarget?
     @State private var ownershipChange: CatalogOwnershipChange?
     @State private var ownershipChangeTask: Task<Void, Never>?
-    /// Projection revision observed when a quantity write started. Controls
-    /// stay locked until ownership republishes, so a quick second tap never
-    /// computes its expected quantity from the pre-write snapshot.
-    @State private var awaitingProjectionRevision: UInt?
-    @State private var showsPriceSources = false
+    @State private var needsCatalogResolution = false
     /// One transport per presentation, so the graded picker shares the app's
     /// pacing and request ledger rather than keeping its own.
     private let marketTransport = JustTCGTransport.shared
+
+    init(summary: CatalogCardSummary, catalog: any BrowseCatalogProviding,
+         openingFinishID: String? = nil, initialDetails: CatalogCardDetails? = nil) {
+        originalSummary = summary
+        self.catalog = catalog
+        self.openingFinishID = openingFinishID ?? summary.masterSetVariant?.id
+        _details = State(initialValue: initialDetails)
+    }
 
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
                 if let details { content(details) }
                 else if isLoading {
-                    initialOwnedPriceSection
                     ProgressView().padding(.top, 40)
                 }
                 else if let error {
-                    initialOwnedPriceSection
                     ContentUnavailableView("Couldn't load this card", systemImage: error.icon, description: Text(error.message))
                     if let action = error.action {
                         Button(action) {
@@ -92,6 +192,7 @@ struct CatalogCardDetailView: View {
         }
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
         .alert(
             addAlertTitle,
             isPresented: Binding(
@@ -104,8 +205,19 @@ struct CatalogCardDetailView: View {
         } message: { detail in
             Text(detail)
         }
-        .task { if details == nil { await load() } }
-        .task(id: "\(details?.card.id ?? ""):\(priceRetryID)") { await loadMappedPrices() }
+        .task {
+            let updates = await catalog.catalogUpdates()
+            if needsCatalogResolution { await reloadCatalogIdentity() }
+            else if !loadedFullDetails { await load() }
+            for await update in updates {
+                guard !Task.isCancelled else { return }
+                guard update.affects(game: summary.game, providerSetID: summary.setID.providerID) else { continue }
+                await reloadCatalogIdentity()
+            }
+        }
+        .task(id: selectedQuoteRequest) {
+            if let request = selectedQuoteRequest { await loadSelectedQuote(request) }
+        }
         .sheet(isPresented: $showsGradedPicker) {
             if let details {
                 GradedVariantPickerView(
@@ -126,16 +238,17 @@ struct CatalogCardDetailView: View {
         .sheet(item: $dispositionTarget) { target in
             // The existing sale/trade record: it reduces quantity through the
             // store and keeps the transaction in Collection Activity.
-            CollectionDispositionSheet(target: target) { snapshot in
-                lockQuantityUntilProjectionUpdates()
+            CollectionDispositionSheet(target: target) { snapshot, kind in
+                isWritePending = true
+                Task { @MainActor in
+                    await projectionStore.rebuild(container: modelContext.container)
+                    isWritePending = false
+                }
                 let noun = snapshot.quantity == 1 ? "copy" : "copies"
                 present(CatalogOwnershipChange(
-                    message: "Recorded \(snapshot.quantity) \(noun) as \(target.kind == .traded ? "traded" : "sold")",
+                    message: "Recorded \(snapshot.quantity) \(noun) as \(kind == .traded ? "traded" : "sold")",
                     undo: nil))
             }
-        }
-        .onChange(of: projectionStore.revision) { _, _ in
-            awaitingProjectionRevision = nil
         }
     }
 
@@ -155,39 +268,37 @@ struct CatalogCardDetailView: View {
             )
                 .frame(maxHeight: 470)
 
-            VStack(spacing: 14) {
-                Text(details.card.name)
-                    .font(.title.bold())
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                CatalogCardFactChips(chips: factChips(details))
-                NavigationLink {
-                    CatalogSetCardsView(set: details.set, catalog: catalog)
-                } label: {
-                    CatalogCardSetRow(set: details.set, setName: details.card.setName)
-                }
-                .buttonStyle(.plain)
-                .accessibilityHint("View cards in this set")
-                .accessibilityIdentifier("card-set-link")
+            identityHeader(details)
+
+            if !finishVariants(details.card).isEmpty {
+                priceSection(details.card)
             }
 
             treatmentSection(details.card)
             if let notice = details.catalogNotice {
                 Text(notice).font(.footnote).foregroundStyle(.secondary)
             }
-            if catalog.gameRegistry.supports(summary.game, .pricing),
-               details.collectionWriteUnavailableReason == nil {
-                priceSection(details.card)
-            } else {
-                Text(details.collectionWriteUnavailableReason == nil
-                     ? "Pricing unavailable" : "Pricing unavailable for this printing")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+            if needsCatalogResolution {
+                Button("Retry catalog lookup") { Task { await reloadCatalogIdentity() } }
+                    .disabled(isLoading)
             }
-            ownedSection(details.card)
-            if catalog.gameRegistry.supports(summary.game, .pricing),
-               details.collectionWriteUnavailableReason == nil {
+            if projectionStore.loadFailed, catalogCardSelection == nil {
+                Button("Reload owned quantities") {
+                    Task { await projectionStore.rebuild(container: modelContext.container) }
+                }
+                .disabled(isWritePending)
+            }
+            if catalog.gameRegistry.supports(summary.game, .pricing), !needsCatalogResolution,
+               selectedVariant(details.card) != nil {
                 browsePriceHistorySection()
+            }
+            if catalogCardSelection == nil {
+                if let variant = selectedVariant(details.card) {
+                    ForEach(ownedSlot(for: variant, card: details.card).targets) { target in
+                        savedCopyLink(target.collectionKey, personalOnly: true)
+                    }
+                }
+                ownedSection(details.card)
             }
 
             if let reason = details.collectionWriteUnavailableReason {
@@ -221,7 +332,7 @@ struct CatalogCardDetailView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .buttonBorderShape(.capsule)
-                        .disabled(isWritePending || !catalog.gameRegistry.supports(summary.game, .collectionWrite)
+                        .disabled(isQuantityLocked || !catalog.gameRegistry.supports(summary.game, .collectionWrite)
                             || !PokemonVariantPolicy.allowsAcquisition(of: details.card, finish: summary.masterSetVariant,
                                 printRun: summary.pokemonPrintRun)
                             || details.collectionWriteUnavailableReason != nil)
@@ -242,8 +353,7 @@ struct CatalogCardDetailView: View {
                         }
                         .buttonStyle(.plain)
                         .appPillGlass(tint: Color.accentColor.opacity(0.22), fallbackTintOpacity: 1, interactive: true)
-                        .disabled(isWritePending || details.collectionWriteUnavailableReason != nil)
-                        .opacity(isWritePending || details.collectionWriteUnavailableReason != nil ? 0.5 : 1)
+                        .disabled(isQuantityLocked || details.collectionWriteUnavailableReason != nil)
                     }
                 }
                 .confirmationDialog(
@@ -260,13 +370,28 @@ struct CatalogCardDetailView: View {
                 }
             }
 
-            let marketplaceDestinations = TCGplayerLinkBuilder.destinations(for: details.card, summary: summary)
-            if !marketplaceDestinations.isEmpty {
-                VStack(spacing: 8) {
-                    ForEach(marketplaceDestinations, id: \.url) { destination in
-                        CardDetailMarketplaceButton(destination: destination)
+            if !needsCatalogResolution,
+               let destination = TCGplayerLinkBuilder.destination(for: details.card,
+                    variant: selectedVariant(details.card), pokemonPrintRun: summary.pokemonPrintRun) {
+                CardDetailMarketplaceButton(destination: destination)
+            }
+            DisclosureGroup("Printing details") {
+                VStack(alignment: .leading, spacing: 8) {
+                    LabeledContent("Set", value: details.set.name)
+                    LabeledContent("Card number", value: summary.printedCollectorNumber ?? "Unnumbered")
+                    if let rarity = CardRarityToken(raw: details.card.rarity) {
+                        LabeledContent("Rarity", value: rarity.label)
+                    }
+                    if let run = summary.pokemonPrintRun {
+                        LabeledContent("Print run", value: run.label)
+                    }
+                    let treatments = details.card.magicTreatments(for: selectedVariant(details.card))
+                    if !treatments.isEmpty {
+                        LabeledContent("Treatment", value: treatments.map(\.label).formatted(.list(type: .and)))
                     }
                 }
+                .font(.subheadline)
+                .padding(.top, 8)
             }
         }
         .padding(20)
@@ -275,39 +400,53 @@ struct CatalogCardDetailView: View {
 
     private func showsInlineQuantityControls(_ details: CatalogCardDetails) -> Bool {
         catalogCardSelection == nil
-            && catalog.gameRegistry.supports(summary.game, [.pricing, .collectionWrite])
             && details.collectionWriteUnavailableReason == nil
-            && !Self.priceVariants(for: details.card, summary: summary,
-                ownedRows: ownership.matchingRows(for: summary)).isEmpty
+            && !finishVariants(details.card).isEmpty
     }
 
-    private func factChips(_ details: CatalogCardDetails) -> [CatalogCardFactChip] {
-        var chips: [CatalogCardFactChip] = [
-            .init(id: "number", text: details.card.identifier, systemImage: "number",
-                  tint: .secondary, accessibilityLabel: "Card number \(details.card.identifier)", monospaced: true)
-        ]
-        if let rarity = details.card.rarity, !rarity.isEmpty {
-            let style = CatalogCardRarityStyle(rarity: rarity)
-            chips.append(.init(id: "rarity", text: rarity.capitalized, systemImage: style.symbol,
-                               tint: style.tint, accessibilityLabel: "Rarity \(rarity.capitalized)"))
+    private func identityHeader(_ details: CatalogCardDetails) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(details.card.name)
+                .font(.largeTitle.bold())
+                .accessibilityAddTraits(.isHeader)
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    setLink(details)
+                    Text("·").foregroundStyle(.secondary).accessibilityHidden(true)
+                    Text(summary.setAndCollectorLabel)
+                }
+                VStack(alignment: .leading, spacing: 0) {
+                    setLink(details)
+                    Text(summary.setAndCollectorLabel)
+                }
+            }
+            .font(.subheadline.weight(.semibold))
+            if let rarity = CardRarityToken(raw: details.card.rarity) {
+                Text(rarity.label).font(.subheadline.weight(.semibold))
+            }
+            if let run = summary.pokemonPrintRun {
+                Text(run.label).font(.subheadline).foregroundStyle(.secondary)
+            }
         }
-        if let printRun = summary.pokemonPrintRun {
-            chips.append(.init(id: "print-run", text: printRun.label, systemImage: "rosette",
-                               tint: .accentColor, accessibilityLabel: printRun.label))
-        }
-        if let variant = summary.masterSetVariant {
-            chips.append(.init(id: "variant", text: variant.label, systemImage: "square.stack.3d.up.fill",
-                               tint: .accentColor, accessibilityLabel: "Finish \(variant.label)"))
-        }
-        if let treatment = details.card.magicTreatmentDisplayLabel {
-            chips.append(.init(id: "treatment", text: treatment, systemImage: "sparkles",
-                               tint: .purple, accessibilityLabel: "Treatment: \(treatment)"))
-        }
-        return chips
+        .multilineTextAlignment(.leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// The treatment itself is a header chip. Only diagnostics that need the
-    /// user's attention keep a panel here.
+    private func setLink(_ details: CatalogCardDetails) -> some View {
+        NavigationLink {
+            CatalogSetCardsView(set: details.set, catalog: catalog)
+        } label: {
+            Text(details.set.name)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(Color.accentColor)
+        .accessibilityHint("View cards in this set")
+        .accessibilityIdentifier("card-set-link")
+    }
+
     @ViewBuilder
     private func treatmentSection(_ card: IdentifiedCard) -> some View {
         if !card.magicTreatmentDiagnostics.isEmpty {
@@ -345,9 +484,11 @@ struct CatalogCardDetailView: View {
                               systemImage: row.itemKind == .rawCard ? "rectangle.portrait" : "checkmark.seal.fill")
                             .symbolRenderingMode(.hierarchical)
                         Spacer()
-                        Text("×\(row.quantity)").monospacedDigit().foregroundStyle(.secondary)
+                        Text("×\(projectionStore.snapshot?.rowsByCollectionKey[row.collectionKey]?.quantity ?? row.quantity)")
+                            .monospacedDigit().foregroundStyle(.secondary)
                     }
                     .accessibilityElement(children: .combine)
+                    savedCopyLink(row.collectionKey, personalOnly: false)
                 }
             }
             .padding(16)
@@ -356,12 +497,25 @@ struct CatalogCardDetailView: View {
         }
     }
 
+    @ViewBuilder
+    private func savedCopyLink(_ key: String, personalOnly: Bool) -> some View {
+        if let copyHistory, let row = projectionStore.snapshot?.rowsByCollectionKey[key] {
+            NavigationLink {
+                CollectionCardDestination(row: row, unpricedReason: nil, artworkReason: nil,
+                    isLogicalConflict: (projectionStore.snapshot?.physicalRowCountsByKey[key] ?? 0) > 1,
+                    history: copyHistory, personalOnly: personalOnly,
+                    onRemoved: { snapshot in
+                        present(.init(message: "Removed from Collection", undo: .restore(snapshot)))
+                    })
+            } label: {
+                Text("Saved copy details").frame(minHeight: 44)
+            }
+        }
+    }
+
     private func otherOwnedRows(_ card: IdentifiedCard) -> [CatalogOwnershipCardSnapshot] {
-        let rows = ownedRows(card)
-        guard catalog.gameRegistry.supports(summary.game, .pricing),
-              details?.collectionWriteUnavailableReason == nil else { return rows }
-        let shown = Set(Self.priceVariants(for: card, summary: summary, ownedRows: ownership.matchingRows(for: summary))
-            .flatMap { ownedPrice(for: $0).entries.map(\.collectionKey) })
+        let rows = ownedRows
+        let shown = Set(finishVariants(card).flatMap { ownedSlot(for: $0, card: card).price.entries.map(\.collectionKey) })
         return rows.filter { !shown.contains($0.collectionKey) }
     }
 
@@ -369,10 +523,26 @@ struct CatalogCardDetailView: View {
         projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
     }
 
-    private func ownedPrice(for variant: PhysicalVariant) -> OwnedCatalogPrice {
-        var slot = summary
-        slot.masterSetVariant = variant
-        return OwnedCatalogPrice(rows: ownership.matchingRows(for: slot))
+    private func finishVariants(_ card: IdentifiedCard) -> [PhysicalVariant] {
+        // An edition-only price context is never an editable physical finish.
+        Self.priceVariants(for: card, summary: summary).filter { $0.id != PhysicalVariant.firstEdition.id }
+    }
+
+    private func selectedVariant(_ card: IdentifiedCard) -> PhysicalVariant? {
+        let variants = finishVariants(card)
+        let preferred = historyVariantID ?? openingFinishID
+        return variants.first { $0.id == preferred } ?? variants.first
+    }
+
+    private func ownedSlot(for variant: PhysicalVariant, card: IdentifiedCard) -> CatalogFinishOwnership {
+        CatalogFinishOwnership(
+            rows: ownership.exactPrintingRows(for: summary),
+            variant: variant,
+            treatments: MagicTreatmentKeyCodec.storedIDs(from: card.magicTreatments(for: variant)),
+            qualifiers: card.magicTreatmentQualifiers(for: variant),
+            name: card.name,
+            projection: projectionStore.snapshot
+        )
     }
 
     static func priceVariants(for card: IdentifiedCard, summary: CatalogCardSummary,
@@ -396,61 +566,14 @@ struct CatalogCardDetailView: View {
         return variants
     }
 
-    @ViewBuilder private var initialOwnedPriceSection: some View {
-        let owned = OwnedCatalogPrice(rows: ownership.matchingRows(for: summary))
-        if !owned.entries.isEmpty {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Saved market price").font(.headline)
-                priceValue(owned.display)
-                if error != nil { Text("Couldn't check for a newer price just now").font(.caption) }
-            }
-            .padding(20)
-        }
-    }
-
     private func priceSection(_ card: IdentifiedCard) -> some View {
-        let variants = Self.priceVariants(for: card, summary: summary,
-            ownedRows: ownership.matchingRows(for: summary))
-        let showsControls = details.map(showsInlineQuantityControls) ?? false
-        let sources = priceSourceLabels(variants)
-        return VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(showsControls ? "Prices & copies" : "Market prices").font(.headline)
-                Spacer()
-                Button {
-                    showsPriceSources = true
-                } label: {
-                    Image(systemName: "info.circle")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .frame(width: 44, height: 32)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Price sources")
-                .accessibilityIdentifier("catalog-price-sources")
-                .popover(isPresented: $showsPriceSources) {
-                    priceSourcesPopover(variants)
-                        .presentationCompactAdaptation(.popover)
-                }
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Finishes").font(.headline).accessibilityAddTraits(.isHeader)
+            ForEach(finishVariants(card)) { variant in
+                variantPriceRow(variant, card: card)
             }
-            .padding(.bottom, 4)
-            ForEach(Array(variants.enumerated()), id: \.element.id) { index, variant in
-                if index > 0 { Divider().opacity(0.6) }
-                variantPriceRow(variant, card: card, showsControls: showsControls)
-            }
-            if !sources.isEmpty {
-                Text("Prices from \(sources.formatted(.list(type: .and)))")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 8)
-            }
-            priceRetryButton.padding(.top, 8)
         }
         .id("catalog-market-prices")
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .confirmationDialog(
             decrementTarget.map { "Remove a \($0.variantLabel) copy?" } ?? "",
             isPresented: Binding(get: { decrementTarget != nil }, set: { if !$0 { decrementTarget = nil } }),
@@ -460,11 +583,13 @@ struct CatalogCardDetailView: View {
             Button(target.quantity == 1 ? "Remove from Collection" : "Remove 1 Copy", role: .destructive) {
                 decrement(target)
             }
+            .disabled(isQuantityLocked)
             Button("Record Sale or Trade…") {
                 dispositionTarget = CollectionDispositionTarget(
                     collectionKey: target.collectionKey, treatments: target.treatments,
                     cardName: target.cardName, quantity: target.quantity, kind: .sold)
             }
+            .disabled(isQuantityLocked)
             Button("Cancel", role: .cancel) {}
         } message: { target in
             Text(target.quantity == 1
@@ -473,119 +598,91 @@ struct CatalogCardDetailView: View {
         }
     }
 
-    private func priceDisplay(for variant: PhysicalVariant) -> PriceDisplay? {
-        let owned = ownedPrice(for: variant)
-        if !owned.entries.isEmpty { return owned.display }
-        if case let .price(quote) = mappedPrices[variant.id] { return PriceDisplay(quote) }
-        return nil
-    }
-
-    private func priceSourceLabels(_ variants: [PhysicalVariant]) -> [String] {
-        var labels: [String] = []
-        for variant in variants {
-            if let label = priceDisplay(for: variant)?.source?.label, !labels.contains(label) { labels.append(label) }
-        }
-        return labels
-    }
-
-    /// Provenance stays one tap away for anyone who wants it, without putting
-    /// check timestamps in front of every price.
-    private func priceSourcesPopover(_ variants: [PhysicalVariant]) -> some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
-                Text("Price sources").font(.headline)
-                ForEach(variants) { variant in
-                    let display = priceDisplay(for: variant)
-                    let checks = Array(Set(ownedPrice(for: variant).entries
-                        .compactMap { ownedPriceChecks[$0.collectionKey]?.caption })).sorted()
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(variant.label).font(.subheadline.weight(.semibold))
-                        if let display, !display.detailAttribution.isEmpty {
-                            priceAttribution(display)
-                        } else {
-                            Text("No price details yet").font(.caption).foregroundStyle(.secondary)
-                        }
-                        ForEach(checks, id: \.self) {
-                            Text($0).font(.caption).foregroundStyle(.secondary)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                    }
-                    .accessibilityElement(children: .combine)
-                }
-            }
-            .padding(16)
-            .frame(minWidth: 280, maxWidth: 360, alignment: .leading)
-        }
-        .frame(maxHeight: 420)
-    }
-
-    private func variantPriceRow(_ variant: PhysicalVariant, card: IdentifiedCard, showsControls: Bool) -> some View {
-        let owned = ownedPrice(for: variant)
-        let quantity = owned.entries.reduce(0) { $0 + $1.quantity }
+    private func variantPriceRow(_ variant: PhysicalVariant, card: IdentifiedCard) -> some View {
+        let slot = ownedSlot(for: variant, card: card)
+        let selected = selectedVariant(card)?.id == variant.id
+        let showControls = details.map(showsInlineQuantityControls) ?? false
         let layout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
-            : AnyLayout(HStackLayout(alignment: .center, spacing: 12))
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+            : AnyLayout(HStackLayout(alignment: .center, spacing: 8))
+        let shape = RoundedRectangle(cornerRadius: 14)
         return layout {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(variant.label)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                rowPrice(variant, owned: owned)
-                if showsControls, owned.entries.count > 1 {
-                    Text("Saved as \(owned.entries.count) entries · edit them in Collection")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityElement(children: .combine)
-            if showsControls {
-                CatalogQuantityStepper(
-                    quantity: quantity,
-                    variantLabel: variant.label,
-                    canIncrease: canAdd(variant, card: card) && quantity < CollectionQuantityLimits.maximum,
-                    canDecrease: owned.entries.count == 1,
-                    isUpdating: isQuantityLocked,
-                    onIncrease: { add(variant, card: card) },
-                    onDecrease: {
-                        guard owned.entries.count == 1, let entry = owned.entries.first else { return }
-                        decrementTarget = CatalogOwnedEntryTarget(
-                            collectionKey: entry.collectionKey, treatments: entry.magicTreatmentIDsRaw,
-                            quantity: entry.quantity, cardName: card.name, variantLabel: variant.label)
+            Button { historyVariantID = variant.id } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(selected ? Color.accentColor : Color.secondary)
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(variant.label).font(.body.weight(.semibold))
+                        if catalog.gameRegistry.supports(summary.game, .pricing), !needsCatalogResolution {
+                            priceValue(priceDisplay(for: variant, card: card, slot: slot))
+                        }
+                        if slot.hasConflict {
+                            Text("Saved copies need review").font(.caption).foregroundStyle(.secondary)
+                        } else if slot.price.entriesDisagree {
+                            Text("Saved prices differ").font(.caption).foregroundStyle(.secondary)
+                        }
                     }
-                )
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                .multilineTextAlignment(.leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityAddTraits(selected ? .isSelected : [])
+
+            if showControls, projectionStore.isLoaded, !projectionStore.loadFailed {
+                VStack(alignment: .trailing, spacing: 0) {
+                    CatalogQuantityStepper(
+                        quantity: slot.quantity, variantLabel: variant.label,
+                        canIncrease: canAdd(variant, card: card) && !slot.hasConflict
+                            && slot.quantity < CollectionQuantityLimits.maximum,
+                        canDecrease: slot.targets.count == 1 && !slot.hasConflict,
+                        isUpdating: isQuantityLocked,
+                        onIncrease: { add(variant, card: card) },
+                        onDecrease: { decrementTarget = slot.targets.first }
+                    )
+                    if slot.targets.count > 1, !slot.hasConflict {
+                        Menu("Manage copies") {
+                            ForEach(slot.targets) { target in
+                                Button("\(target.dateAdded.formatted(date: .abbreviated, time: .shortened)) · \(target.quantity) owned") {
+                                    decrementTarget = target
+                                }
+                            }
+                        }
+                        .font(.caption)
+                        .frame(minHeight: 44)
+                        .disabled(isQuantityLocked)
+                    }
+                }
+            } else if catalogCardSelection == nil, projectionStore.isLoaded, !projectionStore.loadFailed {
+                Text("\(slot.quantity) owned").font(.subheadline).foregroundStyle(.secondary)
             }
         }
-        .padding(.vertical, 10)
+        .padding(12)
+        .background(selected ? Color.accentColor.opacity(0.12) : Color.primary.opacity(0.06), in: shape)
+        .overlay { shape.strokeBorder(selected ? Color.accentColor : .clear) }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("catalog-price-row-\(variant.id)")
     }
 
-    @ViewBuilder
-    private func rowPrice(_ variant: PhysicalVariant, owned: OwnedCatalogPrice) -> some View {
-        if !owned.entries.isEmpty {
-            priceValue(owned.display)
-            if failedPriceVariantIDs.contains(variant.id) {
-                Text("Couldn't check for a newer price").font(.caption).foregroundStyle(.secondary)
-            }
-        } else if case let .price(quote) = mappedPrices[variant.id] {
-            priceValue(PriceDisplay(quote))
-        } else if !mappedPriceCheckFinished {
-            ProgressView().frame(height: 28)
-        } else {
-            Text(failedPriceVariantIDs.contains(variant.id) ? "Couldn't check price"
-                : (mappedPrices[variant.id] == .unavailable(nil) ? "No price yet" : "No USD price"))
-                .font(.body)
-                .foregroundStyle(.secondary)
-                .frame(minHeight: 28, alignment: .leading)
+    private func priceDisplay(for variant: PhysicalVariant, card: IdentifiedCard, slot: CatalogFinishOwnership) -> PriceDisplay {
+        if !slot.hasConflict, !slot.price.entriesDisagree,
+           Set(slot.price.entries.map(\.selectedPriceKey)).count == 1 {
+            return slot.price.display
         }
+        let lookup = mappedPrices[variant.id] ?? CardPricing.price(for: card, variant: variant,
+            magicTreatments: card.magicTreatments(for: variant), pokemonPrintRun: summary.pokemonPrintRun,
+            at: details?.retrievedAt ?? .distantPast)
+        if case let .price(quote) = lookup { return PriceDisplay(quote) }
+        return .unknown
     }
 
     @ViewBuilder private func priceValue(_ display: PriceDisplay) -> some View {
         if let amount = display.amount {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(amount.formatted(.currency(code: "USD")))
+                Text(amount.formatted(.currency(code: display.currencyCode)))
                     .font(.title3.weight(.semibold))
                     .monospacedDigit()
                     .foregroundStyle(PortfolioPalette.value)
@@ -601,60 +698,25 @@ struct CatalogCardDetailView: View {
         }
     }
 
-    private func priceAttribution(_ display: PriceDisplay) -> some View {
-        ForEach(display.detailAttribution, id: \.self) {
-            Text($0).font(.caption).foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
     // MARK: - Inline quantity
 
-    private var isQuantityLocked: Bool { isWritePending || awaitingProjectionRevision != nil }
-
-    /// A row names its finish, so a + on a finish the catalog lists is the
-    /// user's explicit choice. Any other row (an edition-only slot) falls back
-    /// to the resolver, which asks when the finish is ambiguous.
-    private func directFinish(_ variant: PhysicalVariant, card: IdentifiedCard) -> Bool {
-        if variant.id == summary.masterSetVariant?.id { return true }
-        var evidence = card.variantEvidence
-        if summary.pokemonPrintRun != nil { evidence = evidence.excludingFirstEditionPseudoFinish() }
-        return evidence.catalogVariants.contains { $0.id == variant.id }
+    private var isQuantityLocked: Bool {
+        isWritePending || needsCatalogResolution || !projectionStore.isLoaded || projectionStore.loadFailed
     }
 
     private func canAdd(_ variant: PhysicalVariant, card: IdentifiedCard) -> Bool {
         catalog.gameRegistry.supports(card.game, .collectionWrite)
+            && (card.variantEvidence.physicalCoverageVerified || card.variantEvidence.explicitMembershipSupported
+                || variant.id == summary.masterSetVariant?.id)
             && PokemonVariantPolicy.allowsAcquisition(of: card,
-                finish: directFinish(variant, card: card) ? variant : summary.masterSetVariant,
+                finish: variant,
                 printRun: summary.pokemonPrintRun)
     }
 
     private func add(_ variant: PhysicalVariant, card: IdentifiedCard) {
-        guard !isQuantityLocked else { return }
-        guard directFinish(variant, card: card) else {
-            prepareAdd(card)
-            return
-        }
-        guard catalog.gameRegistry.supports(card.game, .collectionWrite) else {
-            addFailure = "Collection saving is not available for this game yet."
-            return
-        }
-        guard PokemonVariantPolicy.allowsAcquisition(of: card, finish: variant, printRun: summary.pokemonPrintRun) else {
-            addFailure = "Scan Stash couldn't verify this printing."
-            return
-        }
+        guard !isQuantityLocked, canAdd(variant, card: card),
+              !ownedSlot(for: variant, card: card).hasConflict else { return }
         commit(ResolvedVariant(variant: variant, resolution: .userConfirmed))
-    }
-
-    private func lockQuantityUntilProjectionUpdates() {
-        let revision = projectionStore.revision
-        awaitingProjectionRevision = revision
-        // A write that changes nothing visible never republishes; don't leave
-        // the controls locked forever waiting for it.
-        Task { @MainActor in
-            try? await Task.sleep(for: .seconds(3))
-            if awaitingProjectionRevision == revision { awaitingProjectionRevision = nil }
-        }
     }
 
     private func decrement(_ target: CatalogOwnedEntryTarget) {
@@ -664,7 +726,6 @@ struct CatalogCardDetailView: View {
         guard let token = generation.currentToken() else { return }
         let shouldContinue = generation.continuation(for: token)
         isWritePending = true
-        lockQuantityUntilProjectionUpdates()
         Task { @MainActor in
             defer { isWritePending = false }
             do {
@@ -689,11 +750,13 @@ struct CatalogCardDetailView: View {
                                            restoreTo: target.quantity, expectedCurrent: saved))
                 }
                 guard generation.isCurrent(token) else { return }
+                await projectionStore.rebuild(container: container)
+                guard generation.isCurrent(token) else { return }
                 present(change)
             } catch is CancellationError {
-                awaitingProjectionRevision = nil
             } catch {
-                awaitingProjectionRevision = nil
+                guard generation.isCurrent(token) else { return }
+                await projectionStore.rebuild(container: container)
                 guard generation.isCurrent(token) else { return }
                 addAlertTitle = "Couldn't update collection"
                 if case CollectionStoreError.staleQuantity = error {
@@ -724,7 +787,6 @@ struct CatalogCardDetailView: View {
         let shouldContinue = generation.continuation(for: token)
         ownershipChangeTask?.cancel()
         isWritePending = true
-        lockQuantityUntilProjectionUpdates()
         Task { @MainActor in
             defer { isWritePending = false }
             do {
@@ -742,11 +804,11 @@ struct CatalogCardDetailView: View {
                     }
                 }
                 guard generation.isCurrent(token), ownershipChange?.id == change.id else { return }
+                await projectionStore.rebuild(container: container)
+                guard generation.isCurrent(token), ownershipChange?.id == change.id else { return }
                 ownershipChange = nil
             } catch is CancellationError {
-                awaitingProjectionRevision = nil
             } catch {
-                awaitingProjectionRevision = nil
                 guard generation.isCurrent(token), ownershipChange?.id == change.id else { return }
                 addAlertTitle = "Couldn't undo change"
                 addFailure = "The collection change could not be undone. \(error.localizedDescription)"
@@ -777,90 +839,88 @@ struct CatalogCardDetailView: View {
         .padding(.bottom, 8)
     }
 
-    private func loadMappedPrices() async {
-        guard let loadedDetails = details,
-              catalog.gameRegistry.supports(loadedDetails.card.game, .pricing) else { return }
-        let card = loadedDetails.card
-        mappedPriceCheckFinished = false
-        failedPriceVariantIDs = []
-        let retryID = priceRetryID
-        let generation = CollectionStorageGeneration.shared
-        let token = generation.currentToken()
-        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: modelContext.container)
-        for variant in Self.priceVariants(for: card, summary: summary,
-            ownedRows: ownership.matchingRows(for: summary)) {
-            do {
-                let quote = try await catalog.price(for: summary, variant: variant)
-                guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
-                mappedPrices[variant.id] = quote
-                let treatments = MagicTreatmentKeyCodec.storedIDs(from: card.magicTreatments(for: variant))
-                if let token {
-                    let entries = ownedPrice(for: variant).reconcilableEntries(variant: variant, treatmentIDs: treatments)
-                    for entry in entries {
-                        let result = try await CollectionExclusiveWrites.retryingIfRequired {
-                            try await writer.reconcileOwnedPrice(quote, collectionKey: entry.collectionKey,
-                                shouldContinue: generation.continuation(for: token))
-                        }
-                        guard !Task.isCancelled, generation.isCurrent(token), priceRetryID == retryID else { return }
-                        ownedPriceChecks[entry.collectionKey] = result.retainedReason
-                    }
-                    if !entries.isEmpty {
-                        await projectionStore.rebuild(container: modelContext.container)
-                    }
-                }
-            } catch PriceQuoteError.mappingUnavailable {
-                guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
-                mappedPrices[variant.id] = .unavailable(nil)
-                for entry in ownedPrice(for: variant).entries { ownedPriceChecks[entry.collectionKey] = .unavailable }
-            } catch {
-                guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
-                failedPriceVariantIDs.insert(variant.id)
-            }
-        }
-        mappedPriceCheckFinished = true
+    private struct QuoteRequest: Hashable {
+        let summary: CatalogCardSummary
+        let variant: PhysicalVariant
+        let retrievedAt: Date
+        let retry: Int
     }
 
-    @ViewBuilder private var priceRetryButton: some View {
-        if mappedPriceCheckFinished && (!failedPriceVariantIDs.isEmpty || !ownedPriceChecks.isEmpty
-            || mappedPrices.values.contains(where: { if case let .unavailable(source) = $0 { return source != nil }; return false })) {
-            Button("Retry prices") {
-                mappedPriceCheckFinished = false
-                Task {
-                    await catalog.resetPriceResolution(for: [summary.id])
-                    priceRetryID += 1
+    private var selectedQuoteRequest: QuoteRequest? {
+        guard !needsCatalogResolution, catalogCardSelection == nil,
+              catalog.gameRegistry.supports(summary.game, .pricing), let details,
+              let variant = selectedVariant(details.card) else { return nil }
+        return QuoteRequest(summary: summary, variant: variant, retrievedAt: details.retrievedAt, retry: priceRetryID)
+    }
+
+    private func loadSelectedQuote(_ request: QuoteRequest) async {
+        guard let card = details?.card, selectedQuoteRequest == request else { return }
+        let generation = CollectionStorageGeneration.shared
+        let token = generation.currentToken()
+        let variant = request.variant
+        failedPriceVariantIDs.remove(variant.id)
+        do {
+            let quote = try await catalog.price(for: request.summary, variant: variant)
+            guard !Task.isCancelled, selectedQuoteRequest == request else { return }
+            mappedPrices[variant.id] = quote
+            guard let token, generation.isCurrent(token), !isWritePending else { return }
+            let slot = ownedSlot(for: variant, card: card)
+            guard !slot.hasConflict, !slot.targets.isEmpty else { return }
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: modelContext.container)
+            for target in slot.targets {
+                guard !Task.isCancelled, generation.isCurrent(token), selectedQuoteRequest == request else { return }
+                let result = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.reconcileOwnedPrice(quote, collectionKey: target.collectionKey,
+                        shouldContinue: generation.continuation(for: token))
                 }
+                guard !Task.isCancelled, generation.isCurrent(token), selectedQuoteRequest == request else { return }
+                ownedPriceChecks[target.collectionKey] = result.retainedReason
             }
-            .buttonStyle(.bordered)
+            await projectionStore.rebuild(container: modelContext.container)
+        } catch is CancellationError {
+        } catch {
+            guard !Task.isCancelled, selectedQuoteRequest == request else { return }
+            failedPriceVariantIDs.insert(variant.id)
         }
     }
 
     @ViewBuilder
     private func browsePriceHistorySection() -> some View {
         if let details {
-            let variants = details.card.variantEvidence.catalogVariants
-            let variant = summary.masterSetVariant
-                ?? variants.first(where: { $0.id == historyVariantID }) ?? variants.first
-            let currentPrice = variant.map { variant in
-                let owned = ownedPrice(for: variant)
-                if !owned.entries.isEmpty { return owned.display }
-                if case let .price(quote) = mappedPrices[variant.id] { return PriceDisplay(quote) }
-                return PriceDisplay.unknown
+            let variant = selectedVariant(details.card)
+            let slot = variant.map { ownedSlot(for: $0, card: details.card) }
+            let currentPrice = variant.flatMap { finish in
+                slot.map { priceDisplay(for: finish, card: details.card, slot: $0) }
             } ?? .unknown
-            let picker: AnyView? = summary.masterSetVariant == nil && variants.count > 1
-                ? AnyView(CatalogHistoryVariantPicker(
-                    title: summary.game == .yuGiOh ? "History edition" : "History finish",
-                    variants: variants,
-                    selection: Binding(get: { variant?.id ?? "" }, set: { historyVariantID = $0 })))
-                : nil
-            CardMarketHistoryPanel(request: .init(card: details.card,
-                variant: variant,
-                printRun: summary.pokemonPrintRun), currentPrice: currentPrice, variantPicker: picker)
-                .id(variant?.id ?? "unknown")
+            VStack(alignment: .leading, spacing: 6) {
+                Text(variant.map { "\($0.label) market price" } ?? "Market price").font(.headline)
+                priceValue(currentPrice)
+                if let slot, projectionStore.isLoaded, !projectionStore.loadFailed, catalogCardSelection == nil {
+                    let unit = PortfolioPriceEligibility.eligibleUnitPrice(
+                        amount: currentPrice.amount, currencyCode: currentPrice.currencyCode)
+                    let value: Money? = slot.hasConflict ? nil
+                        : (slot.quantity == 0 ? .zero : unit?.multiplied(by: slot.quantity))
+                    LabeledContent("Owned value", value: value?.formatted() ?? "Unavailable")
+                        .font(.subheadline)
+                }
+                if let variant {
+                    let notes = Set((slot?.targets ?? []).compactMap { ownedPriceChecks[$0.collectionKey]?.caption })
+                    ForEach(notes.sorted(), id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
+                    if failedPriceVariantIDs.contains(variant.id) {
+                        Button("Retry price check") { priceRetryID += 1 }.font(.subheadline)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            let request = CardMarketHistoryRequest(card: details.card, variant: variant, printRun: summary.pokemonPrintRun)
+            CardMarketHistoryPanel(request: request, currentPrice: currentPrice.amount == nil ? nil : currentPrice)
+                .id(request)
         }
     }
 
     private func prepareAdd(_ card: IdentifiedCard) {
-        guard !isWritePending else { return }
+        guard !isQuantityLocked else { return }
         guard catalog.gameRegistry.supports(card.game, .collectionWrite) else {
             addFailure = "Collection saving is not available for this game yet."
             return
@@ -893,19 +953,18 @@ struct CatalogCardDetailView: View {
     }
 
     private func commit(_ resolved: ResolvedVariant) {
-        guard !isWritePending else { return }
+        guard !isQuantityLocked else { return }
         guard catalog.gameRegistry.supports(summary.game, .collectionWrite) else {
             addFailure = "Collection saving is not available for this game yet."
             return
         }
-        guard let details else { return }
+        guard let details, details.collectionWriteUnavailableReason == nil else { return }
         let container = modelContext.container
         let printRun = summary.pokemonPrintRun
         let generation = CollectionStorageGeneration.shared
         guard let token = generation.currentToken() else { return }
         let shouldContinue = generation.continuation(for: token)
         isWritePending = true
-        lockQuantityUntilProjectionUpdates()
         Task { @MainActor in
             defer { isWritePending = false }
             do {
@@ -914,6 +973,8 @@ struct CatalogCardDetailView: View {
                     try await writer.addCatalog(details, resolved: resolved, pokemonPrintRun: printRun,
                         shouldContinue: shouldContinue)
                 }
+                guard generation.isCurrent(token) else { return }
+                await projectionStore.rebuild(container: container)
                 guard generation.isCurrent(token) else { return }
                 if !receipt.priceSaved {
                     addAlertTitle = "Added with price warning"
@@ -932,16 +993,12 @@ struct CatalogCardDetailView: View {
                     if !Task.isCancelled, pendingMutation == receipt.mutation { pendingMutation = nil }
                 }
             } catch is CancellationError {
-                awaitingProjectionRevision = nil
-            } catch CatalogLookupError.staleCatalog where summary.game == .pokemon {
-                awaitingProjectionRevision = nil
+            } catch CatalogLookupError.staleCatalog {
                 guard generation.isCurrent(token) else { return }
-                self.details = nil
                 addAlertTitle = "Catalog updated"
                 addFailure = "Choose the printing again to add it to your collection."
-                await load()
+                await reloadCatalogIdentity()
             } catch {
-                awaitingProjectionRevision = nil
                 guard generation.isCurrent(token) else { return }
                 addAlertTitle = "Couldn't add card"
                 addFailure = error.localizedDescription
@@ -1025,10 +1082,11 @@ struct CatalogCardDetailView: View {
         }
     }
 
-    private func ownedRows(_ card: IdentifiedCard) -> [CatalogOwnershipCardSnapshot] {
-        let ownership = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
-        return ownership.matchingRows(for: summary)
-            .sorted { ($0.variantLabel ?? "") < ($1.variantLabel ?? "") }
+    private var ownedRows: [CatalogOwnershipCardSnapshot] {
+        let rows = ownership.exactPrintingRows(for: summary)
+        var seen: Set<String> = []
+        return rows.filter { seen.insert($0.collectionKey).inserted }
+            .sorted { ($0.ownedDisplayLabel, $0.collectionKey) < ($1.ownedDisplayLabel, $1.collectionKey) }
     }
 
     private func addedBanner(_ mutation: CollectionMutation) -> some View {
@@ -1084,6 +1142,8 @@ struct CatalogCardDetailView: View {
                     try await writer.undoCatalog(mutation, shouldContinue: shouldContinue)
                 }
                 guard generation.isCurrent(token), pendingMutation == mutation else { return }
+                await projectionStore.rebuild(container: container)
+                guard generation.isCurrent(token) else { return }
                 pendingMutation = nil
             } catch is CancellationError {
             } catch {
@@ -1095,6 +1155,7 @@ struct CatalogCardDetailView: View {
     }
 
     private func load() async {
+        guard !isLoading else { return }
         isLoading = true
         error = nil
         defer { isLoading = false }
@@ -1108,13 +1169,72 @@ struct CatalogCardDetailView: View {
             let refreshed = try await catalog.details(for: summary, refreshingPrices: needsRefresh || priceRetryID > 0)
             guard !Task.isCancelled else { return }
             details = refreshed
+            loadedFullDetails = true
         }
         catch is CancellationError { return }
         catch { self.error = CatalogFailurePresentation(error: error) }
     }
+
+    private func reloadCatalogIdentity() async {
+        guard !isLoading else { return }
+        isLoading = true
+        needsCatalogResolution = true
+        decrementTarget = nil
+        showsFinishChoice = false
+        mappedPrices = [:]
+        failedPriceVariantIDs = []
+        ownedPriceChecks = [:]
+        defer { isLoading = false }
+        let lookup = CatalogDetailLookup(game: summary.game, providerID: summary.providerID,
+            printRun: summary.pokemonPrintRun, name: summary.name, setCode: summary.setCode)
+        do {
+            guard let current = try await lookup.summary(in: catalog, setIDs: [summary.setID]) else { return }
+            let refreshed = try await catalog.details(for: current)
+            try Task.checkCancellation()
+            guard lookup.matches(refreshed, summary: current) else { return }
+            updatedSummary = current
+            details = refreshed
+            loadedFullDetails = true
+            historyVariantID = selectedVariant(refreshed.card)?.id
+            needsCatalogResolution = false
+            priceRetryID += 1
+        } catch {
+            // Retain the last identity for display until it can be reverified.
+        }
+    }
 }
 
 // MARK: - Catalog detail components
+
+struct CatalogFinishOwnership {
+    let price: OwnedCatalogPrice
+    let targets: [CatalogOwnedEntryTarget]
+    let quantity: Int
+    let hasConflict: Bool
+
+    init(rows: [CatalogOwnershipCardSnapshot], variant: PhysicalVariant, treatments: [String],
+         qualifiers: [String: String], name: String, projection: CollectionProjectionSnapshot?) {
+        let treatmentSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: treatments))
+        let matching = rows.filter { row in
+            row.itemKind == .rawCard && row.variantID == variant.id
+                && Set(MagicTreatmentKeyCodec.canonicalIDs(from: row.magicTreatmentIDsRaw)) == treatmentSet
+                && row.magicTreatmentQualifiers.allSatisfy { key, value in qualifiers[key] == value }
+        }
+        price = OwnedCatalogPrice(rows: matching)
+        let groups = Dictionary(grouping: matching, by: \.collectionKey)
+        quantity = matching.reduce(0) { CollectionQuantityLimits.saturatingAdd($0, $1.quantity) }
+        hasConflict = groups.contains { key, group in
+            (projection?.physicalRowCountsByKey[key] ?? group.count) != group.count
+                || Set(group.map(\.storedPriceKey)).count > 1
+                || Set(group.map(\.selectedPriceKey)).count > 1
+        }
+        targets = groups.keys.sorted().compactMap { key in
+            guard let row = projection?.rowsByCollectionKey[key] else { return nil }
+            return CatalogOwnedEntryTarget(collectionKey: key, treatments: treatments,
+                quantity: row.quantity, cardName: name, variantLabel: variant.label, dateAdded: row.dateAdded)
+        }
+    }
+}
 
 /// The single raw entry a − tap acts on, captured as the user saw it.
 struct CatalogOwnedEntryTarget: Identifiable, Equatable {
@@ -1124,6 +1244,7 @@ struct CatalogOwnedEntryTarget: Identifiable, Equatable {
     let quantity: Int
     let cardName: String
     let variantLabel: String
+    let dateAdded: Date
 }
 
 /// A completed quantity change from this screen, with what Undo must invert.
@@ -1140,137 +1261,7 @@ struct CatalogOwnershipChange: Identifiable {
     let undo: Undo?
 }
 
-struct CatalogCardFactChip: Identifiable {
-    let id: String
-    let text: String
-    let systemImage: String
-    let tint: Color
-    let accessibilityLabel: String
-    var monospaced = false
-}
-
-/// Number, rarity, edition, finish and treatment as one row of capsules.
-/// Wraps to a column when a long treatment or large text cannot fit.
-struct CatalogCardFactChips: View {
-    let chips: [CatalogCardFactChip]
-
-    var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 8) { chipViews }
-            VStack(spacing: 8) { chipViews }
-        }
-    }
-
-    private var chipViews: some View {
-        ForEach(chips) { chip in
-            Label {
-                Text(chip.text)
-                    .monospacedDigit()
-                    .fontDesign(chip.monospaced ? .rounded : nil)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-            } icon: {
-                Image(systemName: chip.systemImage)
-                    .imageScale(.small)
-            }
-            .font(.subheadline.weight(.semibold))
-            .foregroundStyle(chip.tint)
-            .padding(.horizontal, 11)
-            .padding(.vertical, 6)
-            .background(chip.tint.opacity(0.14), in: Capsule())
-            .overlay(Capsule().strokeBorder(chip.tint.opacity(0.28), lineWidth: 0.5))
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(chip.accessibilityLabel)
-        }
-    }
-}
-
-/// Rarity names differ by game, so this matches on words rather than an
-/// exhaustive table. Unknown rarities fall back to a neutral chip.
-struct CatalogCardRarityStyle {
-    let symbol: String
-    let tint: Color
-
-    init(rarity: String) {
-        let value = rarity.lowercased()
-        func has(_ words: String...) -> Bool { words.contains { value.contains($0) } }
-        if has("mythic", "secret", "hyper", "special illustration", "starlight", "enchanted", "manga", "gold") {
-            symbol = "sparkles"; tint = Color(red: 0.96, green: 0.52, blue: 0.24)
-        } else if has("ultra", "illustration", "legendary", "double rare", "super", "epic", "ace") {
-            symbol = "star.circle.fill"; tint = Color(red: 0.70, green: 0.55, blue: 0.98)
-        } else if has("uncommon") {
-            symbol = "diamond.fill"; tint = Color(red: 0.55, green: 0.70, blue: 0.82)
-        } else if has("common") {
-            symbol = "circle.fill"; tint = .secondary
-        } else if has("rare", "holo") {
-            symbol = "star.fill"; tint = Color(red: 0.90, green: 0.70, blue: 0.28)
-        } else {
-            symbol = "seal.fill"; tint = .secondary
-        }
-    }
-}
-
-/// The set is a destination, so it is drawn as one: a full-width row with the
-/// set's symbol, a "browse" affordance, and a chevron.
-struct CatalogCardSetRow: View {
-    let set: CatalogSet
-    let setName: String
-
-    var body: some View {
-        HStack(spacing: 14) {
-            symbol
-                .frame(width: 44, height: 44)
-                .background(Color.accentColor.opacity(0.14),
-                            in: RoundedRectangle(cornerRadius: 11, style: .continuous))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(setName)
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(set.cardCount.map { $0 == 1 ? "Browse 1 card" : "Browse all \($0) cards" } ?? "Browse this set")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.accentColor)
-            }
-            Spacer(minLength: 8)
-            Image(systemName: "chevron.right")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.tertiary)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
-        .frame(maxWidth: .infinity, minHeight: 68, alignment: .leading)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Set, \(setName)")
-    }
-
-    private var placeholder: some View {
-        Image(systemName: "square.stack.3d.up.fill")
-            .font(.title3)
-            .foregroundStyle(Color.accentColor)
-    }
-
-    /// Scryfall symbols are SVG, which the raster loader cannot draw; Magic
-    /// keeps the placeholder rather than a broken image.
-    @ViewBuilder private var symbol: some View {
-        if set.game != .magic, let url = set.symbolURL ?? set.logoURL {
-            AsyncImage(url: url) { phase in
-                if let image = phase.image {
-                    image.resizable().scaledToFit().padding(7)
-                } else {
-                    placeholder
-                }
-            }
-        } else {
-            placeholder
-        }
-    }
-}
-
-/// Owned quantity for one finish. With none owned it is a single + button;
-/// with copies it becomes − n +.
+/// Owned quantity and two independent controls for one finish.
 struct CatalogQuantityStepper: View {
     let quantity: Int
     let variantLabel: String
@@ -1282,22 +1273,20 @@ struct CatalogQuantityStepper: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            if quantity > 0 {
-                Button(action: onDecrease) {
-                    Image(systemName: "minus")
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
-                }
-                .disabled(!canDecrease || isUpdating)
-                .accessibilityLabel("Remove a \(variantLabel) copy")
-
-                Text("\(quantity)")
-                    .font(.system(.body, design: .rounded).weight(.semibold))
-                    .monospacedDigit()
-                    .frame(minWidth: 20)
-                    .contentTransition(.numericText())
-                    .accessibilityLabel("\(quantity) \(variantLabel) owned")
+            Button(action: onDecrease) {
+                Image(systemName: "minus")
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
+            .disabled(quantity == 0 || !canDecrease || isUpdating)
+            .accessibilityLabel("Remove a \(variantLabel) copy")
+
+            Text("\(quantity)")
+                .font(.system(.body, design: .rounded).weight(.semibold))
+                .monospacedDigit()
+                .frame(minWidth: 20)
+                .contentTransition(.numericText())
+                .accessibilityLabel("\(quantity) \(variantLabel) owned")
             Button(action: onIncrease) {
                 Image(systemName: "plus")
                     .frame(width: 44, height: 44)
@@ -1315,47 +1304,6 @@ struct CatalogQuantityStepper: View {
         .animation(.snappy(duration: 0.2), value: quantity)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("catalog-quantity-\(variantLabel)")
-    }
-}
-
-/// Segmented when the finishes fit; a scrolling row of capsules for long
-/// lists or accessibility text sizes, where segments would truncate.
-struct CatalogHistoryVariantPicker: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    let title: String
-    let variants: [PhysicalVariant]
-    @Binding var selection: String
-
-    var body: some View {
-        if variants.count <= 4, !dynamicTypeSize.isAccessibilitySize {
-            Picker(title, selection: $selection) {
-                ForEach(variants) { Text($0.label).tag($0.id) }
-            }
-            .pickerStyle(.segmented)
-            .accessibilityIdentifier("catalog-history-variant-picker")
-        } else {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(variants) { variant in
-                        let isSelected = variant.id == selection
-                        Button { selection = variant.id } label: {
-                            Text(variant.label)
-                                .font(.subheadline.weight(.semibold))
-                                .padding(.horizontal, 14)
-                                .frame(minHeight: 36)
-                                .foregroundStyle(isSelected ? Color.white : Color.primary)
-                                .background(isSelected ? Color.accentColor : Color.primary.opacity(0.08),
-                                            in: Capsule())
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityAddTraits(isSelected ? .isSelected : [])
-                    }
-                }
-            }
-            .accessibilityElement(children: .contain)
-            .accessibilityLabel(title)
-            .accessibilityIdentifier("catalog-history-variant-picker")
-        }
     }
 }
 

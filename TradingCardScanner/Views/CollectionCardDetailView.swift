@@ -91,6 +91,7 @@ struct CollectionCardDetailView: View {
     var logicalQuantity: Int? = nil
     var isLogicalConflict = false
     var instrumentKey: String? = nil
+    var personalOnly = false
     let onRemoved: (RemovedCardSnapshot) -> Void
 
     var body: some View {
@@ -98,7 +99,8 @@ struct CollectionCardDetailView: View {
             CollectionCardDetailContent(card: card, price: price, history: history,
                 unpricedReason: unpricedReason, artworkReason: artworkReason,
                 logicalQuantity: logicalQuantity, isLogicalConflict: isLogicalConflict,
-                instrumentKey: instrumentKey, localArtworkFilename: filename, onRemoved: onRemoved)
+                instrumentKey: instrumentKey, localArtworkFilename: filename, personalOnly: personalOnly,
+                onRemoved: onRemoved)
         }
     }
 
@@ -179,6 +181,7 @@ private struct CollectionCardDetailContent: View {
     let isLogicalConflict: Bool
     private let priceHistoryInstrumentKey: String
     let localArtworkFilename: String?
+    let personalOnly: Bool
 
     @State private var isConfirmingRemoval = false
     @State private var dispositionTarget: CollectionDispositionTarget?
@@ -225,6 +228,7 @@ private struct CollectionCardDetailContent: View {
         isLogicalConflict: Bool = false,
         instrumentKey: String? = nil,
         localArtworkFilename: String?,
+        personalOnly: Bool,
         onRemoved: @escaping (RemovedCardSnapshot) -> Void
     ) {
         let resolvedInstrumentKey = instrumentKey ?? card.priceKey
@@ -254,12 +258,11 @@ private struct CollectionCardDetailContent: View {
         self.isLogicalConflict = isLogicalConflict
         self.priceHistoryInstrumentKey = resolvedInstrumentKey
         self.localArtworkFilename = localArtworkFilename
+        self.personalOnly = personalOnly
         self.onRemoved = onRemoved
     }
 
     var body: some View {
-        let chartModel = makePriceHistoryModel()
-
         return ZStack {
             AppCardDetailBackdrop()
                 .ignoresSafeArea()
@@ -269,16 +272,21 @@ private struct CollectionCardDetailContent: View {
                     VStack(spacing: 0) {
                         heroSection
                         cardIdentitySection
-                        if card.cardGame == .yuGiOh {
-                            YuGiOhPricingNotice()
-                                .font(.footnote).foregroundStyle(.secondary).padding()
+                        if personalOnly {
+                            NavigationLink("Printing details") { printingDetailsDestination }
+                                .frame(minHeight: 44)
+                        } else {
+                            if card.cardGame == .yuGiOh {
+                                YuGiOhPricingNotice()
+                                    .font(.footnote).foregroundStyle(.secondary).padding()
+                            }
+                            CardDetailValuationView(price: price, selection: chartSelection)
+                                .id("card-price-valuation")
+                            priceHistorySection(model: makePriceHistoryModel())
+                            marketplaceSection
+                            ownershipSection
+                                .id("card-ownership")
                         }
-                        CardDetailValuationView(price: price, selection: chartSelection)
-                            .id("card-price-valuation")
-                        priceHistorySection(model: chartModel)
-                        marketplaceSection
-                        ownershipSection
-                            .id("card-ownership")
 
                         if isLogicalConflict {
                             conflictNotice
@@ -304,13 +312,14 @@ private struct CollectionCardDetailContent: View {
         }
         .environment(\.colorScheme, .dark)
         .task(id: MarketHistoryLoadID(request: marketHistoryRequest, retry: marketHistoryRetry)) {
+            guard !personalOnly else { return }
             await loadMarketHistory()
         }
         .task(id: GradedFinishLoadID(summary: gradedFinishSummary, retry: gradedFinishRetry)) {
             await loadGradedFinishes()
         }
         .task(id: runtimes?.runtime(for: card.cardGame)?.catalog?.generation) {
-            guard marketHistoryRequest.requiresCatalogMapping else { return }
+            guard !personalOnly, marketHistoryRequest.requiresCatalogMapping else { return }
             let source = runtimes?.runtime(for: card.cardGame)?.activationSource
             let events = await source?.activationSnapshots()
             // Subscribe before the authoritative reload, closing a missed-event
@@ -380,6 +389,7 @@ private struct CollectionCardDetailContent: View {
             )
         }
         .task(id: card.catalogProviderID ?? card.providerID) {
+            guard !personalOnly else { return }
             await loadMarketplaceLinkIfNeeded()
         }
         .task(id: quantityInput) {
@@ -409,7 +419,7 @@ private struct CollectionCardDetailContent: View {
             Text(errorMessage ?? "Please try again.")
         }
         .sheet(item: $dispositionTarget) { target in
-            CollectionDispositionSheet(target: target) { snapshot in
+            CollectionDispositionSheet(target: target) { snapshot, _ in
                 let remaining = target.quantity - snapshot.quantity
                 quantityState.update(remaining, for: quantityInput)
                 if remaining == 0 {
@@ -497,10 +507,11 @@ private struct CollectionCardDetailContent: View {
                 }
             }
 
-            Divider()
-
-            Button("Remove from Collection", role: .destructive) {
-                isConfirmingRemoval = true
+            if !personalOnly {
+                Divider()
+                Button("Remove from Collection", role: .destructive) {
+                    isConfirmingRemoval = true
+                }
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -509,7 +520,8 @@ private struct CollectionCardDetailContent: View {
                 .foregroundStyle(.white)
         }
         .accessibilityLabel("Card actions")
-        .accessibilityHint("Open collection history, manage artwork, or remove this card.")
+        .accessibilityHint(personalOnly ? "Open collection history or manage artwork."
+            : "Open collection history, manage artwork, or remove this card.")
         .disabled(isOwnershipWritePending)
     }
 
@@ -2157,7 +2169,7 @@ struct CollectionDispositionSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     let target: CollectionDispositionTarget
-    let onRecorded: (RemovedCardSnapshot) -> Void
+    let onRecorded: (RemovedCardSnapshot, CollectionDispositionKind) -> Void
     @State private var kind: CollectionDispositionKind
     @State private var quantity = 1
     @State private var amount = ""
@@ -2165,7 +2177,8 @@ struct CollectionDispositionSheet: View {
     @State private var isSaving = false
     @State private var errorMessage: String?
 
-    init(target: CollectionDispositionTarget, onRecorded: @escaping (RemovedCardSnapshot) -> Void) {
+    init(target: CollectionDispositionTarget,
+         onRecorded: @escaping (RemovedCardSnapshot, CollectionDispositionKind) -> Void) {
         self.target = target
         self.onRecorded = onRecorded
         _kind = State(initialValue: target.kind)
@@ -2271,7 +2284,7 @@ struct CollectionDispositionSheet: View {
                 }
                 guard generation.isCurrent(token) else { return }
                 dismiss()
-                onRecorded(snapshot)
+                onRecorded(snapshot, disposition.kind)
             } catch is CancellationError {
             } catch {
                 guard generation.isCurrent(token) else { return }
@@ -2875,9 +2888,6 @@ struct CardMarketHistoryPanel: View {
     @Environment(\.cardGameRuntimes) private var runtimes
     let request: CardMarketHistoryRequest
     var currentPrice: PriceDisplay? = nil
-    /// Chooses which finish the chart shows; sits under the title so the
-    /// control reads as part of the chart rather than a stray menu above it.
-    var variantPicker: AnyView? = nil
     @State private var points: [JustTCGHistoryPoint] = []
     @State private var range: PortfolioHistoryRange = .threeMonths
     @State private var selection = PriceHistorySelection()
@@ -2896,9 +2906,6 @@ struct CardMarketHistoryPanel: View {
             Text("JustTCG historical prices · Today uses the current quote")
                 .font(.caption).foregroundStyle(.secondary).padding(.horizontal, 16)
                 .fixedSize(horizontal: false, vertical: true)
-            if let variantPicker {
-                variantPicker.padding(.horizontal, 16)
-            }
             CardMarketHistoryReadout(selection: selection)
             MarketHistoryChartContent(model: model, hasHistory: !points.isEmpty, isLoading: isLoading,
                                       error: error, direction: direction, range: $range,

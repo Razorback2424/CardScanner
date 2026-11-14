@@ -160,6 +160,7 @@ struct ContentView: View {
         .environmentObject(priceSnapshot)
         .environment(\.cardGameRuntimes, runtimes)
         .environment(\.sharedBrowseCatalog, browseCatalog)
+        .environment(\.catalogCopyHistory, history)
         .environmentObject(projectionStore)
         .environmentObject(setCompletionStore)
         .environmentObject(revisionStore)
