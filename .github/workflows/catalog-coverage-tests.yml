@@ -30,6 +30,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up a reproducible Python environment
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/tests/requirements-ci.txt
+      - name: Install dependencies for retained image comparisons
+        run: |
+          python3 -m pip install -r scripts/tests/requirements-ci.txt
+          python3 -c "from PIL import Image; print('Pillow image fixtures ready:', Image.__version__)"
+      - name: Verify native CI selectors name real XCTest classes and methods
+        run: python3 scripts/verify_ci_test_selections.py .github/workflows/catalog-coverage-tests.yml
       - name: Test offline ingestion and mapping policies
         run: |
           # The finish ledger pins this baseline; its objects are required by the audit.
@@ -173,6 +185,7 @@ jobs:
             -only-testing:TradingCardScannerTests/OpusImplementationPlanTests \
             -only-testing:TradingCardScannerTests/BrowseFeatureTests \
             -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
+            -only-testing:TradingCardScannerTests/CSVImportResumeTests \
             -only-testing:TradingCardScannerTests/MagicPhysicalObjectTests \
             -only-testing:TradingCardScannerTests/LorcanaPhysicalCatalogTests \
             -only-testing:TradingCardScannerTests/LorcanaDiscoveryCatalogTests \

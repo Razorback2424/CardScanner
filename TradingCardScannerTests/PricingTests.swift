@@ -47,6 +47,33 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testPriceSnapshotReadFailureAfterStorageSwitchDoesNotShowPreviousCollection() async throws {
+        let first = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let second = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let previous = PriceSnapshot(prices: [
+            "previous-store-card": PriceDisplay(amount: 99, currencyCode: "USD",
+                source: .tcgplayer, sourceUpdatedAt: nil, fetchedAt: .now, lastCheckedAt: .now)
+        ], diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:])
+        let store = PriceSnapshotStore()
+        store.setSnapshotReadOverrideForTesting { container in
+            ObjectIdentifier(container) == ObjectIdentifier(first) ? previous : nil
+        }
+
+        await store.rebuild(container: first)
+        XCTAssertEqual(store.display(for: "previous-store-card")?.amount, 99)
+        await store.rebuild(container: second)
+        XCTAssertNil(store.display(for: "previous-store-card"),
+            "Prices from another storage generation must never survive a failed first read")
+        XCTAssertTrue(store.prices.isEmpty)
+
+        await store.rebuild(container: first)
+        XCTAssertEqual(store.display(for: "previous-store-card")?.amount, 99,
+            "A valid snapshot from a newly selected container must still load")
+    }
+
+    @MainActor
     func testCatalogDetailFirstEditionHoloUsesItsOwnFinishAndRun() throws {
         let json = #"{"id":"base1-004","localId":"004","name":"Charizard","set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},"variants":{"firstEdition":true,"holo":true,"normal":false,"reverse":false},"variants_detailed":[{"type":"holo","stamp":["1st-edition"],"pricing":{"tcgplayer":{"holofoil":{"marketPrice":816}}}}]}"#
         let card = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "BAS")
@@ -1175,25 +1202,33 @@ final class PricingTests: XCTestCase {
         try context.save()
         let worker = PriceRefreshModelActor(modelContainer: container)
         await worker.setGradedLookupOverrideForTesting { _, _ in
+            XCTFail("An unconfirmed finish must never reach the provider")
+            return .noProductMatch
+        }
+        guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+            return XCTFail("Expected initial refresh to record the unresolved finish")
+        }
+        XCTAssertEqual(result.priced, 0)
+        let unconfirmedContext = ModelContext(container)
+        let unconfirmed = try XCTUnwrap(unconfirmedContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertNil(unconfirmed.justTCGVariantID)
+        let unresolved = PriceStore(context: unconfirmedContext).record(forKey: unconfirmed.priceKey)
+        XCTAssertEqual(unresolved?.lastFailureReasonRaw, PricingDiagnosticReason.gradedFinishUnresolved.rawValue)
+        XCTAssertNil(unresolved?.effectiveUnitMarketPriceUSD)
+        guard case .noTargets = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+            return XCTFail("Expected the unchanged unresolved finish to be skipped")
+        }
+
+        await worker.setGradedLookupOverrideForTesting { _, _ in
             .matched([GradedVariant(id: "sole-holo", company: .cgc, grade: .init(value: "10"),
                 printing: "Holofoil", marketPriceUSD: 123, updatedAt: nil)])
         }
-        for _ in 0..<2 {
-            guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
-                return XCTFail("Expected completed refresh")
-            }
-            XCTAssertEqual(result.priced, 0)
-            let fresh = ModelContext(container)
-            let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
-            XCTAssertNil(saved.justTCGVariantID)
-            XCTAssertNil(PriceStore(context: fresh).record(forKey: saved.priceKey)?.effectiveUnitMarketPriceUSD)
-        }
         row.variantID = PhysicalVariant.holo.id
         try context.save()
-        guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+        guard case let .completed(confirmedResult) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
             return XCTFail("Expected confirmed refresh")
         }
-        XCTAssertEqual(result.priced, 1)
+        XCTAssertEqual(confirmedResult.priced, 1)
         let fresh = ModelContext(container)
         let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
         XCTAssertEqual(saved.justTCGVariantID, "sole-holo")

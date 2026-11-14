@@ -77,6 +77,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case gradedVariantUnavailable = "graded_variant_unavailable"
     case providerRequestFailed = "provider_request_failed"
     case gradedMarketPriceNull = "graded_market_price_null"
+    case gradedFinishUnresolved = "graded_finish_unresolved"
     case gradedCardNotTracked = "graded_card_not_tracked"
     case gradedCardHasNoPrices = "graded_card_no_prices"
     case gradedGradeNotTracked = "graded_grade_not_tracked"
@@ -102,7 +103,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .noExactVariantPrice: return "No price for this finish"
         case .gradedVariantUnavailable: return "No price for this grade"
         case .providerRequestFailed: return "Couldn’t update price"
-        case .gradedMarketPriceNull: return "No graded price right now"
+        case .gradedMarketPriceNull: return "No current graded price"
+        case .gradedFinishUnresolved: return "Confirm printed finish"
         case .gradedCardNotTracked: return "No graded price found"
         case .gradedCardHasNoPrices: return "No graded sales yet"
         case .gradedGradeNotTracked: return "No price for this grade"
@@ -123,7 +125,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     /// show it inline; the rest keep it one tap away.
     var detailIsActionable: Bool {
         switch self {
-        case .notChecked, .identityResolvedAfterFailedCheck, .providerRequestFailed, .physicalIdentityReview:
+        case .notChecked, .identityResolvedAfterFailedCheck, .providerRequestFailed,
+             .physicalIdentityReview, .gradedFinishUnresolved:
             return true
         default:
             return false
@@ -147,7 +150,9 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .providerRequestFailed:
             return "The last provider request failed. A later refresh can try again."
         case .gradedMarketPriceNull:
-            return "The exact graded listing exists, but the provider currently reports no market price."
+            return "The exact graded listing exists, but its latest published market price is unavailable. Any previous amount remains in history and is excluded from current portfolio value."
+        case .gradedFinishUnresolved:
+            return "The slab was saved, but its printed finish was not established. Open its details, confirm the printed finish, then refresh graded prices."
         case .gradedCardNotTracked:
             return "JustTCG returned no graded card matching this name, set, and collector number. The app will check again next week."
         case .gradedCardHasNoPrices:
@@ -224,8 +229,10 @@ enum PricingDiagnostics {
             if lifecycle.isExpired(at: .now) { return .gradedMarketPriceExpired }
             if lifecycle.wasNeverPriced { return .gradedMarketNeverPriced }
         }
+        if record?.exactGradedNullQuoteIsWithdrawn(at: .now) == true { return .gradedMarketPriceNull }
         if let reason = record?.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
-           reason == .gradedSearchIncomplete || reason == .gradedIdentityUnresolved { return reason }
+           reason == .gradedSearchIncomplete || reason == .gradedIdentityUnresolved
+            || reason == .gradedFinishUnresolved || reason == .gradedMarketPriceNull { return reason }
         if let id = card.variantID,
            PokemonVariantRules.requiresPhysicalReview(cardID: card.catalogProviderID ?? card.providerID,
                variant: PhysicalVariant.resolving(id)) { return .physicalIdentityReview }
@@ -362,6 +369,7 @@ struct PriceRecordKeySelection: Sendable {
             ),
             invalidatedKeys: Set(records.filter {
                 $0.isInvalidated || $0.exactGradedQuoteIsWithdrawn(at: date)
+                    || $0.exactGradedNullQuoteIsWithdrawn(at: date)
             }.map(\.key))
         )
     }
@@ -884,7 +892,7 @@ struct PriceStore {
         guard let record = record(forKey: key), record.marketVariantID == evidence.variantID,
               record.lastCheckedAt == evidence.checkedAt else { return }
         PriceObservationLog(context: context, index: index).recordElapsedEligibility(for: record, at: evidence.checkedAt)
-        if evidence.lifecycle.withdrawsCurrentQuote(at: evidence.checkedAt) {
+        if evidence.withdrawsCurrentQuote(at: evidence.checkedAt) {
             // A price-observation clock and a most-recent-sale clock describe
             // different facts. Only matching clock fields can establish stale
             // evidence; same-sale expiry may have a later update timestamp.
@@ -902,10 +910,16 @@ struct PriceStore {
                 prior?.sourceUpdatedAt, observedUpdate].compactMap { $0 }.max()
             if let incomingUpdate = evidence.sourceUpdatedAt,
                let knownUpdate, incomingUpdate < knownUpdate { return }
-            PriceObservationLog(context: context, index: index).recordInvalidation(
-                instrumentKey: key, source: .justTCG, at: evidence.checkedAt)
+            if evidence.marketPriceMissing != true {
+                PriceObservationLog(context: context, index: index).recordInvalidation(
+                    instrumentKey: key, source: .justTCG, at: evidence.checkedAt)
+            }
         }
         record.exactGradedQuoteEvidence = evidence
+        if evidence.marketPriceMissing == true {
+            PriceObservationLog(context: context, index: index)
+                .recordElapsedEligibility(for: record, at: evidence.checkedAt)
+        }
         PriceObservationLog(context: context, index: index)
             .recordLocalQuoteReceipt(for: record, learnedAt: evidence.checkedAt)
     }
@@ -1088,7 +1102,10 @@ struct PriceStore {
         // The canonical record is authoritative once it has explicitly been
         // invalidated. Falling through to a legacy key in that state would
         // resurrect the very value the invalidation withdrew.
-        if primary.isInvalidated || primary.exactGradedQuoteIsWithdrawn { return primary }
+        if primary.isInvalidated || primary.exactGradedQuoteIsWithdrawn
+            || primary.exactGradedNullQuoteIsWithdrawn(at: .now) {
+            return primary
+        }
 
         // Prefer a real record value over an empty canonical placeholder. The
         // legacy value is for the same exact object and remains better evidence

@@ -29,8 +29,7 @@ struct PriceCheckResultView: View {
                     artwork
                     identity
                     quote
-                    if let destination = TCGplayerLinkBuilder.destination(
-                        for: result.card, variant: result.resolved.variant, pokemonPrintRun: result.pokemonPrintRun) {
+                    if let destination = TCGplayerLinkBuilder.destination(for: result.resolvedScan) {
                         CardDetailMarketplaceButton(destination: destination)
                     }
                 }
@@ -297,12 +296,31 @@ struct PriceCheckResultView: View {
             )
         case .gradedGradeNotTracked:
             NoPriceState(
-                "No price for this grade",
+                "No price for this exact slab",
                 systemImage: "seal",
                 detail: gradedMarketContext,
                 why: gradedMarketContext == nil
-                    ? "JustTCG lists other grades for this card, but not this one."
+                    ? "The published listings do not confirm the exact finish, grader, grade and designation."
                     : nil
+            )
+        case .gradedFinishUnresolved:
+            NoPriceState(
+                "Confirm the printed finish",
+                systemImage: "square.on.square",
+                why: "The slab was recognized, but its physical finish is uncertain. Confirm it before a graded price can be matched."
+            )
+        case .gradedSearchIncomplete:
+            NoPriceState(
+                "Graded search incomplete",
+                systemImage: "arrow.clockwise",
+                detail: "Retry when the pricing provider is available.",
+                why: "A bounded marketplace search did not complete. This does not mean the slab is unlisted."
+            )
+        case .gradedIdentityUnresolved:
+            NoPriceState(
+                "Graded identity not verified",
+                systemImage: "questionmark.folder",
+                why: "The set, edition or printed variant could not be matched reliably to the graded marketplace."
             )
         case .providerUnavailable:
             NoPriceState("Couldn’t reach prices", systemImage: "wifi.exclamationmark", detail: "Try again shortly.")
@@ -360,7 +378,8 @@ struct PriceCheckResultView: View {
         case .mappingUnavailable, .noExactPrice, .notMatched, .unsupportedFinish,
              .unsupportedGame, .unsupportedTreatment, .gradedGradeNotPriced,
              .gradedProductNotMatched, .gradedCardNotTracked, .gradedCardHasNoPrices,
-             .gradedGradeNotTracked:
+             .gradedGradeNotTracked, .gradedFinishUnresolved, .gradedSearchIncomplete,
+             .gradedIdentityUnresolved:
             return "No current price — showing last known"
         }
     }

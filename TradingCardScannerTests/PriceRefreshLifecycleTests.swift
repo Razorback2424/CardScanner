@@ -507,6 +507,36 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         XCTAssertTrue(eligible(fallback: false, credentials: true))
     }
 
+    func testUnboundGradedFinishMustBeConfirmedBeforeLookupAndManualRetryOverridesRecentMiss() {
+        var target = PriceTarget(
+            game: .pokemon, printingID: "graded:review-psa10", catalogPrintingID: "sv10-085",
+            setCode: "DRI", variantID: nil, importedIdentity: nil,
+            catalogMetadataCheckedAt: nil, lastFailureAt: nil,
+            lastFailureReasonRaw: PricingDiagnosticReason.gradedFinishUnresolved.rawValue,
+            hasPrice: false, lastCheckedAt: .now
+        )
+        target.itemKind = .gradedCard
+        target.gradedIdentity = .init(name: "Example Pokémon", setName: "Destined Rivals",
+            collectorNumber: "085", catalogID: "sv10-085")
+        target.gradingCompany = .psa
+        target.grade = "10"
+
+        XCTAssertFalse(target.canResolveGradedVariant)
+        XCTAssertTrue(PriceRefreshController.staleTargets(from: [target], intent: .manual).isEmpty)
+
+        target.variantID = PhysicalVariant.normal.id
+        XCTAssertTrue(target.canResolveGradedVariant)
+        XCTAssertEqual(PriceRefreshController.staleTargets(from: [target], intent: .manual).count, 1)
+        XCTAssertEqual(PriceRefreshController.staleTargets(from: [target]).count, 1,
+            "Correcting the physical finish must unblock a previously unresolved slab")
+
+        target.lastFailureReasonRaw = PricingDiagnosticReason.gradedGradeNotTracked.rawValue
+        XCTAssertTrue(PriceRefreshController.staleTargets(from: [target]).isEmpty,
+            "Automatic graded coverage retries remain weekly")
+        XCTAssertEqual(PriceRefreshController.staleTargets(from: [target], intent: .manual).count, 1,
+            "An explicit user retry should be allowed without waiting a week")
+    }
+
     func testEmptyAutomaticPassNotifiesObserversWhenQueueEndsWithoutStatusChange() async throws {
         let container = try makeContainer(withCard: false)
         let controller = PriceRefreshController()
@@ -708,6 +738,51 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         XCTAssertFalse(controller.isPassInFlight)
         let attempts = await counter.value()
         XCTAssertEqual(attempts, 1, "The retained request must run after the later suspension resumes.")
+    }
+
+    @MainActor
+    func testInteractiveGradedIdentityGatePreemptsAndReplaysSlowBackgroundRefresh() async throws {
+        let container = try makeContainer(withCard: true)
+        let controller = PriceRefreshController.shared
+        controller.dismissSummary()
+        let gate = PriceRefreshTestGate()
+        let attempts = PriceRefreshAttemptCounter()
+        controller.setPokemonFetchOverrideForTesting { printing in
+            if await attempts.next() == 1 {
+                // If an interactive binding waits for the whole pass, this
+                // blocks it for ten seconds. Cancellation ends immediately.
+                try await gate.pauseUntilCancelled(for: .seconds(10))
+            }
+            return .pokemon(Self.card(id: printing.printingID), setCode: "LIF")
+        }
+        defer {
+            controller.setPokemonFetchOverrideForTesting(nil)
+            controller.dismissSummary()
+        }
+
+        let active = Task {
+            await controller.refresh(Self.request, container: container, owner: .background)
+        }
+        await gate.waitUntilStarted()
+
+        let startedAt = Date.now
+        var didCommit = false
+        await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+            didCommit = true
+        }
+        XCTAssertTrue(didCommit, "The interactive binding acquires the same identity gate")
+        XCTAssertLessThan(Date.now.timeIntervalSince(startedAt), 5,
+            "The graded identity write must not wait for the full vendor pass")
+
+        _ = await active.value
+        for _ in 0..<300 {
+            let count = await attempts.value()
+            if count >= 2 && !controller.isPassInFlight { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertFalse(controller.isPassInFlight)
+        let count = await attempts.value()
+        XCTAssertEqual(count, 2, "Background work interrupted for the slab must replay exactly once")
     }
 
     func testCancellingSuspensionUpgradesAnExistingNonCancellingWait() async throws {

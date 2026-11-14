@@ -298,6 +298,39 @@ final class StoreRevisionMonitorTests: XCTestCase {
         XCTAssertEqual(projection.snapshot?.rows.first?.quantity, 1)
     }
 
+    func testProvenanceOnlyChangeInvalidatesCollectionProjectionFingerprint() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let card = monitorCard(game: .lorcana)
+        card.variantResolutionRaw = VariantResolution.uniqueInCatalog.rawValue
+        context.insert(card)
+        try context.save()
+
+        let initialActor = await StoreRevisionModelActor.makeBackground(modelContainer: container)
+        let before = await initialActor.fingerprint()
+        let initialReadSucceeded = await initialActor.readSucceeded()
+        XCTAssertTrue(initialReadSucceeded)
+
+        // The user-confirmed provenance affects CollectionRow and its finish
+        // presentation, without changing the item's identity or amount.
+        card.variantResolutionRaw = VariantResolution.userConfirmed.rawValue
+        try context.save()
+
+        let updatedActor = await StoreRevisionModelActor.makeBackground(modelContainer: container)
+        let after = await updatedActor.fingerprint()
+        let updatedReadSucceeded = await updatedActor.readSucceeded()
+        XCTAssertTrue(updatedReadSucceeded)
+        XCTAssertEqual(before.cardCount, after.cardCount)
+        XCTAssertEqual(before.priceValues, after.priceValues)
+        XCTAssertEqual(before.inventoryEvents, after.inventoryEvents)
+        XCTAssertNotEqual(before.cards, after.cards)
+
+        let projection = CollectionProjectionStore()
+        await projection.rebuild(container: container)
+        XCTAssertEqual(projection.snapshot?.rows.first?.variantResolution, .userConfirmed)
+    }
+
     func testOwnershipEditReplaysBeforeAnActivePriceRefreshFinishes() async throws {
         for usesBulkInterval in [false, true] {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
@@ -555,6 +588,105 @@ final class StoreRevisionMonitorTests: XCTestCase {
             previousPendingFingerprint: fingerprint,
             currentPendingKeys: []
         ))
+    }
+
+    func testProvenanceOnlyChangeInvalidatesCollectionFingerprintAndProjection() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let row = CollectedCard(
+            collectionKey: "provenance-only#normal",
+            game: .pokemon,
+            providerID: "provenance-only",
+            name: "Provenance Only",
+            setName: "Fixture Set",
+            setCode: "FIX",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .normal,
+            variantResolution: .uniqueInCatalog
+        )
+        container.mainContext.insert(row)
+        try container.mainContext.save()
+
+        let monitor = await StoreRevisionModelActor.makeBackground(modelContainer: container)
+        let before = await monitor.fingerprint()
+        let projection = await CollectionProjectionActor.makeBackground(modelContainer: container)
+        let initial = await projection.snapshot()
+        XCTAssertEqual(initial.rowsByCollectionKey[row.collectionKey]?.variantResolution,
+            .uniqueInCatalog)
+
+        // No physical identity, quantity, ownership or price field changes.
+        row.variantResolutionRaw = VariantResolution.userConfirmed.rawValue
+        try container.mainContext.save()
+        let nextMonitor = await StoreRevisionModelActor.makeBackground(modelContainer: container)
+        let after = await nextMonitor.fingerprint()
+        let nextProjection = await CollectionProjectionActor.makeBackground(modelContainer: container)
+        let refreshed = await nextProjection.snapshot()
+        XCTAssertNotEqual(before.cards, after.cards,
+            "Changing the provenance used by the finish overlay must rebuild the collection")
+        XCTAssertEqual(before.stalePriceTargetFingerprint, after.stalePriceTargetFingerprint,
+            "A provenance-only edit must not schedule a price refresh")
+        XCTAssertEqual(refreshed.rowsByCollectionKey[row.collectionKey]?.variantResolution,
+            .userConfirmed)
+    }
+
+    func testPriceSnapshotRetriesTransientReadFailureWithoutAnotherSave() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let store = PriceSnapshotStore()
+        var attempts = 0
+        let expected = PriceSnapshot(
+            prices: ["pokemon:fixture": PriceDisplay(amount: 25)],
+            diagnosticsByCollectionKey: [:],
+            priceStorageKeyByCollectionKey: [:]
+        )
+        store.setSnapshotReadOverrideForTesting { _ in
+            attempts += 1
+            return attempts == 1 ? nil : expected
+        }
+        await store.rebuild(container: container)
+        XCTAssertEqual(attempts, 2)
+        XCTAssertEqual(store.prices["pokemon:fixture"]?.amount, 25)
+        XCTAssertFalse(store.loadFailed)
+    }
+
+    func testPriceSnapshotPreservesLastValueAndOffersRecoveryAfterPersistentReadFailure() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let store = PriceSnapshotStore()
+        let initial = PriceSnapshot(
+            prices: ["pokemon:fixture": PriceDisplay(amount: 25)],
+            diagnosticsByCollectionKey: [:],
+            priceStorageKeyByCollectionKey: [:]
+        )
+        store.setSnapshotReadOverrideForTesting { _ in initial }
+        await store.rebuild(container: container)
+        let baselineRevision = store.revision
+
+        var failedReads = 0
+        store.setSnapshotReadOverrideForTesting { _ in
+            failedReads += 1
+            return nil
+        }
+        await store.rebuild(container: container)
+        XCTAssertEqual(failedReads, 3, "A failed read must have a bounded retry budget")
+        XCTAssertTrue(store.loadFailed, "The collection can now show an actionable retry")
+        XCTAssertEqual(store.prices["pokemon:fixture"]?.amount, 25,
+            "A read failure must never replace a real price with an empty snapshot")
+        XCTAssertEqual(store.revision, baselineRevision)
+
+        let updated = PriceSnapshot(
+            prices: ["pokemon:fixture": PriceDisplay(amount: 30)],
+            diagnosticsByCollectionKey: [:],
+            priceStorageKeyByCollectionKey: [:]
+        )
+        store.setSnapshotReadOverrideForTesting { _ in updated }
+        await store.rebuild(container: container)
+        XCTAssertFalse(store.loadFailed)
+        XCTAssertEqual(store.prices["pokemon:fixture"]?.amount, 30)
+        XCTAssertEqual(store.revision, baselineRevision + 1)
     }
 
     func testDerivedOnlySavesAreIgnoredAndOwnershipSavesRemainRelevant() throws {

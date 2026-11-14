@@ -24,6 +24,38 @@ final class TCGplayerLinkTests: XCTestCase {
         XCTAssertNil(TCGplayerLinkBuilder.destination(for: row), "Unlimited product cannot price another print run")
     }
 
+    func testGradedSlabCannotOfferRawMarketplaceProductAsEvidence() throws {
+        let identified = try pricedPokemon()
+        let raw = CollectedCard(card: identified,
+            resolved: .init(variant: .holo, resolution: .userConfirmed))
+        XCTAssertNotNil(TCGplayerLinkBuilder.destination(for: raw),
+            "Ordinary raw collection product links must remain available")
+
+        raw.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        XCTAssertEqual(raw.tcgplayerProductID, "123456",
+            "The underlying raw product is deliberately still stored")
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: raw),
+            "Collection and movement details must not advertise a raw product as the graded market")
+
+        let subject = ScanSubject(identifier: .pokemon(setCode: "SVP", cardNumber: "1",
+            printedTotal: 2, setDefinition: .init(printedCode: "SVP", tcgdexSetID: "svp",
+                officialCount: 2, releaseIndex: 0)))
+        let rawScan = ResolvedScan(request: ScanRequest(subject: subject,
+            purpose: .priceCheck, generation: 0), card: identified,
+            resolved: .init(variant: .holo, resolution: .userConfirmed),
+            pokemonPrintRun: nil, options: [])
+        XCTAssertNotNil(TCGplayerLinkBuilder.destination(for: rawScan))
+        let slabSubject = ScanSubject(identifier: subject.identifier,
+            slab: GradedSlabEvidence(company: .psa, grade: CardGrade(value: "10"),
+                certificationNumber: "synthetic-cert", labelCardText: [], printedFinish: .holo))
+        let slabScan = ResolvedScan(request: ScanRequest(subject: slabSubject,
+            purpose: .priceCheck, generation: 0), card: identified,
+            resolved: .init(variant: .holo, resolution: .userConfirmed),
+            pokemonPrintRun: nil, options: [])
+        XCTAssertNil(TCGplayerLinkBuilder.destination(for: slabScan),
+            "Price Check must not link the underlying ungraded TCGplayer product")
+    }
+
     func testAmbiguousPokemonMetadataWithdrawsAnOwnedProduct() throws {
         let identified = try pricedPokemon()
         let row = CollectedCard(card: identified, resolved: .init(variant: .holo, resolution: .userConfirmed))

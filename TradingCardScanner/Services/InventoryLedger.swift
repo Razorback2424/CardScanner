@@ -354,7 +354,7 @@ struct InventoryLedger {
                       receipt.learnedAt <= date,
                       receipt.evidence.checkedAt > evidence.checkedAt,
                       record.invalidatedAt.map({ receipt.learnedAt > $0 }) ?? true,
-                      !receipt.evidence.lifecycle.withdrawsCurrentQuote(at: date) else { return .unpriced }
+                      !receipt.evidence.withdrawsCurrentQuote(at: date) else { return .unpriced }
                 if let knownUpdate, receipt.sourceUpdatedAt.map({ $0 >= knownUpdate }) != true { return .unpriced }
                 if let incomingSale = receipt.evidence.lifecycle.lastSaleAt,
                    let knownSale = evidence.lifecycle.lastSaleAt, incomingSale < knownSale { return .unpriced }

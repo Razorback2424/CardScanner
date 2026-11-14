@@ -1,0 +1,102 @@
+name: iOS Release build and full-suite validation
+
+on:
+  pull_request:
+    paths:
+      - "TradingCardScanner/**"
+      - "TradingCardScannerTests/**"
+      - "TradingCardScanner.xcodeproj/**"
+      - "Config/**"
+      - "*CatalogCore/**"
+      - "docs/plans/pr23-production-review-validation.md"
+      - ".github/workflows/ios-release-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-release-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-build:
+    runs-on: xcode-27
+    timeout-minutes: 90
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Record exact candidate and Xcode version
+        run: |
+          git rev-parse HEAD
+          xcodebuild -version
+      - name: Build complete application in Release configuration
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project TradingCardScanner.xcodeproj \
+            -scheme TradingCardScanner \
+            -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$RUNNER_TEMP/ios-release-derived-data" \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee "$RUNNER_TEMP/ios-release-build.log"
+      - name: Retain Release build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-build-log
+          path: ${{ runner.temp }}/ios-release-build.log
+          retention-days: 14
+
+  full-app-tests:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: xcode-27
+    timeout-minutes: 90
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record exact candidate and Xcode version
+        run: |
+          git rev-parse HEAD
+          xcodebuild -version
+      - name: Select an available iPhone simulator
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          devices = json.loads(subprocess.check_output(
+              ['xcrun', 'simctl', 'list', 'devices', 'available', '-j']))['devices']
+          phones = [(runtime, device) for runtime, group in devices.items()
+                    if '.iOS-' in runtime for device in group
+                    if device['name'].startswith('iPhone')]
+          if not phones:
+              raise SystemExit('No available iPhone simulator')
+          phones.sort(key=lambda entry: (entry[0], entry[1]['name']), reverse=True)
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write('IOS_TEST_DEVICE=' + phones[0][1]['udid'] + '\n')
+          PY
+      - name: Run complete iOS application test suite
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project TradingCardScanner.xcodeproj \
+            -scheme TradingCardScanner \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$IOS_TEST_DEVICE" \
+            -derivedDataPath "$RUNNER_TEMP/ios-release-derived-data" \
+            -resultBundlePath "$RUNNER_TEMP/ios-release-tests.xcresult" \
+            -parallel-testing-enabled NO \
+            2>&1 | tee "$RUNNER_TEMP/ios-release-tests.log"
+      - name: Retain full test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-gate-results
+          path: |
+            ${{ runner.temp }}/ios-release-tests.log
+            ${{ runner.temp }}/ios-release-tests.xcresult
+          retention-days: 14

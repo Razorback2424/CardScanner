@@ -1,6 +1,7 @@
 import XCTest
 import SwiftData
 import Network
+import Security
 @testable import TradingCardScanner
 
 private actor MarketRefreshProgressProbe {
@@ -27,6 +28,20 @@ private actor EditionPriceProbe {
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    func testTransientKeychainReadFailureIsNotCachedAsMissingPricingCredentials() {
+        XCTAssertEqual(PriceVendorCredentials.cacheablePresence(
+            status: errSecItemNotFound, key: nil), false)
+        XCTAssertEqual(PriceVendorCredentials.cacheablePresence(
+            status: errSecSuccess, key: "synthetic-key"), true)
+        XCTAssertNil(PriceVendorCredentials.cacheablePresence(
+            status: errSecInteractionNotAllowed, key: nil))
+        XCTAssertNil(PriceVendorCredentials.cacheablePresence(
+            status: errSecNotAvailable, key: nil))
+        XCTAssertNil(PriceVendorCredentials.cacheablePresence(
+            status: errSecSuccess, key: nil),
+            "A malformed result must not permanently suppress access after repair")
+    }
+
     func testAuthenticatedPricingClientsRejectRedirectsBeforeForwardingKeys() async throws {
         let suite = "PricingRedirects-\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
@@ -269,6 +284,107 @@ final class JustTCGContractTests: XCTestCase {
         }
         let legacy = GradedVariant(id: "legacy", company: .psa, grade: variant.grade, marketPriceUSD: 50, updatedAt: now)
         XCTAssertEqual(legacy.marketPriceUSD(at: .distantFuture), 50)
+    }
+
+    @MainActor
+    func testExactGradedNullQuoteRetainsHistoryWithoutCountingCurrentValue() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let store = PriceStore(context: container.mainContext)
+        let earlier = Date.now.addingTimeInterval(-60)
+        let grade = CardGrade(value: "10", label: "Gem Mint")
+        let quoted = GradedVariant(id: "synthetic-exact-psa10", company: .psa,
+            grade: grade, printing: "Holofoil", marketPriceUSD: 200, updatedAt: earlier)
+        let first = GradedVariantBinding.storeUnboundVariantQuote(
+            quoted, game: .pokemon, variantID: nil, treatmentIDs: [], store: store, at: earlier)
+        XCTAssertTrue(first.wasAccepted)
+        XCTAssertEqual(store.record(forKey: first.priceKey)?.effectiveUnitMarketPriceUSD, 200)
+
+        let withdrawnAt = earlier.addingTimeInterval(10)
+        let olderNull = GradedVariant(id: quoted.id, company: .psa, grade: grade,
+            printing: "Holofoil", marketPriceUSD: nil, updatedAt: earlier.addingTimeInterval(-1))
+        XCTAssertFalse(GradedVariantBinding.storeUnboundVariantQuote(olderNull, game: .pokemon,
+            variantID: nil, treatmentIDs: [], store: store, at: withdrawnAt).wasAccepted)
+        let noCurrentQuote = GradedVariant(id: quoted.id, company: .psa, grade: grade,
+            printing: "Holofoil", marketPriceUSD: nil, updatedAt: withdrawnAt)
+        let second = GradedVariantBinding.storeUnboundVariantQuote(
+            noCurrentQuote, game: .pokemon, variantID: nil, treatmentIDs: [], store: store, at: withdrawnAt)
+        XCTAssertTrue(second.wasAccepted)
+        let retained = try XCTUnwrap(store.record(forKey: second.priceKey))
+        XCTAssertEqual(retained.unitMarketPriceUSD, 200, "Do not destroy the historical amount")
+        XCTAssertEqual(retained.exactGradedQuoteEvidence?.marketPriceMissing, true)
+        XCTAssertNil(retained.effectiveUnitMarketPriceUSD, "A current null quote must not value the portfolio")
+        XCTAssertEqual(retained.effectiveUnitMarketPriceUSD(at: earlier.addingTimeInterval(1)), 200,
+            "Earlier valuation cutoffs must retain the quote known before the null result")
+        XCTAssertNil(retained.display.amount)
+        XCTAssertEqual(retained.display.lastKnownGradedAmount, 200)
+        let log = PriceObservationLog(context: container.mainContext)
+        let withdrawal = try XCTUnwrap(log.newestObservation(instrumentKey: second.priceKey))
+        XCTAssertEqual(withdrawal.kind, .eligibilityExpiry)
+        XCTAssertEqual(withdrawal.receivedAt, withdrawnAt)
+        XCTAssertNil(InventoryLedger.resolveValuation(observation: withdrawal, record: retained).unitPrice)
+        XCTAssertTrue(store.recordLookupStatus(.gradedVariantUnavailable, game: .pokemon,
+            printingID: retained.printingID, variantID: retained.variantID, at: withdrawnAt.addingTimeInterval(1)))
+        XCTAssertNil(retained.effectiveUnitMarketPriceUSD)
+
+        let recovered = GradedVariant(id: quoted.id, company: .psa, grade: grade,
+            printing: "Holofoil", marketPriceUSD: 230, updatedAt: .now)
+        let third = GradedVariantBinding.storeUnboundVariantQuote(
+            recovered, game: .pokemon, variantID: nil, treatmentIDs: [], store: store,
+            at: .now.addingTimeInterval(1))
+        XCTAssertTrue(third.wasAccepted)
+        let latest = try XCTUnwrap(store.record(forKey: third.priceKey))
+        XCTAssertEqual(latest.effectiveUnitMarketPriceUSD, 230)
+        XCTAssertNil(latest.display.lastKnownGradedAmount)
+        XCTAssertEqual(log.newestObservation(instrumentKey: third.priceKey)?.effectiveUSDAmount?.doubleValue, 230)
+    }
+
+    @MainActor
+    func testWithdrawnExactSlabQuoteCannotResurrectValuedLegacyAlias() throws {
+        let slab = CollectedCard(
+            collectionKey: "graded:synthetic-owner", game: .pokemon, providerID: "base1-4",
+            name: "Fixture", setName: "Base Set", setCode: "BAS", cardNumber: "4",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .holo,
+            variantResolution: .userConfirmed
+        )
+        slab.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        slab.justTCGVariantID = "synthetic-exact-psa10"
+        slab.justTCGAPIVersion = "v2"
+        let legacyKey = try XCTUnwrap(slab.legacyPriceKeys.first)
+        XCTAssertNotEqual(slab.priceKey, legacyKey)
+
+        let exact = PriceRecord(key: slab.priceKey, game: .pokemon,
+            printingID: slab.priceStorageID, variantID: slab.variantID)
+        exact.unitMarketPriceUSD = 200
+        exact.lastFailureReasonRaw = PricingDiagnosticReason.gradedMarketPriceNull.rawValue
+        let withdrawnAt = Date.now
+        exact.lastCheckedAt = withdrawnAt
+        exact.lastSuccessfulCheckAt = withdrawnAt
+        XCTAssertEqual(exact.effectiveUnitMarketPriceUSD(at: withdrawnAt.addingTimeInterval(-60)),
+            200, "A later null quote must not retroactively withdraw historical value")
+        exact.recordFailure(at: withdrawnAt.addingTimeInterval(120))
+        XCTAssertEqual(exact.effectiveUnitMarketPriceUSD(at: withdrawnAt.addingTimeInterval(-1)),
+            200, "A failed retry cannot change when withdrawal first became known")
+        XCTAssertNil(exact.effectiveUnitMarketPriceUSD(at: withdrawnAt.addingTimeInterval(1)),
+            "A later failed retry cannot re-enable a withdrawn graded quote")
+
+        let legacy = PriceRecord(key: legacyKey, game: .pokemon,
+            printingID: slab.providerID, variantID: slab.variantID)
+        legacy.unitMarketPriceUSD = 300
+        XCTAssertEqual(legacy.effectiveUnitMarketPriceUSD, 300)
+        XCTAssertNil(exact.effectiveUnitMarketPriceUSD)
+
+        let records = [exact, legacy]
+        XCTAssertEqual(PriceRecordKeySelection(records: records).priceStorageKey(for: slab),
+            slab.priceKey, "A current exact null quote must block old aliases")
+        XCTAssertEqual(PriceRecordKeySelection(records: records,
+            at: withdrawnAt.addingTimeInterval(-60)).priceStorageKey(for: slab), slab.priceKey,
+            "Historical selection must retain the exact instrument known at that time")
+        let selected = PriceStore.record(for: slab,
+            in: Dictionary(uniqueKeysWithValues: records.map { ($0.key, $0) }))
+        XCTAssertEqual(selected?.key, slab.priceKey)
+        XCTAssertNil(selected?.effectiveUnitMarketPriceUSD,
+            "Collection value cannot silently recover a withdrawn slab price")
     }
 
     func testGradedDiscoveryRequestsAllNullCardsSoAbsenceDoesNotMeanNoProduct() {

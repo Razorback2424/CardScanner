@@ -103,7 +103,12 @@ enum GradedVariantBinding {
     ) -> GradedVariantBindingReceipt {
         let priceKey = PriceRecord.key(game: game, printingID: printingID,
             variantID: variantID, treatmentIDs: treatmentIDs)
-        let priorEvidence = store.record(forKey: priceKey)?.exactGradedQuoteEvidence
+        let record = store.record(forKey: priceKey)
+        let priorEvidence = record?.exactGradedQuoteEvidence
+        if !variant.hasMarketPrice, record?.marketVariantID == variant.id,
+           let incoming = variant.updatedAt, let known = record?.sourceUpdatedAt, incoming < known {
+            return .init(quote: .unavailable(.justTCG), priceKey: priceKey, wasAccepted: false)
+        }
         if let prior = priorEvidence,
            prior.variantID == variant.id {
             let staleSale = variant.quoteLifecycle?.lastSaleAt.map { incoming in
@@ -157,10 +162,13 @@ enum GradedVariantBinding {
             record.gradedPrinting = variant.persistedPrinting
             record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         }
-        if wasAccepted, let lifecycle {
+        if wasAccepted, let lifecycle = lifecycle ?? (!variant.hasMarketPrice
+            ? JustTCGQuoteLifecycle(status: nil, lastPrice: nil, lastSaleAt: nil, priceExpiresAt: nil) : nil) {
             store.recordExactGradedQuoteEvidence(.init(variantID: variant.id, lifecycle: lifecycle,
                 checkedAt: fetchedAt, sourceUpdatedAt: variant.updatedAt
-                    ?? (variant.quoteLifecycle == nil ? priorEvidence?.sourceUpdatedAt : nil)), forKey: priceKey)
+                    ?? (variant.quoteLifecycle == nil ? priorEvidence?.sourceUpdatedAt : nil),
+                marketPriceMissing: !variant.hasMarketPrice && !lifecycle.withdrawsCurrentQuote(at: fetchedAt)
+                    ? true : nil), forKey: priceKey)
         }
         return GradedVariantBindingReceipt(
             quote: quote,
@@ -603,12 +611,20 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 && !$0.canResolveGradedVariant
         }
         for target in unsupported {
-            stage(store.recordUnsupportedProvider(
-                game: target.game,
-                printingID: target.printingID,
-                variantID: target.variantID,
-                treatmentIDs: target.magicTreatmentIDsRaw
-            ), key: target.id)
+            // A scanned slab with a known card and grade but no verified finish
+            // needs a physical correction, not another vendor request.
+            let needsFinish = target.gradedIdentity != nil
+                && target.gradingCompany != nil
+                && (target.grade != nil || target.gradeLabel != nil)
+                && target.variantID == nil
+            let accepted = needsFinish
+                ? store.recordLookupStatus(.gradedFinishUnresolved,
+                    game: target.game, printingID: target.printingID,
+                    variantID: target.variantID, treatmentIDs: target.magicTreatmentIDsRaw)
+                : store.recordUnsupportedProvider(
+                    game: target.game, printingID: target.printingID,
+                    variantID: target.variantID, treatmentIDs: target.magicTreatmentIDsRaw)
+            stage(accepted, key: target.id)
         }
         let unsupportedIDs = Set(unsupported.map(\.id))
         let mappedTargets = targets.filter {
@@ -1847,8 +1863,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         let slabs = targets.filter {
             guard CardGameRegistry.standard.supports($0.game, .gradedPricing),
                   $0.itemKind == .gradedCard else { return false }
-            if $0.marketVariantID != nil { return true }
-            return $0.variantID != nil && $0.canResolveGradedVariant
+            return $0.marketVariantID != nil || $0.canResolveGradedVariant
         }
         guard !slabs.isEmpty, gradedLookupOverride != nil || PriceVendorCredentials.hasKey else {
             return (0, false, 0, 0, 0, 0)
@@ -2189,6 +2204,9 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
             && gradedIdentity != nil
             && gradingCompany != nil
             && (grade != nil || gradeLabel != nil)
+            // Market discovery cannot prove the finish of the physical slab.
+            // A bound slab may retain its exact market handle without one.
+            && (variantID != nil || marketVariantID != nil)
     }
 
     var id: String {
@@ -3082,10 +3100,18 @@ final class PriceRefreshController: ObservableObject {
     ) -> [PriceTarget] {
         let primaryPricing = pricing ?? PriceQuoteService()
         return targets.filter { target in
-            // Only explicit primary/catalog work bypasses the recent-check
-            // gate. Vendor-only graded/sealed cadence remains independent.
+            // Explicit raw and graded refreshes can bypass the recent-check gate.
             let manualPrimary = intent == .manual && target.itemKind == .rawCard
                 && primaryPricing.supportsPricing(for: target.game)
+            let manualGraded = intent == .manual && target.itemKind == .gradedCard
+                && target.canResolveGradedVariant
+            // A deliberate graded retry can supersede a recent coverage miss.
+            // It must never bypass the requirement for a known physical finish.
+            if manualGraded { return true }
+            if target.itemKind == .gradedCard,
+               target.lastFailureReasonRaw == PricingDiagnosticReason.gradedFinishUnresolved.rawValue {
+                return target.canResolveGradedVariant
+            }
             // A recent legacy miss must not delay trying the newly available
             // source. Its shared cache/backoff bounds downloads independently.
             if target.game == .pokemon, target.itemKind == .rawCard, !target.hasPrice,
@@ -3611,6 +3637,7 @@ final class PriceRefreshController: ObservableObject {
             await worker.setPokemonFetchOverrideForTesting(pokemonFetchOverrideForTesting)
         }
         let relay = PriceRefreshProgressRelay { [weak self] value in
+            guard shouldContinue?() ?? true else { return }
             self?.consume(value)
         }
         let progress: @Sendable (PriceRefreshProgress) async -> Void = { value in

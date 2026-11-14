@@ -230,7 +230,7 @@ final class PriceRecord {
 
     func exactGradedQuoteIsWithdrawn(at date: Date) -> Bool {
         guard let evidence = exactGradedQuoteEvidence, evidence.checkedAt <= date else { return false }
-        return evidence.lifecycle.withdrawsCurrentQuote(at: date)
+        return evidence.withdrawsCurrentQuote(at: date)
     }
 
     /// Returns whether a quote predates the value currently stored on this
@@ -317,9 +317,25 @@ final class PriceRecord {
         effectiveUnitMarketPriceUSD(at: .now)
     }
 
+    /// An exact graded null observation withdraws present value from the
+    /// successful check onward. Earlier portfolio knowledge cutoffs retain
+    /// their historical quote rather than inheriting today's unavailability.
+    func exactGradedNullQuoteIsWithdrawn(at date: Date) -> Bool {
+        if let evidence = exactGradedQuoteEvidence, evidence.marketPriceMissing == true {
+            return evidence.checkedAt <= date
+        }
+        guard lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue else {
+            return false
+        }
+        // An unsuccessful retry advances lastCheckedAt, but does not change
+        // the successful null-price observation that withdrew the quote.
+        return (lastSuccessfulCheckAt ?? lastCheckedAt).map { $0 <= date } ?? true
+    }
+
     func effectiveUnitMarketPriceUSD(at date: Date) -> Double? {
         guard !isInvalidated,
               !exactGradedQuoteIsWithdrawn(at: date),
+              !exactGradedNullQuoteIsWithdrawn(at: date),
               !PokemonReviewedPhysicalObjects.requiresReview(priceKey: key),
               currencyCode.caseInsensitiveCompare("USD") == .orderedSame else { return nil }
         return unitMarketPriceUSD
@@ -361,7 +377,11 @@ final class PriceRecord {
             fetchedAt: fetchedAt,
             lastCheckedAt: lastCheckedAt,
             refreshFailed: lastFailureAt != nil,
-            gradedMarketCoverage: gradedMarketCoverage
+            gradedMarketCoverage: gradedMarketCoverage,
+            lastKnownGradedAmount: exactGradedNullQuoteIsWithdrawn(at: .now)
+                ? unitMarketPriceUSD : nil,
+            lastKnownGradedAsOf: exactGradedNullQuoteIsWithdrawn(at: .now)
+                ? sourceUpdatedAt ?? fetchedAt : nil
         )
     }
 }
@@ -390,6 +410,10 @@ struct PriceDisplay: Equatable, Sendable {
     var lastCheckedAt: Date? = nil
     var refreshFailed: Bool = false
     var gradedMarketCoverage: GradedMarketCoverage? = nil
+    /// Preserved for context when the exact slab listing currently has no
+    /// market quote. Never contributes to the headline or portfolio total.
+    var lastKnownGradedAmount: Double? = nil
+    var lastKnownGradedAsOf: Date? = nil
 
     static let unknown = PriceDisplay()
 
