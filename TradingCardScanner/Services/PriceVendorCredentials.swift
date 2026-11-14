@@ -35,6 +35,19 @@ enum PriceVendorCredentials {
         }
     }
 
+    /// A temporary Keychain access error is not proof of a missing vendor key.
+    /// Returning nil deliberately leaves the cache unset for a later retry.
+    static func cacheablePresence(status: OSStatus, key: String?) -> Bool? {
+        switch status {
+        case errSecItemNotFound:
+            return false
+        case errSecSuccess:
+            return key?.isEmpty == false ? true : nil
+        default:
+            return nil
+        }
+    }
+
     static var hasKey: Bool {
         cacheLock.lock()
         if let cachedHasKey {
@@ -43,26 +56,32 @@ enum PriceVendorCredentials {
         }
         cacheLock.unlock()
 
-        let present = key?.isEmpty == false
+        let read = readKey()
+        let presence = cacheablePresence(status: read.status, key: read.key)
         cacheLock.lock()
-        cachedHasKey = present
+        // Store/remove may have updated the value during the Keychain read.
+        if cachedHasKey == nil { cachedHasKey = presence }
+        let available = cachedHasKey ?? false
         cacheLock.unlock()
-        return present
+        return available
     }
 
-    static var key: String? {
+    static var key: String? { readKey().key }
+
+    private static func readKey() -> (status: OSStatus, key: String?) {
         var query = baseQuery
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne
 
         var item: CFTypeRef?
-        guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess,
+        let status = SecItemCopyMatching(query as CFDictionary, &item)
+        guard status == errSecSuccess,
               let data = item as? Data,
               let value = String(data: data, encoding: .utf8) else {
-            return nil
+            return (status, nil)
         }
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? nil : trimmed
+        return (status, trimmed.isEmpty ? nil : trimmed)
     }
 
     /// Storing an empty string removes the key, so the settings field clearing to
