@@ -51,7 +51,7 @@ final class ScannedGradedResolverTests: XCTestCase {
         let result = PriceCheckCoordinator(context: container.mainContext).present(scan)
         XCTAssertEqual(result.quoteState, .stale)
         XCTAssertEqual(result.successfulQuoteState, .stale)
-        XCTAssertFalse(result.shouldAutoRefresh == false && result.quoteState == .current)
+        XCTAssertTrue(result.shouldAutoRefresh, "A stale slab quote should trigger an automatic check")
     }
 
     func testUnknownCatalogFinishCannotBindTheOnlyPublishedFinish() async {
