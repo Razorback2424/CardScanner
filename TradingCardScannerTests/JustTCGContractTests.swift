@@ -345,8 +345,14 @@ final class JustTCGContractTests: XCTestCase {
         exact.lastFailureReasonRaw = PricingDiagnosticReason.gradedMarketPriceNull.rawValue
         let withdrawnAt = Date.now
         exact.lastCheckedAt = withdrawnAt
+        exact.lastSuccessfulCheckAt = withdrawnAt
         XCTAssertEqual(exact.effectiveUnitMarketPriceUSD(at: withdrawnAt.addingTimeInterval(-60)),
             200, "A later null quote must not retroactively withdraw historical value")
+        exact.recordFailure(at: withdrawnAt.addingTimeInterval(120))
+        XCTAssertEqual(exact.effectiveUnitMarketPriceUSD(at: withdrawnAt.addingTimeInterval(-1)),
+            200, "A failed retry cannot change when withdrawal first became known")
+        XCTAssertNil(exact.effectiveUnitMarketPriceUSD(at: withdrawnAt.addingTimeInterval(1)),
+            "A later failed retry cannot re-enable a withdrawn graded quote")
 
         let legacy = PriceRecord(key: legacyKey, game: .pokemon,
             printingID: slab.providerID, variantID: slab.variantID)
