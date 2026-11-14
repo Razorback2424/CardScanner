@@ -391,10 +391,10 @@ final class CSVImportResumeTests: XCTestCase {
         XCTAssertTrue(try storedQuantities(in: container).values.allSatisfy { $0 == 1 })
         let events = try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>())
         XCTAssertEqual(events.count, 160)
-        XCTAssertEqual(Set(events.map(\\.operationID)).count, 160,
+        XCTAssertEqual(Set(events.map(\.operationID)).count, 160,
             "Every imported holding must have one distinct acquisition operation")
-        XCTAssertEqual(Set(events.map(\\.collectionKey)),
-            Set(plan.entries.map(\\.collectionKey)))
+        XCTAssertEqual(Set(events.map(\.collectionKey)),
+            Set(plan.entries.map(\.collectionKey)))
         XCTAssertEqual(try ModelContext(container).fetchCount(FetchDescriptor<CollectionActivity>()), 160)
         let storeID = UUID()
         let beforeReplay = try CollectionStoreDigester.make(
