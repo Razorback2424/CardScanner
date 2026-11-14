@@ -317,10 +317,20 @@ final class PriceRecord {
         effectiveUnitMarketPriceUSD(at: .now)
     }
 
+    /// An exact graded null observation withdraws present value from the
+    /// successful check onward. Earlier portfolio knowledge cutoffs retain
+    /// their historical quote rather than inheriting today's unavailability.
+    func exactGradedNullQuoteIsWithdrawn(at date: Date) -> Bool {
+        guard lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue else {
+            return false
+        }
+        return lastCheckedAt.map { $0 <= date } ?? true
+    }
+
     func effectiveUnitMarketPriceUSD(at date: Date) -> Double? {
         guard !isInvalidated,
               !exactGradedQuoteIsWithdrawn(at: date),
-              lastFailureReasonRaw != PricingDiagnosticReason.gradedMarketPriceNull.rawValue,
+              !exactGradedNullQuoteIsWithdrawn(at: date),
               !PokemonReviewedPhysicalObjects.requiresReview(priceKey: key),
               currencyCode.caseInsensitiveCompare("USD") == .orderedSame else { return nil }
         return unitMarketPriceUSD
