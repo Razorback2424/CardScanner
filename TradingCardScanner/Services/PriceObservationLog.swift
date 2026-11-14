@@ -386,6 +386,9 @@ struct PriceObservationLog {
               evidence.withdrawsCurrentQuote(at: date) else { return nil }
         let previous = previous ?? newestObservation(instrumentKey: record.key)
         guard previous?.kind.withdrawsValue != true else { return nil }
+        if evidence.marketPriceMissing == true, previous == nil, record.unitMarketPriceUSD == nil {
+            return nil
+        }
         let learnedAt: Date
         if let previous {
             guard previous.receivedAt <= date else { return nil }
