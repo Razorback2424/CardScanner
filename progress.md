@@ -1,3 +1,14 @@
+# 2026-11-14 — Combined review of seven pull requests
+
+[Integration PR #31](https://github.com/Razorback2424/CardScanner/pull/31)
+resolves the overlap in price snapshot recovery and collection provenance,
+keeps exact graded quote withdrawals in portfolio history through later lookup
+misses, and covers interrupted multi-batch raw CSV import. Pull requests run
+the curated app/catalog checks, a Release simulator build and static analysis.
+The complete Debug suite can be dispatched separately. The
+[release verification plan](docs/plans/pr23-production-review-validation.md)
+records the remaining centering, StoreKit and finish-editor evidence gaps.
+
 # 2026-11-13 — Backup-verified iPhone install and acceptance checklist
 
 The ReleaseLocal build now enables unverified report creation through

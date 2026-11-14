@@ -26,8 +26,19 @@ enum TCGplayerLinkBuilder {
 
     /// Only show a marketplace action when the exact product is known.
     static func destination(for card: CollectedCard) -> Destination? {
-        guard let exact = url(for: card), isProductPage(exact) else { return nil }
+        // An owned graded slab's TCGplayer product belongs to the underlying
+        // raw printing. It cannot substantiate the displayed graded quote.
+        guard card.itemKind != .gradedCard,
+              let exact = url(for: card), isProductPage(exact) else { return nil }
         return .init(url: exact, isExactProduct: true)
+    }
+
+    /// Price Check must not offer a raw printing as evidence for a slab quote.
+    /// Keep the ordinary raw-card destination unchanged.
+    static func destination(for scan: ResolvedScan) -> Destination? {
+        guard scan.request.subject.slab == nil else { return nil }
+        return destination(for: scan.card, variant: scan.resolved.variant,
+            pokemonPrintRun: scan.pokemonPrintRun)
     }
 
     static func destination(for card: IdentifiedCard, variant: PhysicalVariant?,

@@ -440,6 +440,23 @@ struct CollectionView: View {
         .safeAreaInset(edge: .top, spacing: 0) {
             collectionNavigationHeader
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if priceSnapshot.loadFailed && projectionStore.isLoaded {
+                HStack(spacing: 12) {
+                    Label("Prices couldn’t load. Previous values may be out of date.",
+                        systemImage: "exclamationmark.triangle")
+                        .font(.footnote)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                    Button("Retry") {
+                        Task { await priceSnapshot.rebuild(container: modelContext.container) }
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding(12)
+                .background(.regularMaterial)
+            }
+        }
     }
 
     private var collectionNavigationHeader: some View {

@@ -383,9 +383,12 @@ struct PriceObservationLog {
         guard let evidence = record.exactGradedQuoteEvidence,
               evidence.checkedAt <= date,
               record.marketVariantID == evidence.variantID,
-              evidence.lifecycle.withdrawsCurrentQuote(at: date) else { return nil }
+              evidence.withdrawsCurrentQuote(at: date) else { return nil }
         let previous = previous ?? newestObservation(instrumentKey: record.key)
         guard previous?.kind.withdrawsValue != true else { return nil }
+        if evidence.marketPriceMissing == true, previous == nil, record.unitMarketPriceUSD == nil {
+            return nil
+        }
         let learnedAt: Date
         if let previous {
             guard previous.receivedAt <= date else { return nil }
@@ -407,7 +410,8 @@ struct PriceObservationLog {
         } else {
             learnedAt = date
         }
-        let deadline = evidence.lifecycle.status == "current" ? evidence.lifecycle.priceExpiresAt : nil
+        let deadline = evidence.marketPriceMissing != true && evidence.lifecycle.status == "current"
+            ? evidence.lifecycle.priceExpiresAt : nil
         let transitionAt: Date
         if previous != nil, let deadline, deadline > learnedAt {
             transitionAt = deadline
@@ -799,6 +803,7 @@ struct PriceObservationLog {
                                          learnedAt: Date, isLocalCheck: Bool = false) -> Bool {
         guard let evidence = record.exactGradedQuoteEvidence,
               evidence.checkedAt <= learnedAt, observation.receivedAt <= learnedAt,
+              evidence.marketPriceMissing != true,
               evidence.lifecycle.status == "current", let deadline = evidence.lifecycle.priceExpiresAt,
               deadline > learnedAt,
               observation.matchesStoredExactQuoteValue(evidence, record: record) else { return false }

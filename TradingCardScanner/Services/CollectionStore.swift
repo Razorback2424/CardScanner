@@ -765,7 +765,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
                         shouldContinue: shouldContinue
                     )
                 case .cardNotTracked, .noGradedListings, .gradeNotTracked,
-                     .unavailable, .none:
+                     .blocked, .unavailable, .none:
                     let mutation = try store.addScannedGraded(
                         underlying: candidate.card,
                         company: slab.company,
