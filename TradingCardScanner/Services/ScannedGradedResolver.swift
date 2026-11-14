@@ -1,10 +1,19 @@
 import Foundation
 
+enum GradedLookupBlocker: Equatable, Sendable {
+    case unsupportedGame
+    case missingCredentials
+    case unresolvedFinish
+    case incompleteSearch
+    case unresolvedIdentity
+}
+
 enum ScannedGradedOutcome: Equatable, Sendable {
     case bound(GradedVariant)
     case cardNotTracked(GradedMarketCoverage)
     case noGradedListings(GradedMarketCoverage)
     case gradeNotTracked(GradedMarketCoverage)
+    case blocked(GradedLookupBlocker)
     case unavailable
 
     var marketCoverage: GradedMarketCoverage? {
@@ -13,7 +22,7 @@ enum ScannedGradedOutcome: Equatable, Sendable {
              let .noGradedListings(coverage),
              let .gradeNotTracked(coverage):
             return coverage
-        case .bound, .unavailable:
+        case .bound, .blocked, .unavailable:
             return nil
         }
     }
@@ -73,8 +82,8 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         slab: GradedSlabEvidence,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> ScannedGradedOutcome {
-        guard gameRegistry.supports(card.game, .gradedPricing) else { return .unavailable }
-        guard credentialsAvailable ?? PriceVendorCredentials.hasKey else { return .unavailable }
+        guard gameRegistry.supports(card.game, .gradedPricing) else { return .blocked(.unsupportedGame) }
+        guard credentialsAvailable ?? PriceVendorCredentials.hasKey else { return .blocked(.missingCredentials) }
         let knownRun = pokemonPrintRun ?? slab.printedPrintRun
         let physicalChoices = card.variantEvidence.catalogVariants.filter {
             !(card.game == .pokemon && knownRun != nil && $0 == .firstEdition)
@@ -83,7 +92,7 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         guard let finish = slab.printedFinish ?? (finishes.count == 1 ? finishes.first : nil) else {
             // Missing sales for another physical finish do not identify the
             // slab in front of the camera. Keep it unbound until confirmed.
-            return .unavailable
+            return .blocked(.unresolvedFinish)
         }
 
         // The timeout task is created here, after catalog/label resolution has
@@ -127,8 +136,10 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
                     return .noGradedListings(GradedMarketCoverage(status: .noGradedListings))
                 case .noProductMatch:
                     return .cardNotTracked(GradedMarketCoverage(status: .cardNotTracked))
-                case .incompleteSearch, .localIdentityUnresolved:
-                    return .unavailable
+                case .incompleteSearch:
+                    return .blocked(.incompleteSearch)
+                case .localIdentityUnresolved:
+                    return .blocked(.unresolvedIdentity)
                 }
             } catch is CancellationError {
                 return .unavailable
