@@ -17,6 +17,23 @@ XCTEST_CLASS = re.compile(
     r"\bclass\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*XCTestCase\b"
 )
 TEST_METHOD = re.compile(r"\bfunc\s+(test[A-Za-z0-9_]+)\s*\(")
+XCTEST_EXTENSION = re.compile(r"\bextension\s+([A-Za-z_][A-Za-z0-9_]*)\b[^\n{]*\{")
+TOP_LEVEL_CLOSING_BRACE = re.compile(r"(?m)^\}\s*(?://[^\n]*)?$")
+
+
+def declaration_methods(content: str, start: int) -> set[str]:
+    """Read methods only within this top-level test declaration's braces.
+
+    Swift test declarations in this repository are top-level. A method in
+    another class in the same file must not validate a stale XCTest selector.
+    """
+    opening = content.find("{", start)
+    if opening < 0:
+        return set()
+    closing = TOP_LEVEL_CLOSING_BRACE.search(content, opening + 1)
+    if closing is None:
+        return set()
+    return set(TEST_METHOD.findall(content[opening + 1:closing.start()]))
 
 
 def missing_selectors(workflow: Path, tests_dir: Path) -> tuple[list[str], int]:
@@ -31,9 +48,16 @@ def missing_selectors(workflow: Path, tests_dir: Path) -> tuple[list[str], int]:
 
     for source in swift_files:
         content = source.read_text(encoding="utf-8")
-        methods = set(TEST_METHOD.findall(content))
         for match in XCTEST_CLASS.finditer(content):
-            declarations.setdefault(match.group(1), set()).update(methods)
+            declarations.setdefault(match.group(1), set()).update(
+                declaration_methods(content, match.end())
+            )
+        # XCTest methods may also live in an extension of an existing test class.
+        for match in XCTEST_EXTENSION.finditer(content):
+            if match.group(1) in declarations:
+                declarations[match.group(1)].update(
+                    declaration_methods(content, match.start())
+                )
 
     missing: list[str] = []
     for selection in selections:
