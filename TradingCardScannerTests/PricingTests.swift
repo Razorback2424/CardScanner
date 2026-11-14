@@ -55,10 +55,11 @@ final class PricingTests: XCTestCase {
         let snapshot = PriceSnapshot(prices: ["raw-price-key": expected],
             diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:])
         var reads = 0
-        let store = PriceSnapshotStore(snapshotReader: { _ in
+        let store = PriceSnapshotStore()
+        store.setSnapshotReadOverrideForTesting { _ in
             reads += 1
             return reads == 1 ? nil : snapshot
-        })
+        }
 
         await store.rebuild(container: container)
 
@@ -76,13 +77,14 @@ final class PricingTests: XCTestCase {
             diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:])
         var failReads = false
         var failedAttempts = 0
-        let store = PriceSnapshotStore(snapshotReader: { _ in
+        let store = PriceSnapshotStore()
+        store.setSnapshotReadOverrideForTesting { _ in
             if failReads {
                 failedAttempts += 1
                 return nil
             }
             return snapshot
-        })
+        }
         await store.rebuild(container: container)
         XCTAssertEqual(store.display(for: "raw-price-key")?.amount, 18)
 
@@ -103,9 +105,10 @@ final class PricingTests: XCTestCase {
             "previous-store-card": PriceDisplay(amount: 99, currencyCode: "USD",
                 source: .tcgplayer, sourceUpdatedAt: nil, fetchedAt: .now, lastCheckedAt: .now)
         ], diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:])
-        let store = PriceSnapshotStore(snapshotReader: { container in
+        let store = PriceSnapshotStore()
+        store.setSnapshotReadOverrideForTesting { container in
             ObjectIdentifier(container) == ObjectIdentifier(first) ? previous : nil
-        })
+        }
 
         await store.rebuild(container: first)
         XCTAssertEqual(store.display(for: "previous-store-card")?.amount, 99)
