@@ -56,6 +56,8 @@ final class PriceSnapshotStore: ObservableObject {
     private var bootstrapTask: Task<Void, Never>?
     private var rebuildTask: Task<Void, Never>?
     private var rebuildRequested = false
+    private var latestRequestedContainer: ModelContainer?
+    private var activeContainerIdentity: ObjectIdentifier?
     private var collectionKeysByPriceKey: [String: [String]] = [:]
 
     func display(for key: String?) -> PriceDisplay? {
@@ -172,6 +174,17 @@ final class PriceSnapshotStore: ObservableObject {
         bootstrapTask = nil
     }
 
+    /// Only retry a queued revision or storage-switch request, never an
+    /// indefinitely failing read from an unchanged container.
+    private func scheduleRebuildRetry() {
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: Self.rebuildRetryDelay)
+            guard !Task.isCancelled, let self,
+                  let container = self.latestRequestedContainer else { return }
+            await self.rebuild(container: container)
+        }
+    }
+
     func rebuild(container: ModelContainer) async {
         let rebuildState = PerformanceSignpost.beginInterval(
             "priceSnapshot.rebuild",
@@ -184,6 +197,16 @@ final class PriceSnapshotStore: ObservableObject {
                 rebuildState,
                 "requested=\(rebuildRequested ? 1 : 0)"
             )
+        }
+        // A failed read may preserve prices only within the *same* store.
+        // When storage mode or account changes, old prices must not leak into
+        // the newly active collection while its first read is unavailable.
+        latestRequestedContainer = container
+        let identity = ObjectIdentifier(container)
+        if activeContainerIdentity != identity {
+            activeContainerIdentity = identity
+            replace(with: PriceSnapshot(prices: [:],
+                diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:]))
         }
         rebuildRequested = true
         guard rebuildTask == nil else {
@@ -199,14 +222,24 @@ final class PriceSnapshotStore: ObservableObject {
                   completedAttempts < Self.maxRebuildAttempts {
                 completedAttempts += 1
                 self.rebuildRequested = false
+                let currentContainer = self.latestRequestedContainer ?? container
                 let startingRevision = self.revision
-                let snapshot = await self.snapshotReader(container)
+                let snapshot = await self.snapshotReader(currentContainer)
                 guard !Task.isCancelled else { return }
+                guard self.activeContainerIdentity == ObjectIdentifier(currentContainer) else {
+                    self.rebuildRequested = true
+                    continue
+                }
                 guard let snapshot else {
                     // Keep the last known values. Retry a transient read failure
                     // within the existing bounded rebuild budget; do not replace
                     // the entire price table with an invented empty result.
-                    guard completedAttempts < Self.maxRebuildAttempts else { return }
+                    // A *new* request arriving during the final failed read
+                    // still needs its own bounded attempt budget.
+                    guard completedAttempts < Self.maxRebuildAttempts else {
+                        if self.rebuildRequested { self.scheduleRebuildRetry() }
+                        return
+                    }
                     self.rebuildRequested = true
                     try? await Task.sleep(for: Self.rebuildRetryDelay)
                     guard !Task.isCancelled else { return }
@@ -229,12 +262,7 @@ final class PriceSnapshotStore: ObservableObject {
             // reading. Yield to the caller, then retry as a new bounded task;
             // never let a continuously changing store create an unbounded
             // actor-read loop or lose the final snapshot.
-            let container = container
-            Task { @MainActor [weak self] in
-                try? await Task.sleep(for: Self.rebuildRetryDelay)
-                guard !Task.isCancelled else { return }
-                await self?.rebuild(container: container)
-            }
+            self.scheduleRebuildRetry()
         }
         rebuildTask = task
         await task.value
