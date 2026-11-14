@@ -740,6 +740,49 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         XCTAssertEqual(attempts, 1, "The retained request must run after the later suspension resumes.")
     }
 
+    @MainActor
+    func testInteractiveGradedIdentityGatePreemptsAndReplaysSlowBackgroundRefresh() async throws {
+        let container = try makeContainer(withCard: true)
+        let controller = PriceRefreshController.shared
+        controller.dismissSummary()
+        let gate = PriceRefreshTestGate()
+        let attempts = PriceRefreshAttemptCounter()
+        controller.setPokemonFetchOverrideForTesting { printing in
+            if await attempts.next() == 1 {
+                // If an interactive binding waits for the whole pass, this
+                // blocks it for ten seconds. Cancellation ends immediately.
+                try await gate.pauseUntilCancelled(for: .seconds(10))
+            }
+            return .pokemon(Self.card(id: printing.printingID), setCode: "LIF")
+        }
+        defer {
+            controller.setPokemonFetchOverrideForTesting(nil)
+            controller.dismissSummary()
+        }
+
+        let active = Task {
+            await controller.refresh(Self.request, container: container, owner: .background)
+        }
+        await gate.waitUntilStarted()
+
+        let startedAt = Date.now
+        var didCommit = false
+        await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+            didCommit = true
+        }
+        XCTAssertTrue(didCommit, "The interactive binding acquires the same identity gate")
+        XCTAssertLessThan(Date.now.timeIntervalSince(startedAt), 5,
+            "The graded identity write must not wait for the full vendor pass")
+
+        _ = await active.value
+        for _ in 0..<300 where controller.isPassInFlight {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertFalse(controller.isPassInFlight)
+        let count = await attempts.value()
+        XCTAssertEqual(count, 2, "Background work interrupted for the slab must replay exactly once")
+    }
+
     func testCancellingSuspensionUpgradesAnExistingNonCancellingWait() async throws {
         let container = try makeContainer(withCard: true)
         let controller = PriceRefreshController()
