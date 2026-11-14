@@ -1,0 +1,70 @@
+name: iOS static analysis
+
+on:
+  pull_request:
+    paths:
+      - "TradingCardScanner/**"
+      - "TradingCardScannerTests/**"
+      - "TradingCardScanner.xcodeproj/**"
+      - "Config/**"
+      - ".github/workflows/ios-static-analysis.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-analysis-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-analysis:
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Record the exact candidate and toolchain
+        run: |
+          git rev-parse HEAD
+          xcodebuild -version
+      - name: Analyze the app target with the Xcode static analyzer
+        run: |
+          set -o pipefail
+          xcodebuild analyze \
+            -project TradingCardScanner.xcodeproj \
+            -scheme TradingCardScanner \
+            -configuration Debug \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$RUNNER_TEMP/ios-analysis-derived-data" \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee "$RUNNER_TEMP/ios-static-analysis.log"
+      - name: Summarize compiler and analyzer diagnostics
+        if: always()
+        run: |
+          {
+            echo '## iOS static analysis'
+            echo ''
+            echo "Source SHA: \`$(git rev-parse HEAD)\`"
+            echo ''
+            echo 'Xcode analysis uses the compiler and static analyzer, not an exhaustive proof of correctness.'
+            echo ''
+            echo '### Reported diagnostics (maximum 80)'
+            echo '```'
+            if [ -f "$RUNNER_TEMP/ios-static-analysis.log" ]; then
+              grep -E 'warning:|error:|potential leak' "$RUNNER_TEMP/ios-static-analysis.log" | head -80 || true
+            else
+              echo 'No analysis log available'
+            fi
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain the full analysis log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-static-analysis-log
+          path: ${{ runner.temp }}/ios-static-analysis.log
+          retention-days: 14
