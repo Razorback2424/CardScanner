@@ -1220,6 +1220,7 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
     let variantID: String?
     let variantLabel: String?
     let gradedLabel: String?
+    let variantResolution: VariantResolution?
     let pokemonPrintRunRaw: String?
     let magicTreatmentIDsRaw: [String]
 
@@ -1249,6 +1250,7 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
         variantID = card.variantID
         variantLabel = card.variantLabel
         gradedLabel = card.itemKind == .gradedCard ? card.itemKindLabel : nil
+        variantResolution = card.variantResolution
         pokemonPrintRunRaw = card.pokemonPrintRun?.rawValue
         magicTreatmentIDsRaw = card.magicTreatmentIDsRaw
         self.selectedPriceKey = selectedPriceKey
@@ -1268,10 +1270,18 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
         return PhysicalVariant(id: variantID, label: variantLabel ?? variantID.capitalized)
     }
 
+    var catalogFinishID: String? { Self.catalogFinishID(variantID, game: game) }
+
+    /// Old Magic rows used the Pokémon-style spelling for nonfoil. Keep
+    /// their stored ownership and price keys intact.
+    static func catalogFinishID(_ id: String?, game: CardGame) -> String? {
+        game == .magic && id == PhysicalVariant.normal.id ? PhysicalVariant.nonfoil.id : id
+    }
+
     var ownedDisplayLabel: String {
         let treatments = MagicTreatmentEvidence(
             treatments: magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:)),
-            qualifiers: [:]
+            qualifiers: magicTreatmentQualifiers
         )
         return [gradedLabel ?? variant?.label ?? "Unknown finish", treatments.displayLabel]
             .compactMap { $0 }.joined(separator: " · ")
@@ -1477,7 +1487,7 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
     func exactPrintingRows(for summary: CatalogCardSummary) -> [CatalogOwnershipCardSnapshot] {
         (byProviderID[summary.providerID.lowercased()] ?? []).filter {
             $0.game == summary.game
-                && !UnverifiedReportKey.hasReport($0.collectionKey)
+                && !UnverifiedReportKey.isUnverified($0.collectionKey)
                 && ($0.catalogProviderID ?? $0.providerID).caseInsensitiveCompare(summary.providerID) == .orderedSame
                 && Self.pokemonPrintRunMatches($0, required: summary.pokemonPrintRun)
         }
@@ -1522,13 +1532,12 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
                     : normalized(card.setCode) == normalized(summary.setCode)
                         || normalized(card.setName) == normalized(summary.setName)))
         guard identityMatches else { return false }
-        if let finishes = summary.magicFinishIDs, let ownedFinish = card.variant {
-            let finish = ownedFinish.id == PhysicalVariant.normal.id ? .nonfoil : ownedFinish
-            guard finishes.contains(where: { $0.caseInsensitiveCompare(finish.id) == .orderedSame }),
-                  summary.masterSetVariant.map({ $0.id.caseInsensitiveCompare(finish.id) == .orderedSame }) ?? true else {
+        if let finishes = summary.magicFinishIDs, let finishID = card.catalogFinishID {
+            guard finishes.contains(where: { $0.caseInsensitiveCompare(finishID) == .orderedSame }),
+                  summary.masterSetVariant.map({ $0.id.caseInsensitiveCompare(finishID) == .orderedSame }) ?? true else {
                 return false
             }
-            let treatments = summary.magicTreatmentEvidence.applicableTreatments(for: finish)
+            let treatments = summary.magicTreatmentEvidence.applicableTreatments(for: PhysicalVariant.resolving(finishID))
             let required = Set(treatments.map(\.id))
             return summary.magicTreatmentIDsRaw.isEmpty || treatmentIDs(for: card) == required
         }

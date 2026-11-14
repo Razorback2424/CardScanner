@@ -89,16 +89,15 @@ struct CollectionCatalogDestination<Fallback: View>: View {
             defer { if !Task.isCancelled { didResolve = true } }
             do {
                 guard let summary = try await lookup.summary(in: catalog) else { return }
-                let installed = await catalog.installedDetails(for: summary)
                 let details: CatalogCardDetails
-                if let installed, installed.collectionWriteUnavailableReason == nil {
+                if let installed = await catalog.installedDetails(for: summary),
+                   lookup.matches(installed, summary: summary) {
                     details = installed
                 } else {
                     details = try await catalog.details(for: summary)
                 }
                 try Task.checkCancellation()
-                guard lookup.matches(details, summary: summary),
-                      details.collectionWriteUnavailableReason == nil else { return }
+                guard lookup.matches(details, summary: summary) else { return }
                 resolvedDetails = details
                 resolvedSummary = summary
             } catch {
@@ -294,8 +293,9 @@ struct CatalogCardDetailView: View {
             }
             if catalogCardSelection == nil {
                 if let variant = selectedVariant(details.card) {
-                    ForEach(ownedSlot(for: variant, card: details.card).targets) { target in
-                        savedCopyLink(target.collectionKey, personalOnly: true)
+                    let slot = ownedSlot(for: variant, card: details.card)
+                    ForEach(slot.copyKeys, id: \.self) { key in
+                        savedCopyLink(key, personalOnly: !UnverifiedReportKey.hasReport(key))
                     }
                 }
                 ownedSection(details.card)
@@ -400,7 +400,6 @@ struct CatalogCardDetailView: View {
 
     private func showsInlineQuantityControls(_ details: CatalogCardDetails) -> Bool {
         catalogCardSelection == nil
-            && details.collectionWriteUnavailableReason == nil
             && !finishVariants(details.card).isEmpty
     }
 
@@ -508,14 +507,15 @@ struct CatalogCardDetailView: View {
                         present(.init(message: "Removed from Collection", undo: .restore(snapshot)))
                     })
             } label: {
-                Text("Saved copy details").frame(minHeight: 44)
+                Text(UnverifiedReportKey.hasReport(key) ? "Linked copy details" : "Saved copy details")
+                    .frame(minHeight: 44)
             }
         }
     }
 
     private func otherOwnedRows(_ card: IdentifiedCard) -> [CatalogOwnershipCardSnapshot] {
         let rows = ownedRows
-        let shown = Set(finishVariants(card).flatMap { ownedSlot(for: $0, card: card).price.entries.map(\.collectionKey) })
+        let shown = Set(finishVariants(card).flatMap { ownedSlot(for: $0, card: card).copyKeys })
         return rows.filter { !shown.contains($0.collectionKey) }
     }
 
@@ -525,7 +525,8 @@ struct CatalogCardDetailView: View {
 
     private func finishVariants(_ card: IdentifiedCard) -> [PhysicalVariant] {
         // An edition-only price context is never an editable physical finish.
-        Self.priceVariants(for: card, summary: summary).filter { $0.id != PhysicalVariant.firstEdition.id }
+        Self.priceVariants(for: card, summary: summary, ownedRows: ownership.exactPrintingRows(for: summary))
+            .filter { $0.id != PhysicalVariant.firstEdition.id }
     }
 
     private func selectedVariant(_ card: IdentifiedCard) -> PhysicalVariant? {
@@ -551,14 +552,16 @@ struct CatalogCardDetailView: View {
             : card.variantEvidence.excludingFirstEditionPseudoFinish().catalogVariants
         // Edition is already carried by the summary. Preserve the physical
         // finish when selecting owned records and requesting exact quotes.
+        if let required = summary.masterSetVariant, required.id != PhysicalVariant.firstEdition.id,
+           !variants.contains(where: { $0.id == required.id }) {
+            variants.append(required)
+        }
         if summary.pokemonPrintRun == .firstEdition, variants.isEmpty {
-            for row in ownedRows where row.itemKind == .rawCard {
+            for row in ownedRows where row.itemKind == .rawCard && row.pokemonPrintRun == .firstEdition {
+                guard let resolution = row.variantResolution, resolution.certainty != .unresolved else { continue }
                 if let variant = row.variant, variant.id != PhysicalVariant.firstEdition.id,
                    !variants.contains(where: { $0.id == variant.id }) { variants.append(variant) }
             }
-        }
-        if let required = summary.masterSetVariant, !variants.contains(where: { $0.id == required.id }) {
-            variants.append(required)
         }
         // An edition-only quote remains context when no physical finish is
         // known. It is never substituted for a known Holo or Normal slot.
@@ -617,7 +620,7 @@ struct CatalogCardDetailView: View {
                         if catalog.gameRegistry.supports(summary.game, .pricing), !needsCatalogResolution {
                             priceValue(priceDisplay(for: variant, card: card, slot: slot))
                         }
-                        if slot.hasConflict {
+                        if slot.hasConflict || slot.hasUnverifiedQualifiers {
                             Text("Saved copies need review").font(.caption).foregroundStyle(.secondary)
                         } else if slot.price.entriesDisagree {
                             Text("Saved prices differ").font(.caption).foregroundStyle(.secondary)
@@ -636,14 +639,14 @@ struct CatalogCardDetailView: View {
                 VStack(alignment: .trailing, spacing: 0) {
                     CatalogQuantityStepper(
                         quantity: slot.quantity, variantLabel: variant.label,
-                        canIncrease: canAdd(variant, card: card) && !slot.hasConflict
+                        canIncrease: canAdd(variant, card: card) && !slot.hasConflict && !slot.hasUnverifiedQualifiers
                             && slot.quantity < CollectionQuantityLimits.maximum,
-                        canDecrease: slot.targets.count == 1 && !slot.hasConflict,
+                        canDecrease: slot.copyKeys.count == 1 && slot.targets.count == 1 && !slot.hasConflict,
                         isUpdating: isQuantityLocked,
                         onIncrease: { add(variant, card: card) },
                         onDecrease: { decrementTarget = slot.targets.first }
                     )
-                    if slot.targets.count > 1, !slot.hasConflict {
+                    if slot.copyKeys.count > 1, !slot.targets.isEmpty, !slot.hasConflict {
                         Menu("Manage copies") {
                             ForEach(slot.targets) { target in
                                 Button("\(target.dateAdded.formatted(date: .abbreviated, time: .shortened)) · \(target.quantity) owned") {
@@ -701,11 +704,14 @@ struct CatalogCardDetailView: View {
     // MARK: - Inline quantity
 
     private var isQuantityLocked: Bool {
-        isWritePending || needsCatalogResolution || !projectionStore.isLoaded || projectionStore.loadFailed
+        isWritePending || needsCatalogResolution || details?.collectionWriteUnavailableReason != nil
+            || !projectionStore.isLoaded || projectionStore.loadFailed
     }
 
     private func canAdd(_ variant: PhysicalVariant, card: IdentifiedCard) -> Bool {
         catalog.gameRegistry.supports(card.game, .collectionWrite)
+            && (card.variantEvidence.catalogVariants.contains { $0.id == variant.id }
+                || variant.id == summary.masterSetVariant?.id)
             && (card.variantEvidence.physicalCoverageVerified || card.variantEvidence.explicitMembershipSupported
                 || variant.id == summary.masterSetVariant?.id)
             && PokemonVariantPolicy.allowsAcquisition(of: card,
@@ -714,8 +720,10 @@ struct CatalogCardDetailView: View {
     }
 
     private func add(_ variant: PhysicalVariant, card: IdentifiedCard) {
+        let slot = ownedSlot(for: variant, card: card)
         guard !isQuantityLocked, canAdd(variant, card: card),
-              !ownedSlot(for: variant, card: card).hasConflict else { return }
+              !slot.hasConflict, !slot.hasUnverifiedQualifiers,
+              slot.quantity < CollectionQuantityLimits.maximum else { return }
         commit(ResolvedVariant(variant: variant, resolution: .userConfirmed))
     }
 
@@ -1208,28 +1216,36 @@ struct CatalogCardDetailView: View {
 
 struct CatalogFinishOwnership {
     let price: OwnedCatalogPrice
+    let copyKeys: [String]
     let targets: [CatalogOwnedEntryTarget]
     let quantity: Int
     let hasConflict: Bool
+    let hasUnverifiedQualifiers: Bool
 
     init(rows: [CatalogOwnershipCardSnapshot], variant: PhysicalVariant, treatments: [String],
          qualifiers: [String: String], name: String, projection: CollectionProjectionSnapshot?) {
         let treatmentSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: treatments))
-        let matching = rows.filter { row in
-            row.itemKind == .rawCard && row.variantID == variant.id
+        let candidates = rows.filter { row in
+            row.itemKind == .rawCard && row.catalogFinishID == variant.id
                 && Set(MagicTreatmentKeyCodec.canonicalIDs(from: row.magicTreatmentIDsRaw)) == treatmentSet
-                && row.magicTreatmentQualifiers.allSatisfy { key, value in qualifiers[key] == value }
         }
+        let requiredQualifiers = MagicTreatmentKeyCodec.storedQualifiers(from: qualifiers)
+        let matching = candidates.filter { $0.magicTreatmentQualifiers == requiredQualifiers }
+        hasUnverifiedQualifiers = candidates.count != matching.count
         price = OwnedCatalogPrice(rows: matching)
         let groups = Dictionary(grouping: matching, by: \.collectionKey)
+        let keys = groups.keys.sorted()
+        copyKeys = keys
         quantity = matching.reduce(0) { CollectionQuantityLimits.saturatingAdd($0, $1.quantity) }
         hasConflict = groups.contains { key, group in
             (projection?.physicalRowCountsByKey[key] ?? group.count) != group.count
                 || Set(group.map(\.storedPriceKey)).count > 1
                 || Set(group.map(\.selectedPriceKey)).count > 1
         }
-        targets = groups.keys.sorted().compactMap { key in
-            guard let row = projection?.rowsByCollectionKey[key] else { return nil }
+        targets = keys.compactMap { key in
+            // Report actions live on the saved entry and retain its lineage.
+            guard !UnverifiedReportKey.hasReport(key),
+                  let row = projection?.rowsByCollectionKey[key] else { return nil }
             return CatalogOwnedEntryTarget(collectionKey: key, treatments: treatments,
                 quantity: row.quantity, cardName: name, variantLabel: variant.label, dateAdded: row.dateAdded)
         }

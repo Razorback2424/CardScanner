@@ -590,13 +590,14 @@ struct CollectionView: View {
 
     private func detailDestination(for row: CollectionRow) -> Destination {
         guard row.itemKind == .rawCard,
-              !UnverifiedReportKey.hasReport(row.id),
+              !UnverifiedReportKey.isUnverified(row.id),
               catalog.gameRegistry.supports(row.game, .browse),
               let providerID = row.catalogProviderID else { return .card(row.id) }
         return .catalogCard(
             .init(game: row.game, providerID: providerID, printRun: row.pokemonPrintRun,
                 name: row.name, setCode: row.setCode),
-            openingFinishID: row.variantID, collectionKey: row.id
+            openingFinishID: CatalogOwnershipCardSnapshot.catalogFinishID(row.variantID, game: row.game),
+            collectionKey: row.id
         )
     }
 
