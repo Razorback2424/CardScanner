@@ -8,11 +8,11 @@ This document coordinates the small refinement PRs without creating a second rel
 ## Freeze and verify only what changed
 
 1. Record the exact candidate SHA, branch ancestry and final diff. Verify no unintended changes to catalog signatures, game activation flags, pricing-service access, purchases, or storage schema.
-2. Review the non-graded refinement slices independently: [baseline protocol](../benchmarks/release-refinement-device-baseline-2026-11.md) (once available), collection provenance fingerprint, bounded snapshot-read recovery, ordinary-card interruption regression.
+2. Review the non-graded refinement slices independently: [baseline protocol (PR #26)](https://github.com/Razorback2424/CardScanner/pull/26), collection provenance fingerprint, bounded snapshot-read recovery, ordinary-card interruption regression.
 3. For each source change, execute its specifically named regression, then its parent test class and applicable neighboring suites. Count failures and skips separately.
 4. Run the *existing* release/build and broad testing procedure, rather than building another test runner. On a suitable macOS/Xcode host, `scripts/run_app_tests.sh fast` supports `-only-testing:` filters; it requires `DEVICE_ID` (simulator) and `DERIVED_DATA` on an external `/Volumes/...` drive. Use `WORKERS=1` if the host has memory pressure.
 5. Build the actual release configuration and inspect entitlements, supported games/capabilities, missing support/privacy URLs, and purchased-feature gating. Simulator compilation does not prove signing, archived distribution or device operation.
-6. Re-run the ordinary-card device scenarios in [interruption acceptance](../benchmarks/non-graded-interruption-acceptance-2026-11.md) (once available) and the [device baseline](../benchmarks/release-refinement-device-baseline-2026-11.md), with the **same** data and device conditions before and after.
+6. Re-run the ordinary-card device scenarios in [interruption acceptance (PR #27)](https://github.com/Razorback2424/CardScanner/pull/27) and the [device baseline (PR #26)](https://github.com/Razorback2424/CardScanner/pull/26), with the **same** data and device conditions before and after.
 7. Leave unresolved failed checks, unmet launch contract gates, and missing evidence explicitly open. Do not merge unrelated cleanup into the release candidate merely to make the diff look tidier.
 
 ## Small focused regression selection (after the corresponding PRs are present)
