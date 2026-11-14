@@ -21,7 +21,7 @@ final class ScannedGradedResolverTests: XCTestCase {
                 options: [], gradedOutcome: nil)
             let outcome = await coordinator.refresh(coordinator.present(scan))
             if finish == nil {
-                if case .quote = outcome { XCTFail("Unknown finish must not publish a graded quote") }
+                XCTAssertEqual(outcome, .failed(.gradedFinishUnresolved))
                 XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<ReferenceQuote>()), 0)
             } else {
                 guard case let .quote(.price(quote)) = outcome else { return XCTFail("Confirmed finish must price") }
@@ -43,7 +43,7 @@ final class ScannedGradedResolverTests: XCTestCase {
             client: StubLookupClient(result: .matched([candidate]), identityRecorder: recorder),
             credentialsAvailable: true
         ).resolve(card: card, slab: evidence, pokemonPrintRun: nil)
-        XCTAssertEqual(result, .unavailable)
+        XCTAssertEqual(result, .blocked(.unresolvedFinish))
         let identity = await recorder.lastIdentity
         XCTAssertNil(identity, "No vendor request can establish a missing physical finish")
     }
@@ -85,7 +85,7 @@ final class ScannedGradedResolverTests: XCTestCase {
         let resolver = ScannedGradedResolver(client: StubLookupClient(result: .matched([candidate]), identityRecorder: recorder),
             credentialsAvailable: true)
         let unknown = await resolver.resolve(card: card, slab: slab(company: .psa, value: "10", finish: nil), pokemonPrintRun: nil)
-        XCTAssertEqual(unknown, .unavailable)
+        XCTAssertEqual(unknown, .blocked(.unresolvedFinish))
         let before = await recorder.lastIdentity
         XCTAssertNil(before)
         let known = await resolver.resolve(card: card, slab: .init(company: .psa, grade: .init(value: "10"),
@@ -132,7 +132,7 @@ final class ScannedGradedResolverTests: XCTestCase {
         )
         let outcome = await resolver.resolve(card: card, slab: slab(company: .psa, value: "10"),
                                              pokemonPrintRun: nil)
-        XCTAssertEqual(outcome, .unavailable)
+        XCTAssertEqual(outcome, .blocked(.unsupportedGame))
         let identity = await recorder.lastIdentity
         XCTAssertNil(identity)
     }
@@ -380,7 +380,9 @@ final class ScannedGradedResolverTests: XCTestCase {
             client: StubLookupClient(result: .matched([])),
             credentialsAvailable: false
         ).resolve(card: card, slab: slab(company: .psa, value: "10"), pokemonPrintRun: nil)
-        XCTAssertEqual(noKey, .unavailable)
+        XCTAssertEqual(noKey, .blocked(.missingCredentials))
+        XCTAssertEqual(await resolve(.incompleteSearch), .blocked(.incompleteSearch))
+        XCTAssertEqual(await resolve(.localIdentityUnresolved), .blocked(.unresolvedIdentity))
     }
 
     func testMissingGradeRetainsOtherJustTCGGradesWithoutFilteringTheRequest() async throws {
