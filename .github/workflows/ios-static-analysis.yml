@@ -53,13 +53,13 @@ jobs:
             echo 'Xcode analysis uses the compiler and static analyzer, not an exhaustive proof of correctness.'
             echo ''
             echo '### Reported diagnostics (maximum 80)'
-            echo '\`\`\`'
+            echo '```'
             if [ -f "$RUNNER_TEMP/ios-static-analysis.log" ]; then
               grep -E 'warning:|error:|potential leak' "$RUNNER_TEMP/ios-static-analysis.log" | head -80 || true
             else
               echo 'No analysis log available'
             fi
-            echo '\`\`\`'
+            echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Retain the full analysis log
         if: always()
