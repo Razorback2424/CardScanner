@@ -1,6 +1,7 @@
 import XCTest
 import SwiftData
 import Network
+import Security
 @testable import TradingCardScanner
 
 private actor MarketRefreshProgressProbe {
@@ -27,6 +28,20 @@ private actor EditionPriceProbe {
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    func testTransientKeychainReadFailureIsNotCachedAsMissingPricingCredentials() {
+        XCTAssertEqual(PriceVendorCredentials.cacheablePresence(
+            status: errSecItemNotFound, key: nil), false)
+        XCTAssertEqual(PriceVendorCredentials.cacheablePresence(
+            status: errSecSuccess, key: "synthetic-key"), true)
+        XCTAssertNil(PriceVendorCredentials.cacheablePresence(
+            status: errSecInteractionNotAllowed, key: nil))
+        XCTAssertNil(PriceVendorCredentials.cacheablePresence(
+            status: errSecNotAvailable, key: nil))
+        XCTAssertNil(PriceVendorCredentials.cacheablePresence(
+            status: errSecSuccess, key: nil),
+            "A malformed result must not permanently suppress access after repair")
+    }
+
     func testAuthenticatedPricingClientsRejectRedirectsBeforeForwardingKeys() async throws {
         let suite = "PricingRedirects-\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
