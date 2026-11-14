@@ -7,6 +7,7 @@ on:
       - "TradingCardScannerTests/**"
       - "TradingCardScanner.xcodeproj/**"
       - "Config/**"
+      - "*CatalogCore/**"
       - ".github/workflows/ios-static-analysis.yml"
   workflow_dispatch:
 

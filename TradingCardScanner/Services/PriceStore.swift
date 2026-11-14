@@ -229,6 +229,7 @@ enum PricingDiagnostics {
             if lifecycle.isExpired(at: .now) { return .gradedMarketPriceExpired }
             if lifecycle.wasNeverPriced { return .gradedMarketNeverPriced }
         }
+        if record?.exactGradedNullQuoteIsWithdrawn(at: .now) == true { return .gradedMarketPriceNull }
         if let reason = record?.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
            reason == .gradedSearchIncomplete || reason == .gradedIdentityUnresolved
             || reason == .gradedFinishUnresolved || reason == .gradedMarketPriceNull { return reason }
@@ -886,22 +887,12 @@ struct PriceStore {
         }
     }
 
-    /// An exact v2 slab listing can be known without publishing a current quote.
-    /// Retain the older amount in history, but never count it as current value.
-    /// This is a successful exact-market check, not a transport failure.
-    func recordGradedNullQuote(forKey key: String, variantID: String, at date: Date) {
-        guard let record = record(forKey: key),
-              record.marketVariantID == variantID,
-              record.lastCheckedAt == date else { return }
-        record.lastFailureReasonRaw = PricingDiagnosticReason.gradedMarketPriceNull.rawValue
-    }
-
     func recordExactGradedQuoteEvidence(_ evidence: ExactGradedQuoteEvidence, forKey key: String) {
         if enqueue(keys: [key], { $0.recordExactGradedQuoteEvidence(evidence, forKey: key) }) { return }
         guard let record = record(forKey: key), record.marketVariantID == evidence.variantID,
               record.lastCheckedAt == evidence.checkedAt else { return }
         PriceObservationLog(context: context, index: index).recordElapsedEligibility(for: record, at: evidence.checkedAt)
-        if evidence.lifecycle.withdrawsCurrentQuote(at: evidence.checkedAt) {
+        if evidence.withdrawsCurrentQuote(at: evidence.checkedAt) {
             // A price-observation clock and a most-recent-sale clock describe
             // different facts. Only matching clock fields can establish stale
             // evidence; same-sale expiry may have a later update timestamp.
@@ -919,10 +910,16 @@ struct PriceStore {
                 prior?.sourceUpdatedAt, observedUpdate].compactMap { $0 }.max()
             if let incomingUpdate = evidence.sourceUpdatedAt,
                let knownUpdate, incomingUpdate < knownUpdate { return }
-            PriceObservationLog(context: context, index: index).recordInvalidation(
-                instrumentKey: key, source: .justTCG, at: evidence.checkedAt)
+            if evidence.marketPriceMissing != true {
+                PriceObservationLog(context: context, index: index).recordInvalidation(
+                    instrumentKey: key, source: .justTCG, at: evidence.checkedAt)
+            }
         }
         record.exactGradedQuoteEvidence = evidence
+        if evidence.marketPriceMissing == true {
+            PriceObservationLog(context: context, index: index)
+                .recordElapsedEligibility(for: record, at: evidence.checkedAt)
+        }
         PriceObservationLog(context: context, index: index)
             .recordLocalQuoteReceipt(for: record, learnedAt: evidence.checkedAt)
     }
@@ -1106,7 +1103,7 @@ struct PriceStore {
         // invalidated. Falling through to a legacy key in that state would
         // resurrect the very value the invalidation withdrew.
         if primary.isInvalidated || primary.exactGradedQuoteIsWithdrawn
-            || primary.lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue {
+            || primary.exactGradedNullQuoteIsWithdrawn(at: .now) {
             return primary
         }
 

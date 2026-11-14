@@ -83,7 +83,8 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         pokemonPrintRun: PokemonPrintRun?
     ) async -> ScannedGradedOutcome {
         guard gameRegistry.supports(card.game, .gradedPricing) else { return .blocked(.unsupportedGame) }
-        guard credentialsAvailable ?? PriceVendorCredentials.hasKey else { return .blocked(.missingCredentials) }
+        guard let hasCredentials = credentialsAvailable ?? PriceVendorCredentials.keyPresence else { return .unavailable }
+        guard hasCredentials else { return .blocked(.missingCredentials) }
         let knownRun = pokemonPrintRun ?? slab.printedPrintRun
         let physicalChoices = card.variantEvidence.catalogVariants.filter {
             !(card.game == .pokemon && knownRun != nil && $0 == .firstEdition)

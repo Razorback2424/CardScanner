@@ -14,7 +14,7 @@
 | F4 — failed price snapshot read leaves stale UI silently | Three bounded read attempts, last-known snapshot preservation, published failure state and Collection retry affordance. | Run injected failure tests, inspect layout at accessibility text sizes and test foreground recovery. |
 | F5 — collection fingerprint omits displayed finish provenance | Fingerprint includes `variantResolutionRaw`, with an isolated-provenance test. | Verify real collection finish overlay changes without unrelated edits. |
 | F6 — transient Keychain access failure cached as missing key | Only confirmed missing-key status is cached as absent; transient failures remain retryable. | Simulate lock/unlock or Keychain access failure on a signed device. |
-| F7 — no complete iOS application release gate | `.github/workflows/ios-release-gate.yml` builds the app in Release and runs the complete iOS test scheme, retaining result bundles. Existing catalog-specific CI remains. | Verify the workflow runs on the PR's exact head and passes; review any known research-only failures rather than masking them. |
+| F7 — no complete iOS application release validation | Pull requests run the Release simulator build and the curated catalog/app suite. Manual dispatch also runs the complete Debug test target and retains its result bundle. | The first complete run found failures in centering, StoreKit, finish-editor rendering and two graded refresh expectations. Complete simulator and device acceptance remain open. |
 
 Other graded-pricing fixes already in PR #23: unbound finish eligibility and manual retry; precise grader/grade/finish matching; stale vendor-data attribution; null, expired and never-priced quote handling; and historical graded value excluded from current totals.
 
@@ -51,7 +51,7 @@ Use existing `PerformanceSignpost` intervals, including `gradedPriceBindingCommi
 
 ## Merge gates and evidence record
 
-1. **CI:** exact PR head SHA; Release app build passes; complete iOS scheme tests pass; existing catalog/publisher checks pass. Archive result bundles and note any environment-dependent test exclusions explicitly.
+1. **CI:** check the integrated source SHA, Release simulator build and catalog/publisher checks before code integration. Record complete iOS scheme results before distribution, including environment-dependent failures and skips. Archive result bundles.
 2. **Device:** signed build on a real iPhone; physical slab and raw-card comparisons; interrupted refresh; transient credential and snapshot failures; accessibility-size collection warning; camera background/foreground.
 3. **Live provider:** exact graded market listings and current null/expired cases; verify credentials, quota and USD source timestamps; never treat an unverified listing as a cert-specific appraisal.
 4. **Data integrity:** representative old local store migration, CloudKit sync, ownership ledger, price lineage, undo and portfolio exclusion of withdrawn prices.

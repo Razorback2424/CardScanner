@@ -477,12 +477,19 @@ struct ExactGradedQuoteEvidence: Codable, Equatable, Sendable {
     let lifecycle: JustTCGQuoteLifecycle
     let checkedAt: Date
     let sourceUpdatedAt: Date?
+    let marketPriceMissing: Bool?
 
-    init(variantID: String, lifecycle: JustTCGQuoteLifecycle, checkedAt: Date, sourceUpdatedAt: Date? = nil) {
+    init(variantID: String, lifecycle: JustTCGQuoteLifecycle, checkedAt: Date,
+         sourceUpdatedAt: Date? = nil, marketPriceMissing: Bool? = nil) {
         self.variantID = variantID
         self.lifecycle = lifecycle
         self.checkedAt = checkedAt
         self.sourceUpdatedAt = sourceUpdatedAt
+        self.marketPriceMissing = marketPriceMissing
+    }
+
+    func withdrawsCurrentQuote(at date: Date) -> Bool {
+        marketPriceMissing == true || lifecycle.withdrawsCurrentQuote(at: date)
     }
 }
 
@@ -730,6 +737,8 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
     }
 
     var marketPriceUSD: Double? { marketPriceUSD(at: .now) }
+
+    var hasMarketPrice: Bool { quotedMarketPriceUSD != nil }
 
     func marketPriceUSD(at date: Date) -> Double? {
         guard quoteLifecycle?.withdrawsCurrentQuote(at: date) != true else { return nil }

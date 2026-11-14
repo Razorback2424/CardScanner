@@ -48,7 +48,9 @@ enum PriceVendorCredentials {
         }
     }
 
-    static var hasKey: Bool {
+    static var hasKey: Bool { keyPresence == true }
+
+    static var keyPresence: Bool? {
         cacheLock.lock()
         if let cachedHasKey {
             cacheLock.unlock()
@@ -61,7 +63,7 @@ enum PriceVendorCredentials {
         cacheLock.lock()
         // Store/remove may have updated the value during the Keychain read.
         if cachedHasKey == nil { cachedHasKey = presence }
-        let available = cachedHasKey ?? false
+        let available = cachedHasKey
         cacheLock.unlock()
         return available
     }

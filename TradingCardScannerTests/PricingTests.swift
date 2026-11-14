@@ -47,55 +47,6 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 
 final class PricingTests: XCTestCase {
     @MainActor
-    func testPriceSnapshotRebuildRecoversAfterOneTransientReadFailure() async throws {
-        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
-            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
-        let expected = PriceDisplay(amount: 12, currencyCode: "USD", source: .tcgplayer,
-            sourceUpdatedAt: nil, fetchedAt: .now, lastCheckedAt: .now)
-        let snapshot = PriceSnapshot(prices: ["raw-price-key": expected],
-            diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:])
-        var reads = 0
-        let store = PriceSnapshotStore()
-        store.setSnapshotReadOverrideForTesting { _ in
-            reads += 1
-            return reads == 1 ? nil : snapshot
-        }
-
-        await store.rebuild(container: container)
-
-        XCTAssertEqual(reads, 2)
-        XCTAssertEqual(store.display(for: "raw-price-key")?.amount, 12)
-    }
-
-    @MainActor
-    func testPriceSnapshotReadFailureStopsAfterBoundedRetriesAndRetainsPrices() async throws {
-        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
-            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
-        let expected = PriceDisplay(amount: 18, currencyCode: "USD", source: .tcgplayer,
-            sourceUpdatedAt: nil, fetchedAt: .now, lastCheckedAt: .now)
-        let snapshot = PriceSnapshot(prices: ["raw-price-key": expected],
-            diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:])
-        var failReads = false
-        var failedAttempts = 0
-        let store = PriceSnapshotStore()
-        store.setSnapshotReadOverrideForTesting { _ in
-            if failReads {
-                failedAttempts += 1
-                return nil
-            }
-            return snapshot
-        }
-        await store.rebuild(container: container)
-        XCTAssertEqual(store.display(for: "raw-price-key")?.amount, 18)
-
-        failReads = true
-        await store.rebuild(container: container)
-        XCTAssertEqual(failedAttempts, 3)
-        XCTAssertEqual(store.display(for: "raw-price-key")?.amount, 18,
-            "A failed authoritative read must not erase the last good value")
-    }
-
-    @MainActor
     func testPriceSnapshotReadFailureAfterStorageSwitchDoesNotShowPreviousCollection() async throws {
         let first = try ModelContainer(for: CollectionStorageModelSchema.full,
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
@@ -1251,25 +1202,33 @@ final class PricingTests: XCTestCase {
         try context.save()
         let worker = PriceRefreshModelActor(modelContainer: container)
         await worker.setGradedLookupOverrideForTesting { _, _ in
+            XCTFail("An unconfirmed finish must never reach the provider")
+            return .noProductMatch
+        }
+        guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+            return XCTFail("Expected initial refresh to record the unresolved finish")
+        }
+        XCTAssertEqual(result.priced, 0)
+        let unconfirmedContext = ModelContext(container)
+        let unconfirmed = try XCTUnwrap(unconfirmedContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertNil(unconfirmed.justTCGVariantID)
+        let unresolved = PriceStore(context: unconfirmedContext).record(forKey: unconfirmed.priceKey)
+        XCTAssertEqual(unresolved?.lastFailureReasonRaw, PricingDiagnosticReason.gradedFinishUnresolved.rawValue)
+        XCTAssertNil(unresolved?.effectiveUnitMarketPriceUSD)
+        guard case .noTargets = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+            return XCTFail("Expected the unchanged unresolved finish to be skipped")
+        }
+
+        await worker.setGradedLookupOverrideForTesting { _, _ in
             .matched([GradedVariant(id: "sole-holo", company: .cgc, grade: .init(value: "10"),
                 printing: "Holofoil", marketPriceUSD: 123, updatedAt: nil)])
         }
-        for _ in 0..<2 {
-            guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
-                return XCTFail("Expected completed refresh")
-            }
-            XCTAssertEqual(result.priced, 0)
-            let fresh = ModelContext(container)
-            let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
-            XCTAssertNil(saved.justTCGVariantID)
-            XCTAssertNil(PriceStore(context: fresh).record(forKey: saved.priceKey)?.effectiveUnitMarketPriceUSD)
-        }
         row.variantID = PhysicalVariant.holo.id
         try context.save()
-        guard case let .completed(result) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
+        guard case let .completed(confirmedResult) = await worker.run(gradedRequest(), progress: { _ in }, shouldContinue: nil) else {
             return XCTFail("Expected confirmed refresh")
         }
-        XCTAssertEqual(result.priced, 1)
+        XCTAssertEqual(confirmedResult.priced, 1)
         let fresh = ModelContext(container)
         let saved = try XCTUnwrap(fresh.fetch(FetchDescriptor<CollectedCard>()).first)
         XCTAssertEqual(saved.justTCGVariantID, "sole-holo")

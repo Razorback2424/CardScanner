@@ -230,7 +230,7 @@ final class PriceRecord {
 
     func exactGradedQuoteIsWithdrawn(at date: Date) -> Bool {
         guard let evidence = exactGradedQuoteEvidence, evidence.checkedAt <= date else { return false }
-        return evidence.lifecycle.withdrawsCurrentQuote(at: date)
+        return evidence.withdrawsCurrentQuote(at: date)
     }
 
     /// Returns whether a quote predates the value currently stored on this
@@ -321,6 +321,9 @@ final class PriceRecord {
     /// successful check onward. Earlier portfolio knowledge cutoffs retain
     /// their historical quote rather than inheriting today's unavailability.
     func exactGradedNullQuoteIsWithdrawn(at date: Date) -> Bool {
+        if let evidence = exactGradedQuoteEvidence, evidence.marketPriceMissing == true {
+            return evidence.checkedAt <= date
+        }
         guard lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue else {
             return false
         }
@@ -375,9 +378,9 @@ final class PriceRecord {
             lastCheckedAt: lastCheckedAt,
             refreshFailed: lastFailureAt != nil,
             gradedMarketCoverage: gradedMarketCoverage,
-            lastKnownGradedAmount: lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue
+            lastKnownGradedAmount: exactGradedNullQuoteIsWithdrawn(at: .now)
                 ? unitMarketPriceUSD : nil,
-            lastKnownGradedAsOf: lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue
+            lastKnownGradedAsOf: exactGradedNullQuoteIsWithdrawn(at: .now)
                 ? sourceUpdatedAt ?? fetchedAt : nil
         )
     }

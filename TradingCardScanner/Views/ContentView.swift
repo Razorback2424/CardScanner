@@ -24,7 +24,7 @@ struct ContentView: View {
     /// Their child views subscribe only to the fields they render, so a price
     /// checkpoint cannot re-evaluate the complete tab tree.
     @State private var portfolio = PortfolioEngine()
-    @State private var priceSnapshot = PriceSnapshotStore.shared
+    @State private var priceSnapshot = PriceSnapshotStore()
     @State private var projectionStore = CollectionProjectionStore()
     @State private var setCompletionStore = CatalogSetCompletionStore()
     @State private var revisionStore = StoreRevisionStore()

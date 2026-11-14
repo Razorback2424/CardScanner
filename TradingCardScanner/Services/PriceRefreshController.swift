@@ -103,7 +103,12 @@ enum GradedVariantBinding {
     ) -> GradedVariantBindingReceipt {
         let priceKey = PriceRecord.key(game: game, printingID: printingID,
             variantID: variantID, treatmentIDs: treatmentIDs)
-        let priorEvidence = store.record(forKey: priceKey)?.exactGradedQuoteEvidence
+        let record = store.record(forKey: priceKey)
+        let priorEvidence = record?.exactGradedQuoteEvidence
+        if !variant.hasMarketPrice, record?.marketVariantID == variant.id,
+           let incoming = variant.updatedAt, let known = record?.sourceUpdatedAt, incoming < known {
+            return .init(quote: .unavailable(.justTCG), priceKey: priceKey, wasAccepted: false)
+        }
         if let prior = priorEvidence,
            prior.variantID == variant.id {
             let staleSale = variant.quoteLifecycle?.lastSaleAt.map { incoming in
@@ -157,13 +162,13 @@ enum GradedVariantBinding {
             record.gradedPrinting = variant.persistedPrinting
             record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         }
-        if wasAccepted, case .unavailable = quote {
-            store.recordGradedNullQuote(forKey: priceKey, variantID: variant.id, at: fetchedAt)
-        }
-        if wasAccepted, let lifecycle {
+        if wasAccepted, let lifecycle = lifecycle ?? (!variant.hasMarketPrice
+            ? JustTCGQuoteLifecycle(status: nil, lastPrice: nil, lastSaleAt: nil, priceExpiresAt: nil) : nil) {
             store.recordExactGradedQuoteEvidence(.init(variantID: variant.id, lifecycle: lifecycle,
                 checkedAt: fetchedAt, sourceUpdatedAt: variant.updatedAt
-                    ?? (variant.quoteLifecycle == nil ? priorEvidence?.sourceUpdatedAt : nil)), forKey: priceKey)
+                    ?? (variant.quoteLifecycle == nil ? priorEvidence?.sourceUpdatedAt : nil),
+                marketPriceMissing: !variant.hasMarketPrice && !lifecycle.withdrawsCurrentQuote(at: fetchedAt)
+                    ? true : nil), forKey: priceKey)
         }
         return GradedVariantBindingReceipt(
             quote: quote,
@@ -3095,8 +3100,7 @@ final class PriceRefreshController: ObservableObject {
     ) -> [PriceTarget] {
         let primaryPricing = pricing ?? PriceQuoteService()
         return targets.filter { target in
-            // Only explicit primary/catalog work bypasses the recent-check
-            // gate. Vendor-only graded/sealed cadence remains independent.
+            // Explicit raw and graded refreshes can bypass the recent-check gate.
             let manualPrimary = intent == .manual && target.itemKind == .rawCard
                 && primaryPricing.supportsPricing(for: target.game)
             let manualGraded = intent == .manual && target.itemKind == .gradedCard
@@ -3633,6 +3637,7 @@ final class PriceRefreshController: ObservableObject {
             await worker.setPokemonFetchOverrideForTesting(pokemonFetchOverrideForTesting)
         }
         let relay = PriceRefreshProgressRelay { [weak self] value in
+            guard shouldContinue?() ?? true else { return }
             self?.consume(value)
         }
         let progress: @Sendable (PriceRefreshProgress) async -> Void = { value in

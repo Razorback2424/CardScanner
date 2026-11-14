@@ -31,8 +31,6 @@ struct PriceSnapshotDiagnostics: Equatable, Sendable {
 /// SwiftData remains the durable source; this is the explicit UI value channel.
 @MainActor
 final class PriceSnapshotStore: ObservableObject {
-    static let shared = PriceSnapshotStore()
-
     private static let maxRebuildAttempts = 3
     private static let rebuildRetryDelay: Duration = .milliseconds(50)
 
@@ -59,7 +57,6 @@ final class PriceSnapshotStore: ObservableObject {
     private var rebuildTask: Task<Void, Never>?
     private var rebuildRequested = false
     private var latestRequestedContainer: ModelContainer?
-    private var activeContainerIdentity: ObjectIdentifier?
     private var collectionKeysByPriceKey: [String: [String]] = [:]
 
     func display(for key: String?) -> PriceDisplay? {
@@ -200,14 +197,12 @@ final class PriceSnapshotStore: ObservableObject {
         }
         // An unreadable replacement store cannot display a previous store's
         // cached values. Keep last-known prices only within one container.
-        latestRequestedContainer = container
-        let identity = ObjectIdentifier(container)
-        if activeContainerIdentity != identity {
-            activeContainerIdentity = identity
+        if let previous = latestRequestedContainer, previous !== container {
             replace(with: PriceSnapshot(prices: [:],
                 diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:]))
             loadFailed = false
         }
+        latestRequestedContainer = container
         rebuildRequested = true
         guard rebuildTask == nil else {
             await rebuildTask?.value
@@ -233,7 +228,7 @@ final class PriceSnapshotStore: ObservableObject {
                     snapshot = await actor.readSucceeded() ? candidate : nil
                 }
                 guard !Task.isCancelled else { return }
-                guard self.activeContainerIdentity == ObjectIdentifier(currentContainer) else {
+                guard self.latestRequestedContainer === currentContainer else {
                     self.rebuildRequested = true
                     continue
                 }

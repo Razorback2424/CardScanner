@@ -300,19 +300,32 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertTrue(first.wasAccepted)
         XCTAssertEqual(store.record(forKey: first.priceKey)?.effectiveUnitMarketPriceUSD, 200)
 
+        let withdrawnAt = earlier.addingTimeInterval(10)
+        let olderNull = GradedVariant(id: quoted.id, company: .psa, grade: grade,
+            printing: "Holofoil", marketPriceUSD: nil, updatedAt: earlier.addingTimeInterval(-1))
+        XCTAssertFalse(GradedVariantBinding.storeUnboundVariantQuote(olderNull, game: .pokemon,
+            variantID: nil, treatmentIDs: [], store: store, at: withdrawnAt).wasAccepted)
         let noCurrentQuote = GradedVariant(id: quoted.id, company: .psa, grade: grade,
-            printing: "Holofoil", marketPriceUSD: nil, updatedAt: .now)
+            printing: "Holofoil", marketPriceUSD: nil, updatedAt: withdrawnAt)
         let second = GradedVariantBinding.storeUnboundVariantQuote(
-            noCurrentQuote, game: .pokemon, variantID: nil, treatmentIDs: [], store: store, at: .now)
+            noCurrentQuote, game: .pokemon, variantID: nil, treatmentIDs: [], store: store, at: withdrawnAt)
         XCTAssertTrue(second.wasAccepted)
         let retained = try XCTUnwrap(store.record(forKey: second.priceKey))
         XCTAssertEqual(retained.unitMarketPriceUSD, 200, "Do not destroy the historical amount")
-        XCTAssertEqual(retained.lastFailureReasonRaw, PricingDiagnosticReason.gradedMarketPriceNull.rawValue)
+        XCTAssertEqual(retained.exactGradedQuoteEvidence?.marketPriceMissing, true)
         XCTAssertNil(retained.effectiveUnitMarketPriceUSD, "A current null quote must not value the portfolio")
         XCTAssertEqual(retained.effectiveUnitMarketPriceUSD(at: earlier.addingTimeInterval(1)), 200,
             "Earlier valuation cutoffs must retain the quote known before the null result")
         XCTAssertNil(retained.display.amount)
         XCTAssertEqual(retained.display.lastKnownGradedAmount, 200)
+        let log = PriceObservationLog(context: container.mainContext)
+        let withdrawal = try XCTUnwrap(log.newestObservation(instrumentKey: second.priceKey))
+        XCTAssertEqual(withdrawal.kind, .eligibilityExpiry)
+        XCTAssertEqual(withdrawal.receivedAt, withdrawnAt)
+        XCTAssertNil(InventoryLedger.resolveValuation(observation: withdrawal, record: retained).unitPrice)
+        XCTAssertTrue(store.recordLookupStatus(.gradedVariantUnavailable, game: .pokemon,
+            printingID: retained.printingID, variantID: retained.variantID, at: withdrawnAt.addingTimeInterval(1)))
+        XCTAssertNil(retained.effectiveUnitMarketPriceUSD)
 
         let recovered = GradedVariant(id: quoted.id, company: .psa, grade: grade,
             printing: "Holofoil", marketPriceUSD: 230, updatedAt: .now)
@@ -323,6 +336,7 @@ final class JustTCGContractTests: XCTestCase {
         let latest = try XCTUnwrap(store.record(forKey: third.priceKey))
         XCTAssertEqual(latest.effectiveUnitMarketPriceUSD, 230)
         XCTAssertNil(latest.display.lastKnownGradedAmount)
+        XCTAssertEqual(log.newestObservation(instrumentKey: third.priceKey)?.effectiveUSDAmount?.doubleValue, 230)
     }
 
     @MainActor
