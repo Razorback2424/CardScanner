@@ -772,6 +772,30 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         }
     }
 
+    func testClassicSnapshotAcceptsReviewedNSupporterTitle() throws {
+        let fixture = try XCTUnwrap(fixtures()["30th-c"])
+        var products = fixture["products"] as! [String: Any]
+        var rows = products["results"] as! [[String: Any]]
+        let n = try XCTUnwrap(rows.firstIndex { $0["productId"] as? Int == 716202 })
+        rows[n]["name"] = "N (Supporter)"
+        products["results"] = rows
+        let prices = try JSONSerialization.data(withJSONObject: fixture["prices"]!)
+
+        let snapshot = try PokemonTCGCSVPriceService.decodeSnapshot(
+            products: JSONSerialization.data(withJSONObject: products),
+            prices: prices, setID: "30th-c", feedBuild: "build", fetchedAt: date
+        )
+        XCTAssertEqual(snapshot.valuesByCardID.count, 30)
+        XCTAssertNotNil(snapshot.valuesByCardID["30th-c-021"])
+
+        rows[n]["extendedData"] = [["name": "Number", "value": "101/102"]]
+        products["results"] = rows
+        XCTAssertThrowsError(try PokemonTCGCSVPriceService.decodeSnapshot(
+            products: JSONSerialization.data(withJSONObject: products),
+            prices: prices, setID: "30th-c", feedBuild: "build", fetchedAt: date
+        ))
+    }
+
     func testClassicRepeatedNumeratorsKeepDifferentProductIdentities() throws {
         let value = try snapshot("30th-c")
         for id in ["30th-c-003", "30th-c-004", "30th-c-022", "30th-c-023", "30th-c-024"] {

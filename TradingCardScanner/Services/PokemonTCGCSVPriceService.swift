@@ -252,7 +252,7 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         for mapping in PokemonTCGCSVMapping.entries where mapping.setID == setID {
             guard let matched = productsByID[mapping.productID], matched.count == 1,
                   let product = matched.first, product.categoryId == 3, product.groupId == groupID,
-                  normalizedName(product.name) == normalizedName(mapping.productName),
+                  matchesProductName(product.name, mapping: mapping),
                   product.extendedData.filter({ $0.name == "Number" }).count == 1,
                   let number = product.extendedData.first(where: { $0.name == "Number" })?.value,
                   normalizedNumber(number) == normalizedNumber(mapping.printedNumber) else {
@@ -269,6 +269,13 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
             schemaVersion: 1, setID: setID, feedBuild: feedBuild,
             fetchedAt: fetchedAt, validatedAt: fetchedAt, valuesByCardID: values
         )
+    }
+
+    private static func matchesProductName(_ name: String, mapping: PokemonTCGCSVMapping.Entry) -> Bool {
+        let normalized = normalizedName(name)
+        return normalized == normalizedName(mapping.productName)
+            || (mapping.cardID == "30th-c-021" && mapping.productID == 716202
+                && normalized == normalizedName("N (Supporter)"))
     }
 
     private static func normalizedName(_ value: String) -> String {
