@@ -77,6 +77,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case gradedVariantUnavailable = "graded_variant_unavailable"
     case providerRequestFailed = "provider_request_failed"
     case gradedMarketPriceNull = "graded_market_price_null"
+    case gradedFinishUnresolved = "graded_finish_unresolved"
     case gradedCardNotTracked = "graded_card_not_tracked"
     case gradedCardHasNoPrices = "graded_card_no_prices"
     case gradedGradeNotTracked = "graded_grade_not_tracked"
@@ -102,7 +103,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .noExactVariantPrice: return "No price for this finish"
         case .gradedVariantUnavailable: return "No price for this grade"
         case .providerRequestFailed: return "Couldn’t update price"
-        case .gradedMarketPriceNull: return "No graded price right now"
+        case .gradedMarketPriceNull: return "No current graded price"
+        case .gradedFinishUnresolved: return "Confirm printed finish"
         case .gradedCardNotTracked: return "No graded price found"
         case .gradedCardHasNoPrices: return "No graded sales yet"
         case .gradedGradeNotTracked: return "No price for this grade"
@@ -123,7 +125,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     /// show it inline; the rest keep it one tap away.
     var detailIsActionable: Bool {
         switch self {
-        case .notChecked, .identityResolvedAfterFailedCheck, .providerRequestFailed, .physicalIdentityReview:
+        case .notChecked, .identityResolvedAfterFailedCheck, .providerRequestFailed,
+             .physicalIdentityReview, .gradedFinishUnresolved:
             return true
         default:
             return false
@@ -147,7 +150,9 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .providerRequestFailed:
             return "The last provider request failed. A later refresh can try again."
         case .gradedMarketPriceNull:
-            return "The exact graded listing exists, but the provider currently reports no market price."
+            return "The exact graded listing exists, but its latest published market price is unavailable. Any previous amount remains in history and is excluded from current portfolio value."
+        case .gradedFinishUnresolved:
+            return "The slab was saved, but its printed finish was not established. Open its details, confirm the printed finish, then refresh graded prices."
         case .gradedCardNotTracked:
             return "JustTCG returned no graded card matching this name, set, and collector number. The app will check again next week."
         case .gradedCardHasNoPrices:
@@ -225,7 +230,8 @@ enum PricingDiagnostics {
             if lifecycle.wasNeverPriced { return .gradedMarketNeverPriced }
         }
         if let reason = record?.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
-           reason == .gradedSearchIncomplete || reason == .gradedIdentityUnresolved { return reason }
+           reason == .gradedSearchIncomplete || reason == .gradedIdentityUnresolved
+            || reason == .gradedFinishUnresolved || reason == .gradedMarketPriceNull { return reason }
         if let id = card.variantID,
            PokemonVariantRules.requiresPhysicalReview(cardID: card.catalogProviderID ?? card.providerID,
                variant: PhysicalVariant.resolving(id)) { return .physicalIdentityReview }
@@ -877,6 +883,16 @@ struct PriceStore {
             _ = GradedVariantBinding.storeVariantQuote(variant, game: game, printingID: printingID,
                 variantID: variantID, treatmentIDs: treatmentIDs, store: fresh, at: date)
         }
+    }
+
+    /// An exact v2 slab listing can be known without publishing a current quote.
+    /// Retain the older amount in history, but never count it as current value.
+    /// This is a successful exact-market check, not a transport failure.
+    func recordGradedNullQuote(forKey key: String, variantID: String, at date: Date) {
+        guard let record = record(forKey: key),
+              record.marketVariantID == variantID,
+              record.lastCheckedAt == date else { return }
+        record.lastFailureReasonRaw = PricingDiagnosticReason.gradedMarketPriceNull.rawValue
     }
 
     func recordExactGradedQuoteEvidence(_ evidence: ExactGradedQuoteEvidence, forKey key: String) {
