@@ -173,6 +173,7 @@ jobs:
             -only-testing:TradingCardScannerTests/OpusImplementationPlanTests \
             -only-testing:TradingCardScannerTests/BrowseFeatureTests \
             -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
+            -only-testing:TradingCardScannerTests/CSVImportResumeTests \
             -only-testing:TradingCardScannerTests/MagicPhysicalObjectTests \
             -only-testing:TradingCardScannerTests/LorcanaPhysicalCatalogTests \
             -only-testing:TradingCardScannerTests/LorcanaDiscoveryCatalogTests \
