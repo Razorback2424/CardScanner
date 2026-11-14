@@ -10,7 +10,7 @@ This is a small, reproducible measurement slice using the app's existing `Perfor
 - Exact commit/build configuration; actual device model, OS, available storage, battery/thermal state, power mode, connectivity, and whether cached artwork/catalog data is warm or cold.
 - Collection size, game distribution, quantity of collection rows, price records, inventory events and activity rows. Use a **disposable** store or synthetic fixtures; never clear or overwrite an owner's collection for testing.
 - Release/profile configuration with the same entitlements and storage mode as the intended candidate. Distinguish simulator runs from physical-device evidence.
-- Three warm repeats after one separate cold launch, with median, p95 and maximum where a journey yields enough samples. Report raw counts and cancellations; no invented benchmarks.
+- Run a separate cold launch, then at least three warm journeys per condition. For high-percentile action latency, gather at least 30 comparable action samples before reporting p95; with fewer, report the individual timings/median and mark p95 **insufficient sample**. Report the sample count, outliers, cancellations and raw traces. Never fabricate benchmark results.
 
 ## Journeys and checkpoints
 
