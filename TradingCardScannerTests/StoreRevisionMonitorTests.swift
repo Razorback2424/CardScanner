@@ -309,7 +309,8 @@ final class StoreRevisionMonitorTests: XCTestCase {
 
         let initialActor = await StoreRevisionModelActor.makeBackground(modelContainer: container)
         let before = await initialActor.fingerprint()
-        XCTAssertTrue(await initialActor.readSucceeded())
+        let initialReadSucceeded = await initialActor.readSucceeded()
+        XCTAssertTrue(initialReadSucceeded)
 
         // The user-confirmed provenance affects CollectionRow and its finish
         // presentation, without changing the item's identity or amount.
@@ -318,7 +319,8 @@ final class StoreRevisionMonitorTests: XCTestCase {
 
         let updatedActor = await StoreRevisionModelActor.makeBackground(modelContainer: container)
         let after = await updatedActor.fingerprint()
-        XCTAssertTrue(await updatedActor.readSucceeded())
+        let updatedReadSucceeded = await updatedActor.readSucceeded()
+        XCTAssertTrue(updatedReadSucceeded)
         XCTAssertEqual(before.cardCount, after.cardCount)
         XCTAssertEqual(before.priceValues, after.priceValues)
         XCTAssertEqual(before.inventoryEvents, after.inventoryEvents)
