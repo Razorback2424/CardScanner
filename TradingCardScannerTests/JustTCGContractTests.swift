@@ -271,6 +271,43 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(legacy.marketPriceUSD(at: .distantFuture), 50)
     }
 
+    @MainActor
+    func testExactGradedNullQuoteRetainsHistoryWithoutCountingCurrentValue() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let store = PriceStore(context: container.mainContext)
+        let earlier = Date.now.addingTimeInterval(-60)
+        let grade = CardGrade(value: "10", label: "Gem Mint")
+        let quoted = GradedVariant(id: "synthetic-exact-psa10", company: .psa,
+            grade: grade, printing: "Holofoil", marketPriceUSD: 200, updatedAt: earlier)
+        let first = GradedVariantBinding.storeUnboundVariantQuote(
+            quoted, game: .pokemon, variantID: nil, treatmentIDs: [], store: store, at: earlier)
+        XCTAssertTrue(first.wasAccepted)
+        XCTAssertEqual(store.record(forKey: first.priceKey)?.effectiveUnitMarketPriceUSD, 200)
+
+        let noCurrentQuote = GradedVariant(id: quoted.id, company: .psa, grade: grade,
+            printing: "Holofoil", marketPriceUSD: nil, updatedAt: .now)
+        let second = GradedVariantBinding.storeUnboundVariantQuote(
+            noCurrentQuote, game: .pokemon, variantID: nil, treatmentIDs: [], store: store, at: .now)
+        XCTAssertTrue(second.wasAccepted)
+        let retained = try XCTUnwrap(store.record(forKey: second.priceKey))
+        XCTAssertEqual(retained.unitMarketPriceUSD, 200, "Do not destroy the historical amount")
+        XCTAssertEqual(retained.lastFailureReasonRaw, PricingDiagnosticReason.gradedMarketPriceNull.rawValue)
+        XCTAssertNil(retained.effectiveUnitMarketPriceUSD, "A current null quote must not value the portfolio")
+        XCTAssertNil(retained.display.amount)
+        XCTAssertEqual(retained.display.lastKnownGradedAmount, 200)
+
+        let recovered = GradedVariant(id: quoted.id, company: .psa, grade: grade,
+            printing: "Holofoil", marketPriceUSD: 230, updatedAt: .now)
+        let third = GradedVariantBinding.storeUnboundVariantQuote(
+            recovered, game: .pokemon, variantID: nil, treatmentIDs: [], store: store,
+            at: .now.addingTimeInterval(1))
+        XCTAssertTrue(third.wasAccepted)
+        let latest = try XCTUnwrap(store.record(forKey: third.priceKey))
+        XCTAssertEqual(latest.effectiveUnitMarketPriceUSD, 230)
+        XCTAssertNil(latest.display.lastKnownGradedAmount)
+    }
+
     func testGradedDiscoveryRequestsAllNullCardsSoAbsenceDoesNotMeanNoProduct() {
         let identity = GradedCardIdentity(name: "Spinarak", setName: "Team Rocket Returns", collectorNumber: "78", catalogID: "ex7-78", finish: .normal)
         for product: String? in [nil, "89455"] {
