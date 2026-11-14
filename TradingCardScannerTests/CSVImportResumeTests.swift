@@ -352,6 +352,51 @@ final class CSVImportResumeTests: XCTestCase {
         XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>()).count, 3)
     }
 
+    func testLargeInterruptedRawImportResumesWithoutDuplicateEvents() throws {
+        let container = try makeContainer()
+        let rows = (1...160).map { index in
+            "raw-\(index),Card \(index),Fixture Set,FIX,\(index),1"
+        }
+        let plan = try parsedPlan(rows: rows)
+        XCTAssertEqual(plan.entries.count, 160)
+        let stopFlag = CollectionCSVImportStopFlag()
+        var committedBeforeStop = 0
+
+        XCTAssertThrowsError(
+            try CollectionCSV.apply(plan, to: ModelContext(container), batchSize: 16,
+                progress: { completed, _ in
+                    committedBeforeStop = completed
+                    if completed >= 64 { stopFlag.requestStop() }
+                },
+                shouldContinue: { stopFlag.shouldContinue })
+        ) { error in
+            guard case let CollectionCSVError.importInterrupted(completedEntries, totalEntries) = error else {
+                return XCTFail("Unexpected interruption outcome: \(error)")
+            }
+            XCTAssertEqual(completedEntries, committedBeforeStop)
+            XCTAssertEqual(totalEntries, 160)
+        }
+        XCTAssertGreaterThanOrEqual(committedBeforeStop, 64)
+        XCTAssertLessThan(committedBeforeStop, 160)
+
+        let committed = try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>()).count
+        XCTAssertEqual(committed, committedBeforeStop,
+            "Interruption must stop after a durable entry boundary")
+
+        let resumed = try CollectionCSV.apply(plan, to: ModelContext(container), batchSize: 16)
+        XCTAssertTrue(resumed.failedRows.isEmpty)
+        XCTAssertEqual(resumed.alreadyImportedEntries, committed)
+        XCTAssertEqual(resumed.importedQuantity, 160 - committed)
+        XCTAssertEqual(try storedQuantities(in: container).count, 160)
+        XCTAssertTrue(try storedQuantities(in: container).values.allSatisfy { $0 == 1 })
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>()).count, 160)
+
+        let replay = try CollectionCSV.apply(plan, to: ModelContext(container), batchSize: 16)
+        XCTAssertEqual(replay.alreadyImportedEntries, 160)
+        XCTAssertEqual(replay.importedQuantity, 0)
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>()).count, 160)
+    }
+
     func testImportAgainUsesFreshSaltAndModifiedQuantityIsANewFile() throws {
         let container = try makeContainer()
         let original = try parsedPlan(rows: ["a,Card A,Set,SET,1,2"])
