@@ -33,6 +33,18 @@ struct PriceSnapshotDiagnostics: Equatable, Sendable {
 final class PriceSnapshotStore: ObservableObject {
     static let shared = PriceSnapshotStore()
 
+    /// The optional loader isolates the real SwiftData read for deterministic
+    /// transient-failure tests. Production uses the same background model actor.
+    private let snapshotReader: @MainActor (ModelContainer) async -> PriceSnapshot?
+
+    init(snapshotReader: @escaping @MainActor (ModelContainer) async -> PriceSnapshot? = { container in
+        let actor = await PriceSnapshotModelActor.makeBackground(modelContainer: container)
+        let snapshot = await actor.snapshot()
+        return await actor.readSucceeded() ? snapshot : nil
+    }) {
+        self.snapshotReader = snapshotReader
+    }
+
     private static let maxRebuildAttempts = 3
     private static let rebuildRetryDelay: Duration = .milliseconds(50)
 
@@ -188,10 +200,18 @@ final class PriceSnapshotStore: ObservableObject {
                 completedAttempts += 1
                 self.rebuildRequested = false
                 let startingRevision = self.revision
-                let actor = await PriceSnapshotModelActor.makeBackground(modelContainer: container)
-                let snapshot = await actor.snapshot()
-                guard await actor.readSucceeded() else { return }
+                let snapshot = await self.snapshotReader(container)
                 guard !Task.isCancelled else { return }
+                guard let snapshot else {
+                    // Keep the last known values. Retry a transient read failure
+                    // within the existing bounded rebuild budget; do not replace
+                    // the entire price table with an invented empty result.
+                    guard completedAttempts < Self.maxRebuildAttempts else { return }
+                    self.rebuildRequested = true
+                    try? await Task.sleep(for: Self.rebuildRetryDelay)
+                    guard !Task.isCancelled else { return }
+                    continue
+                }
 
                 // A delta or another requested rebuild landed while the actor
                 // was reading. Do not overwrite it with an older whole-store
