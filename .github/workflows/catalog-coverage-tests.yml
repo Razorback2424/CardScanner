@@ -30,6 +30,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install offline image-test dependencies
+        run: |
+          python3 -m venv "$RUNNER_TEMP/catalog-python"
+          "$RUNNER_TEMP/catalog-python/bin/python" -m pip install --no-input --disable-pip-version-check "Pillow==11.3.0"
+          echo "$RUNNER_TEMP/catalog-python/bin" >> "$GITHUB_PATH"
       - name: Test offline ingestion and mapping policies
         run: |
           # The finish ledger pins this baseline; its objects are required by the audit.
