@@ -323,6 +323,41 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertNil(latest.display.lastKnownGradedAmount)
     }
 
+    @MainActor
+    func testWithdrawnExactSlabQuoteCannotResurrectValuedLegacyAlias() throws {
+        let slab = CollectedCard(
+            collectionKey: "graded:synthetic-owner", game: .pokemon, providerID: "base1-4",
+            name: "Fixture", setName: "Base Set", setCode: "BAS", cardNumber: "4",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .holo,
+            variantResolution: .userConfirmed
+        )
+        slab.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        slab.justTCGVariantID = "synthetic-exact-psa10"
+        slab.justTCGAPIVersion = "v2"
+        let legacyKey = try XCTUnwrap(slab.legacyPriceKeys.first)
+        XCTAssertNotEqual(slab.priceKey, legacyKey)
+
+        let exact = PriceRecord(key: slab.priceKey, game: .pokemon,
+            printingID: slab.priceStorageID, variantID: slab.variantID)
+        exact.unitMarketPriceUSD = 200
+        exact.lastFailureReasonRaw = PricingDiagnosticReason.gradedMarketPriceNull.rawValue
+
+        let legacy = PriceRecord(key: legacyKey, game: .pokemon,
+            printingID: slab.providerID, variantID: slab.variantID)
+        legacy.unitMarketPriceUSD = 300
+        XCTAssertEqual(legacy.effectiveUnitMarketPriceUSD, 300)
+        XCTAssertNil(exact.effectiveUnitMarketPriceUSD)
+
+        let records = [exact, legacy]
+        XCTAssertEqual(PriceRecordKeySelection(records: records).priceStorageKey(for: slab),
+            slab.priceKey, "A current exact null quote must block old aliases")
+        let selected = PriceStore.record(for: slab,
+            in: Dictionary(uniqueKeysWithValues: records.map { ($0.key, $0) }))
+        XCTAssertEqual(selected?.key, slab.priceKey)
+        XCTAssertNil(selected?.effectiveUnitMarketPriceUSD,
+            "Collection value cannot silently recover a withdrawn slab price")
+    }
+
     func testGradedDiscoveryRequestsAllNullCardsSoAbsenceDoesNotMeanNoProduct() {
         let identity = GradedCardIdentity(name: "Spinarak", setName: "Team Rocket Returns", collectorNumber: "78", catalogID: "ex7-78", finish: .normal)
         for product: String? in [nil, "89455"] {
