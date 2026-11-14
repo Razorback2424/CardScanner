@@ -309,6 +309,8 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(retained.unitMarketPriceUSD, 200, "Do not destroy the historical amount")
         XCTAssertEqual(retained.lastFailureReasonRaw, PricingDiagnosticReason.gradedMarketPriceNull.rawValue)
         XCTAssertNil(retained.effectiveUnitMarketPriceUSD, "A current null quote must not value the portfolio")
+        XCTAssertEqual(retained.effectiveUnitMarketPriceUSD(at: earlier.addingTimeInterval(1)), 200,
+            "Earlier valuation cutoffs must retain the quote known before the null result")
         XCTAssertNil(retained.display.amount)
         XCTAssertEqual(retained.display.lastKnownGradedAmount, 200)
 
@@ -341,6 +343,10 @@ final class JustTCGContractTests: XCTestCase {
             printingID: slab.priceStorageID, variantID: slab.variantID)
         exact.unitMarketPriceUSD = 200
         exact.lastFailureReasonRaw = PricingDiagnosticReason.gradedMarketPriceNull.rawValue
+        let withdrawnAt = Date.now
+        exact.lastCheckedAt = withdrawnAt
+        XCTAssertEqual(exact.effectiveUnitMarketPriceUSD(at: withdrawnAt.addingTimeInterval(-60)),
+            200, "A later null quote must not retroactively withdraw historical value")
 
         let legacy = PriceRecord(key: legacyKey, game: .pokemon,
             printingID: slab.providerID, variantID: slab.variantID)
@@ -351,6 +357,9 @@ final class JustTCGContractTests: XCTestCase {
         let records = [exact, legacy]
         XCTAssertEqual(PriceRecordKeySelection(records: records).priceStorageKey(for: slab),
             slab.priceKey, "A current exact null quote must block old aliases")
+        XCTAssertEqual(PriceRecordKeySelection(records: records,
+            at: withdrawnAt.addingTimeInterval(-60)).priceStorageKey(for: slab), slab.priceKey,
+            "Historical selection must retain the exact instrument known at that time")
         let selected = PriceStore.record(for: slab,
             in: Dictionary(uniqueKeysWithValues: records.map { ($0.key, $0) }))
         XCTAssertEqual(selected?.key, slab.priceKey)
