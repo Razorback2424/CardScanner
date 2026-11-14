@@ -998,6 +998,10 @@ actor StoreRevisionModelActor: BackgroundModelActor {
             cardHasher.combine(card.cardNumber)
             cardHasher.combine(card.variantID)
             cardHasher.combine(card.variantLabel)
+            // The collection projection displays the finish provenance as
+            // well as the finish. A provenance-only correction must invalidate
+            // its cached overlay even when the physical variant is unchanged.
+            cardHasher.combine(card.variantResolutionRaw)
             cardHasher.combine(card.magicTreatmentIDsRaw)
             cardHasher.combine(card.magicTreatmentQualifiersJSON)
             cardHasher.combine(card.itemKindRaw)
