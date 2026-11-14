@@ -26,6 +26,7 @@ Run these together with existing ordinary-card regressions, including the raw CS
 
 ## Integration order and overlapping changes
 
+- [PR #29](https://github.com/Razorback2424/CardScanner/pull/29) repairs the shared Python/Pillow catalog CI environment and adds Xcode static analysis plus XCTest-selector auditing. A prior Linux missing-dependency failure is not evidence that the corresponding Swift tests failed; re-execute after integration and record each job independently.
 - PR #23 contains the initial provenance-fingerprint fix and bounded price-snapshot recovery. The narrower [PR #24](https://github.com/Razorback2424/CardScanner/pull/24) has its own provenance test; [PR #25](https://github.com/Razorback2424/CardScanner/pull/25) extends the same snapshot work with storage-container isolation. Review their shared hunks after bringing them onto a combined candidate; no duplicate or conflicting runtime implementation should survive.
 - [PR #27](https://github.com/Razorback2424/CardScanner/pull/27) adds raw import interruption coverage and opts that suite into native PR CI; [PR #26](https://github.com/Razorback2424/CardScanner/pull/26) is a measurement protocol, not evidence of performance.
 - Record the combined head SHA **after** resolving overlaps. A clean CI result for any isolated PR does not certify a different, combined candidate. Leave all changes unmerged until that verification exists.
