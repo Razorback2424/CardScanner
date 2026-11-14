@@ -587,8 +587,10 @@ final class StoreRevisionMonitorTests: XCTestCase {
         // No physical identity, quantity, ownership or price field changes.
         row.variantResolutionRaw = VariantResolution.userConfirmed.rawValue
         try container.mainContext.save()
-        let after = await monitor.fingerprint()
-        let refreshed = await projection.snapshot()
+        let nextMonitor = await StoreRevisionModelActor.makeBackground(modelContainer: container)
+        let after = await nextMonitor.fingerprint()
+        let nextProjection = await CollectionProjectionActor.makeBackground(modelContainer: container)
+        let refreshed = await nextProjection.snapshot()
         XCTAssertNotEqual(before.cards, after.cards,
             "Changing the provenance used by the finish overlay must rebuild the collection")
         XCTAssertEqual(before.stalePriceTargetFingerprint, after.stalePriceTargetFingerprint,
