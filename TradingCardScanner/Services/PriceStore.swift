@@ -368,6 +368,7 @@ struct PriceRecordKeySelection: Sendable {
             ),
             invalidatedKeys: Set(records.filter {
                 $0.isInvalidated || $0.exactGradedQuoteIsWithdrawn(at: date)
+                    || $0.lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue
             }.map(\.key))
         )
     }
@@ -1104,7 +1105,10 @@ struct PriceStore {
         // The canonical record is authoritative once it has explicitly been
         // invalidated. Falling through to a legacy key in that state would
         // resurrect the very value the invalidation withdrew.
-        if primary.isInvalidated || primary.exactGradedQuoteIsWithdrawn { return primary }
+        if primary.isInvalidated || primary.exactGradedQuoteIsWithdrawn
+            || primary.lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue {
+            return primary
+        }
 
         // Prefer a real record value over an empty canonical placeholder. The
         // legacy value is for the same exact object and remains better evidence
