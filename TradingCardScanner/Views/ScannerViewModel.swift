@@ -205,7 +205,7 @@ struct CollectionCommitCandidate: Sendable {
                     price = .unavailable(.justTCG)
                 }
             case .cardNotTracked, .noGradedListings, .gradeNotTracked,
-                 .unavailable, .none:
+                 .blocked, .unavailable, .none:
                 price = .unavailable(.justTCG)
             }
         } else {
@@ -4922,6 +4922,7 @@ final class ScannerViewModel: ObservableObject {
             case .cardNotTracked: lookupResult = "card-not-tracked"
             case .noGradedListings: lookupResult = "no-listings"
             case .gradeNotTracked: lookupResult = "grade-not-tracked"
+            case let .blocked(reason): lookupResult = "blocked-\(reason)"
             case .unavailable: lookupResult = "unavailable"
             }
             PerformanceSignpost.endInterval(
@@ -5075,10 +5076,23 @@ final class ScannerViewModel: ObservableObject {
             message = "\(slab.grade.display(company: slab.company)) added — no graded listings on JustTCG yet"
         case .gradeNotTracked:
             message = "\(slab.grade.display(company: slab.company)) added — this grade isn’t listed on JustTCG yet"
+        case let .blocked(reason):
+            let description: String
+            switch reason {
+            case .unsupportedGame:
+                description = "graded pricing is unavailable for this game"
+            case .missingCredentials:
+                description = "add a JustTCG key in Pricing Settings for graded prices"
+            case .unresolvedFinish:
+                description = "confirm the printed finish in Collection to price this slab"
+            case .incompleteSearch:
+                description = "graded price search was incomplete; try again later"
+            case .unresolvedIdentity:
+                description = "graded market identity could not be verified"
+            }
+            message = "\(slab.grade.display(company: slab.company)) added — \(description)"
         case .unavailable:
-            message = PriceVendorCredentials.hasKey
-                ? "\(slab.grade.display(company: slab.company)) added — price pending"
-                : "\(slab.grade.display(company: slab.company)) added — add a JustTCG key in Pricing Settings for graded prices"
+            message = "\(slab.grade.display(company: slab.company)) added — graded price check failed; retry later"
         }
         if let message { show(ScanNote(text: message, tone: .info)) }
     }
