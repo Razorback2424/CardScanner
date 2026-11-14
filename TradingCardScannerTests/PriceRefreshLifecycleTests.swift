@@ -507,6 +507,36 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         XCTAssertTrue(eligible(fallback: false, credentials: true))
     }
 
+    func testUnboundGradedFinishMustBeConfirmedBeforeLookupAndManualRetryOverridesRecentMiss() {
+        var target = PriceTarget(
+            game: .pokemon, printingID: "graded:review-psa10", catalogPrintingID: "sv10-085",
+            setCode: "DRI", variantID: nil, importedIdentity: nil,
+            catalogMetadataCheckedAt: nil, lastFailureAt: nil,
+            lastFailureReasonRaw: PricingDiagnosticReason.gradedFinishUnresolved.rawValue,
+            hasPrice: false, lastCheckedAt: .now
+        )
+        target.itemKind = .gradedCard
+        target.gradedIdentity = .init(name: "Example Pokémon", setName: "Destined Rivals",
+            collectorNumber: "085", catalogID: "sv10-085")
+        target.gradingCompany = .psa
+        target.grade = "10"
+
+        XCTAssertFalse(target.canResolveGradedVariant)
+        XCTAssertTrue(PriceRefreshController.staleTargets(from: [target], intent: .manual).isEmpty)
+
+        target.variantID = PhysicalVariant.normal.id
+        XCTAssertTrue(target.canResolveGradedVariant)
+        XCTAssertEqual(PriceRefreshController.staleTargets(from: [target], intent: .manual).count, 1)
+        XCTAssertEqual(PriceRefreshController.staleTargets(from: [target]).count, 1,
+            "Correcting the physical finish must unblock a previously unresolved slab")
+
+        target.lastFailureReasonRaw = PricingDiagnosticReason.gradedGradeNotTracked.rawValue
+        XCTAssertTrue(PriceRefreshController.staleTargets(from: [target]).isEmpty,
+            "Automatic graded coverage retries remain weekly")
+        XCTAssertEqual(PriceRefreshController.staleTargets(from: [target], intent: .manual).count, 1,
+            "An explicit user retry should be allowed without waiting a week")
+    }
+
     func testEmptyAutomaticPassNotifiesObserversWhenQueueEndsWithoutStatusChange() async throws {
         let container = try makeContainer(withCard: false)
         let controller = PriceRefreshController()
