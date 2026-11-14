@@ -301,6 +301,7 @@ final class PriceCheckCoordinator {
                 state = .providerUnavailable
             }
             let shouldAutoRefresh = state == .checking
+                || state == .stale
                 || state == .providerUnavailable
                 || state == .fallbackUnconfigured
             if case let .bound(variant)? = resolvedScan.gradedOutcome,
