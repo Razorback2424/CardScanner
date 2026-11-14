@@ -775,7 +775,9 @@ final class PriceRefreshLifecycleTests: XCTestCase {
             "The graded identity write must not wait for the full vendor pass")
 
         _ = await active.value
-        for _ in 0..<300 where controller.isPassInFlight {
+        for _ in 0..<300 {
+            let count = await attempts.value()
+            if count >= 2 && !controller.isPassInFlight { break }
             try await Task.sleep(for: .milliseconds(10))
         }
         XCTAssertFalse(controller.isPassInFlight)
