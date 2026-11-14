@@ -543,8 +543,7 @@ struct PriceCheckResult: Identifiable {
 
     var successfulQuoteState: PriceCheckQuoteState {
         guard hasUsableAmount else { return .checking }
-        if resolvedScan.request.subject.slab == nil,
-           display.state() == .stale { return .stale }
+        if display.state() == .stale { return .stale }
         return .current
     }
 
@@ -6271,6 +6270,9 @@ final class ScannerViewModel: ObservableObject {
         case .gradedCardNotTracked: return .gradedCardNotTracked
         case .gradedCardHasNoPrices: return .gradedCardHasNoPrices
         case .gradedGradeNotTracked: return .gradedGradeNotTracked
+        case .gradedFinishUnresolved: return .gradedFinishUnresolved
+        case .gradedSearchIncomplete: return .gradedSearchIncomplete
+        case .gradedIdentityUnresolved: return .gradedIdentityUnresolved
         case .providerUnavailable: return .providerUnavailable
         case .fallbackDisabled: return .fallbackDisabled
         case .fallbackUnconfigured: return .fallbackUnconfigured
