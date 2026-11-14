@@ -566,38 +566,29 @@ private struct CollectionCardDetailContent: View {
     }
 
     private var cardIdentitySection: some View {
-        VStack(spacing: 6) {
+        VStack(alignment: .leading, spacing: 6) {
             Text(card.name)
                 .font(.system(size: titleFontSize, weight: .bold))
                 .tracking(dynamicTypeSize <= .large ? -0.6 : 0)
-                .multilineTextAlignment(.center)
+                .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
 
-            if !provenanceLine.isEmpty {
-                if !card.setName.isEmpty {
-                    NavigationLink {
-                        setDestination
-                    } label: {
-                        Text(provenanceLine)
-                            .multilineTextAlignment(.center)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .frame(minHeight: 44)
-                            .contentShape(Rectangle())
+            if !card.setName.isEmpty || !printingDesignation.isEmpty {
+                ViewThatFits(in: .horizontal) {
+                    provenanceRow
+                    VStack(alignment: .leading, spacing: 0) {
+                        if !card.setName.isEmpty { setNameLink }
+                        if !printingDesignation.isEmpty { Text(printingDesignation) }
                     }
-                    .font(.subheadline)
-                    .buttonStyle(.plain)
-                    .foregroundStyle(Color.accentColor)
-                    .accessibilityHint("View this set")
-                    .accessibilityIdentifier("collection-set-link")
-                } else {
-                    Text(provenanceLine)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
                 }
+                .font(.subheadline.weight(.semibold))
             }
 
-            identityStatusRow
+            if let rarity = CardRarityToken(raw: card.rarity) {
+                Text(rarity.label)
+                    .font(.subheadline.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
             if card.hasReport {
                 UnverifiedReportStatus(card: card, isWritePending: isOwnershipWritePending,
@@ -614,32 +605,40 @@ private struct CollectionCardDetailContent: View {
                         }
                         Button("Cancel", role: .cancel) { pendingReportLink = nil }
                     }
-            } else if card.itemKind == .gradedCard {
-                gradedVariantCorrectionBlock
-            } else if card.itemKind == .rawCard, let activity = collectionActivities.first {
-                NavigationLink {
-                    CollectionActivityEditor(activity: activity, onCorrected: { dismiss() })
-                } label: {
-                    Label("Fix finish", systemImage: "pencil")
-                        .frame(minHeight: 44)
-                }
-                .font(.subheadline.weight(.semibold))
-                .accessibilityLabel("Fix card finish")
-                .disabled(isOwnershipWritePending)
-                if card.variantResolution == .uniqueInCatalog {
-                    Text("Finish selected from the catalog. Compare your card’s stamp and foil pattern; special printings may need a correction.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
             }
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 18)
         .padding(.horizontal, 16)
         .padding(.bottom, 22)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
+    }
+
+    private var provenanceRow: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            if !card.setName.isEmpty { setNameLink }
+            if !printingDesignation.isEmpty {
+                if !card.setName.isEmpty { Text("·").foregroundStyle(.secondary) }
+                Text(printingDesignation)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private var setNameLink: some View {
+        NavigationLink {
+            setDestination
+        } label: {
+            Text(card.setName)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(Color.accentColor)
+        .accessibilityHint("View this set")
+        .accessibilityIdentifier("collection-set-link")
     }
 
     @ViewBuilder
@@ -650,14 +649,14 @@ private struct CollectionCardDetailContent: View {
                 label: card.itemKindLabel,
                 dotStyle: nil,
                 tint: .secondary,
-                rarity: CardRarityToken(raw: card.rarity)
+                rarity: nil
             )
         case .gradedCard:
             identityStatusLine(
                 label: conditionLine ?? card.itemKindLabel,
                 dotStyle: .flat(.finishGraded),
                 tint: .finishGraded,
-                rarity: CardRarityToken(raw: card.rarity)
+                rarity: nil
             )
         case .rawCard:
             if let label = detailFinishLabel,
@@ -666,13 +665,6 @@ private struct CollectionCardDetailContent: View {
                     label: label,
                     dotStyle: status.style,
                     tint: status.tint,
-                    rarity: CardRarityToken(raw: card.rarity)
-                )
-            } else if let rarity = CardRarityToken(raw: card.rarity) {
-                identityStatusLine(
-                    label: rarity.label,
-                    dotStyle: nil,
-                    tint: rarity.tint,
                     rarity: nil
                 )
             }
@@ -702,8 +694,8 @@ private struct CollectionCardDetailContent: View {
                     .foregroundStyle(rarity.tint)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .center)
-        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .multilineTextAlignment(.leading)
         .fixedSize(horizontal: false, vertical: true)
     }
 
@@ -748,16 +740,8 @@ private struct CollectionCardDetailContent: View {
         }
     }
 
-    /// The collector's canonical short form: where this printing comes from.
-    ///
-    /// This is one fact, so it stays on one line and uses one type treatment.
-    /// The rarity chip is adjacent because rarity belongs to the printing, not
-    /// to the physical copy being held.
-    private var provenanceLine: String {
+    private var printingDesignation: String {
         var parts: [String] = []
-        if !card.setName.isEmpty {
-            parts.append(card.setName)
-        }
 
         let designation = [card.setCode, card.displayCardNumber]
             .filter { !$0.isEmpty }
