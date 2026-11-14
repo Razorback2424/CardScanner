@@ -320,6 +320,7 @@ final class PriceRecord {
     func effectiveUnitMarketPriceUSD(at date: Date) -> Double? {
         guard !isInvalidated,
               !exactGradedQuoteIsWithdrawn(at: date),
+              lastFailureReasonRaw != PricingDiagnosticReason.gradedMarketPriceNull.rawValue,
               !PokemonReviewedPhysicalObjects.requiresReview(priceKey: key),
               currencyCode.caseInsensitiveCompare("USD") == .orderedSame else { return nil }
         return unitMarketPriceUSD
@@ -361,7 +362,11 @@ final class PriceRecord {
             fetchedAt: fetchedAt,
             lastCheckedAt: lastCheckedAt,
             refreshFailed: lastFailureAt != nil,
-            gradedMarketCoverage: gradedMarketCoverage
+            gradedMarketCoverage: gradedMarketCoverage,
+            lastKnownGradedAmount: lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue
+                ? unitMarketPriceUSD : nil,
+            lastKnownGradedAsOf: lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue
+                ? sourceUpdatedAt ?? fetchedAt : nil
         )
     }
 }
@@ -390,6 +395,10 @@ struct PriceDisplay: Equatable, Sendable {
     var lastCheckedAt: Date? = nil
     var refreshFailed: Bool = false
     var gradedMarketCoverage: GradedMarketCoverage? = nil
+    /// Preserved for context when the exact slab listing currently has no
+    /// market quote. Never contributes to the headline or portfolio total.
+    var lastKnownGradedAmount: Double? = nil
+    var lastKnownGradedAsOf: Date? = nil
 
     static let unknown = PriceDisplay()
 
