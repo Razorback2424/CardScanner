@@ -222,6 +222,10 @@ final class PriceSnapshotStore: ObservableObject {
                         continue
                     }
                     self.loadFailed = true
+                    // A newer request may have arrived during the last failed
+                    // read. Defer it to a new bounded task rather than silently
+                    // dropping the user's Retry action.
+                    if self.rebuildRequested { break }
                     return
                 }
 
