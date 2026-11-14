@@ -389,12 +389,25 @@ final class CSVImportResumeTests: XCTestCase {
         XCTAssertEqual(resumed.importedQuantity, 160 - committed)
         XCTAssertEqual(try storedQuantities(in: container).count, 160)
         XCTAssertTrue(try storedQuantities(in: container).values.allSatisfy { $0 == 1 })
-        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>()).count, 160)
+        let events = try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(events.count, 160)
+        XCTAssertEqual(Set(events.map(\\.operationID)).count, 160,
+            "Every imported holding must have one distinct acquisition operation")
+        XCTAssertEqual(Set(events.map(\\.collectionKey)),
+            Set(plan.entries.map(\\.collectionKey)))
+        XCTAssertEqual(try ModelContext(container).fetchCount(FetchDescriptor<CollectionActivity>()), 160)
+        let storeID = UUID()
+        let beforeReplay = try CollectionStoreDigester.make(
+            in: ModelContext(container), storeID: storeID).materialSHA256
 
         let replay = try CollectionCSV.apply(plan, to: ModelContext(container), batchSize: 16)
         XCTAssertEqual(replay.alreadyImportedEntries, 160)
         XCTAssertEqual(replay.importedQuantity, 0)
         XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>()).count, 160)
+        XCTAssertEqual(try ModelContext(container).fetchCount(FetchDescriptor<CollectionActivity>()), 160)
+        XCTAssertEqual(try CollectionStoreDigester.make(
+            in: ModelContext(container), storeID: storeID).materialSHA256, beforeReplay,
+            "Replaying the same file may not alter the durable collection or activity ledger")
     }
 
     func testImportAgainUsesFreshSaltAndModifiedQuantityIsANewFile() throws {
