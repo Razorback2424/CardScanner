@@ -381,8 +381,10 @@ final class ScannedGradedResolverTests: XCTestCase {
             credentialsAvailable: false
         ).resolve(card: card, slab: slab(company: .psa, value: "10"), pokemonPrintRun: nil)
         XCTAssertEqual(noKey, .blocked(.missingCredentials))
-        XCTAssertEqual(await resolve(.incompleteSearch), .blocked(.incompleteSearch))
-        XCTAssertEqual(await resolve(.localIdentityUnresolved), .blocked(.unresolvedIdentity))
+        let incomplete = await resolve(.incompleteSearch)
+        let unresolved = await resolve(.localIdentityUnresolved)
+        XCTAssertEqual(incomplete, .blocked(.incompleteSearch))
+        XCTAssertEqual(unresolved, .blocked(.unresolvedIdentity))
     }
 
     func testMissingGradeRetainsOtherJustTCGGradesWithoutFilteringTheRequest() async throws {
