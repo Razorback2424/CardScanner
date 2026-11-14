@@ -32,6 +32,28 @@ final class ScannedGradedResolverTests: XCTestCase {
         }
     }
 
+    @MainActor
+    func testGradedPriceCheckUsesVendorDataDateToShowStaleQuote() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let olderMarketTimestamp = Date.now.addingTimeInterval(-3 * 24 * 60 * 60)
+        let exact = GradedVariant(id: "synthetic-psa-10", company: .psa,
+            grade: .init(value: "10"), printing: "Normal",
+            marketPriceUSD: 125, updatedAt: olderMarketTimestamp)
+        let scan = ResolvedScan(request: ScanRequest(subject: ScanSubject(
+            identifier: .pokemon(setCode: "DRI", cardNumber: "085", printedTotal: 182,
+                setDefinition: .init(printedCode: "DRI", tcgdexSetID: "sv10", officialCount: 182, releaseIndex: 0)),
+            slab: .init(company: .psa, grade: .init(value: "10"), certificationNumber: nil, labelCardText: [],
+                printedFinish: .normal)),
+            purpose: .priceCheck, generation: 0), card: card,
+            resolved: .init(variant: .normal, resolution: .userConfirmed),
+            pokemonPrintRun: nil, options: [], gradedOutcome: .bound(exact))
+        let result = PriceCheckCoordinator(context: container.mainContext).present(scan)
+        XCTAssertEqual(result.quoteState, .stale)
+        XCTAssertEqual(result.successfulQuoteState, .stale)
+        XCTAssertFalse(result.shouldAutoRefresh == false && result.quoteState == .current)
+    }
+
     func testUnknownCatalogFinishCannotBindTheOnlyPublishedFinish() async {
         XCTAssertTrue(card.variantEvidence.catalogVariants.isEmpty)
         let candidate = variant(id: "sole-normal", company: .psa, grade: .init(value: "10"))
