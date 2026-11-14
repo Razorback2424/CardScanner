@@ -46,13 +46,15 @@ def missing_selectors(workflow: Path, tests_dir: Path) -> tuple[list[str], int]:
     if not swift_files:
         raise ValueError(f"No Swift test sources found under {tests_dir}")
 
-    for source in swift_files:
-        content = source.read_text(encoding="utf-8")
+    # First collect all test classes, then their extensions. An extension may
+    # live in a file alphabetically earlier than its class declaration.
+    sources = [(source, source.read_text(encoding="utf-8")) for source in swift_files]
+    for _, content in sources:
         for match in XCTEST_CLASS.finditer(content):
             declarations.setdefault(match.group(1), set()).update(
                 declaration_methods(content, match.end())
             )
-        # XCTest methods may also live in an extension of an existing test class.
+    for _, content in sources:
         for match in XCTEST_EXTENSION.finditer(content):
             if match.group(1) in declarations:
                 declarations[match.group(1)].update(
