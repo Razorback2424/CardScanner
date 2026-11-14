@@ -1,3 +1,27 @@
+# 2026-11-13 — Backup-verified iPhone install and acceptance checklist
+
+The ReleaseLocal build now enables unverified report creation through
+`UNVERIFIED_REPORTS_LOCAL_BETA` (`8e547b6`). The device installer
+(`scripts/iphone_releaselocal_install.py`, wrapped by
+`install_releaselocal_on_iphone.sh`) now fails closed: it quits the app,
+copies the whole data container, matches the copy to the device's file
+listing, runs SQLite `integrity_check` on every store with its WAL, checksums
+and write-protects the backup and prepares a WAL-safe restore set before
+installing. The earlier version accepted any nonempty `default.store` and had
+a `FORCE_INSTALL` bypass; both are gone, and the queued job that would have
+run it was cancelled. Its offline checks pass 15 of 15 tests
+(`scripts/tests/test_iphone_releaselocal_install.py`). The catalog report
+read the packaged ReleaseLocal app as Pokémon 24, One Piece owner 10, Magic 1,
+Yu-Gi-Oh `yugioh-en-fe3eaff93a48` and Lorcana 2026-11-08. The first device run
+refused before installing because the device file listing reports sizes under
+`metadata.size`; the parser now reads that shape. The second run verified a
+complete backup and collection-store `integrity_check`, then installed and
+launched the build. After launch the store passed the same check, retained
+the collection state, and had migrated to the report column.
+The persisted Pokémon release was revision 24. The on-device checklist has
+not been run.
+[Acceptance checklist](docs/release/iphone-releaselocal-acceptance.md).
+
 # 2026-11-13 — Test baseline, catalog fixes and unverified Pokémon reports
 
 **Baseline.** A full run of committed `1a2a662` in a separate worktree had

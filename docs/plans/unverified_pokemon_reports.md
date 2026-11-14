@@ -1,10 +1,13 @@
 # Unverified Pokémon variants: synced in collection (beta)
 
 **Status — 2026-11-13:** design revision 5, with the implementation decisions
-below. Report creation is built and enabled in DEBUG builds only
+below. Report creation is built and enabled in DEBUG builds and in the local
+`ReleaseLocal` build (ProfileLocal) through `UNVERIFIED_REPORTS_LOCAL_BETA`,
+which also requires local-only signing and no CloudKit
 (`UnverifiedReportsFeature`). It must stay off for beta users until the
 release gates in [Release gates](#release-gates) pass. Simulator unit tests
-only; no device, CloudKit or TestFlight evidence yet.
+only; no device, CloudKit or TestFlight evidence yet. On-device acceptance:
+[`../release/iphone-releaselocal-acceptance.md`](../release/iphone-releaselocal-acceptance.md).
 
 ## Status
 
