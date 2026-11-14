@@ -47,6 +47,82 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testPriceSnapshotRebuildRecoversAfterOneTransientReadFailure() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let expected = PriceDisplay(amount: 12, currencyCode: "USD", source: .tcgplayer,
+            sourceUpdatedAt: nil, fetchedAt: .now, lastCheckedAt: .now)
+        let snapshot = PriceSnapshot(prices: ["raw-price-key": expected],
+            diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:])
+        var reads = 0
+        let store = PriceSnapshotStore()
+        store.setSnapshotReadOverrideForTesting { _ in
+            reads += 1
+            return reads == 1 ? nil : snapshot
+        }
+
+        await store.rebuild(container: container)
+
+        XCTAssertEqual(reads, 2)
+        XCTAssertEqual(store.display(for: "raw-price-key")?.amount, 12)
+    }
+
+    @MainActor
+    func testPriceSnapshotReadFailureStopsAfterBoundedRetriesAndRetainsPrices() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let expected = PriceDisplay(amount: 18, currencyCode: "USD", source: .tcgplayer,
+            sourceUpdatedAt: nil, fetchedAt: .now, lastCheckedAt: .now)
+        let snapshot = PriceSnapshot(prices: ["raw-price-key": expected],
+            diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:])
+        var failReads = false
+        var failedAttempts = 0
+        let store = PriceSnapshotStore()
+        store.setSnapshotReadOverrideForTesting { _ in
+            if failReads {
+                failedAttempts += 1
+                return nil
+            }
+            return snapshot
+        }
+        await store.rebuild(container: container)
+        XCTAssertEqual(store.display(for: "raw-price-key")?.amount, 18)
+
+        failReads = true
+        await store.rebuild(container: container)
+        XCTAssertEqual(failedAttempts, 3)
+        XCTAssertEqual(store.display(for: "raw-price-key")?.amount, 18,
+            "A failed authoritative read must not erase the last good value")
+    }
+
+    @MainActor
+    func testPriceSnapshotReadFailureAfterStorageSwitchDoesNotShowPreviousCollection() async throws {
+        let first = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let second = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let previous = PriceSnapshot(prices: [
+            "previous-store-card": PriceDisplay(amount: 99, currencyCode: "USD",
+                source: .tcgplayer, sourceUpdatedAt: nil, fetchedAt: .now, lastCheckedAt: .now)
+        ], diagnosticsByCollectionKey: [:], priceStorageKeyByCollectionKey: [:])
+        let store = PriceSnapshotStore()
+        store.setSnapshotReadOverrideForTesting { container in
+            ObjectIdentifier(container) == ObjectIdentifier(first) ? previous : nil
+        }
+
+        await store.rebuild(container: first)
+        XCTAssertEqual(store.display(for: "previous-store-card")?.amount, 99)
+        await store.rebuild(container: second)
+        XCTAssertNil(store.display(for: "previous-store-card"),
+            "Prices from another storage generation must never survive a failed first read")
+        XCTAssertTrue(store.prices.isEmpty)
+
+        await store.rebuild(container: first)
+        XCTAssertEqual(store.display(for: "previous-store-card")?.amount, 99,
+            "A valid snapshot from a newly selected container must still load")
+    }
+
+    @MainActor
     func testCatalogDetailFirstEditionHoloUsesItsOwnFinishAndRun() throws {
         let json = #"{"id":"base1-004","localId":"004","name":"Charizard","set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},"variants":{"firstEdition":true,"holo":true,"normal":false,"reverse":false},"variants_detailed":[{"type":"holo","stamp":["1st-edition"],"pricing":{"tcgplayer":{"holofoil":{"marketPrice":816}}}}]}"#
         let card = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "BAS")
