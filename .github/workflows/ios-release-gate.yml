@@ -7,6 +7,7 @@ on:
       - "TradingCardScannerTests/**"
       - "TradingCardScanner.xcodeproj/**"
       - "Config/**"
+      - "docs/plans/pr23-production-review-validation.md"
       - ".github/workflows/ios-release-gate.yml"
   workflow_dispatch:
 
