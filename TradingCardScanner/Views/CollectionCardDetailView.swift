@@ -846,6 +846,11 @@ private struct CollectionCardDetailContent: View {
                         .disabled(isOwnershipWritePending)
                     }
                 }
+                if card.variant == nil {
+                    Text("A printed finish is required to match a reliable graded price. Confirm it with Fix finish, then refresh prices.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
                 if !options.isEmpty {
                     Text(card.quantity > activity.remainingQuantity
                         ? "Applies to the \(activity.remainingQuantity == 1 ? "most recently added copy" : "\(activity.remainingQuantity) most recently added copies"). Other copies keep their finish."
@@ -988,8 +993,10 @@ private struct CollectionCardDetailContent: View {
                         activityID: activityID, quantity: quantity, variant: variant, shouldContinue: shouldContinue)
                 }
                 guard generation.isCurrent(token) else { return }
-                if let mutation, mutation.collectionKey != collectionKey {
-                    gradedFinishCorrectionMessage = "Corrected \(quantity) \(quantity == 1 ? "copy" : "copies") to \(variant.label). Other copies kept their finish."
+                if let mutation {
+                    gradedFinishCorrectionMessage = mutation.collectionKey != collectionKey
+                        ? "Corrected \(quantity) \(quantity == 1 ? "copy" : "copies") to \(variant.label). Other copies kept their finish. Refresh Prices to check the graded market."
+                        : "Printed finish confirmed as \(variant.label). Refresh Prices to check the graded market."
                 }
             } catch is CancellationError {
             } catch {
@@ -1278,6 +1285,15 @@ private struct CollectionCardDetailContent: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if unpricedReason == .gradedMarketPriceNull,
+                       let lastKnown = price.lastKnownGradedAmount {
+                        let age = price.lastKnownGradedAsOf.map {
+                            " · as of \($0.formatted(date: .abbreviated, time: .omitted))"
+                        } ?? ""
+                        Text("Last known: \(lastKnown.formatted(.currency(code: "USD")))\(age) — not included in current value")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                     if let rawReference = ungradedReferenceRecord,
                        let amount = rawReference.effectiveUnitMarketPriceUSD {
