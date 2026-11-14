@@ -368,7 +368,7 @@ struct PriceRecordKeySelection: Sendable {
             ),
             invalidatedKeys: Set(records.filter {
                 $0.isInvalidated || $0.exactGradedQuoteIsWithdrawn(at: date)
-                    || $0.lastFailureReasonRaw == PricingDiagnosticReason.gradedMarketPriceNull.rawValue
+                    || $0.exactGradedNullQuoteIsWithdrawn(at: date)
             }.map(\.key))
         )
     }
