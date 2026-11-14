@@ -77,7 +77,7 @@ def read_http(url, maximum=MAX_FILE_BYTES, absent_ok=False):
         time.sleep(2 ** attempt)
 
 
-def scope_from_repo(repo):
+def scope_from_repo(repo, one_piece_envelope=None):
     """Price lookup scope cannot add physical identity or collection authority."""
     scope = {}
 
@@ -137,14 +137,17 @@ def scope_from_repo(repo):
             continue
         for market in printing.get("marketMappings") or []:
             add(71, market["groupID"], market["productID"], market["providerVariantID"])
-    envelope = json.loads((repo / "TradingCardScanner/OnePieceOwnerCatalog/one-piece-owner-catalog.json").read_bytes())
+    production_seed = repo / "TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json"
+    envelope = json.loads((one_piece_envelope or production_seed).read_bytes())
     encoded = envelope["payload"]
     one_piece = json.loads(base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4)))
     for printing in one_piece["registry"]["printings"]:
-        if printing["status"] != "verified":
+        if printing["status"] != "verified" or printing["language"] != "en":
             continue
         for market in printing.get("marketMappings") or []:
-            if market["status"] == "exact" and market["provider"] == "tcgplayer" and market["market"] == "us" and market["currency"] == "USD":
+            if (market["status"] == "exact" and market["provider"] == "tcgplayer"
+                    and market["market"] == "us" and market["currency"] == "USD"
+                    and market["condition"] == "aggregate"):
                 add(68, int(market["qualifiers"]["groupID"]), int(market["productID"]), market["providerVariantID"])
     yugioh = json.loads((repo / "TradingCardScanner/YuGiOhCatalogSeed/catalog.json").read_bytes())
     lanes = {"yugioh1stEdition": "1st Edition", "yugiohUnlimited": "Unlimited", "yugiohLimited": "Limited"}
@@ -376,6 +379,8 @@ def main():
     build.add_argument("--site-root", type=Path, required=True)
     build.add_argument("--report", type=Path, required=True)
     build.add_argument("--yugioh-source", type=Path, help="Reuse the same job's build-bound YGO source without another upstream download")
+    build.add_argument("--verified-one-piece-envelope", type=Path,
+                       help="Production envelope already verified with the app-pinned keys")
     preserve = commands.add_parser("restore")
     preserve.add_argument("--site-root", type=Path, required=True)
     preserve.add_argument("--origin", default=ORIGIN)
@@ -383,7 +388,8 @@ def main():
     preserve.add_argument("--require-present", action="store_true")
     args = parser.parse_args()
     if args.command == "prepare":
-        result = prepare(scope_from_repo(args.repo), args.cache_dir, args.site_root, yugioh_source=args.yugioh_source)
+        result = prepare(scope_from_repo(args.repo, args.verified_one_piece_envelope),
+                         args.cache_dir, args.site_root, yugioh_source=args.yugioh_source)
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_bytes(packed(result))
         print(json.dumps({key: value for key, value in result.items() if key != "missingProducts"}, sort_keys=True))

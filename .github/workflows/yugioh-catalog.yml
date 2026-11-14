@@ -96,11 +96,28 @@ jobs:
             --user-agent 'ScanStashPricePublisher/1.0' \
             https://tcgcsv.com/last-updated.txt -o "$RUNNER_TEMP/yugioh-source/source-build-end.txt"
           cmp "$RUNNER_TEMP/yugioh-source/source-build-start.txt" "$RUNNER_TEMP/yugioh-source/source-build-end.txt"
+      - name: Verify the active One Piece pricing scope
+        run: |
+          python3 - "$RUNNER_TEMP/one-piece-price-scope.json" <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from market_price_feeds import ORIGIN, read_http
+
+          data = read_http(f'{ORIGIN}/one-piece/v1/current.json', 48 * 1024 * 1024, absent_ok=True)
+          if data is None:
+              data = Path('TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json').read_bytes()
+          Path(sys.argv[1]).write_bytes(data)
+          PY
+          python3 scripts/one_piece_pinned_keys.py Config/OnePieceCatalogProduction.xcconfig "$RUNNER_TEMP/one-piece-app-pins.json"
+          swift run --package-path OnePieceCatalogCore one-piece-catalog-publisher verify-hosted-release \
+            --input "$RUNNER_TEMP/one-piece-price-scope.json" --trusted-keys "$RUNNER_TEMP/one-piece-app-pins.json"
       - name: Prepare scoped prices using the same YGO capture
         run: >-
           python3 scripts/market_price_feeds.py prepare
           --cache-dir "${RUNNER_TEMP}/market-price-source"
           --yugioh-source "${RUNNER_TEMP}/yugioh-source"
+          --verified-one-piece-envelope "${RUNNER_TEMP}/one-piece-price-scope.json"
           --site-root "${RUNNER_TEMP}/price-candidate/site"
           --report "${RUNNER_TEMP}/price-candidate/report.json"
       - uses: actions/upload-artifact@v4
