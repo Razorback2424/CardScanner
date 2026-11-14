@@ -298,6 +298,37 @@ final class StoreRevisionMonitorTests: XCTestCase {
         XCTAssertEqual(projection.snapshot?.rows.first?.quantity, 1)
     }
 
+    func testProvenanceOnlyChangeInvalidatesCollectionProjectionFingerprint() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let card = monitorCard(game: .lorcana)
+        card.variantResolutionRaw = VariantResolution.uniqueInCatalog.rawValue
+        context.insert(card)
+        try context.save()
+
+        let initialActor = await StoreRevisionModelActor.makeBackground(modelContainer: container)
+        let before = await initialActor.fingerprint()
+        XCTAssertTrue(await initialActor.readSucceeded())
+
+        // The user-confirmed provenance affects CollectionRow and its finish
+        // presentation, without changing the item's identity or amount.
+        card.variantResolutionRaw = VariantResolution.userConfirmed.rawValue
+        try context.save()
+
+        let updatedActor = await StoreRevisionModelActor.makeBackground(modelContainer: container)
+        let after = await updatedActor.fingerprint()
+        XCTAssertTrue(await updatedActor.readSucceeded())
+        XCTAssertEqual(before.cardCount, after.cardCount)
+        XCTAssertEqual(before.priceValues, after.priceValues)
+        XCTAssertEqual(before.inventoryEvents, after.inventoryEvents)
+        XCTAssertNotEqual(before.cards, after.cards)
+
+        let projection = CollectionProjectionStore()
+        await projection.rebuild(container: container)
+        XCTAssertEqual(projection.snapshot?.rows.first?.variantResolution, .userConfirmed)
+    }
+
     func testOwnershipEditReplaysBeforeAnActivePriceRefreshFinishes() async throws {
         for usesBulkInterval in [false, true] {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
