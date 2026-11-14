@@ -157,6 +157,9 @@ enum GradedVariantBinding {
             record.gradedPrinting = variant.persistedPrinting
             record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         }
+        if wasAccepted, case .unavailable = quote {
+            store.recordGradedNullQuote(forKey: priceKey, variantID: variant.id, at: fetchedAt)
+        }
         if wasAccepted, let lifecycle {
             store.recordExactGradedQuoteEvidence(.init(variantID: variant.id, lifecycle: lifecycle,
                 checkedAt: fetchedAt, sourceUpdatedAt: variant.updatedAt
