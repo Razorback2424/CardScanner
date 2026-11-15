@@ -1,5 +1,41 @@
 # Catalog health export
 
+## On-device active catalog report
+
+In ScanStash, open **Settings → Advanced → Collection Diagnostics →
+Collection Exports & Price Coverage → Export Catalog Health Report**.
+This button sits beside **Export Cards Excluded from USD Value**, but is
+independent of the user's collection and works even if no cards are owned.
+
+The device report exports a CSV from the **currently active Browse catalogs**
+for Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh. It includes all visible
+cards/printings, product memberships, current catalog generation and release
+revision where available, per-set expected versus enumerated row counts,
+verification warnings, finish/edition evidence, and active market mapping IDs.
+Its `record_type` separates `card`, `set_summary`, `set_notice`,
+`set_error`, and `game_error`; failed pages are not silently treated as
+healthy sets. A catalog activation during export rejects the mixed snapshot.
+
+**Check live catalog prices** is on by default. It requests price statuses
+through the same Browse price resolution path and reports `priced`,
+`no_usd_quote`, `mapping_missing`, `printing_needs_review`,
+`unresolved` or `not_checked`. The displayed
+`browse_aggregate_price_usd` is a **card-summary aggregate**, not proof
+that every finish has a distinct usable quote. The exact mapping evidence is
+recorded separately by printing and finish/edition. Price checking the
+entire catalog may require significant network activity; switch it off for
+a quicker mapping/verification-only export. A cancelled run never presents
+a partial report. The report does not change any catalog or collection data.
+
+The on-device report is independent of the offline repository audit below.
+The latter's `candidate` and historical observations are **not**
+automatically assumed to be activated on the iPhone. Conversely, offline
+test-only Magic coverage must not be mistaken for the device's live Scryfall
+Browse results. Some providers and releases may not enumerate when the
+device is offline; those failures are explicit in the CSV.
+
+## Offline repository audit
+
 Run `python3 scripts/catalog_health_export.py --output <directory>` or trigger
 the **Catalog Health Audit** workflow and download its artifact. The four CSVs
 are deterministic for the checkout; the inventory contains all records in the
