@@ -342,29 +342,49 @@ def load_prices(directory):
     return snapshot_date, feeds
 
 
+def resolved_check(row, status, code=None, detail='', action=''):
+    # Preserve all existing printing/family issues and their actions while
+    # replacing only PRICE_NOT_CHECKED. A source defect is not a no-quote.
+    previous = [(key, info) for key, info in zip(
+        row['issue_codes'].split('|'), row['issue_details'].split(' | '))
+        if key and key != 'PRICE_NOT_CHECKED']
+    actions = [value for value in row['recommended_action'].split(' | ')
+               if value and value not in ('Check a dated provider snapshot', 'Check exact edition pricing')]
+    if code:
+        previous.append((code, detail))
+        actions.append(action)
+    row['issue_codes'] = '|'.join(key for key, _ in previous)
+    row['issue_details'] = ' | '.join(info for _, info in previous)
+    row['recommended_action'] = ' | '.join(dict.fromkeys(actions))
+    row['price_status'] = status
+    row['assessment'] = assessment(row)
+
+
+def inspect_static_mappings(rows):
+    """Find known broken mapping evidence even when no price feed is available."""
+    for row in rows:
+        if (row['record_type'] != 'physical_printing' or row['price_status'] != 'not_checked'
+                or row['market_provider'] != 'tcgplayer'):
+            continue
+        group, product = row['market_group_id'], row['market_product_id']
+        required = [row['market_product_name'], row['market_product_number'], row['market_lane']]
+        if (not group.isdigit() or int(group) <= 0 or not product.isdigit() or int(product) <= 0
+                or not all(required)):
+            resolved_check(row, 'mapping_incomplete', 'MARKET_MAPPING_INCOMPLETE',
+                           'Retained exact mapping lacks a valid group, product, name, number or variant lane.',
+                           'Repair exact market mapping evidence')
+            continue
+        if row['game'] == 'one-piece' and row['market_lane'] != {'normal': 'Normal', 'foil': 'Foil'}.get(row['finish']):
+            resolved_check(row, 'mapping_incomplete', 'MARKET_MAPPING_INCOMPLETE',
+                           'One Piece mapped variant lane disagrees with the approved physical finish.',
+                           'Repair physical finish and market variant identity')
+
 def apply_prices(rows, snapshot_date, feeds, as_of, max_age_days):
     if as_of < snapshot_date:
         raise ValueError('Evaluation date precedes marketplace snapshot')
     indexes = {key: ({p['productId']: p for p in feed['products']},
                      {(p['productId'], p['subTypeName']): p.get('marketPrice') for p in feed['prices']})
                for key, feed in feeds.items() if {'products', 'prices'} <= feed.keys()}
-
-    def resolved_check(row, status, code=None, detail='', action=''):
-        # Preserve all existing printing/family issues and their actions while
-        # replacing only PRICE_NOT_CHECKED. A source defect is not a no-quote.
-        previous = [(key, info) for key, info in zip(
-            row['issue_codes'].split('|'), row['issue_details'].split(' | '))
-            if key and key != 'PRICE_NOT_CHECKED']
-        actions = [value for value in row['recommended_action'].split(' | ')
-                   if value and value not in ('Check a dated provider snapshot', 'Check exact edition pricing')]
-        if code:
-            previous.append((code, detail))
-            actions.append(action)
-        row['issue_codes'] = '|'.join(key for key, _ in previous)
-        row['issue_details'] = ' | '.join(info for _, info in previous)
-        row['recommended_action'] = ' | '.join(dict.fromkeys(actions))
-        row['price_status'] = status
-        row['assessment'] = assessment(row)
 
     for row in rows:
         if (row['record_type'] != 'physical_printing' or row['verification_status'] not in ('verified', 'supported')
@@ -411,6 +431,7 @@ def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
     if result['structuralErrors']:
         raise ValueError('Catalog validation failed: ' + json.dumps(result['structuralErrors']))
     rows = inventory(repo)
+    inspect_static_mappings(rows)
     snapshot_date = None
     if capture_dir:
         if as_of is None:
@@ -431,7 +452,8 @@ def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
     write(output / 'catalog-census-findings.csv', CENSUS_FIELDS,
           ({**item, 'assessment': census_assessment(item)} for item in census_findings))
     severity = {'RAW_FINISH_COVERAGE_UNEVALUATED': 'unchecked', 'PHYSICAL_FAMILY_INCOMPLETE': 'review',
-                'EDITION_UNVERIFIED': 'review', 'CANONICAL_LINK_UNRESOLVED': 'review', 'PRINTING_FAMILY_INCOMPLETE': 'review',
+                'EDITION_UNVERIFIED': 'review', 'CANONICAL_LINK_UNRESOLVED': 'review', 'CANONICAL_CARD_MISSING': 'review',
+                'SOURCE_OBSERVATION_INCOMPLETE': 'review', 'PRICE_MAPPING_UNAPPROVED': 'review', 'PRICE_MAPPING_CONFLICT': 'review', 'PRINTING_FAMILY_INCOMPLETE': 'review',
                 'PRINTING_NEEDS_REVIEW': 'review', 'POSSIBLE_DUPLICATE': 'review',
                 'FINISH_UNVERIFIED': 'review', 'PRICE_MAPPING_MISSING': 'review',
                 'NO_MARKET_QUOTE': 'availability', 'PRICE_SNAPSHOT_STALE': 'refresh', 'MARKET_MAPPING_MISMATCH': 'review', 'MARKET_MAPPING_INCOMPLETE': 'review',
