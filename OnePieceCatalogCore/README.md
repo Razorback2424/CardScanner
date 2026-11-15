@@ -141,6 +141,30 @@ Use `--fetch-missing-artwork` to extend an artwork capture with the missing
 references from the retained product pages. Keep captures private. Review the
 batch and the remaining gaps before adding it to the final build.
 
+### Per-artwork retail replay diagnostics
+
+The retail reconciler can now write an **optional read-only evidence report** alongside its ordinary
+additions file:
+
+```sh
+python3 scripts/reconcile_one_piece_retail_printings.py \
+  --release "$REVIEWED_CANDIDATE" \
+  --bandai-captures "$BANDAI" --artwork-captures "$ARTWORK" \
+  --market-captures "$MARKET" --eb05-retail-captures "$EB05_RETAIL" \
+  --output "$AUDIT_DIR/retail-additions.json" \
+  --evidence-report "$AUDIT_DIR/retail-evidence.json"
+```
+
+Each unresolved artwork alias gets its same-number TCGCSV market products, captured
+retailer-listing count, accepted retailer-artwork matches, and rejection-stage reasons.
+A market product or its quoted Foil lane is **not** independent physical-printing
+evidence; neither the report nor an artwork match grants an exact price mapping.
+Missing images or listings mean they were unavailable **in this replay**, not
+necessarily unavailable at the provider or in other capture directories.
+The optional report does not change catalog contents or sign/publish anything.
+Ensure each output path is new, and supply all relevant retained retailer roots
+before treating a negative replay result as a source-data limitation.
+
 The workflow runs a weekly read-only coverage report. Its manual jobs prepare
 the reviewed signed artifact and publish it in separate environments. Publication
 compares the predecessor while holding the shared hosting concurrency lock,
