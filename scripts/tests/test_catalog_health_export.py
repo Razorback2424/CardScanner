@@ -43,7 +43,8 @@ class CatalogHealthTest(unittest.TestCase):
                     [('PRICE_NOT_CHECKED', 'Not checked', 'Check a dated provider snapshot')])
             rows = [row(1), row(2), row(3)]
             health.apply_prices(rows, captured, feeds, date(2026, 11, 2), 30)
-            self.assertEqual([r['price_status'] for r in rows], ['quoted', 'no_quote', 'not_checked'])
+            self.assertEqual([r['price_status'] for r in rows], ['quoted', 'no_quote', 'mapping_mismatch'])
+            self.assertEqual(rows[2]['issue_codes'], 'MARKET_MAPPING_MISMATCH')
             self.assertEqual(rows[0]['issue_codes'], '')
             self.assertEqual(rows[1]['issue_codes'], 'NO_MARKET_QUOTE')
             missing_group = row(1)
@@ -132,6 +133,16 @@ class CatalogHealthTest(unittest.TestCase):
                 row = by_id.get(printing['id'])
                 if row and row['verification_status'] == 'supported':
                     self.assertNotIn('PRICE_MAPPING_MISSING', row['issue_codes'])
+
+    def test_mapping_evidence_errors_do_not_depend_on_live_feed(self):
+        row = health.classify(health.make(game='one-piece', source_scope='installed', record_type='physical_printing',
+            verification_status='verified', price_status='not_checked', market_provider='tcgplayer',
+            market_group_id='', market_product_id=123, market_lane='Foil', market_product_name='Card',
+            market_product_number='EB05-001', finish='foil'),
+            [('PRICE_NOT_CHECKED', 'Not checked', 'Check a dated provider snapshot')])
+        health.inspect_static_mappings([row])
+        self.assertEqual(row['issue_codes'], 'MARKET_MAPPING_INCOMPLETE')
+        self.assertEqual(row['assessment'], 'actionable')
 
     def test_misleading_finish_coverage_is_not_actionable_without_evidence(self):
         raw = health.classify(health.make(game='pokemon', source_scope='retained_raw', record_type='checklist_slot'),
