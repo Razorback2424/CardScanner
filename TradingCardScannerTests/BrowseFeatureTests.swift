@@ -10268,3 +10268,91 @@ private actor CountingPokemonCardSource: PokemonCardSource {
 
     func artworkRecoveryCount() -> Int { artworkRequests }
 }
+
+
+final class ActiveCatalogHealthExportTests: XCTestCase {
+    private func sample(_ notice: String? = nil) -> CatalogCardSummary {
+        CatalogCardSummary(
+            game: .onePiece, providerID: "discovery:eb05-001",
+            setID: CatalogSetID(game: .onePiece, providerID: "eb05-release"),
+            setName: "EB05", setCode: "EB05", name: "Example",
+            collectorNumber: "EB05-001", thumbnailURL: nil, imageURL: nil,
+            collectionAvailabilityNotice: notice
+        )
+    }
+
+    func testDiscoveryNeedsReviewWithoutInventingPrintingID() {
+        let summary = sample("Printing needs review")
+        let evidence = ActiveCatalogHealthCSV.printingEvidence(for: summary, catalog: nil)
+        XCTAssertEqual(evidence.count, 1)
+        XCTAssertEqual(evidence.first?.verification, "needs_review")
+        XCTAssertTrue(evidence[0].issues.contains("PRINTING_NEEDS_REVIEW"))
+        let set = CatalogSet(catalogID: summary.setID, name: "EB05", code: "EB05",
+                             logoURL: nil, symbolURL: nil, cardCount: 1,
+                             releaseDate: nil, sortRank: 0)
+        let csv = ActiveCatalogHealthCSV.row(
+            kind: "card", exported: "2026-11-15T00:00:00Z", build: "1", game: .onePiece,
+            set: set, card: summary, evidence: evidence[0]
+        )
+        XCTAssertTrue(csv.contains("\"discovery:eb05-001\",\"\","))
+    }
+
+    func testPricingNoQuoteIsDistinctFromUnresolvedRequestAndMissingMapping() {
+        let summary = sample()
+        let id = summary.id
+        var evidence = ActiveCatalogHealthCSV.Evidence()
+        let noQuote = CatalogPriceUpdate(prices: [:], resolvedIDs: [id], unresolvedIDs: [])
+        let noQuoteState = ActiveCatalogHealthCSV.checkedPriceStatus(
+            summary, update: noQuote, evidence: &evidence
+        )
+        XCTAssertEqual(noQuoteState.0, "no_usd_quote")
+        XCTAssertTrue(evidence.issues.contains("NO_USD_QUOTE"))
+
+        evidence = .init()
+        let unresolved = CatalogPriceUpdate(prices: [:], resolvedIDs: [], unresolvedIDs: [id])
+        XCTAssertEqual(
+            ActiveCatalogHealthCSV.checkedPriceStatus(
+                summary, update: unresolved, evidence: &evidence
+            ).0, "unresolved"
+        )
+        XCTAssertFalse(evidence.issues.contains("NO_USD_QUOTE"))
+        XCTAssertTrue(evidence.issues.contains("PRICE_CHECK_UNRESOLVED"))
+
+        evidence = .init()
+        let unmapped = CatalogPriceUpdate(prices: [:], resolvedIDs: [id], unresolvedIDs: [],
+                                          missingMappingIDs: [id])
+        XCTAssertEqual(
+            ActiveCatalogHealthCSV.checkedPriceStatus(
+                summary, update: unmapped, evidence: &evidence
+            ).0, "mapping_missing"
+        )
+        XCTAssertTrue(evidence.issues.contains("BROWSE_PRICE_MAPPING_MISSING"))
+    }
+
+    func testCachedQuoteAndNoCheckAreNotInventedNoQuotes() {
+        let summary = sample()
+        var evidence = ActiveCatalogHealthCSV.Evidence()
+        XCTAssertEqual(ActiveCatalogHealthCSV.checkedPriceStatus(
+            summary, update: nil, evidence: &evidence
+        ).0, "not_checked")
+        XCTAssertTrue(evidence.issues.isEmpty)
+
+        let priced = CatalogPriceUpdate(prices: [summary.id: 3.75],
+                                        resolvedIDs: [summary.id], unresolvedIDs: [])
+        let result = ActiveCatalogHealthCSV.checkedPriceStatus(
+            summary, update: priced, evidence: &evidence
+        )
+        XCTAssertEqual(result.0, "priced")
+        XCTAssertEqual(result.1, 3.75)
+        XCTAssertTrue(evidence.issues.isEmpty)
+    }
+
+    func testCSVProtectsSpreadsheetFormulasAndEscapesQuotedValues() {
+        XCTAssertEqual(ActiveCatalogHealthCSV.escaped("=HYPERLINK(1)"), "\"'=HYPERLINK(1)\"")
+        XCTAssertEqual(ActiveCatalogHealthCSV.escaped("  -5"), "\"'  -5\"")
+        XCTAssertEqual(ActiveCatalogHealthCSV.escaped("Card, \"Rare\""), "\"Card, \"\"Rare\"\"\"")
+        XCTAssertEqual(ActiveCatalogHealthCSV.headers.first, "record_type")
+        XCTAssertTrue(ActiveCatalogHealthCSV.headers.contains("active_release_revision"))
+        XCTAssertTrue(ActiveCatalogHealthCSV.headers.contains("market_product_id"))
+    }
+}
