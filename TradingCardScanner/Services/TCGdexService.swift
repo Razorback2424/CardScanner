@@ -925,7 +925,7 @@ struct ScryfallService: Sendable {
         }
     }
 
-    nonisolated private static func retryAfter(from value: String?, now: Date) -> TimeInterval? {
+    nonisolated static func retryAfter(from value: String?, now: Date) -> TimeInterval? {
         guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines),
               !value.isEmpty else { return nil }
         if let seconds = TimeInterval(value), seconds.isFinite, seconds >= 0 { return seconds }

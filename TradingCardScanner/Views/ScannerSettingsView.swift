@@ -1056,7 +1056,9 @@ enum ActiveCatalogHealthCSV {
         "card_notice", "image_url", "evidence_scope", "pokemon_print_run", "magic_treatments",
         "price_source", "price_fetched_at_utc", "price_source_updated_at_utc", "price_listing",
         "finish_records", "checked_finishes", "issue_finishes", "unevaluated_finishes",
-        "rows_without_finish"
+        "rows_without_finish", "complete_sets", "incomplete_sets", "deferred_sets",
+        "actionable_rows", "blocked_price_finishes", "shared_issue_records", "shared_family_codes",
+        "artwork_id"
     ]
 
     struct Evidence {
@@ -1073,6 +1075,8 @@ enum ActiveCatalogHealthCSV {
         var fetchedAt: Date?
         var sourceUpdatedAt: Date?
         var priceListing: String = ""
+        var artworkID = ""
+        var familyCode = ""
         var issues: [String] = []
         var details: [String] = []
         var actions: [String] = []
@@ -1083,6 +1087,14 @@ enum ActiveCatalogHealthCSV {
             details.append(detail)
             actions.append(action)
         }
+
+        mutating func removeIssue(_ code: String) -> Bool {
+            guard let index = issues.firstIndex(of: code) else { return false }
+            issues.remove(at: index)
+            details.remove(at: index)
+            actions.remove(at: index)
+            return true
+        }
     }
 
     struct Coverage {
@@ -1091,6 +1103,11 @@ enum ActiveCatalogHealthCSV {
         var issues = 0
         var unevaluated = 0
         var withoutFinish = 0
+        var completeSets = 0
+        var incompleteSets = 0
+        var deferredSets = 0
+        var actionableRows = 0
+        var blockedPrices = 0
 
         mutating func add(_ other: Self) {
             finishes += other.finishes
@@ -1098,6 +1115,22 @@ enum ActiveCatalogHealthCSV {
             issues += other.issues
             unevaluated += other.unevaluated
             withoutFinish += other.withoutFinish
+            completeSets += other.completeSets
+            incompleteSets += other.incompleteSets
+            deferredSets += other.deferredSets
+            actionableRows += other.actionableRows
+            blockedPrices += other.blockedPrices
+        }
+    }
+
+    struct FamilyCoverage {
+        private(set) var affectedRecords = 0
+        private(set) var codes = Set<String>()
+
+        mutating func collect(from evidence: inout Evidence, printedCode: String) {
+            guard evidence.removeIssue("PRINTING_FAMILY_INCOMPLETE") else { return }
+            affectedRecords += 1
+            if !printedCode.isEmpty { codes.insert(printedCode) }
         }
     }
 
@@ -1123,7 +1156,8 @@ enum ActiveCatalogHealthCSV {
         evidence: Evidence = Evidence(), priceStatus: String = "not_checked",
         price: Double? = nil, generation: String = "", note: String = "",
         revision: Int? = nil, observedCount: Int? = nil,
-        scope: String = "active_browse", coverage: Coverage? = nil
+        scope: String = "active_browse", coverage: Coverage? = nil,
+        families: FamilyCoverage? = nil
     ) -> String {
         let issues = evidence.issues.joined(separator: "|")
         let details = evidence.details.joined(separator: " | ")
@@ -1132,7 +1166,7 @@ enum ActiveCatalogHealthCSV {
             revision.map(String.init) ?? "", set?.cardCount.map(String.init) ?? "",
             observedCount.map(String.init) ?? "",
             set?.providerID ?? "", generation.isEmpty ? card?.catalogGeneration ?? "" : generation,
-            set?.collectionAvailabilityNotice ?? "", card?.name ?? "",
+            kind == "set_coverage" ? set?.collectionAvailabilityNotice ?? "" : "", card?.name ?? "",
             card?.collectorNumber ?? "", card?.providerID ?? "",
             card.flatMap { UUID(uuidString: $0.providerID) != nil ? $0.providerID : nil } ?? "",
             evidence.finish, evidence.verification, evidence.mapping, priceStatus,
@@ -1146,7 +1180,11 @@ enum ActiveCatalogHealthCSV {
             evidence.sourceUpdatedAt?.ISO8601Format() ?? "", evidence.priceListing,
             coverage.map { String($0.finishes) } ?? "", coverage.map { String($0.checked) } ?? "",
             coverage.map { String($0.issues) } ?? "", coverage.map { String($0.unevaluated) } ?? "",
-            coverage.map { String($0.withoutFinish) } ?? ""
+            coverage.map { String($0.withoutFinish) } ?? "",
+            coverage.map { String($0.completeSets) } ?? "", coverage.map { String($0.incompleteSets) } ?? "",
+            coverage.map { String($0.deferredSets) } ?? "", coverage.map { String($0.actionableRows) } ?? "",
+            coverage.map { String($0.blockedPrices) } ?? "", families.map { String($0.affectedRecords) } ?? "",
+            families?.codes.sorted().joined(separator: "|") ?? "", evidence.artworkID
         ])
     }
 
@@ -1273,6 +1311,7 @@ enum ActiveCatalogHealthCSV {
         if let registry = (catalog as? OnePieceCatalogAdapter)?.registry,
            let uuid = UUID(uuidString: summary.providerID),
            let printing = registry.printingByID[uuid] {
+            base.artworkID = printing.artworkID.uuidString
             base.verification = printing.status.rawValue
             let supported = printing.supportedVariantIDs
             if supported.isEmpty {
@@ -1366,6 +1405,7 @@ enum ActiveCatalogHealthCSV {
                 base.issue("CANONICAL_LINK_UNRESOLVED", "Unresolved canonical card link.", "Review canonical card relationship")
             }
             if catalog.incompleteCodes.contains(printing.code) {
+                base.familyCode = printing.code
                 base.issue("PRINTING_FAMILY_INCOMPLETE", "The printed-code family is incomplete.", "Review printing family")
             }
             if printing.editions.isEmpty {
@@ -1422,12 +1462,16 @@ enum ActiveCatalogHealthCSV {
 
     static func makeDocument(
         runtimes: CardGameRuntimeContainer, browse: any BrowseCatalogProviding,
-        checkPrices: Bool, progress: @escaping @MainActor (String) -> Void
+        checkPrices: Bool,
+        loadMagicSet: ((CatalogSet) async throws -> [(CatalogCardSummary, CatalogCardDetails)])? = nil,
+        progress: @escaping @MainActor (String) -> Void
     ) async throws -> CollectionCSVDocument {
         let date = ISO8601DateFormatter().string(from: .now)
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
         var csv = line(headers)
-        csv.reserveCapacity(10_000_000)
+        let magicLoader = loadMagicSet ?? (browse as? BrowseCatalog).map { catalog in
+            { (set: CatalogSet) in try await catalog.catalogHealthMagicSet(set) }
+        }
         var auditedRevisions: [(CardGameRuntime, Int?, Int?, Int?)] = []
         for game in games {
             try Task.checkCancellation()
@@ -1481,20 +1525,33 @@ enum ActiveCatalogHealthCSV {
                                scope: "coverage_not_fully_evaluated"))
             }
             var gameCoverage = Coverage()
+            var magicDeferredReason: String?
+            var consecutiveMagicFailures = 0
             for (index, set) in sets.enumerated() {
                 try Task.checkCancellation()
                 if index.isMultiple(of: 10) || index == sets.count - 1 {
                     await progress("\(game.label): set \(index + 1) of \(sets.count)")
                 }
-                if let notice = set.collectionAvailabilityNotice {
+                if let magicDeferredReason {
+                    gameCoverage.deferredSets += 1
                     var issue = Evidence()
-                    issue.issue("SET_PARTIAL_CATALOG", notice, "Review unresolved set membership and verification")
-                    csv.append(row(kind: "set_notice", exported: date, build: build, game: game,
-                                   set: set, evidence: issue, generation: activeGeneration))
+                    issue.provider = "scryfall"
+                    issue.issue("SET_ENUMERATION_DEFERRED", magicDeferredReason, "Retry after Scryfall is available")
+                    csv.append(row(kind: "set_deferred", exported: date, build: build, game: game,
+                                   set: set, evidence: issue, generation: activeGeneration,
+                                   revision: snapshot?.revision ?? magicRevision, scope: "set_not_examined"))
+                    continue
                 }
                 do {
                     let summaries: [CatalogCardSummary]
-                    if let complete = try await browse.completeLocalCards(in: set) {
+                    var magicDetails: [String: CatalogCardDetails] = [:]
+                    if game == .magic, let magicLoader {
+                        let entries = try await magicLoader(set)
+                        summaries = entries.map { $0.0 }
+                        if checkPrices {
+                            magicDetails = Dictionary(uniqueKeysWithValues: entries.map { ($0.0.providerID, $0.1) })
+                        }
+                    } else if let complete = try await browse.completeLocalCards(in: set) {
                         summaries = complete
                     } else {
                         var cards: [CatalogCardSummary] = []
@@ -1525,6 +1582,8 @@ enum ActiveCatalogHealthCSV {
                                        revision: snapshot?.revision ?? pokemonRevision ?? magicRevision, observedCount: summaries.count))
                     }
                     var setCoverage = Coverage()
+                    setCoverage.completeSets = 1
+                    var sharedFamilies = FamilyCoverage()
                     if checkPrices {
                         await progress("\(game.label): checking \(set.name) finishes…")
                         if game == .pokemon, let catalog = browse as? BrowseCatalog {
@@ -1540,7 +1599,12 @@ enum ActiveCatalogHealthCSV {
                         // Pokémon normally enumerates one expected finish per checklist slot.
                         if checkPrices && (game == .magic || (game == .pokemon && summary.masterSetVariant == nil)) {
                             do {
-                                let loaded = try await browse.details(for: summary)
+                                let loaded: CatalogCardDetails
+                                if let fromPage = magicDetails[summary.providerID] {
+                                    loaded = fromPage
+                                } else {
+                                    loaded = try await browse.details(for: summary)
+                                }
                                 details = loaded
                                 let variants = loaded.card.variantEvidence.catalogVariants
                                 if !variants.isEmpty {
@@ -1625,13 +1689,20 @@ enum ActiveCatalogHealthCSV {
                                     }
                                 }
                             }
+                            let familyCode = finding.familyCode
+                            sharedFamilies.collect(from: &finding, printedCode: familyCode)
                             let hasIssue = shouldExport(finding)
+                            let blockageCodes = ["PRICE_PROVIDER_UNAVAILABLE", "PRICE_CHECK_FAILED",
+                                                 "PRICE_RESPONSE_INVALID", "PRICE_CHECK_NOT_COMPLETED", "FINISH_NOT_EVALUATED"]
+                            let hasActionableIssue = finding.issues.contains { !blockageCodes.contains($0) }
+                            if hasActionableIssue { setCoverage.actionableRows += 1 }
                             if !finding.finish.isEmpty {
                                 setCoverage.finishes += 1
                                 if ["priced", "no_usd_quote", "stale", "stale_unverified", "invalid_quote"].contains(status) {
                                     setCoverage.checked += 1
                                 } else {
                                     setCoverage.unevaluated += 1
+                                    if checkPrices { setCoverage.blockedPrices += 1 }
                                 }
                                 if hasIssue { setCoverage.issues += 1 }
                             } else {
@@ -1643,23 +1714,52 @@ enum ActiveCatalogHealthCSV {
                                            priceStatus: status, price: amount,
                                            generation: summary.catalogGeneration ?? activeGeneration,
                                            revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
-                                           scope: "exact_finish; provider data may be cached"))
+                                           scope: !checkPrices ? "pricing_disabled"
+                                               : status == "not_checked" || blockageCodes.contains(status.uppercased()) ? "price_check_incomplete"
+                                               : game == .magic && magicDetails[summary.providerID] != nil ? "scryfall_enumeration_response"
+                                               : "price_resolver_evidence_may_be_cached"))
                         }
                     }
                     gameCoverage.add(setCoverage)
+                    consecutiveMagicFailures = 0
+                    var sharedIssue = Evidence()
+                    if sharedFamilies.affectedRecords > 0 {
+                        sharedIssue.issue("PRINTING_FAMILY_INCOMPLETE",
+                            "Shared catalog limitation across \(sharedFamilies.codes.count) printed-code families in this product. Counts can overlap between products.",
+                            "Review printed-code families as groups")
+                    }
                     csv.append(row(kind: "set_coverage", exported: date, build: build, game: game,
-                                   set: set, generation: activeGeneration,
+                                   set: set, evidence: sharedIssue, generation: activeGeneration,
                                    revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
-                                   observedCount: summaries.count, coverage: setCoverage))
+                                   observedCount: summaries.count,
+                                   scope: checkPrices ? "enumeration_complete; see_finish_counts" : "enumeration_complete; pricing_disabled",
+                                   coverage: setCoverage, families: sharedFamilies.affectedRecords > 0 ? sharedFamilies : nil))
                 } catch CatalogLookupError.staleCatalog {
                     throw CatalogHealthExportError.catalogChanged
                 } catch is CancellationError {
                     throw CancellationError()
                 } catch {
+                    gameCoverage.incompleteSets += 1
                     var issue = Evidence()
+                    let scryfallFailure = error as? CatalogHealthScryfallFailure
+                    if game == .magic {
+                        issue.provider = "scryfall"
+                        // A response scoped to a single unmatched query does
+                        // not establish a wider provider outage.
+                        if scryfallFailure?.httpStatus == 404 {
+                            consecutiveMagicFailures = 0
+                        } else {
+                            consecutiveMagicFailures += 1
+                        }
+                        if scryfallFailure?.defersProvider == true || consecutiveMagicFailures >= 3 {
+                            magicDeferredReason = "Scryfall enumeration stopped at \(set.code). \(error.localizedDescription)"
+                        }
+                    }
                     issue.issue("SET_ENUMERATION_FAILED", error.localizedDescription, "Recheck this set and active revision")
                     csv.append(row(kind: "set_error", exported: date, build: build, game: game,
-                                   set: set, evidence: issue, generation: activeGeneration, scope: "not_fully_enumerated"))
+                                   set: set, evidence: issue, generation: activeGeneration,
+                                   revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
+                                   observedCount: scryfallFailure?.observed, scope: "not_fully_enumerated"))
                 }
             }
             csv.append(row(kind: "game_coverage", exported: date, build: build, game: game,
@@ -1690,6 +1790,7 @@ enum ActiveCatalogHealthCSV {
                 throw CatalogHealthExportError.catalogChanged
             }
         }
+        try Task.checkCancellation()
         return CollectionCSVDocument(text: csv)
     }
 

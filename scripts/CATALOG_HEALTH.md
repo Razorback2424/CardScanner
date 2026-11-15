@@ -8,24 +8,35 @@ This button sits beside **Export Cards Excluded from USD Value**, but is
 independent of the user's collection and works even if no cards are owned.
 
 The device report exports a CSV from the **currently active Browse catalogs**
-for Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh. It includes all visible
-cards/printings, product memberships, current catalog generation and release
-revision where available, per-set expected versus enumerated row counts,
-verification warnings, finish/edition evidence, and active market mapping IDs.
-Its `record_type` separates `card`, `set_summary`, `set_notice`,
-`set_error`, and `game_error`; failed pages are not silently treated as
-healthy sets. A catalog activation during export rejects the mixed snapshot.
+for Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh. Card rows contain
+exceptions by product, printing and finish. Set coverage rows include Browse
+notices and shared Yu-Gi-Oh printed-code families in `shared_family_codes`,
+with the affected record count in `shared_issue_records`. A family may
+appear in several products. Product rows and finish counts describe appearances,
+so summing them does not yield a unique-card or unique-family count.
 
-**Check live catalog prices** is on by default. It requests price statuses
-through the same Browse price resolution path and reports `priced`,
-`no_usd_quote`, `mapping_missing`, `printing_needs_review`,
-`unresolved` or `not_checked`. The displayed
-`browse_aggregate_price_usd` is a **card-summary aggregate**, not proof
-that every finish has a distinct usable quote. The exact mapping evidence is
-recorded separately by printing and finish/edition. Price checking the
-entire catalog may require significant network activity; switch it off for
-a quicker mapping/verification-only export. A cancelled run never presents
-a partial report. The report does not change any catalog or collection data.
+Game coverage counts completed, incomplete and deferred sets, along with
+checked and unevaluated finish records, specific exception rows and blocked
+price checks. Failed Magic pages report the number of printing records
+retrieved before the failure. Deferred sets were never requested. Missing
+directory or marketplace evidence has its own notice. A catalog activation
+or cancellation rejects the export before it can be saved.
+
+**Check live catalog prices** is on by default. Price evidence is finish
+specific and can come from the existing price resolver cache. The CSV reports
+the provider, listing, observation time and provider data date when available.
+With pricing off, all rows use `not_checked` and price amounts are empty.
+With pricing on, distinguish `no_usd_quote` from provider failures, stale
+evidence and unsupported checks.
+
+Magic enumerates the active set directory with Scryfall's printing search.
+The audit requires a complete page sequence with matching provider totals and
+uses the same response to read finish prices. Requests start at least 200 ms
+apart. Transient HTTP and network errors get one retry, while a rate limit or
+access denial defers the remaining sets. A valid Retry-After also applies to
+subsequent runs in the same app session. The Nov. 15, 2026 device report
+contained 657 generic Magic errors. Its original HTTP statuses were not
+retained, so the incident cannot be attributed to a particular provider status.
 
 The on-device report is independent of the offline repository audit below.
 The latter's `candidate` and historical observations are **not**
