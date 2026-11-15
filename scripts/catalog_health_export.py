@@ -15,11 +15,12 @@ from audit_set_pricing import validate_feed
 from audit_one_piece_coverage import BROWSE_DISCOVERY
 from discover_one_piece_products import prefixes
 
-FIELDS = ('game record_type source_id set_name set_code product_set_code printed_set_marker card_number card_name rarity printing_id artwork_id finish '
+FIELDS = ('game source_scope record_type source_id set_name set_code product_set_code printed_set_marker card_number card_name rarity printing_id artwork_id finish '
           'verification_status price_status issue_codes issue_details recommended_action '
           'catalog_source_url market_provider market_product_id market_product_url market_group_id market_lane market_product_name market_product_number last_price_check '
           'catalog_revision market_snapshot_date possible_verified_match_id confidence review_notes assessment').split()
-SUMMARY = ['game', 'set_name', 'set_code', 'issue_code', 'severity', 'count']
+SUMMARY = ['game', 'source_scope', 'set_name', 'set_code', 'issue_code', 'severity', 'count']
+CENSUS_FIELDS = ['game', 'code', 'identity', 'scope', 'disposition', 'detail', 'assessment']
 
 
 def read(path):
@@ -40,8 +41,7 @@ def classify(row, issues):
 
 def assessment(row):
     codes = set(row['issue_codes'].split('|')) - {''}
-    if row['game'] == 'pokemon' and row['record_type'] == 'checklist_slot':
-        codes.discard('FINISH_UNVERIFIED')
+    codes.discard('RAW_FINISH_COVERAGE_UNEVALUATED')
     if codes - {'PRICE_NOT_CHECKED'}:
         return 'actionable'
     return 'coverage_not_evaluated' if codes else 'no_known_exception'
@@ -61,13 +61,13 @@ def inventory(repo):
     manifest = read(root / 'PokemonChecklistSnapshot/manifest.json')
     for entry in manifest['entries']:
         for card in read(root / 'PokemonChecklistSnapshot' / entry['resource']):
-            row = make(game='pokemon', record_type='checklist_slot', source_id=card['providerID'], set_name=card.get('setName'), set_code=card.get('setCode'),
+            row = make(game='pokemon', source_scope='retained_raw', record_type='checklist_slot', source_id=card['providerID'], set_name=card.get('setName'), set_code=card.get('setCode'),
                        card_number=card.get('collectorNumber'), card_name=card.get('name'),
                        finish=(card.get('masterSetVariant') or {}).get('id'), verification_status='source_slot_unverified',
                        price_status='unknown', catalog_revision=manifest.get('generatedAt'),
                        catalog_source_url='https://api.tcgdex.net/v2/en/cards/' + card['providerID'],
                        review_notes='Raw checklist slot; read-time corrections and marketplace mapping are not evaluated.')
-            rows.append(classify(row, [('FINISH_UNVERIFIED', 'Raw checklist slot is not independent physical finish verification.', 'Review physical finish evidence')]))
+            rows.append(classify(row, [('RAW_FINISH_COVERAGE_UNEVALUATED', 'Raw checklist cannot establish resolved physical finishes or read-time corrections.', 'Evaluate native finish resolution')]))
 
     manifest = read(root / 'MagicTreatmentSnapshot/manifest.json')
     for entry in manifest['entries']:
@@ -75,7 +75,7 @@ def inventory(repo):
             continue
         for card in read(root / 'MagicTreatmentSnapshot' / entry['resource']):
             for finish in card.get('finishes') or ['']:
-                row = make(game='magic', record_type='treatment_snapshot', source_id=card.get('id'), set_name=card.get('setName'), set_code=card.get('setCode'),
+                row = make(game='magic', source_scope='test_only', record_type='treatment_snapshot', source_id=card.get('id'), set_name=card.get('setName'), set_code=card.get('setCode'),
                            card_number=card.get('collectorNumber'), card_name=card.get('name'), rarity=card.get('rarity'),
                            printing_id=card.get('id'), finish=finish, verification_status='source_record', price_status='unknown',
                            catalog_revision=manifest.get('generatedAt'),
@@ -106,7 +106,7 @@ def inventory(repo):
                 issues.append(('FINISH_UNVERIFIED', 'No supported finish is retained.', 'Review physical finish evidence'))
             product_codes = prefixes(product.get('label', ''))
             product_code = product_codes[0] if len(product_codes) == 1 else ''
-            row = make(game='one-piece', record_type='physical_printing', source_id=printing['canonicalCardID'], set_name=product.get('label'), set_code=product_code, product_set_code=product_code, printed_set_marker=card.get('printedNumber', '').split('-')[0],
+            row = make(game='one-piece', source_scope='installed', record_type='physical_printing', source_id=printing['canonicalCardID'], set_name=product.get('label'), set_code=product_code, product_set_code=product_code, printed_set_marker=card.get('printedNumber', '').split('-')[0],
                        card_number=card.get('printedNumber'), card_name=card.get('name'), printing_id=printing['id'],
                        artwork_id=printing.get('artworkID'), finish=finish, verification_status=printing['status'],
                        price_status=status, catalog_revision=owner.get('revision'),
@@ -118,24 +118,24 @@ def inventory(repo):
                        market_product_number=card.get('printedNumber') if mapping else '')
             rows.append(classify(row, issues))
 
-    # Browse groups discoveries by product, printed number and artwork alias.
+    # Browse groups discoveries by product and printed number; aliases are evidence, not separate displayed cards.
     # Observations do not establish physical printing, artwork or finish IDs.
     discoveries = collections.defaultdict(list)
     cards_by_number = {c['printedNumber']: c for c in registry['canonicalCards'] if c['language'] == 'en'}
     for obs in owner['observations']:
         evidence = obs['printedEvidence']
         if evidence.get('sourceRole') == BROWSE_DISCOVERY and obs.get('productEvidence') and evidence.get('number') in cards_by_number:
-            discoveries[(obs['productEvidence'][0], evidence['number'], evidence.get('sourceArtworkAlias', obs['id']))].append(obs)
-    for (product_id, number, alias), observations in sorted(discoveries.items()):
+            discoveries[(obs['productEvidence'][0], evidence['number'])].append(obs)
+    for (product_id, number), observations in sorted(discoveries.items()):
         product = products.get(product_id, {})
         product_codes = prefixes(product.get('label', ''))
         product_code = product_codes[0] if len(product_codes) == 1 else ''
         card = cards_by_number[number]
-        row = make(game='one-piece', record_type='browse_discovery', source_id='|'.join(sorted(o['id'] for o in observations)),
+        row = make(game='one-piece', source_scope='installed', record_type='browse_discovery', source_id='|'.join(sorted(o['id'] for o in observations)),
                    set_name=product.get('label'), set_code=product_code, product_set_code=product_code,
                    printed_set_marker=number.split('-')[0], card_number=number, card_name=card['name'],
                    verification_status='discovery', price_status='unknown', catalog_source_url=observations[0]['sourceURL'],
-                   catalog_revision=owner.get('revision'), review_notes='Bandai artwork alias: ' + alias + '; product ID: ' + product_id)
+                   catalog_revision=owner.get('revision'), review_notes='Bandai artwork aliases: ' + '|'.join(sorted({o['printedEvidence'].get('sourceArtworkAlias', o['id']) for o in observations})) + '; product ID: ' + product_id)
         rows.append(classify(row, [('PRINTING_NEEDS_REVIEW', 'Browse discovery has no verified physical printing for this appearance.', 'Review Bandai appearance and physical printing')]))
 
     candidate_path = repo / 'publisher/one-piece/production/revision-4/candidate.json'
@@ -145,18 +145,18 @@ def inventory(repo):
     for obs in candidate['observations']:
         ev = obs['printedEvidence']
         if ev.get('sourceRole') == BROWSE_DISCOVERY and obs.get('productEvidence') and ev.get('number'):
-            key = (obs['productEvidence'][0], ev['number'], ev.get('sourceArtworkAlias', obs['id']))
+            key = (obs['productEvidence'][0], ev['number'])
             if key not in discoveries:
                 pending[key].append(obs)
-    for (product_id, number, alias), observations in sorted(pending.items()):
+    for (product_id, number), observations in sorted(pending.items()):
         label = candidate_products.get(product_id, {}).get('label', '')
         codes = prefixes(label)
         code = codes[0] if len(codes) == 1 else ''
-        row = make(game='one-piece', record_type='candidate_discovery', source_id='|'.join(sorted(o['id'] for o in observations)),
+        row = make(game='one-piece', source_scope='candidate', record_type='candidate_discovery', source_id='|'.join(sorted(o['id'] for o in observations)),
                    set_name=label, set_code=code, product_set_code=code, printed_set_marker=number.split('-')[0],
                    card_number=number, card_name=observations[0]['printedEvidence'].get('name'),
                    verification_status='candidate_discovery', price_status='unknown', catalog_source_url=observations[0]['sourceURL'],
-                   catalog_revision=candidate.get('revision'), review_notes='Pending candidate; not installed. Bandai artwork alias: ' + alias + '; product ID: ' + product_id)
+                   catalog_revision=candidate.get('revision'), review_notes='Pending candidate; not installed. Bandai artwork aliases: ' + '|'.join(sorted({o['printedEvidence'].get('sourceArtworkAlias', o['id']) for o in observations})) + '; product ID: ' + product_id)
         rows.append(classify(row, [('PRINTING_NEEDS_REVIEW', 'Candidate discovery has no verified physical printing for this appearance.', 'Review candidate and physical printing')]))
 
     # A historical, explicitly incomplete unmatched-product report is useful as
@@ -176,7 +176,7 @@ def inventory(repo):
             issues = [('PRINTING_NEEDS_REVIEW', 'Historical unmatched marketplace product; physical identity is not established.', 'Reconcile product and physical evidence')]
             if matches:
                 issues.append(('POSSIBLE_DUPLICATE', 'Verified printings share this printed number; this is not an identity match.', 'Compare artwork, release and finish'))
-            row = make(game='one-piece', record_type='market_discovery', source_id='tcgplayer:' + item['product_id'],
+            row = make(game='one-piece', source_scope='historical', record_type='market_discovery', source_id='tcgplayer:' + item['product_id'],
                        set_name=item['group'], printed_set_marker=item['number'].split('-')[0] if '-' in item['number'] else '',
                        card_number=item['number'], card_name=item['name'], verification_status='discovery', price_status='unknown',
                        market_provider='tcgplayer', market_product_id=item['product_id'], market_product_url=item['source_url'],
@@ -205,9 +205,11 @@ def inventory(repo):
             status, issues = pricing(mapping, verified and bool(finish))
             if not verified:
                 issues.append(('PRINTING_NEEDS_REVIEW', 'Printing status: ' + printing['status'], 'Review printing evidence'))
-            if not finish or not universe.get('isComplete'):
-                issues.append(('FINISH_UNVERIFIED', 'Physical family or finish coverage is incomplete.', 'Review physical family and finishes'))
-            row = make(game='lorcana', record_type='physical_printing', source_id=card.get('id'), set_name=card.get('setName'), set_code=card.get('setCode'), card_number=card.get('number'),
+            if not finish:
+                issues.append(('FINISH_UNVERIFIED', 'No physical finish is recorded.', 'Review finish evidence'))
+            if not universe.get('isComplete'):
+                issues.append(('PHYSICAL_FAMILY_INCOMPLETE', 'The physical family has not been certified complete.', 'Review family-wide printing coverage'))
+            row = make(game='lorcana', source_scope='retained_physical', record_type='physical_printing', source_id=card.get('id'), set_name=card.get('setName'), set_code=card.get('setCode'), card_number=card.get('number'),
                        card_name=card.get('name'), rarity=card.get('rarity'), printing_id=printing['id'],
                        artwork_id=printing['identity'].get('artworkID'), finish=finish, verification_status=printing['status'],
                        price_status=status, catalog_source_url=printing.get('imageURL'), catalog_revision=discovery.get('generatedOn'),
@@ -218,7 +220,7 @@ def inventory(repo):
     for identity, card in sources.items():
         if identity in covered:
             continue
-        row = make(game='lorcana', record_type='discovery', source_id=identity, set_name=card.get('setName'), set_code=card.get('setCode'), card_number=card.get('number'),
+        row = make(game='lorcana', source_scope='retained_discovery', record_type='discovery', source_id=identity, set_name=card.get('setName'), set_code=card.get('setCode'), card_number=card.get('number'),
                    card_name=card.get('name'), rarity=card.get('rarity'), verification_status='discovery', price_status='unknown',
                    catalog_source_url=card.get('imageURL'), catalog_revision=discovery.get('generatedOn'), review_notes=identity)
         rows.append(classify(row, [('PRINTING_NEEDS_REVIEW', 'Discovery record lacks a complete verified physical family.', 'Review physical printing evidence')]))
@@ -231,7 +233,7 @@ def inventory(repo):
         supported = printing.get('ir') is None and printing['e'] and (printing['ec'] or printing.get('m'))
         for edition in printing['e'] or ['']:
             membership = next((m for m in printing.get('m', []) if m['e'] == edition), None)
-            row = make(game='yugioh', record_type='physical_printing', source_id=card.get('sourceID'), set_name=group.get('n'), set_code=group.get('a'), card_number=printing.get('c'),
+            row = make(game='yugioh', source_scope='retained_seed', record_type='physical_printing', source_id=card.get('sourceID'), set_name=group.get('n'), set_code=group.get('a'), card_number=printing.get('c'),
                        card_name=card.get('n'), rarity=printing.get('r'), printing_id=printing['id'], finish=edition,
                        verification_status='supported' if supported else 'held', price_status='unknown',
                        catalog_source_url=printing.get('img'), catalog_revision=seed.get('generation'),
@@ -252,7 +254,11 @@ def inventory(repo):
             if not supported:
                 issues.append(('PRINTING_NEEDS_REVIEW', printing.get('ir') or 'No supported edition membership.', 'Review printing and edition evidence'))
             if not edition:
-                issues.append(('FINISH_UNVERIFIED', 'No edition is retained.', 'Review edition evidence'))
+                issues.append(('EDITION_UNVERIFIED', 'No supported physical edition is retained.', 'Review edition evidence'))
+            if printing.get('canonicalLink') == 'unresolved':
+                issues.append(('CANONICAL_LINK_UNRESOLVED', 'The physical printing has no resolved canonical-card link.', 'Review canonical identity'))
+            if printing['c'] in seed.get('incompleteCodes', []):
+                issues.append(('PRINTING_FAMILY_INCOMPLETE', 'The printed code is explicitly marked incomplete.', 'Review printing family and distinctions'))
             rows.append(classify(row, issues))
     return sorted(rows, key=lambda r: tuple(r[f] for f in ('game', 'set_code', 'card_number', 'card_name', 'printing_id', 'finish', 'review_notes')))
 
@@ -335,7 +341,7 @@ def apply_prices(rows, snapshot_date, feeds, as_of, max_age_days):
 
 
 def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
-    result, _ = run(repo)
+    result, census_findings = run(repo)
     if result['structuralErrors']:
         raise ValueError('Catalog validation failed: ' + json.dumps(result['structuralErrors']))
     rows = inventory(repo)
@@ -348,15 +354,27 @@ def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
     output.mkdir(parents=True, exist_ok=True)
     write(output / 'catalog-inventory.csv', FIELDS, rows)
     write(output / 'catalog-exceptions.csv', FIELDS, (row for row in rows if row['assessment'] == 'actionable'))
-    severity = {'PRINTING_NEEDS_REVIEW': 'review', 'POSSIBLE_DUPLICATE': 'review',
+    # These are source-/set-level findings, not invented physical printing rows.
+    # Preserve the original audit's disposition: informational and risk cohorts are not defects.
+    def census_assessment(item):
+        if item['disposition'] in ('informational', 'source_risk_cohort', 'runtime_projection_required'):
+            return 'coverage_not_evaluated'
+        if item['disposition'] in ('intentionally_held', 'unsupported_placeholder'):
+            return 'known_limitation'
+        return 'actionable'
+    write(output / 'catalog-census-findings.csv', CENSUS_FIELDS,
+          ({**item, 'assessment': census_assessment(item)} for item in census_findings))
+    severity = {'RAW_FINISH_COVERAGE_UNEVALUATED': 'unchecked', 'PHYSICAL_FAMILY_INCOMPLETE': 'review',
+                'EDITION_UNVERIFIED': 'review', 'CANONICAL_LINK_UNRESOLVED': 'review', 'PRINTING_FAMILY_INCOMPLETE': 'review',
+                'PRINTING_NEEDS_REVIEW': 'review', 'POSSIBLE_DUPLICATE': 'review',
                 'FINISH_UNVERIFIED': 'review', 'PRICE_MAPPING_MISSING': 'review',
                 'NO_MARKET_QUOTE': 'availability', 'PRICE_STALE': 'refresh',
                 'PRICE_NOT_CHECKED': 'unchecked'}
-    counts = collections.Counter((row['game'], row['set_name'], row['set_code'], code, severity.get(code, 'review'))
+    counts = collections.Counter((row['game'], row['source_scope'], row['set_name'], row['set_code'], code, severity.get(code, 'review'))
                                  for row in rows for code in row['issue_codes'].split('|') if code)
     write(output / 'catalog-summary.csv', SUMMARY,
           (dict(zip(SUMMARY, (*key, count))) for key, count in sorted(counts.items())))
-    metadata = dict(schemaVersion=1, boundary=result['boundary'], sources=result['sources'],
+    metadata = dict(schemaVersion=2, boundary=result['boundary'], sources=result['sources'],
                     marketCaptureSHA256=hashlib.sha256((capture_dir / 'capture.json').read_bytes()).hexdigest() if capture_dir else None,
                     marketSnapshotDate=snapshot_date.isoformat() if snapshot_date else None,
                     freshnessAsOf=as_of.isoformat() if as_of else None, maxAgeDays=max_age_days if capture_dir else None,
