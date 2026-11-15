@@ -269,6 +269,9 @@ struct CatalogCardDetailView: View {
 
             identityHeader(details)
 
+            if let reason = details.collectionWriteUnavailableReason {
+                Text(reason).font(.footnote).foregroundStyle(.secondary)
+            }
             if !finishVariants(details.card).isEmpty {
                 priceSection(details.card)
             }
@@ -301,9 +304,6 @@ struct CatalogCardDetailView: View {
                 ownedSection(details.card)
             }
 
-            if let reason = details.collectionWriteUnavailableReason {
-                Text(reason).font(.footnote).foregroundStyle(.secondary)
-            }
             if let catalogCardSelection {
                 Button {
                     catalogCardSelection(details, summary)
@@ -639,7 +639,7 @@ struct CatalogCardDetailView: View {
                 VStack(alignment: .trailing, spacing: 0) {
                     CatalogQuantityStepper(
                         quantity: slot.quantity, variantLabel: variant.label,
-                        canIncrease: canAdd(variant, card: card) && !slot.hasConflict && !slot.hasUnverifiedQualifiers
+                        canIncrease: canAdd(variant, card: card) && !slot.hasConflict
                             && slot.quantity < CollectionQuantityLimits.maximum,
                         canDecrease: slot.copyKeys.count == 1 && slot.targets.count == 1 && !slot.hasConflict,
                         isUpdating: isQuantityLocked,
@@ -722,7 +722,7 @@ struct CatalogCardDetailView: View {
     private func add(_ variant: PhysicalVariant, card: IdentifiedCard) {
         let slot = ownedSlot(for: variant, card: card)
         guard !isQuantityLocked, canAdd(variant, card: card),
-              !slot.hasConflict, !slot.hasUnverifiedQualifiers,
+              !slot.hasConflict,
               slot.quantity < CollectionQuantityLimits.maximum else { return }
         commit(ResolvedVariant(variant: variant, resolution: .userConfirmed))
     }

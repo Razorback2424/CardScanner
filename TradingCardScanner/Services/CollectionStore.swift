@@ -3066,7 +3066,8 @@ struct CollectionStore {
     func card(
         forAnyKey canonicalKey: String,
         magicTreatmentIDsRaw suppliedTreatmentIDs: [String] = [],
-        resolveLegacyIdentity: Bool = true
+        resolveLegacyIdentity: Bool = true,
+        requiredTreatmentQualifiers: [String: String]? = nil
     ) throws -> CollectedCard? {
         // Direct ownership lookup is still the common path, but a treatment-free
         // Magic key cannot use an empty result as proof that no position exists.
@@ -3108,6 +3109,13 @@ struct CollectionStore {
         )
 
         guard !rows.isEmpty else { return nil }
+        // A catalog acquisition proves the new copy's qualifier only. A
+        // row on the same key (including read-through aliases) needs review
+        // before copies with different or missing evidence can be combined.
+        if let requiredTreatmentQualifiers,
+           !rows.allSatisfy({ $0.magicTreatmentQualifiers == requiredTreatmentQualifiers }) {
+            throw CollectionStoreError.ledgerConflict("a saved copy on this key has a different or missing treatment qualifier")
+        }
         if rows.count > 1 {
             return try mergeCollectionRows(
                 rows,
@@ -4836,15 +4844,17 @@ struct CollectionStore {
                 from: card.magicTreatments(for: resolved.variant)
             )
             let treatmentQualifiers = card.magicTreatmentQualifiers(for: resolved.variant)
+            let requiredQualifiers = matchCatalogAliases && !treatmentQualifiers.isEmpty ? treatmentQualifiers : nil
 
-            let existing = try uniqueCard(
-                forAnyKey: key,
-                magicTreatmentIDsRaw: treatmentIDs
+            let existing = try self.card(
+                forAnyKey: key, magicTreatmentIDsRaw: treatmentIDs,
+                requiredTreatmentQualifiers: requiredQualifiers
             ) ?? (matchCatalogAliases
                 ? try catalogAliasCard(
                     providerID: card.providerID,
                     variantID: resolved.variant?.id,
-                    pokemonPrintRun: pokemonPrintRun
+                    pokemonPrintRun: pokemonPrintRun,
+                    requiredTreatmentQualifiers: requiredQualifiers
                 )
                 : nil)
 
@@ -5484,7 +5494,8 @@ struct CollectionStore {
     private func catalogAliasCard(
         providerID: String,
         variantID: String?,
-        pokemonPrintRun: PokemonPrintRun?
+        pokemonPrintRun: PokemonPrintRun?,
+        requiredTreatmentQualifiers: [String: String]?
     ) throws -> CollectedCard? {
         // Vendor identity is an indexed equality match, so it belongs in the
         // query rather than in a filter over every row the store has ever held.
@@ -5493,7 +5504,7 @@ struct CollectionStore {
         // cannot reach.
         let catalogID: String? = providerID
         let rawCardKind = CollectionItemKind.rawCard.rawValue
-        let rows = try context.fetch(
+        let candidates = try context.fetch(
             FetchDescriptor<CollectedCard>(
                 predicate: #Predicate {
                     ($0.providerID == providerID || $0.catalogProviderID == catalogID)
@@ -5508,6 +5519,18 @@ struct CollectionStore {
                 && (pokemonPrintRun == .unlimited
                     ? ($0.pokemonPrintRun == .unlimited || $0.pokemonPrintRun == nil)
                     : $0.pokemonPrintRun == pokemonPrintRun)
+        }
+        let rows: [CollectedCard]
+        if let requiredTreatmentQualifiers {
+            rows = candidates.filter { $0.magicTreatmentQualifiers == requiredTreatmentQualifiers }
+            let matchingKeys = Set(rows.map(\.collectionKey))
+            guard !candidates.contains(where: {
+                matchingKeys.contains($0.collectionKey) && $0.magicTreatmentQualifiers != requiredTreatmentQualifiers
+            }) else {
+                throw CollectionStoreError.ledgerConflict("a saved copy on this key has a different or missing treatment qualifier")
+            }
+        } else {
+            rows = candidates
         }
         guard rows.count <= 1 else {
             let keys = Set(rows.map(\.collectionKey))

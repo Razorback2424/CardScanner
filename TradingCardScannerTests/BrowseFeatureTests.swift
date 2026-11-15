@@ -749,6 +749,68 @@ final class BrowseFeatureTests: XCTestCase {
     }
 
     @MainActor
+    func testCatalogAdditionKeepsDifferentAndUnqualifiedNeonInkCopiesSeparate() async throws {
+        // The bundled catalog identifies this exact printing as Red Neon Ink.
+        let card = IdentifiedCard.magic(try decode(ScryfallCard.self, from: """
+        {"id":"4826991d-c3c3-45ff-9dfc-4246a84b40e0","name":"Hidetsugu, Devouring Chaos",
+         "set":"neo","set_name":"Kamigawa: Neon Dynasty","collector_number":"429",
+         "lang":"en","digital":false,"released_at":"2022-02-18","finishes":["foil"]}
+        """))
+        let red = ["neonink": "red"]
+        XCTAssertEqual(card.magicTreatmentQualifiers(for: .foil), red)
+        let canonicalKey = card.collectionKey(variant: .foil)
+        let finish = ResolvedVariant(variant: .foil, resolution: .userConfirmed)
+        let set = CatalogSet(catalogID: .init(game: .magic, providerID: card.setID),
+            name: card.setName, code: card.setCode, logoURL: nil, symbolURL: nil,
+            cardCount: 1, releaseDate: nil, sortRank: 0)
+        let details = CatalogCardDetails(card: card, set: set)
+
+        for exactKey in [nil, "magic:csv-red-neon", canonicalKey] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let context = container.mainContext
+            func seed(_ key: String, qualifiers: [String: String]) {
+                let row = CollectedCard(card: card, resolved: finish)
+                row.collectionKey = key
+                row.magicTreatmentQualifiers = qualifiers
+                context.insert(row)
+            }
+            seed("magic:csv-unknown-neon", qualifiers: [:])
+            seed("magic:csv-blue-neon", qualifiers: ["neonink": "blue"])
+            if let exactKey { seed(exactKey, qualifiers: red) }
+            try context.save()
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            let receipt = try await writer.addCatalog(details, resolved: finish,
+                pokemonPrintRun: nil, shouldContinue: { true })
+            XCTAssertEqual(receipt.mutation.collectionKey, exactKey ?? canonicalKey)
+            let rows = try ModelContext(container).fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 3)
+            XCTAssertEqual(rows.first { $0.magicTreatmentQualifiers == red }?.quantity, exactKey == nil ? 1 : 2)
+            XCTAssertEqual(rows.first { $0.collectionKey == "magic:csv-unknown-neon" }?.magicTreatmentQualifiers, [:])
+            XCTAssertEqual(rows.first { $0.collectionKey == "magic:csv-unknown-neon" }?.quantity, 1)
+            XCTAssertEqual(rows.first { $0.collectionKey == "magic:csv-blue-neon" }?.magicTreatmentQualifiers, ["neonink": "blue"])
+            XCTAssertEqual(rows.first { $0.collectionKey == "magic:csv-blue-neon" }?.quantity, 1)
+        }
+
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let unknown = CollectedCard(card: card, resolved: finish)
+        unknown.magicTreatmentQualifiers = [:]
+        container.mainContext.insert(unknown)
+        try container.mainContext.save()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        do {
+            _ = try await writer.addCatalog(details, resolved: finish, pokemonPrintRun: nil, shouldContinue: { true })
+            XCTFail("A copy on the same key cannot be silently relabelled")
+        } catch CollectionStoreError.ledgerConflict {
+            let rows = try ModelContext(container).fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(rows.first?.quantity, 1)
+            XCTAssertEqual(rows.first?.magicTreatmentQualifiers, [:])
+        }
+    }
+
+    @MainActor
     func testFirstEditionRowsRecoverOnlyAnEstablishedFinishOfTheSameRun() throws {
         let payload = try decode(TCGdexCard.self, from: """
         {"id":"base1-004","localId":"004","name":"Charizard",
@@ -842,8 +904,8 @@ final class BrowseFeatureTests: XCTestCase {
                 request.recognitionLevel = .fast
                 try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
                 text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
-                if text.localizedCaseInsensitiveContains("Eevee"), text.localizedCaseInsensitiveContains("Normal"),
-                   !readOnly || text.localizedCaseInsensitiveContains("Collection writes unavailable") { return }
+                let expected = readOnly ? "Collection writes unavailable" : "Normal"
+                if text.localizedCaseInsensitiveContains("Eevee"), text.localizedCaseInsensitiveContains(expected) { return }
             }
             XCTFail("Verified detail was not visible. Rendered text: \(text)")
         }
