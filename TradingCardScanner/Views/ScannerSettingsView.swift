@@ -27,6 +27,7 @@ private struct SettingsContentView: View {
     @State private var isPreparingDiagnosticsExport = false
     @State private var isPreparingCatalogHealthExport = false
     @State private var catalogHealthExportProgress = ""
+    @State private var checkLiveCatalogPrices = true
     @State private var catalogHealthExportTask: Task<Void, Never>?
     @State private var isShowingDiagnosticsExporter = false
     @State private var csvExportDocument: CollectionCSVDocument?
@@ -366,7 +367,8 @@ private struct SettingsContentView: View {
                 Button("Export Catalog Health Report", systemImage: "square.and.arrow.up") {
                     prepareCatalogHealthExport()
                 }
-                .disabled(runtimes == nil || isPreparingCatalogHealthExport || isPreparingCSVExport)
+                .disabled(runtimes == nil || isPreparingCatalogHealthExport || isPreparingCSVExport ||
+                          writeCoordinator.activeExclusiveOperation != nil)
                 if isPreparingCatalogHealthExport {
                     HStack(spacing: 8) {
                         ProgressView().controlSize(.small)
@@ -375,13 +377,15 @@ private struct SettingsContentView: View {
                         Button("Cancel") { catalogHealthExportTask?.cancel() }
                     }
                 }
-                Text("Catalog-wide export for all five games, not just cards you own. Uses the currently active catalog and reports unavailable checks explicitly.")
+                Toggle("Check live catalog prices", isOn: $checkLiveCatalogPrices)
+                    .disabled(isPreparingCatalogHealthExport)
+                Text("Exports all five active Browse catalogs, not just owned cards. Price checks use the same lookup paths as Browse and may require many network requests. Turn off for a mapping-and-verification-only report.")
                     .font(.footnote).foregroundStyle(.secondary)
 
                 Button("Export Cards Excluded from USD Value", systemImage: "dollarsign.circle") {
                     prepareCSVExport(.unpriced, filename: "ScanStash Unpriced Cards")
                 }
-                .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
+                .disabled(collectionCardCount == 0 || isPreparingCSVExport || isPreparingCatalogHealthExport || writeCoordinator.activeExclusiveOperation != nil)
 
                 Button("Export Price Evidence for All Cards", systemImage: "clock.badge.checkmark") {
                     prepareCSVExport(.priceEvidence, filename: "ScanStash Price Evidence")
@@ -473,7 +477,9 @@ private struct SettingsContentView: View {
                 catalogHealthExportTask = nil
             }
             do {
-                let document = try await ActiveCatalogHealthCSV.makeDocument(runtimes: runtimes) { message in
+                let document = try await ActiveCatalogHealthCSV.makeDocument(
+                    runtimes: runtimes, checkPrices: checkLiveCatalogPrices
+                ) { message in
                     catalogHealthExportProgress = message
                 }
                 try Task.checkCancellation()
@@ -1100,6 +1106,36 @@ private enum ActiveCatalogHealthCSV {
         ])
     }
 
+    private static func checkedPriceStatus(
+        _ summary: CatalogCardSummary, update: CatalogPriceUpdate?, evidence: inout Evidence
+    ) -> (String, Double?) {
+        guard let update else { return ("not_checked", nil) }
+        if update.printingNeedsReviewIDs.contains(summary.id) {
+            evidence.issue("PRINTING_NEEDS_REVIEW", "Browse price resolver requires printing verification.",
+                           "Review physical printing")
+            return ("printing_needs_review", nil)
+        }
+        if update.missingMappingIDs.contains(summary.id) {
+            evidence.issue("BROWSE_PRICE_MAPPING_MISSING", "Browse could not establish an approved price mapping.",
+                           "Research exact market mapping")
+            return ("mapping_missing", nil)
+        }
+        if update.unresolvedIDs.contains(summary.id) {
+            evidence.issue("PRICE_CHECK_UNRESOLVED",
+                           "The Browse price check did not complete with an accepted current result.",
+                           "Recheck source availability, mapping and quote freshness")
+            return ("unresolved", nil)
+        }
+        if update.resolvedIDs.contains(summary.id) {
+            if let amount = update.prices[summary.id] { return ("priced", amount) }
+            evidence.issue("NO_USD_QUOTE", "Browse checked available sources but found no accepted USD quote.",
+                           "Investigate quote availability for the printed identity")
+            return ("no_usd_quote", nil)
+        }
+        // An interrupted or absent check is not proof that a quote is missing.
+        return ("not_checked", nil)
+    }
+
     private static func printingEvidence(
         for summary: CatalogCardSummary, catalog: (any GameCatalogAdapter)?
     ) -> [Evidence] {
@@ -1256,7 +1292,7 @@ private enum ActiveCatalogHealthCSV {
     }
 
     static func makeDocument(
-        runtimes: CardGameRuntimeContainer,
+        runtimes: CardGameRuntimeContainer, checkPrices: Bool,
         progress: @escaping @MainActor (String) -> Void
     ) async throws -> CollectionCSVDocument {
         let browse = runtimes.makeBrowseCatalog()
@@ -1318,14 +1354,28 @@ private enum ActiveCatalogHealthCSV {
                         } while true
                         summaries = cards
                     }
-                    // These exact mapping checks read the active, verified registry.
-                    // A missing quote is never inferred without a provider check.
+                    // Resolve price states through the same engine as Browse.
+                    // Mapping authority remains per-finish; observed price is
+                    // explicitly a card-summary aggregate, not a per-finish quote.
+                    var priceUpdate: CatalogPriceUpdate?
+                    if checkPrices && !summaries.isEmpty {
+                        await progress("\(game.label): checking \(set.name) prices…")
+                        for await update in browse.sortPriceUpdates(for: summaries) {
+                            try Task.checkCancellation()
+                            priceUpdate = update
+                        }
+                    }
                     for summary in summaries {
                         try Task.checkCancellation()
                         let findings = printingEvidence(for: summary, catalog: activeCatalog)
-                        for finding in findings {
+                        for original in findings {
+                            var finding = original
+                            let (status, aggregateUSD) = checkedPriceStatus(
+                                summary, update: priceUpdate, evidence: &finding
+                            )
                             csv.append(row(kind: "card", exported: date, build: build, game: game,
                                            set: set, card: summary, evidence: finding,
+                                           priceStatus: status, price: aggregateUSD,
                                            generation: summary.catalogGeneration ?? activeGeneration))
                         }
                     }
