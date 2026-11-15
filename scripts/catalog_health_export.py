@@ -481,7 +481,14 @@ def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
                 'FINISH_UNVERIFIED': 'review', 'PRICE_MAPPING_MISSING': 'review',
                 'NO_MARKET_QUOTE': 'availability', 'PRICE_SNAPSHOT_STALE': 'refresh', 'MARKET_MAPPING_MISMATCH': 'review', 'MARKET_MAPPING_INCOMPLETE': 'review',
                 'PRICE_NOT_CHECKED': 'unchecked'}
-    counts = collections.Counter((row['game'], row['source_scope'], row['set_name'], row['set_code'], code, severity.get(code, 'review'))
+    unknown_codes = sorted({code for row in rows for code in row['issue_codes'].split('|')
+                            if code and code not in severity})
+    if unknown_codes:
+        (output / 'catalog-run-failure.json').write_text(
+            json.dumps({'stage': 'issue_taxonomy', 'errors': unknown_codes}, indent=2) + '\n',
+            encoding='utf-8')
+        raise ValueError('Unclassified catalog issue codes: ' + ', '.join(unknown_codes))
+    counts = collections.Counter((row['game'], row['source_scope'], row['set_name'], row['set_code'], code, severity[code])
                                  for row in rows for code in row['issue_codes'].split('|') if code)
     write(output / 'catalog-summary.csv', SUMMARY,
           (dict(zip(SUMMARY, (*key, count))) for key, count in sorted(counts.items())))
