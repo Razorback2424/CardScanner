@@ -1247,17 +1247,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
         return details
     }
 
-    private func addingTCGCSVPrices(to details: CatalogCardDetails) async -> CatalogCardDetails {
+    private func addingTCGCSVPrices(
+        to details: CatalogCardDetails, reportFailure: Bool = false
+    ) async throws -> CatalogCardDetails {
         guard let source = tcgCSVSource,
               case let .pokemon(payload, code) = details.card.legacyIdentity,
               PokemonTCGCSVMapping.byCardID[payload.id]?.setID == payload.set.id else { return details }
         var card = payload
         // A failed refresh must not erase a previously retrieved quote or its
         // provenance. A successful snapshot still replaces it, including gaps.
-        guard let snapshot = try? await source.snapshot(setID: card.set.id, retry: false) else {
+        do {
+            card.supplementalTCGCSV = try await source.snapshot(setID: card.set.id, retry: false)
+        } catch {
+            if reportFailure { throw error }
             return details
         }
-        card.supplementalTCGCSV = snapshot
         return CatalogCardDetails(
             card: .pokemon(card, setCode: code), set: details.set,
             retrievedAt: details.retrievedAt
@@ -1336,6 +1340,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
+        try await price(for: summary, variant: variant, catalogHealthCheck: false)
+    }
+
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant, catalogHealthCheck: Bool) async throws -> PriceLookup {
         if let product = PokemonReviewedMarketProduct.entry(for: summary, variantID: variant.id), product.variant.id == variant.id {
             await synchronizeCatalogAuthority()
             _ = try await authorizedPokemonDetailSet(for: summary)
@@ -1352,7 +1360,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
             guard promo.printings.contains(where: { $0.variant.id == variant.id }) else { throw PriceQuoteError.identityMismatch }
             return .unavailable(nil)
         }
-        let details = await addingTCGCSVPrices(to: try await details(for: summary))
+        let baseDetails = try await details(for: summary)
+        let checksSupplement = variant == .holo && (summary.pokemonPrintRun == nil || summary.pokemonPrintRun == .unlimited)
+        let details: CatalogCardDetails
+        if catalogHealthCheck {
+            let embedded = CardPricing.price(for: baseDetails.card, variant: variant,
+                magicTreatments: baseDetails.card.magicTreatments(for: variant),
+                pokemonPrintRun: summary.pokemonPrintRun, at: baseDetails.retrievedAt)
+            if case let .price(quote) = embedded, quote.isUsableUSD, !quote.isStale(),
+               summary.game == .pokemon {
+                return embedded
+            }
+            details = checksSupplement ? try await addingTCGCSVPrices(to: baseDetails, reportFailure: true) : baseDetails
+        } else {
+            details = try await addingTCGCSVPrices(to: baseDetails)
+        }
         try Task.checkCancellation()
         let key = detailCacheKey(for: summary)
         if detailCache[key]?.retrievedAt == details.retrievedAt {
@@ -1378,7 +1400,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                                        pokemonPrintRun: summary.pokemonPrintRun, at: details.retrievedAt)
         if case let .price(price) = lookup, price.currencyCode == "USD" { return lookup }
         // Reuse the set-wide source used by the grid, only for an exact ordinary finish.
-        guard summary.game == .pokemon, summary.pokemonPrintRun == nil,
+        guard !catalogHealthCheck, summary.game == .pokemon, summary.pokemonPrintRun == nil,
               let listing = PokemonBulkPriceMap.listingKey(for: variant),
               let source = pokemonPriceSource,
               let secondarySetID = try await resolvedPokemonSecondarySetID(for: summary) else { return lookup }
@@ -1903,7 +1925,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     /// Resolve and fetch one bulk map per TCGdex set before the card-level
     /// worker pool starts. This keeps the set-wide optimization while allowing
     /// every uncovered card to use an independent fallback slot.
-    private func preparePokemonBulkPrices(for cards: [CatalogCardSummary]) async {
+    func preparePokemonBulkPrices(for cards: [CatalogCardSummary]) async {
         guard let source = pokemonPriceSource else { return }
         let cardsBySet = Dictionary(
             grouping: cards.filter { $0.game == .pokemon },
@@ -1932,6 +1954,28 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 continue
             }
         }
+    }
+
+    /// Positive evidence only. The set feed's silence does not establish
+    /// that a physical finish has no quote.
+    func catalogHealthBulkQuote(for summary: CatalogCardSummary, variant: PhysicalVariant) -> NormalizedPrice? {
+        let setID = summary.setID.providerID
+        let corrections = catalogRegistry.descriptor(forProviderSetID: setID)?.additionalVariants ?? []
+        guard summary.game == .pokemon, summary.pokemonPrintRun == nil,
+              !corrections.contains(where: { $0.providerCardID == summary.providerID }),
+              PokemonReviewedArtworkCatalog.printingLabel(for: summary.providerID, setID: setID) == nil,
+              PokemonReviewedEnergyCatalog.card(providerID: summary.providerID) == nil,
+              !PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: summary.providerID, setID: setID),
+              PokemonReviewedMarketProduct.entry(for: summary, variantID: variant.id) == nil,
+              !PokemonVariantRules.requiresPhysicalReview(cardID: summary.providerID, variant: variant),
+              let lane = PokemonBulkPriceMap.listingKey(for: variant),
+              let snapshot = pokemonBulkPriceCache[setID.lowercased()],
+              let amount = snapshot.value.price(for: summary.providerID, variant: variant)
+        else { return nil }
+        let quote = NormalizedPrice(unitMarketPriceUSD: amount, currencyCode: "USD",
+            source: .tcgplayer, sourceVariantID: lane,
+            sourceUpdatedAt: snapshot.value.providerUpdatedAt(for: summary.providerID), fetchedAt: snapshot.storedAt)
+        return quote.isUsableUSD && !quote.isStale() ? quote : nil
     }
 
     private func fallbackSortPriceGroup(
@@ -2306,6 +2350,72 @@ actor BrowseCatalog: BrowseCatalogProviding {
         return CatalogPage(items: summaries, nextCursor: cards.count == 60 ? String(page + 1) : nil)
     }
 
+    /// Catalog Health requires a complete, current page sequence. Browse's
+    /// legacy first-page fallback and background cache refresh are UI policies.
+    func catalogHealthMagicSet(_ set: CatalogSet) async throws -> [(CatalogCardSummary, CatalogCardDetails)] {
+        guard let url = BrowseRequestBuilder.scryfallSearchURL(query: "e:\(set.providerID) lang:en game:paper") else {
+            throw BrowseCatalogError.invalidURL
+        }
+        let session = magicSession
+        return try await Self.enumerateCatalogHealthMagicSet(set, firstURL: url) { url in
+            var request = Self.catalogRequest(url, scryfall: true)
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+            return try await Self.catalogHealthMagicTransport.load(request, session: session)
+        }
+    }
+
+    nonisolated static func enumerateCatalogHealthMagicSet(
+        _ set: CatalogSet, firstURL: URL,
+        load: (URL) async throws -> Data
+    ) async throws -> [(CatalogCardSummary, CatalogCardDetails)] {
+        var url = firstURL
+        var seen = Set<URL>()
+        var printingIDs = Set<String>()
+        var details: [(CatalogCardSummary, CatalogCardDetails)] = []
+        var total: Int?
+        while true {
+            try Task.checkCancellation()
+            guard url.scheme == "https", url.host == "api.scryfall.com", url.path == "/cards/search",
+                  seen.insert(url).inserted else {
+                throw CatalogHealthScryfallFailure.incomplete(details.count, "invalid or repeated page URL")
+            }
+            let data: Data
+            do {
+                data = try await load(url)
+            } catch let error as CatalogHealthScryfallFailure {
+                throw error.afterObserving(details.count)
+            }
+            try Task.checkCancellation()
+            guard let page = try? JSONDecoder().decode(ScryfallBrowseCardPage.self, from: data),
+                  let reportedTotal = total ?? page.totalCards, reportedTotal >= 0,
+                  page.totalCards == nil || page.totalCards == reportedTotal else {
+                throw CatalogHealthScryfallFailure.incomplete(details.count, "invalid response or changing provider total")
+            }
+            total = reportedTotal
+            let retrievedAt = Date.now
+            for card in page.data {
+                guard card.setCode.caseInsensitiveCompare(set.providerID) == .orderedSame,
+                      card.language == "en", !card.digital, card.games?.contains("paper") == true,
+                      printingIDs.insert(card.id.lowercased()).inserted else {
+                    throw CatalogHealthScryfallFailure.incomplete(details.count, "unexpected or repeated printing identity")
+                }
+                details.append((magicSummary(card, in: set), .init(card: .magic(card), set: set, retrievedAt: retrievedAt)))
+            }
+            if !page.hasMore {
+                guard details.count == reportedTotal, page.nextPage == nil else {
+                    throw CatalogHealthScryfallFailure.incomplete(details.count, "terminal page does not match the provider total")
+                }
+                return details
+            }
+            guard !page.data.isEmpty, details.count < reportedTotal, let next = page.nextPage else {
+                throw CatalogHealthScryfallFailure.incomplete(details.count, "missing continuation or inconsistent page count")
+            }
+            url = next
+        }
+    }
+
+    private static let catalogHealthMagicTransport = CatalogHealthScryfallTransport()
+
     private func magicCards(
         query: String,
         cursor: String?
@@ -2337,23 +2447,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let items = page.data.compactMap { card -> CatalogCardSummary? in
             let id = CatalogSetID(game: .magic, providerID: card.setCode.lowercased())
             guard let set = directory.first(where: { $0.catalogID == id }) else { return nil }
-            let evidence = card.magicTreatmentEvidence
-            let summary = CatalogCardSummary(
-                game: .magic,
-                providerID: card.id,
-                setID: id,
-                setName: set.name,
-                setCode: set.code,
-                name: card.name,
-                collectorNumber: card.collectorNumber,
-                thumbnailURL: card.thumbnailImageURL,
-                imageURL: card.displayImageURL,
-                magicTreatmentIDsRaw: MagicTreatmentKeyCodec.storedIDs(
-                    from: evidence.treatments
-                ),
-                magicTreatmentQualifiers: evidence.qualifiers,
-                magicFinishIDs: card.finishes
-            )
+            let summary = Self.magicSummary(card, in: set)
             detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(
                 card: .magic(card), set: set, retrievedAt: retrievedAt
             )
@@ -2371,6 +2465,26 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 nextCursor: page.hasMore ? page.nextPage?.absoluteString : nil
             ),
             prices: prices
+        )
+    }
+
+    private nonisolated static func magicSummary(_ card: ScryfallCard, in set: CatalogSet) -> CatalogCardSummary {
+        let evidence = card.magicTreatmentEvidence
+        return CatalogCardSummary(
+                game: .magic,
+                providerID: card.id,
+                setID: set.catalogID,
+                setName: set.name,
+                setCode: set.code,
+                name: card.name,
+                collectorNumber: card.collectorNumber,
+                thumbnailURL: card.thumbnailImageURL,
+                imageURL: card.displayImageURL,
+                magicTreatmentIDsRaw: MagicTreatmentKeyCodec.storedIDs(
+                    from: evidence.treatments
+                ),
+                magicTreatmentQualifiers: evidence.qualifiers,
+                magicFinishIDs: card.finishes
         )
     }
 
@@ -2731,6 +2845,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func request(_ url: URL, scryfall: Bool = false) -> URLRequest {
+        Self.catalogRequest(url, scryfall: scryfall)
+    }
+
+    private nonisolated static func catalogRequest(_ url: URL, scryfall: Bool) -> URLRequest {
         var request = URLRequest(url: url)
         request.timeoutInterval = 12
         request.cachePolicy = .useProtocolCachePolicy
@@ -3429,10 +3547,109 @@ private struct ScryfallBrowseCardPage: Decodable {
     let data: [ScryfallCard]
     let hasMore: Bool
     let nextPage: URL?
+    let totalCards: Int?
 
     enum CodingKeys: String, CodingKey {
         case data
         case hasMore = "has_more"
         case nextPage = "next_page"
+        case totalCards = "total_cards"
+    }
+}
+
+struct CatalogHealthScryfallFailure: LocalizedError {
+    let reason: String
+    let defersProvider: Bool
+    var observed = 0
+    var httpStatus: Int? = nil
+
+    var errorDescription: String? { "Scryfall: \(reason). Retrieved \(observed) printing records before stopping." }
+
+    static func incomplete(_ count: Int, _ reason: String) -> Self {
+        .init(reason: "incomplete pagination (\(reason))", defersProvider: false, observed: count)
+    }
+
+    func afterObserving(_ count: Int) -> Self {
+        .init(reason: reason, defersProvider: defersProvider, observed: count, httpStatus: httpStatus)
+    }
+}
+
+/// Shared across Catalog Health runs. The normal Browse path keeps its own
+/// behavior. A rate limit or access denial opens the circuit for this export.
+actor CatalogHealthScryfallTransport {
+    private let clock = ContinuousClock()
+    private var nextStart: ContinuousClock.Instant?
+    private var retryAllowedAt: Date?
+    private let pause: @Sendable (Duration) async throws -> Void
+
+    init(pause: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
+        self.pause = pause
+    }
+
+    func load(_ request: URLRequest, session: URLSession) async throws -> Data {
+        try await load { try await session.data(for: request) }
+    }
+
+    func load(operation: @Sendable () async throws -> (Data, URLResponse)) async throws -> Data {
+        for attempt in 1...2 {
+            try await waitForRequestSlot()
+            let reason: String
+            do {
+                let (data, response) = try await operation()
+                try Task.checkCancellation()
+                guard let http = response as? HTTPURLResponse else {
+                    throw CatalogHealthScryfallFailure(reason: "non-HTTP response; no retry", defersProvider: true)
+                }
+                let status = http.statusCode
+                if (200..<300).contains(status) { return data }
+                if status == 429 || status == 503,
+                   let delay = ScryfallService.retryAfter(
+                       from: http.value(forHTTPHeaderField: "Retry-After"), now: .now
+                   ) {
+                    retryAllowedAt = Date.now.addingTimeInterval(status == 429 ? max(1, delay) : delay)
+                    throw CatalogHealthScryfallFailure(reason: "HTTP \(status); Retry-After \(delay)s; no retry",
+                                                      defersProvider: true, httpStatus: status)
+                }
+                if status == 429 {
+                    retryAllowedAt = Date.now.addingTimeInterval(60)
+                }
+                guard [408, 500, 502, 503, 504].contains(status) else {
+                    throw CatalogHealthScryfallFailure(reason: "HTTP \(status); no further retry (attempt \(attempt))",
+                                                      defersProvider: status != 404, httpStatus: status)
+                }
+                reason = "HTTP \(status)"
+            } catch let error as CatalogHealthScryfallFailure {
+                throw error
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch let error as URLError {
+                if error.code == .cancelled { throw CancellationError() }
+                reason = "network error \(error.code.rawValue)"
+            } catch {
+                throw CatalogHealthScryfallFailure(reason: "transport error; no retry", defersProvider: true)
+            }
+            if attempt == 2 {
+                throw CatalogHealthScryfallFailure(reason: "\(reason) after one retry", defersProvider: true)
+            }
+            try await pause(.seconds(1))
+        }
+        preconditionFailure("Two attempts must produce a result or throw")
+    }
+
+    private func waitForRequestSlot() async throws {
+        while true {
+            try Task.checkCancellation()
+            if let retryAllowedAt, retryAllowedAt > .now {
+                throw CatalogHealthScryfallFailure(reason: "provider cooldown is still active; request skipped",
+                                                  defersProvider: true)
+            }
+            let now = clock.now
+            if let nextStart, now < nextStart {
+                try await clock.sleep(until: nextStart)
+            } else {
+                nextStart = now.advanced(by: .milliseconds(200))
+                return
+            }
+        }
     }
 }

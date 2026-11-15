@@ -10268,3 +10268,337 @@ private actor CountingPokemonCardSource: PokemonCardSource {
 
     func artworkRecoveryCount() -> Int { artworkRequests }
 }
+
+
+final class ActiveCatalogHealthExportTests: XCTestCase {
+    private func sample(_ notice: String? = nil) -> CatalogCardSummary {
+        CatalogCardSummary(
+            game: .onePiece, providerID: "discovery:eb05-001",
+            setID: CatalogSetID(game: .onePiece, providerID: "eb05-release"),
+            setName: "EB05", setCode: "EB05", name: "Example",
+            collectorNumber: "EB05-001", thumbnailURL: nil, imageURL: nil,
+            collectionAvailabilityNotice: notice
+        )
+    }
+
+    func testDiscoveryNeedsReviewWithoutInventingPrintingID() {
+        let summary = sample("Printing needs review")
+        let evidence = ActiveCatalogHealthCSV.printingEvidence(for: summary, catalog: nil)
+        XCTAssertEqual(evidence.count, 1)
+        XCTAssertEqual(evidence.first?.verification, "needs_review")
+        XCTAssertTrue(evidence[0].issues.contains("PRINTING_NEEDS_REVIEW"))
+        let set = CatalogSet(catalogID: summary.setID, name: "EB05", code: "EB05",
+                             logoURL: nil, symbolURL: nil, cardCount: 1,
+                             releaseDate: nil, sortRank: 0)
+        let csv = ActiveCatalogHealthCSV.row(
+            kind: "card", exported: "2026-11-15T00:00:00Z", build: "1", game: .onePiece,
+            set: set, card: summary, evidence: evidence[0]
+        )
+        XCTAssertTrue(csv.contains("\"discovery:eb05-001\",\"\","))
+    }
+
+    func testMissingQuoteIsDistinctFromUnavailableProviderAndMissingMapping() {
+        let now = Date.now
+        var evidence = ActiveCatalogHealthCSV.Evidence()
+        XCTAssertEqual(ActiveCatalogHealthCSV.priceStatus(.unavailable(.scryfall), checkedAt: now, evidence: &evidence).status, "no_usd_quote")
+        XCTAssertEqual(evidence.issues, ["NO_USD_QUOTE"])
+
+        evidence = .init()
+        XCTAssertEqual(ActiveCatalogHealthCSV.priceStatus(.unavailable(nil), checkedAt: now, evidence: &evidence).status, "not_checked")
+        XCTAssertEqual(evidence.issues, ["PRICE_CHECK_NOT_COMPLETED"])
+
+        evidence = .init()
+        _ = ActiveCatalogHealthCSV.recordPriceError(PriceQuoteError.providerUnavailable, evidence: &evidence)
+        XCTAssertEqual(evidence.issues, ["PRICE_PROVIDER_UNAVAILABLE"])
+        XCTAssertTrue(evidence.details.first?.contains("PriceQuoteError") == true)
+        XCTAssertTrue(evidence.details.first?.contains("code \((PriceQuoteError.providerUnavailable as NSError).code)") == true)
+
+        evidence = .init()
+        _ = ActiveCatalogHealthCSV.recordPriceError(PriceQuoteError.mappingUnavailable, evidence: &evidence)
+        XCTAssertEqual(evidence.issues, ["PRICE_MAPPING_MISSING"])
+    }
+
+    func testStaleQuoteRetainsOriginalObservationTime() {
+        let now = Date.now
+        let earlier = now.addingTimeInterval(-PriceDisplay.staleAfter - 1)
+        let quote = NormalizedPrice(unitMarketPriceUSD: 2, currencyCode: "USD", source: .scryfall,
+                                    sourceVariantID: "usd_etched", sourceUpdatedAt: nil, fetchedAt: earlier)
+        var evidence = ActiveCatalogHealthCSV.Evidence()
+        XCTAssertEqual(ActiveCatalogHealthCSV.priceStatus(.price(quote), checkedAt: now, evidence: &evidence).status, "stale")
+        XCTAssertEqual(evidence.fetchedAt, earlier)
+        XCTAssertEqual(evidence.issues, ["PRICE_EVIDENCE_STALE"])
+    }
+
+    func testCSVProtectsSpreadsheetFormulasAndEscapesQuotedValues() {
+        XCTAssertEqual(ActiveCatalogHealthCSV.escaped("=HYPERLINK(1)"), "\"'=HYPERLINK(1)\"")
+        XCTAssertEqual(ActiveCatalogHealthCSV.escaped("  -5"), "\"'  -5\"")
+        XCTAssertEqual(ActiveCatalogHealthCSV.escaped("\ttext"), "\"'\ttext\"")
+        XCTAssertEqual(ActiveCatalogHealthCSV.escaped("Card, \"Rare\""), "\"Card, \"\"Rare\"\"\"")
+        XCTAssertEqual(ActiveCatalogHealthCSV.headers.first, "record_type")
+        XCTAssertTrue(ActiveCatalogHealthCSV.headers.contains("active_release_revision"))
+        XCTAssertTrue(ActiveCatalogHealthCSV.headers.contains("market_product_id"))
+    }
+
+    func testOnlyIssuesAreExportedAndMagicFinishesAreSeparate() {
+        let card = CatalogCardSummary(game: .magic, providerID: UUID().uuidString,
+            setID: CatalogSetID(game: .magic, providerID: "set"), setName: "Set", setCode: "SET",
+            name: "Card", collectorNumber: "1", thumbnailURL: nil, imageURL: nil,
+            magicFinishIDs: ["foil", "nonfoil"])
+        let evidence = ActiveCatalogHealthCSV.printingEvidence(for: card, catalog: nil)
+        XCTAssertEqual(evidence.map(\.finish), ["foil", "nonfoil"])
+        XCTAssertFalse(ActiveCatalogHealthCSV.shouldExport(evidence[0]))
+        var issue = evidence[0]
+        issue.issue("PRICE_CHECK_UNRESOLVED", "Provider unavailable", "Retry")
+        XCTAssertTrue(ActiveCatalogHealthCSV.shouldExport(issue))
+    }
+
+    func testProductionLorcanaDiscoveryRuntimeExposesPhysicalEvidence() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let sets = try await catalog.sets()
+        for set in sets {
+            let cards = try await catalog.completeLocalCards(in: set) ?? []
+            guard let card = cards.first(where: { UUID(uuidString: $0.providerID) != nil }) else { continue }
+            let evidence = ActiveCatalogHealthCSV.printingEvidence(for: card, catalog: catalog)
+            XCTAssertFalse(evidence.isEmpty)
+            XCTAssertNotEqual(evidence[0].verification, "not_evaluated")
+            XCTAssertFalse(evidence[0].finish.isEmpty)
+            return
+        }
+        XCTFail("Production Lorcana catalog contains no browsable physical printing")
+    }
+
+    @MainActor
+    func testExportReportsOnlyEtchedWhenOtherFinishesArePriced() async throws {
+        let browse = HealthExportFixture()
+        var progressMessages: [String] = []
+        let report = try await ActiveCatalogHealthCSV.makeDocument(
+            runtimes: CardGameRuntimeContainer(runtimes: []), browse: browse,
+            checkPrices: true, loadMagicSet: { set in
+                let page = try await browse.cards(in: set, cursor: nil)
+                let card = try XCTUnwrap(page.items.first)
+                return [(card, try await browse.details(for: card))]
+            }, progress: { progressMessages.append($0) })
+        let cards = report.text.components(separatedBy: "\r\n").filter { $0.hasPrefix("\"card\"") }
+        XCTAssertEqual(cards.count, 1)
+        let row = try XCTUnwrap(cards.first)
+        XCTAssertTrue(row.contains("\"etched\""))
+        XCTAssertTrue(row.contains("\"202\""))
+        XCTAssertTrue(row.contains("NO_USD_QUOTE"))
+        XCTAssertTrue(row.contains("Scryfall usd_etched has no usable value"))
+        XCTAssertTrue(progressMessages.contains("\(CardGame.magic.label): checking Fixture finishes…"))
+        XCTAssertTrue(report.text.contains("\"set_coverage\""))
+        XCTAssertTrue(report.text.contains("\"3\",\"3\",\"1\",\"0\""))
+        let loads = await browse.detailLoads
+        XCTAssertEqual(loads, 1)
+    }
+
+    func testScryfallRateLimitHonorsRetryAfterAcrossCalls() async throws {
+        let replies = HealthScryfallReplies([429, 200], retryAfter: "120")
+        let transport = CatalogHealthScryfallTransport(pause: { _ in XCTFail("429 must not be retried") })
+        for expected in ["HTTP 429; Retry-After 120", "cooldown is still active"] {
+            do {
+                _ = try await transport.load { await replies.next() }
+                XCTFail("Expected Scryfall deferral")
+            } catch let error as CatalogHealthScryfallFailure {
+                XCTAssertTrue(error.defersProvider)
+                XCTAssertTrue(error.reason.contains(expected))
+            }
+        }
+        let calls = await replies.calls
+        XCTAssertEqual(calls, 1)
+    }
+
+    func testScryfallTemporaryFailureRecoversAndPersistentFailureStopsAfterOneRetry() async throws {
+        for results in [[503, 200], [503, 503, 200]] {
+            let replies = HealthScryfallReplies(results)
+            let transport = CatalogHealthScryfallTransport(pause: { XCTAssertEqual($0, .seconds(1)) })
+            do {
+                _ = try await transport.load { await replies.next() }
+                XCTAssertEqual(results[1], 200)
+            } catch let error as CatalogHealthScryfallFailure {
+                XCTAssertEqual(results[1], 503)
+                XCTAssertTrue(error.defersProvider)
+                XCTAssertEqual(error.reason, "HTTP 503 after one retry")
+            }
+            let calls = await replies.calls
+            XCTAssertEqual(calls, 2)
+        }
+    }
+
+    func testScryfallPaginationRequiresContinuationAndMatchingTotal() async throws {
+        let set = HealthExportFixture.fixtureSet()
+        let first = try XCTUnwrap(URL(string: "https://api.scryfall.com/cards/search?page=1"))
+        let second = try XCTUnwrap(URL(string: "https://api.scryfall.com/cards/search?page=2"))
+        func page(_ id: String, total: Int?, more: Bool, next: URL?) throws -> Data {
+            var value: [String: Any] = ["data": [
+                ["id": id, "name": "Fixture", "set": "fixture", "set_name": "Fixture", "collector_number": id,
+                 "lang": "en", "games": ["paper"], "digital": false, "finishes": ["nonfoil"]]
+            ], "has_more": more]
+            value["total_cards"] = total
+            value["next_page"] = next?.absoluteString
+            return try JSONSerialization.data(withJSONObject: value)
+        }
+        let result = try await BrowseCatalog.enumerateCatalogHealthMagicSet(set, firstURL: first) { url in
+            if url == first { return try page("a", total: 2, more: true, next: second) }
+            XCTAssertEqual(url, second)
+            return try page("b", total: nil, more: false, next: nil)
+        }
+        XCTAssertEqual(result.map { $0.0.providerID }, ["a", "b"])
+        for hasMore in [true, false] {
+            do {
+                _ = try await BrowseCatalog.enumerateCatalogHealthMagicSet(set, firstURL: first) { _ in
+                    try page("a", total: 2, more: hasMore, next: nil)
+                }
+                XCTFail("A partial set must not complete")
+            } catch let error as CatalogHealthScryfallFailure {
+                XCTAssertEqual(error.observed, 1)
+                XCTAssertFalse(error.defersProvider)
+                XCTAssertTrue(error.reason.contains("incomplete pagination"))
+            }
+        }
+    }
+
+    @MainActor
+    func testProviderDeferralKeepsCompletedSetAndSkipsRemainingSets() async throws {
+        let browse = HealthExportFixture(setCount: 4)
+        var attempted: [String] = []
+        let report = try await ActiveCatalogHealthCSV.makeDocument(
+            runtimes: CardGameRuntimeContainer(runtimes: []), browse: browse, checkPrices: false,
+            loadMagicSet: { set in
+                attempted.append(set.providerID)
+                if attempted.count == 1 {
+                    let page = try await browse.cards(in: set, cursor: nil)
+                    let card = try XCTUnwrap(page.items.first)
+                    return [(card, try await browse.details(for: card))]
+                }
+                throw CatalogHealthScryfallFailure(reason: "HTTP 429; no retry", defersProvider: true)
+            }, progress: { _ in })
+        let rows = report.text.components(separatedBy: "\r\n")
+        XCTAssertEqual(attempted, ["fixture", "fixture1"])
+        XCTAssertEqual(rows.filter { $0.hasPrefix("\"set_coverage\"") }.count, 1)
+        XCTAssertEqual(rows.filter { $0.hasPrefix("\"set_error\"") }.count, 1)
+        XCTAssertEqual(rows.filter { $0.hasPrefix("\"set_deferred\"") }.count, 2)
+        XCTAssertTrue(rows.allSatisfy { !$0.contains("no_usd_quote") })
+        XCTAssertTrue(report.text.contains("\"3\",\"0\",\"0\",\"3\",\"0\",\"1\",\"0\",\"0\""))
+    }
+
+    func testSharedFamilyDoesNotHideActionablePrintingIssues() {
+        var families = ActiveCatalogHealthCSV.FamilyCoverage()
+        var warning = ActiveCatalogHealthCSV.Evidence()
+        warning.issue("PRINTING_FAMILY_INCOMPLETE", "Shared family", "Review family")
+        var mapping = warning
+        mapping.issue("PRICE_MAPPING_MISSING", "Missing product", "Research exact product")
+        families.collect(from: &warning, printedCode: "SET-001")
+        families.collect(from: &mapping, printedCode: "SET-001")
+        XCTAssertEqual(families.affectedRecords, 2)
+        XCTAssertEqual(families.codes, ["SET-001"])
+        XCTAssertFalse(ActiveCatalogHealthCSV.shouldExport(warning))
+        XCTAssertEqual(mapping.issues, ["PRICE_MAPPING_MISSING"])
+        XCTAssertEqual(mapping.details, ["Missing product"])
+    }
+
+    func testCancellationDuringPaginationDiscardsResult() async throws {
+        let set = HealthExportFixture.fixtureSet()
+        let url = try XCTUnwrap(URL(string: "https://api.scryfall.com/cards/search"))
+        let task = Task {
+            try await BrowseCatalog.enumerateCatalogHealthMagicSet(set, firstURL: url) { _ in
+                withUnsafeCurrentTask { $0?.cancel() }
+                return Data()
+            }
+        }
+        do {
+            _ = try await task.value
+            XCTFail("Expected cancellation")
+        } catch is CancellationError {}
+    }
+
+    @MainActor
+    func testActivationDuringExportRejectsMixedRevision() async throws {
+        let registry = try LorcanaDiscoveryCatalog.bundledMarket.get().registry
+        let activation = HealthExportActivation(registry: registry)
+        let runtime = CardGameRuntime(descriptor: LorcanaGameRuntime(registry: registry).runtime.descriptor,
+            variantPolicy: LorcanaVariantPolicy(registry: registry), activationSource: activation)
+        let runtimes = try CardGameRuntimeContainer(runtimes: [runtime])
+        do {
+            _ = try await ActiveCatalogHealthCSV.makeDocument(
+                runtimes: runtimes, browse: HealthExportFixture(), checkPrices: false, progress: { _ in })
+            XCTFail("A changing catalog must invalidate the report")
+        } catch {
+            XCTAssertTrue(error.localizedDescription.contains("catalog update activated"))
+        }
+    }
+}
+
+private actor HealthExportActivation: GameCatalogActivationSource {
+    nonisolated let game = CardGame.lorcana
+    let registry: LorcanaCatalogRegistry
+    private var revision = 0
+
+    init(registry: LorcanaCatalogRegistry) { self.registry = registry }
+
+    func currentSnapshot() async -> GameCatalogSnapshot? {
+        revision += 1
+        return .init(revision: revision, catalog: LorcanaCatalogAdapter(registry: registry),
+                     recognizer: LorcanaRecognitionAdapter(registry: registry),
+                     variantPolicy: LorcanaVariantPolicy(registry: registry))
+    }
+
+    func activationSnapshots() async -> AsyncStream<GameCatalogSnapshot> {
+        AsyncStream { $0.finish() }
+    }
+}
+
+private actor HealthScryfallReplies {
+    private var statuses: [Int]
+    private let retryAfter: String?
+    private(set) var calls = 0
+
+    init(_ statuses: [Int], retryAfter: String? = nil) {
+        self.statuses = statuses
+        self.retryAfter = retryAfter
+    }
+
+    func next() -> (Data, URLResponse) {
+        let status = statuses.removeFirst()
+        calls += 1
+        let headers = retryAfter.map { ["Retry-After": $0] }
+        let url = URL(string: "https://api.scryfall.com/cards/search")!
+        return (Data(), HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: headers)!)
+    }
+}
+
+private actor HealthExportFixture: BrowseCatalogProviding {
+    private let printingID = "c3c12b8c-0a0f-472d-923b-62e34135142b"
+    private(set) var detailLoads = 0
+    private let setCount: Int
+    init(setCount: Int = 1) { self.setCount = setCount }
+    static func fixtureSet(_ id: String = "fixture") -> CatalogSet {
+        CatalogSet(catalogID: .init(game: .magic, providerID: id), name: "Fixture",
+                   code: "TST", logoURL: nil, symbolURL: nil, cardCount: 1, releaseDate: nil, sortRank: 0)
+    }
+    func sets(for game: CardGame) async throws -> [CatalogSet] {
+        game == .magic ? (0..<setCount).map { Self.fixtureSet($0 == 0 ? "fixture" : "fixture\($0)") } : []
+    }
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [.init(game: .magic, providerID: printingID, setID: set.catalogID,
+            setName: set.name, setCode: set.code, name: "Fixture Card", collectorNumber: "1",
+            thumbnailURL: nil, imageURL: nil, magicFinishIDs: ["nonfoil", "foil", "etched"])], nextCursor: nil)
+    }
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [], nextCursor: nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        detailLoads += 1
+        let json = """
+        {"object":"card","id":"\(printingID)","name":"Fixture Card","set":"tst","set_name":"Fixture",
+         "collector_number":"1","lang":"en","digital":false,"finishes":["nonfoil","foil","etched"],
+         "prices":{"usd":"2.15","usd_foil":"5.80","usd_etched":null},
+         "tcgplayer_id":101,"tcgplayer_etched_id":202}
+        """
+        let card = try JSONDecoder().decode(ScryfallCard.self, from: Data(json.utf8))
+        return .init(card: .magic(card), set: Self.fixtureSet())
+    }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { $0.finish() }
+    }
+}

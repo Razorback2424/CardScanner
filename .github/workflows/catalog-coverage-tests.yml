@@ -185,6 +185,7 @@ jobs:
             -only-testing:TradingCardScannerTests/CardCenteringSurfaceTests \
             -only-testing:TradingCardScannerTests/OpusImplementationPlanTests \
             -only-testing:TradingCardScannerTests/BrowseFeatureTests \
+            -only-testing:TradingCardScannerTests/ActiveCatalogHealthExportTests \
             -only-testing:TradingCardScannerTests/StoreRevisionMonitorTests \
             -only-testing:TradingCardScannerTests/CSVImportResumeTests \
             -only-testing:TradingCardScannerTests/MagicPhysicalObjectTests \
