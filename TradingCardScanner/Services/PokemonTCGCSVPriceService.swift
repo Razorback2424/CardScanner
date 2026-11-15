@@ -321,6 +321,48 @@ struct PokemonReviewedMarketProduct: Sendable {
     let printing: String
     let allowsMissingMarketNumber: Bool
 
+    private struct PrizePackResource: Decodable {
+        let schemaVersion: Int
+        let groupID: Int
+        let entries: [Entry]
+
+        struct Entry: Decodable {
+            let cardID: String
+            let cardName: String
+            let number: String
+            let variantID: String
+            let productID: Int
+            let marketName: String
+            let printing: String
+        }
+    }
+
+    private static let prizePacks: [String: [Self]] = {
+        guard let url = Bundle.main.url(forResource: "pokemon-prize-pack-printings", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let resource = try? JSONDecoder().decode(PrizePackResource.self, from: data),
+              resource.schemaVersion == 1, resource.groupID == 22880,
+              Set(resource.entries.map(\.productID)).count == resource.entries.count else { return [:] }
+        var entries: [String: [Self]] = [:]
+        for entry in resource.entries {
+            guard entry.productID > 0, !entry.marketName.isEmpty,
+                  let variant = PokemonCatalogStampVariant.resolving(entry.variantID),
+                  variant.id == entry.variantID,
+                  let separator = entry.cardID.lastIndex(of: "-"),
+                  ["Normal", "Holofoil"].contains(entry.printing),
+                  entries[entry.cardID]?.contains(where: { $0.variant.id == variant.id }) != true else { return [:] }
+            entries[entry.cardID, default: []].append(Self(entry, variant: variant,
+                setID: String(entry.cardID[..<separator]), groupID: resource.groupID))
+        }
+        return entries
+    }()
+
+    static func prizePackVariants(for card: TCGdexCard) -> [PhysicalVariant] {
+        (prizePacks[card.id] ?? []).filter {
+            $0.setID == card.set.id && $0.matches(name: card.name, number: card.localId)
+        }.map(\.variant)
+    }
+
     static let setIDs = PokemonBattleDeckFinishCatalog.setIDs.union([PokemonM26Catalog.setID])
         .union(PokemonDeltaReignCatalog.setIDs)
 
@@ -330,12 +372,19 @@ struct PokemonReviewedMarketProduct: Sendable {
     }
 
     static func entry(cardID: String, variantID: String?) -> Self? {
+        if let prizePack = prizePacks[cardID]?.first(where: { $0.variant.id == variantID }) { return prizePack }
         if let m26 = PokemonM26Catalog.entry(cardID: cardID), m26.variant.id == variantID { return .init(m26) }
         if let card = PokemonDeltaReignCatalog.card(cardID) { return .init(card, variantID: variantID) }
         return PokemonBattleDeckFinishCatalog.entry(cardID: cardID, variantID: variantID).map(Self.init)
     }
 
     static func entry(for summary: CatalogCardSummary, variantID: String? = nil) -> Self? {
+        if summary.game == .pokemon, summary.pokemonPrintRun == nil,
+           let prizePack = prizePacks[summary.providerID]?.first(where: {
+               $0.variant.id == (variantID ?? summary.masterSetVariant?.id)
+                   && $0.setID == summary.setID.providerID
+                   && $0.matches(name: summary.name, number: summary.collectorNumber)
+           }) { return prizePack }
         if let m26 = PokemonM26Catalog.entry(for: summary) { return .init(m26) }
         if let card = PokemonDeltaReignCatalog.card(for: summary) {
             return .init(card, variantID: variantID ?? summary.masterSetVariant?.id)
@@ -344,6 +393,10 @@ struct PokemonReviewedMarketProduct: Sendable {
     }
 
     static func entry(for card: TCGdexCard, variantID: String?) -> Self? {
+        if let prizePack = prizePacks[card.id]?.first(where: {
+            $0.variant.id == variantID && $0.setID == card.set.id
+                && $0.matches(name: card.name, number: card.localId)
+        }) { return prizePack }
         if let m26 = PokemonM26Catalog.entry(for: card), m26.variant.id == variantID { return .init(m26) }
         if let delta = PokemonDeltaReignCatalog.card(for: card) { return .init(delta, variantID: variantID) }
         return PokemonBattleDeckFinishCatalog.entries(for: card)
@@ -351,13 +404,26 @@ struct PokemonReviewedMarketProduct: Sendable {
     }
 
     static func printing(productID: Int, variantID: String?) -> String? {
-        PokemonDeltaReignCatalog.printing(productID: productID, variantID: variantID)?.finish.printing
+        prizePacks.values.lazy.flatMap { $0 }.first { $0.productID == productID && $0.variant.id == variantID }?.printing
+            ?? PokemonDeltaReignCatalog.printing(productID: productID, variantID: variantID)?.finish.printing
             ?? PokemonBattleDeckFinishCatalog.entry(productID: productID, variantID: variantID)?.printing.rawValue
     }
 
     func matches(name: String, number: String) -> Bool {
         CatalogIdentityNormalization.canonicalText(name) == CatalogIdentityNormalization.canonicalText(cardName)
             && ProductCatalogIdentity.numbersMatch(self.number, number)
+    }
+
+    private init(_ entry: PrizePackResource.Entry, variant: PhysicalVariant, setID: String, groupID: Int) {
+        self.setID = setID
+        self.groupID = groupID
+        productID = entry.productID
+        cardName = entry.cardName
+        marketName = entry.marketName
+        number = entry.number
+        self.variant = variant
+        printing = entry.printing
+        allowsMissingMarketNumber = false
     }
 
     private init(_ m26: PokemonM26Catalog.Entry) {

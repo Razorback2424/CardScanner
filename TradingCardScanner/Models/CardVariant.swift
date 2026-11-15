@@ -79,6 +79,7 @@ enum PokemonCatalogStampVariant {
         case "w-promo": return "W Promo"
         case "trick-or-trade": return "Trick or Trade"
         case "player-rewards-program": return "Prize Pack"
+        case "player-rewards-program-left": return "Prize Pack Left Stamp"
         case "gamestop": return "GameStop"
         case "eb-games": return "EB Games"
         default:

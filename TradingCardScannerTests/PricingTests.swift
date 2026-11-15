@@ -46,6 +46,31 @@ private actor BlisterFamilyProbeTransport: PokemonBrowseTransport {
 }
 
 final class PricingTests: XCTestCase {
+    func testReviewedPrizePackProductsKeepTheirOwnVariantsAndMarketListings() throws {
+        let samples = [
+            ("sv10", "078", "Zeraora", "DRI", 182, "pokemonStamp|cosmos|player-rewards-program|", 704473, "Holofoil"),
+            ("sv06", "143", "Bug Catching Set", "TWM", 167, "pokemonStamp|normal|player-rewards-program-left|", 709703, "Normal")
+        ]
+        for (set, number, name, code, total, variantID, productID, printing) in samples {
+            func payload(name: String) throws -> TCGdexCard {
+                try JSONDecoder().decode(TCGdexCard.self, from: Data("""
+                {"id":"\(set)-\(number)","localId":"\(number)","name":"\(name)",
+                 "set":{"id":"\(set)","name":"Fixture","cardCount":{"total":\(total),"official":\(total)}},
+                 "variants":{"normal":true,"holo":false,"reverse":true,"firstEdition":false}}
+                """.utf8))
+            }
+            let card = IdentifiedCard.pokemon(try payload(name: name), setCode: code)
+            let variant = try XCTUnwrap(card.variantEvidence.catalogVariants.first { $0.id == variantID })
+            XCTAssertTrue(card.variantEvidence.catalogVariants.contains(.reverse))
+            XCTAssertEqual(CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: nil), productID)
+            XCTAssertNotEqual(CardPricing.tcgplayerProductID(for: card, variant: .normal, printRun: nil), productID)
+            XCTAssertFalse(try payload(name: "Different card").catalogVariants.contains { $0.id == variantID })
+            let history = CardMarketHistoryRequest(card: card, variant: variant, printRun: nil)
+            XCTAssertEqual(history.exactProductID, String(productID))
+            XCTAssertEqual(history.providerPrinting, printing)
+        }
+    }
+
     @MainActor
     func testPriceSnapshotReadFailureAfterStorageSwitchDoesNotShowPreviousCollection() async throws {
         let first = try ModelContainer(for: CollectionStorageModelSchema.full,

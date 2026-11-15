@@ -1,6 +1,18 @@
 {
   "sets": [
     {
+      "providerSetID": "basep",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1
+    },
+    {
+      "providerSetID": "np",
+      "recognitionKind": "notScannable",
+      "scanEnabled": false,
+      "rulesVersion": 1
+    },
+    {
       "providerSetID": "sve",
       "recognitionKind": "energy",
       "printedPrefix": "SVE",
