@@ -83,6 +83,23 @@ def region_errors(candidate, official):
                  for region in ARTWORK_REGIONS)
 
 
+def near_threshold_artwork_match(scores):
+    """Report a likely JPEG-scale match, never an approved printing.
+
+    Compare sum and worst-region errors, and require clear separation from
+    every sibling. This is intentionally *not* used by the publisher verifier.
+    """
+    ranked = sorted(scores.items(), key=lambda item: sum(item[1]))
+    if not ranked:
+        return None
+    best_alias, errors = ranked[0]
+    if max(errors) > 0.023 or sum(errors) > 0.056:
+        return None
+    if len(ranked) > 1 and sum(ranked[1][1]) - sum(errors) < 0.12:
+        return None
+    return best_alias
+
+
 def official_images(raw, series):
     document = Document(raw).root
     urls = {}
@@ -134,7 +151,11 @@ def match_products(number, official_rows, products, image_loader):
             if selected is not None:
                 result.update(decision="unique-artwork-candidate", matchedAlias=selected)
             else:
-                result["decision"] = "no-unique-artwork-match"
+                near = near_threshold_artwork_match(scores)
+                if near is not None:
+                    result.update(decision="near-threshold-artwork-candidate", matchedAlias=near)
+                else:
+                    result["decision"] = "no-unique-artwork-match"
             result["regionErrors"] = {
                 alias: [round(value, 5) for value in values] for alias, values in sorted(scores.items())
             }
@@ -195,9 +216,12 @@ def audit(series, group, previews, fetcher):
     for alias in sorted(discoveries):
         number = by_alias[alias]["number"]
         same_art = [p for p in results_by_number[number]
-                    if p.get("matchedAlias") == alias and p["decision"] == "unique-artwork-candidate"]
-        status = ("unique-artwork-market-candidate" if len(same_art) == 1
-                  else "multiple-products-claim-artwork" if len(same_art) > 1
+                    if p.get("matchedAlias") == alias and p["decision"] in {
+                        "unique-artwork-candidate", "near-threshold-artwork-candidate"}]
+        status = ("multiple-products-claim-artwork" if len(same_art) > 1
+                  else "unique-artwork-market-candidate" if len(same_art) == 1
+                       and same_art[0]["decision"] == "unique-artwork-candidate"
+                  else "near-threshold-artwork-market-candidate" if len(same_art) == 1
                   else "official-artwork-not-captured" if alias in source_gaps[number]
                   else "unresolved-in-live-image-comparison")
         aliases.append({"alias": alias, "number": number, "status": status,
