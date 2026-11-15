@@ -17,7 +17,7 @@ this changes the CSV representation of those values.
 
 This is an offline evidence census, not a complete live catalog or price audit.
 It reads Pokémon's raw checklist slots, Magic's **test-only treatment subset**,
-the installed One Piece owner registry and Bandai Browse discovery observations,
+the bundled One Piece owner registry and Bandai Browse discovery observations,
 Lorcana discovery and physical records,
 the Yu-Gi-Oh seed and reference printings, and the retained October 2026 One
 Piece unmatched marketplace report. The latter is an incomplete historical
@@ -25,6 +25,7 @@ discovery lead; products already mapped in the current owner registry are
 excluded, and number-only candidate matches are not physical identity proof.
 Browse observations are grouped by product and printed number, as in the
 app; multiple artwork aliases are retained together as evidence.
+The bundled owner seed is not proof of device activation (rollout/configuration is separate).
 Additional discoveries from the retained revision-4 candidate are labeled
 `candidate_discovery`; they are not necessarily present in installed Browse.
 `product_set_code` identifies the release where a One Piece entry appears;
