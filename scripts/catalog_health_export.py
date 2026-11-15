@@ -142,11 +142,12 @@ def inventory(repo):
     candidate = read(candidate_path)
     candidate_products = {p['id']: p for p in candidate['registry']['products']}
     pending = collections.defaultdict(list)
+    installed_discovery_ids = {o['id'] for group in discoveries.values() for o in group}
     for obs in candidate['observations']:
         ev = obs['printedEvidence']
         if ev.get('sourceRole') == BROWSE_DISCOVERY and obs.get('productEvidence') and ev.get('number'):
             key = (obs['productEvidence'][0], ev['number'])
-            if key not in discoveries:
+            if obs['id'] not in installed_discovery_ids:
                 pending[key].append(obs)
     for (product_id, number), observations in sorted(pending.items()):
         label = candidate_products.get(product_id, {}).get('label', '')
@@ -233,18 +234,23 @@ def inventory(repo):
         supported = printing.get('ir') is None and printing['e'] and (printing['ec'] or printing.get('m'))
         for edition in printing['e'] or ['']:
             membership = next((m for m in printing.get('m', []) if m['e'] == edition), None)
+            # Current Yu-Gi-Oh pricing uses the physical printing's product and
+            # edition regardless of whether a dated historical membership exists.
+            # Membership is evidence for historical price fallback, not a
+            # prerequisite for today's TCGCSV quote (YuGiOhPriceAdapter).
+            current_mapping = supported and bool(edition) and bool(printing.get('p'))
             row = make(game='yugioh', source_scope='retained_seed', record_type='physical_printing', source_id=card.get('sourceID'), set_name=group.get('n'), set_code=group.get('a'), card_number=printing.get('c'),
                        card_name=card.get('n'), rarity=printing.get('r'), printing_id=printing['id'], finish=edition,
                        verification_status='supported' if supported else 'held', price_status='unknown',
                        catalog_source_url=printing.get('img'), catalog_revision=seed.get('generation'),
-                       market_provider='tcgplayer' if membership and printing.get('p') else '',
-                       market_product_id=printing.get('p') if membership else '',
-                       market_group_id=printing.get('pg', printing['g']) if membership else '',
-                       market_lane={'yugioh1stEdition': '1st Edition', 'yugiohUnlimited': 'Unlimited', 'yugiohLimited': 'Limited'}.get(edition) if membership else '',
-                       market_product_name=printing.get('pn') if membership else '', market_product_number=printing.get('c') if membership else '',
-                       review_notes='Edition is recorded in finish; rarity is a separate printing attribute.')
-            if supported and membership and printing.get('p'):
-                issues = [('PRICE_NOT_CHECKED', 'Exact edition membership is retained; live quote was not evaluated.', 'Check exact edition pricing')]
+                       market_provider='tcgplayer' if current_mapping else '',
+                       market_product_id=printing.get('p') if current_mapping else '',
+                       market_group_id=printing.get('pg', printing['g']) if current_mapping else '',
+                       market_lane={'yugioh1stEdition': '1st Edition', 'yugiohUnlimited': 'Unlimited', 'yugiohLimited': 'Limited'}.get(edition) if current_mapping else '',
+                       market_product_name=printing.get('pn') if current_mapping else '', market_product_number=printing.get('c') if current_mapping else '',
+                       review_notes='Edition is a physical distinction; historical membership ' + ('present.' if membership else 'absent; current quote still eligible.'))
+            if current_mapping:
+                issues = [('PRICE_NOT_CHECKED', 'Current market product and edition are retained; current quote was not evaluated.', 'Check exact edition pricing')]
                 row['price_status'] = 'not_checked'
             elif supported and edition:
                 issues = [('PRICE_MAPPING_MISSING', 'No exact product and edition membership is retained.', 'Review exact edition mapping')]
