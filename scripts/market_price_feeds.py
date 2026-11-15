@@ -131,6 +131,13 @@ def scope_from_repo(repo, one_piece_envelope=None):
             if product is None and card["cardID"] == "mep-114" and finish == "staff":
                 continue
             add(3, group, product, lane)
+    prize_packs = json.loads((repo / "publisher/pokemon-prize-pack-printings.json").read_bytes())
+    if prize_packs["schemaVersion"] != 1 or prize_packs["groupID"] != 22880:
+        raise ValueError("Invalid Pokémon Prize Pack printing catalog")
+    for entry in prize_packs["entries"]:
+        if not entry["variantID"].startswith("pokemonStamp|") or entry["printing"] not in {"Normal", "Holofoil"}:
+            raise ValueError("Invalid Pokémon Prize Pack market lane")
+        add(3, prize_packs["groupID"], entry["productID"], entry["printing"])
     lorcana = json.loads((repo / "TradingCardScanner/LorcanaCatalogSeed/market.json").read_bytes())
     for printing in lorcana["physicalPrintings"]:
         if printing["status"] != "verified":

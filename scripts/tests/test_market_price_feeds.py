@@ -14,6 +14,10 @@ import market_price_feeds as feeds
 
 
 class MarketPriceFeedTests(unittest.TestCase):
+    def test_prize_pack_market_scope_uses_only_reviewed_finishes(self):
+        scope = feeds.scope_from_repo(Path(__file__).resolve().parents[2])
+        self.assertEqual(scope[(3, 22880)], {704473: {"Holofoil"}, 709703: {"Normal"}})
+
     def test_m26_market_scope_contains_only_the_verified_product_finishes(self):
         repo = Path(__file__).resolve().parents[2]
         scope = feeds.scope_from_repo(repo)

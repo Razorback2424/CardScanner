@@ -160,8 +160,6 @@ private struct CollectionCardDetailContent: View {
     @Environment(\.cardGameRuntimes) private var runtimes
     @Environment(\.sharedBrowseCatalog) private var sharedBrowseCatalog
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @ScaledMetric(relativeTo: .largeTitle) private var titleFontSize: CGFloat = 32
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
@@ -579,27 +577,9 @@ private struct CollectionCardDetailContent: View {
 
     private var cardIdentitySection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(card.name)
-                .font(.system(size: titleFontSize, weight: .bold))
-                .tracking(dynamicTypeSize <= .large ? -0.6 : 0)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
-
-            if !card.setName.isEmpty || !printingDesignation.isEmpty {
-                ViewThatFits(in: .horizontal) {
-                    provenanceRow
-                    VStack(alignment: .leading, spacing: 0) {
-                        if !card.setName.isEmpty { setNameLink }
-                        if !printingDesignation.isEmpty { Text(printingDesignation) }
-                    }
-                }
-                .font(.subheadline.weight(.semibold))
-            }
-
-            if let rarity = CardRarityToken(raw: card.rarity) {
-                Text(rarity.label)
-                    .font(.subheadline.weight(.semibold))
-                    .fixedSize(horizontal: false, vertical: true)
+            CardDetailIdentityHeader(name: card.name, setName: card.setName, designation: printingDesignation,
+                rarity: card.rarity, setLinkID: "collection-set-link") {
+                setDestination
             }
 
             if card.hasReport {
@@ -624,33 +604,6 @@ private struct CollectionCardDetailContent: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 22)
         .accessibilityElement(children: .contain)
-    }
-
-    private var provenanceRow: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 6) {
-            if !card.setName.isEmpty { setNameLink }
-            if !printingDesignation.isEmpty {
-                if !card.setName.isEmpty { Text("·").foregroundStyle(.secondary) }
-                Text(printingDesignation)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }
-    }
-
-    private var setNameLink: some View {
-        NavigationLink {
-            setDestination
-        } label: {
-            Text(card.setName)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(minHeight: 44)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .foregroundStyle(Color.accentColor)
-        .accessibilityHint("View this set")
-        .accessibilityIdentifier("collection-set-link")
     }
 
     @ViewBuilder
@@ -1797,9 +1750,73 @@ private struct CollectionCardDetailContent: View {
     }
 }
 
-/// A compact, stable vocabulary for the common rarity families. The enum
-/// classifies the provider value for tinting, but keeps the provider's exact
-/// label because named rarities such as "Illustration Rare" are distinct facts.
+struct CardDetailIdentityHeader<SetDestination: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let name: String
+    let setName: String
+    let designation: String
+    let rarity: String?
+    let setLinkID: String
+    @ViewBuilder let setDestination: () -> SetDestination
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(name)
+                .font(.largeTitle.bold())
+                .tracking(dynamicTypeSize <= .large ? -0.5 : 0)
+                .lineSpacing(2)
+                .accessibilityAddTraits(.isHeader)
+
+            if !setName.isEmpty || !designation.isEmpty {
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline, spacing: 7) {
+                        if !setName.isEmpty { setLink }
+                        if !setName.isEmpty && !designation.isEmpty {
+                            Text("·").foregroundStyle(.secondary).accessibilityHidden(true)
+                        }
+                        if !designation.isEmpty { number }
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        if !setName.isEmpty { setLink }
+                        if !designation.isEmpty { number }
+                    }
+                }
+                .font(.headline)
+            }
+
+            if let label = CardRarityToken(raw: rarity)?.label {
+                Text(label == label.lowercased() ? label.localizedCapitalized : label)
+                    .font(.callout.weight(.semibold))
+                    .padding(.top, setName.isEmpty ? 4 : 0)
+            }
+        }
+        .foregroundStyle(.primary)
+        .multilineTextAlignment(.leading)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var number: some View {
+        Text(designation)
+            .foregroundStyle(.secondary)
+    }
+
+    private var setLink: some View {
+        NavigationLink(destination: setDestination) {
+            Text(setName)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(colorScheme == .dark ? Color(red: 0.30, green: 0.75, blue: 0.79) : Color.accentColor)
+        .accessibilityHint("View this set")
+        .accessibilityIdentifier(setLinkID)
+    }
+}
+
+/// Classifies the provider value for tinting while preserving the exact label.
 enum CardRarityToken: Equatable, Hashable {
     case common(String)
     case uncommon(String)
@@ -1925,6 +1942,7 @@ private struct CardDetailFormattedPrice {
 }
 
 private struct CardDetailValuationView: View {
+    @ScaledMetric(relativeTo: .largeTitle) private var priceSize = 42.0
     let price: PriceDisplay
     let selection: PriceHistorySelection
 
@@ -1933,14 +1951,14 @@ private struct CardDetailValuationView: View {
             let sample = selection.sample
             if sample != nil || selection.date != nil {
                 Text(sample?.amount.formatted(currencyCode: "USD") ?? "—")
-                    .font(.system(size: 52, weight: .bold, design: .rounded))
+                    .font(.system(size: priceSize, weight: .semibold, design: .rounded))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                 Text(sample?.priceCaption ?? "No market history for this date")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .padding(.top, 10)
+                    .padding(.top, 6)
             } else {
                 // The headline and today's chart endpoint share this quote.
                 CardDetailHeroPrice(price: price)
@@ -1949,16 +1967,18 @@ private struct CardDetailValuationView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                        .padding(.top, 10)
+                        .padding(.top, 6)
                 }
             }
         }
-        .frame(maxWidth: .infinity, minHeight: 104)
+        .frame(maxWidth: .infinity, minHeight: 84)
         .padding(.horizontal, 16)
     }
 }
 
 private struct CardDetailHeroPrice: View {
+    @ScaledMetric(relativeTo: .largeTitle) private var priceSize = 42.0
+    @ScaledMetric(relativeTo: .title) private var centsSize = 30.0
     let price: PriceDisplay
 
     var body: some View {
@@ -1995,10 +2015,10 @@ private struct CardDetailHeroPrice: View {
            ) {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Text(formatted.leading)
-                    .font(.system(size: 52, weight: .bold, design: .rounded))
+                    .font(.system(size: priceSize, weight: .semibold, design: .rounded))
                 if let fractional = formatted.fractional {
                     Text(fractional)
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                        .font(.system(size: centsSize, weight: .semibold, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
             }

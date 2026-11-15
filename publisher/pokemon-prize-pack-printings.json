@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "groupID": 22880,
+  "entries": [
+    {
+      "cardID": "sv10-078",
+      "cardName": "Zeraora",
+      "number": "078/182",
+      "variantID": "pokemonStamp|cosmos|player-rewards-program|",
+      "productID": 704473,
+      "marketName": "Zeraora - 078/182 (Cosmos Holo)",
+      "printing": "Holofoil"
+    },
+    {
+      "cardID": "sv06-143",
+      "cardName": "Bug Catching Set",
+      "number": "143/167",
+      "variantID": "pokemonStamp|normal|player-rewards-program-left|",
+      "productID": 709703,
+      "marketName": "Bug Catching Set - 143/167 (Left Stamp)",
+      "printing": "Normal"
+    }
+  ]
+}

@@ -165,3 +165,19 @@ The app and price publisher share the
 [Delta Reign printing table](pokemon-delta-reign-printings.json). The
 [evidence ledger](pokemon-delta-reign-evidence.md) records the deck finishes,
 the MEP 111–117 variants, and the pending Staff Kommo-o market binding.
+
+The [Prize Pack printing table](pokemon-prize-pack-printings.json) shares
+two exact Play! Pokémon variants between the app and market publisher.
+The [Zeraora card face](https://tcgplayer-cdn.tcgplayer.com/product/704473_in_1000x1000.jpg)
+shows DRI 078/182 with the Prize Pack stamp and Cosmos foil. The
+[Bug Catching Set card face](https://tcgplayer-cdn.tcgplayer.com/product/709703_in_1000x1000.jpg)
+shows TWM 143/167 with the stamp on the left. The
+[Prize Pack product inventory](https://tcgcsv.com/tcgplayer/3/22880/products)
+provides the separate product IDs. Neither variant replaces an expansion finish.
+
+The Wizards and Nintendo Black Star Promo overrides request Browse
+membership for the [53 Wizards cards](https://api.tcgdex.net/v2/en/sets/basep)
+and [40 Nintendo cards](https://api.tcgdex.net/v2/en/sets/np). The scoped
+review matched all 93 detail records to their set entries by ID, name, and
+local number. Both overrides keep scan disabled because set size does not
+establish a printed denominator.

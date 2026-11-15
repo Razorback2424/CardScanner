@@ -12,6 +12,7 @@ on:
       - "publisher/catalog-input.json"
       - "publisher/pokemon-mcdonalds-2026.json"
       - "publisher/pokemon-delta-reign-printings.json"
+      - "publisher/pokemon-prize-pack-printings.json"
       - "scripts/**"
       - ".github/workflows/catalog-coverage-tests.yml"
 

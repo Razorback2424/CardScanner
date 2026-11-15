@@ -404,46 +404,12 @@ struct CatalogCardDetailView: View {
     }
 
     private func identityHeader(_ details: CatalogCardDetails) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(details.card.name)
-                .font(.largeTitle.bold())
-                .accessibilityAddTraits(.isHeader)
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    setLink(details)
-                    Text("·").foregroundStyle(.secondary).accessibilityHidden(true)
-                    Text(summary.setAndCollectorLabel)
-                }
-                VStack(alignment: .leading, spacing: 0) {
-                    setLink(details)
-                    Text(summary.setAndCollectorLabel)
-                }
-            }
-            .font(.subheadline.weight(.semibold))
-            if let rarity = CardRarityToken(raw: details.card.rarity) {
-                Text(rarity.label).font(.subheadline.weight(.semibold))
-            }
-            if let run = summary.pokemonPrintRun {
-                Text(run.label).font(.subheadline).foregroundStyle(.secondary)
-            }
-        }
-        .multilineTextAlignment(.leading)
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func setLink(_ details: CatalogCardDetails) -> some View {
-        NavigationLink {
+        let designation = [summary.setAndCollectorLabel, summary.pokemonPrintRun?.label]
+            .compactMap { $0 }.joined(separator: " · ")
+        return CardDetailIdentityHeader(name: details.card.name, setName: details.set.name,
+            designation: designation, rarity: details.card.rarity, setLinkID: "card-set-link") {
             CatalogSetCardsView(set: details.set, catalog: catalog)
-        } label: {
-            Text(details.set.name)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(minHeight: 44)
-                .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
-        .foregroundStyle(Color.accentColor)
-        .accessibilityHint("View cards in this set")
-        .accessibilityIdentifier("card-set-link")
     }
 
     @ViewBuilder

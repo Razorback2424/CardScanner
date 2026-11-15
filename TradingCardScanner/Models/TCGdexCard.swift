@@ -145,6 +145,7 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
             variants = PokemonFinishMinimumCatalog.projectingLegacy(cardID: id, variants: catalogVariantsWithoutCertification)
         }
         var additions = PokemonBattleDeckFinishCatalog.entries(for: self).map(\.variant)
+        additions += PokemonReviewedMarketProduct.prizePackVariants(for: self)
         if PokemonDeltaReignCatalog.card(for: self) != nil { additions.append(.normal) }
         return additions.isEmpty ? variants : ScanText.unique(variants + additions)
     }
