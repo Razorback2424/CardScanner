@@ -579,7 +579,7 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
     # can legitimately share it. Independent marketplace products must still
     # be unique across the candidates in this review.
     candidate_market_ids = candidate_product_claims(candidate_matches)
-    for (_, alias), match in sorted(candidate_matches.items()):
+    for (series_key, alias), match in sorted(candidate_matches.items()):
         row, identity, list_source, image_source, listing, receipt, score, existing, distribution, image_review = match
         release_id, canonical_id, treatment = identity
         if candidate_market_ids[listing["imageProductID"]] != 1:
@@ -618,6 +618,8 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
         if existing is not None:
             result["finishUpdates"].append({"printingID": existing["id"], "observationID": finish_id})
             stats["verified-existing"] += 1
+            if (series_key, alias) in alias_report:
+                alias_report[(series_key, alias)]["acceptedPrinting"] = True
             continue
         observe(list_id, official, list_source, {"productLabel": " | ".join(row["productLabels"])})
         observe(render_id, official, image_source, {"sourceRole": "watermarked-digital-render"},
@@ -652,6 +654,8 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                 if promo_products.setdefault(release_id, product) != product:
                     raise ValueError("Two official labels claim the same promo product")
         stats["verified-new"] += 1
+        if (series_key, alias) in alias_report:
+            alias_report[(series_key, alias)]["acceptedPrinting"] = True
     for (provider, digest), ids in sorted(evidence_ids.items()):
         ids = sorted(ids)
         # Later reviews can derive additional observations from the same bytes.
@@ -663,20 +667,7 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
     if promo_products:
         result["products"] = list(promo_products.values())
     if evidence_report is not None:
-        accepted_aliases = set(candidate_matches) - {
-            (series, alias) for (series, alias), row in alias_report.items()
-            if row["matchedRetailerProducts"] and any(reason in row["reasons"] for reason in (
-                "contradictory-retailer-claims", "conflicting-source-identity-or-finish",
-                "marketplace-crosscheck-failed"))
-        }
-        # Accepted identity is established by output evidence, not by an artwork score.
-        accepted_source_aliases = {
-            (obs["printedEvidence"].get("sourceArtworkAlias"), tuple(obs["productEvidence"]))
-            for obs in result["observations"]
-            if obs["printedEvidence"].get("sourceRole") == "retailer-exact-printing-specification"
-        }
-        for (series, alias), row in sorted(alias_report.items()):
-            row["acceptedPrinting"] = any(alias == key for key, _ in accepted_source_aliases)
+        for (_, _), row in sorted(alias_report.items()):
             row["reasons"].sort()
             row["resolution"] = replay_resolution(row)
             evidence_report.append(row)
