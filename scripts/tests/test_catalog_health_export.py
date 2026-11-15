@@ -51,10 +51,14 @@ class CatalogHealthTest(unittest.TestCase):
             mismatch = row(1)
             mismatch['market_product_name'] = 'Other'
             health.apply_prices([missing_group, mismatch], captured, feeds, date(2026, 11, 2), 30)
-            self.assertEqual([missing_group['price_status'], mismatch['price_status']], ['not_checked', 'not_checked'])
+            self.assertEqual([missing_group['price_status'], mismatch['price_status']], ['mapping_incomplete', 'mapping_mismatch'])
+            self.assertEqual(missing_group['issue_codes'], 'MARKET_MAPPING_INCOMPLETE')
+            self.assertEqual(mismatch['issue_codes'], 'MARKET_MAPPING_MISMATCH')
+            self.assertIn('expected Other / N', mismatch['issue_details'])
             stale = [row(1)]
             health.apply_prices(stale, captured, feeds, date(2026, 12, 3), 30)
-            self.assertEqual(stale[0]['issue_codes'], 'PRICE_STALE')
+            self.assertEqual(stale[0]['issue_codes'], 'PRICE_SNAPSHOT_STALE')
+            self.assertEqual(stale[0]['price_status'], 'snapshot_stale')
             with self.assertRaises(ValueError):
                 health.apply_prices(stale, captured, feeds, date(2026, 10, 1), 30)
             (root / '68-9-prices.json').write_text('{}')
@@ -67,16 +71,23 @@ class CatalogHealthTest(unittest.TestCase):
             one, two = Path(temp) / 'one', Path(temp) / 'two'
             health.export(repo, one)
             health.export(repo, two)
-            for name in ('catalog-inventory.csv', 'catalog-exceptions.csv', 'catalog-summary.csv', 'catalog-metadata.json'):
+            for name in ('catalog-inventory.csv', 'catalog-exceptions.csv', 'catalog-summary.csv', 'catalog-census-findings.csv', 'catalog-metadata.json'):
                 self.assertEqual(hashlib.sha256((one / name).read_bytes()).digest(),
                                  hashlib.sha256((two / name).read_bytes()).digest())
             def rows(name):
                 with (one / name).open(encoding='utf-8', newline='') as file:
                     return list(csv.DictReader(file))
-            inventory, exceptions, summary = (rows(name) for name in
-                ('catalog-inventory.csv', 'catalog-exceptions.csv', 'catalog-summary.csv'))
+            inventory, exceptions, summary, census = (rows(name) for name in
+                ('catalog-inventory.csv', 'catalog-exceptions.csv', 'catalog-summary.csv', 'catalog-census-findings.csv'))
             self.assertEqual({r['game'] for r in inventory}, {'pokemon', 'magic', 'one-piece', 'lorcana', 'yugioh'})
             self.assertEqual(exceptions, [r for r in inventory if r['assessment'] == 'actionable'])
+            self.assertTrue(census)
+            self.assertTrue({r['game'] for r in census} <= {'pokemon', 'magic', 'one-piece', 'lorcana', 'yugioh'})
+            self.assertTrue(all(r['disposition'] and r['code'] for r in census))
+            self.assertTrue(all(r['source_scope'] for r in inventory))
+            self.assertTrue(all(r['source_scope'] for r in summary))
+            self.assertFalse(any(r['game'] == 'pokemon' and r['issue_codes'] == 'FINISH_UNVERIFIED' for r in inventory))
+            self.assertTrue(any(r['game'] == 'pokemon' and r['issue_codes'] == 'RAW_FINISH_COVERAGE_UNEVALUATED' and r['assessment'] == 'coverage_not_evaluated' for r in inventory))
             self.assertEqual(sum(int(r['count']) for r in summary),
                              sum(len(r['issue_codes'].split('|')) for r in inventory if r['issue_codes']))
             self.assertTrue(any(r['game'] == 'lorcana' and r['verification_status'] == 'discovery'
@@ -97,6 +108,10 @@ class CatalogHealthTest(unittest.TestCase):
                 self.assertTrue(expected, code)
                 self.assertEqual(actual, expected)
             self.assertTrue(any(r['product_set_code'] == 'EB05' and r['printed_set_marker'] == 'EB03' for r in inventory))
+            for kind in ('browse_discovery', 'candidate_discovery'):
+                keys = [(r['source_scope'], r['product_set_code'], r['card_number']) for r in inventory if r['record_type'] == kind]
+                self.assertEqual(len(keys), len(set(keys)), kind)
+            self.assertEqual({r['source_scope'] for r in inventory if r['record_type'] == 'candidate_discovery'}, {'candidate'})
 
     def test_spreadsheet_formula_protection(self):
         for value in ('=1+1', '+1', '-1', '@x', '  =cmd', '\ttext', '\rtext'):
