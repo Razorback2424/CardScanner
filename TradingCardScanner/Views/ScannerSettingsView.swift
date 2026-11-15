@@ -18,6 +18,7 @@ private struct SettingsContentView: View {
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.sharedBrowseCatalog) private var sharedBrowseCatalog
     @ObservedObject private var storageGeneration = CollectionStorageGeneration.shared
     @State private var isConfirmingCollectionDeletion = false
     @State private var deletionError: String?
@@ -469,6 +470,9 @@ private struct SettingsContentView: View {
 
     private func prepareCatalogHealthExport() {
         guard !isPreparingCatalogHealthExport, let runtimes else { return }
+        // Use the same Browse actor as the running app, including its active
+        // catalog revisions and in-session price observations.
+        let browse = (sharedBrowseCatalog as Any as? BrowseCatalog) ?? runtimes.makeBrowseCatalog()
         isPreparingCatalogHealthExport = true
         catalogHealthExportProgress = "Reading active catalog…"
         catalogHealthExportTask = Task { @MainActor in
@@ -478,7 +482,7 @@ private struct SettingsContentView: View {
             }
             do {
                 let document = try await ActiveCatalogHealthCSV.makeDocument(
-                    runtimes: runtimes, checkPrices: checkLiveCatalogPrices
+                    runtimes: runtimes, browse: browse, checkPrices: checkLiveCatalogPrices
                 ) { message in
                     catalogHealthExportProgress = message
                 }
@@ -1297,10 +1301,9 @@ enum ActiveCatalogHealthCSV {
     }
 
     static func makeDocument(
-        runtimes: CardGameRuntimeContainer, checkPrices: Bool,
-        progress: @escaping @MainActor (String) -> Void
+        runtimes: CardGameRuntimeContainer, browse: any BrowseCatalogProviding,
+        checkPrices: Bool, progress: @escaping @MainActor (String) -> Void
     ) async throws -> CollectionCSVDocument {
-        let browse = runtimes.makeBrowseCatalog()
         let date = ISO8601DateFormatter().string(from: .now)
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
         var csv = line(headers)
