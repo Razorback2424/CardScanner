@@ -270,8 +270,21 @@ def candidate_product_claims(candidate_matches):
     return Counter(match[4]["imageProductID"] for match in candidate_matches.values())
 
 
+def replay_resolution(row):
+    """Only summarize evidence exercised in the retained retailer replay."""
+    if row["acceptedPrinting"]:
+        return "printing-verified-by-retailer-replay"
+    if not row["marketProducts"]:
+        return "no-same-number-marketplace-product"
+    if not row["retailerListingCount"]:
+        return "no-retailer-listing-in-this-replay"
+    if row["matchedRetailerProducts"]:
+        return "artwork-matched-but-printing-not-accepted"
+    return "no-unique-artwork-match-in-this-replay"
+
+
 def build_retail_additions(release, product_rules, bandai_root, retail_root, artwork_root, market, artwork_capture=None,
-                           eb05_roots=(), promo_root=None, promo_photo_reviews=None):
+                           eb05_roots=(), promo_root=None, promo_photo_reviews=None, evidence_report=None):
     from io import BytesIO
     from PIL import Image, ImageChops, ImageStat
 
@@ -331,6 +344,13 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
     names = {row["printedNumber"]: row["name"] for row in registry["canonicalCards"] if row["language"] == "en"}
     candidate_matches = {}
     stats = Counter()
+    alias_report = {}
+
+    def mark(series, rows, reason):
+        for row in rows:
+            entry = alias_report.get((series, row["artworkAlias"]))
+            if entry is not None and reason not in entry["reasons"]:
+                entry["reasons"].append(reason)
 
     @lru_cache(maxsize=None)
     def load_series(manufacturer_url):
@@ -392,11 +412,33 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
             if row["number"]:
                 by_number[row["number"]].append(row)
         matches = defaultdict(list)
+        for row in rows:
+            if row["status"] not in {"missing-printing-or-appearance", "held"} or not row["number"]:
+                continue
+            number = row["number"]
+            candidates = [
+                {"id": p["productId"], "name": p["name"],
+                 "quoteLanes": sorted(market_finishes[p["productId"]])}
+                for p in market_products.values()
+                if [field["value"] for field in p.get("extendedData", [])
+                    if field["name"] == "Number"] == [number]
+            ]
+            alias_report[(series, row["artworkAlias"])] = {
+                "series": series, "alias": row["artworkAlias"], "number": number,
+                "catalogStatus": row["status"],
+                "marketProducts": sorted(candidates, key=lambda p: p["id"]),
+                "retailerListingCount": 0, "matchedRetailerProducts": [],
+                "reasons": [], "acceptedPrinting": False,
+            }
         for listing, receipt in chain.from_iterable(sources):
             number = listing["number"]
             family = by_number[number]
             if not family or all(row["status"] == "verified" for row in family) or number not in names:
                 continue
+            for row in family:
+                entry = alias_report.get((series, row["artworkAlias"]))
+                if entry is not None:
+                    entry["retailerListingCount"] += 1
             if promotion:
                 labels = {row["productLabels"][0] for row in family if len(row["productLabels"]) == 1
                           and row["status"] == "missing-printing-or-appearance"}
@@ -408,12 +450,17 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                 label = listing_treatment(number, names[number], listing["title"])
                 if label is None:
                     stats["unrecognized-retailer-title"] += 1
+                    mark(series, family, "retailer-title-unrecognized")
                     continue
                 art_urls = {row["artworkAlias"]: render_urls.get(row["artworkAlias"]) for row in family}
             comparison = pixels(listing["imageURL"])
             references = {key: pixels(url) if url is not None else None for key, url in art_urls.items()}
             if comparison is None or any(image is None for image in references.values()):
                 stats["unavailable-reference-image"] += 1
+                if comparison is None:
+                    mark(series, family, "retailer-reference-image-missing")
+                if any(image is None for image in references.values()):
+                    mark(series, family, "official-reference-image-missing")
                 continue
             scores = {alias: differences(comparison, image) for alias, image in references.items()}
             selected = exact_artwork_match(scores)
@@ -451,6 +498,7 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                         image_detail = "A visual review matched the English card photograph to this exact Bandai design."
             if selected is None:
                 stats["ambiguous-artwork"] += 1
+                mark(series, family, "no-unique-artwork-match")
                 continue
             if promotion:
                 selected_series, alias = selected
@@ -459,6 +507,12 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
             else:
                 alias = selected
             matches[alias].append((listing, receipt, label, scores[selected], (image_detail, image_fields)))
+            entry = alias_report.get((series, alias))
+            if entry is not None:
+                entry["matchedRetailerProducts"].append({
+                    "marketProductID": listing["imageProductID"],
+                    "retailer": listing["provider"], "finish": listing["finish"]})
+
         for row in rows:
             alias, number = row["artworkAlias"], row["number"]
             evidence = matches.get(alias)
@@ -467,15 +521,18 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
             identities = {(listing["finish"], label) for listing, _, label, _, _ in evidence}
             if len(identities) != 1 or len({listing["imageProductID"] for listing, _, _, _, _ in evidence}) != 1:
                 stats["contradictory-retailer-listings"] += 1
+                mark(series, [row], "contradictory-retailer-claims")
                 continue
             listing, receipt, (label, treatment), score, image_review = min(
                 evidence, key=lambda value: (value[0]["provider"], value[0]["sourceID"]))
             if ((listing["provider"], listing["sourceID"]) in used_aliases or listing["imageProductID"] in known_market_ids
                     or ("Foil" in label and listing["finish"] != "foil")):
                 stats["conflicting-source-identity"] += 1
+                mark(series, [row], "conflicting-source-identity-or-finish")
                 continue
             if not market_agrees(listing, (label, treatment), names[number], market_products, market_finishes, promotion):
                 stats["unconfirmed-marketplace-crosscheck"] += 1
+                mark(series, [row], "marketplace-crosscheck-failed")
                 continue
             image_source = artwork[render_urls[alias]]
             existing = printings[row["printingIDs"][0]] if row["status"] == "held" else None
@@ -605,6 +662,24 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                                       "paginationComplete": False, "observationIDs": ids})
     if promo_products:
         result["products"] = list(promo_products.values())
+    if evidence_report is not None:
+        accepted_aliases = set(candidate_matches) - {
+            (series, alias) for (series, alias), row in alias_report.items()
+            if row["matchedRetailerProducts"] and any(reason in row["reasons"] for reason in (
+                "contradictory-retailer-claims", "conflicting-source-identity-or-finish",
+                "marketplace-crosscheck-failed"))
+        }
+        # Accepted identity is established by output evidence, not by an artwork score.
+        accepted_source_aliases = {
+            (obs["printedEvidence"].get("sourceArtworkAlias"), tuple(obs["productEvidence"]))
+            for obs in result["observations"]
+            if obs["printedEvidence"].get("sourceRole") == "retailer-exact-printing-specification"
+        }
+        for (series, alias), row in sorted(alias_report.items()):
+            row["acceptedPrinting"] = any(alias == key for key, _ in accepted_source_aliases)
+            row["reasons"].sort()
+            row["resolution"] = replay_resolution(row)
+            evidence_report.append(row)
     return result, stats
 
 
@@ -623,6 +698,8 @@ def main():
     parser.add_argument("--fetch-missing-artwork", action="store_true",
                         help="Capture missing artwork references from the supplied product pages")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--evidence-report", type=Path,
+                        help="Optional read-only alias-level evidence/rejection report")
     args = parser.parse_args()
     if (args.products is None) != (args.retail_captures is None):
         parser.error("--products and --retail-captures must be supplied together")
@@ -632,6 +709,8 @@ def main():
         parser.error("Reviewed promo photos require the retained promo listings")
     if args.output.exists():
         raise ValueError("Retail printing additions already exist")
+    if args.evidence_report is not None and (args.evidence_report == args.output or args.evidence_report.exists()):
+        raise ValueError("Evidence report must have a fresh path distinct from output")
     market = TCGCSVSnapshot(args.market_captures, "CardScannerOnePieceReview/1.0", 0.15, offline=True)
     if market.manifest.get("complete") is not True or market.manifest.get("upstreamBuild") != market.upstream_build:
         raise ValueError("Marketplace cross-check requires a complete retained daily snapshot")
@@ -645,11 +724,21 @@ def main():
             artwork_capture = ProductCapture(args.artwork_captures)
         products = load_products(args.products) if args.products else {"products": []}
         reviews = json.loads(args.reviewed_promo_photos.read_bytes()) if args.reviewed_promo_photos else None
+        evidence_rows = []
         result, stats = build_retail_additions(json.loads(args.release.read_bytes()), products,
                                                args.bandai_captures, args.retail_captures, args.artwork_captures,
                                                market, artwork_capture, args.eb05_retail_captures,
-                                               args.promo_retail_captures, reviews)
+                                               args.promo_retail_captures, reviews, evidence_report=evidence_rows)
         atomic_json(args.output, result)
+        if args.evidence_report is not None:
+            atomic_json(args.evidence_report, {
+                "schemaVersion": 1, "scope": "retained-retailer-replay-only",
+                "limitations": [
+                    "A matching number or price lane does not establish physical identity or finish.",
+                    "Missing evidence means unavailable in this replay, not necessarily at the provider.",
+                    "A newly verified printing still needs a separate exact market mapping.",
+                ], "candidates": evidence_rows})
+
     print(dict(sorted(stats.items())))
 
 
