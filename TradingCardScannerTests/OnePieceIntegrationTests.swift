@@ -758,7 +758,7 @@ final class OnePieceIntegrationTests: XCTestCase {
             $0.collectorNumber == "EB05-006" && $0.collectionAvailabilityNotice == "Printing needs review"
         }
         XCTAssertEqual(unresolvedEB05006.count, 3)
-        XCTAssertEqual(Set(unresolvedEB05006.map(\\.providerID)).count, 3)
+        XCTAssertEqual(Set(unresolvedEB05006.map(\.providerID)).count, 3)
         XCTAssertTrue(unresolvedEB05006.allSatisfy { $0.imageURL != nil })
         let op18Search = try await browse.search(query: "OP18", setIDs: [op18.catalogID], cursor: nil)
         XCTAssertEqual(op18Search.items.count, 60)
