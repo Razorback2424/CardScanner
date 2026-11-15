@@ -64,6 +64,38 @@ Sources:
 `TradingCardScanner/Models/BrowseCatalogModels.swift`,
 `TradingCardScanner/Services/TCGCSVProductPriceSource.swift`.
 
+## Exact user-facing catalog and price messages
+
+The phrases below are grounded in the present app, but a **message type is
+not proof it occurred**. Only per-record notices that can be derived directly
+from retained input are populated in `user_facing_notice`; live error banners
+need runtime evidence.
+
+| Actual UI text (counts vary) | Code / diagnostic meaning |
+|---|---|
+| `Printing needs review` | One Piece Browse discovery without a verified physical printing |
+| `Browse only` | One Piece held physical printing |
+| `Partial catalog` | One Piece product has unresolved discoveries/held printings/incomplete canonical coverage |
+| `Price mappings pending for N cards` | Catalog price-sort slots with `mappingMissing`; not a failed provider request |
+| `Couldn't price N cards` | Price-sort slots unresolved after requests; retryable; not proof of absent quotes |
+| `No USD quote from checked sources for N cards` | Resolved source check with no accepted USD price |
+| `This printing needs identity review (reason).` | Yu-Gi-Oh printing `identityReason` (`ir`) |
+| `No supported edition is recorded for this product.` | Yu-Gi-Oh edition authority absent |
+| `The available labels do not distinguish this printing.` | Yu-Gi-Oh choice evidence is insufficient; requires native candidate comparison |
+| `Canonical card linkage is unresolved.` | Yu-Gi-Oh unresolved canonical relationship |
+| `We couldn’t reach the catalog. Check your connection and try again.` | Generic connectivity, not catalog absence |
+| `This listing needs updated catalog information. Refresh the catalog and try again.` | Generic catalog-resolution failure/stale generation |
+| `This feature isn’t available for this game in the current catalog.` | Capability unsupported |
+| `Pricing access is unavailable. Check your API key and account access in Settings.` | Pricing credentials/access unavailable |
+
+Sources: `TradingCardScanner/Games/OnePiece/OnePieceBrowseAdapter.swift`,
+`TradingCardScanner/Games/YuGiOh/YuGiOhBrowseAdapter.swift`,
+`TradingCardScanner/Views/BrowseView.swift`,
+`TradingCardScanner/Models/BrowseCatalogModels.swift`.
+`user_facing_notice` is blank if the repository cannot determine an exact
+per-card notice from offline inputs. Do not synthesize an error banner for a
+network request that never ran.
+
 ## Pokémon
 
 Retained audit findings in `catalog-census-findings.csv`:
