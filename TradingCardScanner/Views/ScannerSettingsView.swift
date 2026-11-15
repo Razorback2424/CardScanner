@@ -1101,8 +1101,7 @@ enum ActiveCatalogHealthCSV {
             set?.providerID ?? "", generation.isEmpty ? card?.catalogGeneration ?? "" : generation,
             set?.collectionAvailabilityNotice ?? "", card?.name ?? "",
             card?.collectorNumber ?? "", card?.providerID ?? "",
-            (evidence.verification == "needs_review" || card?.collectionAvailabilityNotice == "Printing needs review")
-                ? "" : card?.providerID ?? "",
+            card.flatMap { UUID(uuidString: $0.providerID) != nil ? $0.providerID : nil } ?? "",
             evidence.finish, evidence.verification, evidence.mapping, priceStatus,
             price.map { String($0) } ?? "", evidence.provider, evidence.group,
             evidence.product, evidence.productName, evidence.marketNumber, evidence.lane,
