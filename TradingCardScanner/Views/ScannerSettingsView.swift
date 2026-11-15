@@ -25,6 +25,9 @@ private struct SettingsContentView: View {
     @State private var isShowingCSVExporter = false
     @State private var isPreparingCSVExport = false
     @State private var isPreparingDiagnosticsExport = false
+    @State private var isPreparingCatalogHealthExport = false
+    @State private var catalogHealthExportProgress = ""
+    @State private var catalogHealthExportTask: Task<Void, Never>?
     @State private var isShowingDiagnosticsExporter = false
     @State private var csvExportDocument: CollectionCSVDocument?
     @State private var csvExportTiming: CSVExportTiming?
@@ -360,6 +363,21 @@ private struct SettingsContentView: View {
     private var diagnosticsSection: some View {
         Section {
             DisclosureGroup("Collection Exports & Price Coverage") {
+                Button("Export Catalog Health Report", systemImage: "square.and.arrow.up") {
+                    prepareCatalogHealthExport()
+                }
+                .disabled(runtimes == nil || isPreparingCatalogHealthExport || isPreparingCSVExport)
+                if isPreparingCatalogHealthExport {
+                    HStack(spacing: 8) {
+                        ProgressView().controlSize(.small)
+                        Text(catalogHealthExportProgress).font(.footnote)
+                        Spacer(minLength: 0)
+                        Button("Cancel") { catalogHealthExportTask?.cancel() }
+                    }
+                }
+                Text("Catalog-wide export for all five games, not just cards you own. Uses the currently active catalog and reports unavailable checks explicitly.")
+                    .font(.footnote).foregroundStyle(.secondary)
+
                 Button("Export Cards Excluded from USD Value", systemImage: "dollarsign.circle") {
                     prepareCSVExport(.unpriced, filename: "ScanStash Unpriced Cards")
                 }
@@ -442,6 +460,34 @@ private struct SettingsContentView: View {
             await catalogNormalizer.normalizeImportedCards(
                 in: container, retryFailedSealed: true, shouldContinue: shouldContinue
             )
+        }
+    }
+
+    private func prepareCatalogHealthExport() {
+        guard !isPreparingCatalogHealthExport, let runtimes else { return }
+        isPreparingCatalogHealthExport = true
+        catalogHealthExportProgress = "Reading active catalog…"
+        catalogHealthExportTask = Task { @MainActor in
+            defer {
+                isPreparingCatalogHealthExport = false
+                catalogHealthExportTask = nil
+            }
+            do {
+                let document = try await ActiveCatalogHealthCSV.makeDocument(runtimes: runtimes) { message in
+                    catalogHealthExportProgress = message
+                }
+                try Task.checkCancellation()
+                csvExportDocument = document
+                csvExportFilename = "ScanStash Active Catalog Health"
+                isShowingCSVExporter = true
+            } catch is CancellationError {
+                // A cancelled run never offers a misleading partial report.
+            } catch {
+                writeCoordinator.csvMessage = CSVMessage(
+                    title: "Catalog Export Failed", message: error.localizedDescription,
+                    skippedCSVText: nil
+                )
+            }
         }
     }
 
@@ -979,5 +1025,336 @@ private struct JSONExportDocument: FileDocument {
 
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
         FileWrapper(regularFileWithContents: data)
+    }
+}
+
+    
+// A read-only report of the catalog Browse actually uses. This deliberately
+// does not scan a user's collection or equate "not checked" with "unpriced".
+private enum ActiveCatalogHealthCSV {
+    private static let games: [CardGame] = [.pokemon, .magic, .onePiece, .lorcana, .yuGiOh]
+    private static let headers = [
+        "record_type", "exported_at_utc", "app_build", "game", "set_name", "set_code",
+        "product_set_id", "catalog_generation", "set_notice", "card_name",
+        "card_number", "catalog_card_id", "printing_id", "finish_id",
+        "verification_status", "market_mapping_status", "price_status",
+        "browse_aggregate_price_usd", "market_provider", "market_group_id",
+        "market_product_id", "market_product_name", "market_number",
+        "market_lane", "issue_codes", "issue_details", "recommended_action",
+        "card_notice", "image_url", "evidence_scope"
+    ]
+
+    private struct Evidence {
+        var finish: String = ""
+        var verification: String = "not_evaluated"
+        var mapping: String = "not_evaluated"
+        var provider: String = ""
+        var group: String = ""
+        var product: String = ""
+        var productName: String = ""
+        var marketNumber: String = ""
+        var lane: String = ""
+        var issues: [String] = []
+        var details: [String] = []
+        var actions: [String] = []
+
+        mutating func issue(_ code: String, _ detail: String, _ action: String) {
+            guard !issues.contains(code) else { return }
+            issues.append(code)
+            details.append(detail)
+            actions.append(action)
+        }
+    }
+
+    private static func escaped(_ value: String) -> String {
+        // Excel/Numbers may evaluate formulas even inside quoted CSV fields.
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        let safe = trimmed.first.map({ "=+-@".contains($0) }) == true ? "'" + value : value
+        return "\"" + safe.replacingOccurrences(of: "\"", with: "\"\"") + "\""
+    }
+
+    private static func line(_ fields: [String]) -> String {
+        fields.map(escaped).joined(separator: ",") + "\r\n"
+    }
+
+    private static func row(
+        kind: String, exported: String, build: String, game: CardGame,
+        set: CatalogSet? = nil, card: CatalogCardSummary? = nil,
+        evidence: Evidence = Evidence(), priceStatus: String = "not_checked",
+        price: Double? = nil, generation: String = "", note: String = "",
+        scope: String = "active_browse"
+    ) -> String {
+        let issues = evidence.issues.joined(separator: "|")
+        let details = evidence.details.joined(separator: " | ")
+        return line([
+            kind, exported, build, game.rawValue, set?.name ?? "", set?.code ?? "",
+            set?.providerID ?? "", generation.isEmpty ? card?.catalogGeneration ?? "" : generation,
+            set?.collectionAvailabilityNotice ?? "", card?.name ?? "",
+            card?.collectorNumber ?? "", card?.providerID ?? "", card?.providerID ?? "",
+            evidence.finish, evidence.verification, evidence.mapping, priceStatus,
+            price.map { String($0) } ?? "", evidence.provider, evidence.group,
+            evidence.product, evidence.productName, evidence.marketNumber, evidence.lane,
+            issues, details, evidence.actions.joined(separator: " | "),
+            note.isEmpty ? card?.collectionAvailabilityNotice ?? "" : note,
+            card?.imageURL?.absoluteString ?? "", scope
+        ])
+    }
+
+    private static func printingEvidence(
+        for summary: CatalogCardSummary, catalog: (any GameCatalogAdapter)?
+    ) -> [Evidence] {
+        var base = Evidence()
+        if let notice = summary.collectionAvailabilityNotice {
+            switch notice {
+            case "Printing needs review", "Browse only":
+                base.verification = "needs_review"
+                base.issue("PRINTING_NEEDS_REVIEW", notice, "Reconcile physical printing and source evidence")
+            default:
+                base.issue("CATALOG_NOTICE", notice, "Review catalog notice")
+            }
+        }
+
+        if let registry = (catalog as? OnePieceCatalogAdapter)?.registry,
+           let uuid = UUID(uuidString: summary.providerID),
+           let printing = registry.printingByID[uuid] {
+            base.verification = printing.status.rawValue
+            let supported = printing.supportedVariantIDs
+            if supported.isEmpty {
+                var value = base
+                value.issue("FINISH_UNVERIFIED", "No reviewed finish is retained.", "Verify physical finish")
+                return [value]
+            }
+            return supported.sorted().map { finish in
+                var value = base
+                value.finish = finish
+                let mappingCandidates = printing.marketMappings.filter { $0.variantID == finish }
+                let exact = mappingCandidates.filter {
+                    $0.status == .exact && $0.provider == "tcgplayer" &&
+                    $0.market == "us" && $0.currency == "USD" && $0.condition == "aggregate"
+                }
+                if printing.status != .verified {
+                    value.mapping = "blocked_by_verification"
+                    value.issue("PRINTING_NEEDS_REVIEW", "Physical printing is not verified.", "Verify printing first")
+                } else if exact.count > 1 {
+                    value.mapping = "conflict"
+                    value.issue("PRICE_MAPPING_CONFLICT", "Multiple exact mappings for this finish.", "Reconcile market-product identities")
+                } else if let market = exact.first {
+                    value.mapping = "exact"
+                    value.provider = market.provider
+                    value.product = market.productID
+                    value.group = market.qualifiers["groupID"] ?? ""
+                    value.productName = market.qualifiers["productName"] ?? ""
+                    value.marketNumber = summary.collectorNumber
+                    value.lane = market.providerVariantID ?? ""
+                    if value.group.isEmpty || value.lane.isEmpty || value.productName.isEmpty {
+                        value.mapping = "incomplete"
+                        value.issue("MARKET_MAPPING_INCOMPLETE", "Exact mapping lacks required group, name or lane.", "Correct marketplace evidence")
+                    }
+                } else if !mappingCandidates.isEmpty {
+                    value.mapping = "unapproved"
+                    value.issue("PRICE_MAPPING_UNAPPROVED", "Market leads exist, but none is approved as an exact USD mapping.", "Review mapping evidence")
+                } else {
+                    value.mapping = "missing"
+                    value.issue("PRICE_MAPPING_MISSING", "No approved market mapping for this verified finish.", "Research exact marketplace product")
+                }
+                return value
+            }
+        }
+
+        if let registry = (catalog as? LorcanaCatalogAdapter)?.registry,
+           let uuid = UUID(uuidString: summary.providerID),
+           let printing = registry.physicalCatalog?.printingByID[uuid] {
+            base.verification = printing.status.rawValue
+            let finishes = printing.finishes.map(\.finish)
+            let family = registry.physicalCatalog?.universesByFooter[printing.identity.footer]
+            if family?.isComplete != true {
+                base.issue("PHYSICAL_FAMILY_INCOMPLETE", "Physical printing family is not certified complete.", "Review all physical appearances")
+            }
+            if finishes.isEmpty {
+                base.issue("FINISH_UNVERIFIED", "No reviewed physical finishes.", "Verify finish evidence")
+                return [base]
+            }
+            return finishes.map { finish in
+                var value = base
+                value.finish = finish.rawValue
+                let matches = (printing.marketMappings ?? []).filter { $0.finish == finish }
+                if printing.status != .verified || family?.isComplete != true {
+                    value.mapping = "blocked_by_verification"
+                } else if let market = matches.first {
+                    value.mapping = market.hasValidMarketLane ? "exact" : "invalid"
+                    value.provider = "tcgplayer"
+                    value.group = String(market.groupID)
+                    value.product = String(market.productID)
+                    value.productName = market.productName
+                    value.marketNumber = market.productNumber
+                    value.lane = market.providerVariantID
+                    if !market.hasValidMarketLane {
+                        value.issue("MARKET_MAPPING_INCOMPLETE", "Mapping lane contradicts reviewed finish.", "Verify marketplace lane")
+                    }
+                } else {
+                    value.mapping = "missing"
+                    value.issue("PRICE_MAPPING_MISSING", "No exact market mapping for reviewed finish.", "Research exact marketplace product")
+                }
+                return value
+            }
+        }
+
+        if let catalog = (catalog as? YuGiOhCatalogAdapter)?.catalog,
+           let uuid = UUID(uuidString: summary.providerID),
+           let printing = catalog.printingByID[uuid] {
+            base.verification = printing.explicitSelectionSupported ? "supported" : "held"
+            if let reason = printing.identityReason {
+                base.issue("PRINTING_NEEDS_REVIEW", reason, "Review physical printing identity")
+            }
+            if printing.canonicalLinkStatus == "unresolved" {
+                base.issue("CANONICAL_LINK_UNRESOLVED", "Unresolved canonical card link.", "Review canonical card relationship")
+            }
+            if catalog.incompleteCodes.contains(printing.code) {
+                base.issue("PRINTING_FAMILY_INCOMPLETE", "The printed-code family is incomplete.", "Review printing family")
+            }
+            if printing.editions.isEmpty {
+                base.issue("EDITION_UNVERIFIED", "No supported edition retained.", "Verify edition evidence")
+                return [base]
+            }
+            return printing.editions.map { edition in
+                var value = base
+                value.finish = edition.rawValue
+                if printing.explicitSelectionSupported, let id = printing.productID,
+                   let group = printing.marketGroupID {
+                    value.mapping = "exact"
+                    value.provider = "tcgplayer"
+                    value.group = String(group)
+                    value.product = String(id)
+                    value.productName = printing.productName
+                    value.marketNumber = printing.code
+                    value.lane = edition.tcgplayerSubtype
+                } else if printing.explicitSelectionSupported {
+                    value.mapping = "missing"
+                    value.issue("PRICE_MAPPING_MISSING", "No market product for supported edition.", "Research marketplace identity")
+                } else {
+                    value.mapping = "blocked_by_verification"
+                }
+                return value
+            }
+        }
+
+        if summary.game == .pokemon {
+            base.finish = summary.masterSetVariant?.id ?? ""
+            if let market = PokemonTCGCSVMapping.byCardID[summary.providerID] {
+                base.provider = "tcgplayer"
+                base.group = String(market.groupID)
+                base.product = String(market.productID)
+                base.productName = market.productName
+                base.marketNumber = market.printedNumber
+                base.lane = "Holofoil"
+                base.mapping = "reviewed_subset_mapping"
+            }
+        } else if summary.game == .magic {
+            base.finish = (summary.magicFinishIDs ?? []).joined(separator: "|")
+        }
+        return [base]
+    }
+
+    static func makeDocument(
+        runtimes: CardGameRuntimeContainer,
+        progress: @escaping @MainActor (String) -> Void
+    ) async throws -> CollectionCSVDocument {
+        let browse = runtimes.makeBrowseCatalog()
+        let date = ISO8601DateFormatter().string(from: .now)
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
+        var csv = line(headers)
+        csv.reserveCapacity(10_000_000)
+        for game in games {
+            try Task.checkCancellation()
+            await progress("Reading \(game.label)…")
+            let runtime = runtimes.runtime(for: game)
+            let snapshot = await runtime?.activationSource?.currentSnapshot()
+            let activeCatalog = snapshot?.catalog ?? runtime?.catalog
+            let activeGeneration = activeCatalog?.generation ?? ""
+            let sets: [CatalogSet]
+            do {
+                sets = try await browse.sets(for: game)
+            } catch {
+                var issue = Evidence()
+                issue.issue("CATALOG_DIRECTORY_FAILED", error.localizedDescription, "Investigate active catalog loading")
+                csv.append(row(kind: "game_error", exported: date, build: build, game: game,
+                               evidence: issue, generation: activeGeneration, scope: "not_enumerated"))
+                continue
+            }
+            if sets.isEmpty {
+                var issue = Evidence()
+                issue.issue("NO_ACTIVE_SETS", "No sets were available from this game's active Browse catalog.", "Verify game activation and rollout")
+                csv.append(row(kind: "game_error", exported: date, build: build, game: game,
+                               evidence: issue, generation: activeGeneration, scope: "not_enumerated"))
+            }
+            for (index, set) in sets.enumerated() {
+                try Task.checkCancellation()
+                if index.isMultiple(of: 10) || index == sets.count - 1 {
+                    await progress("\(game.label): set \(index + 1) of \(sets.count)")
+                }
+                if let notice = set.collectionAvailabilityNotice {
+                    var issue = Evidence()
+                    issue.issue("SET_PARTIAL_CATALOG", notice, "Review unresolved set membership and verification")
+                    csv.append(row(kind: "set_notice", exported: date, build: build, game: game,
+                                   set: set, evidence: issue, generation: activeGeneration))
+                }
+                do {
+                    let summaries: [CatalogCardSummary]
+                    if let complete = try await browse.completeLocalCards(in: set) {
+                        summaries = complete
+                    } else {
+                        var cards: [CatalogCardSummary] = []
+                        var cursor: String?
+                        var seen = Set<String>()
+                        repeat {
+                            try Task.checkCancellation()
+                            let page = try await browse.cards(in: set, cursor: cursor)
+                            cards.append(contentsOf: page.items)
+                            guard let next = page.nextCursor else { break }
+                            guard seen.insert(next).inserted else {
+                                throw CatalogHealthExportError.repeatedCursor
+                            }
+                            cursor = next
+                        } while true
+                        summaries = cards
+                    }
+                    // These exact mapping checks read the active, verified registry.
+                    // A missing quote is never inferred without a provider check.
+                    for summary in summaries {
+                        try Task.checkCancellation()
+                        let findings = printingEvidence(for: summary, catalog: activeCatalog)
+                        for finding in findings {
+                            csv.append(row(kind: "card", exported: date, build: build, game: game,
+                                           set: set, card: summary, evidence: finding,
+                                           generation: summary.catalogGeneration ?? activeGeneration))
+                        }
+                    }
+                } catch is CancellationError {
+                    throw CancellationError()
+                } catch {
+                    var issue = Evidence()
+                    issue.issue("SET_ENUMERATION_FAILED", error.localizedDescription, "Recheck this set and active revision")
+                    csv.append(row(kind: "set_error", exported: date, build: build, game: game,
+                                   set: set, evidence: issue, generation: activeGeneration, scope: "not_fully_enumerated"))
+                }
+            }
+            if let source = runtime?.activationSource, let first = snapshot {
+                let latest = await source.currentSnapshot()
+                if latest?.revision != first.revision {
+                    throw CatalogHealthExportError.catalogChanged
+                }
+            }
+        }
+        return CollectionCSVDocument(text: csv)
+    }
+
+    private enum CatalogHealthExportError: LocalizedError {
+        case repeatedCursor, catalogChanged
+        var errorDescription: String? {
+            switch self {
+            case .repeatedCursor: "Catalog pagination repeated a cursor."
+            case .catalogChanged: "A catalog update activated during export. Run the report again for a consistent snapshot."
+            }
+        }
     }
 }
