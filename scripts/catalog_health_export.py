@@ -303,42 +303,63 @@ def apply_prices(rows, snapshot_date, feeds, as_of, max_age_days):
     indexes = {key: ({p['productId']: p for p in feed['products']},
                      {(p['productId'], p['subTypeName']): p.get('marketPrice') for p in feed['prices']})
                for key, feed in feeds.items() if {'products', 'prices'} <= feed.keys()}
+
+    def resolved_check(row, status, code=None, detail='', action=''):
+        # Preserve all existing printing/family issues and their actions while
+        # replacing only PRICE_NOT_CHECKED. A source defect is not a no-quote.
+        previous = [(key, info) for key, info in zip(
+            row['issue_codes'].split('|'), row['issue_details'].split(' | '))
+            if key and key != 'PRICE_NOT_CHECKED']
+        actions = [value for value in row['recommended_action'].split(' | ')
+                   if value and value not in ('Check a dated provider snapshot', 'Check exact edition pricing')]
+        if code:
+            previous.append((code, detail))
+            actions.append(action)
+        row['issue_codes'] = '|'.join(key for key, _ in previous)
+        row['issue_details'] = ' | '.join(info for _, info in previous)
+        row['recommended_action'] = ' | '.join(dict.fromkeys(actions))
+        row['price_status'] = status
+        row['assessment'] = assessment(row)
+
     for row in rows:
-        if row['record_type'] != 'physical_printing' or row['market_provider'] != 'tcgplayer' or not row['market_lane'] or not row['market_group_id'].isdigit():
+        if (row['record_type'] != 'physical_printing' or row['verification_status'] not in ('verified', 'supported')
+                or row['market_provider'] != 'tcgplayer' or not row['market_lane']):
+            continue
+        if not row['market_group_id'].isdigit() or not row['market_product_id'].isdigit():
+            if row['price_status'] == 'not_checked':
+                resolved_check(row, 'mapping_incomplete', 'MARKET_MAPPING_INCOMPLETE',
+                               'Exact market mapping lacks a numeric group or product ID.',
+                               'Repair marketplace identity evidence')
             continue
         category = {'one-piece': 68, 'lorcana': 71, 'yugioh': 2}.get(row['game'])
         index = indexes.get((category, int(row['market_group_id'])))
         if not index:
-            continue
+            continue  # No matched snapshot; do not claim missing source data.
         product = int(row['market_product_id'])
         products, prices = index
         observed = products.get(product)
         numbers = [v['value'] for v in observed.get('extendedData', []) if v['name'] == 'Number'] if observed else []
         if (not observed or not row['market_product_name'] or not row['market_product_number']
                 or observed.get('name') != row['market_product_name'] or numbers != [row['market_product_number']]):
-            continue  # Product identity drift is not proof of quote availability.
-        quote = prices.get((product, row['market_lane']))
-        codes = row['issue_codes'].split('|') if row['issue_codes'] else []
-        details = row['issue_details'].split(' | ') if row['issue_details'] else []
-        issues = [(code, detail, '') for code, detail in zip(codes, details) if code != 'PRICE_NOT_CHECKED']
+            expected = row['market_product_name'] + ' / ' + row['market_product_number']
+            actual = (observed.get('name', '') + ' / ' + '|'.join(numbers)) if observed else 'product absent'
+            resolved_check(row, 'mapping_mismatch', 'MARKET_MAPPING_MISMATCH',
+                           'Captured product identity differs; expected ' + expected + ', observed ' + actual + '.',
+                           'Reconcile marketplace product identity')
+            row['market_snapshot_date'] = snapshot_date.isoformat()
+            continue
         row['market_snapshot_date'] = snapshot_date.isoformat()
+        quote = prices.get((product, row['market_lane']))
         if quote is None:
-            row['price_status'] = 'no_quote'
-            issues.append(('NO_MARKET_QUOTE', 'Captured feed has no usable market price for this product and lane.', 'Review provider availability'))
+            resolved_check(row, 'no_quote', 'NO_MARKET_QUOTE',
+                           'Complete captured feed has no usable price for the exact product and lane.',
+                           'Investigate provider quote availability')
         elif (as_of - snapshot_date).days > max_age_days:
-            row['price_status'] = 'stale'
-            issues.append(('PRICE_STALE', f'Quote snapshot is older than {max_age_days} days as of {as_of}.', 'Refresh provider snapshot'))
+            resolved_check(row, 'snapshot_stale', 'PRICE_SNAPSHOT_STALE',
+                           f'Captured provider snapshot is older than {max_age_days} days as of {as_of}; quote age is not independently proven.',
+                           'Refresh provider snapshot')
         else:
-            row['price_status'] = 'quoted'
-        # Existing actions belong to other issues; drop the resolved lookup action.
-        actions = [a for a in row['recommended_action'].split(' | ')
-                   if a and a not in ('Check a dated provider snapshot', 'Check exact edition pricing')]
-        actions.extend(action for _, _, action in issues if action)
-        row['issue_codes'] = '|'.join(code for code, _, _ in issues)
-        row['issue_details'] = ' | '.join(detail for _, detail, _ in issues)
-        row['recommended_action'] = ' | '.join(dict.fromkeys(actions))
-        row['assessment'] = assessment(row)
-
+            resolved_check(row, 'quoted')
 
 def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
     result, census_findings = run(repo)
@@ -368,7 +389,7 @@ def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
                 'EDITION_UNVERIFIED': 'review', 'CANONICAL_LINK_UNRESOLVED': 'review', 'PRINTING_FAMILY_INCOMPLETE': 'review',
                 'PRINTING_NEEDS_REVIEW': 'review', 'POSSIBLE_DUPLICATE': 'review',
                 'FINISH_UNVERIFIED': 'review', 'PRICE_MAPPING_MISSING': 'review',
-                'NO_MARKET_QUOTE': 'availability', 'PRICE_STALE': 'refresh',
+                'NO_MARKET_QUOTE': 'availability', 'PRICE_SNAPSHOT_STALE': 'refresh', 'MARKET_MAPPING_MISMATCH': 'review', 'MARKET_MAPPING_INCOMPLETE': 'review',
                 'PRICE_NOT_CHECKED': 'unchecked'}
     counts = collections.Counter((row['game'], row['source_scope'], row['set_name'], row['set_code'], code, severity.get(code, 'review'))
                                  for row in rows for code in row['issue_codes'].split('|') if code)
