@@ -60,7 +60,8 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
         var discoveries: [String: [String: [OnePieceSourceObservation]]] = [:]
         for observation in registry.verifiedRelease.release.observations where observation.isBrowseDiscovery {
             if let product = observation.productEvidence.first, let number = observation.printedEvidence["number"] {
-                discoveries[product, default: [:]][number, default: []].append(observation)
+                let alias = observation.printedEvidence["sourceArtworkAlias"] ?? observation.id
+                discoveries[product, default: [:]]["\(number.utf8.count):\(number)\(alias)", default: []].append(observation)
             }
         }
         var sets: [CatalogSetID: CatalogSet] = [:]
@@ -101,14 +102,16 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                     collectionAvailabilityNotice: printing.status == .verified ? nil : "Browse only",
                     searchFields: Self.searchFields(name: name, number: canonical.printedNumber, additionalText: finishSearchTerms))
             }
-            let discoveryRows = unresolvedNumbers.compactMap { number, observations -> CatalogCardSummary? in
+            let discoveryRows = unresolvedNumbers.compactMap { _, observations -> CatalogCardSummary? in
+                guard let observation = observations.first,
+                      let number = observation.printedEvidence["number"] else { return nil }
                 guard let card = registry.canonicalByPrintedNumber[number] else { return nil }
                 let labels = Set(observations.compactMap { $0.printedEvidence["productLabel"] })
                 let previews = observations.compactMap { Self.discoveryPreviews[$0.id + "|" + $0.payloadSHA256] }
                 let distinctPreviews = Set(previews)
                 let preview = previews.count == observations.count && distinctPreviews.count == 1
                     ? distinctPreviews.first : nil
-                return .init(game: .onePiece, providerID: Self.discoveryID(for: card), setID: setID,
+                return .init(game: .onePiece, providerID: Self.discoveryID(productID: productID, observation: observation), setID: setID,
                     setName: set.name, setCode: OnePieceTextNormalization.prefix(of: number) ?? "",
                     name: card.name, collectorNumber: number, thumbnailURL: preview, imageURL: preview,
                     catalogGeneration: registry.generation, collectionAvailabilityNotice: "Printing needs review",
@@ -207,7 +210,7 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
             return try OnePieceCatalogAdapter(registry: registry).browseDetails(forPrintingID: id, set: set)
         }
         guard let canonical = registry.canonicalByPrintedNumber[summary.collectorNumber],
-              summary.providerID == Self.discoveryID(for: canonical) else { throw CatalogLookupError.staleCatalog }
+              summary.providerID.hasPrefix("one-piece-discovery:") else { throw CatalogLookupError.staleCatalog }
         let preview = try ResolvedCatalogCard(game: game, physicalPrintingID: summary.providerID,
             canonicalCardID: canonical.id, language: canonical.language, name: canonical.name,
             setName: set.name, setCode: summary.setCode, cardNumber: canonical.printedNumber,
@@ -218,7 +221,13 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
             collectionWriteUnavailableReason: "The card is listed by Bandai. Its printing and finish need review before it can be added.")
     }
 
-    private static func discoveryID(for card: OnePieceCanonicalCard) -> String { "one-piece-discovery:" + card.id }
+    private static func discoveryID(productID: String, observation: OnePieceSourceObservation) -> String {
+        let alias = observation.printedEvidence["sourceArtworkAlias"] ?? observation.id
+        let identity = [productID, observation.printedEvidence["number"] ?? "", alias]
+            .map { "\($0.utf8.count):\($0)" }.joined()
+        let digest = SHA256.hash(data: Data(identity.utf8)).map { String(format: "%02x", $0) }.joined()
+        return "one-piece-discovery:" + digest
+    }
 
     private func page(_ rows: [CatalogCardSummary], cursor: String?, scope: String) throws -> CatalogPage<CatalogCardSummary> {
         let fingerprint = SHA256.hash(data: Data(scope.utf8)).map { String(format: "%02x", $0) }.joined()

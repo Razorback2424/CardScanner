@@ -752,10 +752,14 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertNotNil(previewDetails.collectionWriteUnavailableReason)
         let localEB05Cards = try await browse.completeLocalCards(in: eb05)
         let allEB05 = try XCTUnwrap(localEB05Cards)
-        let ambiguous = try XCTUnwrap(allEB05.first {
+        // Discovery presentations now have distinct identities and previews,
+        // instead of collapsing all artwork for one number into a blank tile.
+        let unresolvedEB05006 = allEB05.filter {
             $0.collectorNumber == "EB05-006" && $0.collectionAvailabilityNotice == "Printing needs review"
-        })
-        XCTAssertNil(ambiguous.imageURL)
+        }
+        XCTAssertEqual(unresolvedEB05006.count, 3)
+        XCTAssertEqual(Set(unresolvedEB05006.map(\.providerID)).count, 3)
+        XCTAssertTrue(unresolvedEB05006.allSatisfy { $0.imageURL != nil })
         let op18Search = try await browse.search(query: "OP18", setIDs: [op18.catalogID], cursor: nil)
         XCTAssertEqual(op18Search.items.count, 60)
         XCTAssertNotNil(op18Search.nextCursor)
@@ -2157,6 +2161,11 @@ final class OnePieceIntegrationTests: XCTestCase {
                 observedAt: date, language: "en", payloadSHA256: imageHash, productEvidence: [product.id],
                 printedEvidence: ["number": "EB05-001", "productLabel": "Official printing preview",
                                   "sourceRole": OnePieceSourceObservation.browseDiscoveryRole]))
+            observations.append(.init(id: "bandai-browse:569205:EB05-001_p1", alias: .init(provider: "bandai", sourceID: "eb05-fixture-p1"),
+                sourceURL: URL(string: "https://en.onepiece-cardgame.com/cardlist/?series=569205")!,
+                observedAt: date, language: "en", payloadSHA256: imageHash, productEvidence: [product.id],
+                printedEvidence: ["number": "EB05-001", "sourceArtworkAlias": "EB05-001_p1",
+                                  "sourceRole": OnePieceSourceObservation.browseDiscoveryRole]))
         }
         let release = try OnePieceCatalogBuilder.build(registry: .init(canonicalCards: [card] + futureCards,
             artworks: [.init(id: artworkID, referenceImageURL: URL(string: "https://fixture.invalid/art.png"),
@@ -2530,10 +2539,18 @@ final class OnePieceIntegrationTests: XCTestCase {
         let directory = try await browse.sets()
         let set = try XCTUnwrap(directory.first { $0.providerID == "product:bandai-series:569205" })
         let page = try await browse.search(query: "Jewelry Bonney EB05001", setIDs: [set.catalogID], cursor: nil)
-        let row = try XCTUnwrap(page.items.first)
+        XCTAssertEqual(page.items.count, 2)
+        XCTAssertEqual(Set(page.items.map(\.providerID)).count, 2)
+        for discovery in page.items {
+            let detail = try await browse.details(for: discovery)
+            XCTAssertNotNil(detail.collectionWriteUnavailableReason)
+            XCTAssertTrue(detail.card.variantEvidence.catalogVariants.isEmpty)
+        }
         let byLabel = try await browse.search(query: "Official printing preview EB05001",
                                             setIDs: [set.catalogID], cursor: nil)
-        XCTAssertEqual(byLabel.items, [row])
+        let row = try XCTUnwrap(byLabel.items.first)
+        XCTAssertEqual(byLabel.items.count, 1)
+        XCTAssertTrue(page.items.contains(row))
         let details = try await browse.details(for: row)
         XCTAssertEqual(row.collectorNumber, "EB05-001")
         XCTAssertEqual(set.physicalPrintingIDs, [])

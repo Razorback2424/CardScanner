@@ -1,0 +1,47 @@
+name: One Piece artwork evidence audit
+
+on:
+  pull_request:
+    paths:
+      - "scripts/audit_one_piece_live_artwork.py"
+      - "scripts/tests/test_one_piece_live_artwork.py"
+      - ".github/workflows/one-piece-eb05-artwork-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: one-piece-artwork-evidence-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  artwork-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install bounded audit dependency
+        run: python3 -m pip install Pillow==11.3.0
+      - name: Test artwork candidate comparison
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_live_artwork.py -v
+      - name: Compare retained EB05 discovery aliases with live official and marketplace images
+        run: |
+          mkdir -p "$RUNNER_TEMP/one-piece-evidence"
+          python3 scripts/audit_one_piece_live_artwork.py \
+            --series 569205 --group 24820 \
+            --output "$RUNNER_TEMP/one-piece-evidence/eb05-market-artwork.json"
+      - name: Cross-check OP01 Romance Dawn with the same artwork matcher
+        run: |
+          python3 scripts/audit_one_piece_live_artwork.py \
+            --series 569101 --group 3188 \
+            --output "$RUNNER_TEMP/one-piece-evidence/op01-market-artwork.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: one-piece-artwork-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/one-piece-evidence/*.json
+          if-no-files-found: warn
