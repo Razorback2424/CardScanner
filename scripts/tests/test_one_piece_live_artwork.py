@@ -5,7 +5,7 @@ import unittest
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from audit_one_piece_live_artwork import match_products, region_errors
+from audit_one_piece_live_artwork import match_products, region_errors, near_threshold_artwork_match
 
 
 class LiveArtworkAuditTests(unittest.TestCase):
@@ -50,6 +50,23 @@ class LiveArtworkAuditTests(unittest.TestCase):
         self.assertEqual(gaps, {"EB05-006_p1": "not-captured"})
         self.assertEqual(matches[0]["decision"], "official-sibling-image-unavailable")
         self.assertNotIn("matchedAlias", matches[0])
+
+    def test_near_threshold_jpeg_comparison_is_labeled_not_verified(self):
+        # 200px JPEG reproductions can differ very slightly from official PNGs.
+        self.assertEqual(near_threshold_artwork_match({
+            "EB05-046_p1": (0.01953, 0.01705, 0.00877),
+            "EB05-046": (0.21851, 0.12822, 0.06129),
+        }), "EB05-046_p1")
+        self.assertEqual(near_threshold_artwork_match({
+            "OP14-033_p3": (0.02137, 0.01760, 0.01267),
+        }), "OP14-033_p3")
+        self.assertIsNone(near_threshold_artwork_match({
+            "candidate-a": (0.018, 0.0195, 0.014),
+            "candidate-b": (0.019, 0.0192, 0.013),
+        }))
+        self.assertIsNone(near_threshold_artwork_match({
+            "unrelated-artwork": (0.08, 0.06, 0.07),
+        }))
 
     def test_absent_market_art_does_not_grant_identity(self):
         rows = [{"artworkAlias": "EB05-014_p2", "number": "EB05-014"}]
