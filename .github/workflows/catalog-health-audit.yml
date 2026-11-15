@@ -1,0 +1,48 @@
+name: Catalog Health Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      capture_prices:
+        description: Capture current TCGCSV feeds for installed One Piece and Lorcana mappings
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test export
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_catalog_health_export.py -v
+      - name: Capture mapped marketplace feeds
+        if: inputs.capture_prices
+        run: PYTHONDONTWRITEBYTECODE=1 python3 scripts/audit_set_pricing.py --capture-dir "$RUNNER_TEMP/catalog-market-capture" --output-dir "$RUNNER_TEMP/catalog-market-audit" --fetch-mapped-feeds
+      - name: Export retained catalog health
+        env:
+          CAPTURE_PRICES: ${{ inputs.capture_prices }}
+        run: |
+          if [ "$CAPTURE_PRICES" = "true" ]; then
+            PYTHONDONTWRITEBYTECODE=1 python3 scripts/catalog_health_export.py --output catalog-health --capture-dir "$RUNNER_TEMP/catalog-market-capture" --as-of "$(date -u +%F)"
+          else
+            PYTHONDONTWRITEBYTECODE=1 python3 scripts/catalog_health_export.py --output catalog-health
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog-health-${{ github.sha }}
+          path: |
+            catalog-health/*.csv
+            catalog-health/catalog-metadata.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: inputs.capture_prices
+        with:
+          name: catalog-market-capture-${{ github.sha }}
+          path: ${{ runner.temp }}/catalog-market-capture/
+          if-no-files-found: error
