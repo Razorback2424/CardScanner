@@ -469,7 +469,8 @@ private struct SettingsContentView: View {
     }
 
     private func prepareCatalogHealthExport() {
-        guard !isPreparingCatalogHealthExport, let runtimes else { return }
+        guard !isPreparingCatalogHealthExport, !isPreparingCSVExport,
+              writeCoordinator.activeExclusiveOperation == nil, let runtimes else { return }
         // Use the same Browse actor as the running app, including its active
         // catalog revisions and in-session price observations.
         let browse = (sharedBrowseCatalog as Any as? BrowseCatalog) ?? runtimes.makeBrowseCatalog()
@@ -502,7 +503,7 @@ private struct SettingsContentView: View {
     }
 
     private func prepareCSVExport(_ kind: CollectionCSV.ExportKind, filename: String) {
-        guard !isPreparingCSVExport,
+        guard !isPreparingCSVExport, !isPreparingCatalogHealthExport,
               let token = storageGeneration.currentToken() else { return }
         let container = modelContext.container
         let timing = CSVExportTiming(kind: String(describing: kind))
