@@ -444,6 +444,7 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                           and row["status"] == "missing-printing-or-appearance"}
                 label = promotion_treatment(number, names[number], listing["title"], promo_labels[number])
                 if label is None or label[0] not in labels:
+                    mark(series, family, "retailer-promotion-title-not-accepted")
                     continue
                 art_urls = promo_renders[number]
             else:
@@ -541,27 +542,32 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
             if promotion:
                 if existing is not None or row["productLabels"] != [label]:
                     stats["promo-distribution-mismatch"] += 1
+                    mark(series, [row], "promotion-distribution-mismatch")
                     continue
                 if ("one-piece:en:" + number, image_source["payloadSHA256"]) in known_artwork:
                     stats["promo-existing-artwork-needs-appearance-review"] += 1
+                    mark(series, [row], "existing-artwork-needs-product-appearance-review")
                     continue
                 distribution = label.removeprefix("Included in ")
                 key = uuid5(NAMESPACE_URL, "https://en.onepiece-cardgame.com/cardlist/#pack/" + normalized_name(distribution))
                 printing_release = f"product:bandai-promo:{key}"
                 if printing_release in products_by_id and products_by_id[printing_release]["label"] != distribution:
                     stats["promo-distribution-mismatch"] += 1
+                    mark(series, [row], "promotion-distribution-mismatch")
                     continue
             elif existing is not None:
                 if (listing["provider"] != "coretcg" or existing["status"] != "provisional" or existing["supportedVariantIDs"]
                         or existing["releaseID"] != release_id or existing.get("review") is None
                         or artworks[existing["artworkID"]].get("imageSHA256") != image_source["payloadSHA256"]):
                     stats["held-identity-needs-review"] += 1
+                    mark(series, [row], "held-identity-requires-separate-review")
                     continue
                 treatment = existing.get("treatment")
             elif (not treatment_matches_alias(label, alias, market_products[int(listing["imageProductID"])],
                                                listing["finish"])
                   or (not label and alias != number)):
                 stats["unclear-retailer-treatment"] += 1
+                mark(series, [row], "retailer-treatment-not-exactly-identified")
                 continue
             elif label == "Manga" and "_r" in alias:
                 treatment = "Manga artwork (non-textured foil)"
@@ -584,6 +590,7 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
         release_id, canonical_id, treatment = identity
         if candidate_market_ids[listing["imageProductID"]] != 1:
             stats["market-product-claimed-by-multiple-presentations"] += 1
+            mark(series_key, [row], "market-product-claimed-by-multiple-artworks")
             continue
         source_id = f"{release_id}:{alias}"
         official = {"provider": "bandai", "sourceID": source_id}
