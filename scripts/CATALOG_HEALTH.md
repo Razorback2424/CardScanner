@@ -1,10 +1,13 @@
 # Catalog health export
 
 Run `python3 scripts/catalog_health_export.py --output <directory>` or trigger
-the **Catalog Health Audit** workflow and download its artifact. The three CSVs
+the **Catalog Health Audit** workflow and download its artifact. The four CSVs
 are deterministic for the checkout; the inventory contains all records in the
 retained inputs described below, exceptions contain actionable rows, and the
-summary counts each issue separately including unchecked coverage. Filter the
+summary counts each issue separately including unchecked coverage, per source scope.
+The fourth CSV, `catalog-census-findings.csv`, preserves the existing five-game
+census's source/set-level diagnostic codes and dispositions instead of
+silently omitting them. It is not one row per physical printing. Filter the
 inventory's `assessment` to distinguish actionable issues from
 `coverage_not_evaluated` and `no_known_exception`. Severity distinguishes review,
 availability, refresh, and unchecked work. `catalog-metadata.json` records
@@ -20,7 +23,8 @@ the Yu-Gi-Oh seed and reference printings, and the retained October 2026 One
 Piece unmatched marketplace report. The latter is an incomplete historical
 discovery lead; products already mapped in the current owner registry are
 excluded, and number-only candidate matches are not physical identity proof.
-Browse observations are grouped by product, printed number, and artwork alias.
+Browse observations are grouped by product and printed number, as in the
+app; multiple artwork aliases are retained together as evidence.
 Additional discoveries from the retained revision-4 candidate are labeled
 `candidate_discovery`; they are not necessarily present in installed Browse.
 `product_set_code` identifies the release where a One Piece entry appears;
@@ -47,17 +51,32 @@ python3 scripts/catalog_health_export.py --output <directory> \
 
 The capture must have a completed matching upstream build and hash-bound,
 valid product and price feeds. The feed's upstream date, not the workflow run
-date, is the quote snapshot date. A zero price is usable; a missing or null lane
-in a complete feed is `NO_MARKET_QUOTE`. A non-null quote older than the
-threshold is `PRICE_STALE`. Missing feeds or products remain unchecked and
-invalid captures fail the export. Product ID, name, and printed number must
-agree before a feed can change a row's price status. No request-failure
+date, is the quote snapshot date. A zero price is usable; a missing or null lane in a complete feed is
+`NO_MARKET_QUOTE`. An older *feed snapshot* is `PRICE_SNAPSHOT_STALE`;
+this does not assert the source's per-quote update time. A missing capture
+group remains unchecked. A missing/changed product in a complete captured
+group is `MARKET_MAPPING_MISMATCH`, not a missing price. Incomplete retained
+mapping evidence is `MARKET_MAPPING_INCOMPLETE` even without a capture.
+Invalid captures fail the export. Product ID, name and printed number must
+agree before the feed is trusted as a price observation. No request-failure
 classification is fabricated. The workflow uploads captured source bytes in a
 separate artifact so the export can be replayed; the metadata includes the
 capture manifest hash.
 Exact missing mappings are reported for verified One Piece and Lorcana finishes
-and supported Yu-Gi-Oh editions whose retained records expose those mappings.
+and supported Yu-Gi-Oh editions. Yu-Gi-Oh's current-price path uses the printing
+product/edition even when historical membership evidence is absent. One Piece
+retains distinct unapproved, conflicting and absent mapping states, as well as
+all associated product appearances of verified printings.
 Blank evidence fields mean unknown, not absent. The source validation and
 boundaries are shared with `audit_catalog_coverage.py`; structural errors fail
-the run instead of publishing a partial result. The output should not be used
+the run instead of publishing a partial inventory. When structural or market
+capture validation fails, `catalog-run-failure.json` records the stage/error,
+while existing census findings remain available. The GitHub artifact upload
+runs even after these validation failures. The output should not be used
 to claim total cross-game catalog completeness.
+
+See [CATALOG_HEALTH_FAILURE_MODES.md](CATALOG_HEALTH_FAILURE_MODES.md) for the
+source-grounded, five-game inventory of publisher validation failures, app
+error messages, runtime-only outcomes, exact export classifications, and
+remaining unobservable coverage. No offline absence of a failure row is proof
+that the corresponding live path is free from errors.
