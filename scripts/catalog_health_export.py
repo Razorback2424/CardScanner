@@ -91,32 +91,42 @@ def inventory(repo):
     registry = owner['registry']
     cards = {card['id']: card for card in registry['canonicalCards']}
     products = {product['id']: product for product in registry['products']}
+    memberships_by_printing = collections.defaultdict(set)
+    for appearance in registry.get('appearances', []):
+        memberships_by_printing[appearance['printingID']].add(appearance['productID'])
     for printing in registry['printings']:
         if printing['status'] == 'superseded':
             continue
         card = cards[printing['canonicalCardID']]
-        product = products.get(printing.get('releaseID'), {})
-        for finish in printing.get('supportedVariantIDs') or ['']:
-            mapping = next((m for m in printing.get('marketMappings', []) if m['variantID'] == finish and m['status'] == 'exact'), None)
-            verified = printing['status'] == 'verified'
-            status, issues = pricing(mapping, verified and bool(finish))
-            if not verified:
-                issues.append(('PRINTING_NEEDS_REVIEW', 'Printing status: ' + printing['status'], 'Review printing evidence'))
-            if not finish:
-                issues.append(('FINISH_UNVERIFIED', 'No supported finish is retained.', 'Review physical finish evidence'))
-            product_codes = prefixes(product.get('label', ''))
-            product_code = product_codes[0] if len(product_codes) == 1 else ''
-            row = make(game='one-piece', source_scope='installed', record_type='physical_printing', source_id=printing['canonicalCardID'], set_name=product.get('label'), set_code=product_code, product_set_code=product_code, printed_set_marker=card.get('printedNumber', '').split('-')[0],
-                       card_number=card.get('printedNumber'), card_name=card.get('name'), printing_id=printing['id'],
-                       artwork_id=printing.get('artworkID'), finish=finish, verification_status=printing['status'],
-                       price_status=status, catalog_revision=owner.get('revision'),
-                       catalog_source_url=(printing.get('review') or {}).get('reference'),
-                       market_provider=(mapping or {}).get('provider'), market_product_id=(mapping or {}).get('productID'),
-                       market_group_id=((mapping or {}).get('qualifiers') or {}).get('groupID'),
-                       market_lane=(mapping or {}).get('providerVariantID'),
-                       market_product_name=((mapping or {}).get('qualifiers') or {}).get('productName'),
-                       market_product_number=card.get('printedNumber') if mapping else '')
-            rows.append(classify(row, issues))
+        memberships = set(memberships_by_printing.get(printing['id'], []))
+        if printing.get('releaseID'):
+            memberships.add(printing['releaseID'])
+        # Browse projects one physical printing into every associated product.
+        # The audit must not lose those appearances simply because releaseID
+        # identifies the primary release rather than the displayed product.
+        for product_id in sorted(memberships) or ['']:
+            product = products.get(product_id, {})
+            for finish in printing.get('supportedVariantIDs') or ['']:
+                mapping = next((m for m in printing.get('marketMappings', []) if m['variantID'] == finish and m['status'] == 'exact'), None)
+                verified = printing['status'] == 'verified'
+                status, issues = pricing(mapping, verified and bool(finish))
+                if not verified:
+                    issues.append(('PRINTING_NEEDS_REVIEW', 'Printing status: ' + printing['status'], 'Review printing evidence'))
+                if not finish:
+                    issues.append(('FINISH_UNVERIFIED', 'No supported finish is retained.', 'Review physical finish evidence'))
+                product_codes = prefixes(product.get('label', ''))
+                product_code = product_codes[0] if len(product_codes) == 1 else ''
+                row = make(game='one-piece', source_scope='installed', record_type='physical_printing', source_id=printing['canonicalCardID'], set_name=product.get('label'), set_code=product_code, product_set_code=product_code, printed_set_marker=card.get('printedNumber', '').split('-')[0],
+                           card_number=card.get('printedNumber'), card_name=card.get('name'), printing_id=printing['id'],
+                           artwork_id=printing.get('artworkID'), finish=finish, verification_status=printing['status'],
+                           price_status=status, catalog_revision=owner.get('revision'),
+                           catalog_source_url=(printing.get('review') or {}).get('reference'),
+                           market_provider=(mapping or {}).get('provider'), market_product_id=(mapping or {}).get('productID'),
+                           market_group_id=((mapping or {}).get('qualifiers') or {}).get('groupID'),
+                           market_lane=(mapping or {}).get('providerVariantID'),
+                           market_product_name=((mapping or {}).get('qualifiers') or {}).get('productName'),
+                           market_product_number=card.get('printedNumber') if mapping else '')
+                rows.append(classify(row, issues))
 
     # Browse groups discoveries by product and printed number; aliases are evidence, not separate displayed cards.
     # Observations do not establish physical printing, artwork or finish IDs.
