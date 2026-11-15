@@ -42,6 +42,7 @@ def classify(row, issues):
 def assessment(row):
     codes = set(row['issue_codes'].split('|')) - {''}
     codes.discard('RAW_FINISH_COVERAGE_UNEVALUATED')
+    codes.discard('LANGUAGE_OUT_OF_SCOPE')
     if codes - {'PRICE_NOT_CHECKED'}:
         return 'actionable'
     return 'coverage_not_evaluated' if codes else 'no_known_exception'
@@ -112,7 +113,11 @@ def inventory(repo):
                             and m['market'] == 'us' and m['currency'] == 'USD' and m['condition'] == 'aggregate']
                 mapping = eligible[0] if len(eligible) == 1 else None
                 verified = printing['status'] == 'verified'
-                if verified and len(eligible) > 1:
+                if printing['language'] != 'en':
+                    status, issues = 'outside_scope', [('LANGUAGE_OUT_OF_SCOPE',
+                        'Current One Piece exact USD pricing audit is limited to English physical printings.',
+                        'No price-reconciliation action for this language')]
+                elif verified and len(eligible) > 1:
                     status, issues = 'mapping_conflict', [('PRICE_MAPPING_CONFLICT',
                         'Multiple active TCGplayer mappings exist for the same printing and finish.', 'Reconcile exact market mappings')]
                 elif verified and not eligible and candidates:
@@ -126,7 +131,7 @@ def inventory(repo):
                     issues.append(('FINISH_UNVERIFIED', 'No supported finish is retained.', 'Review physical finish evidence'))
                 product_codes = prefixes(product.get('label', ''))
                 product_code = product_codes[0] if len(product_codes) == 1 else ''
-                row = make(game='one-piece', source_scope='installed', record_type='physical_printing', source_id=printing['canonicalCardID'], set_name=product.get('label'), set_code=product_code, product_set_code=product_code, printed_set_marker=card.get('printedNumber', '').split('-')[0],
+                row = make(game='one-piece', source_scope='installed' if printing['language'] == 'en' else 'retained_non_english', record_type='physical_printing', source_id=printing['canonicalCardID'], set_name=product.get('label'), set_code=product_code, product_set_code=product_code, printed_set_marker=card.get('printedNumber', '').split('-')[0],
                            card_number=card.get('printedNumber'), card_name=card.get('name'), printing_id=printing['id'],
                            artwork_id=printing.get('artworkID'), finish=finish, verification_status=printing['status'],
                            price_status=status, catalog_revision=owner.get('revision'),
@@ -243,13 +248,17 @@ def inventory(repo):
             mapping = next((m for m in printing.get('marketMappings', []) if m['finish'] == finish), None)
             verified = printing['status'] == 'verified'
             status, issues = pricing(mapping, verified and bool(finish))
+            if printing['identity']['footer']['language'] != 'en':
+                status, issues = 'outside_scope', [('LANGUAGE_OUT_OF_SCOPE',
+                    'Current exact USD mapping authority is limited to English Lorcana printings.',
+                    'No price-reconciliation action for this language')]
             if not verified:
                 issues.append(('PRINTING_NEEDS_REVIEW', 'Printing status: ' + printing['status'], 'Review printing evidence'))
             if not finish:
                 issues.append(('FINISH_UNVERIFIED', 'No physical finish is recorded.', 'Review finish evidence'))
             if not universe.get('isComplete'):
                 issues.append(('PHYSICAL_FAMILY_INCOMPLETE', 'The physical family has not been certified complete.', 'Review family-wide printing coverage'))
-            row = make(game='lorcana', source_scope='retained_physical', record_type='physical_printing', source_id=card.get('id'), set_name=card.get('setName'), set_code=card.get('setCode'), card_number=card.get('number'),
+            row = make(game='lorcana', source_scope='retained_physical' if printing['identity']['footer']['language'] == 'en' else 'retained_non_english', record_type='physical_printing', source_id=card.get('id'), set_name=card.get('setName'), set_code=card.get('setCode'), card_number=card.get('number'),
                        card_name=card.get('name'), rarity=card.get('rarity'), printing_id=printing['id'],
                        artwork_id=printing['identity'].get('artworkID'), finish=finish, verification_status=printing['status'],
                        price_status=status, catalog_source_url=printing.get('imageURL'), catalog_revision=discovery.get('generatedOn'),
@@ -387,7 +396,7 @@ def apply_prices(rows, snapshot_date, feeds, as_of, max_age_days):
                for key, feed in feeds.items() if {'products', 'prices'} <= feed.keys()}
 
     for row in rows:
-        if (row['record_type'] != 'physical_printing' or row['verification_status'] not in ('verified', 'supported')
+        if (row['record_type'] != 'physical_printing' or row['price_status'] != 'not_checked' or row['verification_status'] not in ('verified', 'supported')
                 or row['market_provider'] != 'tcgplayer' or not row['market_lane']):
             continue
         if not row['market_group_id'].isdigit() or not row['market_product_id'].isdigit():
@@ -460,7 +469,7 @@ def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
             raise
     write(output / 'catalog-inventory.csv', FIELDS, rows)
     write(output / 'catalog-exceptions.csv', FIELDS, (row for row in rows if row['assessment'] == 'actionable'))
-    severity = {'RAW_FINISH_COVERAGE_UNEVALUATED': 'unchecked', 'PHYSICAL_FAMILY_INCOMPLETE': 'review',
+    severity = {'LANGUAGE_OUT_OF_SCOPE': 'unchecked', 'RAW_FINISH_COVERAGE_UNEVALUATED': 'unchecked', 'PHYSICAL_FAMILY_INCOMPLETE': 'review',
                 'EDITION_UNVERIFIED': 'review', 'CANONICAL_LINK_UNRESOLVED': 'review', 'CANONICAL_CARD_MISSING': 'review',
                 'SOURCE_OBSERVATION_INCOMPLETE': 'review', 'PRICE_MAPPING_UNAPPROVED': 'review', 'PRICE_MAPPING_CONFLICT': 'review', 'PRINTING_FAMILY_INCOMPLETE': 'review',
                 'PRINTING_NEEDS_REVIEW': 'review', 'POSSIBLE_DUPLICATE': 'review',
