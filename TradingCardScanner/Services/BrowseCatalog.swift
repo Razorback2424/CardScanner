@@ -1247,17 +1247,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
         return details
     }
 
-    private func addingTCGCSVPrices(to details: CatalogCardDetails) async -> CatalogCardDetails {
+    private func addingTCGCSVPrices(
+        to details: CatalogCardDetails, reportFailure: Bool = false
+    ) async throws -> CatalogCardDetails {
         guard let source = tcgCSVSource,
               case let .pokemon(payload, code) = details.card.legacyIdentity,
               PokemonTCGCSVMapping.byCardID[payload.id]?.setID == payload.set.id else { return details }
         var card = payload
         // A failed refresh must not erase a previously retrieved quote or its
         // provenance. A successful snapshot still replaces it, including gaps.
-        guard let snapshot = try? await source.snapshot(setID: card.set.id, retry: false) else {
+        do {
+            card.supplementalTCGCSV = try await source.snapshot(setID: card.set.id, retry: false)
+        } catch {
+            if reportFailure { throw error }
             return details
         }
-        card.supplementalTCGCSV = snapshot
         return CatalogCardDetails(
             card: .pokemon(card, setCode: code), set: details.set,
             retrievedAt: details.retrievedAt
@@ -1336,6 +1340,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
+        try await price(for: summary, variant: variant, catalogHealthCheck: false)
+    }
+
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant, catalogHealthCheck: Bool) async throws -> PriceLookup {
         if let product = PokemonReviewedMarketProduct.entry(for: summary, variantID: variant.id), product.variant.id == variant.id {
             await synchronizeCatalogAuthority()
             _ = try await authorizedPokemonDetailSet(for: summary)
@@ -1352,7 +1360,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
             guard promo.printings.contains(where: { $0.variant.id == variant.id }) else { throw PriceQuoteError.identityMismatch }
             return .unavailable(nil)
         }
-        let details = await addingTCGCSVPrices(to: try await details(for: summary))
+        let baseDetails = try await details(for: summary)
+        let checksSupplement = variant == .holo && (summary.pokemonPrintRun == nil || summary.pokemonPrintRun == .unlimited)
+        let details: CatalogCardDetails
+        if catalogHealthCheck {
+            let embedded = CardPricing.price(for: baseDetails.card, variant: variant,
+                magicTreatments: baseDetails.card.magicTreatments(for: variant),
+                pokemonPrintRun: summary.pokemonPrintRun, at: baseDetails.retrievedAt)
+            if case let .price(quote) = embedded, quote.isUsableUSD, !quote.isStale(),
+               summary.game == .pokemon {
+                return embedded
+            }
+            details = checksSupplement ? try await addingTCGCSVPrices(to: baseDetails, reportFailure: true) : baseDetails
+        } else {
+            details = try await addingTCGCSVPrices(to: baseDetails)
+        }
         try Task.checkCancellation()
         let key = detailCacheKey(for: summary)
         if detailCache[key]?.retrievedAt == details.retrievedAt {
@@ -1378,7 +1400,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                                        pokemonPrintRun: summary.pokemonPrintRun, at: details.retrievedAt)
         if case let .price(price) = lookup, price.currencyCode == "USD" { return lookup }
         // Reuse the set-wide source used by the grid, only for an exact ordinary finish.
-        guard summary.game == .pokemon, summary.pokemonPrintRun == nil,
+        guard !catalogHealthCheck, summary.game == .pokemon, summary.pokemonPrintRun == nil,
               let listing = PokemonBulkPriceMap.listingKey(for: variant),
               let source = pokemonPriceSource,
               let secondarySetID = try await resolvedPokemonSecondarySetID(for: summary) else { return lookup }
@@ -1903,7 +1925,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     /// Resolve and fetch one bulk map per TCGdex set before the card-level
     /// worker pool starts. This keeps the set-wide optimization while allowing
     /// every uncovered card to use an independent fallback slot.
-    private func preparePokemonBulkPrices(for cards: [CatalogCardSummary]) async {
+    func preparePokemonBulkPrices(for cards: [CatalogCardSummary]) async {
         guard let source = pokemonPriceSource else { return }
         let cardsBySet = Dictionary(
             grouping: cards.filter { $0.game == .pokemon },
@@ -1932,6 +1954,28 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 continue
             }
         }
+    }
+
+    /// Positive evidence only. The set feed's silence does not establish
+    /// that a physical finish has no quote.
+    func catalogHealthBulkQuote(for summary: CatalogCardSummary, variant: PhysicalVariant) -> NormalizedPrice? {
+        let setID = summary.setID.providerID
+        let corrections = catalogRegistry.descriptor(forProviderSetID: setID)?.additionalVariants ?? []
+        guard summary.game == .pokemon, summary.pokemonPrintRun == nil,
+              !corrections.contains(where: { $0.providerCardID == summary.providerID }),
+              PokemonReviewedArtworkCatalog.printingLabel(for: summary.providerID, setID: setID) == nil,
+              PokemonReviewedEnergyCatalog.card(providerID: summary.providerID) == nil,
+              !PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: summary.providerID, setID: setID),
+              PokemonReviewedMarketProduct.entry(for: summary, variantID: variant.id) == nil,
+              !PokemonVariantRules.requiresPhysicalReview(cardID: summary.providerID, variant: variant),
+              let lane = PokemonBulkPriceMap.listingKey(for: variant),
+              let snapshot = pokemonBulkPriceCache[setID.lowercased()],
+              let amount = snapshot.value.price(for: summary.providerID, variant: variant)
+        else { return nil }
+        let quote = NormalizedPrice(unitMarketPriceUSD: amount, currencyCode: "USD",
+            source: .tcgplayer, sourceVariantID: lane,
+            sourceUpdatedAt: snapshot.value.providerUpdatedAt(for: summary.providerID), fetchedAt: snapshot.storedAt)
+        return quote.isUsableUSD && !quote.isStale() ? quote : nil
     }
 
     private func fallbackSortPriceGroup(

@@ -10297,54 +10297,34 @@ final class ActiveCatalogHealthExportTests: XCTestCase {
         XCTAssertTrue(csv.contains("\"discovery:eb05-001\",\"\","))
     }
 
-    func testPricingNoQuoteIsDistinctFromUnresolvedRequestAndMissingMapping() {
-        let summary = sample()
-        let id = summary.id
+    func testMissingQuoteIsDistinctFromUnavailableProviderAndMissingMapping() {
+        let now = Date.now
         var evidence = ActiveCatalogHealthCSV.Evidence()
-        let noQuote = CatalogPriceUpdate(prices: [:], resolvedIDs: [id], unresolvedIDs: [])
-        let noQuoteState = ActiveCatalogHealthCSV.checkedPriceStatus(
-            summary, update: noQuote, evidence: &evidence
-        )
-        XCTAssertEqual(noQuoteState.0, "no_usd_quote")
-        XCTAssertTrue(evidence.issues.contains("NO_USD_QUOTE"))
+        XCTAssertEqual(ActiveCatalogHealthCSV.priceStatus(.unavailable(.scryfall), checkedAt: now, evidence: &evidence).status, "no_usd_quote")
+        XCTAssertEqual(evidence.issues, ["NO_USD_QUOTE"])
 
         evidence = .init()
-        let unresolved = CatalogPriceUpdate(prices: [:], resolvedIDs: [], unresolvedIDs: [id])
-        XCTAssertEqual(
-            ActiveCatalogHealthCSV.checkedPriceStatus(
-                summary, update: unresolved, evidence: &evidence
-            ).0, "unresolved"
-        )
-        XCTAssertFalse(evidence.issues.contains("NO_USD_QUOTE"))
-        XCTAssertTrue(evidence.issues.contains("PRICE_CHECK_UNRESOLVED"))
+        XCTAssertEqual(ActiveCatalogHealthCSV.priceStatus(.unavailable(nil), checkedAt: now, evidence: &evidence).status, "not_checked")
+        XCTAssertEqual(evidence.issues, ["PRICE_CHECK_NOT_COMPLETED"])
 
         evidence = .init()
-        let unmapped = CatalogPriceUpdate(prices: [:], resolvedIDs: [id], unresolvedIDs: [],
-                                          missingMappingIDs: [id])
-        XCTAssertEqual(
-            ActiveCatalogHealthCSV.checkedPriceStatus(
-                summary, update: unmapped, evidence: &evidence
-            ).0, "mapping_missing"
-        )
-        XCTAssertTrue(evidence.issues.contains("BROWSE_PRICE_MAPPING_MISSING"))
+        _ = ActiveCatalogHealthCSV.recordPriceError(PriceQuoteError.providerUnavailable, evidence: &evidence)
+        XCTAssertEqual(evidence.issues, ["PRICE_PROVIDER_UNAVAILABLE"])
+
+        evidence = .init()
+        _ = ActiveCatalogHealthCSV.recordPriceError(PriceQuoteError.mappingUnavailable, evidence: &evidence)
+        XCTAssertEqual(evidence.issues, ["PRICE_MAPPING_MISSING"])
     }
 
-    func testCachedQuoteAndNoCheckAreNotInventedNoQuotes() {
-        let summary = sample()
+    func testStaleQuoteRetainsOriginalObservationTime() {
+        let now = Date.now
+        let earlier = now.addingTimeInterval(-PriceDisplay.staleAfter - 1)
+        let quote = NormalizedPrice(unitMarketPriceUSD: 2, currencyCode: "USD", source: .scryfall,
+                                    sourceVariantID: "usd_etched", sourceUpdatedAt: nil, fetchedAt: earlier)
         var evidence = ActiveCatalogHealthCSV.Evidence()
-        XCTAssertEqual(ActiveCatalogHealthCSV.checkedPriceStatus(
-            summary, update: nil, evidence: &evidence
-        ).0, "not_checked")
-        XCTAssertTrue(evidence.issues.isEmpty)
-
-        let priced = CatalogPriceUpdate(prices: [summary.id: 3.75],
-                                        resolvedIDs: [summary.id], unresolvedIDs: [])
-        let result = ActiveCatalogHealthCSV.checkedPriceStatus(
-            summary, update: priced, evidence: &evidence
-        )
-        XCTAssertEqual(result.0, "priced")
-        XCTAssertEqual(result.1, 3.75)
-        XCTAssertTrue(evidence.issues.isEmpty)
+        XCTAssertEqual(ActiveCatalogHealthCSV.priceStatus(.price(quote), checkedAt: now, evidence: &evidence).status, "stale")
+        XCTAssertEqual(evidence.fetchedAt, earlier)
+        XCTAssertEqual(evidence.issues, ["PRICE_EVIDENCE_STALE"])
     }
 
     func testCSVProtectsSpreadsheetFormulasAndEscapesQuotedValues() {
@@ -10385,45 +10365,53 @@ final class ActiveCatalogHealthExportTests: XCTestCase {
         XCTFail("Production Lorcana catalog contains no browsable physical printing")
     }
 
-    func testExportContainsOnlyAffectedCardsAndIncludesFailureReasons() async throws {
+    func testExportReportsOnlyEtchedWhenOtherFinishesArePriced() async throws {
+        let browse = HealthExportFixture()
         let report = try await ActiveCatalogHealthCSV.makeDocument(
-            runtimes: CardGameRuntimeContainer(runtimes: []), browse: HealthExportFixture(),
+            runtimes: CardGameRuntimeContainer(runtimes: []), browse: browse,
             checkPrices: true, progress: { _ in })
-        XCTAssertTrue(report.text.contains("Broken Card"))
-        XCTAssertTrue(report.text.contains("PRICE_CHECK_UNRESOLVED"))
-        XCTAssertFalse(report.text.contains("Healthy Card"))
-        XCTAssertTrue(report.text.contains("NO_ACTIVE_SETS"))
+        let cards = report.text.components(separatedBy: "\r\n").filter { $0.hasPrefix("\"card\"") }
+        XCTAssertEqual(cards.count, 1)
+        let row = try XCTUnwrap(cards.first)
+        XCTAssertTrue(row.contains("\"etched\""))
+        XCTAssertTrue(row.contains("\"202\""))
+        XCTAssertTrue(row.contains("NO_USD_QUOTE"))
+        XCTAssertTrue(row.contains("usd_etched"))
+        XCTAssertTrue(report.text.contains("\"set_coverage\""))
+        XCTAssertTrue(report.text.contains("\"3\",\"3\",\"1\",\"0\""))
+        let loads = await browse.detailLoads
+        XCTAssertEqual(loads, 1)
     }
 }
 
-private struct HealthExportFixture: BrowseCatalogProviding {
+private actor HealthExportFixture: BrowseCatalogProviding {
+    private let printingID = "c3c12b8c-0a0f-472d-923b-62e34135142b"
+    private(set) var detailLoads = 0
     private var set: CatalogSet {
-        CatalogSet(catalogID: .init(game: .onePiece, providerID: "fixture"), name: "Fixture",
-                   code: "OP01", logoURL: nil, symbolURL: nil, cardCount: 2, releaseDate: nil, sortRank: 0)
+        CatalogSet(catalogID: .init(game: .magic, providerID: "fixture"), name: "Fixture",
+                   code: "TST", logoURL: nil, symbolURL: nil, cardCount: 1, releaseDate: nil, sortRank: 0)
     }
-    private var cards: [CatalogCardSummary] {
-        ["Healthy Card", "Broken Card"].enumerated().map { index, name in
-            CatalogCardSummary(game: .onePiece, providerID: "fixture-\(index)", setID: set.catalogID,
-                setName: set.name, setCode: set.code, name: name, collectorNumber: "OP01-00\(index + 1)",
-                thumbnailURL: nil, imageURL: nil)
-        }
-    }
-    func sets(for game: CardGame) async throws -> [CatalogSet] { game == .onePiece ? [set] : [] }
+    func sets(for game: CardGame) async throws -> [CatalogSet] { game == .magic ? [set] : [] }
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
-        .init(items: cards, nextCursor: nil)
+        .init(items: [.init(game: .magic, providerID: printingID, setID: set.catalogID,
+            setName: set.name, setCode: set.code, name: "Fixture Card", collectorNumber: "1",
+            thumbnailURL: nil, imageURL: nil, magicFinishIDs: ["nonfoil", "foil", "etched"])], nextCursor: nil)
     }
     func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         .init(items: [], nextCursor: nil)
     }
-    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails { throw BrowseCatalogError.unknownSet }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        detailLoads += 1
+        let json = """
+        {"object":"card","id":"\(printingID)","name":"Fixture Card","set":"tst","set_name":"Fixture",
+         "collector_number":"1","lang":"en","digital":false,"finishes":["nonfoil","foil","etched"],
+         "prices":{"usd":"2.15","usd_foil":"5.80","usd_etched":null},
+         "tcgplayer_id":101,"tcgplayer_etched_id":202}
+        """
+        let card = try JSONDecoder().decode(ScryfallCard.self, from: Data(json.utf8))
+        return .init(card: .magic(card), set: set)
+    }
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
         AsyncStream { $0.finish() }
-    }
-    nonisolated func sortPriceUpdates(for cards: [CatalogCardSummary]) -> AsyncStream<CatalogPriceUpdate> {
-        AsyncStream { continuation in
-            let healthy = cards[0].id, broken = cards[1].id
-            continuation.yield(.init(prices: [healthy: 1], resolvedIDs: [healthy], unresolvedIDs: [broken]))
-            continuation.finish()
-        }
     }
 }

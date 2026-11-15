@@ -1050,10 +1050,13 @@ enum ActiveCatalogHealthCSV {
         "product_set_id", "catalog_generation", "set_notice", "card_name",
         "card_number", "catalog_card_id", "printing_id", "finish_id",
         "verification_status", "market_mapping_status", "price_status",
-        "browse_aggregate_price_usd", "market_provider", "market_group_id",
+        "finish_price_usd", "market_provider", "market_group_id",
         "market_product_id", "market_product_name", "market_number",
         "market_lane", "issue_codes", "issue_details", "recommended_action",
-        "card_notice", "image_url", "evidence_scope"
+        "card_notice", "image_url", "evidence_scope", "pokemon_print_run", "magic_treatments",
+        "price_source", "price_fetched_at_utc", "price_source_updated_at_utc", "price_listing",
+        "finish_records", "checked_finishes", "issue_finishes", "unevaluated_finishes",
+        "rows_without_finish"
     ]
 
     struct Evidence {
@@ -1066,6 +1069,10 @@ enum ActiveCatalogHealthCSV {
         var productName: String = ""
         var marketNumber: String = ""
         var lane: String = ""
+        var priceSource: String = ""
+        var fetchedAt: Date?
+        var sourceUpdatedAt: Date?
+        var priceListing: String = ""
         var issues: [String] = []
         var details: [String] = []
         var actions: [String] = []
@@ -1075,6 +1082,22 @@ enum ActiveCatalogHealthCSV {
             issues.append(code)
             details.append(detail)
             actions.append(action)
+        }
+    }
+
+    struct Coverage {
+        var finishes = 0
+        var checked = 0
+        var issues = 0
+        var unevaluated = 0
+        var withoutFinish = 0
+
+        mutating func add(_ other: Self) {
+            finishes += other.finishes
+            checked += other.checked
+            issues += other.issues
+            unevaluated += other.unevaluated
+            withoutFinish += other.withoutFinish
         }
     }
 
@@ -1100,7 +1123,7 @@ enum ActiveCatalogHealthCSV {
         evidence: Evidence = Evidence(), priceStatus: String = "not_checked",
         price: Double? = nil, generation: String = "", note: String = "",
         revision: Int? = nil, observedCount: Int? = nil,
-        scope: String = "active_browse"
+        scope: String = "active_browse", coverage: Coverage? = nil
     ) -> String {
         let issues = evidence.issues.joined(separator: "|")
         let details = evidence.details.joined(separator: " | ")
@@ -1117,38 +1140,120 @@ enum ActiveCatalogHealthCSV {
             evidence.product, evidence.productName, evidence.marketNumber, evidence.lane,
             issues, details, evidence.actions.joined(separator: " | "),
             note.isEmpty ? card?.collectionAvailabilityNotice ?? "" : note,
-            card?.imageURL?.absoluteString ?? "", scope
+            card?.imageURL?.absoluteString ?? "", scope, card?.pokemonPrintRun?.rawValue ?? "",
+            card?.magicTreatmentIDsRaw.joined(separator: "|") ?? "",
+            evidence.priceSource, evidence.fetchedAt?.ISO8601Format() ?? "",
+            evidence.sourceUpdatedAt?.ISO8601Format() ?? "", evidence.priceListing,
+            coverage.map { String($0.finishes) } ?? "", coverage.map { String($0.checked) } ?? "",
+            coverage.map { String($0.issues) } ?? "", coverage.map { String($0.unevaluated) } ?? "",
+            coverage.map { String($0.withoutFinish) } ?? ""
         ])
     }
 
-    static func checkedPriceStatus(
-        _ summary: CatalogCardSummary, update: CatalogPriceUpdate?, evidence: inout Evidence
-    ) -> (String, Double?) {
-        guard let update else { return ("not_checked", nil) }
-        if update.printingNeedsReviewIDs.contains(summary.id) {
-            evidence.issue("PRINTING_NEEDS_REVIEW", "Browse price resolver requires printing verification.",
-                           "Review physical printing")
-            return ("printing_needs_review", nil)
-        }
-        if update.missingMappingIDs.contains(summary.id) {
-            evidence.issue("BROWSE_PRICE_MAPPING_MISSING", "Browse could not establish a card-level price mapping; this result does not identify a specific finish.",
-                           "Research exact market mapping")
-            return ("mapping_missing", nil)
-        }
-        if update.unresolvedIDs.contains(summary.id) {
-            evidence.issue("PRICE_CHECK_UNRESOLVED",
-                           "Browse returned an unresolved price check without an underlying error or quote timestamp; the cause cannot be determined from this result.",
-                           "Inspect provider, mapping and quote freshness diagnostics")
-            return ("unresolved", nil)
-        }
-        if update.resolvedIDs.contains(summary.id) {
-            if let amount = update.prices[summary.id] { return ("priced", amount) }
-            evidence.issue("NO_USD_QUOTE", "Browse found no accepted USD quote for this card; this aggregate result is not a per-finish check.",
-                           "Investigate quote availability for the printed identity")
+    static func priceStatus(
+        _ lookup: PriceLookup, checkedAt: Date, evidence: inout Evidence
+    ) -> (status: String, amount: Double?) {
+        switch lookup {
+        case let .price(quote):
+            evidence.priceSource = quote.source.rawValue
+            evidence.priceListing = quote.sourceVariantID
+            evidence.fetchedAt = quote.fetchedAt
+            evidence.sourceUpdatedAt = quote.sourceUpdatedAt
+            guard quote.isUsableUSD else {
+                evidence.issue("INVALID_USD_QUOTE", "The exact finish returned an unusable USD amount.", "Inspect the provider quote")
+                return ("invalid_quote", nil)
+            }
+            guard !quote.isStale(now: checkedAt) else {
+                evidence.issue("PRICE_EVIDENCE_STALE", "The exact finish quote exceeds the app’s price freshness threshold.", "Refresh the provider quote")
+                return ("stale", quote.unitMarketPriceUSD)
+            }
+            return ("priced", quote.unitMarketPriceUSD)
+        case let .unavailable(source):
+            guard let source else {
+                evidence.issue("PRICE_CHECK_NOT_COMPLETED", "No provider reported a result for this exact finish.", "Check exact finish coverage and retry")
+                return ("not_checked", nil)
+            }
+            evidence.priceSource = source.rawValue
+            evidence.issue("NO_USD_QUOTE", "The pricing source returned no accepted USD quote for this exact finish.", "Inspect the provider listing")
             return ("no_usd_quote", nil)
         }
-        // An interrupted or absent check is not proof that a quote is missing.
-        return ("not_checked", nil)
+    }
+
+    static func recordPriceError(_ error: Error, evidence: inout Evidence) -> String {
+        let code: String
+        let reason: String
+        switch error {
+        case PriceQuoteError.mappingUnavailable:
+            code = "PRICE_MAPPING_MISSING"
+            reason = "The pricing resolver has no approved product mapping for this finish."
+        case PriceQuoteError.identityMismatch, PokemonTCGCSVError.identityMismatch, ScryfallError.identityMismatch, TCGdexError.identityMismatch:
+            code = "PRICE_IDENTITY_MISMATCH"
+            reason = "The provider identity disagrees with the expected printing or finish."
+        case PriceQuoteError.pricingUnsupported, ScryfallError.unsupportedPrinting, PokemonTCGCSVError.unsupportedSet:
+            code = "PRICE_UNSUPPORTED"
+            reason = "The pricing resolver does not support this printing, finish, or set."
+        case PriceQuoteError.providerUnavailable, ScryfallError.providerUnavailable, ScryfallError.rateLimited,
+             PokemonTCGCSVError.retryLater, TCGdexError.providerUnavailable, is URLError:
+            code = "PRICE_PROVIDER_UNAVAILABLE"
+            reason = "The provider check could not complete ((String(reflecting: type(of: error)), code ((error as NSError).code))."
+        case is DecodingError, PokemonTCGCSVError.invalidResponse, BrowseCatalogError.badResponse,
+             ScryfallError.badResponse, TCGdexError.badResponse:
+            code = "PRICE_RESPONSE_INVALID"
+            reason = "The provider response could not be validated."
+        case ScryfallError.cardNotFound, TCGdexError.cardNotFound:
+            code = "PRICE_PRINTING_NOT_FOUND"
+            reason = "The source did not return the exact printing listed in Browse."
+        default:
+            code = "PRICE_CHECK_FAILED"
+            reason = "The exact finish check failed ((String(reflecting: type(of: error)), code ((error as NSError).code))."
+        }
+        evidence.issue(code, reason, "Inspect the exact printing and provider evidence")
+        return code.lowercased()
+    }
+
+    static func magicPrice(
+        _ printing: ScryfallCard, card: IdentifiedCard, finish: PhysicalVariant,
+        retrievedAt: Date, checkedAt: Date, evidence: inout Evidence
+    ) -> (status: String, amount: Double?) {
+        guard printing.finishes?.contains(finish.id) == true,
+              let listing = CardPricing.scryfallListing(for: finish) else {
+            evidence.issue("PRICE_UNSUPPORTED", "The exact Scryfall printing does not advertise a supported USD price field for this finish.", "Review Scryfall finish evidence")
+            return ("unsupported", nil)
+        }
+        evidence.priceSource = PriceSource.scryfall.rawValue
+        evidence.fetchedAt = retrievedAt
+        evidence.priceListing = listing
+        if let product = printing.tcgplayerProductID(for: finish) {
+            evidence.provider = "tcgplayer"
+            evidence.product = String(product)
+            evidence.mapping = "provider_product"
+        } else {
+            evidence.mapping = "product_id_missing"
+            evidence.issue("MARKET_PRODUCT_ID_MISSING", "Scryfall did not publish a numeric TCGplayer product ID for this finish.", "Review Scryfall marketplace links")
+        }
+        guard let prices = printing.prices else {
+            return priceStatus(.unavailable(nil), checkedAt: checkedAt, evidence: &evidence)
+        }
+        let rawPrice = switch listing {
+        case "usd": prices.usd
+        case "usd_foil": prices.usdFoil
+        default: prices.usdEtched
+        }
+        if rawPrice == nil {
+            if checkedAt.timeIntervalSince(retrievedAt) > PriceDisplay.staleAfter {
+                evidence.issue("PRICE_EVIDENCE_STALE", "The Scryfall observation for (listing) is too old to establish current availability.", "Refresh the Scryfall printing")
+                return ("stale_unverified", nil)
+            }
+            evidence.issue("NO_USD_QUOTE", "Scryfall (listing) has no usable value for this exact printing and finish.", "Inspect the Scryfall printing")
+            return ("no_usd_quote", nil)
+        }
+        guard let amount = prices.value(forKey: listing), amount.isFinite, amount >= 0 else {
+            evidence.issue("INVALID_USD_QUOTE", "Scryfall \(listing) contains an invalid USD amount.", "Inspect the Scryfall printing")
+            return ("invalid_quote", nil)
+        }
+        return priceStatus(CardPricing.price(for: card, variant: finish,
+                           magicTreatments: card.magicTreatments(for: finish), at: retrievedAt),
+                           checkedAt: checkedAt, evidence: &evidence)
     }
 
     static func printingEvidence(
@@ -1375,6 +1480,7 @@ enum ActiveCatalogHealthCSV {
                                revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
                                scope: "coverage_not_fully_evaluated"))
             }
+            var gameCoverage = Coverage()
             for (index, set) in sets.enumerated() {
                 try Task.checkCancellation()
                 if index.isMultiple(of: 10) || index == sets.count - 1 {
@@ -1418,37 +1524,133 @@ enum ActiveCatalogHealthCSV {
                                        set: set, evidence: summaryIssue, generation: activeGeneration,
                                        revision: snapshot?.revision ?? pokemonRevision ?? magicRevision, observedCount: summaries.count))
                     }
-                    // Resolve price states through the same engine as Browse.
-                    // Mapping authority remains per-finish; observed price is
-                    // explicitly a card-summary aggregate, not a per-finish quote.
-                    var priceUpdate: CatalogPriceUpdate?
-                    if checkPrices && !summaries.isEmpty {
-                        await progress("\(game.label): checking \(set.name) prices…")
-                        for await update in browse.sortPriceUpdates(for: summaries) {
-                            try Task.checkCancellation()
-                            priceUpdate = update
+                    var setCoverage = Coverage()
+                    if checkPrices {
+                        await progress("(game.label): checking (set.name) finishes…")
+                        if game == .pokemon, let catalog = browse as? BrowseCatalog {
+                            await catalog.preparePokemonBulkPrices(for: summaries)
                         }
                     }
                     for summary in summaries {
                         try Task.checkCancellation()
-                        let findings = printingEvidence(for: summary, catalog: activeCatalog)
-                        for original in findings {
-                            var finding = original
-                            let (status, aggregateUSD) = checkedPriceStatus(
-                                summary, update: priceUpdate, evidence: &finding
-                            )
-                            if checkPrices && status == "not_checked" {
-                                finding.issue("PRICE_CHECK_NOT_COMPLETED", "Browse did not return a price result for this card.", "Retry the catalog price check")
+                        var findings = printingEvidence(for: summary, catalog: activeCatalog)
+                        var details: CatalogCardDetails?
+                        var detailError: Error?
+                        // A single printing payload supplies all Magic finishes and USD fields.
+                        // Pokémon normally enumerates one expected finish per checklist slot.
+                        if checkPrices && (game == .magic || (game == .pokemon && summary.masterSetVariant == nil)) {
+                            do {
+                                let loaded = try await browse.details(for: summary)
+                                details = loaded
+                                let variants = loaded.card.variantEvidence.catalogVariants
+                                if !variants.isEmpty {
+                                    let original = findings[0]
+                                    findings = Set(variants.map(\.id)).sorted().map { finish in
+                                        var finding = original
+                                        finding.finish = finish
+                                        return finding
+                                    }
+                                }
+                            } catch is CancellationError {
+                                throw CancellationError()
+                            } catch CatalogLookupError.staleCatalog {
+                                throw CatalogLookupError.staleCatalog
+                            } catch {
+                                detailError = error
                             }
-                            guard shouldExport(finding) else { continue }
+                        }
+                        for original in findings {
+                            try Task.checkCancellation()
+                            var finding = original
+                            var status = "not_checked"
+                            var amount: Double?
+                            if checkPrices {
+                                if let detailError {
+                                    status = recordPriceError(detailError, evidence: &finding)
+                                } else if finding.finish.isEmpty {
+                                    finding.issue("FINISH_NOT_EVALUATED", "The active card record does not identify a finish to check.", "Review physical finish evidence")
+                                } else {
+                                    let finish = PhysicalVariant.resolving(finding.finish)
+                                    let checkedAt = Date.now
+                                    do {
+                                        if let details, case let .magic(printing) = details.card.legacyIdentity {
+                                            guard printing.id.caseInsensitiveCompare(summary.providerID) == .orderedSame else {
+                                                throw PriceQuoteError.identityMismatch
+                                            }
+                                            (status, amount) = magicPrice(printing, card: details.card, finish: finish,
+                                                retrievedAt: details.retrievedAt, checkedAt: checkedAt, evidence: &finding)
+                                        } else if game == .magic {
+                                            throw PriceQuoteError.identityMismatch
+                                        } else {
+                                            let reviewed = game == .pokemon
+                                                ? PokemonReviewedMarketProduct.entry(for: summary, variantID: finish.id) : nil
+                                            if let reviewed, reviewed.variant.id == finish.id {
+                                                finding.provider = "tcgplayer"
+                                                finding.product = String(reviewed.productID)
+                                                finding.group = String(reviewed.groupID)
+                                                finding.productName = reviewed.marketName
+                                                finding.marketNumber = reviewed.number
+                                                finding.lane = reviewed.printing
+                                                finding.mapping = "reviewed_product"
+                                            }
+                                            let bulk = await (browse as? BrowseCatalog)?.catalogHealthBulkQuote(for: summary, variant: finish)
+                                            var lookup: PriceLookup
+                                            if let bulk {
+                                                lookup = .price(bulk)
+                                            } else if let catalog = browse as? BrowseCatalog {
+                                                lookup = try await catalog.price(for: summary, variant: finish, catalogHealthCheck: true)
+                                            } else {
+                                                lookup = try await browse.price(for: summary, variant: finish)
+                                            }
+                                            if game == .pokemon, case .unavailable(.tcgplayer) = lookup {
+                                                // TCGdex can return this for a blocked or absent exact lane.
+                                                // Only a source that confirms the finish can establish no quote.
+                                                lookup = .unavailable(nil)
+                                            }
+                                            (status, amount) = priceStatus(lookup, checkedAt: checkedAt, evidence: &finding)
+                                            if game == .pokemon, shouldExport(finding), finding.product.isEmpty,
+                                               let loaded = try? await browse.details(for: summary),
+                                               let product = CardPricing.tcgplayerProductID(for: loaded.card, variant: finish, printRun: summary.pokemonPrintRun) {
+                                                finding.provider = "tcgplayer"
+                                                finding.product = String(product)
+                                                finding.mapping = "provider_product"
+                                            }
+                                        }
+                                    } catch is CancellationError {
+                                        throw CancellationError()
+                                    } catch CatalogLookupError.staleCatalog {
+                                        throw CatalogLookupError.staleCatalog
+                                    } catch {
+                                        status = recordPriceError(error, evidence: &finding)
+                                    }
+                                }
+                            }
+                            let hasIssue = shouldExport(finding)
+                            if !finding.finish.isEmpty {
+                                setCoverage.finishes += 1
+                                if ["priced", "no_usd_quote", "stale", "stale_unverified", "invalid_quote"].contains(status) {
+                                    setCoverage.checked += 1
+                                } else {
+                                    setCoverage.unevaluated += 1
+                                }
+                                if hasIssue { setCoverage.issues += 1 }
+                            } else {
+                                setCoverage.withoutFinish += 1
+                            }
+                            guard hasIssue else { continue }
                             csv.append(row(kind: "card", exported: date, build: build, game: game,
                                            set: set, card: summary, evidence: finding,
-                                           priceStatus: status, price: aggregateUSD,
+                                           priceStatus: status, price: amount,
                                            generation: summary.catalogGeneration ?? activeGeneration,
                                            revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
-                                           scope: checkPrices ? "active_browse; price may be cached" : "active_browse; price not checked"))
+                                           scope: "exact_finish; provider data may be cached"))
                         }
                     }
+                    gameCoverage.add(setCoverage)
+                    csv.append(row(kind: "set_coverage", exported: date, build: build, game: game,
+                                   set: set, generation: activeGeneration,
+                                   revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
+                                   observedCount: summaries.count, coverage: setCoverage))
                 } catch CatalogLookupError.staleCatalog {
                     throw CatalogHealthExportError.catalogChanged
                 } catch is CancellationError {
@@ -1460,6 +1662,9 @@ enum ActiveCatalogHealthCSV {
                                    set: set, evidence: issue, generation: activeGeneration, scope: "not_fully_enumerated"))
                 }
             }
+            csv.append(row(kind: "game_coverage", exported: date, build: build, game: game,
+                           generation: activeGeneration, revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
+                           coverage: gameCoverage))
             if let source = runtime?.activationSource {
                 let latest = await source.currentSnapshot()
                 if latest?.revision != snapshot?.revision {
