@@ -43,5 +43,5 @@ jobs:
         if: always()
         with:
           name: one-piece-artwork-evidence-${{ github.run_id }}
-          path: ${{ runner.temp }}/one-piece-evidence/eb05-market-artwork.json
+          path: ${{ runner.temp }}/one-piece-evidence/*.json
           if-no-files-found: warn
