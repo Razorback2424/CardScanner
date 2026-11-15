@@ -238,12 +238,12 @@ struct CollectionView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// The collection's destinations, so one hierarchy drives a push on a
-    /// phone-sized window and a second column on an iPad-sized one. `card` carries
-    /// the row id rather than the model object: a removed card's id simply stops
-    /// resolving, which is how the detail column falls back to its placeholder.
+    /// phone-sized window and a second column on an iPad-sized one. Catalog
+    /// routes carry a value identity so they survive removal of the opening copy.
     private enum Destination: Hashable {
         case browse
         case card(String)
+        case catalogCard(CatalogDetailLookup, openingFinishID: String?, collectionKey: String)
         case movement(String)
         case unverifiedReports
     }
@@ -543,23 +543,14 @@ struct CollectionView: View {
         switch destination {
         case .browse:
             BrowseView(catalog: catalog)
-        case let .card(id):
-            if let entry = entry(for: id, in: snapshot) {
-                CollectionCardDestination(
-                    row: entry.row,
-                    unpricedReason: entry.unpricedReason,
-                    artworkReason: entry.artworkReason,
-                    isLogicalConflict: entry.isLogicalConflict,
-                    history: history,
-                    onRemoved: presentUndo(for:)
-                )
-            } else {
-                ContentUnavailableView(
-                    "Card not shown",
-                    systemImage: "rectangle.stack",
-                    description: Text("This card was removed from your collection.")
-                )
+        case let .catalogCard(lookup, openingFinishID, collectionKey):
+            CollectionCatalogDestination(
+                lookup: lookup, openingFinishID: openingFinishID, catalog: catalog
+            ) {
+                legacyCardDestination(collectionKey, in: snapshot)
             }
+        case let .card(id):
+            legacyCardDestination(id, in: snapshot)
         case .unverifiedReports:
             UnverifiedReportsListView { collectionKey in
                 navigationPath.append(Destination.card(collectionKey))
@@ -575,6 +566,39 @@ struct CollectionView: View {
                 )
             }
         }
+    }
+
+    @ViewBuilder
+    private func legacyCardDestination(_ id: String, in snapshot: Snapshot) -> some View {
+        if let entry = entry(for: id, in: snapshot) {
+            CollectionCardDestination(
+                row: entry.row,
+                unpricedReason: entry.unpricedReason,
+                artworkReason: entry.artworkReason,
+                isLogicalConflict: entry.isLogicalConflict,
+                history: history,
+                onRemoved: presentUndo(for:)
+            )
+        } else {
+            ContentUnavailableView(
+                "Card not shown",
+                systemImage: "rectangle.stack",
+                description: Text("This card was removed from your collection.")
+            )
+        }
+    }
+
+    private func detailDestination(for row: CollectionRow) -> Destination {
+        guard row.itemKind == .rawCard,
+              !UnverifiedReportKey.isUnverified(row.id),
+              catalog.gameRegistry.supports(row.game, .browse),
+              let providerID = row.catalogProviderID else { return .card(row.id) }
+        return .catalogCard(
+            .init(game: row.game, providerID: providerID, printRun: row.pokemonPrintRun,
+                name: row.name, setCode: row.setCode),
+            openingFinishID: CatalogOwnershipCardSnapshot.catalogFinishID(row.variantID, game: row.game),
+            collectionKey: row.id
+        )
     }
 
     private func entry(for id: String, in snapshot: Snapshot) -> Snapshot.Entry? {
@@ -638,7 +662,7 @@ struct CollectionView: View {
                             // them, and the stack that must move is the one in the next
                             // column over.
                             Button {
-                                select(.card(entry.id))
+                                select(detailDestination(for: entry.row))
                             } label: {
                                 CollectionCardTile(
                                     row: entry.row,
@@ -1440,6 +1464,7 @@ struct CollectionCardDestination: View {
     let artworkReason: ArtworkDiagnosticReason?
     let isLogicalConflict: Bool
     @ObservedObject var history: PortfolioHistoryStore
+    let personalOnly: Bool
     let onRemoved: (RemovedCardSnapshot) -> Void
     let onMissingPlaceholderAppeared: (@MainActor () -> Void)?
 
@@ -1449,6 +1474,7 @@ struct CollectionCardDestination: View {
         artworkReason: ArtworkDiagnosticReason?,
         isLogicalConflict: Bool,
         history: PortfolioHistoryStore,
+        personalOnly: Bool = false,
         onRemoved: @escaping (RemovedCardSnapshot) -> Void,
         onMissingPlaceholderAppeared: (@MainActor () -> Void)? = nil
     ) {
@@ -1457,6 +1483,7 @@ struct CollectionCardDestination: View {
         self.artworkReason = artworkReason
         self.isLogicalConflict = isLogicalConflict
         self.history = history
+        self.personalOnly = personalOnly
         self.onRemoved = onRemoved
         self.onMissingPlaceholderAppeared = onMissingPlaceholderAppeared
         let collectionKey = row.id
@@ -1477,6 +1504,7 @@ struct CollectionCardDestination: View {
                 logicalQuantity: row.quantity,
                 isLogicalConflict: isLogicalConflict,
                 instrumentKey: row.priceStorageKey,
+                personalOnly: personalOnly,
                 onRemoved: onRemoved
             )
         } else {

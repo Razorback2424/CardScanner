@@ -196,6 +196,7 @@ actor CollectionProjectionActor: BackgroundModelActor {
                     highImageURL: card.highImageURL,
                     userArtworkFilename: artworkFilename,
                     catalogProviderID: card.underlyingPrintingID,
+                    pokemonPrintRun: card.pokemonPrintRun,
                     normalizedName: CardNameSearch.normalize(card.name),
                     collectorNumberSortKey: CollectorNumber.key(for: card.cardNumber),
                     variantResolution: card.variantResolution,

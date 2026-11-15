@@ -3,6 +3,7 @@ import Combine
 import SwiftData
 import SwiftUI
 import UIKit
+import Vision
 import XCTest
 import PokemonCatalogCore
 @testable import TradingCardScanner
@@ -641,6 +642,292 @@ final class CatalogSetArtworkTests: XCTestCase {
 }
 
 final class BrowseFeatureTests: XCTestCase {
+    func testCollectionDetailLookupRequiresExactPrintingAndPrintRun() {
+        let lookup = CatalogDetailLookup(game: .pokemon, providerID: "base1-4",
+            printRun: .firstEdition, name: "Charizard", setCode: "BS")
+        func summary(_ id: String, set: String, run: PokemonPrintRun?) -> CatalogCardSummary {
+            .init(game: .pokemon, providerID: id, setID: .init(game: .pokemon, providerID: set, pokemonPrintRun: run),
+                setName: "Base Set", setCode: "BS", name: "Charizard", collectorNumber: "4",
+                thumbnailURL: nil, imageURL: nil)
+        }
+        let reprint = summary("base4-4", set: "base4", run: .firstEdition)
+        let unlimited = summary("base1-4", set: "base1", run: .unlimited)
+        let exact = summary("base1-4", set: "base1", run: .firstEdition)
+        XCTAssertNil(lookup.exactSummary(in: [reprint, unlimited]))
+        XCTAssertEqual(lookup.exactSummary(in: [reprint, unlimited, exact]), exact)
+        XCTAssertNil(lookup.exactSummary(in: [exact, summary("base1-4", set: "other", run: .firstEdition)]))
+    }
+
+    @MainActor
+    func testCatalogFinishOwnershipSeparatesFinishesAndDetectsSameKeyPriceConflicts() {
+        func snapshot(key: String, variant: PhysicalVariant?, quantity: Int, priceKey: String) -> CatalogOwnershipCardSnapshot {
+            let row = CollectedCard(collectionKey: key, game: .pokemon, providerID: "base1-4",
+                name: "Charizard", setName: "Base Set", setCode: "BS", cardNumber: "4", rarity: nil,
+                imageURL: nil, thumbnailURL: nil, variant: variant, variantResolution: .userConfirmed,
+                quantity: quantity)
+            return .init(row, selectedPriceKey: priceKey, selectedPrice: .init(amount: 10))
+        }
+        let holo = snapshot(key: "holo", variant: .holo, quantity: 1, priceKey: "price")
+        let syncedHolo = snapshot(key: "holo", variant: .holo, quantity: 2, priceKey: "price")
+        let reverse = snapshot(key: "reverse", variant: .reverse, quantity: 4, priceKey: "reverse-price")
+        let unknown = snapshot(key: "unknown", variant: nil, quantity: 8, priceKey: "unknown-price")
+        func slot(_ rows: [CatalogOwnershipCardSnapshot], finish: PhysicalVariant) -> CatalogFinishOwnership {
+            .init(rows: rows, variant: finish, treatments: [], qualifiers: [:], name: "Charizard", projection: nil)
+        }
+        let rows = [holo, syncedHolo, reverse, unknown]
+        XCTAssertEqual(slot(rows, finish: .holo).quantity, 3)
+        XCTAssertFalse(slot(rows, finish: .holo).hasConflict)
+        XCTAssertEqual(slot(rows, finish: .reverse).quantity, 4)
+        XCTAssertEqual(slot(rows, finish: .normal).quantity, 0)
+
+        let conflict = slot([holo, snapshot(key: "holo", variant: .holo, quantity: 2, priceKey: "other-price")],
+            finish: .holo)
+        XCTAssertEqual(conflict.quantity, 3)
+        XCTAssertFalse(conflict.price.entriesDisagree, "Equal displayed quotes do not establish identity")
+        XCTAssertTrue(conflict.hasConflict)
+    }
+
+    @MainActor
+    func testLinkedReportsCountWithTheirVerifiedFinishAndKeepSeparateCopyDetails() async throws {
+        let card = try ProductionRowFixtures.pokemonCard()
+        let summary = catalogDetailSummary(card)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let baseKey = card.collectionKey(variant: .reverse)
+        let linkedKey = UnverifiedReportKey.linkedKey(base: baseKey, reportID: UUID())
+        let unresolvedKey = UnverifiedReportKey.unverifiedKey(base: baseKey, reportID: UUID())
+        for (key, resolution, quantity) in [(baseKey, VariantResolution.userConfirmed, 3),
+            (linkedKey, .linkedFromReport, 3), (unresolvedKey, .userConfirmed, 9)] {
+            let row = CollectedCard(collectionKey: key, game: .pokemon, providerID: card.providerID,
+                name: card.name, setName: card.setName, setCode: card.setCode, cardNumber: card.cardNumber,
+                rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .reverse, variantResolution: resolution,
+                quantity: quantity)
+            container.mainContext.insert(row)
+        }
+        try container.mainContext.save()
+        let projection = CollectionProjectionStore()
+        await projection.rebuild(container: container)
+        let snapshot = try XCTUnwrap(projection.snapshot)
+        let slot = CatalogFinishOwnership(rows: snapshot.ownership.exactPrintingRows(for: summary),
+            variant: .reverse, treatments: [], qualifiers: [:], name: card.name, projection: snapshot)
+
+        XCTAssertEqual(slot.quantity, 6)
+        XCTAssertEqual(Set(slot.copyKeys), Set([baseKey, linkedKey]))
+        XCTAssertEqual(slot.targets.map(\.collectionKey), [baseKey])
+        XCTAssertEqual(slot.targets.first?.quantity, 3)
+        XCTAssertFalse(slot.hasConflict)
+        XCTAssertEqual(Set(slot.price.entries.map(\.storedPriceKey)).count, 1)
+    }
+
+    @MainActor
+    func testCatalogFinishCountsLegacyMagicNonfoilWithoutGuessingTreatmentQualifiers() {
+        func row(_ key: String, finish: PhysicalVariant, quantity: Int, qualifiers: [String: String] = [:]) -> CatalogOwnershipCardSnapshot {
+            let stored = CollectedCard(collectionKey: key, game: .magic, providerID: "printing",
+                name: "Magic Card", setName: "Test", setCode: "TST", cardNumber: "1",
+                rarity: nil, imageURL: nil, thumbnailURL: nil, variant: finish, variantResolution: .imported,
+                quantity: quantity, magicTreatments: finish == .foil ? [.neonInk] : [],
+                magicTreatmentQualifiers: qualifiers)
+            return .init(stored, selectedPriceKey: stored.priceKey, selectedPrice: .init(amount: 4))
+        }
+        let rows = [
+            row("legacy-nonfoil", finish: .normal, quantity: 2),
+            row("unspecified-ink", finish: .foil, quantity: 5),
+            row("blue-ink", finish: .foil, quantity: 3, qualifiers: ["neonink": "blue"]),
+            row("red-ink", finish: .foil, quantity: 1, qualifiers: ["neonink": "red"])
+        ]
+        let nonfoil = CatalogFinishOwnership(rows: rows, variant: .nonfoil, treatments: [],
+            qualifiers: [:], name: "Magic Card", projection: nil)
+        XCTAssertEqual(nonfoil.quantity, 2)
+        XCTAssertEqual(nonfoil.copyKeys, ["legacy-nonfoil"])
+        XCTAssertEqual(nonfoil.price.display.amount, 4)
+
+        let red = CatalogFinishOwnership(rows: rows, variant: .foil, treatments: ["neonink"],
+            qualifiers: ["neonink": "red"], name: "Magic Card", projection: nil)
+        XCTAssertEqual(red.quantity, 1)
+        XCTAssertEqual(red.copyKeys, ["red-ink"])
+        XCTAssertTrue(red.hasUnverifiedQualifiers)
+    }
+
+    @MainActor
+    func testCatalogAdditionKeepsDifferentAndUnqualifiedNeonInkCopiesSeparate() async throws {
+        // The bundled catalog identifies this exact printing as Red Neon Ink.
+        let card = IdentifiedCard.magic(try decode(ScryfallCard.self, from: """
+        {"id":"4826991d-c3c3-45ff-9dfc-4246a84b40e0","name":"Hidetsugu, Devouring Chaos",
+         "set":"neo","set_name":"Kamigawa: Neon Dynasty","collector_number":"429",
+         "lang":"en","digital":false,"released_at":"2022-02-18","finishes":["foil"]}
+        """))
+        let red = ["neonink": "red"]
+        XCTAssertEqual(card.magicTreatmentQualifiers(for: .foil), red)
+        let canonicalKey = card.collectionKey(variant: .foil)
+        let finish = ResolvedVariant(variant: .foil, resolution: .userConfirmed)
+        let set = CatalogSet(catalogID: .init(game: .magic, providerID: card.setID),
+            name: card.setName, code: card.setCode, logoURL: nil, symbolURL: nil,
+            cardCount: 1, releaseDate: nil, sortRank: 0)
+        let details = CatalogCardDetails(card: card, set: set)
+
+        for exactKey in [nil, "magic:csv-red-neon", canonicalKey] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let context = container.mainContext
+            func seed(_ key: String, qualifiers: [String: String]) {
+                let row = CollectedCard(card: card, resolved: finish)
+                row.collectionKey = key
+                row.magicTreatmentQualifiers = qualifiers
+                context.insert(row)
+            }
+            seed("magic:csv-unknown-neon", qualifiers: [:])
+            seed("magic:csv-blue-neon", qualifiers: ["neonink": "blue"])
+            if let exactKey { seed(exactKey, qualifiers: red) }
+            try context.save()
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            let receipt = try await writer.addCatalog(details, resolved: finish,
+                pokemonPrintRun: nil, shouldContinue: { true })
+            XCTAssertEqual(receipt.mutation.collectionKey, exactKey ?? canonicalKey)
+            let rows = try ModelContext(container).fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 3)
+            XCTAssertEqual(rows.first { $0.magicTreatmentQualifiers == red }?.quantity, exactKey == nil ? 1 : 2)
+            XCTAssertEqual(rows.first { $0.collectionKey == "magic:csv-unknown-neon" }?.magicTreatmentQualifiers, [:])
+            XCTAssertEqual(rows.first { $0.collectionKey == "magic:csv-unknown-neon" }?.quantity, 1)
+            XCTAssertEqual(rows.first { $0.collectionKey == "magic:csv-blue-neon" }?.magicTreatmentQualifiers, ["neonink": "blue"])
+            XCTAssertEqual(rows.first { $0.collectionKey == "magic:csv-blue-neon" }?.quantity, 1)
+        }
+
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let unknown = CollectedCard(card: card, resolved: finish)
+        unknown.magicTreatmentQualifiers = [:]
+        container.mainContext.insert(unknown)
+        try container.mainContext.save()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        do {
+            _ = try await writer.addCatalog(details, resolved: finish, pokemonPrintRun: nil, shouldContinue: { true })
+            XCTFail("A copy on the same key cannot be silently relabelled")
+        } catch CollectionStoreError.ledgerConflict {
+            let rows = try ModelContext(container).fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(rows.first?.quantity, 1)
+            XCTAssertEqual(rows.first?.magicTreatmentQualifiers, [:])
+        }
+    }
+
+    @MainActor
+    func testFirstEditionRowsRecoverOnlyAnEstablishedFinishOfTheSameRun() throws {
+        let payload = try decode(TCGdexCard.self, from: """
+        {"id":"base1-004","localId":"004","name":"Charizard",
+         "set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},
+         "variants":{"firstEdition":true,"normal":false,"holo":false,"reverse":false}}
+        """)
+        let card = IdentifiedCard.pokemon(payload, setCode: "BAS")
+        let summary = catalogDetailSummary(card, run: .firstEdition)
+        func row(_ variant: PhysicalVariant, run: PokemonPrintRun, resolution: VariantResolution) -> CatalogOwnershipCardSnapshot {
+            let stored = CollectedCard(card: card, resolved: .init(variant: variant, resolution: resolution))
+            stored.pokemonPrintRunRaw = run.rawValue
+            return CatalogOwnershipCardSnapshot(stored)
+        }
+        let ambiguous = row(.normal, run: .firstEdition, resolution: .imported)
+        let otherRun = row(.normal, run: .unlimited, resolution: .userConfirmed)
+        let editionOnly = row(.firstEdition, run: .firstEdition, resolution: .userConfirmed)
+        let confirmed = row(.holo, run: .firstEdition, resolution: .userConfirmed)
+        let incomplete = [ambiguous, otherRun, editionOnly]
+        XCTAssertEqual(CatalogCardDetailView.priceVariants(for: card, summary: summary, ownedRows: incomplete),
+            [.firstEdition], "The edition context must not become a guessed physical finish")
+        XCTAssertEqual(CatalogCardDetailView.priceVariants(for: card, summary: summary, ownedRows: incomplete + [confirmed]),
+            [.holo])
+    }
+
+    private func catalogDetailSummary(_ card: IdentifiedCard, run: PokemonPrintRun? = nil) -> CatalogCardSummary {
+        .init(game: card.game, providerID: card.providerID,
+            setID: .init(game: card.game, providerID: card.setID, pokemonPrintRun: run),
+            setName: card.setName, setCode: card.setCode, name: card.name, collectorNumber: card.cardNumber,
+            thumbnailURL: nil, imageURL: nil)
+    }
+
+    @MainActor
+    func testHostedCatalogDetailStaysOpenThroughLastCopyRemovalAndReacquisition() async throws {
+        try await assertHostedCatalogDetailLifecycle(readOnly: false)
+    }
+
+    @MainActor
+    func testHostedVerifiedCatalogDetailRendersWhenCollectionWritesAreUnavailable() async throws {
+        try await assertHostedCatalogDetailLifecycle(readOnly: true)
+    }
+
+    @MainActor
+    private func assertHostedCatalogDetailLifecycle(readOnly: Bool) async throws {
+        let payload = try decode(TCGdexCard.self, from: """
+        {"id":"test-set-001","localId":"001","name":"Eevee",
+         "set":{"id":"test-set","name":"Test Set","cardCount":{"total":1,"official":1}},
+         "variants":{"normal":true,"holo":false,"reverse":false,"firstEdition":false}}
+        """)
+        let card = IdentifiedCard.pokemon(payload, setCode: "TST")
+        let summary = catalogDetailSummary(card)
+        let set = CatalogSet(catalogID: summary.setID, name: card.setName, code: card.setCode,
+            logoURL: nil, symbolURL: nil, cardCount: 1, releaseDate: nil, sortRank: 0)
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        let writable = CatalogCardDetails(card: card, set: set)
+        let finish = ResolvedVariant(variant: .normal, resolution: .userConfirmed)
+        let opening = try await writer.addCatalog(writable, resolved: finish,
+            pokemonPrintRun: nil, shouldContinue: { true })
+        let key = opening.mutation.collectionKey
+        let projection = CollectionProjectionStore()
+        await projection.rebuild(container: container)
+        let catalog = CatalogDetailRenderProvider(summary: summary,
+            details: .init(card: card, set: set, collectionWriteUnavailableReason: readOnly ? "Collection writes unavailable" : nil))
+        let lookup = CatalogDetailLookup(game: card.game, providerID: card.providerID,
+            printRun: nil, name: card.name, setCode: card.setCode)
+        let root = NavigationStack {
+            CollectionCatalogDestination(lookup: lookup, openingFinishID: PhysicalVariant.normal.id, catalog: catalog) {
+                Text("Saved record fallback")
+            }
+        }
+        .modelContainer(container)
+        .environmentObject(projection)
+        .environment(\.dynamicTypeSize, .large)
+        let controller = UIHostingController(rootView: root)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        controller.view.frame = window.bounds
+
+        @MainActor func assertDetailVisible() async throws {
+            var text = ""
+            for _ in 0..<40 {
+                try await Task.sleep(for: .milliseconds(50))
+                controller.view.layoutIfNeeded()
+                let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
+                    controller.view.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+                }
+                let request = VNRecognizeTextRequest()
+                request.recognitionLevel = .fast
+                try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+                text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+                let expected = readOnly ? "Collection writes unavailable" : "Normal"
+                if text.localizedCaseInsensitiveContains("Eevee"), text.localizedCaseInsensitiveContains(expected) { return }
+            }
+            XCTFail("Verified detail was not visible. Rendered text: \(text)")
+        }
+
+        XCTAssertEqual(projection.snapshot?.rowsByCollectionKey[key]?.quantity, 1)
+        try await assertDetailVisible()
+        guard !readOnly else { return }
+        let remover = await CollectionDetailWriter.makeBackground(modelContainer: container)
+        _ = try await remover.remove(collectionKey: key, treatments: [], expectedCurrent: 1, shouldContinue: { true })
+        await projection.rebuild(container: container)
+        XCTAssertNil(projection.snapshot?.rowsByCollectionKey[key])
+        XCTAssertTrue(projection.snapshot?.ownership.exactPrintingRows(for: summary).isEmpty == true)
+        try await assertDetailVisible()
+
+        let readded = try await writer.addCatalog(writable, resolved: finish,
+            pokemonPrintRun: nil, shouldContinue: { true })
+        await projection.rebuild(container: container)
+        XCTAssertEqual(readded.mutation.collectionKey, key)
+        XCTAssertEqual(projection.snapshot?.rowsByCollectionKey[key]?.quantity, 1)
+        try await assertDetailVisible()
+    }
+
     func testFreshTCGCSVSortQuoteReplacesStaleDetailWithoutDisplacingFreshDetail() async throws {
         for (receiptAge, sourceAge) in [(172800.0, 172800.0), (0.0, 172800.0), (0.0, 0.0)] {
             let root = try makeTemporaryCacheDirectory()
@@ -8634,6 +8921,28 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         return root
+    }
+}
+
+private struct CatalogDetailRenderProvider: BrowseCatalogProviding {
+    let summary: CatalogCardSummary
+    let details: CatalogCardDetails
+    let gameRegistry = CardGameRegistry(descriptors: [
+        .init(game: .pokemon, displayName: "Pokémon", sortOrder: 0, capabilities: [.browse, .collectionWrite])
+    ])
+
+    func sets(for game: CardGame) async throws -> [CatalogSet] { [details.set] }
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [summary], nextCursor: nil)
+    }
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>,
+                     cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [summary], nextCursor: nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails { details }
+    func installedDetails(for summary: CatalogCardSummary) async -> CatalogCardDetails? { details }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { $0.finish() }
     }
 }
 
