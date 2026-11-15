@@ -25,6 +25,7 @@ jobs:
         if: inputs.capture_prices
         run: PYTHONDONTWRITEBYTECODE=1 python3 scripts/audit_set_pricing.py --capture-dir "$RUNNER_TEMP/catalog-market-capture" --output-dir "$RUNNER_TEMP/catalog-market-audit" --fetch-mapped-feeds
       - name: Export retained catalog health
+        if: always()
         env:
           CAPTURE_PRICES: ${{ inputs.capture_prices }}
         run: |
@@ -42,8 +43,8 @@ jobs:
             catalog-health/*.json
           if-no-files-found: warn
       - uses: actions/upload-artifact@v4
-        if: inputs.capture_prices
+        if: ${{ always() && inputs.capture_prices }}
         with:
           name: catalog-market-capture-${{ github.sha }}
           path: ${{ runner.temp }}/catalog-market-capture/
-          if-no-files-found: error
+          if-no-files-found: warn
