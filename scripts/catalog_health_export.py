@@ -131,7 +131,7 @@ def inventory(repo):
                     issues.append(('FINISH_UNVERIFIED', 'No supported finish is retained.', 'Review physical finish evidence'))
                 product_codes = prefixes(product.get('label', ''))
                 product_code = product_codes[0] if len(product_codes) == 1 else ''
-                row = make(game='one-piece', source_scope='installed' if printing['language'] == 'en' else 'retained_non_english', record_type='physical_printing', source_id=printing['canonicalCardID'], set_name=product.get('label'), set_code=product_code, product_set_code=product_code, printed_set_marker=card.get('printedNumber', '').split('-')[0],
+                row = make(game='one-piece', source_scope='bundled_owner' if printing['language'] == 'en' else 'retained_non_english', record_type='physical_printing', source_id=printing['canonicalCardID'], set_name=product.get('label'), set_code=product_code, product_set_code=product_code, printed_set_marker=card.get('printedNumber', '').split('-')[0],
                            card_number=card.get('printedNumber'), card_name=card.get('name'), printing_id=printing['id'],
                            artwork_id=printing.get('artworkID'), finish=finish, verification_status=printing['status'],
                            price_status=status, user_facing_notice='Browse only' if not verified else '', catalog_revision=owner.get('revision'),
@@ -158,7 +158,7 @@ def inventory(repo):
         discoveries[(obs['productEvidence'][0], evidence['number'])].append(obs)
     for observation in invalid_observations:
         evidence = observation['printedEvidence']
-        row = make(game='one-piece', source_scope='installed', record_type='invalid_browse_observation',
+        row = make(game='one-piece', source_scope='bundled_owner', record_type='invalid_browse_observation',
                    source_id=observation['id'], card_number=evidence.get('number'), card_name=evidence.get('name'),
                    verification_status='invalid_observation', price_status='unknown',
                    catalog_revision=owner.get('revision'), catalog_source_url=observation['sourceURL'],
@@ -170,7 +170,7 @@ def inventory(repo):
         product_codes = prefixes(product.get('label', ''))
         product_code = product_codes[0] if len(product_codes) == 1 else ''
         card = cards_by_number.get(number)
-        row = make(game='one-piece', source_scope='installed', record_type='browse_discovery', source_id='|'.join(sorted(o['id'] for o in observations)),
+        row = make(game='one-piece', source_scope='bundled_owner', record_type='browse_discovery', source_id='|'.join(sorted(o['id'] for o in observations)),
                    set_name=product.get('label'), set_code=product_code, product_set_code=product_code,
                    printed_set_marker=number.split('-')[0], card_number=number, card_name=card['name'] if card else observations[0]['printedEvidence'].get('name'),
                    verification_status='discovery', price_status='unknown', user_facing_notice='Printing needs review' if card else '', catalog_source_url=observations[0]['sourceURL'],
