@@ -265,6 +265,11 @@ def treatment_matches_alias(label, alias, market_product, finish):
                     for field in market_product["extendedData"]))
 
 
+def candidate_product_claims(candidate_matches):
+    """Count claims independently of shared collector numbers or treatment labels."""
+    return Counter(match[4]["imageProductID"] for match in candidate_matches.values())
+
+
 def build_retail_additions(release, product_rules, bandai_root, retail_root, artwork_root, market, artwork_capture=None,
                            eb05_roots=(), promo_root=None, promo_photo_reviews=None):
     from io import BytesIO
@@ -324,8 +329,6 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                         if mapping["provider"] == "tcgplayer"}
     products_by_id = {product["id"]: product for product in registry["products"]}
     names = {row["printedNumber"]: row["name"] for row in registry["canonicalCards"] if row["language"] == "en"}
-    seen_presentations = Counter((row["releaseID"], row["canonicalCardID"], row.get("treatment"))
-                                 for row in printings.values() if row["status"] == "verified" and row.get("releaseID"))
     candidate_matches = {}
     stats = Counter()
 
@@ -507,7 +510,6 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                 treatment = "Manga artwork (non-textured foil)"
                 image_review[1]["marketplacePrintingSpecification"] = PRB01_MANGA_SPEC
             identity = (printing_release, "one-piece:en:" + number, treatment)
-            seen_presentations[identity] += 1
             if (series, alias) in candidate_matches:
                 raise ValueError("Two retailer groups claim the same Bandai presentation")
             candidate_matches[(series, alias)] = (
@@ -516,11 +518,15 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
     result = {key: [] for key in ("artworks", "printings", "observations", "inventories", "finishUpdates")}
     evidence_ids = defaultdict(list)
     promo_products = {}
+    # A treatment label is not a physical identity: distinct official artwork
+    # can legitimately share it. Independent marketplace products must still
+    # be unique across the candidates in this review.
+    candidate_market_ids = candidate_product_claims(candidate_matches)
     for (_, alias), match in sorted(candidate_matches.items()):
         row, identity, list_source, image_source, listing, receipt, score, existing, distribution, image_review = match
         release_id, canonical_id, treatment = identity
-        if seen_presentations[identity] != 1:
-            stats["indistinguishable-printing-label"] += 1
+        if candidate_market_ids[listing["imageProductID"]] != 1:
+            stats["market-product-claimed-by-multiple-presentations"] += 1
             continue
         source_id = f"{release_id}:{alias}"
         official = {"provider": "bandai", "sourceID": source_id}

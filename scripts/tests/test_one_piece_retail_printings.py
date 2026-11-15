@@ -5,7 +5,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from reconcile_one_piece_retail_printings import (
-    PRB01_MANGA_SPEC, exact_artwork_match, exact_digital_artwork_match, listing_treatment, market_agrees,
+    PRB01_MANGA_SPEC, candidate_product_claims, exact_artwork_match, exact_digital_artwork_match, listing_treatment, market_agrees,
     photographic_artwork_match, promotion_label, promotion_treatment, retailer_listings, reviewed_promo_artwork,
     treatment_matches_alias,
 )
@@ -14,6 +14,16 @@ from one_piece_eb05_retail import cardboard_listings, rocket_listings, weirdwolf
 
 
 class OnePieceRetailPrintingsTests(unittest.TestCase):
+    def test_market_claims_are_per_product_not_treatment_or_number(self):
+        def match(product):
+            return (None, ("release", "same-number", "Alternate artwork"), None, None,
+                    {"imageProductID": product})
+        claims = candidate_product_claims({("series", "base"): match("1"),
+                                           ("series", "parallel-1"): match("2"),
+                                           ("series", "parallel-2"): match("3"),
+                                           ("other-series", "duplicate"): match("3")})
+        self.assertEqual(claims, {"1": 1, "2": 1, "3": 2})
+
     def test_image_match_requires_clear_agreement_in_every_region(self):
         scores = {"original": (0.013, 0.010, 0.014), "parallel": (0.170, 0.090, 0.013)}
         self.assertEqual(exact_artwork_match(scores), "original")
