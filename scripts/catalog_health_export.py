@@ -16,7 +16,7 @@ from audit_one_piece_coverage import BROWSE_DISCOVERY
 from discover_one_piece_products import prefixes
 
 FIELDS = ('game source_scope record_type source_id set_name set_code product_set_code printed_set_marker card_number card_name rarity printing_id artwork_id finish '
-          'verification_status price_status issue_codes issue_details recommended_action '
+          'verification_status price_status issue_codes issue_details recommended_action user_facing_notice '
           'catalog_source_url market_provider market_product_id market_product_url market_group_id market_lane market_product_name market_product_number last_price_check '
           'catalog_revision market_snapshot_date possible_verified_match_id confidence review_notes assessment').split()
 SUMMARY = ['game', 'source_scope', 'set_name', 'set_code', 'issue_code', 'severity', 'count']
@@ -134,7 +134,7 @@ def inventory(repo):
                 row = make(game='one-piece', source_scope='installed' if printing['language'] == 'en' else 'retained_non_english', record_type='physical_printing', source_id=printing['canonicalCardID'], set_name=product.get('label'), set_code=product_code, product_set_code=product_code, printed_set_marker=card.get('printedNumber', '').split('-')[0],
                            card_number=card.get('printedNumber'), card_name=card.get('name'), printing_id=printing['id'],
                            artwork_id=printing.get('artworkID'), finish=finish, verification_status=printing['status'],
-                           price_status=status, catalog_revision=owner.get('revision'),
+                           price_status=status, user_facing_notice='Browse only' if not verified else '', catalog_revision=owner.get('revision'),
                            catalog_source_url=(printing.get('review') or {}).get('reference'),
                            market_provider=(mapping or {}).get('provider'), market_product_id=(mapping or {}).get('productID'),
                            market_group_id=((mapping or {}).get('qualifiers') or {}).get('groupID'),
@@ -173,7 +173,7 @@ def inventory(repo):
         row = make(game='one-piece', source_scope='installed', record_type='browse_discovery', source_id='|'.join(sorted(o['id'] for o in observations)),
                    set_name=product.get('label'), set_code=product_code, product_set_code=product_code,
                    printed_set_marker=number.split('-')[0], card_number=number, card_name=card['name'] if card else observations[0]['printedEvidence'].get('name'),
-                   verification_status='discovery', price_status='unknown', catalog_source_url=observations[0]['sourceURL'],
+                   verification_status='discovery', price_status='unknown', user_facing_notice='Printing needs review' if card else '', catalog_source_url=observations[0]['sourceURL'],
                    catalog_revision=owner.get('revision'), review_notes='Bandai artwork aliases: ' + '|'.join(sorted({o['printedEvidence'].get('sourceArtworkAlias', o['id']) for o in observations})) + '; product ID: ' + product_id)
         issues = [('PRINTING_NEEDS_REVIEW', 'Browse discovery has no verified physical printing for this appearance.', 'Review Bandai appearance and physical printing')]
         if card is None:
@@ -287,9 +287,14 @@ def inventory(repo):
             # Membership is evidence for historical price fallback, not a
             # prerequisite for today's TCGCSV quote (YuGiOhPriceAdapter).
             current_mapping = supported and bool(edition) and bool(printing.get('p'))
+            notice = ('Reference display card without a printed set code.' if not printing['c'] else
+                      ('This printing needs identity review (' + printing['ir'] + ').' if printing.get('ir') else
+                      ('No supported edition is recorded for this product.' if not printing['e'] else '')))
+            if printing.get('canonicalLink') == 'unresolved':
+                notice = (notice + ' Canonical card linkage is unresolved.').strip()
             row = make(game='yugioh', source_scope='retained_seed', record_type='physical_printing', source_id=card.get('sourceID'), set_name=group.get('n'), set_code=group.get('a'), card_number=printing.get('c'),
                        card_name=card.get('n'), rarity=printing.get('r'), printing_id=printing['id'], finish=edition,
-                       verification_status='supported' if supported else 'held', price_status='unknown',
+                       verification_status='supported' if supported else 'held', price_status='unknown', user_facing_notice=notice,
                        catalog_source_url=printing.get('img'), catalog_revision=seed.get('generation'),
                        market_provider='tcgplayer' if current_mapping else '',
                        market_product_id=printing.get('p') if current_mapping else '',
