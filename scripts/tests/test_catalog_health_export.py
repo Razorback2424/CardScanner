@@ -109,9 +109,35 @@ class CatalogHealthTest(unittest.TestCase):
                 self.assertEqual(actual, expected)
             self.assertTrue(any(r['product_set_code'] == 'EB05' and r['printed_set_marker'] == 'EB03' for r in inventory))
             for kind in ('browse_discovery', 'candidate_discovery'):
-                keys = [(r['source_scope'], r['product_set_code'], r['card_number']) for r in inventory if r['record_type'] == kind]
+                keys = [(r['source_scope'], r['review_notes'].split('product ID: ')[-1], r['card_number']) for r in inventory if r['record_type'] == kind]
                 self.assertEqual(len(keys), len(set(keys)), kind)
             self.assertEqual({r['source_scope'] for r in inventory if r['record_type'] == 'candidate_discovery'}, {'candidate'})
+            # One Piece printings can have separate product appearances (reprints).
+            # The export must include those product memberships, not just releaseID.
+            printings = {p['id']: p for p in release['registry']['printings'] if p['status'] != 'superseded'}
+            product_labels = {p['id']: p['label'] for p in release['registry']['products']}
+            exported = {(r['printing_id'], r['set_name']) for r in inventory if r['game'] == 'one-piece'
+                        and r['record_type'] == 'physical_printing'}
+            for appearance in release['registry'].get('appearances', []):
+                if appearance['printingID'] in printings:
+                    self.assertIn((appearance['printingID'], product_labels[appearance['productID']]), exported)
+
+    def test_known_mapping_not_confused_with_historical_membership(self):
+        repo = Path(__file__).resolve().parents[2]
+        catalog = health.read(repo / 'TradingCardScanner/YuGiOhCatalogSeed/catalog.json')
+        by_id = {r['printing_id']: r for r in health.inventory(repo) if r['game'] == 'yugioh'
+                 and r['record_type'] == 'physical_printing' and r['finish']}
+        for printing in catalog['printings'] + catalog.get('referencePrintings', []):
+            if printing.get('p') and printing.get('e') and printing.get('ir') is None:
+                row = by_id.get(printing['id'])
+                if row and row['verification_status'] == 'supported':
+                    self.assertNotIn('PRICE_MAPPING_MISSING', row['issue_codes'])
+
+    def test_misleading_finish_coverage_is_not_actionable_without_evidence(self):
+        raw = health.classify(health.make(game='pokemon', source_scope='retained_raw', record_type='checklist_slot'),
+                              [('RAW_FINISH_COVERAGE_UNEVALUATED', 'Unknown', 'Evaluate')])
+        self.assertEqual(raw['assessment'], 'coverage_not_evaluated')
+        self.assertEqual(raw['issue_codes'], 'RAW_FINISH_COVERAGE_UNEVALUATED')
 
     def test_spreadsheet_formula_protection(self):
         for value in ('=1+1', '+1', '-1', '@x', '  =cmd', '\ttext', '\rtext'):
