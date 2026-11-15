@@ -752,10 +752,14 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertNotNil(previewDetails.collectionWriteUnavailableReason)
         let localEB05Cards = try await browse.completeLocalCards(in: eb05)
         let allEB05 = try XCTUnwrap(localEB05Cards)
-        let ambiguous = try XCTUnwrap(allEB05.first {
+        // Discovery presentations now have distinct identities and previews,
+        // instead of collapsing all artwork for one number into a blank tile.
+        let unresolvedEB05006 = allEB05.filter {
             $0.collectorNumber == "EB05-006" && $0.collectionAvailabilityNotice == "Printing needs review"
-        })
-        XCTAssertNil(ambiguous.imageURL)
+        }
+        XCTAssertEqual(unresolvedEB05006.count, 3)
+        XCTAssertEqual(Set(unresolvedEB05006.map(\\.providerID)).count, 3)
+        XCTAssertTrue(unresolvedEB05006.allSatisfy { $0.imageURL != nil })
         let op18Search = try await browse.search(query: "OP18", setIDs: [op18.catalogID], cursor: nil)
         XCTAssertEqual(op18Search.items.count, 60)
         XCTAssertNotNil(op18Search.nextCursor)
