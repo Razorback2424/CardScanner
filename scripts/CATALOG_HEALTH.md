@@ -3,19 +3,29 @@
 Run `python3 scripts/catalog_health_export.py --output <directory>` or trigger
 the **Catalog Health Audit** workflow and download its artifact. The three CSVs
 are deterministic for the checkout; the inventory contains all records in the
-retained inputs described below, exceptions are its rows with issues, and the
-summary counts each issue separately. Severity distinguishes review,
+retained inputs described below, exceptions contain actionable rows, and the
+summary counts each issue separately including unchecked coverage. Filter the
+inventory's `assessment` to distinguish actionable issues from
+`coverage_not_evaluated` and `no_known_exception`. Severity distinguishes review,
 availability, refresh, and unchecked work. `catalog-metadata.json` records
-source hashes and freshness parameters. CSV values are raw data and should be
-treated as untrusted when opened in a spreadsheet.
+source hashes and freshness parameters. Spreadsheet-dangerous leading characters
+are prefixed with an apostrophe in the CSV, including after leading whitespace;
+this changes the CSV representation of those values.
 
 This is an offline evidence census, not a complete live catalog or price audit.
 It reads Pokémon's raw checklist slots, Magic's **test-only treatment subset**,
-the installed One Piece owner registry, Lorcana discovery and physical records,
+the installed One Piece owner registry and Bandai Browse discovery observations,
+Lorcana discovery and physical records,
 the Yu-Gi-Oh seed and reference printings, and the retained October 2026 One
 Piece unmatched marketplace report. The latter is an incomplete historical
 discovery lead; products already mapped in the current owner registry are
 excluded, and number-only candidate matches are not physical identity proof.
+Browse observations are grouped by product, printed number, and artwork alias.
+Additional discoveries from the retained revision-4 candidate are labeled
+`candidate_discovery`; they are not necessarily present in installed Browse.
+`product_set_code` identifies the release where a One Piece entry appears;
+`printed_set_marker` identifies the number printed on the card. A blank product
+code means the release label does not identify exactly one code.
 Magic card data is live and the
 retained subset is not exhaustive. Pokémon read-time corrections and mapping
 logic are not evaluated. The census does not include unretained provider data,
