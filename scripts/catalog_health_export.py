@@ -107,9 +107,19 @@ def inventory(repo):
         for product_id in sorted(memberships) or ['']:
             product = products.get(product_id, {})
             for finish in printing.get('supportedVariantIDs') or ['']:
-                mapping = next((m for m in printing.get('marketMappings', []) if m['variantID'] == finish and m['status'] == 'exact'), None)
+                candidates = [m for m in printing.get('marketMappings', []) if m['variantID'] == finish]
+                eligible = [m for m in candidates if m['status'] == 'exact' and m['provider'] == 'tcgplayer'
+                            and m['market'] == 'us' and m['currency'] == 'USD' and m['condition'] == 'aggregate']
+                mapping = eligible[0] if len(eligible) == 1 else None
                 verified = printing['status'] == 'verified'
-                status, issues = pricing(mapping, verified and bool(finish))
+                if verified and len(eligible) > 1:
+                    status, issues = 'mapping_conflict', [('PRICE_MAPPING_CONFLICT',
+                        'Multiple active TCGplayer mappings exist for the same printing and finish.', 'Reconcile exact market mappings')]
+                elif verified and not eligible and candidates:
+                    status, issues = 'mapping_unapproved', [('PRICE_MAPPING_UNAPPROVED',
+                        'Marketplace candidates exist, but none is an approved exact US/USD aggregate mapping.', 'Review mapping authority and source')]
+                else:
+                    status, issues = pricing(mapping, verified and bool(finish))
                 if not verified:
                     issues.append(('PRINTING_NEEDS_REVIEW', 'Printing status: ' + printing['status'], 'Review printing evidence'))
                 if not finish:
@@ -132,21 +142,40 @@ def inventory(repo):
     # Observations do not establish physical printing, artwork or finish IDs.
     discoveries = collections.defaultdict(list)
     cards_by_number = {c['printedNumber']: c for c in registry['canonicalCards'] if c['language'] == 'en'}
+    invalid_observations = []
     for obs in owner['observations']:
         evidence = obs['printedEvidence']
-        if evidence.get('sourceRole') == BROWSE_DISCOVERY and obs.get('productEvidence') and evidence.get('number') in cards_by_number:
-            discoveries[(obs['productEvidence'][0], evidence['number'])].append(obs)
+        if evidence.get('sourceRole') != BROWSE_DISCOVERY:
+            continue
+        if not obs.get('productEvidence') or not evidence.get('number'):
+            invalid_observations.append(obs)
+            continue
+        discoveries[(obs['productEvidence'][0], evidence['number'])].append(obs)
+    for observation in invalid_observations:
+        evidence = observation['printedEvidence']
+        row = make(game='one-piece', source_scope='installed', record_type='invalid_browse_observation',
+                   source_id=observation['id'], card_number=evidence.get('number'), card_name=evidence.get('name'),
+                   verification_status='invalid_observation', price_status='unknown',
+                   catalog_revision=owner.get('revision'), catalog_source_url=observation['sourceURL'],
+                   review_notes='Missing product membership or card number; Browse silently skips this observation.')
+        rows.append(classify(row, [('SOURCE_OBSERVATION_INCOMPLETE',
+            'Bandai discovery lacks a product membership or printed number.', 'Repair official discovery evidence')]))
     for (product_id, number), observations in sorted(discoveries.items()):
         product = products.get(product_id, {})
         product_codes = prefixes(product.get('label', ''))
         product_code = product_codes[0] if len(product_codes) == 1 else ''
-        card = cards_by_number[number]
+        card = cards_by_number.get(number)
         row = make(game='one-piece', source_scope='installed', record_type='browse_discovery', source_id='|'.join(sorted(o['id'] for o in observations)),
                    set_name=product.get('label'), set_code=product_code, product_set_code=product_code,
-                   printed_set_marker=number.split('-')[0], card_number=number, card_name=card['name'],
+                   printed_set_marker=number.split('-')[0], card_number=number, card_name=card['name'] if card else observations[0]['printedEvidence'].get('name'),
                    verification_status='discovery', price_status='unknown', catalog_source_url=observations[0]['sourceURL'],
                    catalog_revision=owner.get('revision'), review_notes='Bandai artwork aliases: ' + '|'.join(sorted({o['printedEvidence'].get('sourceArtworkAlias', o['id']) for o in observations})) + '; product ID: ' + product_id)
-        rows.append(classify(row, [('PRINTING_NEEDS_REVIEW', 'Browse discovery has no verified physical printing for this appearance.', 'Review Bandai appearance and physical printing')]))
+        issues = [('PRINTING_NEEDS_REVIEW', 'Browse discovery has no verified physical printing for this appearance.', 'Review Bandai appearance and physical printing')]
+        if card is None:
+            issues.append(('CANONICAL_CARD_MISSING',
+                'No English canonical card exists for this printed number; current Browse skips the entry.',
+                'Reconcile canonical card and official number'))
+        rows.append(classify(row, issues))
 
     candidate_path = repo / 'publisher/one-piece/production/revision-4/candidate.json'
     candidate = read(candidate_path)
