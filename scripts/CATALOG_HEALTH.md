@@ -14,6 +14,8 @@ availability, refresh, and unchecked work. `catalog-metadata.json` records
 source hashes and freshness parameters. Spreadsheet-dangerous leading characters
 are prefixed with an apostrophe in the CSV, including after leading whitespace;
 this changes the CSV representation of those values.
+Use a fresh output directory for each run. Existing catalog health output files
+are never overwritten or mixed with a later failed run.
 
 This is an offline evidence census, not a complete live catalog or price audit.
 It reads Pokémon's raw checklist slots, Magic's **test-only treatment subset**,
@@ -54,7 +56,8 @@ The capture must have a completed matching upstream build and hash-bound,
 valid product and price feeds. The feed's upstream date, not the workflow run
 date, is the quote snapshot date. A zero price is usable; a missing or null lane in a complete feed is
 `NO_MARKET_QUOTE`. An older *feed snapshot* is `PRICE_SNAPSHOT_STALE`;
-this does not assert the source's per-quote update time. A missing capture
+this does not assert the source's per-quote update time. A stale null quote
+retains both issues and does not establish current availability. A missing capture
 group remains unchecked. A missing/changed product in a complete captured
 group is `MARKET_MAPPING_MISMATCH`, not a missing price. Incomplete retained
 mapping evidence is `MARKET_MAPPING_INCOMPLETE` even without a capture.

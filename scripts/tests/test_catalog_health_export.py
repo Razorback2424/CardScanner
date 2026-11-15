@@ -38,7 +38,7 @@ class CatalogHealthTest(unittest.TestCase):
             captured, feeds = health.load_prices(root)
             def row(product):
                 return health.classify(health.make(game='one-piece', record_type='physical_printing', market_provider='tcgplayer',
-                    market_group_id=9, market_product_id=product, market_lane='Foil', market_product_name='Card',
+                    verification_status='verified', market_group_id=9, market_product_id=product, market_lane='Foil', market_product_name='Card',
                     market_product_number='N', price_status='not_checked'),
                     [('PRICE_NOT_CHECKED', 'Not checked', 'Check a dated provider snapshot')])
             rows = [row(1), row(2), row(3)]
@@ -60,6 +60,10 @@ class CatalogHealthTest(unittest.TestCase):
             health.apply_prices(stale, captured, feeds, date(2026, 12, 3), 30)
             self.assertEqual(stale[0]['issue_codes'], 'PRICE_SNAPSHOT_STALE')
             self.assertEqual(stale[0]['price_status'], 'snapshot_stale')
+            stale_null = [row(2)]
+            health.apply_prices(stale_null, captured, feeds, date(2026, 12, 3), 30)
+            self.assertEqual(stale_null[0]['issue_codes'], 'NO_MARKET_QUOTE|PRICE_SNAPSHOT_STALE')
+            self.assertEqual(stale_null[0]['price_status'], 'snapshot_stale')
             with self.assertRaises(ValueError):
                 health.apply_prices(stale, captured, feeds, date(2026, 10, 1), 30)
             (root / '68-9-prices.json').write_text('{}')
@@ -154,6 +158,16 @@ class CatalogHealthTest(unittest.TestCase):
         for value in ('=1+1', '+1', '-1', '@x', '  =cmd', '\ttext', '\rtext'):
             self.assertEqual(health.spreadsheet_safe(value), "'" + value)
         self.assertEqual(health.spreadsheet_safe('EB05-001'), 'EB05-001')
+
+    def test_existing_results_are_never_mixed_with_failed_runs(self):
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp)
+            old = output / 'catalog-inventory.csv'
+            old.write_text('previous output')
+            with self.assertRaisesRegex(ValueError, 'already contains'):
+                health.export(Path('/nonexistent'), output)
+            self.assertEqual(old.read_text(), 'previous output')
+            self.assertFalse((output / 'catalog-run-failure.json').exists())
 
 
 if __name__ == '__main__':

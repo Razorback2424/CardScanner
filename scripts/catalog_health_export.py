@@ -41,9 +41,7 @@ def classify(row, issues):
 
 def assessment(row):
     codes = set(row['issue_codes'].split('|')) - {''}
-    codes.discard('RAW_FINISH_COVERAGE_UNEVALUATED')
-    codes.discard('LANGUAGE_OUT_OF_SCOPE')
-    if codes - {'PRICE_NOT_CHECKED'}:
+    if codes - {'PRICE_NOT_CHECKED', 'RAW_FINISH_COVERAGE_UNEVALUATED', 'LANGUAGE_OUT_OF_SCOPE'}:
         return 'actionable'
     return 'coverage_not_evaluated' if codes else 'no_known_exception'
 
@@ -433,6 +431,10 @@ def apply_prices(rows, snapshot_date, feeds, as_of, max_age_days):
             resolved_check(row, 'no_quote', 'NO_MARKET_QUOTE',
                            'Complete captured feed has no usable price for the exact product and lane.',
                            'Investigate provider quote availability')
+            if (as_of - snapshot_date).days > max_age_days:
+                resolved_check(row, 'snapshot_stale', 'PRICE_SNAPSHOT_STALE',
+                               f'The no-quote observation is older than {max_age_days} days as of {as_of}; current availability is unknown.',
+                               'Refresh provider snapshot')
         elif (as_of - snapshot_date).days > max_age_days:
             resolved_check(row, 'snapshot_stale', 'PRICE_SNAPSHOT_STALE',
                            f'Captured provider snapshot is older than {max_age_days} days as of {as_of}; quote age is not independently proven.',
@@ -441,6 +443,12 @@ def apply_prices(rows, snapshot_date, feeds, as_of, max_age_days):
             resolved_check(row, 'quoted')
 
 def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
+    # Do not mix an earlier successful export with diagnostics from a failed run.
+    # Preserve existing user files instead of deleting or overwriting them.
+    names = ('catalog-inventory.csv', 'catalog-exceptions.csv', 'catalog-summary.csv',
+             'catalog-census-findings.csv', 'catalog-metadata.json', 'catalog-run-failure.json')
+    if any((output / name).exists() for name in names):
+        raise ValueError('Output directory already contains catalog health results; choose a new directory')
     result, census_findings = run(repo)
     output.mkdir(parents=True, exist_ok=True)
     # Retain diagnostics even when invalid inputs prevent the normal inventory.
@@ -472,8 +480,6 @@ def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
                 json.dumps({'stage': 'market_capture', 'errors': [str(error)]}, indent=2) + '\n',
                 encoding='utf-8')
             raise
-    write(output / 'catalog-inventory.csv', FIELDS, rows)
-    write(output / 'catalog-exceptions.csv', FIELDS, (row for row in rows if row['assessment'] == 'actionable'))
     severity = {'LANGUAGE_OUT_OF_SCOPE': 'unchecked', 'RAW_FINISH_COVERAGE_UNEVALUATED': 'unchecked', 'PHYSICAL_FAMILY_INCOMPLETE': 'review',
                 'EDITION_UNVERIFIED': 'review', 'CANONICAL_LINK_UNRESOLVED': 'review', 'CANONICAL_CARD_MISSING': 'review',
                 'SOURCE_OBSERVATION_INCOMPLETE': 'review', 'PRICE_MAPPING_UNAPPROVED': 'review', 'PRICE_MAPPING_CONFLICT': 'review', 'PRINTING_FAMILY_INCOMPLETE': 'review',
@@ -488,11 +494,15 @@ def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
             json.dumps({'stage': 'issue_taxonomy', 'errors': unknown_codes}, indent=2) + '\n',
             encoding='utf-8')
         raise ValueError('Unclassified catalog issue codes: ' + ', '.join(unknown_codes))
+    write(output / 'catalog-inventory.csv', FIELDS, rows)
+    write(output / 'catalog-exceptions.csv', FIELDS, (row for row in rows if row['assessment'] == 'actionable'))
     counts = collections.Counter((row['game'], row['source_scope'], row['set_name'], row['set_code'], code, severity[code])
                                  for row in rows for code in row['issue_codes'].split('|') if code)
     write(output / 'catalog-summary.csv', SUMMARY,
           (dict(zip(SUMMARY, (*key, count))) for key, count in sorted(counts.items())))
     metadata = dict(schemaVersion=2, boundary=result['boundary'], sources=result['sources'],
+                    exportCodeSHA256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                    pricingAuditCodeSHA256=hashlib.sha256((repo / 'scripts/audit_set_pricing.py').read_bytes()).hexdigest(),
                     marketCaptureSHA256=hashlib.sha256((capture_dir / 'capture.json').read_bytes()).hexdigest() if capture_dir else None,
                     marketSnapshotDate=snapshot_date.isoformat() if snapshot_date else None,
                     freshnessAsOf=as_of.isoformat() if as_of else None, maxAgeDays=max_age_days if capture_dir else None,
