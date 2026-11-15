@@ -1041,6 +1041,7 @@ private enum ActiveCatalogHealthCSV {
     private static let games: [CardGame] = [.pokemon, .magic, .onePiece, .lorcana, .yuGiOh]
     private static let headers = [
         "record_type", "exported_at_utc", "app_build", "game", "set_name", "set_code",
+        "active_release_revision", "expected_set_card_count", "enumerated_set_row_count",
         "product_set_id", "catalog_generation", "set_notice", "card_name",
         "card_number", "catalog_card_id", "printing_id", "finish_id",
         "verification_status", "market_mapping_status", "price_status",
@@ -1088,15 +1089,20 @@ private enum ActiveCatalogHealthCSV {
         set: CatalogSet? = nil, card: CatalogCardSummary? = nil,
         evidence: Evidence = Evidence(), priceStatus: String = "not_checked",
         price: Double? = nil, generation: String = "", note: String = "",
+        revision: Int? = nil, observedCount: Int? = nil,
         scope: String = "active_browse"
     ) -> String {
         let issues = evidence.issues.joined(separator: "|")
         let details = evidence.details.joined(separator: " | ")
         return line([
             kind, exported, build, game.rawValue, set?.name ?? "", set?.code ?? "",
+            revision.map(String.init) ?? "", set?.cardCount.map(String.init) ?? "",
+            observedCount.map(String.init) ?? "",
             set?.providerID ?? "", generation.isEmpty ? card?.catalogGeneration ?? "" : generation,
             set?.collectionAvailabilityNotice ?? "", card?.name ?? "",
-            card?.collectorNumber ?? "", card?.providerID ?? "", card?.providerID ?? "",
+            card?.collectorNumber ?? "", card?.providerID ?? "",
+            (evidence.verification == "needs_review" || card?.collectionAvailabilityNotice == "Printing needs review")
+                ? "" : card?.providerID ?? "",
             evidence.finish, evidence.verification, evidence.mapping, priceStatus,
             price.map { String($0) } ?? "", evidence.provider, evidence.group,
             evidence.product, evidence.productName, evidence.marketNumber, evidence.lane,
@@ -1304,9 +1310,9 @@ private enum ActiveCatalogHealthCSV {
             try Task.checkCancellation()
             await progress("Reading \(game.label)…")
             let runtime = runtimes.runtime(for: game)
-            let snapshot = await runtime?.activationSource?.currentSnapshot()
-            let activeCatalog = snapshot?.catalog ?? runtime?.catalog
-            let activeGeneration = activeCatalog?.generation ?? ""
+            var snapshot = await runtime?.activationSource?.currentSnapshot()
+            var activeCatalog = snapshot?.catalog ?? runtime?.catalog
+            var activeGeneration = activeCatalog?.generation ?? ""
             let sets: [CatalogSet]
             do {
                 sets = try await browse.sets(for: game)
@@ -1316,6 +1322,13 @@ private enum ActiveCatalogHealthCSV {
                 csv.append(row(kind: "game_error", exported: date, build: build, game: game,
                                evidence: issue, generation: activeGeneration, scope: "not_enumerated"))
                 continue
+            }
+            // Read the live authority again after Browse loads the set
+            // directory. A persisted release may first become active here.
+            if let current = await runtime?.activationSource?.currentSnapshot() {
+                snapshot = current
+                activeCatalog = current.catalog
+                activeGeneration = current.catalog.generation
             }
             if sets.isEmpty {
                 var issue = Evidence()
@@ -1354,6 +1367,16 @@ private enum ActiveCatalogHealthCSV {
                         } while true
                         summaries = cards
                     }
+                    var summaryIssue = Evidence()
+                    if [.onePiece, .lorcana, .yuGiOh].contains(game),
+                       let expected = set.cardCount, expected != summaries.count {
+                        summaryIssue.issue("SET_BROWSE_COUNT_MISMATCH",
+                            "Active set declares \(expected) Browse entries but enumerated \(summaries.count).",
+                            "Reconcile set list and current catalog generation")
+                    }
+                    csv.append(row(kind: "set_summary", exported: date, build: build, game: game,
+                                   set: set, evidence: summaryIssue, generation: activeGeneration,
+                                   revision: snapshot?.revision, observedCount: summaries.count))
                     // Resolve price states through the same engine as Browse.
                     // Mapping authority remains per-finish; observed price is
                     // explicitly a card-summary aggregate, not a per-finish quote.
@@ -1376,9 +1399,12 @@ private enum ActiveCatalogHealthCSV {
                             csv.append(row(kind: "card", exported: date, build: build, game: game,
                                            set: set, card: summary, evidence: finding,
                                            priceStatus: status, price: aggregateUSD,
-                                           generation: summary.catalogGeneration ?? activeGeneration))
+                                           generation: summary.catalogGeneration ?? activeGeneration,
+                                           revision: snapshot?.revision))
                         }
                     }
+                } catch CatalogLookupError.staleCatalog {
+                    throw CatalogHealthExportError.catalogChanged
                 } catch is CancellationError {
                     throw CancellationError()
                 } catch {
@@ -1388,9 +1414,9 @@ private enum ActiveCatalogHealthCSV {
                                    set: set, evidence: issue, generation: activeGeneration, scope: "not_fully_enumerated"))
                 }
             }
-            if let source = runtime?.activationSource, let first = snapshot {
+            if let source = runtime?.activationSource {
                 let latest = await source.currentSnapshot()
-                if latest?.revision != first.revision {
+                if latest?.revision != snapshot?.revision {
                     throw CatalogHealthExportError.catalogChanged
                 }
             }
