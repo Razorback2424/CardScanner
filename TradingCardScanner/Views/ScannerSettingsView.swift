@@ -378,9 +378,9 @@ private struct SettingsContentView: View {
                         Button("Cancel") { catalogHealthExportTask?.cancel() }
                     }
                 }
-                Toggle("Check live catalog prices", isOn: $checkLiveCatalogPrices)
+                Toggle("Check catalog prices", isOn: $checkLiveCatalogPrices)
                     .disabled(isPreparingCatalogHealthExport)
-                Text("Exports all five active Browse catalogs, not just owned cards. Price checks use the same lookup paths as Browse and may require many network requests. Turn off for a mapping-and-verification-only report.")
+                Text("Exports catalog issues across all five games, including cards you don’t own. Price checks use Browse prices, which may be cached, and may require many network requests. Turn off to skip price checks.")
                     .font(.footnote).foregroundStyle(.secondary)
 
                 Button("Export Cards Excluded from USD Value", systemImage: "dollarsign.circle") {
@@ -1081,12 +1081,17 @@ enum ActiveCatalogHealthCSV {
     static func escaped(_ value: String) -> String {
         // Excel/Numbers may evaluate formulas even inside quoted CSV fields.
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        let safe = trimmed.first.map({ "=+-@".contains($0) }) == true ? "'" + value : value
+        let unsafeControl = value.first.map { "\t\r\n".contains($0) } == true
+        let safe = unsafeControl || trimmed.first.map({ "=+-@".contains($0) }) == true ? "'" + value : value
         return "\"" + safe.replacingOccurrences(of: "\"", with: "\"\"") + "\""
     }
 
     static func line(_ fields: [String]) -> String {
         fields.map(escaped).joined(separator: ",") + "\r\n"
+    }
+
+    static func shouldExport(_ evidence: Evidence) -> Bool {
+        !evidence.issues.isEmpty
     }
 
     static func row(
@@ -1126,19 +1131,19 @@ enum ActiveCatalogHealthCSV {
             return ("printing_needs_review", nil)
         }
         if update.missingMappingIDs.contains(summary.id) {
-            evidence.issue("BROWSE_PRICE_MAPPING_MISSING", "Browse could not establish an approved price mapping.",
+            evidence.issue("BROWSE_PRICE_MAPPING_MISSING", "Browse could not establish a card-level price mapping; this result does not identify a specific finish.",
                            "Research exact market mapping")
             return ("mapping_missing", nil)
         }
         if update.unresolvedIDs.contains(summary.id) {
             evidence.issue("PRICE_CHECK_UNRESOLVED",
-                           "The Browse price check did not complete with an accepted current result.",
-                           "Recheck source availability, mapping and quote freshness")
+                           "Browse returned an unresolved price check without an underlying error or quote timestamp; the cause cannot be determined from this result.",
+                           "Inspect provider, mapping and quote freshness diagnostics")
             return ("unresolved", nil)
         }
         if update.resolvedIDs.contains(summary.id) {
             if let amount = update.prices[summary.id] { return ("priced", amount) }
-            evidence.issue("NO_USD_QUOTE", "Browse checked available sources but found no accepted USD quote.",
+            evidence.issue("NO_USD_QUOTE", "Browse found no accepted USD quote for this card; this aggregate result is not a per-finish check.",
                            "Investigate quote availability for the printed identity")
             return ("no_usd_quote", nil)
         }
@@ -1207,7 +1212,7 @@ enum ActiveCatalogHealthCSV {
             }
         }
 
-        if let registry = (catalog as? LorcanaCatalogAdapter)?.registry,
+        if let registry = (catalog as? LorcanaCatalogAdapter)?.registry ?? (catalog as? LorcanaDiscoveryCatalog)?.registry,
            let uuid = UUID(uuidString: summary.providerID),
            let printing = registry.physicalCatalog?.printingByID[uuid] {
             base.verification = printing.status.rawValue
@@ -1292,11 +1297,20 @@ enum ActiveCatalogHealthCSV {
                 base.product = String(market.productID)
                 base.productName = market.productName
                 base.marketNumber = market.printedNumber
-                base.lane = "Holofoil"
-                base.mapping = "reviewed_subset_mapping"
+                // This source-level mapping does not prove the lane for each
+                // checklist finish. Preserve the product lead without claiming
+                // that every physical variant uses its aggregate Holofoil lane.
+                base.mapping = "reviewed_product_finish_not_evaluated"
             }
         } else if summary.game == .magic {
-            base.finish = (summary.magicFinishIDs ?? []).joined(separator: "|")
+            let finishes = summary.magicFinishIDs ?? []
+            if !finishes.isEmpty {
+                return finishes.sorted().map { finish in
+                    var value = base
+                    value.finish = finish
+                    return value
+                }
+            }
         }
         return [base]
     }
@@ -1309,10 +1323,13 @@ enum ActiveCatalogHealthCSV {
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
         var csv = line(headers)
         csv.reserveCapacity(10_000_000)
+        var auditedRevisions: [(CardGameRuntime, Int?, Int?, Int?)] = []
         for game in games {
             try Task.checkCancellation()
             await progress("Reading \(game.label)…")
             let runtime = runtimes.runtime(for: game)
+            let pokemonRevision = await runtime?.legacyCatalogBindings.pokemon?.revision
+            let magicRevision = await runtime?.legacyCatalogBindings.magic?.revision
             var snapshot = await runtime?.activationSource?.currentSnapshot()
             var activeCatalog = snapshot?.catalog ?? runtime?.catalog
             var activeGeneration = activeCatalog?.generation ?? ""
@@ -1329,6 +1346,9 @@ enum ActiveCatalogHealthCSV {
             // Read the live authority again after Browse loads the set
             // directory. A persisted release may first become active here.
             if let current = await runtime?.activationSource?.currentSnapshot() {
+                if current.revision != snapshot?.revision {
+                    throw CatalogHealthExportError.catalogChanged
+                }
                 snapshot = current
                 activeCatalog = current.catalog
                 activeGeneration = current.catalog.generation
@@ -1338,6 +1358,22 @@ enum ActiveCatalogHealthCSV {
                 issue.issue("NO_ACTIVE_SETS", "No sets were available from this game's active Browse catalog.", "Verify game activation and rollout")
                 csv.append(row(kind: "game_error", exported: date, build: build, game: game,
                                evidence: issue, generation: activeGeneration, scope: "not_enumerated"))
+            }
+            if [.pokemon, .magic].contains(game) || !checkPrices {
+                var limitation = Evidence()
+                if [.pokemon, .magic].contains(game) {
+                    limitation.issue("MAPPING_COVERAGE_NOT_FULLY_EVALUATED",
+                        "Browse does not expose complete per-finish mapping and verification evidence for this game.",
+                        "Investigate catalog and provider evidence before treating missing rows as healthy")
+                }
+                if !checkPrices {
+                    limitation.issue("PRICE_CHECK_SKIPPED", "The price check was turned off for this export.",
+                        "Run the export with catalog price checks enabled to investigate pricing")
+                }
+                csv.append(row(kind: "game_notice", exported: date, build: build, game: game,
+                               evidence: limitation, generation: activeGeneration,
+                               revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
+                               scope: "coverage_not_fully_evaluated"))
             }
             for (index, set) in sets.enumerated() {
                 try Task.checkCancellation()
@@ -1377,9 +1413,11 @@ enum ActiveCatalogHealthCSV {
                             "Active set declares \(expected) Browse entries but enumerated \(summaries.count).",
                             "Reconcile set list and current catalog generation")
                     }
-                    csv.append(row(kind: "set_summary", exported: date, build: build, game: game,
-                                   set: set, evidence: summaryIssue, generation: activeGeneration,
-                                   revision: snapshot?.revision, observedCount: summaries.count))
+                    if !summaryIssue.issues.isEmpty {
+                        csv.append(row(kind: "set_summary", exported: date, build: build, game: game,
+                                       set: set, evidence: summaryIssue, generation: activeGeneration,
+                                       revision: snapshot?.revision ?? pokemonRevision ?? magicRevision, observedCount: summaries.count))
+                    }
                     // Resolve price states through the same engine as Browse.
                     // Mapping authority remains per-finish; observed price is
                     // explicitly a card-summary aggregate, not a per-finish quote.
@@ -1399,11 +1437,16 @@ enum ActiveCatalogHealthCSV {
                             let (status, aggregateUSD) = checkedPriceStatus(
                                 summary, update: priceUpdate, evidence: &finding
                             )
+                            if checkPrices && status == "not_checked" {
+                                finding.issue("PRICE_CHECK_NOT_COMPLETED", "Browse did not return a price result for this card.", "Retry the catalog price check")
+                            }
+                            guard shouldExport(finding) else { continue }
                             csv.append(row(kind: "card", exported: date, build: build, game: game,
                                            set: set, card: summary, evidence: finding,
                                            priceStatus: status, price: aggregateUSD,
                                            generation: summary.catalogGeneration ?? activeGeneration,
-                                           revision: snapshot?.revision))
+                                           revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
+                                           scope: checkPrices ? "active_browse; price may be cached" : "active_browse; price not checked"))
                         }
                     }
                 } catch CatalogLookupError.staleCatalog {
@@ -1422,6 +1465,24 @@ enum ActiveCatalogHealthCSV {
                 if latest?.revision != snapshot?.revision {
                     throw CatalogHealthExportError.catalogChanged
                 }
+            }
+            let latestPokemonRevision = await runtime?.legacyCatalogBindings.pokemon?.revision
+            let latestMagicRevision = await runtime?.legacyCatalogBindings.magic?.revision
+            if latestPokemonRevision != pokemonRevision || latestMagicRevision != magicRevision {
+                throw CatalogHealthExportError.catalogChanged
+            }
+            if let runtime {
+                auditedRevisions.append((runtime, snapshot?.revision, pokemonRevision, magicRevision))
+            }
+        }
+        // An earlier game can activate a new release while a later game is
+        // being enumerated. Never save a mixed or already-obsolete report.
+        for (runtime, revision, pokemonRevision, magicRevision) in auditedRevisions {
+            let activeRevision = await runtime.activationSource?.currentSnapshot()?.revision
+            let pokemon = await runtime.legacyCatalogBindings.pokemon?.revision
+            let magic = await runtime.legacyCatalogBindings.magic?.revision
+            if activeRevision != revision || pokemon != pokemonRevision || magic != magicRevision {
+                throw CatalogHealthExportError.catalogChanged
             }
         }
         return CollectionCSVDocument(text: csv)

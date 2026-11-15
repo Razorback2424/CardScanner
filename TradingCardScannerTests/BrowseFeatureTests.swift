@@ -10350,9 +10350,80 @@ final class ActiveCatalogHealthExportTests: XCTestCase {
     func testCSVProtectsSpreadsheetFormulasAndEscapesQuotedValues() {
         XCTAssertEqual(ActiveCatalogHealthCSV.escaped("=HYPERLINK(1)"), "\"'=HYPERLINK(1)\"")
         XCTAssertEqual(ActiveCatalogHealthCSV.escaped("  -5"), "\"'  -5\"")
+        XCTAssertEqual(ActiveCatalogHealthCSV.escaped("\ttext"), "\"'\ttext\"")
         XCTAssertEqual(ActiveCatalogHealthCSV.escaped("Card, \"Rare\""), "\"Card, \"\"Rare\"\"\"")
         XCTAssertEqual(ActiveCatalogHealthCSV.headers.first, "record_type")
         XCTAssertTrue(ActiveCatalogHealthCSV.headers.contains("active_release_revision"))
         XCTAssertTrue(ActiveCatalogHealthCSV.headers.contains("market_product_id"))
+    }
+
+    func testOnlyIssuesAreExportedAndMagicFinishesAreSeparate() {
+        let card = CatalogCardSummary(game: .magic, providerID: UUID().uuidString,
+            setID: CatalogSetID(game: .magic, providerID: "set"), setName: "Set", setCode: "SET",
+            name: "Card", collectorNumber: "1", thumbnailURL: nil, imageURL: nil,
+            magicFinishIDs: ["foil", "nonfoil"])
+        let evidence = ActiveCatalogHealthCSV.printingEvidence(for: card, catalog: nil)
+        XCTAssertEqual(evidence.map(\.finish), ["foil", "nonfoil"])
+        XCTAssertFalse(ActiveCatalogHealthCSV.shouldExport(evidence[0]))
+        var issue = evidence[0]
+        issue.issue("PRICE_CHECK_UNRESOLVED", "Provider unavailable", "Retry")
+        XCTAssertTrue(ActiveCatalogHealthCSV.shouldExport(issue))
+    }
+
+    func testProductionLorcanaDiscoveryRuntimeExposesPhysicalEvidence() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let sets = try await catalog.sets()
+        for set in sets {
+            let cards = try await catalog.completeLocalCards(in: set) ?? []
+            guard let card = cards.first(where: { UUID(uuidString: $0.providerID) != nil }) else { continue }
+            let evidence = ActiveCatalogHealthCSV.printingEvidence(for: card, catalog: catalog)
+            XCTAssertFalse(evidence.isEmpty)
+            XCTAssertNotEqual(evidence[0].verification, "not_evaluated")
+            XCTAssertFalse(evidence[0].finish.isEmpty)
+            return
+        }
+        XCTFail("Production Lorcana catalog contains no browsable physical printing")
+    }
+
+    func testExportContainsOnlyAffectedCardsAndIncludesFailureReasons() async throws {
+        let report = try await ActiveCatalogHealthCSV.makeDocument(
+            runtimes: CardGameRuntimeContainer(runtimes: []), browse: HealthExportFixture(),
+            checkPrices: true, progress: { _ in })
+        XCTAssertTrue(report.text.contains("Broken Card"))
+        XCTAssertTrue(report.text.contains("PRICE_CHECK_UNRESOLVED"))
+        XCTAssertFalse(report.text.contains("Healthy Card"))
+        XCTAssertTrue(report.text.contains("NO_ACTIVE_SETS"))
+    }
+}
+
+private struct HealthExportFixture: BrowseCatalogProviding {
+    private var set: CatalogSet {
+        CatalogSet(catalogID: .init(game: .onePiece, providerID: "fixture"), name: "Fixture",
+                   code: "OP01", logoURL: nil, symbolURL: nil, cardCount: 2, releaseDate: nil, sortRank: 0)
+    }
+    private var cards: [CatalogCardSummary] {
+        ["Healthy Card", "Broken Card"].enumerated().map { index, name in
+            CatalogCardSummary(game: .onePiece, providerID: "fixture-\(index)", setID: set.catalogID,
+                setName: set.name, setCode: set.code, name: name, collectorNumber: "OP01-00\(index + 1)",
+                thumbnailURL: nil, imageURL: nil)
+        }
+    }
+    func sets(for game: CardGame) async throws -> [CatalogSet] { game == .onePiece ? [set] : [] }
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: cards, nextCursor: nil)
+    }
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [], nextCursor: nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails { throw BrowseCatalogError.unknownSet }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { $0.finish() }
+    }
+    nonisolated func sortPriceUpdates(for cards: [CatalogCardSummary]) -> AsyncStream<CatalogPriceUpdate> {
+        AsyncStream { continuation in
+            let healthy = cards[0].id, broken = cards[1].id
+            continuation.yield(.init(prices: [healthy: 1], resolvedIDs: [healthy], unresolvedIDs: [broken]))
+            continuation.finish()
+        }
     }
 }
