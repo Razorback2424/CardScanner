@@ -1037,9 +1037,9 @@ private struct JSONExportDocument: FileDocument {
     
 // A read-only report of the catalog Browse actually uses. This deliberately
 // does not scan a user's collection or equate "not checked" with "unpriced".
-private enum ActiveCatalogHealthCSV {
+enum ActiveCatalogHealthCSV {
     private static let games: [CardGame] = [.pokemon, .magic, .onePiece, .lorcana, .yuGiOh]
-    private static let headers = [
+    static let headers = [
         "record_type", "exported_at_utc", "app_build", "game", "set_name", "set_code",
         "active_release_revision", "expected_set_card_count", "enumerated_set_row_count",
         "product_set_id", "catalog_generation", "set_notice", "card_name",
@@ -1051,7 +1051,7 @@ private enum ActiveCatalogHealthCSV {
         "card_notice", "image_url", "evidence_scope"
     ]
 
-    private struct Evidence {
+    struct Evidence {
         var finish: String = ""
         var verification: String = "not_evaluated"
         var mapping: String = "not_evaluated"
@@ -1073,18 +1073,18 @@ private enum ActiveCatalogHealthCSV {
         }
     }
 
-    private static func escaped(_ value: String) -> String {
+    static func escaped(_ value: String) -> String {
         // Excel/Numbers may evaluate formulas even inside quoted CSV fields.
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
         let safe = trimmed.first.map({ "=+-@".contains($0) }) == true ? "'" + value : value
         return "\"" + safe.replacingOccurrences(of: "\"", with: "\"\"") + "\""
     }
 
-    private static func line(_ fields: [String]) -> String {
+    static func line(_ fields: [String]) -> String {
         fields.map(escaped).joined(separator: ",") + "\r\n"
     }
 
-    private static func row(
+    static func row(
         kind: String, exported: String, build: String, game: CardGame,
         set: CatalogSet? = nil, card: CatalogCardSummary? = nil,
         evidence: Evidence = Evidence(), priceStatus: String = "not_checked",
@@ -1112,7 +1112,7 @@ private enum ActiveCatalogHealthCSV {
         ])
     }
 
-    private static func checkedPriceStatus(
+    static func checkedPriceStatus(
         _ summary: CatalogCardSummary, update: CatalogPriceUpdate?, evidence: inout Evidence
     ) -> (String, Double?) {
         guard let update else { return ("not_checked", nil) }
@@ -1142,7 +1142,7 @@ private enum ActiveCatalogHealthCSV {
         return ("not_checked", nil)
     }
 
-    private static func printingEvidence(
+    static func printingEvidence(
         for summary: CatalogCardSummary, catalog: (any GameCatalogAdapter)?
     ) -> [Evidence] {
         var base = Evidence()
