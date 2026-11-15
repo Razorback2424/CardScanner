@@ -1195,7 +1195,7 @@ enum ActiveCatalogHealthCSV {
         case PriceQuoteError.providerUnavailable, ScryfallError.providerUnavailable, ScryfallError.rateLimited,
              PokemonTCGCSVError.retryLater, TCGdexError.providerUnavailable, is URLError:
             code = "PRICE_PROVIDER_UNAVAILABLE"
-            reason = "The provider check could not complete ((String(reflecting: type(of: error)), code ((error as NSError).code))."
+            reason = "The provider check could not complete (\(String(reflecting: type(of: error))), code \((error as NSError).code))."
         case is DecodingError, PokemonTCGCSVError.invalidResponse, BrowseCatalogError.badResponse,
              ScryfallError.badResponse, TCGdexError.badResponse:
             code = "PRICE_RESPONSE_INVALID"
@@ -1205,7 +1205,7 @@ enum ActiveCatalogHealthCSV {
             reason = "The source did not return the exact printing listed in Browse."
         default:
             code = "PRICE_CHECK_FAILED"
-            reason = "The exact finish check failed ((String(reflecting: type(of: error)), code ((error as NSError).code))."
+            reason = "The exact finish check failed (\(String(reflecting: type(of: error))), code \((error as NSError).code))."
         }
         evidence.issue(code, reason, "Inspect the exact printing and provider evidence")
         return code.lowercased()
@@ -1241,10 +1241,10 @@ enum ActiveCatalogHealthCSV {
         }
         if rawPrice == nil {
             if checkedAt.timeIntervalSince(retrievedAt) > PriceDisplay.staleAfter {
-                evidence.issue("PRICE_EVIDENCE_STALE", "The Scryfall observation for (listing) is too old to establish current availability.", "Refresh the Scryfall printing")
+                evidence.issue("PRICE_EVIDENCE_STALE", "The Scryfall observation for \(listing) is too old to establish current availability.", "Refresh the Scryfall printing")
                 return ("stale_unverified", nil)
             }
-            evidence.issue("NO_USD_QUOTE", "Scryfall (listing) has no usable value for this exact printing and finish.", "Inspect the Scryfall printing")
+            evidence.issue("NO_USD_QUOTE", "Scryfall \(listing) has no usable value for this exact printing and finish.", "Inspect the Scryfall printing")
             return ("no_usd_quote", nil)
         }
         guard let amount = prices.value(forKey: listing), amount.isFinite, amount >= 0 else {
@@ -1526,7 +1526,7 @@ enum ActiveCatalogHealthCSV {
                     }
                     var setCoverage = Coverage()
                     if checkPrices {
-                        await progress("(game.label): checking (set.name) finishes…")
+                        await progress("\(game.label): checking \(set.name) finishes…")
                         if game == .pokemon, let catalog = browse as? BrowseCatalog {
                             await catalog.preparePokemonBulkPrices(for: summaries)
                         }

@@ -10310,6 +10310,8 @@ final class ActiveCatalogHealthExportTests: XCTestCase {
         evidence = .init()
         _ = ActiveCatalogHealthCSV.recordPriceError(PriceQuoteError.providerUnavailable, evidence: &evidence)
         XCTAssertEqual(evidence.issues, ["PRICE_PROVIDER_UNAVAILABLE"])
+        XCTAssertTrue(evidence.details.first?.contains("PriceQuoteError") == true)
+        XCTAssertTrue(evidence.details.first?.contains("code \((PriceQuoteError.providerUnavailable as NSError).code)") == true)
 
         evidence = .init()
         _ = ActiveCatalogHealthCSV.recordPriceError(PriceQuoteError.mappingUnavailable, evidence: &evidence)
@@ -10365,18 +10367,21 @@ final class ActiveCatalogHealthExportTests: XCTestCase {
         XCTFail("Production Lorcana catalog contains no browsable physical printing")
     }
 
+    @MainActor
     func testExportReportsOnlyEtchedWhenOtherFinishesArePriced() async throws {
         let browse = HealthExportFixture()
+        var progressMessages: [String] = []
         let report = try await ActiveCatalogHealthCSV.makeDocument(
             runtimes: CardGameRuntimeContainer(runtimes: []), browse: browse,
-            checkPrices: true, progress: { _ in })
+            checkPrices: true, progress: { progressMessages.append($0) })
         let cards = report.text.components(separatedBy: "\r\n").filter { $0.hasPrefix("\"card\"") }
         XCTAssertEqual(cards.count, 1)
         let row = try XCTUnwrap(cards.first)
         XCTAssertTrue(row.contains("\"etched\""))
         XCTAssertTrue(row.contains("\"202\""))
         XCTAssertTrue(row.contains("NO_USD_QUOTE"))
-        XCTAssertTrue(row.contains("usd_etched"))
+        XCTAssertTrue(row.contains("Scryfall usd_etched has no usable value"))
+        XCTAssertTrue(progressMessages.contains("\(CardGame.magic.label): checking Fixture finishes…"))
         XCTAssertTrue(report.text.contains("\"set_coverage\""))
         XCTAssertTrue(report.text.contains("\"3\",\"3\",\"1\",\"0\""))
         let loads = await browse.detailLoads
