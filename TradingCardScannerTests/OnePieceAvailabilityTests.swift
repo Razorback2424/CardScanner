@@ -17,7 +17,9 @@ final class OnePieceAvailabilityTests: XCTestCase {
             XCTAssertNotNil(runtime.recognizer)
             XCTAssertFalse(preferences.bool(forKey: "onePieceOwnerCatalogEnabled"))
 
-            let games = CardGameRuntimeContainer.appDefaults().registry
+            let container = CardGameRuntimeContainer.appDefaults()
+            XCTAssertNotNil(container.runtime(for: .onePiece)?.activationSource)
+            let games = container.registry
             for capability: CardGameCapabilities in [.scan, .browse, .collectionWrite, .pricing, .sealed] {
                 XCTAssertTrue(games.supports(.onePiece, capability))
             }

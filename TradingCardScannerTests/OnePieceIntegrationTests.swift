@@ -121,6 +121,14 @@ private final class OnePieceRecoveryReadGate: @unchecked Sendable {
 
 @MainActor
 final class OnePieceIntegrationTests: XCTestCase {
+    func testDiscoveryPreviewURLRejectsUntrustedValues() throws {
+        let good = "https://en.onepiece-cardgame.com/images/cardlist/card/OP18-001.png?261016"
+        XCTAssertNotNil(OnePieceBrowseAdapter.validPreviewURL(good))
+        for value in ["https://example.com/images/cardlist/card/a.png", "http://en.onepiece-cardgame.com/images/cardlist/card/a.png", "https://en.onepiece-cardgame.com/images/cardlist/card/a.jpg", "https://en.onepiece-cardgame.com/images/cardlist/card/a.png#fragment", "not a URL"] {
+            XCTAssertNil(OnePieceBrowseAdapter.validPreviewURL(value), value)
+        }
+        XCTAssertNotNil(Bundle.main.url(forResource: "discovery-previews-v1", withExtension: "json"))
+    }
     func testBuiltAppConfiguresOnePieceMarketPriceFeed() throws {
         XCTAssertEqual(try XCTUnwrap(TCGCSVPriceMirror.baseURL).absoluteString,
             "https://catalog.scan-stash.com/market-prices/v1")
@@ -721,17 +729,47 @@ final class OnePieceIntegrationTests: XCTestCase {
         let container = try CardGameRuntimeContainer(runtimes: [runtime])
         XCTAssertTrue(container.registry.supports(.onePiece, .collectionWrite))
 
-        let sets = try await XCTUnwrap(runtime.browse).sets()
+        let browse = try XCTUnwrap(runtime.browse)
+        let sets = try await browse.sets()
         let eb05 = try XCTUnwrap(sets.first { $0.providerID == "product:bandai-series:569205" })
         XCTAssertEqual(eb05.name, "Extra Booster: One Piece Heroines Edition Vol. 2 · EB05")
         XCTAssertEqual(eb05.releaseDate, OnePieceTextNormalization.releaseDate("2026-10-30"))
+        XCTAssertTrue(sets.filter { $0.physicalPrintingIDs?.isEmpty == false }
+            .allSatisfy { $0.artworkFallbackURLs?.isEmpty == false })
+        let eb05Cards = try await browse.cards(in: eb05, cursor: nil)
+        XCTAssertFalse(eb05Cards.items.isEmpty)
+        XCTAssertTrue(eb05Cards.items.filter { $0.collectionAvailabilityNotice == nil }
+            .allSatisfy { $0.imageURL != nil })
+        let op18 = try XCTUnwrap(sets.first { $0.name.contains("[OP-18]") })
+        XCTAssertEqual(op18.code, "OP18")
+        XCTAssertEqual(op18.cardCount, 119)
+        XCTAssertEqual(op18.artworkFallbackURLs?.count, 3)
+        let localOP18Cards = try await browse.completeLocalCards(in: op18)
+        let op18Cards = try XCTUnwrap(localOP18Cards)
+        XCTAssertEqual(op18Cards.count, 119)
+        XCTAssertTrue(op18Cards.allSatisfy { $0.imageURL != nil && $0.collectionAvailabilityNotice == "Printing needs review" })
+        let previewDetails = try await browse.details(for: try XCTUnwrap(op18Cards.first))
+        XCTAssertNotNil(previewDetails.collectionWriteUnavailableReason)
+        let localEB05Cards = try await browse.completeLocalCards(in: eb05)
+        let allEB05 = try XCTUnwrap(localEB05Cards)
+        let ambiguous = try XCTUnwrap(allEB05.first {
+            $0.collectorNumber == "EB05-006" && $0.collectionAvailabilityNotice == "Printing needs review"
+        })
+        XCTAssertNil(ambiguous.imageURL)
+        let op18Search = try await browse.search(query: "OP18", setIDs: [op18.catalogID], cursor: nil)
+        XCTAssertEqual(op18Search.items.count, 60)
+        XCTAssertNotNil(op18Search.nextCursor)
 
         // The production release keeps every owner printing identity, so an
         // existing collection keeps its links when the owner build moves to it.
         let production = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter).registry
         let owner = try XCTUnwrap(XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime()).catalog as? OnePieceCatalogAdapter).registry
-        XCTAssertEqual(production.verifiedRelease.release.revision, 2)
+        XCTAssertEqual(production.verifiedRelease.release.revision, 4)
+        let eb05Printings = production.printingByID.values.filter { $0.releaseID == eb05.providerID }
+        XCTAssertEqual(eb05Printings.count, 64)
+        XCTAssertTrue(eb05Printings.allSatisfy { $0.marketMappings.contains { $0.status == .exact } })
         XCTAssertEqual(Set(production.printingByID.keys), Set(owner.printingByID.keys))
+        XCTAssertTrue(Set(owner.artworkURLByID.keys).isSubset(of: Set(production.artworkURLByID.keys)))
         XCTAssertEqual(production.printingByID.count, 4383)
     }
     private var now: Date { ISO8601DateFormatter().date(from: date)! }

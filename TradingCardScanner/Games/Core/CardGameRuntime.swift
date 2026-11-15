@@ -403,19 +403,19 @@ struct CardGameRuntimeContainer: Sendable {
         }
 #endif
         do {
-#if LOCAL_ONLY_SIGNING
-            if let module = try OnePieceCatalogBootstrap.ownerRuntime() {
-                modules.append(module)
-                return try! Self(runtimes: modules, unavailableGames: unavailable)
-            }
-#endif
 #if DEBUG && LOCAL_ONLY_SIGNING
             if OnePieceCatalogBootstrap.isLocalReviewLaunch {
                 if let module = try OnePieceCatalogBootstrap.localReviewRuntime() { modules.append(module) }
-                return try! Self(runtimes: modules)
+                return try! Self(runtimes: modules, unavailableGames: unavailable)
             }
 #endif
-            if let module = try OnePieceCatalogBootstrap.configuredRuntime() { modules.append(module) }
+            let configured = try OnePieceCatalogBootstrap.configuredRuntime()
+#if LOCAL_ONLY_SIGNING
+            let module = try configured ?? OnePieceCatalogBootstrap.ownerRuntime()
+#else
+            let module = configured
+#endif
+            if let module { modules.append(module) }
         } catch {
             Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
                 .error("One Piece catalog configuration or seed rejected; existing games remain available")

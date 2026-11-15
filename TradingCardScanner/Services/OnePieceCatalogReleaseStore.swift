@@ -94,6 +94,13 @@ actor OnePieceCatalogReleaseStore {
     private static func stored(envelope: OnePieceCatalogReleaseEnvelope,
                                keys: [String: Curve25519.Signing.PublicKey], now: Date) throws -> StoredRelease {
         let verified = try OnePieceCatalogSignature.verify(envelope, trustedKeys: keys, now: now)
-        return .init(envelope: envelope, release: verified, registry: .init(verifiedRelease: verified))
+        // Local installs keep the same exact Bandai artwork as the owner catalog
+        // when switching to the production update path.
+#if LOCAL_ONLY_SIGNING
+        let registry = OnePieceCatalogRegistry(verifiedRelease: verified, includeRecordedArtwork: true)
+#else
+        let registry = OnePieceCatalogRegistry(verifiedRelease: verified)
+#endif
+        return .init(envelope: envelope, release: verified, registry: registry)
     }
 }

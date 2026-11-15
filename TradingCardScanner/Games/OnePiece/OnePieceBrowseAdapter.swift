@@ -24,6 +24,22 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
     }
     private static let collectorNumber = try! NSRegularExpression(
         pattern: #"(?<!\S)([a-z]{1,8}) ?([0-9]{0,3}) ?([0-9]{3})(?!\S)"#)
+    private static let discoveryPreviews: [String: URL] = {
+        if let resource = Bundle.main.url(forResource: "discovery-previews-v1", withExtension: "json",
+                                          subdirectory: nil),
+           let data = try? Data(contentsOf: resource),
+           let previews = try? JSONDecoder().decode([String: String].self, from: data) {
+            return previews.compactMapValues(Self.validPreviewURL)
+        }
+        return [:]
+    }()
+
+    static func validPreviewURL(_ value: String) -> URL? {
+        guard let url = URL(string: value), url.scheme == "https", url.host == "en.onepiece-cardgame.com",
+              url.port == nil, url.user == nil, url.password == nil, url.fragment == nil,
+              url.path.hasPrefix("/images/cardlist/card/"), url.pathExtension.lowercased() == "png" else { return nil }
+        return url
+    }
 
     init(registry: OnePieceCatalogRegistry) {
         self.registry = registry
@@ -41,11 +57,10 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
             if products.isEmpty { products.insert(unassignedID) }
             for product in products { grouped[product, default: []].append(printing) }
         }
-        var discoveries: [String: [String: Set<String>]] = [:]
+        var discoveries: [String: [String: [OnePieceSourceObservation]]] = [:]
         for observation in registry.verifiedRelease.release.observations where observation.isBrowseDiscovery {
             if let product = observation.productEvidence.first, let number = observation.printedEvidence["number"] {
-                let labels = observation.printedEvidence["productLabel"].map { [$0] } ?? []
-                discoveries[product, default: [:]][number, default: []].formUnion(labels)
+                discoveries[product, default: [:]][number, default: []].append(observation)
             }
         }
         var sets: [CatalogSetID: CatalogSet] = [:]
@@ -54,9 +69,12 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
             let printings = grouped[productID] ?? []
             let unresolvedNumbers = discoveries[productID] ?? [:]
             let product = registry.productsByID[productID]
+            let label = product?.label ?? "Other releases"
+            let code = label.range(of: #"(?<=\[)[A-Z]+-?[0-9]+(?=\]$)"#, options: .regularExpression)
+                .map { label[$0].replacingOccurrences(of: "-", with: "") } ?? label
             let setID = CatalogSetID(game: .onePiece, providerID: productID)
-            var set = CatalogSet(catalogID: setID, name: product?.label ?? "Other releases",
-                code: product?.label ?? "Other releases", logoURL: nil, symbolURL: nil,
+            var set = CatalogSet(catalogID: setID, name: label,
+                code: code, logoURL: nil, symbolURL: nil,
                 cardCount: printings.count + unresolvedNumbers.count,
                 releaseDate: product?.releaseDate.flatMap(OnePieceTextNormalization.releaseDate), sortRank: 0,
                 physicalPrintingIDs: Set(printings.lazy.filter { $0.status == .verified }.map { $0.id.uuidString.lowercased() }))
@@ -83,11 +101,16 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                     collectionAvailabilityNotice: printing.status == .verified ? nil : "Browse only",
                     searchFields: Self.searchFields(name: name, number: canonical.printedNumber, additionalText: finishSearchTerms))
             }
-            let discoveryRows = unresolvedNumbers.compactMap { number, labels -> CatalogCardSummary? in
+            let discoveryRows = unresolvedNumbers.compactMap { number, observations -> CatalogCardSummary? in
                 guard let card = registry.canonicalByPrintedNumber[number] else { return nil }
+                let labels = Set(observations.compactMap { $0.printedEvidence["productLabel"] })
+                let previews = observations.compactMap { Self.discoveryPreviews[$0.id + "|" + $0.payloadSHA256] }
+                let distinctPreviews = Set(previews)
+                let preview = previews.count == observations.count && distinctPreviews.count == 1
+                    ? distinctPreviews.first : nil
                 return .init(game: .onePiece, providerID: Self.discoveryID(for: card), setID: setID,
                     setName: set.name, setCode: OnePieceTextNormalization.prefix(of: number) ?? "",
-                    name: card.name, collectorNumber: number, thumbnailURL: nil, imageURL: nil,
+                    name: card.name, collectorNumber: number, thumbnailURL: preview, imageURL: preview,
                     catalogGeneration: registry.generation, collectionAvailabilityNotice: "Printing needs review",
                     searchFields: Self.searchFields(name: card.name, number: number, additionalText: labels.sorted()))
             }
@@ -95,10 +118,12 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                 $0.collectorNumber == $1.collectorNumber ? $0.providerID < $1.providerID
                     : $0.collectorNumber < $1.collectorNumber
             }
-            // Reuse verified member artwork; product releases do not publish logos.
-            // Sorting above makes the selection stable across registry rebuilds.
+            // Prefer verified member artwork and fill remaining slots with official previews.
             var seenImages: Set<URL> = []
-            set.artworkFallbackURLs = Array((cards[setID] ?? []).filter { $0.collectionAvailabilityNotice == nil }
+            let sortedRows = cards[setID] ?? []
+            let verifiedRows = sortedRows.filter { $0.collectionAvailabilityNotice == nil }
+            let previewRows = sortedRows.filter { $0.collectionAvailabilityNotice == "Printing needs review" }
+            set.artworkFallbackURLs = Array((verifiedRows + previewRows)
                 .compactMap(\.thumbnailURL)
                 .filter { seenImages.insert($0).inserted }.prefix(3))
             sets[setID] = set
@@ -107,7 +132,8 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
         cardsBySetID = cards
         searchRows = cards.values.flatMap { $0 }.sorted { $0.id < $1.id }.map {
             let cardText = $0.searchFields?.text ?? "\($0.name) \($0.collectorNumber)"
-            return SearchRow(summary: $0, searchableText: CardNameSearch.normalize(cardText + " " + $0.setName))
+            let setCode = sets[$0.setID]?.code ?? ""
+            return SearchRow(summary: $0, searchableText: CardNameSearch.normalize("\(cardText) \($0.setName) \(setCode)"))
         }
     }
 

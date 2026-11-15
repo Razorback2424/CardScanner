@@ -42,8 +42,8 @@ struct OnePieceCatalogRegistry: Sendable {
         variantsByID = Dictionary(uniqueKeysWithValues: release.registry.variants.map { ($0.id, $0) })
     }
 
-    /// Exact recorded artwork for the owner's local display, enabled explicitly
-    /// by that bootstrap. No guessed number/parallel URLs or signed-payload edits.
+    /// Exact Bandai artwork from a hash-matched render observation. No guessed
+    /// number or parallel URLs.
     static func recordedArtworkURL(for artwork: OnePieceArtwork,
                                    observations: [String: OnePieceSourceObservation]) -> URL? {
         guard let hash = artwork.imageSHA256 else { return nil }
