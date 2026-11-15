@@ -10,7 +10,7 @@ standard. Do not use a missing row as evidence that a live catalog is complete.
 ## Output contract
 
 - `catalog-inventory.csv`: retained record/printing/finish observations;
-  `source_scope` distinguishes `installed`, `candidate`, `historical`,
+  `source_scope` distinguishes `bundled_owner`, `candidate`, `historical`,
   `retained_raw`, `test_only`, `retained_physical`, `retained_discovery`,
   and `retained_seed`. Multiple product appearances can legitimately produce
   multiple rows for one physical printing.
@@ -151,7 +151,7 @@ Sources: `MagicCatalogCore/Sources/MagicCatalogCore/CatalogBuilder.swift`,
 
 ## One Piece
 
-The installed Browse adapter displays a **single discovery row per product
+The Browse adapter for the bundled owner registry displays a **single discovery row per product
 and printed number**; individual artwork observations are joined evidence,
 not additional rows. The offline report follows that grouping and preserves
 the source IDs. The registry can project one verified printing into more
