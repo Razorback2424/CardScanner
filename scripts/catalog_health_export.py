@@ -428,21 +428,9 @@ def apply_prices(rows, snapshot_date, feeds, as_of, max_age_days):
 
 def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
     result, census_findings = run(repo)
-    if result['structuralErrors']:
-        raise ValueError('Catalog validation failed: ' + json.dumps(result['structuralErrors']))
-    rows = inventory(repo)
-    inspect_static_mappings(rows)
-    snapshot_date = None
-    if capture_dir:
-        if as_of is None:
-            raise ValueError('--as-of is required with --capture-dir for reproducible freshness')
-        snapshot_date, feeds = load_prices(capture_dir)
-        apply_prices(rows, snapshot_date, feeds, as_of, max_age_days)
     output.mkdir(parents=True, exist_ok=True)
-    write(output / 'catalog-inventory.csv', FIELDS, rows)
-    write(output / 'catalog-exceptions.csv', FIELDS, (row for row in rows if row['assessment'] == 'actionable'))
-    # These are source-/set-level findings, not invented physical printing rows.
-    # Preserve the original audit's disposition: informational and risk cohorts are not defects.
+    # Retain diagnostics even when invalid inputs prevent the normal inventory.
+    # Never emit a partial inventory and misrepresent it as complete.
     def census_assessment(item):
         if item['disposition'] in ('informational', 'source_risk_cohort', 'runtime_projection_required'):
             return 'coverage_not_evaluated'
@@ -451,6 +439,27 @@ def export(repo, output, capture_dir=None, as_of=None, max_age_days=30):
         return 'actionable'
     write(output / 'catalog-census-findings.csv', CENSUS_FIELDS,
           ({**item, 'assessment': census_assessment(item)} for item in census_findings))
+    if result['structuralErrors']:
+        (output / 'catalog-run-failure.json').write_text(
+            json.dumps({'stage': 'catalog_structure', 'errors': result['structuralErrors']}, indent=2) + '\n',
+            encoding='utf-8')
+        raise ValueError('Catalog validation failed: ' + json.dumps(result['structuralErrors']))
+    rows = inventory(repo)
+    inspect_static_mappings(rows)
+    snapshot_date = None
+    if capture_dir:
+        try:
+            if as_of is None:
+                raise ValueError('--as-of is required with --capture-dir for reproducible freshness')
+            snapshot_date, feeds = load_prices(capture_dir)
+            apply_prices(rows, snapshot_date, feeds, as_of, max_age_days)
+        except (ValueError, KeyError, OSError) as error:
+            (output / 'catalog-run-failure.json').write_text(
+                json.dumps({'stage': 'market_capture', 'errors': [str(error)]}, indent=2) + '\n',
+                encoding='utf-8')
+            raise
+    write(output / 'catalog-inventory.csv', FIELDS, rows)
+    write(output / 'catalog-exceptions.csv', FIELDS, (row for row in rows if row['assessment'] == 'actionable'))
     severity = {'RAW_FINISH_COVERAGE_UNEVALUATED': 'unchecked', 'PHYSICAL_FAMILY_INCOMPLETE': 'review',
                 'EDITION_UNVERIFIED': 'review', 'CANONICAL_LINK_UNRESOLVED': 'review', 'CANONICAL_CARD_MISSING': 'review',
                 'SOURCE_OBSERVATION_INCOMPLETE': 'review', 'PRICE_MAPPING_UNAPPROVED': 'review', 'PRICE_MAPPING_CONFLICT': 'review', 'PRINTING_FAMILY_INCOMPLETE': 'review',
