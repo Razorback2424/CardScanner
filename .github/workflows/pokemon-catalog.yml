@@ -50,6 +50,9 @@ on:
         description: "Reviewed candidate manifest SHA-256"
         required: false
         type: string
+      reviewed_candidate_revision:
+        description: "Prepare the retained candidate for this revision instead of reading live providers"
+        type: string
       bootstrap:
         description: "Allow initial publication when no production pointer exists"
         default: false
@@ -123,6 +126,7 @@ jobs:
               ;;
           esac
       - name: Validate the scoped live production candidate
+        if: inputs.reviewed_candidate_revision == ''
         run: |
           swift run --package-path PokemonCatalogCore pokemon-catalog-publisher validate \
             --input publisher/catalog-input.json \
@@ -132,6 +136,22 @@ jobs:
             --live true \
             --candidate-root publisher/candidate \
             --report publisher/reports/production.json
+      - name: Validate the retained production candidate
+        if: github.event_name == 'workflow_dispatch' && inputs.reviewed_candidate_revision != ''
+        env:
+          REVIEWED_REVISION: ${{ inputs.reviewed_candidate_revision }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$REVIEWED_REVISION" =~ ^[1-9][0-9]*$ ]]
+          source="publisher/pokemon/production/revision-$REVIEWED_REVISION"
+          test "$(jq -er .revision "$source/catalog-payload.json")" = "$REVIEWED_REVISION"
+          swift run --package-path PokemonCatalogCore pokemon-catalog-publisher verify-candidate \
+            --candidate-root "$source" --environment production \
+            --active-release "${RUNNER_TEMP}/pokemon-catalog-production-current.json"
+          mkdir -p publisher/candidate publisher/reports
+          cp "$source"/{catalog-payload.json,pokemon-catalog-snapshot.json,review-report.json} publisher/candidate/
+          cp "$source/review-report.json" publisher/reports/production.json
       - name: Classify the production candidate
         id: prepare
         run: |
