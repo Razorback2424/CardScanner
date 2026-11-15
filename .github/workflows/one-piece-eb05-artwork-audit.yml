@@ -1,4 +1,4 @@
-name: One Piece EB05 artwork evidence audit
+name: One Piece artwork evidence audit
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: one-piece-eb05-evidence-${{ github.ref }}
+  group: one-piece-artwork-evidence-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -34,9 +34,14 @@ jobs:
           python3 scripts/audit_one_piece_live_artwork.py \
             --series 569205 --group 24820 \
             --output "$RUNNER_TEMP/one-piece-evidence/eb05-market-artwork.json"
+      - name: Cross-check OP01 Romance Dawn with the same artwork matcher
+        run: |
+          python3 scripts/audit_one_piece_live_artwork.py \
+            --series 569101 --group 3188 \
+            --output "$RUNNER_TEMP/one-piece-evidence/op01-market-artwork.json"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: one-piece-eb05-artwork-evidence-${{ github.run_id }}
+          name: one-piece-artwork-evidence-${{ github.run_id }}
           path: ${{ runner.temp }}/one-piece-evidence/eb05-market-artwork.json
           if-no-files-found: warn
