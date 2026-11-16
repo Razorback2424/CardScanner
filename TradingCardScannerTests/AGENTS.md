@@ -16,6 +16,23 @@ grep -rhoE "class [A-Za-z0-9_]+ *: *XCTestCase" TradingCardScannerTests/Centerin
 
 Notable multi-class files: `CenteringExportTests.swift`, `OpusImplementationPlanTests.swift`, `UncoveredSurfaceTests.swift` (17 surface/smoke classes), `YuGiOhIntegrationTests.swift`, `BrowseFeatureTests.swift`, `PokemonCatalogTests.swift`, `PokemonCatalogSliceBTests.swift`, `SignedCatalogReleaseStoreTests.swift`, `VariantResolverTests.swift`, `CenteringNativeResearchTests.swift`.
 
+## Catalog health and exact-quote tests (November 2026)
+
+- `ActiveCatalogHealthExportTests` is declared inside
+  `BrowseFeatureTests.swift`, **not** a file named after the class.
+  The catalog coverage workflow explicitly selects this class. It checks
+  discovery/finish issue classification and generated CSV behavior, but
+  does not prove the physical iPhone file-export flow or full provider coverage.
+- `JustTCGContractTests` lives in `JustTCGContractTests.swift`. When changing
+  exact quote/history fallback, include the reviewed Pokémon promo cases,
+  quote-lifecycle/expiry guards, and existing-price preservation. Also test
+  affected card detail and storage-generation behavior; a chart point is not
+  automatically a current quote.
+- Publisher-side EB-05 and offline catalog-health logic have separate Python
+  regressions: `scripts/tests/test_one_piece_eb05_market.py` and
+  `scripts/tests/test_catalog_health_export.py`. These cannot replace
+  iOS integration/device checks.
+
 ## Centering: behavior → class
 
 | Changed behavior | Class | File |
