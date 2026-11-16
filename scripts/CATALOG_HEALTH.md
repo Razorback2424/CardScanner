@@ -22,7 +22,7 @@ retrieved before the failure. Deferred sets were never requested. Missing
 directory or marketplace evidence has its own notice. A catalog activation
 or cancellation rejects the export before it can be saved.
 
-**Check live catalog prices** is on by default. Price evidence is finish
+**Check catalog prices** is on by default. Price evidence is finish
 specific and can come from the existing price resolver cache. The CSV reports
 the provider, listing, observation time and provider data date when available.
 With pricing off, all rows use `not_checked` and price amounts are empty.
@@ -37,6 +37,15 @@ access denial defers the remaining sets. A valid Retry-After also applies to
 subsequent runs in the same app session. The Nov. 15, 2026 device report
 contained 657 generic Magic errors. Its original HTTP statuses were not
 retained, so the incident cannot be attributed to a particular provider status.
+
+**Interpretation matters:** a price-history chart can have dated
+observations while the selected finish still lacks an eligible **current**
+quote. The November 15 current-quote fallback in the detail views checks a
+unique exact physical product/finish and provider quote lifecycle; the report
+must not infer a current price merely from historical chart points.
+A valid existing price is not replaced simply because a history lookup
+returns older or no data. See the
+[implementation checkpoint](../docs/current-implementation-2026-11-15.md).
 
 The on-device report is independent of the offline repository audit below.
 The latter's `candidate` and historical observations are **not**
@@ -125,6 +134,35 @@ capture validation fails, `catalog-run-failure.json` records the stage/error,
 while existing census findings remain available. The GitHub artifact upload
 runs even after these validation failures. The output should not be used
 to claim total cross-game catalog completeness.
+
+## EB-05 publisher-side follow-up
+
+The separate [EB-05 mapping preparer](prepare_one_piece_eb05_market.py)
+evaluates already verified, English, exact-artwork-and-finish EB-05 records
+missing an exact marketplace mapping. Its current title validation requires
+the retailer's supported treatment and exact product ID, and one unique
+Normal/Foil price lane. Duplicate price lanes, reused product IDs, mismatched
+titles, and insufficient retailer evidence remain **held**, not silently
+assigned or collapsed. The quoted market amount is not proof of the physical
+card. The preparer does not authorize any unverified Browse discovery record
+or publish a new signed release. Focused regression:
+`scripts/tests/test_one_piece_eb05_market.py`.
+
+The GitHub [live artwork audit](../.github/workflows/one-piece-eb05-artwork-audit.yml)
+compares pictures as read-only candidate evidence. An image match alone cannot
+authorize a printing, finish, or market mapping.
+
+## Reproducible evidence and failures
+
+The [Catalog Health Audit workflow](../.github/workflows/catalog-health-audit.yml)
+is **manual**. It always attempts to retain its output, even after a
+structural failure, and may upload `catalog-run-failure.json` instead of
+a usable census. With `capture_prices=true`, the workflow separately
+uploads retained market captures, subject to provider availability and
+upstream-build validation. A workflow artifact's presence is **not** proof
+that the inventory completed or that every iPhone Browse game was enumerated.
+Recheck the output's metadata, source hashes, assessment and failure file
+before comparing it to an on-device export.
 
 See [CATALOG_HEALTH_FAILURE_MODES.md](CATALOG_HEALTH_FAILURE_MODES.md) for the
 source-grounded, five-game inventory of publisher validation failures, app
