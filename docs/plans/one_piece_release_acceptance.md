@@ -1,5 +1,20 @@
 # One Piece v1 release acceptance
 
+**Current-source correction — 2026-11-15 (`main@a8d3103a`):**
+The historical status and approvals below describe the October local-only
+configuration. Today `Config/OnePieceCatalogProduction.xcconfig` sets
+`remote-authority` and `ONE_PIECE_COLLECTION_WRITES = YES` for the
+on-device-only (`NO_CLOUDKIT`) Release configuration. A signed production
+seed is bundled; the retained revision-4 OP-18 candidate is **unsigned**.
+Neither configuration nor a retained candidate demonstrates physical-device
+activation, CloudKit compatibility, a completed iPhone acceptance run, or a
+completed distribution gate. Use the
+[November source checkpoint](../current-implementation-2026-11-15.md) and
+[launch contract](../release/launch-contract.md) for those boundaries.
+Do not erase the earlier test history or treat its old disabled-build claims
+as current facts.
+
+
 **2026-10-23 safety follow-up:** number-only scans with a known retained
 provisional/conflicted/quarantined sibling now require explicit selection among
 verified printings. P-001 therefore requires winner confirmation before saving;
