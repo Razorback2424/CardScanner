@@ -18,10 +18,9 @@ Their exact lanes exist; the capture does not establish an available quote.
 The retained capture has matching source-build markers, timestamps, and hashes.
 The 251 CoreTCG/Bandai observation IDs and bytes match both the signed baseline
 and `../prb02-revision-5/observations.json`. The supplied research validation
-JSON covers the same 252 UUIDs, but explicitly marks all 252 unresolved and
-zero mappings approved. The CSV marks them verified; the relationship between
-these conflicting handoffs needs owner clarification before relying on the
-candidate. The separately described findings Markdown was not supplied.
+JSON covers the same 252 UUIDs but marks all 252 unresolved and zero mappings
+approved. The owner confirmed that the verified CSV supersedes this earlier
+research status. The separately described findings Markdown was not supplied.
 
 Reproduce with `scripts/prepare_one_piece_prb01_market.py` using the retained
 predecessor, inventory, and capture, then build with the One Piece publisher
