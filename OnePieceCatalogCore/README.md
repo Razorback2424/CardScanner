@@ -1,9 +1,17 @@
 # One Piece catalog publisher
 
-The app includes a signed English catalog seed. The production configuration
-keeps remote activation and collection writes disabled. The retained review
-records identify the evidence and capture hashes for individual physical
-printings. [English review corpus](ReviewCorpus/english-stress/README.md)
+The app includes a signed English catalog seed. As of `main@a8d3103a`
+(2026-11-15), the production Xcode configuration uses `remote-authority`
+with a dedicated One Piece pin and `ONE_PIECE_COLLECTION_WRITES = YES`,
+while the Release app remains on-device-only (`NO_CLOUDKIT`). These settings
+do not prove that a later candidate is signed, hosted, activated on an iPhone,
+or accepted for distribution. In particular, the retained revision-4 OP-18
+candidate is unsigned discovery evidence, not a deployed physical/price
+expansion. The [seed resource guide](../TradingCardScanner/OnePieceCatalogSeed/README.md)
+separates the local and production paths.
+
+The retained review records identify the evidence and capture hashes for
+individual physical printings. [English review corpus](ReviewCorpus/english-stress/README.md)
 
 `one-piece-catalog-publisher build` takes a durable registry, normalized source
 observations and source inventories. It retains app-owned printing UUIDs and
@@ -164,6 +172,27 @@ necessarily unavailable at the provider or in other capture directories.
 The optional report does not change catalog contents or sign/publish anything.
 Ensure each output path is new, and supply all relevant retained retailer roots
 before treating a negative replay result as a source-data limitation.
+
+### EB-05 mapping-only price candidate
+
+`scripts/prepare_one_piece_eb05_market.py` only proposes exact marketplace
+mappings for **already verified** English EB-05 physical printings that lack
+one. It requires retained retailer artwork-and-finish evidence, an exact
+marketplace product ID and acceptable treatment title, and **one** quote lane
+for the requested Normal/Foil subtype. The feed validator rejects duplicate
+lanes before matching. Missing lanes and previously claimed product IDs leave
+the mapping held. The price feed itself grants no printing, artwork, or
+finish authority. Its report distinguishes existing,
+exact, and held rows. It does not sign, activate, publish, or fix the separate
+unapproved discovery aliases. Relevant tests:
+`scripts/tests/test_one_piece_eb05_market.py`.
+
+A read-only external-image comparison is also available in
+[`one-piece-eb05-artwork-audit.yml`](../.github/workflows/one-piece-eb05-artwork-audit.yml).
+Image agreement is a research candidate, not permission to create an exact
+price mapping. For the publisher-side exception classifications and the
+different on-device report, see
+[`scripts/CATALOG_HEALTH.md`](../scripts/CATALOG_HEALTH.md).
 
 The workflow runs a weekly read-only coverage report. Its manual jobs prepare
 the reviewed signed artifact and publish it in separate environments. Publication

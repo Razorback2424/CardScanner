@@ -27,6 +27,26 @@ Do not run live capture or regenerate committed resources just to verify a code 
 
 ## Data contracts
 
+### Current catalog-health and EB-05 boundaries
+
+The [on-device catalog-health export](CATALOG_HEALTH.md) traverses active
+Browse catalogs; `catalog_health_export.py` audits **retained repository
+data**. Do not compare their issue totals as identical universes, treat
+`not_checked` as a missing market quote, or present an incomplete Magic
+enumeration as full coverage. The manual catalog-health workflow can retain a
+failure JSON instead of a valid census.
+
+`prepare_one_piece_eb05_market.py` is a mapping-only preparer for already
+verified English EB-05 physical printings. It must have exact retailer artwork
+and finish evidence, one acceptable marketplace title/product and **exactly
+one** requested Normal/Foil lane. Missing lanes remain held. The feed
+validator rejects duplicate lanes before matching.
+Do not promote a Bandai discovery entry from title/image/market agreement
+alone. Read-only live image-audit findings are not signing approvals.
+Run `test_one_piece_eb05_market.py` and `test_catalog_health_export.py`
+when changing these boundaries.
+
+
 - Preserve retained source bytes, receipt hashes, capture dates, and identity-assignment ledgers. Never rewrite a retained input to make a test pass.
 - Keep discovery data, physical-printing authority, finish evidence, and market observations separate. For example, One Piece normalization explicitly grants no physical UUID, finish, or completeness authority.
 - Preserve stable physical identities (UUIDs, pinned keys) when rebuilding; validate against the previous release.

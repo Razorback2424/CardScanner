@@ -1,29 +1,45 @@
-# One Piece signed seed
+# One Piece signed catalog resources
 
-The normal local Xcode app includes the owner's verified catalog and public pin
-under `OnePieceOwnerCatalog/`. Debug local builds register it on their first
-launch without custom Info.plist settings, Documents copies or saved preferences.
-It uses the normal collection storage. This is separate from the production
-publication seed described below.
+**Current source-of-truth check: 2026-11-15, `main@a8d3103a`.**
 
-The 2026-10-07 mapping-only owner revision is **2**, with 406 additional exact
-mappings across 39 sets. The existing public pin is retained alongside the new
-owner review pin. Physical IDs and supported finishes are unchanged. The
-[owner-update preparer](../../scripts/prepare_one_piece_owner_update.py) validates
-against the signed previous release and independently verifies the new signature
-and publication manifest; private keys are ephemeral and never retained.
+There are two distinct signed catalog paths. Do not treat their files, revisions,
+keys, or storage boundaries as interchangeable.
 
-No production seed is supplied yet. Synthetic test fixtures must not be bundled
-as a production catalog or used to claim printing-universe completeness.
+- `TradingCardScanner/OnePieceOwnerCatalog/` contains the separately signed
+  owner-local catalog and public keys used by local development configurations.
+  The October 7, 2026 revision-2 mapping update is a **historical checkpoint**,
+  not the latest statement about production coverage.
+- `TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json`
+  contains a signed **production** seed bundled by the app. It is not a
+  synthetic fixture or a substitute for verifying the installed app's exact
+  payload and pinned key.
 
-Once reviewed source data/rights and dedicated signing keys are approved, retain
-the verified publication envelope here as `one-piece-catalog-release.json` and
-add that file to the app's Copy Bundle Resources phase. Bootstrap looks for this
-exact resource name at the bundle root and verifies it against the One Piece
-public keys supplied by the build configuration.
+`Config/OnePieceCatalogProduction.xcconfig` currently sets
+`ONE_PIECE_CATALOG_ROLLOUT_MODE = remote-authority`, a dedicated production
+key pin and hosted catalog URL, and `ONE_PIECE_COLLECTION_WRITES = YES`.
+Its comment scopes the Release build to **on-device storage (`NO_CLOUDKIT`)**.
+These are source configuration facts, not evidence of successful device
+activation, live-host publication, CloudKit compatibility, or distribution
+acceptance. Any signed update still must pass the configured pin, prior-release
+and activation checks. Older documentation saying production is universally
+disabled describes a prior configuration.
 
-The default rollout is disabled. Validation-only mode verifies remote releases
-without enabling One Piece scan/Browse or collection writes. Remote authority
-enables local scanning and Browse only after the signed seed and configuration
-pass validation; collection writes and pricing retain their independent gates.
-Failed configuration/seed validation preserves Pokémon/Magic availability.
+`publisher/one-piece/production/revision-4/candidate.json` is a separately
+retained **unsigned** candidate for OP-18 discovery. Its product/preview
+observations must not be described as verified physical printings, exact price
+mappings, or as activated on a particular phone merely because the candidate
+exists. Consult its [release notes](../../publisher/one-piece/production/revision-4/README.md)
+and the [One Piece publisher guide](../../OnePieceCatalogCore/README.md).
+
+The additional `discovery-previews-v1.json` resources carry representative
+official artwork evidence, not physical identity or acquisition authority.
+A preview can be displayed for a record still marked "Printing needs review."
+That record remains unavailable for collection writes and exact pricing until
+independent printing/finish and mapping review succeeds.
+
+For current release and test boundaries, see the
+[documentation map](../../docs/README.md),
+[catalog health guide](../../scripts/CATALOG_HEALTH.md), and
+[launch contract](../../docs/release/launch-contract.md).
+Never infer a verified iPhone install, successful catalog publication, or
+completed release gate from the presence of a bundled artifact.

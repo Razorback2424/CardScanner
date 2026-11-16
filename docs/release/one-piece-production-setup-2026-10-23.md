@@ -1,5 +1,18 @@
 # One Piece production setup for owner approval
 
+**Historical preparation snapshot, not current rollout guidance.**
+At the November 15, 2026 source checkpoint (`main@a8d3103a`),
+[`Config/OnePieceCatalogProduction.xcconfig`](../../Config/OnePieceCatalogProduction.xcconfig)
+already uses signed `remote-authority` with a dedicated public pin and
+`ONE_PIECE_COLLECTION_WRITES = YES` for an on-device-only Release build.
+The disabled/unsigned assertions in the October 23 preparation paragraph
+below describe that **earlier** stage; subsequent signing and configuration
+changes superseded them. The retained revision-4 OP-18 discovery **candidate**
+is unsigned and is not proof of current device activation. Current operational
+and evidence boundaries: [November checkpoint](../current-implementation-2026-11-15.md)
+and [One Piece seed guide](../../TradingCardScanner/OnePieceCatalogSeed/README.md).
+
+
 **Date:** 2026-10-23. **Source:** `c4e1198` plus the launch-readiness working tree.
 **Status at preparation:** unsigned candidate prepared and validated. No production key created
 or provisioned; no signing, workflow dispatch, deployment or activation performed.
