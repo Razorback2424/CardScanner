@@ -591,6 +591,122 @@ final class JustTCGContractTests: XCTestCase {
     }
 
     @MainActor
+    func testGengarRetailPromosShareExactQuoteAndHistoryWithoutBorrowingAnotherFinish() async throws {
+        let suite = "RetailPromoHistory-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(suite)
+        defer {
+            defaults.removePersistentDomain(forName: suite)
+            try? FileManager.default.removeItem(at: root)
+        }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        let service = CardMarketHistoryService(transport: .init(configuration: settings,
+            session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+            pacer: .init(), apiKeyOverride: "fixture-key"), root: root)
+        let tcgdex = try JSONDecoder().decode(TCGdexCard.self, from: Data("""
+            {"id":"me03-050","localId":"050","name":"Gengar",
+             "set":{"id":"me03","name":"Perfect Order","cardCount":{"official":88,"total":124}},
+             "variants_detailed":[
+                {"type":"holo","foil":"cosmos","stamp":["gamestop"],"thirdParty":{"tcgplayer":685555}},
+                {"type":"holo","foil":"cosmos","stamp":["eb-games"],"thirdParty":{"tcgplayer":686505}}
+             ]}
+            """.utf8))
+        let card = IdentifiedCard.pokemon(tcgdex, setCode: "POR")
+        let now = Date(timeIntervalSince1970: Date.now.timeIntervalSince1970.rounded(.down))
+        let historicalTime = now.addingTimeInterval(-3600).timeIntervalSince1970
+        let expiresAt = now.addingTimeInterval(10 * 60)
+        let container = try ProductionRowFixtures.makeContainer()
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        for (stamp, product, otherProduct, amount) in [
+            ("gamestop", "685555", "686505", 12.34),
+            ("eb-games", "686505", "685555", 23.45)
+        ] {
+            let finish = try XCTUnwrap(PokemonCatalogStampVariant.make(
+                base: .pokemonFoilPattern("cosmos"), stamps: [stamp]))
+            let request = CardMarketHistoryRequest(card: card, variant: finish, printRun: nil)
+            XCTAssertEqual(request.exactProductID, product)
+            let owned = CollectedCard(collectionKey: "gengar-\(stamp)", game: .pokemon, providerID: "me03-050",
+                name: "Gengar", setName: "Perfect Order", setCode: "POR", cardNumber: "050",
+                rarity: nil, imageURL: nil, thumbnailURL: nil, variant: finish, variantResolution: .userConfirmed)
+            owned.tcgplayerProductID = product
+            owned.justTCGVariantID = "wrong-saved-listing"
+            let context = ModelContext(container)
+            context.insert(owned)
+            try context.save()
+            let ownedRequest = CardMarketHistoryRequest(card: owned)
+            XCTAssertEqual(ownedRequest.exactProductID, product)
+            XCTAssertEqual(ownedRequest.historyIdentity, request.historyIdentity)
+            let matching = """
+                {"uuid":"\(stamp)-nm","condition":"Near Mint","printing":"Holofoil",
+                 "language":"English","currency":"USD","type":"raw",
+                 "priceHistory":[{"p":10,"t":\(historicalTime)}]
+                """
+            func fixture(_ fields: String) {
+                RecordingURLProtocol.reset(body: """
+                    {"data":[
+                    {"tcgplayerId":"\(otherProduct)","variants":[
+                        {"uuid":"wrong-saved-listing","condition":"Near Mint","printing":"Holofoil","price":999}]},
+                    {"tcgplayerId":"\(product)","variants":[
+                        {"condition":"Near Mint","printing":"Normal","price":888},
+                        {"condition":"Lightly Played","printing":"Holofoil","price":777},
+                        {"condition":"Near Mint","printing":"Holofoil","currency":"CAD","price":666},
+                        {"condition":"Near Mint","printing":"Holofoil","language":"Japanese","price":555},
+                        \(matching)\(fields)}
+                    ]}]}
+                    """)
+            }
+            fixture("""
+                ,"price":\(amount),"priceStatus":"current","lastUpdated":\(now.timeIntervalSince1970),
+                "priceExpiresAt":\(expiresAt.timeIntervalSince1970)
+                """)
+            let result = try await service.market(for: request, now: now)
+            let quote = try XCTUnwrap(result.quote)
+            XCTAssertEqual(quote.current(at: now)?.unitMarketPriceUSD, amount)
+            XCTAssertEqual(quote.current(at: now)?.sourceVariantID, "\(stamp)-nm")
+            XCTAssertEqual(result.points.map(\.p), [10, amount])
+            let ownedHistory = try await service.market(for: ownedRequest, now: now)
+            XCTAssertEqual(ownedHistory.quote?.current(at: now), quote.current(at: now))
+            XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+            let url = try XCTUnwrap(RecordingURLProtocol.recorded().first)
+            let query = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems
+            XCTAssertEqual(query?.first { $0.name == "tcgplayerId" }?.value, product)
+            XCTAssertEqual(query?.first { $0.name == "include_null_prices" }?.value, "true")
+
+            let expiredCache = try await service.market(for: request, now: expiresAt)
+            XCTAssertNil(expiredCache.quote)
+            XCTAssertEqual(expiredCache.points.map(\.p), [10, amount])
+            XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+
+            let later = now.addingTimeInterval(7 * 3600)
+            let lastObserved = now.addingTimeInterval(30).timeIntervalSince1970
+            fixture("""
+                ,"priceStatus":"expired","price":null,"lastKnownPrice":11,"lastUpdated":\(lastObserved)
+                """)
+            let expired = try await service.market(for: request, now: later)
+            XCTAssertNil(expired.quote)
+            XCTAssertEqual(expired.points.map(\.p), [10, amount, 11])
+            XCTAssertEqual(expired.points.last?.t, lastObserved)
+            fixture("")
+            let historyOnly = try await service.market(for: request, now: later.addingTimeInterval(7 * 3600))
+            XCTAssertNil(historyOnly.quote)
+            XCTAssertEqual(historyOnly.points.map(\.p), [10, amount, 11])
+            XCTAssertNil(try PriceStore(context: ModelContext(container)).selectedRecord(for: owned))
+            let alreadyExpired = CardMarketHistoryResult.Quote(price: quote.price, expiresAt: now)
+            let rejected = try await writer.fillMissingMarketPrice(alreadyExpired, request: request,
+                collectionKey: owned.collectionKey, shouldContinue: { true })
+            XCTAssertNil(rejected)
+            let stored = try await writer.fillMissingMarketPrice(quote, request: request,
+                collectionKey: owned.collectionKey, shouldContinue: { true })
+            XCTAssertEqual(stored?.amount, amount)
+            XCTAssertEqual(try PriceStore(context: ModelContext(container)).selectedRecord(for: owned)?.effectiveUnitMarketPriceUSD, amount)
+        }
+    }
+
+    @MainActor
     func testClassicPikachuHistoryFetchesExactModernProductAndRejectsOtherListings() async throws {
         let suite = "ClassicHistory-\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))

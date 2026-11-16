@@ -10,21 +10,17 @@ import json
 
 from market_price_feeds import digest, validate_response
 from review_one_piece_base_market_mappings import base_title_matches
+from reconcile_one_piece_retail_printings import listing_treatment
 
 
 RELEASE = "product:bandai-series:569205"
 GROUP = 24820
 SOURCE = f"https://tcgcsv.com/tcgplayer/68/{GROUP}"
-# The retailer product images for these six IDs were matched against Bandai
-# and are pinned in the baseline's printing evidence.
-SPECIAL_TITLES = {
-    712885: "Nico Robin (016) (SP)",
-    722774: "Gloriosa (Super Rare Alternate Art)",
-    723148: "Nami (061) (Alternate Art)",
-    723308: "Sugar (Super Rare Alternate Art)",
-    723376: "Shirahoshi (Super Rare Alternate Art)",
-    726216: "Nami (055) (Kentaro Yabuki)",
-}
+def reviewed_title_matches(product_name, retailer_title, name, number, treatment):
+    """Require both independent titles to identify the reviewed treatment."""
+    retailer = listing_treatment(number, name, retailer_title)
+    market = listing_treatment(number, name, product_name)
+    return retailer is not None and retailer == market and retailer[1] == treatment
 
 
 def prepare(release, products_raw, prices_raw, observed_at):
@@ -35,7 +31,9 @@ def prepare(release, products_raw, prices_raw, observed_at):
         numbers = [f["value"] for f in product.get("extendedData", []) if f["name"] == "Number"]
         if len(numbers) == 1:
             by_number[numbers[0]].append(product)
-    quotes = {(row["productId"], row["subTypeName"]): row["marketPrice"] for row in prices}
+    quotes = defaultdict(list)
+    for row in prices:
+        quotes[row["productId"], row["subTypeName"]].append(row["marketPrice"])
     registry = release["registry"]
     cards = {row["id"]: row for row in registry["canonicalCards"]}
     printings = {row["id"]: row for row in registry["printings"]}
@@ -85,14 +83,15 @@ def prepare(release, products_raw, prices_raw, observed_at):
             if printing["treatment"] == "Standard artwork" and alias == number:
                 candidates = [p for p in candidates if base_title_matches(p["name"], name, number)]
             else:
-                candidates = [p for p in candidates if SPECIAL_TITLES.get(retailer_id) == p["name"]
-                              and proof.get("treatment") == printing["treatment"]]
+                candidates = [p for p in candidates if proof.get("treatment") == printing["treatment"]
+                              and reviewed_title_matches(p["name"], proof.get("retailerTitle", ""),
+                                                         name, number, printing["treatment"])]
             if len(candidates) != 1 or retailer_id in used:
                 decision.update(reason="retailer product ID and exact marketplace title did not uniquely agree")
                 continue
             lane = {"normal": "Normal", "foil": "Foil"}[variant]
-            if (retailer_id, lane) not in quotes:
-                decision.update(reason="marketplace has no exact finish lane")
+            if len(quotes[retailer_id, lane]) != 1:
+                decision.update(reason="marketplace has no unique exact finish lane")
                 continue
             product = candidates[0]
             pid = str(retailer_id)
@@ -115,7 +114,7 @@ def prepare(release, products_raw, prices_raw, observed_at):
             printing["marketMappings"].append(mapping)
             used.add(retailer_id)
             decision.update(status="exact", mapping=mapping, retailerEvidenceID=finish["id"],
-                            capturedMarketPrice=quotes[retailer_id, lane])
+                            capturedMarketPrice=quotes[retailer_id, lane][0])
     release["observations"].extend(new_observations)
     if new_observations:
         release["inventories"].append(dict(provider="tcgplayer", snapshotID=f"eb05-market-{observed_at}",

@@ -471,7 +471,8 @@ struct JustTCGRefreshCoordinator {
                 .matched(card: $0.card, variant: $0.variant)
             } ?? .noExactListing
         case let .tcgplayerID(id):
-            guard let card = response.data.first(where: { $0.tcgplayerId == id }) else {
+            let cards = response.data.filter { $0.tcgplayerId == id }
+            guard cards.count == 1, let card = cards.first else {
                 return .unresolved
             }
             return listing(on: card, for: owners).map {
@@ -519,6 +520,13 @@ struct JustTCGRefreshCoordinator {
         let reviewedPrinting = owner.game == .pokemon ? owner.exactPhysicalProductID.flatMap(Int.init).flatMap {
             PokemonReviewedMarketProduct.printing(productID: $0, variantID: owner.variantID)
         } : nil
+        if reviewedPrinting == nil, let productID = owner.exactPhysicalProductID,
+           let printing = ProductFinish.stampedProductPrinting(variantID: owner.variantID, printRun: owner.pokemonPrintRun) {
+            guard card.tcgplayerId == productID,
+                  let variant = exactRawListing(on: card, printings: [printing], isJapanese: owner.isJapanese)
+            else { return nil }
+            return (card, variant)
+        }
         guard reviewedPrinting == nil || card.tcgplayerId == owner.exactPhysicalProductID else { return nil }
         let requirement = reviewedPrinting.map { ProductFinish.Requirement.printings([$0]) }
             ?? ProductFinish.requirement(for: owner.variantID.map(PhysicalVariant.resolving),
@@ -551,6 +559,19 @@ struct JustTCGRefreshCoordinator {
         let eligible = nearMint.filter { edition.admits(printing: $0.printing ?? "") }
         guard eligible.count == 1 else { return nil }
         return (card, eligible[0])
+    }
+
+    nonisolated static func exactRawListing(
+        on card: JustTCGCard, printings: [String], isJapanese: Bool
+    ) -> JustTCGVariant? {
+        let matches = (card.variants ?? []).filter { variant in
+            variant.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
+                && printings.contains { variant.printing?.caseInsensitiveCompare($0) == .orderedSame }
+                && GradedCardIdentity.matchesLanguage(variant.language, isJapanese: isJapanese)
+                && (variant.currency == nil || variant.currency?.uppercased() == "USD")
+                && (variant.type == nil || variant.type?.lowercased() == "raw")
+        }
+        return matches.count == 1 ? matches.first : nil
     }
 
     private nonisolated static func stopReason(
