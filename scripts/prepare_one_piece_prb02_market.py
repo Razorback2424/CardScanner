@@ -146,6 +146,7 @@ def main():
     for name in ("verified-baseline", "products", "prices", "output"):
         parser.add_argument(f"--{name}", required=True, type=Path)
     parser.add_argument("--observed-at", required=True)
+    parser.add_argument("--baseline-revision", type=int, choices=(3, 4), default=3)
     parser.add_argument("--source-build", required=True, type=Path,
                         help="Retained TCGCSV last-updated marker, confirmed before and after the capture")
     args = parser.parse_args()
@@ -155,8 +156,8 @@ def main():
     encoded = json.loads(args.verified_baseline.read_bytes())["payload"]
     baseline = base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4))
     release = json.loads(baseline)
-    if release["revision"] != 3:
-        parser.error("Expected production revision 3")
+    if release["revision"] != args.baseline_revision:
+        parser.error("Production baseline revision does not match the requested revision")
     products, prices = args.products.read_bytes(), args.prices.read_bytes()
     report = prepare(release, products, prices, args.observed_at)
     report.update(productsSHA256=digest(products), pricesSHA256=digest(prices),

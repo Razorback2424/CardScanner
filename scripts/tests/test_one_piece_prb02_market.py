@@ -54,6 +54,29 @@ class PRB02MappingTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.run_prepare(copy.deepcopy(self.baseline), prices=json.dumps(prices).encode())
 
+    def test_revision_five_preserves_the_signed_revision_four_registry(self):
+        path = ROOT / 'publisher/one-piece/prb02-revision-5/previous-envelope.json'
+        payload = json.loads(path.read_bytes())['payload']
+        baseline = json.loads(base64.urlsafe_b64decode(payload + '=' * (-len(payload) % 4)))
+        candidate = json.loads((path.parent / 'candidate.json').read_bytes())
+        self.assertEqual((baseline['revision'], candidate['revision']), (4, 5))
+        self.assertEqual({k: v for k, v in baseline['registry'].items() if k != 'printings'},
+                         {k: v for k, v in candidate['registry'].items() if k != 'printings'})
+        before = {p['id']: p for p in baseline['registry']['printings']}
+        after = {p['id']: p for p in candidate['registry']['printings']}
+        self.assertEqual(before.keys(), after.keys())
+        additions = 0
+        for key, old in before.items():
+            new = after[key]
+            self.assertEqual({k: v for k, v in old.items() if k != 'marketMappings'},
+                             {k: v for k, v in new.items() if k != 'marketMappings'})
+            if old['marketMappings']:
+                self.assertEqual(old['marketMappings'], new['marketMappings'])
+            elif new['marketMappings']:
+                self.assertEqual(old.get('releaseID'), 'product:prb02-premium-booster-the-best-vol-2-2025')
+                additions += 1
+        self.assertEqual(additions, 265)
+
 
 if __name__ == '__main__':
     unittest.main()
