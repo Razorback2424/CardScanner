@@ -27,6 +27,25 @@ This directory is flat (no feature subfolders). Use the task map to find the own
 7. **Background execution.** Build `@ModelActor` workers through `BackgroundModelActor.makeBackground`. Constructing an actor off the main thread alone did not keep SwiftData work off the UI thread on a real device. Only the actor and `Sendable` results cross back to the UI.
 8. **Historical meaning.** A repaired mapping, provider restatement, failed lookup, or unavailable price keeps its actual meaning in portfolio history; never backfill it as a real observation or a zero.
 
+## Current quote versus market history
+
+For a missing owned price, `ScannerCollectionWriter.fillMissingMarketPrice`
+may use an eligible JustTCG **current** exact-product-and-finish quote
+associated with `CardMarketHistoryRequest`. The service must re-read the
+current owned rows inside the serialized write, check active storage generation
+and current game catalog mapping/authority for affected raw games, reject
+physical-review requirements, and **not overwrite an existing eligible
+price**. Quoted history points do not independently authorize a write.
+`JustTCGVariant.marketPriceUSD(at:)` checks lifecycle and expiry; an
+ambiguous listing, expired quote, wrong currency or other finish cannot become
+the active USD valuation.
+
+The current on-device catalog-health report (see
+[`scripts/CATALOG_HEALTH.md`](../../scripts/CATALOG_HEALTH.md)) has a
+different scope than `scripts/catalog_health_export.py`. Preserve explicit
+checked, incomplete, deferred, provider-failed and unknown distinctions
+across provider failures and async cancellation.
+
 ## Two stores, not one transaction
 
 Production keeps ownership and local pricing/artwork in two SQLite files (see `CollectionStorageBootstrap`). SwiftData cannot commit across them atomically. Writes within one store should be atomic; operations spanning both must be **recoverable** if the process stops between writes. Do not design a change that assumes a cross-store transaction.

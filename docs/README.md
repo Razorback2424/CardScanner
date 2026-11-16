@@ -1,6 +1,17 @@
 # Documentation map
 
-**Status:** current navigation map — 2026-10-15
+**Status:** current navigation map — updated 2026-11-15 for `main@a8d3103a`
+
+## November 15 authority update
+
+The [current implementation checkpoint](current-implementation-2026-11-15.md)
+reviews the latest five main-history commits, exact JustTCG quote fallback,
+EB-05 mapping safeguards and the two distinct catalog-health exports.
+The Release configuration now enables signed One Piece `remote-authority`
+and **on-device** writes; an unsigned candidate is not automatically activated.
+See [One Piece seed guidance](../TradingCardScanner/OnePieceCatalogSeed/README.md).
+Dated plans and audit records below remain useful evidence, but source and
+newer verified evidence take precedence over their old status assertions.
 
 The [Pokémon Master / Grand Master criteria review](research/pokemon-master-set-definitions-2026-10-29.md)
 records collector conventions, corrected pack-parallel membership, representative
@@ -17,8 +28,8 @@ The [23 October five-game launch follow-up](release/five-game-launch-readiness-2
 validates the supplied readiness audit, tracks the bounded One Piece identity
 safeguard and keeps catalog, physical-device and owner release gates explicit.
 The [One Piece production setup](release/one-piece-production-setup-2026-10-23.md)
-contains the exact unsigned candidate and protected signing/deployment proposal
-for owner approval; production remains disabled.
+records a historical unsigned-candidate and protected signing/deployment proposal,
+not the current Release configuration.
 
 The [20 October card-detail cleanup](release/card-detail-cleanup-2026-10-20.md)
 records bounded chart, artwork, explicit refresh and provenance work separately
@@ -28,8 +39,8 @@ The [20 October bounded bug repairs](release/verified-bug-repairs-2026-10-20.md)
 record F1–F13 changes and native regression evidence separately from UI and release gates.
 
 The [individual-card market history authority](plans/price_history_chart_plan.md)
-records the 2026-10-18 decision to show JustTCG historical prices independently
-of acquisition and local checks, replacing the archived continuity proposal.
+records JustTCG history independently of local collection checks. The newer
+exact-current-quote fallback is separate; a history chart is not a current quote.
 
 The [four-game specialty coverage review](research/catalog-variant-coverage-2026-10-15/README.md)
 records exact Pokémon eligibility repairs, six Magic promo-footer mappings and
@@ -98,7 +109,7 @@ chronological notes.
 | Automatic Pokémon set updates | [`plans/automatic_pokemon_catalog_updates_plan.md`](plans/automatic_pokemon_catalog_updates_plan.md) — Slices A–E implemented; F04 automatic discovery and the revision-1 authority rehearsal completed 2026-09-19; schema-1 additive fingerprints, canonical publisher/device parity, fail-closed classification, durable targeted reconciliation, parent-artwork metadata, and set-specific Browse updates were implemented 2026-09-20; protected baseline publication, auto-environment setup, four-hour schedule, live-provider, physical-device/offline, first real update, and release acceptance remain open |
 | Unverified Pokémon variants (beta) | [`plans/unverified_pokemon_reports.md`](plans/unverified_pokemon_reports.md) — synced unverified report rows, dated-correction linking and undo, evaluator and reconciler. Review, CSV restore and replay verification are implemented. Report creation is limited to DEBUG and the local ReleaseLocal build; the CloudKit/two-device/mixed-build gates remain open. iPhone acceptance: [`release/iphone-releaselocal-acceptance.md`](release/iphone-releaselocal-acceptance.md). |
 | Magic catalog signing and publication | [`plans/magic_catalog_key_handling_runbook.md`](plans/magic_catalog_key_handling_runbook.md) — current authority for Magic-specific key custody, signed catalog releases, protected/automatic publication routing, Scryfall boundaries, and rollout safeguards; owner key-pin input remains open and rollout remains `legacy-live` |
-| One Piece expansion | [`plans/one_piece_catalog_integration_plan.md`](plans/one_piece_catalog_integration_plan.md) — catalog design, source roles and acceptance; [`plans/one_piece_code_implementation.md`](plans/one_piece_code_implementation.md) records the full ordinary corpus, exact pricing and integrated local acceptance slice. [`plans/one_piece_release_acceptance.md`](plans/one_piece_release_acceptance.md) separates simulator evidence from device/provider/sync/publication gates. The [November Browse artwork audit](audits/one-piece-browse-artwork-2026-11-14.md) records discovery preview coverage and its review boundaries. Production publication remains disabled. |
+| One Piece expansion | [`plans/one_piece_catalog_integration_plan.md`](plans/one_piece_catalog_integration_plan.md) — catalog design, source roles and acceptance; [`plans/one_piece_code_implementation.md`](plans/one_piece_code_implementation.md) records the full ordinary corpus, exact pricing and integrated local acceptance slice. [`plans/one_piece_release_acceptance.md`](plans/one_piece_release_acceptance.md) separates simulator evidence from device/provider/sync/publication gates. The [November Browse artwork audit](audits/one-piece-browse-artwork-2026-11-14.md) records discovery preview coverage and its review boundaries. Its older disabled-production status is superseded by the present Release configuration; publishing, activating and release-testing remain separate. |
 | Lorcana integration | [`plans/lorcana_code_implementation.md`](plans/lorcana_code_implementation.md) — current execution and verification authority for ingestion, schema-2 physical resolution, signing contracts, normal ordinary ownership/Browse/CSV and shared pricing. [`research/lorcana-source-corpus.md`](research/lorcana-source-corpus.md) records provider observations; [`research/lorcana-physical-contract.md`](research/lorcana-physical-contract.md) records UUID/choice/finish contracts; [`research/lorcana-signed-activation.md`](research/lorcana-signed-activation.md) records protected remote updates. [`research/lorcana-real-card-corpus/README.md`](research/lorcana-real-card-corpus/README.md) retains unapproved physical scenarios. Public-source review and simulator/live-price evidence do not close physical-device/camera, publication/asset rights or distribution gates. Live sync is deferred for on-device 1.0. [`audits/lorcana-data-variant-scanner-architecture-audit.md`](audits/lorcana-data-variant-scanner-architecture-audit.md) remains background research. |
 | Lorcana catalog coverage | [November English coverage audit](audits/lorcana-coverage-2026-11-11.md) records the current bundle, exact finishes, held rows, and publisher census replay. |
 | Lorcana UI review launch | [`research/lorcana-ui-review.md`](research/lorcana-ui-review.md) — opt-in isolated debug workspace with synthetic scan/choice/finish/Browse/CSV flows; bounded phone/tablet rendering passed. Physical-device/camera and spoken VoiceOver acceptance remain open. |
@@ -115,7 +126,7 @@ chronological notes.
 | Pricing correctness and coverage sequence | [`plans/pricing_correctness_and_coverage.md`](plans/pricing_correctness_and_coverage.md) — USD enforcement, mapping/quote/failure distinctions and negative-cache recovery before reviewed mapping expansion and a complete census. |
 | Pokémon USD pricing coverage | [`plans/browse_pricing_coverage_plan.md`](plans/browse_pricing_coverage_plan.md) — device-local TCGCSV fallback for both 30th sets; 322 focused simulator tests and a live 188-card feed check passed 2026-09-30. General bulk-provider migration remains unresolved. |
 | Finish-effect rendering performance | [`superpowers/plans/2026-09-12-foil-effect-performance.md`](superpowers/plans/2026-09-12-foil-effect-performance.md) |
-| Commercial pricing implementation proposal | [`plans/shared_pricing_cache_plan.md`](plans/shared_pricing_cache_plan.md) — gated JustTCG/Firebase design. The launch contract requires commercial API access without customer keys; provider selection and production acceptance remain open. |
+| Commercial pricing implementation proposal | [`plans/shared_pricing_cache_plan.md`](plans/shared_pricing_cache_plan.md) — gated JustTCG/Firebase design. The launch contract requires commercial API access without customer keys; paid JustTCG has been selected, but production integration and acceptance remain open. |
 | App Review remediation | [`app_review_fix_plan.md`](../app_review_fix_plan.md) and [`app_review_preflight.md`](../app_review_preflight.md) |
 | Phase 0/1 release evidence | [`release/phase-1-integrity-evidence.md`](release/phase-1-integrity-evidence.md), [`release/cloudkit-compatibility-audit.md`](release/cloudkit-compatibility-audit.md), and [`release/cloudkit-release-matrix.md`](release/cloudkit-release-matrix.md) |
 | Pro tab and eBay listing photos | [`plans/pro_tab_ebay_listing_photos_plan.md`](plans/pro_tab_ebay_listing_photos_plan.md) |
@@ -123,12 +134,12 @@ chronological notes.
 | Chronological implementation record | [`../progress.md`](../progress.md) |
 | Legal/support copy | [`legal/privacy-policy.md`](legal/privacy-policy.md), [`legal/support.md`](legal/support.md), and [publication checks](legal/README.md) — Scanstash drafts with owner-confirmed contact; live publication and provider/retention verification remain open. |
 
-Integration review handoff: [One Piece merge-branch change report](audits/one-piece-integration-review-handoff.md)
+The [One Piece merge-branch change report](audits/one-piece-integration-review-handoff.md)
+records the integration fixes, subsequent cleanup, and remaining work.
 
-One Piece owner approvals, local preparation and remaining device/release gates:
-[v1 release acceptance](plans/one_piece_release_acceptance.md).
-records the committed integration/finding fixes, subsequent local cleanup,
-verification, historical transfer evidence, and open work.
+The [One Piece v1 release-acceptance ledger](plans/one_piece_release_acceptance.md)
+preserves earlier implementation evidence and remaining device/release gates.
+Its old production-disabled statements are historical.
 
 ## Legacy boundary
 

@@ -14,6 +14,22 @@ Several files here carry workflow logic, not just layout: `ScannerViewModel` (sc
 6. **Reportable measurements.** Keep the confirmation and validity requirements before a centering result can be shared or exported.
 7. **Shared components.** Reuse `ContentWidth`, `AppGlass`, and existing option/picker controls before inventing a new layout or visual convention.
 
+## Catalog detail and report behavior
+
+The current Catalog detail quote route can obtain an exact **current** JustTCG
+fallback for a missing selected finish price; a historical chart point alone
+does not justify a current display or stored owned-price change. Preserve the
+selected card/finish request and cancellation checks, active storage generation,
+authoritative catalog mapping and no-overwrite policy. An already priced owned
+finish must not silently be replaced by a later history lookup.
+
+Settings' **Export Catalog Health Report** examines active Browse catalogs,
+not just the owner's collection. An incomplete/deferred set, cancelled
+generation or provider failure must remain visible as incomplete evidence;
+export UI must not imply a complete live census after a failed enumeration.
+See [the catalog-health guide](../../scripts/CATALOG_HEALTH.md) and
+[`ActiveCatalogHealthExportTests`](../../TradingCardScannerTests/BrowseFeatureTests.swift).
+
 ## Visual verification
 
 Do not claim a visual improvement without inspecting the rendered affected state: the relevant locale, Dynamic Type size, loading/empty/error state, and image scenario.

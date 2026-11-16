@@ -16,6 +16,27 @@ chronological implementation log remains in [`progress.md`](progress.md), while
 validation work that cannot be retired by simulator tests is centralized in
 [`docs/plans/release_followups.md`](docs/plans/release_followups.md).
 
+## Current five-game scope
+
+Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh are registered through
+game-specific runtime adapters. Available Scan, Browse, write, import, and
+pricing capabilities depend on the relevant adapter, catalog authorization
+and build configuration; a discovery preview does not establish a physical
+printing or an exact price mapping. See the
+[game integration guide](TradingCardScanner/Games/AGENTS.md).
+
+**Documentation checkpoint (2026-11-15, `main@a8d3103a`):**
+One Piece Release configuration uses a signed `remote-authority` catalog
+and enables **on-device** collection writes (`NO_CLOUDKIT`). The OP-18
+revision-4 discovery candidate is unsigned and is not evidence that a
+particular phone activated it. The app now exposes an
+[active five-game catalog-health CSV](scripts/CATALOG_HEALTH.md); the
+repository also has a separate offline retained-source audit. New exact
+JustTCG fallback logic can fill a missing current eligible quote for a
+matching printing/finish; historical chart data alone never establishes
+a current quote. The [implementation checkpoint](docs/current-implementation-2026-11-15.md)
+details the source changes and unverified gates.
+
 ## Three principles
 
 **Fast.** Speed comes from removing interactions that carry no information and
@@ -35,22 +56,14 @@ does not already have?* If not, it is removed.
 
 ### No game mode
 
-There is no Pokémon/Magic toggle. A printed identifier is specific enough to say
-which game it came from — `OBF 223/197` cannot be a Magic footer and
-`ECL • 0218 • EN` cannot be a Pokémon one — so asking the user to declare it
-first was asking for information the card already carries. That is the same test
-every interaction has to pass.
-
-Both parsers run on every frame against one combined vocabulary
-(`RecognitionProfile`):
-
-- exactly one game produces an identifier → that is the identification
-- neither does → an ordinary miss
-- **both** do → the frame is rejected, not ranked
-
-The last case is the existing two-identifiers-in-one-frame rule extended across
-games. A later pass almost always resolves it, and a wrong entry costs far more
-than a wait.
+There is no need to preselect Pokémon or Magic merely to read a printed
+identifier such as `OBF 223/197` or `ECL • 0218 • EN`. The modern
+recognition registry evaluates **all participating game recognizers**, not
+only two fixed parsers. A single supported result can advance; no result is
+a miss; conflicting game candidates are ambiguous and **never** resolved by
+registration order. Activation and capability gates determine which game
+recognizers participate. Recognition is not permission to guess a physical
+printing or finish.
 
 Magic's OCR vocabulary *is* its set directory, so a compiled-in snapshot
 (`MagicSetSnapshot`) is installed before the first frame, so footer recognition
@@ -409,18 +422,16 @@ Raising any of them makes duplicates harder and back-to-back identical copies sl
 
 ## Adding a set
 
-**Pokémon:** add one row to `Services/SetCodeMap.swift` with the printed
-three-letter code, the TCGdex set ID, the official denominator, and its release
-index. That also adds the code to Vision's custom vocabulary.
-
-**Magic:** nothing to do. The directory comes from Scryfall at session start.
-`Services/MagicSetSnapshot.swift` is a generated fallback for the first frames
-and for offline use; regenerate it whenever `ScryfallService`'s filter changes, so
-the snapshot and the live refresh agree about what is scannable. A stale snapshot
-only costs the newest sets a few seconds of unrecognisability on a cold launch.
-
-If the set prints parallel patterns TCGdex does not model, add a row to
-`PokemonVariantRules` as well — after checking real cards.
+Set inclusion is game- and authority-specific rather than a universal
+`SetCodeMap.swift` edit. Pokémon combines TCGdex discovery with reviewed
+publisher overrides and physical-finish rules
+([publisher guide](publisher/README.md)); Magic loads Scryfall's directory
+with a bundled offline/first-frame fallback. One Piece, Lorcana and Yu-Gi-Oh
+use their own reviewed catalog pipelines and runtime adapters. Do not infer
+a new scannable or owned physical variant from a set listing or preview.
+Follow [the game-adapter contracts](TradingCardScanner/Games/AGENTS.md),
+[the publisher workflows](.github/workflows/), and
+[the catalog-health operator guide](scripts/CATALOG_HEALTH.md).
 
 ## Tests
 
