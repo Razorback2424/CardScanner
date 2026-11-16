@@ -103,6 +103,61 @@ final class DetailDeletionRenderTests: XCTestCase {
         }
     }
 
+    /// Owned partway through the range: the chart marks the day the card was
+    /// added and the holder's own result sits in its own row. Not owned: the
+    /// same market line with no ownership UI at all.
+    func testMarketMovementAndOwnershipRenderSeparately() throws {
+        let now = Date.now
+        let day: TimeInterval = 86_400
+        let points = (0..<30).map { index in
+            JustTCGHistoryPoint(p: 524.17 + Double(index) * 1.6 + sin(Double(index) / 2) * 4,
+                                t: now.addingTimeInterval(Double(index - 30) * day).timeIntervalSince1970)
+        }
+        let quote = PriceDisplay(amount: 572.27, source: .tcgplayer, sourceUpdatedAt: now, fetchedAt: now,
+                                 lastCheckedAt: now)
+        let model = PriceHistoryChartModel.market(points: points, range: .oneMonth, currentPrice: quote, now: now)
+        let addedAt = now.addingTimeInterval(-12 * day)
+        let impact = PortfolioContributionDetail(totalImpact: try XCTUnwrap(Money(rounding: 21.40)),
+            cumulativeUnitMovement: try XCTUnwrap(Money(rounding: 21.40)), affectedQuantities: [1])
+        XCTAssertEqual(model.ownershipMarkerDate(for: addedAt), addedAt)
+        XCTAssertNil(model.ownershipMarkerDate(for: now), "A card added today has no owned stretch to mark.")
+        XCTAssertNil(model.ownershipMarkerDate(for: now.addingTimeInterval(-60 * day)),
+                     "Ownership before the range covers the whole line.")
+
+        for owned in [true, false] {
+            let state: PortfolioCardMovementState = .recorded(impact)
+            let content = VStack(alignment: .leading, spacing: 16) {
+                CardDetailMarketChange(model: model, range: .oneMonth)
+                MarketHistoryChartContent(model: model, hasHistory: true, isLoading: false, error: nil,
+                    direction: model.direction, range: .constant(.oneMonth), selection: PriceHistorySelection(),
+                    ownership: owned ? PriceHistoryOwnership(since: addedAt, tint: state.ownedTint) : nil,
+                    retry: {})
+                if owned {
+                    CardDetailPortfolioImpactView(state: state, range: .oneMonth,
+                                                  ownedSince: model.ownershipMarkerDate(for: addedAt))
+                }
+            }
+            .padding(16).frame(width: 390).background(Color.black)
+            .environment(\.colorScheme, .dark)
+            let renderer = ImageRenderer(content: content)
+            renderer.scale = 2
+            let image = try XCTUnwrap(renderer.uiImage)
+            let request = VNRecognizeTextRequest()
+            request.recognitionLevel = .accurate
+            try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
+            let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+            XCTAssertTrue(text.localizedCaseInsensitiveContains("past month"), text)
+            XCTAssertEqual(text.localizedCaseInsensitiveContains("Added"), owned, text)
+            XCTAssertEqual(text.localizedCaseInsensitiveContains("Your copy"), owned, text)
+            XCTAssertEqual(text.contains("21.40"), owned, text)
+            XCTAssertFalse(text.contains("$0.00"), text)
+            let attachment = XCTAttachment(image: image)
+            attachment.name = owned ? "market-vs-ownership-owned" : "market-vs-ownership-not-owned"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+    }
+
     func testPortfolioImpactRemainsVisibleAboveFlatOrUnavailableMarketHistory() throws {
         let now = Date.now
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
@@ -129,10 +184,9 @@ final class DetailDeletionRenderTests: XCTestCase {
                 request.recognitionLevel = .accurate
                 try VNImageRequestHandler(cgImage: XCTUnwrap(image.cgImage), options: [:]).perform([request])
                 let text = (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
-                XCTAssertTrue(text.localizedCaseInsensitiveContains("Portfolio impact"), text)
+                XCTAssertTrue(text.localizedCaseInsensitiveContains("Your copy"), text)
                 XCTAssertTrue(text.localizedCaseInsensitiveContains("past day"), text)
                 XCTAssertTrue(text.contains("0.49"), text)
-                XCTAssertTrue(text.localizedCaseInsensitiveContains("per card"), text)
                 XCTAssertFalse(text.localizedCaseInsensitiveContains("No net movement"), text)
                 let attachment = XCTAttachment(image: image)
                 attachment.name = "portfolio-impact-\(hasHistory ? "flat-history" : "unavailable-history")-\(size)"

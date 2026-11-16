@@ -113,7 +113,9 @@ struct CatalogCardDetailView: View {
     @Environment(\.catalogCardSelection) private var catalogCardSelection
     @Environment(\.cardGameRuntimes) private var runtimes
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.catalogCopyHistory) private var copyHistory
+    @State private var artworkAccent: ArtworkAccent?
     private let originalSummary: CatalogCardSummary
     let catalog: any BrowseCatalogProviding
     private let openingFinishID: String?
@@ -188,6 +190,23 @@ struct CatalogCardDetailView: View {
                 if OwnedPriceReviewView.isActive { proxy.scrollTo("catalog-market-prices", anchor: .top) }
 #endif
             }
+        }
+        // Owned or not, a card's detail is the same surface: black, washed
+        // with the card's own colour.
+        .background {
+            AppCardDetailBackdrop(accent: reduceTransparency ? nil : artworkAccent)
+                .ignoresSafeArea()
+        }
+        .environment(\.colorScheme, .dark)
+        .toolbarBackground(artworkAccent == nil || reduceTransparency ? .visible : .hidden, for: .navigationBar)
+        .toolbarBackground(Color.black, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .task(id: details.map { $0.card.displayImageURL ?? summary.imageURL }) {
+            guard let details else { return }
+            artworkAccent = await ArtworkAccentStore.accent(
+                localFilename: nil,
+                remoteURL: details.card.displayImageURL ?? summary.imageURL
+            )
         }
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)
@@ -272,6 +291,10 @@ struct CatalogCardDetailView: View {
             if let reason = details.collectionWriteUnavailableReason {
                 Text(reason).font(.footnote).foregroundStyle(.secondary)
             }
+            if catalog.gameRegistry.supports(summary.game, .pricing), !needsCatalogResolution,
+               selectedVariant(details.card) != nil {
+                browsePriceHistorySection()
+            }
             if !finishVariants(details.card).isEmpty {
                 priceSection(details.card)
             }
@@ -289,10 +312,6 @@ struct CatalogCardDetailView: View {
                     Task { await projectionStore.rebuild(container: modelContext.container) }
                 }
                 .disabled(isWritePending)
-            }
-            if catalog.gameRegistry.supports(summary.game, .pricing), !needsCatalogResolution,
-               selectedVariant(details.card) != nil {
-                browsePriceHistorySection()
             }
             if catalogCardSelection == nil {
                 if let variant = selectedVariant(details.card) {
@@ -407,7 +426,8 @@ struct CatalogCardDetailView: View {
         let designation = [summary.setAndCollectorLabel, summary.pokemonPrintRun?.label]
             .compactMap { $0 }.joined(separator: " · ")
         return CardDetailIdentityHeader(name: details.card.name, setName: details.set.name,
-            designation: designation, rarity: details.card.rarity, setLinkID: "card-set-link") {
+            designation: designation, rarity: details.card.rarity, setLinkID: "card-set-link",
+            accent: artworkAccent) {
             CatalogSetCardsView(set: details.set, catalog: catalog)
         }
     }
@@ -537,7 +557,9 @@ struct CatalogCardDetailView: View {
 
     private func priceSection(_ card: IdentifiedCard) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Finishes").font(.headline).accessibilityAddTraits(.isHeader)
+            if finishVariants(card).count > 1 {
+                Text("Finishes").font(.headline).accessibilityAddTraits(.isHeader)
+            }
             ForEach(finishVariants(card)) { variant in
                 variantPriceRow(variant, card: card)
             }
@@ -570,6 +592,7 @@ struct CatalogCardDetailView: View {
     private func variantPriceRow(_ variant: PhysicalVariant, card: IdentifiedCard) -> some View {
         let slot = ownedSlot(for: variant, card: card)
         let selected = selectedVariant(card)?.id == variant.id
+        let isOnlyFinish = finishVariants(card).count == 1
         let showControls = details.map(showsInlineQuantityControls) ?? false
         let layout = dynamicTypeSize.isAccessibilitySize
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
@@ -578,12 +601,15 @@ struct CatalogCardDetailView: View {
         return layout {
             Button { historyVariantID = variant.id } label: {
                 HStack(spacing: 10) {
-                    Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(selected ? Color.accentColor : Color.secondary)
-                        .accessibilityHidden(true)
+                    if !isOnlyFinish {
+                        Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(selected ? Color.accentColor : Color.secondary)
+                            .accessibilityHidden(true)
+                    }
                     VStack(alignment: .leading, spacing: 4) {
                         Text(variant.label).font(.body.weight(.semibold))
-                        if catalog.gameRegistry.supports(summary.game, .pricing), !needsCatalogResolution {
+                        // A sole finish's price is the headline above.
+                        if !isOnlyFinish, catalog.gameRegistry.supports(summary.game, .pricing), !needsCatalogResolution {
                             priceValue(priceDisplay(for: variant, card: card, slot: slot))
                         }
                         if slot.hasConflict || slot.hasUnverifiedQualifiers {
@@ -630,8 +656,8 @@ struct CatalogCardDetailView: View {
             }
         }
         .padding(12)
-        .background(selected ? Color.accentColor.opacity(0.12) : Color.primary.opacity(0.06), in: shape)
-        .overlay { shape.strokeBorder(selected ? Color.accentColor : .clear) }
+        .background(selected && !isOnlyFinish ? Color.accentColor.opacity(0.12) : Color.primary.opacity(0.07), in: shape)
+        .overlay { shape.strokeBorder(selected && !isOnlyFinish ? Color.accentColor : .clear) }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("catalog-price-row-\(variant.id)")
     }
@@ -907,30 +933,26 @@ struct CatalogCardDetailView: View {
             let currentPrice = variant.flatMap { finish in
                 slot.map { priceDisplay(for: finish, card: details.card, slot: $0) }
             } ?? .unknown
-            VStack(alignment: .leading, spacing: 6) {
-                Text(variant.map { "\($0.label) market price" } ?? "Market price").font(.headline)
-                priceValue(currentPrice)
-                if let slot, projectionStore.isLoaded, !projectionStore.loadFailed, catalogCardSelection == nil {
-                    let unit = PortfolioPriceEligibility.eligibleUnitPrice(
-                        amount: currentPrice.amount, currencyCode: currentPrice.currencyCode)
-                    let value: Money? = slot.hasConflict ? nil
-                        : (slot.quantity == 0 ? .zero : unit?.multiplied(by: slot.quantity))
-                    LabeledContent("Owned value", value: value?.formatted() ?? "Unavailable")
-                        .font(.subheadline)
-                }
-                if let variant {
-                    let notes = Set((slot?.targets ?? []).compactMap { ownedPriceChecks[$0.collectionKey]?.caption })
-                    ForEach(notes.sorted(), id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
-                    if failedPriceVariantIDs.contains(variant.id) {
-                        Button("Retry price check") { priceRetryID += 1 }.font(.subheadline)
+            let request = CardMarketHistoryRequest(card: details.card, variant: variant, printRun: summary.pokemonPrintRun)
+            CardMarketHistoryPanel(request: request, currentPrice: currentPrice.amount == nil ? nil : currentPrice,
+                                   headlinePrice: currentPrice)
+                .id(request)
+                // The panel insets its own rows; align them with the header.
+                .padding(.horizontal, -16)
+            if let variant {
+                // The headline, chart and source details live in the panel
+                // above; only check notes and recovery sit under it.
+                let notes = Set((slot?.targets ?? []).compactMap { ownedPriceChecks[$0.collectionKey]?.caption })
+                if !notes.isEmpty || failedPriceVariantIDs.contains(variant.id) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        ForEach(notes.sorted(), id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
+                        if failedPriceVariantIDs.contains(variant.id) {
+                            Button("Retry price check") { priceRetryID += 1 }.font(.subheadline)
+                        }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            let request = CardMarketHistoryRequest(card: details.card, variant: variant, printRun: summary.pokemonPrintRun)
-            CardMarketHistoryPanel(request: request, currentPrice: currentPrice.amount == nil ? nil : currentPrice)
-                .id(request)
         }
     }
 
