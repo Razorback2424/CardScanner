@@ -141,11 +141,11 @@ The separate [EB-05 mapping preparer](prepare_one_piece_eb05_market.py)
 evaluates already verified, English, exact-artwork-and-finish EB-05 records
 missing an exact marketplace mapping. Its current title validation requires
 the retailer's supported treatment and exact product ID, and one unique
-Normal/Foil price lane. Duplicate price lanes, reused product IDs, mismatched
-titles, and insufficient retailer evidence remain **held**, not silently
-assigned or collapsed. The quoted market amount is not proof of the physical
-card. The preparer does not authorize any unverified Browse discovery record
-or publish a new signed release. Focused regression:
+Normal/Foil price lane. The feed validator rejects duplicate price lanes before
+matching. Missing lanes, reused product IDs, mismatched titles, and insufficient
+retailer evidence leave the mapping **held**. Physical-card verification
+requires independent evidence. The preparer does not authorize any unverified
+Browse discovery record or publish a new signed release. Focused regression:
 `scripts/tests/test_one_piece_eb05_market.py`.
 
 The GitHub [live artwork audit](../.github/workflows/one-piece-eb05-artwork-audit.yml)

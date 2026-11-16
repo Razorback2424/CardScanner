@@ -134,7 +134,8 @@ chronological notes.
 | Chronological implementation record | [`../progress.md`](../progress.md) |
 | Legal/support copy | [`legal/privacy-policy.md`](legal/privacy-policy.md), [`legal/support.md`](legal/support.md), and [publication checks](legal/README.md) — Scanstash drafts with owner-confirmed contact; live publication and provider/retention verification remain open. |
 
-Integration review handoff: [One Piece merge-branch change report](audits/one-piece-integration-review-handoff.md)
+The [One Piece merge-branch change report](audits/one-piece-integration-review-handoff.md)
+records the integration fixes, subsequent cleanup, and remaining work.
 
 The [One Piece v1 release-acceptance ledger](plans/one_piece_release_acceptance.md)
 preserves earlier implementation evidence and remaining device/release gates.

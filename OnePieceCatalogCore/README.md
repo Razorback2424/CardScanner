@@ -179,9 +179,10 @@ before treating a negative replay result as a source-data limitation.
 mappings for **already verified** English EB-05 physical printings that lack
 one. It requires retained retailer artwork-and-finish evidence, an exact
 marketplace product ID and acceptable treatment title, and **one** quote lane
-for the requested Normal/Foil subtype. Ambiguous or duplicate lanes and
-previously claimed product IDs are held; the price feed itself grants no
-printing, artwork, or finish authority. Its report distinguishes existing,
+for the requested Normal/Foil subtype. The feed validator rejects duplicate
+lanes before matching. Missing lanes and previously claimed product IDs leave
+the mapping held. The price feed itself grants no printing, artwork, or
+finish authority. Its report distinguishes existing,
 exact, and held rows. It does not sign, activate, publish, or fix the separate
 unapproved discovery aliases. Relevant tests:
 `scripts/tests/test_one_piece_eb05_market.py`.

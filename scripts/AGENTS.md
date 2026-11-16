@@ -39,7 +39,8 @@ failure JSON instead of a valid census.
 `prepare_one_piece_eb05_market.py` is a mapping-only preparer for already
 verified English EB-05 physical printings. It must have exact retailer artwork
 and finish evidence, one acceptable marketplace title/product and **exactly
-one** requested Normal/Foil lane; missing or duplicate lanes remain held.
+one** requested Normal/Foil lane. Missing lanes remain held. The feed
+validator rejects duplicate lanes before matching.
 Do not promote a Bandai discovery entry from title/image/market agreement
 alone. Read-only live image-audit findings are not signing approvals.
 Run `test_one_piece_eb05_market.py` and `test_catalog_health_export.py`

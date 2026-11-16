@@ -10,8 +10,8 @@ or release acceptance.
 | Commit | Observed implementation | Important limit |
 | --- | --- | --- |
 | [`a8d3103a`](https://github.com/Razorback2424/CardScanner/commit/a8d3103ab24b05bb23b1fbf38ebd094e0ab77c5b) | Merged One Piece printing reconciliation with exact-price detail changes. | Merge conflicts involved the catalog-health workflow and exporter; compare the **merged tree**, not either parent alone. |
-| [`3372ee69`](https://github.com/Razorback2424/CardScanner/commit/3372ee69e1fb3b29ea4ab24a19b595891f243d7d) | Retained the offline catalog-health workflow, CSV exporter, and focused test during integration. | Offline observations are not live iPhone state or exhaustive provider coverage. |
-| [`c149d50d`](https://github.com/Razorback2424/CardScanner/commit/c149d50da094a57fedd648b5707bac25cc985870) | Tightened EB-05 marketplace-title and unique quote-lane validation. | Market titles and prices cannot independently certify physical artwork or finish. |
+| [`3372ee69`](https://github.com/Razorback2424/CardScanner/commit/3372ee69e1fb3b29ea4ab24a19b595891f243d7d) | Added earlier copies of four catalog-health files on the integration branch. | The merge kept PR #37's versions of all four files. |
+| [`c149d50d`](https://github.com/Razorback2424/CardScanner/commit/c149d50da094a57fedd648b5707bac25cc985870) | Replaced six pinned EB-05 titles with paired retailer and marketplace treatment checks. | The shared feed validator already rejected duplicate price lanes. |
 | [`24fb6382`](https://github.com/Razorback2424/CardScanner/commit/24fb63821b563d61c625eb698667f5889ef261b1) | Added current exact JustTCG quote fallback in card detail and safe owned-price fill. | A chart's historical observations do not themselves qualify as a current exact quote. |
 | [`c114ff6a`](https://github.com/Razorback2424/CardScanner/commit/c114ff6a45312769fdaff54b0493f0362788ffe8) | Merged active iPhone catalog-health CSV export and selected simulator regression test. | A configured test is not a newly observed passing run. |
 
@@ -88,20 +88,22 @@ and [failure classifications](../scripts/CATALOG_HEALTH_FAILURE_MODES.md).
 
 For EB-05, [`prepare_one_piece_eb05_market.py`](../scripts/prepare_one_piece_eb05_market.py)
 requires independently verified physical/retailer evidence, exact product
-identity and title treatment, and **one** matching Normal/Foil quote lane;
-multiple candidate lanes remain held. The live-image audit and its report
-are read-only research, not signing or activation.
+identity and title treatment, and **one** matching Normal/Foil quote lane.
+The feed validator rejects duplicate lanes before matching. The live-image
+audit and its report are read-only research.
 
-## Verification still required
+## Verification
 
-The five commits and source files above were inspected; **no build, simulator
-test, Python suite, physical iPhone export, live provider capture, or signed
-release were executed as part of this documentation review**.
+On November 15, the Release simulator build of `a8d3103a` passed on Xcode 27.2.
+On an iPhone 17 Pro simulator running iOS 27.0, 302 targeted
+`DebugRemoteLocal` tests passed across JustTCG, Browse, card detail, and
+catalog-health export. The working tree included one additional local
+JustTCG write-guard test. The EB-05 and offline catalog-health Python suites
+passed all 10 tests. The retained EB-05 feed reproduced all 64 committed
+mappings, including the six previously pinned titles.
 
-Before treating the implementation as fully verified, execute the focused
-`ActiveCatalogHealthExportTests`, `JustTCGContractTests`, EB-05 Python
-regression, and offline catalog-health export tests; validate full device
-export/save behavior and Magic page/rate-limit outcomes separately.
+Full-target, physical-device export and live-provider acceptance remain open.
+A fresh device export is needed to diagnose the November 15 Magic failures.
 The current [launch contract](release/launch-contract.md) remains the release
 acceptance authority. Older test counts and open gates should not be silently
 reinterpreted as current successes.
