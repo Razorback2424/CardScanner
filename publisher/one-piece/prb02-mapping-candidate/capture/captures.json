@@ -1,0 +1,36 @@
+{
+  "captures": {
+    "https://tcgcsv.com/last-updated.txt": {
+      "byteCount": 24,
+      "observedAt": "2026-11-16T11:49:59+00:00",
+      "payloadSHA256": "b0a1f3998b9bfac8a6776611baec95312d9e3aea58089af01fc41eba5cb34d5a",
+      "rawFile": "last-updated-start.txt",
+      "sourceURL": "https://tcgcsv.com/last-updated.txt"
+    },
+    "https://tcgcsv.com/last-updated.txt#end": {
+      "byteCount": 24,
+      "observedAt": "2026-11-16T11:50:00+00:00",
+      "payloadSHA256": "b0a1f3998b9bfac8a6776611baec95312d9e3aea58089af01fc41eba5cb34d5a",
+      "rawFile": "last-updated-end.txt",
+      "sourceURL": "https://tcgcsv.com/last-updated.txt"
+    },
+    "https://tcgcsv.com/tcgplayer/68/24305/prices": {
+      "byteCount": 60647,
+      "observedAt": "2026-11-16T11:50:00+00:00",
+      "payloadSHA256": "b6fe82e890cc6503b973a2f0d257b799402bdc1f7571a9d8ea144c878afd9d5e",
+      "rawFile": "68-24305-prices.json",
+      "sourceURL": "https://tcgcsv.com/tcgplayer/68/24305/prices"
+    },
+    "https://tcgcsv.com/tcgplayer/68/24305/products": {
+      "byteCount": 490646,
+      "observedAt": "2026-11-16T11:49:59+00:00",
+      "payloadSHA256": "f4113c4889166c01e017064fe4bdc36b75831f3ab3f0525cefc10b472af914d7",
+      "rawFile": "68-24305-products.json",
+      "sourceURL": "https://tcgcsv.com/tcgplayer/68/24305/products"
+    }
+  },
+  "complete": true,
+  "schemaVersion": 1,
+  "startedAt": "2026-11-16T11:49:59+00:00",
+  "upstreamBuild": "2026-11-15T20:06:00+0000"
+}
