@@ -1,0 +1,255 @@
+#!/usr/bin/env python3
+"""Publish a signed One Piece catalog release to production from this Mac.
+
+Runs the same checks as the `publish-reviewed-artifact` job in
+`.github/workflows/one-piece-catalog.yml` without a GitHub-hosted runner, then
+deploys with the operator's own Firebase login and reads the live bytes back.
+Signing stays in GitHub; this script only publishes an already signed artifact.
+
+Every step runs in a fresh detached worktree of `origin/main` under --work-dir,
+so local edits never reach production. Put --work-dir on the external SSD.
+"""
+
+import argparse
+import hashlib
+import json
+import re
+import shutil
+import subprocess
+import sys
+import time
+from pathlib import Path
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
+
+ORIGINS = ("https://scanstash-catalog-prod.web.app", "https://catalog.scan-stash.com")
+PROJECT = "scanstash-catalog-prod"
+REPOSITORY = "Razorback2424/CardScanner"
+WORKFLOW_PATH = ".github/workflows/one-piece-catalog.yml"
+SITE_ROOT = "publisher/site"
+# Every namespace the shared site can serve. A deploy replaces the whole site,
+# so each one that is live must be present and unchanged in the staged tree.
+PRESERVED_POINTERS = ("v1/current.json", "magic/v1/current.json", "yugioh/v1/current.json",
+                      "lorcana/v1/current.json", "market-prices/v1/index.json")
+ONE_PIECE_POINTER = "one-piece/v1/current.json"
+# Workflows that deploy the shared site under the scanstash-catalog-production-hosting lock.
+SHARED_SITE_WORKFLOWS = ("one-piece-catalog.yml", "magic-catalog.yml", "pokemon-catalog.yml", "yugioh-catalog.yml")
+DIGEST = re.compile(r"[0-9a-f]{64}\Z")
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--signed-run-id", help="Successful One Piece signing run on main")
+    source.add_argument("--artifact-dir", type=Path, help="Already downloaded signed artifact directory")
+    parser.add_argument("--reviewed-sha256", required=True, help="SHA-256 of the reviewed payload")
+    parser.add_argument("--envelope-sha256", required=True, help="SHA-256 of the reviewed signed envelope")
+    parser.add_argument("--manifest-sha256", required=True, help="SHA-256 of the reviewed verified manifest")
+    parser.add_argument("--work-dir", type=Path, required=True, help="Scratch directory (external SSD)")
+    parser.add_argument("--bootstrap", action="store_true", help="First publication at revision one")
+    parser.add_argument("--skip-github-run-check", action="store_true",
+                        help="Do not refuse when GitHub catalog runs are queued or running")
+    parser.add_argument("--yes", action="store_true", help="Deploy without the interactive confirmation")
+    args = parser.parse_args(argv)
+    for name in ("reviewed_sha256", "envelope_sha256", "manifest_sha256"):
+        if not DIGEST.match(getattr(args, name)):
+            parser.error(f"--{name.replace('_', '-')} must be 64 lowercase hex characters")
+    if args.signed_run_id is not None and not args.signed_run_id.isdigit():
+        parser.error("--signed-run-id must be numeric")
+    return args
+
+
+def sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def run(command, cwd=None, capture=False):
+    print("+ " + " ".join(str(part) for part in command), flush=True)
+    result = subprocess.run([str(part) for part in command], cwd=cwd, check=True, text=True,
+                            stdout=subprocess.PIPE if capture else None)
+    return result.stdout if capture else None
+
+
+def fetch(url, absent_ok=True):
+    """Return (bytes, headers) or None for a 404 when absent_ok."""
+    request = Request(url, headers={"User-Agent": "ScanStashLocalPublisher/1.0", "Cache-Control": "no-cache"})
+    for attempt in range(3):
+        try:
+            with urlopen(request, timeout=60) as response:
+                return response.read(), {k.lower(): v for k, v in response.headers.items()}
+        except HTTPError as error:
+            if error.code == 404 and absent_ok:
+                return None
+            if error.code not in (429, 500, 502, 503, 504) or attempt == 2:
+                raise
+        time.sleep(2 * (attempt + 1))
+    raise RuntimeError("unreachable")
+
+
+def busy_github_runs(runs):
+    """Non-PR catalog runs that may hold the shared hosting lock."""
+    return [r for r in runs if r.get("event") != "pull_request"
+            and r.get("status") in ("queued", "in_progress", "waiting", "pending", "requested")]
+
+
+def preservation_problems(site, live_fetch):
+    """Live namespaces missing from, or different in, the staged site."""
+    problems = []
+    for relative in PRESERVED_POINTERS:
+        live = live_fetch(relative)
+        staged = site / relative
+        if live is None:
+            continue
+        if not staged.is_file():
+            problems.append(f"{relative} is live but missing from the staged site")
+        elif staged.read_bytes() != live:
+            problems.append(f"{relative} differs from the live bytes")
+    return problems
+
+
+def readback_problems(site, revision, live_fetch_with_headers):
+    """Compare every staged pointer with each production origin, as the workflow does."""
+    problems = []
+    paths = (ONE_PIECE_POINTER, f"one-piece/v1/releases/{revision}/catalog-release.json") + PRESERVED_POINTERS
+    stamp = int(time.time())
+    for origin in ORIGINS:
+        for relative in paths:
+            expected = site / relative
+            if not expected.is_file():
+                continue
+            result = live_fetch_with_headers(f"{origin}/{relative}?publication_check=local-{stamp}")
+            if result is None:
+                problems.append(f"{origin}/{relative} is missing")
+                continue
+            body, headers = result
+            cache = headers.get("cache-control", "").lower()
+            found = []
+            if body != expected.read_bytes():
+                found.append(f"{origin}/{relative} bytes differ")
+            elif relative == ONE_PIECE_POINTER and "no-cache" not in cache:
+                found.append(f"{origin}/{relative} lacks no-cache")
+            elif relative.startswith("one-piece/v1/releases/") and not (
+                    "max-age=31536000" in cache and "immutable" in cache):
+                found.append(f"{origin}/{relative} is not cached as immutable")
+            problems += found
+            if not found:
+                print(f"Verified {origin}/{relative}")
+    return problems
+
+
+def gh_json(args):
+    return json.loads(run(["gh"] + args, capture=True))
+
+
+def check_github_runs(skip):
+    if skip:
+        print("Skipping the GitHub run check by request.")
+        return
+    busy = []
+    for workflow in SHARED_SITE_WORKFLOWS:
+        for status in ("queued", "in_progress", "waiting"):
+            busy += busy_github_runs(gh_json(["run", "list", "--repo", REPOSITORY, "--workflow", workflow,
+                                              "--status", status, "--json",
+                                              "databaseId,event,status,workflowName"]))
+    if busy:
+        listing = ", ".join(f"{r['workflowName']} {r['databaseId']} ({r['status']})" for r in busy)
+        sys.exit(f"Refusing to deploy while GitHub catalog runs may publish: {listing}. "
+                 "Wait for or cancel them, or pass --skip-github-run-check.")
+
+
+def obtain_artifact(args, scratch):
+    artifact = scratch / "artifact"
+    if args.artifact_dir:
+        shutil.copytree(args.artifact_dir, artifact)
+        return artifact
+    signing = gh_json(["api", f"repos/{REPOSITORY}/actions/runs/{args.signed_run_id}"])
+    if not (signing.get("path") == WORKFLOW_PATH and signing.get("head_branch") == "main"
+            and signing.get("event") == "workflow_dispatch" and signing.get("conclusion") == "success"):
+        sys.exit("The signed run is not a successful One Piece workflow_dispatch run on main.")
+    run(["gh", "run", "download", args.signed_run_id, "--repo", REPOSITORY,
+         "--name", f"one-piece-signed-artifact-{args.signed_run_id}", "--dir", artifact])
+    return artifact
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    repo = Path(run(["git", "rev-parse", "--show-toplevel"], capture=True).strip())
+    check_github_runs(args.skip_github_run_check)
+
+    work = args.work_dir.resolve()
+    scratch = work / "scratch"
+    checkout = work / "checkout"
+    if scratch.exists():
+        shutil.rmtree(scratch)
+    scratch.mkdir(parents=True)
+    run(["git", "fetch", "origin", "main"], cwd=repo)
+    if checkout.exists():
+        run(["git", "worktree", "remove", "--force", checkout], cwd=repo)
+    run(["git", "worktree", "add", "--detach", checkout, "origin/main"], cwd=repo)
+
+    try:
+        artifact = obtain_artifact(args, scratch)
+        envelope = artifact / "release-envelope.json"
+        if sha256(envelope) != args.envelope_sha256:
+            sys.exit("The signed envelope does not match --envelope-sha256.")
+        if sha256(artifact / "verified-manifest.json") != args.manifest_sha256:
+            sys.exit("The verified manifest does not match --manifest-sha256.")
+
+        inputs = scratch / "inputs"
+        revision = run(["python3", "scripts/prepare_one_piece_hosting.py", "--artifact", artifact,
+                        "--output-dir", inputs, "--bootstrap", "true" if args.bootstrap else "false"],
+                       cwd=checkout, capture=True).strip()
+        if not revision.isdigit():
+            sys.exit(f"Unexpected revision from hosting preparation: {revision!r}")
+        keys = scratch / "keys.json"
+        run(["python3", "scripts/one_piece_pinned_keys.py", "Config/OnePieceCatalogProduction.xcconfig", keys],
+            cwd=checkout)
+        baseline = (["--bootstrap-registry", "yes"] if args.bootstrap
+                    else ["--previous", inputs / "one-piece-predecessor.json"])
+        verified = scratch / "verified-manifest.json"
+        run(["swift", "run", "--scratch-path", work / "build", "--package-path", "OnePieceCatalogCore",
+             "one-piece-catalog-publisher", "verify", "--input", envelope, "--trusted-keys", keys,
+             "--reviewed-payload-sha256", args.reviewed_sha256, *baseline, "--manifest", verified], cwd=checkout)
+        if verified.read_bytes() != (artifact / "verified-manifest.json").read_bytes():
+            sys.exit("Local verification produced a different manifest than the signing run.")
+
+        run(["bash", "scripts/restore_catalog_hosting_site.sh", inputs / "pokemon-current.json",
+             inputs / "magic-current.json", SITE_ROOT, ORIGINS[0], "", "", "", "",
+             inputs / "one-piece-current.json"], cwd=checkout)
+        site = checkout / SITE_ROOT
+        destination = site / "one-piece/v1"
+        immutable = destination / "releases" / revision / "catalog-release.json"
+        immutable.parent.mkdir(parents=True, exist_ok=True)
+        if immutable.exists():
+            if immutable.read_bytes() != envelope.read_bytes():
+                sys.exit("An existing immutable revision differs from the signed envelope.")
+        else:
+            shutil.copyfile(envelope, immutable)
+        shutil.copyfile(envelope, destination / "current.json")
+        run(["bash", "scripts/verify_pokemon_catalog_hosting_config.sh"], cwd=checkout)
+
+        def live_bytes(relative):
+            result = fetch(f"{ORIGINS[0]}/{relative}")
+            return None if result is None else result[0]
+
+        problems = preservation_problems(site, live_bytes)
+        if problems:
+            sys.exit("Refusing to deploy; the staged site would change other catalogs:\n- " + "\n- ".join(problems))
+
+        print(f"\nReady to publish One Piece revision {revision} (envelope {args.envelope_sha256[:16]}…) "
+              f"to {PROJECT}. Other live catalogs are byte-identical in the staged site.")
+        if not args.yes and input("Type 'publish' to deploy: ").strip() != "publish":
+            sys.exit("Not deployed.")
+
+        run(["firebase", "deploy", "--only", "hosting:production", "--project", PROJECT, "--non-interactive"],
+            cwd=checkout)
+        problems = readback_problems(site, revision, lambda url: fetch(url, absent_ok=True))
+        if problems:
+            sys.exit("Deployed, but live readback failed:\n- " + "\n- ".join(problems))
+        print(f"One Piece revision {revision} is live and verified on {', '.join(ORIGINS)}.")
+    finally:
+        run(["git", "worktree", "remove", "--force", checkout], cwd=repo)
+
+
+if __name__ == "__main__":
+    main()

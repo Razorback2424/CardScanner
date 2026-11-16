@@ -40,6 +40,8 @@ on:
       - "scripts/prepare_one_piece_acceptance_samples.py"
       - "scripts/tests/test_one_piece_acceptance_samples.py"
       - "scripts/tests/test_one_piece_workflow.py"
+      - "scripts/publish_one_piece_local.py"
+      - "scripts/tests/test_publish_one_piece_local.py"
   workflow_dispatch:
     inputs:
       audit:
@@ -155,6 +157,8 @@ jobs:
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_pinned_keys.py -v
       - name: Test workflow verification and scheduling boundaries
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_workflow.py -v
+      - name: Test local publication safeguards
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_publish_one_piece_local.py -v
 
   validate-catalog-core:
     if: github.event_name != 'schedule'
