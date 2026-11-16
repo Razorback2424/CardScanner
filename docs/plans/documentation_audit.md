@@ -1,10 +1,34 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; review evidence updated 2026-11-10
+**Audit history:** started 2026-10-02; latest source-boundary reconciliation 2026-11-15
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
+
+## November 15, 2026 current-source reconciliation
+
+**Baseline:** `main@a8d3103ab24b`, including its five newest
+main-history commits. This is a source/documentation review, not a fresh
+device, live-feed, catalog-activation or complete regression run.
+[New checkpoint and source references](../current-implementation-2026-11-15.md).
+
+| Earlier current-sounding claim | Current resolution and remaining gate |
+| --- | --- |
+| One Piece production rollout, public pin and collection writes are all disabled; no production seed exists. | **Superseded.** `Config/OnePieceCatalogProduction.xcconfig` sets signed `remote-authority`, a dedicated pin and `ONE_PIECE_COLLECTION_WRITES = YES` for the on-device-only `NO_CLOUDKIT` Release configuration. A signed seed is bundled under `TradingCardScanner/OnePieceCatalogSeed/`. This does not prove successful device activation, live pointer or release acceptance. |
+| The retained OP-18 revision-4 candidate makes additional physical One Piece printings available. | **Not established.** `publisher/one-piece/production/revision-4/candidate.json` is unsigned discovery-only evidence. Artwork previews are not independently approved printing, finish or price mappings. Older candidate inventories and image studies remain dated snapshots. |
+| Latest exact-price behavior can be deduced from the history chart. | **Incorrect inference.** `CardMarketHistoryService`, `PriceFallbackQuoteResolver`, both card detail views, and `CollectionStore` distinguish historical points from current eligible exact JustTCG quotes. A missing owned price is filled only after identity, quote lifecycle, catalog authority and session checks; existing eligible owned prices are not overwritten merely because a chart loads. |
+| The catalog-health CSV is a complete live five-game census. | **Not established.** The Settings export evaluates active Browse catalogs but can report incomplete/deferred sets and unavailable provider data. The separate Python/CI audit is an offline, retained-input census with its own candidate and historical scope. A failed workflow can leave `catalog-run-failure.json`, not a trustworthy partial report. |
+| EB-05 exact market title/quote means a new printing is approved. | **Incorrect.** `prepare_one_piece_eb05_market.py` requires separately verified English physical/retailer evidence, unique exact product/title agreement and a unique Normal/Foil lane; duplicate lanes and ambiguous/unverified candidates remain held. The live image audit is read-only. |
+| Launch commercial pricing service has not been selected. | **Superseded.** Paid JustTCG was selected 2026-11-10, but the current transport still requires a configured API key; production no-customer-key integration, licensing, device and distribution gates remain open in the launch contract. |
+
+The [documentation index](../README.md), [One Piece resource
+guide](../../TradingCardScanner/OnePieceCatalogSeed/README.md),
+[catalog health guide](../../scripts/CATALOG_HEALTH.md), and
+[current release contract](../release/launch-contract.md) point to the
+active authorities. Older dates, tests and checkboxes below remain
+historical unless reconfirmed against this checkout. Do not quietly rewrite
+the older evidence to erase how the system reached this state.
 
 ## Current authority boundary — updated 2026-11-10
 
