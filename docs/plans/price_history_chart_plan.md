@@ -1,5 +1,23 @@
 # Individual-card market price history
 
+**November 15, 2026 source update — `main@a8d3103a`:** The current
+individual-detail implementation can use a **separate current exact JustTCG
+quote** when the selected printing/finish has no usable USD catalog quote.
+This does not repurpose a dated chart point as current price evidence.
+[`CardMarketHistoryService.swift`](../../TradingCardScanner/Services/CardMarketHistoryService.swift)
+resolves active exact product/subtype identities;
+[`CatalogCardDetailView.swift`](../../TradingCardScanner/Views/CatalogCardDetailView.swift)
+checks current fallback eligibility; and the background collection writer
+only fills an otherwise missing eligible owned price after storage-session,
+catalog-authority, and exact-identity checks. A withdrawn, expired,
+ambiguous, or non-USD quote remains ineligible. The source changes include
+focused regression cases in
+[`JustTCGContractTests.swift`](../../TradingCardScannerTests/JustTCGContractTests.swift).
+No new physical-device/provider acceptance or complete target run is asserted
+by this documentation update. See the
+[current checkpoint](../current-implementation-2026-11-15.md).
+
+
 **Status:** implemented on `main` in `3527a29` — 2026-11-06. Focused simulator
 verification is recorded in the root [progress log](../../progress.md); live-provider,
 physical-device and release acceptance are separate checks.
