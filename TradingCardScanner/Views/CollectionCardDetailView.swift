@@ -1873,7 +1873,9 @@ enum CardRarityToken: Equatable, Hashable {
 
     init?(raw: String?) {
         guard let raw = raw?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !raw.isEmpty else {
+              !raw.isEmpty,
+              // Some providers send a placeholder rather than omitting the field.
+              !["none", "n/a", "null", "-"].contains(raw.lowercased()) else {
             return nil
         }
 
