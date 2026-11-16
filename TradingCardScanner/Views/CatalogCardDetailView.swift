@@ -208,7 +208,7 @@ struct CatalogCardDetailView: View {
                 remoteURL: details.card.displayImageURL ?? summary.imageURL
             )
         }
-        .navigationTitle("Card")
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
         .alert(
