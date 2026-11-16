@@ -707,6 +707,68 @@ final class JustTCGContractTests: XCTestCase {
     }
 
     @MainActor
+    func testDetailQuoteOnlyFillsMissingPriceForCurrentMatchingOwners() async throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let context = ModelContext(container)
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        let collectionKey = "detail-eevee-normal"
+        func owner(productID: String) -> CollectedCard {
+            let card = CollectedCard(collectionKey: collectionKey, game: .pokemon, providerID: "sv08.5-074",
+                name: "Eevee", setName: "Prismatic Evolutions", setCode: "PRE", cardNumber: "074",
+                rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .normal, variantResolution: .userConfirmed)
+            card.tcgplayerProductID = productID
+            return card
+        }
+        let card = owner(productID: "900001")
+        context.insert(card)
+        try context.save()
+        let request = CardMarketHistoryRequest(card: card)
+        XCTAssertEqual(request.exactProductID, "900001")
+        XCTAssertFalse(request.exactQuotePrintings.isEmpty)
+
+        let now = Date.now
+        let incoming = NormalizedPrice(unitMarketPriceUSD: 12, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "eevee-nm", sourceUpdatedAt: now, fetchedAt: now)
+        let quote = CardMarketHistoryResult.Quote(price: incoming, expiresAt: nil)
+        let staleSession = try await writer.fillMissingMarketPrice(quote, request: request,
+            collectionKey: collectionKey, shouldContinue: { false })
+        XCTAssertNil(staleSession)
+        XCTAssertTrue(try ModelContext(container).fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+
+        let conflictingCopy = owner(productID: "900002")
+        context.insert(conflictingCopy)
+        try context.save()
+        let conflict = try await writer.fillMissingMarketPrice(quote, request: request,
+            collectionKey: collectionKey, shouldContinue: { true })
+        XCTAssertNil(conflict)
+        XCTAssertTrue(try ModelContext(container).fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+
+        context.delete(conflictingCopy)
+        try context.save()
+        let prices = PriceStore(context: context)
+        let existing = NormalizedPrice(unitMarketPriceUSD: 27, currencyCode: "USD", source: .tcgCSV,
+            sourceVariantID: "catalog-eevee", sourceUpdatedAt: nil, fetchedAt: now)
+        XCTAssertTrue(prices.storeOwnedPrice(.price(existing), collectionKey: collectionKey))
+        XCTAssertTrue(prices.save())
+        let retained = try await writer.fillMissingMarketPrice(quote, request: request,
+            collectionKey: collectionKey, shouldContinue: { true })
+        XCTAssertEqual(retained?.amount, 27)
+        let saved = try ModelContext(container).fetch(FetchDescriptor<PriceRecord>())
+        XCTAssertEqual(saved.count, 1)
+        XCTAssertEqual(saved.first?.effectiveUnitMarketPriceUSD, 27)
+        XCTAssertEqual(saved.first?.source, .tcgCSV)
+
+        context.delete(card)
+        try context.save()
+        let removed = try await writer.fillMissingMarketPrice(quote, request: request,
+            collectionKey: collectionKey, shouldContinue: { true })
+        XCTAssertNil(removed)
+        let verification = ModelContext(container)
+        XCTAssertTrue(try verification.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertEqual(try verification.fetch(FetchDescriptor<PriceRecord>()).map(\.effectiveUnitMarketPriceUSD), [27])
+    }
+
+    @MainActor
     func testClassicPikachuHistoryFetchesExactModernProductAndRejectsOtherListings() async throws {
         let suite = "ClassicHistory-\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
