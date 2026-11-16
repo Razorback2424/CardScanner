@@ -326,6 +326,7 @@ struct JustTCGVariant: Decodable, Sendable {
     let price: Double?
     let priceStatus: String?
     let lastKnownPrice: Double?
+    let priceExpiresAt: Double?
     /// v2 only. Per-region market blocks.
     let markets: [JustTCGMarket]?
     let currency: String?
@@ -362,8 +363,13 @@ struct JustTCGVariant: Decodable, Sendable {
     /// at all — the picker showed grades with nothing beside them and no slab
     /// could ever contribute to a total.
     var marketPrice: (amount: Double, currency: String)? {
+        marketPrice(at: .now)
+    }
+
+    private func marketPrice(at date: Date) -> (amount: Double, currency: String)? {
         if let status = quoteLifecycle?.status, status != "current" { return nil }
-        guard quoteLifecycle?.withdrawsCurrentQuote(at: .now) != true else { return nil }
+        guard quoteLifecycle?.withdrawsCurrentQuote(at: date) != true,
+              quoteLifecycle?.priceExpiresAt.map({ $0 > date }) ?? true else { return nil }
         if let price {
             // v1 normally omits `currency` because its flat price is USD. If
             // it is present, however, it is authoritative and must not be
@@ -380,7 +386,11 @@ struct JustTCGVariant: Decodable, Sendable {
     /// The USD market price, whichever schema published it. Foreign-currency
     /// quotes are intentionally rejected rather than silently converted.
     var marketPriceUSD: Double? {
-        guard let quote = marketPrice,
+        marketPriceUSD(at: .now)
+    }
+
+    func marketPriceUSD(at date: Date) -> Double? {
+        guard let quote = marketPrice(at: date),
               quote.currency.caseInsensitiveCompare("USD") == .orderedSame else {
             return nil
         }
@@ -397,8 +407,9 @@ struct JustTCGVariant: Decodable, Sendable {
 
     var quoteLifecycle: JustTCGQuoteLifecycle? {
         let value: JustTCGQuoteLifecycle
-        if priceStatus != nil || lastKnownPrice != nil {
-            value = .init(status: priceStatus, lastPrice: lastKnownPrice, lastSaleAt: nil, priceExpiresAt: nil)
+        if priceStatus != nil || lastKnownPrice != nil || priceExpiresAt != nil {
+            value = .init(status: priceStatus, lastPrice: lastKnownPrice, lastSaleAt: nil,
+                priceExpiresAt: priceExpiresAt.flatMap(Self.providerDate))
         } else if let market = usdMarket {
             value = .init(status: market.priceStatus, lastPrice: market.lastPrice,
                 lastSaleAt: market.lastSaleAt.flatMap(Self.providerDate),
@@ -427,7 +438,7 @@ struct JustTCGVariant: Decodable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case id, uuid, type, condition, printing, language, tcgplayerSkuId
-        case price, currency, lastUpdated, grading, markets, priceHistory, priceStatus, lastKnownPrice
+        case price, currency, lastUpdated, grading, markets, priceHistory, priceStatus, lastKnownPrice, priceExpiresAt
         case priceChange24hr, priceChange7d, minPrice7d, maxPrice7d
         case covPrice7d, priceChangesCount7d
     }

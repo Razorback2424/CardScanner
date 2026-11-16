@@ -837,6 +837,34 @@ struct CatalogCardDetailView: View {
             let quote = try await catalog.price(for: request.summary, variant: variant)
             guard !Task.isCancelled, selectedQuoteRequest == request else { return }
             mappedPrices[variant.id] = quote
+            if PriceFallbackQuoteResolver.needsFallback(quote, identifiedCatalogCard: true),
+               ownedSlot(for: variant, card: card).price.display.amount == nil,
+               let fallback = await exactMarketFallback(for: card, variant: variant, printRun: request.summary.pokemonPrintRun),
+               let current = fallback.quote.current() {
+                guard !Task.isCancelled, selectedQuoteRequest == request else { return }
+                mappedPrices[variant.id] = .price(current)
+                if let token, generation.isCurrent(token), !isWritePending,
+                   generation.activeSession()?.container === modelContext.container {
+                    let slot = ownedSlot(for: variant, card: card)
+                    guard !slot.hasConflict, !slot.targets.isEmpty else { return }
+                    let container = modelContext.container
+                    let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+                    for target in slot.targets {
+                        guard !Task.isCancelled, selectedQuoteRequest == request,
+                              generation.isCurrent(token),
+                              await fallback.request.resolvingMarketMapping(in: runtimes) == fallback.request
+                        else { return }
+                        _ = try await CollectionExclusiveWrites.retryingIfRequired {
+                            try await writer.fillMissingMarketPrice(fallback.quote, request: fallback.request,
+                                collectionKey: target.collectionKey, shouldContinue: generation.continuation(for: token))
+                        }
+                    }
+                    guard generation.isCurrent(token), !Task.isCancelled else { return }
+                    await projectionStore.rebuild(container: container)
+                }
+                return
+            }
+            guard !Task.isCancelled, selectedQuoteRequest == request else { return }
             guard let token, generation.isCurrent(token), !isWritePending else { return }
             let slot = ownedSlot(for: variant, card: card)
             guard !slot.hasConflict, !slot.targets.isEmpty else { return }
@@ -856,6 +884,19 @@ struct CatalogCardDetailView: View {
             guard !Task.isCancelled, selectedQuoteRequest == request else { return }
             failedPriceVariantIDs.insert(variant.id)
         }
+    }
+
+    private func exactMarketFallback(
+        for card: IdentifiedCard, variant: PhysicalVariant, printRun: PokemonPrintRun?
+    ) async -> (quote: CardMarketHistoryResult.Quote, request: CardMarketHistoryRequest)? {
+        guard PriceVendorCredentials.hasKey else { return nil }
+        let request = CardMarketHistoryRequest(card: card, variant: variant, printRun: printRun)
+        let resolved = await request.resolvingMarketMapping(in: runtimes)
+        guard !Task.isCancelled, !resolved.exactQuotePrintings.isEmpty,
+              let market = try? await CardMarketHistoryService.shared.market(for: request, runtimes: runtimes),
+              let quote = market.quote,
+              await request.resolvingMarketMapping(in: runtimes) == resolved else { return nil }
+        return (quote, resolved)
     }
 
     @ViewBuilder
@@ -1023,8 +1064,20 @@ struct CatalogCardDetailView: View {
 
         let fallbackContext = ModelContext(writer.modelContainer)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
+        let reusesDetailQuote: Bool
+        if let variant, case let .price(quote) = mappedPrices[variant.id], quote.source == .justTCG {
+            reusesDetailQuote = true
+        } else { reusesDetailQuote = false }
         fallbackQuoteTasks[key] = Task { @MainActor in
             defer { fallbackQuoteTasks[key] = nil }
+            if reusesDetailQuote, let variant,
+               let fallback = await exactMarketFallback(for: card, variant: variant, printRun: pokemonPrintRun),
+               !Task.isCancelled, shouldContinue(),
+               let _ = try? await writer.fillMissingMarketPrice(fallback.quote, request: fallback.request,
+                    collectionKey: collectionKey, shouldContinue: shouldContinue) {
+                return
+            }
+            guard !Task.isCancelled, shouldContinue() else { return }
             switch await resolver.resolve(
                 card: card,
                 variant: variant,

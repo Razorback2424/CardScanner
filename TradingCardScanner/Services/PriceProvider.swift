@@ -2,7 +2,7 @@ import Foundation
 
 /// A price this app is willing to claim, together with everything needed to say
 /// how much it should be trusted.
-struct NormalizedPrice: Equatable, Sendable {
+struct NormalizedPrice: Codable, Equatable, Sendable {
     let unitMarketPriceUSD: Double
     let currencyCode: String
     let source: PriceSource

@@ -167,7 +167,7 @@ private struct CollectionCardDetailContent: View {
     @Bindable var card: CollectedCard
     @Query private var collectionActivities: [CollectionActivity]
     @Query private var ungradedReferenceRecords: [PriceRecord]
-    let price: PriceDisplay
+    private let primaryPrice: PriceDisplay
     @ObservedObject var history: PortfolioHistoryStore
     let unpricedReason: PricingDiagnosticReason?
     let artworkReason: ArtworkDiagnosticReason?
@@ -197,6 +197,7 @@ private struct CollectionCardDetailContent: View {
     @State private var isSharing = false
     @State private var chartSelection = PriceHistorySelection()
     @State private var marketHistory: [JustTCGHistoryPoint] = []
+    @State private var marketPriceFallback: (request: CardMarketHistoryRequest, display: PriceDisplay)?
     @State private var marketHistoryError: String?
     @State private var marketHistoryRequiresKey = false
     @State private var isLoadingMarketHistory = true
@@ -248,7 +249,7 @@ private struct CollectionCardDetailContent: View {
             descriptor.fetchLimit = 1
             self._collectionActivities = Query(descriptor)
         }
-        self.price = price
+        self.primaryPrice = price
         self.history = history
         self.unpricedReason = unpricedReason
         self.artworkReason = artworkReason
@@ -278,7 +279,8 @@ private struct CollectionCardDetailContent: View {
                                 YuGiOhPricingNotice()
                                     .font(.footnote).foregroundStyle(.secondary).padding()
                             }
-                            CardDetailValuationView(price: price, selection: chartSelection)
+                            CardDetailValuationView(price: price, selection: chartSelection,
+                                latestObservation: marketHistory.last)
                                 .id("card-price-valuation")
                             priceHistorySection(model: makePriceHistoryModel())
                             marketplaceSection
@@ -309,6 +311,7 @@ private struct CollectionCardDetailContent: View {
             }
         }
         .environment(\.colorScheme, .dark)
+        .onChange(of: primaryPrice) { _, _ in marketPriceFallback = nil }
         .task(id: MarketHistoryLoadID(request: marketHistoryRequest, retry: marketHistoryRetry)) {
             guard !personalOnly else { return }
             await loadMarketHistory()
@@ -327,6 +330,7 @@ private struct CollectionCardDetailContent: View {
             for await _ in events {
                 guard !Task.isCancelled else { return }
                 marketHistory = []
+                marketPriceFallback = nil
                 isLoadingMarketHistory = true
                 marketHistoryRetry += 1
             }
@@ -1090,15 +1094,25 @@ private struct CollectionCardDetailContent: View {
 
     private var marketHistoryRequest: CardMarketHistoryRequest { .init(card: card) }
 
+    private var price: PriceDisplay {
+        guard PortfolioPriceEligibility.eligibleUnitPrice(amount: primaryPrice.amount,
+                  currencyCode: primaryPrice.currencyCode) == nil,
+              let fallback = marketPriceFallback, fallback.request == marketHistoryRequest else { return primaryPrice }
+        return fallback.display
+    }
+
     @MainActor
     private func loadMarketHistory() async {
         let request = marketHistoryRequest
+        let generation = CollectionStorageGeneration.shared
+        let token = generation.currentToken()
         isLoadingMarketHistory = true
         marketHistoryError = nil
         let resolved = await request.resolvingMarketMapping(in: runtimes)
         guard !Task.isCancelled, request == marketHistoryRequest else { return }
         if marketHistoryIdentity != resolved.historyIdentity {
             marketHistory = []
+            marketPriceFallback = nil
             chartSelection.clear()
             marketHistoryIdentity = resolved.historyIdentity
         }
@@ -1150,12 +1164,28 @@ private struct CollectionCardDetailContent: View {
         marketHistoryRequiresKey = !PriceVendorCredentials.hasKey
         guard !marketHistoryRequiresKey else { return }
         do {
-            let points = try await CardMarketHistoryService.shared.history(for: request, runtimes: runtimes)
+            let market = try await CardMarketHistoryService.shared.market(for: request, runtimes: runtimes)
             try Task.checkCancellation()
             guard request == marketHistoryRequest else { return }
             guard await request.resolvingMarketMapping(in: runtimes) == resolved,
                   !Task.isCancelled, request == marketHistoryRequest else { return }
-            marketHistory = points
+            marketHistory = market.points
+            guard let quote = market.quote, let token, generation.isCurrent(token),
+                  generation.activeSession()?.container === modelContext.container,
+                  !isLogicalConflict,
+                  PortfolioPriceEligibility.eligibleUnitPrice(amount: price.amount,
+                    currencyCode: price.currencyCode) == nil else { return }
+            let collectionKey = card.collectionKey
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: modelContext.container)
+            guard !Task.isCancelled, request == marketHistoryRequest, collectionKey == card.collectionKey,
+                  await request.resolvingMarketMapping(in: runtimes) == resolved else { return }
+            let display = try? await CollectionExclusiveWrites.retryingIfRequired {
+                try await writer.fillMissingMarketPrice(quote, request: resolved, collectionKey: collectionKey,
+                    shouldContinue: generation.continuation(for: token))
+            }
+            guard !Task.isCancelled, generation.isCurrent(token), request == marketHistoryRequest,
+                  collectionKey == card.collectionKey, let display, display.amount != nil else { return }
+            marketPriceFallback = (request, display)
         } catch is CancellationError { return }
         catch CardMarketHistoryService.HistoryError.noListing { return }
         catch JustTCGTransport.TransportError.missingCredentials {
@@ -1945,6 +1975,7 @@ private struct CardDetailValuationView: View {
     @ScaledMetric(relativeTo: .largeTitle) private var priceSize = 42.0
     let price: PriceDisplay
     let selection: PriceHistorySelection
+    let latestObservation: JustTCGHistoryPoint?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -1959,6 +1990,8 @@ private struct CardDetailValuationView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding(.top, 6)
+            } else if price.amount == nil, let latestObservation {
+                CardMarketLatestObservation(point: latestObservation)
             } else {
                 // The headline and today's chart endpoint share this quote.
                 CardDetailHeroPrice(price: price)
@@ -2807,7 +2840,7 @@ struct PriceHistoryChartModel: Equatable {
 
     var summary: String {
         if currentPrice != nil {
-            return "\(observationCount) historical market prices from JustTCG. Today's value uses the current saved quote."
+            return "\(observationCount) historical market prices from JustTCG. Today's value uses the displayed quote."
         }
         if isProviderHistory { return "\(samples.count) historical market prices from JustTCG." }
         let observationLabel = observationCount == 1 ? "1 changed price" : "\(observationCount) changed prices"
@@ -2923,9 +2956,16 @@ struct CardMarketHistoryPanel: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Market price history").font(.headline).padding(.horizontal, 16)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("JustTCG historical prices · Today uses the current quote")
+            Text(model.currentPrice.map {
+                $0.state() == .current ? "JustTCG historical prices · Today uses the current quote"
+                    : "JustTCG historical prices · Today shows the saved quote"
+            } ?? "JustTCG historical prices")
                 .font(.caption).foregroundStyle(.secondary).padding(.horizontal, 16)
                 .fixedSize(horizontal: false, vertical: true)
+            if model.currentPrice == nil, selection.date == nil, let latest = points.last {
+                CardMarketLatestObservation(point: latest)
+                    .padding(.horizontal, 16)
+            }
             CardMarketHistoryReadout(selection: selection)
             MarketHistoryChartContent(model: model, hasHistory: !points.isEmpty, isLoading: isLoading,
                                       error: error, direction: direction, range: $range,
@@ -3002,6 +3042,22 @@ struct CardMarketHistoryPanel: View {
             guard !Task.isCancelled else { return }
             self.error = error.localizedDescription
         }
+    }
+}
+
+private struct CardMarketLatestObservation: View {
+    let point: JustTCGHistoryPoint
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(point.p.formatted(.currency(code: "USD")))
+                .font(.title3.weight(.semibold))
+                .monospacedDigit()
+            Text("Last observed by JustTCG · \(Date(timeIntervalSince1970: point.t).formatted(date: .abbreviated, time: .shortened))")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -3225,9 +3281,12 @@ private struct MarketHistoryExplanation: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(currentPrice != nil
-                 ? "Today uses the current quote shown above. Earlier history comes from JustTCG for this printing, including before you added the card."
-                 : "History is provided by JustTCG for this printing. It includes prices from before you added the card.")
+            if let currentPrice {
+                Text(currentPrice.state() == .current
+                    ? "Today uses the current quote shown above."
+                    : "Today shows the saved quote.")
+            }
+            Text("JustTCG history covers this printing, including prices from before you added the card.")
             if let latest = points.last {
                 Text("Latest history point · \(Date(timeIntervalSince1970: latest.t).formatted(date: .abbreviated, time: .shortened))")
             }

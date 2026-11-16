@@ -756,6 +756,16 @@ enum ProductFinish {
         default: return nil
         }
     }
+
+    /// The product ID carries the stamp and Cosmos pattern. On that exact
+    /// product the vendor still distinguishes the underlying foil lane.
+    static func stampedProductPrinting(variantID: String?, printRun: PokemonPrintRun?) -> String? {
+        guard printRun == nil || printRun == .unlimited,
+              let variantID, let stamp = PokemonCatalogStampVariant.decode(variantID),
+              stamp.subtype == nil else { return nil }
+        if stamp.base == .pokemonFoilPattern("cosmos") { return "Holofoil" }
+        return printing(for: stamp.base)
+    }
 }
 
 // MARK: - Wire format

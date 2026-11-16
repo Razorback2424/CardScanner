@@ -19,6 +19,7 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
     var exactProductID: String?
     var providerPrinting: String? = nil
     var authorityRevision: String? = nil
+    var authorityGeneration: String? = nil
 
     var requiresCatalogMapping: Bool {
         itemKind == .rawCard && (game == .onePiece || game == .lorcana || game == .yuGiOh)
@@ -31,7 +32,21 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
          exactProductID ?? "", providerPrinting ?? ""]
     }
 
-    @MainActor
+    var exactQuotePrintings: [String] {
+        guard itemKind == .rawCard, exactProductID != nil, let variantID else { return [] }
+        if let providerPrinting { return [providerPrinting] }
+        guard !requiresCatalogMapping,
+              case let .printings(printings) = ProductFinish.requirement(
+                for: .resolving(variantID), printRun: printRun, isJapanese: isJapanese) else { return [] }
+        return printings
+    }
+
+    private var isJapanese: Bool {
+        ProductCatalogIdentity.game(for: game, catalogID: catalogID ?? printingID) == .pokemonJapan
+    }
+
+    var exactQuoteIsJapanese: Bool { providerPrinting == nil && isJapanese }
+
     init(card: CollectedCard) {
         let input = PriceFallbackCardInput(card: card, variant: card.variant, pokemonPrintRun: card.pokemonPrintRun)
         game = input.game
@@ -88,6 +103,17 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
                   let product = PokemonTCGCSVMapping.byCardID[catalogID] {
             productID = String(product.productID)
             printing = "Holofoil"
+        } else if let exactProductID,
+                  let stamped = ProductFinish.stampedProductPrinting(variantID: variantID, printRun: printRun),
+                  !PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: catalogID),
+                  !PokemonVariantRules.requiresPhysicalReview(cardID: catalogID, variantID: variantID) {
+            productID = exactProductID
+            printing = stamped
+        } else if variantID == PokemonReviewedParallelCatalog.variant.id,
+                  let reviewed = PokemonReviewedParallelCatalog.entry(cardID: catalogID),
+                  exactProductID == String(reviewed.productID) {
+            productID = String(reviewed.productID)
+            printing = "Holofoil"
         } else {
             if PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: catalogID) {
                 exactProductID = nil
@@ -114,6 +140,7 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
         result.marketVariantID = nil
         result.lookups = []
         result.authorityRevision = nil
+        result.authorityGeneration = nil
         guard let runtime = runtimes?.runtime(for: game),
               let id = UUID(uuidString: catalogID ?? printingID) else { return result }
         let catalog: (any GameCatalogAdapter)?
@@ -123,8 +150,8 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
             result.authorityRevision = "\(snapshot.revision):\(snapshot.catalog.generation)"
         } else {
             catalog = runtime.catalog
-            result.authorityRevision = catalog?.generation
         }
+        result.authorityGeneration = catalog?.generation
         // The normal Lorcana runtime wraps its reviewed physical registry with
         // discovery/sealed content. Both registrations have the same authority.
         let lorcanaCatalog = (catalog as? LorcanaCatalogAdapter)
@@ -166,6 +193,24 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
     }
 }
 
+struct CardMarketHistoryResult: Sendable {
+    struct Quote: Codable, Sendable {
+        let price: NormalizedPrice
+        let expiresAt: Date?
+        var providerConfirmedCurrent: Bool? = nil
+
+        func current(at date: Date = .now) -> NormalizedPrice? {
+            guard price.isUsableUSD, price.effectiveAsOf.timeIntervalSince1970 <= date.timeIntervalSince1970,
+                  providerConfirmedCurrent == true || !price.isStale(now: date),
+                  expiresAt.map({ $0 > date }) ?? true else { return nil }
+            return price
+        }
+    }
+
+    let points: [JustTCGHistoryPoint]
+    let quote: Quote?
+}
+
 actor CardMarketHistoryService {
     static let shared = CardMarketHistoryService()
 
@@ -191,6 +236,8 @@ actor CardMarketHistoryService {
         /// the lookup inputs that answer applies to.
         var noListingAt: Date? = nil
         var noListingInputs: [String]? = nil
+        var quote: CardMarketHistoryResult.Quote? = nil
+        var checkedQuote: Bool? = nil
     }
 
     /// Detail history spends the same daily vendor allowance as price refresh.
@@ -205,7 +252,7 @@ actor CardMarketHistoryService {
     private let root: URL
     private struct PendingHistory {
         let id: UUID
-        let task: Task<[JustTCGHistoryPoint], Error>
+        let task: Task<CardMarketHistoryResult, Error>
         var waiterIDs: Set<UUID>
     }
     private var pending: [CardMarketHistoryRequest: PendingHistory] = [:]
@@ -260,6 +307,11 @@ actor CardMarketHistoryService {
 
     func history(for input: CardMarketHistoryRequest, now: Date = .now,
                  runtimes: CardGameRuntimeContainer? = nil) async throws -> [JustTCGHistoryPoint] {
+        try await market(for: input, now: now, runtimes: runtimes).points
+    }
+
+    func market(for input: CardMarketHistoryRequest, now: Date = .now,
+                runtimes: CardGameRuntimeContainer? = nil) async throws -> CardMarketHistoryResult {
         let request = await input.resolvingMarketMapping(in: runtimes)
         try Task.checkCancellation()
         guard !request.requiresCatalogMapping || request.exactProductID != nil else { throw HistoryError.noListing }
@@ -268,8 +320,10 @@ actor CardMarketHistoryService {
            old.noListingInputs == Self.noListingInputs(request) {
             throw HistoryError.noListing
         }
-        if let old, now.timeIntervalSince(old.fetchedAt) < 6 * 60 * 60 {
-            return try await currentResult(old.points, for: request, runtimes: runtimes)
+        if let old, now.timeIntervalSince(old.fetchedAt) < 6 * 60 * 60,
+           old.checkedQuote != nil || request.exactQuotePrintings.isEmpty {
+            return try await currentResult(.init(points: old.points, quote: old.quote), for: request,
+                                           now: now, runtimes: runtimes)
         }
         let waiterID = UUID()
         let state: PendingHistory
@@ -286,7 +340,7 @@ actor CardMarketHistoryService {
         }
         defer { releaseWaiter(waiterID, request: request, taskID: state.id) }
         return try await withTaskCancellationHandler {
-            try await currentResult(state.task.value, for: request, runtimes: runtimes)
+            try await currentResult(state.task.value, for: request, now: now, runtimes: runtimes)
         } onCancel: {
             Task { await self.releaseWaiter(waiterID, request: request, taskID: state.id) }
         }
@@ -303,16 +357,16 @@ actor CardMarketHistoryService {
         }
     }
 
-    private func currentResult(_ points: [JustTCGHistoryPoint], for request: CardMarketHistoryRequest,
-                               runtimes: CardGameRuntimeContainer?) async throws -> [JustTCGHistoryPoint] {
+    private func currentResult(_ result: CardMarketHistoryResult, for request: CardMarketHistoryRequest,
+                               now: Date, runtimes: CardGameRuntimeContainer?) async throws -> CardMarketHistoryResult {
         guard await request.resolvingMarketMapping(in: runtimes) == request else { throw CancellationError() }
         try Task.checkCancellation()
-        return points
+        return .init(points: result.points, quote: result.quote.flatMap { $0.current(at: now) == nil ? nil : $0 })
     }
 
     private func fetchAndCache(_ request: CardMarketHistoryRequest, old: Cached?, now: Date,
-                               runtimes: CardGameRuntimeContainer?) async throws -> [JustTCGHistoryPoint] {
-        let received: (points: [JustTCGHistoryPoint], sourceProductID: String?)
+                               runtimes: CardGameRuntimeContainer?) async throws -> CardMarketHistoryResult {
+        let received: (variant: JustTCGVariant, sourceProductID: String?, quoteIsExact: Bool)
         do {
             received = try await fetch(request)
         } catch HistoryError.noListing {
@@ -341,16 +395,24 @@ actor CardMarketHistoryService {
             sourceProductID = nil
         }
         var byTime: [Double: JustTCGHistoryPoint] = [:]
-        for point in oldPoints + received.points
+        for point in oldPoints + Self.points(from: received.variant, now: now)
             where point.p.isFinite && point.p >= 0 && point.t.isFinite && point.t > 0
                 && point.t <= now.timeIntervalSince1970 {
             byTime[point.t] = point
         }
         let points = byTime.values.sorted { $0.t < $1.t }
+        let quote: CardMarketHistoryResult.Quote?
+        if received.quoteIsExact, let variantID = received.variant.variantId, !variantID.isEmpty,
+           let amount = received.variant.marketPriceUSD(at: now) {
+            quote = .init(price: .init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .justTCG,
+                             sourceVariantID: variantID, sourceUpdatedAt: received.variant.updatedAt, fetchedAt: now),
+                          expiresAt: received.variant.quoteLifecycle?.priceExpiresAt,
+                          providerConfirmedCurrent: received.variant.quoteLifecycle?.status == "current")
+        } else { quote = nil }
         // This is derived data. A full disk must not hide a successful response.
         try? writeCache(Cached(requestData: identityData(request), fetchedAt: now, points: points,
-                              sourceProductID: sourceProductID))
-        return points
+                              sourceProductID: sourceProductID, quote: quote, checkedQuote: true))
+        return .init(points: points, quote: quote)
     }
 
     private func writeCache(_ cached: Cached) throws {
@@ -362,9 +424,9 @@ actor CardMarketHistoryService {
         try JSONEncoder().encode(cached).write(to: cacheURL(cached.requestData), options: .atomic)
     }
 
-    /// Points plus the marketplace product the provider returned them for.
+    /// The provider listing and the product it was returned for.
     private func fetch(_ request: CardMarketHistoryRequest) async throws
-        -> (points: [JustTCGHistoryPoint], sourceProductID: String?) {
+        -> (variant: JustTCGVariant, sourceProductID: String?, quoteIsExact: Bool) {
         if request.itemKind == .gradedCard {
             // Graded cards already carry an exact vendor variant selected by
             // the graded picker. Never substitute a raw-card history.
@@ -376,7 +438,7 @@ actor CardMarketHistoryService {
             guard let variant = response.data.flatMap({ $0.variants ?? [] }).first(where: {
                 $0.variantId == id && $0.type?.lowercased() == "graded"
             }) else { throw HistoryError.noListing }
-            return (Self.points(from: variant), nil)
+            return (variant, nil, false)
         }
 
         if request.game == .pokemon, let catalogID = request.catalogID,
@@ -390,6 +452,12 @@ actor CardMarketHistoryService {
             ), at: 0)
         }
         var variantID = request.marketVariantID
+        let exactPrintings = request.exactQuotePrintings
+        if let productID = request.exactProductID, !exactPrintings.isEmpty,
+           variantID == nil || request.providerPrinting != nil {
+            lookups = [.tcgplayerID(productID)]
+            variantID = nil
+        }
         if variantID == nil, request.game == .magic, lookups.isEmpty, let id = request.catalogID,
                !id.hasPrefix("csv:"), let card = try? await ScryfallService().fetchCard(id: id),
                let productID = card.tcgplayerProductID(for: request.variantID.map(PhysicalVariant.resolving)) {
@@ -397,7 +465,7 @@ actor CardMarketHistoryService {
         }
         // Older Pokémon print runs also alter vendor sets/printing names.
         // Resolve the edition before asking for an exact variant's history.
-        if variantID == nil && (lookups.isEmpty || (request.printRun != nil && request.providerPrinting == nil)) {
+        if variantID == nil && (lookups.isEmpty || (request.printRun != nil && exactPrintings.isEmpty)) {
             guard request.game == .pokemon || request.game == .magic else { throw HistoryError.noListing }
             guard PriceVendorCredentials.hasKey else { throw JustTCGTransport.TransportError.missingCredentials }
             var vendorCardID: String?
@@ -432,28 +500,28 @@ actor CardMarketHistoryService {
         // refreshes remain lean and do not consume history requests.
         let response: JustTCGBatchResponse = try await transport.get("v1/cards", query: [
             (lookup.wireKey, lookup.value), ("include_price_history", "true"),
-            ("priceHistoryDuration", "1y")
+            ("priceHistoryDuration", "1y"), ("include_null_prices", "true")
         ], lane: .interactive)
-        if case let .tcgplayerID(productID) = lookup, let printing = request.providerPrinting {
+        if case let .tcgplayerID(productID) = lookup, !exactPrintings.isEmpty {
             // Every reviewed product can return multiple editions, languages
             // and conditions. Apply the same exact raw USD lane contract to
             // all catalog-backed games; response order is never authority.
             let cards = response.data.filter { $0.tcgplayerId == productID }
-            guard cards.count == 1 else { throw HistoryError.noListing }
-            let variants = (cards[0].variants ?? []).filter {
-                $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
-                    && $0.printing?.caseInsensitiveCompare(printing) == .orderedSame
-                    && ($0.language == nil || ["english", "en"].contains($0.language?.lowercased() ?? ""))
-                    && ($0.currency == nil || $0.currency?.uppercased() == "USD")
-                    && ($0.type == nil || $0.type?.lowercased() == "raw")
-            }
-            guard variants.count == 1 else { throw HistoryError.noListing }
-            return (Self.points(from: variants[0]), productID)
+            guard cards.count == 1, let card = cards.first,
+                  let variant = JustTCGRefreshCoordinator.exactRawListing(
+                    on: card, printings: exactPrintings, isJapanese: request.exactQuoteIsJapanese)
+            else { throw HistoryError.noListing }
+            return (variant, productID, true)
         }
         guard case let .matched(card, variant) = JustTCGRefreshCoordinator.exactListing(
             lookup: lookup, owners: [target], response: response
         ) else { throw HistoryError.noListing }
-        return (Self.points(from: variant), Self.productID(of: card))
+        let sourceProductID = Self.productID(of: card)
+        let exactVariant = JustTCGRefreshCoordinator.exactRawListing(
+            on: card, printings: exactPrintings, isJapanese: request.exactQuoteIsJapanese)
+        let quoteIsExact = request.exactProductID != nil && request.exactProductID == sourceProductID
+            && variant.variantId != nil && variant.variantId == exactVariant?.variantId
+        return (variant, sourceProductID, quoteIsExact)
     }
 
     private static func productID(of card: JustTCGCard) -> String? {
@@ -461,10 +529,15 @@ actor CardMarketHistoryService {
         return id
     }
 
-    private static func points(from variant: JustTCGVariant) -> [JustTCGHistoryPoint] {
+    private static func points(from variant: JustTCGVariant, now: Date) -> [JustTCGHistoryPoint] {
         var points = variant.historyUSD
-        if let amount = variant.marketPriceUSD, let updatedAt = variant.updatedAt {
+        if let amount = variant.marketPriceUSD(at: now), let updatedAt = variant.updatedAt {
             points.append(.init(p: amount, t: updatedAt.timeIntervalSince1970))
+        } else if variant.priceStatus == "expired", let amount = variant.lastKnownPrice,
+                  let observedAt = variant.lastUpdated,
+                  variant.currency == nil || variant.currency?.uppercased() == "USD" {
+            // The v1 status qualifies this amount as a dated observation only.
+            points.append(.init(p: amount, t: observedAt))
         }
         return points
     }

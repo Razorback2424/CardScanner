@@ -665,6 +665,48 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         }
     }
 
+    /// The detail lookup spans a network await. Match the current owner in
+    /// the serialized write and let an eligible price from another check win.
+    func fillMissingMarketPrice(
+        _ quote: CardMarketHistoryResult.Quote, request: CardMarketHistoryRequest,
+        collectionKey: String, shouldContinue: StorageGenerationContinuation
+    ) throws -> PriceDisplay? {
+        try performOwnershipWrite { context in
+            try Task.checkCancellation()
+            guard shouldContinue(), let price = quote.current() else { return nil }
+            let rows = try context.fetch(FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey == collectionKey }))
+            guard let card = rows.first, !request.exactQuotePrintings.isEmpty else { return nil }
+            if request.requiresCatalogMapping {
+                let authority = CollectionStoreSessionRegistry.shared.mutationAuthority(
+                    for: request.game, container: context.container)
+                guard let adapter = authority.adapter, adapter.generation == request.authorityGeneration else { return nil }
+                try adapter.validateBrowseAcquisition(printingID: request.catalogID ?? request.printingID,
+                    variantID: request.variantID)
+            }
+            for row in rows {
+                let current = CardMarketHistoryRequest(card: row)
+                guard row.quantity > 0, current.itemKind == request.itemKind, current.game == request.game,
+                      current.catalogID == request.catalogID, current.variantID == request.variantID,
+                      current.printRun == request.printRun, current.treatments.sorted() == request.treatments.sorted(),
+                      request.requiresCatalogMapping || current.exactProductID == nil
+                        || current.exactProductID == request.exactProductID,
+                      !PokemonReviewedPhysicalObjects.requiresReview(row) else { return nil }
+            }
+            let prices = PriceStore(context: context)
+            let selected = try prices.selectedRecord(for: card)
+            if let selected, PortfolioPriceEligibility.eligibleUnitPrice(
+                amount: selected.display.amount, currencyCode: selected.currencyCode) != nil {
+                return selected.display
+            }
+            guard prices.storeOwnedPrice(.price(price), collectionKey: collectionKey,
+                marketVariantID: price.sourceVariantID), prices.save() else {
+                throw PriceStore.CheckpointWriteError()
+            }
+            return try prices.selectedRecord(for: card)?.display
+        }
+    }
+
     func addGradedSelection(
         underlying card: IdentifiedCard, variant: GradedVariant, certificationNumber: String?,
         setReleaseOrder: Int?, pokemonPrintRun: PokemonPrintRun?,
