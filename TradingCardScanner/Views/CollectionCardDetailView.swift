@@ -4054,21 +4054,86 @@ struct ArtworkAccent: Equatable, Sendable {
 
 enum ArtworkAccentExtractor {
     private static let context = CIContext()
+    private static let gridSize = 48
+    private static let hueBins = 36
 
-    /// Reduce the artwork to one stable accent outside of `body`. A cropped
-    /// area average ignores the card edge and the usual white border, so the
-    /// detail backdrop follows the subject rather than turning every card gray.
+    /// Reduce the artwork to one stable accent outside of `body`.
+    ///
+    /// Busy, multicoloured art averages to grey, so the accent is the artwork's
+    /// dominant hue instead: saturated, reasonably bright pixels vote into hue
+    /// bins (weighted by how vivid they are) and the winning neighbourhood's
+    /// mean colour is returned. Only genuinely colourless art falls back to the
+    /// area average. The card edge and usual border are cropped first.
     static func make(from image: UIImage) -> ArtworkAccent? {
         guard let cgImage = image.cgImage else { return nil }
-        let input = CIImage(cgImage: cgImage)
-        let insetX = input.extent.width * 0.08
-        let insetY = input.extent.height * 0.08
-        let sampleRect = input.extent.insetBy(dx: insetX, dy: insetY)
-        guard !sampleRect.isEmpty,
-              let filter = CIFilter(name: "CIAreaAverage") else { return nil }
+        let width = CGFloat(cgImage.width), height = CGFloat(cgImage.height)
+        let crop = CGRect(x: 0, y: 0, width: width, height: height).insetBy(dx: width * 0.08, dy: height * 0.08)
+        guard !crop.isEmpty, let cropped = cgImage.cropping(to: crop.integral) else { return nil }
+        if let dominant = dominantHue(in: cropped) { return dominant }
+        return areaAverage(of: cropped)
+    }
 
+    private static func dominantHue(in image: CGImage) -> ArtworkAccent? {
+        let side = gridSize
+        var pixels = [UInt8](repeating: 0, count: side * side * 4)
+        let drew = pixels.withUnsafeMutableBytes { buffer -> Bool in
+            guard let bitmap = CGContext(data: buffer.baseAddress, width: side, height: side,
+                                         bitsPerComponent: 8, bytesPerRow: side * 4,
+                                         space: CGColorSpaceCreateDeviceRGB(),
+                                         bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return false }
+            bitmap.interpolationQuality = .medium
+            bitmap.draw(image, in: CGRect(x: 0, y: 0, width: side, height: side))
+            return true
+        }
+        guard drew else { return nil }
+
+        struct Bin { var weight = 0.0, red = 0.0, green = 0.0, blue = 0.0 }
+        var bins = [Bin](repeating: Bin(), count: hueBins)
+        for index in stride(from: 0, to: pixels.count, by: 4) {
+            let red = Double(pixels[index]) / 255
+            let green = Double(pixels[index + 1]) / 255
+            let blue = Double(pixels[index + 2]) / 255
+            let maximum = max(red, green, blue), minimum = min(red, green, blue)
+            let value = maximum
+            let saturation = maximum > 0 ? (maximum - minimum) / maximum : 0
+            guard saturation >= 0.3, value >= 0.3 else { continue }
+            let delta = maximum - minimum
+            var hue: Double
+            if maximum == red { hue = (green - blue) / delta }
+            else if maximum == green { hue = 2 + (blue - red) / delta }
+            else { hue = 4 + (red - green) / delta }
+            hue = (hue / 6).truncatingRemainder(dividingBy: 1)
+            if hue < 0 { hue += 1 }
+            let bin = min(Int(hue * Double(hueBins)), hueBins - 1)
+            let weight = saturation * value
+            bins[bin].weight += weight
+            bins[bin].red += red * weight
+            bins[bin].green += green * weight
+            bins[bin].blue += blue * weight
+        }
+
+        // Pick the strongest neighbourhood of three bins so a hue split across
+        // a bin edge is not undercounted.
+        var best = -1, bestWeight = 0.0
+        for center in 0..<hueBins {
+            let total = (-1...1).reduce(0.0) { $0 + bins[(center + $1 + hueBins) % hueBins].weight }
+            if total > bestWeight { bestWeight = total; best = center }
+        }
+        // Too little vivid colour to call: let the caller use the average.
+        guard best >= 0, bestWeight >= Double(side * side) * 0.02 else { return nil }
+        var red = 0.0, green = 0.0, blue = 0.0
+        for offset in -1...1 {
+            let bin = bins[(best + offset + hueBins) % hueBins]
+            red += bin.red; green += bin.green; blue += bin.blue
+        }
+        return ArtworkAccent(red: red / bestWeight, green: green / bestWeight, blue: blue / bestWeight)
+    }
+
+    private static func areaAverage(of image: CGImage) -> ArtworkAccent? {
+        let input = CIImage(cgImage: image)
+        guard let filter = CIFilter(name: "CIAreaAverage") else { return nil }
         filter.setValue(input, forKey: kCIInputImageKey)
-        filter.setValue(CIVector(cgRect: sampleRect), forKey: kCIInputExtentKey)
+        filter.setValue(CIVector(cgRect: input.extent), forKey: kCIInputExtentKey)
         guard let output = filter.outputImage else { return nil }
 
         var pixel = [UInt8](repeating: 0, count: 4)

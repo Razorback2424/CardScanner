@@ -1546,6 +1546,30 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
         XCTAssertEqual(accent.blue, 0.1, accuracy: 0.02)
     }
 
+    /// Busy multicoloured art must not average to grey: the accent follows the
+    /// artwork's dominant hue, while colourless art keeps its neutral average.
+    func testArtworkAccentExtractorFollowsDominantHueOfMulticolouredArt() throws {
+        let busy = UIGraphicsImageRenderer(size: CGSize(width: 120, height: 120)).image { context in
+            UIColor(red: 0.95, green: 0.35, blue: 0.70, alpha: 1).setFill()   // pink, the dominant colour
+            context.fill(CGRect(x: 0, y: 0, width: 120, height: 70))
+            UIColor(red: 0.10, green: 0.65, blue: 0.60, alpha: 1).setFill()   // teal
+            context.fill(CGRect(x: 0, y: 70, width: 60, height: 50))
+            UIColor(red: 0.98, green: 0.85, blue: 0.15, alpha: 1).setFill()   // yellow
+            context.fill(CGRect(x: 60, y: 70, width: 60, height: 50))
+        }
+        let accent = try XCTUnwrap(ArtworkAccentExtractor.make(from: busy))
+        XCTAssertFalse(accent.isNeutral)
+        XCTAssertEqual(accent.red, 0.95, accuracy: 0.05)
+        XCTAssertEqual(accent.green, 0.35, accuracy: 0.05)
+        XCTAssertEqual(accent.blue, 0.70, accuracy: 0.05)
+
+        let grey = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 100)).image { context in
+            UIColor(white: 0.5, alpha: 1).setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 100, height: 100))
+        }
+        XCTAssertTrue(try XCTUnwrap(ArtworkAccentExtractor.make(from: grey)).isNeutral)
+    }
+
     func testCollectionArtworkIsDownsampledBeforeStorageAndDecode() throws {
         let source = UIGraphicsImageRenderer(size: CGSize(width: 4_096, height: 3_072)).image { context in
             UIColor.systemBlue.setFill()
