@@ -39,6 +39,7 @@ on:
       - "scripts/tests/test_catalog_hosting_restore.py"
       - "scripts/prepare_one_piece_acceptance_samples.py"
       - "scripts/tests/test_one_piece_acceptance_samples.py"
+      - "scripts/tests/test_one_piece_workflow.py"
   workflow_dispatch:
     inputs:
       audit:
@@ -116,7 +117,7 @@ jobs:
 
   validate:
     if: github.event_name != 'schedule'
-    runs-on: macos-15
+    runs-on: ubuntu-latest
     steps:
       - name: Reject a combined sign and publish request
         if: github.event_name == 'workflow_dispatch' && inputs.sign && inputs.publish
@@ -150,13 +151,21 @@ jobs:
           done
       - name: Test exact base market mapping review
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_base_market_mappings.py -v
-      - name: Test catalog core and publisher CLI
-        run: swift test --package-path OnePieceCatalogCore
       - name: Test app trust anchor export
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_pinned_keys.py -v
+      - name: Test workflow verification and scheduling boundaries
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_workflow.py -v
+
+  validate-catalog-core:
+    if: github.event_name != 'schedule'
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test catalog core and publisher CLI
+        run: swift test --package-path OnePieceCatalogCore
 
   sign-reviewed-artifact:
-    needs: validate
+    needs: [validate, validate-catalog-core]
     if: github.event_name == 'workflow_dispatch' && inputs.sign == true && github.ref == 'refs/heads/main'
     runs-on: macos-15
     environment: one-piece-catalog-signing
@@ -215,7 +224,7 @@ jobs:
           retention-days: 30
 
   publish-reviewed-artifact:
-    needs: validate
+    needs: [validate, validate-catalog-core]
     if: github.event_name == 'workflow_dispatch' && inputs.publish == true && github.ref == 'refs/heads/main'
     runs-on: macos-15
     environment: one-piece-catalog-production
