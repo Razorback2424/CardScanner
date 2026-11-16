@@ -193,9 +193,12 @@ jobs:
             echo "- Approval required: $requires_approval"
             echo "- Publish environment: $publish_environment"
             if [ "${{ github.event_name }}" = "schedule" ] && [ "$requires_approval" = "true" ]; then
-              echo "- Manual publication is required; the validated candidate is retained as an artifact."
+              echo "- Manual publication is required: run this workflow with publish enabled; it revalidates the live catalog and waits for production approval."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$requires_approval" = "true" ]; then
+            echo "::warning title=Magic catalog needs manual publication::The $change_class candidate was not published. Run this workflow with publish enabled to revalidate and request production approval."
+          fi
       - name: Upload the validated production candidate
         uses: actions/upload-artifact@v4
         with:
