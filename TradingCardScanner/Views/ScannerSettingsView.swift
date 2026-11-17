@@ -1224,11 +1224,12 @@ enum ActiveCatalogHealthCSV {
             // already returned; there is no separate marketplace mapping.
             true
         case .pokemon:
-            // Only reviewed products name an approved finish lane. A
+            // Only this card's own reviewed products name an approved finish
+            // lane. Sharing a set with reviewed cards is not enough, and a
             // product-level TCGCSV mapping does not establish which physical
             // finishes it prices (`reviewed_product_finish_not_evaluated`).
-            PokemonReviewedMarketProduct.setIDs.contains(summary.setID.providerID)
-                || PokemonReviewedMarketProduct.entry(for: summary) != nil
+            PokemonReviewedMarketProduct.entry(for: summary) != nil
+                || PokemonBattleDeckFinishCatalog.hasReviewedFinishes(for: summary)
         default:
             findings.contains { $0.mapping == "exact" }
         }
