@@ -1,3 +1,18 @@
+# 2026-11-16 — Scryfall pacing, Magic bulk data and targeted price audit
+
+Catalog Health's Magic searches were spaced 200 ms apart, above Scryfall's
+published 2-per-second limit for `/cards/search`. That is the likely cause of
+the Nov. 15 Magic errors, though their statuses were not retained. Every
+Scryfall API request in the app now goes through one shared pacer (600 ms for
+card searches, 120 ms otherwise, 30-second lockout after a 429). The full
+report reads Magic from the daily Default Cards bulk file instead of about 750
+searches. **Export Price Audit** prices only mapped finishes for one game or
+set, stops when a provider throttles, and lists only pricing failures.
+**Check catalog prices** now starts off. Details:
+[catalog-health guide](scripts/CATALOG_HEALTH.md). Evidence: focused simulator
+classes and the live bulk-file validation described there. A device export
+has not been run.
+
 # 2026-11-15 — Catalog and pricing documentation review
 
 The [implementation checkpoint](docs/current-implementation-2026-11-15.md)

@@ -22,21 +22,66 @@ retrieved before the failure. Deferred sets were never requested. Missing
 directory or marketplace evidence has its own notice. A catalog activation
 or cancellation rejects the export before it can be saved.
 
-**Check catalog prices** is on by default. Price evidence is finish
-specific and can come from the existing price resolver cache. The CSV reports
+**Check catalog prices** is off by default: pricing every finish in all five
+games sends many provider requests. Use a targeted price audit (below) to check
+mapped prices. When the toggle is on, price evidence is finish specific and
+can come from the existing price resolver cache. The CSV reports
 the provider, listing, observation time and provider data date when available.
 With pricing off, all rows use `not_checked` and price amounts are empty.
 With pricing on, distinguish `no_usd_quote` from provider failures, stale
 evidence and unsupported checks.
 
-Magic enumerates the active set directory with Scryfall's printing search.
-The audit requires a complete page sequence with matching provider totals and
-uses the same response to read finish prices. Requests start at least 200 ms
-apart. Transient HTTP and network errors get one retry, while a rate limit or
-access denial defers the remaining sets. A valid Retry-After also applies to
-subsequent runs in the same app session. The Nov. 15, 2026 device report
-contained 657 generic Magic errors. Its original HTTP statuses were not
-retained, so the incident cannot be attributed to a particular provider status.
+The full report reads Magic from Scryfall's daily **Default Cards** bulk
+file, as Scryfall requires for large lookups: one metadata request plus one
+download (about 80 MB) from the unmetered `data.scryfall.io` origin,
+replacing roughly 750 per-set searches. The download must match the published
+size, every record must decode, gzip's checksum must verify, and printing IDs
+must be unique; otherwise all Magic sets are deferred rather than partially
+reported. English, non-digital paper printings are spooled to a temporary
+directory in Caches, read back one set at a time, and deleted after the
+export. Bulk prices carry the file's `updated_at` as their observation time,
+so a file more than 24 hours old reports stale price evidence. CSV rows from
+this source use the `scryfall_bulk_data` evidence scope. A set with no bulk
+printings is a set-level error, not a provider outage. On Nov. 16, 2026 the
+live file held 120,139 records (108,316 kept across 973 sets), every record
+decoded under the app's field rules, and per-set counts matched the
+previous search (`e:SET lang:en game:paper`, unique prints, variations) for
+14 sampled sets including token, scheme, plane and oversized sets.
+
+A single-set price audit still uses the paced printing search, which requires
+a complete page sequence with matching provider totals. Every Scryfall API
+request in the app (Browse, scanner and export) shares one pacer: card
+searches start at least 600 ms apart (published limit 2 per second) and other
+methods 120 ms apart (limit 10 per second). A 429 locks every caller out for
+at least 30 seconds, matching Scryfall's documented penalty, or longer when
+Retry-After says so. Transient HTTP and network errors get one retry, while a
+rate limit or access denial defers the remaining sets. The Nov. 15, 2026 device
+report's 657 generic Magic errors occurred while searches were spaced 200 ms
+apart, above the 2-per-second search limit. That is the likely cause, but the
+original HTTP statuses were not retained, so it is not proven.
+
+### Targeted price audit
+
+**Export Price Audit** (beside the report button) prices one game, or one of
+its sets, and is meant for verifying marketplace mappings such as new One
+Piece releases without scanning every catalog:
+
+- Only verified printings with an approved exact marketplace mapping are
+  priced: One Piece and Lorcana `exact` mappings, supported Yu-Gi-Oh editions
+  with a market product, Pokémon cards with a reviewed TCGplayer product,
+  and each Magic printing's own Scryfall prices. Other finishes are counted
+  in `price_audit_excluded_finishes` and never requested.
+- Prices go through the same resolver as Browse, so cached quotes and the
+  grouped, 24-hour-cached hosted feeds are reused. JustTCG is not used.
+- One rate-limit response, or three consecutive provider failures, stops
+  price requests. The remaining finishes stay unevaluated in the coverage
+  rows and later sets are `set_deferred` with `PRICE_AUDIT_STOPPED`.
+- Rows are `price_failure` records carrying only pricing issue codes
+  (`NO_USD_QUOTE`, `PRICE_EVIDENCE_STALE`, `PRICE_PROVIDER_UNAVAILABLE`,
+  `PRICE_MAPPING_MISSING`, `PRICE_IDENTITY_MISMATCH`, …). Catalog identity
+  and coverage findings are left to the full report. An `audit_scope` row
+  states what was examined; a set missing from the active catalog is
+  reported as `AUDIT_SET_NOT_ACTIVE`.
 
 **Interpretation matters:** a price-history chart can have dated
 observations while the selected finish still lacks an eligible **current**

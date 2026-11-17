@@ -23,6 +23,12 @@ Notable multi-class files: `CenteringExportTests.swift`, `OpusImplementationPlan
   The catalog coverage workflow explicitly selects this class. It checks
   discovery/finish issue classification and generated CSV behavior, but
   does not prove the physical iPhone file-export flow or full provider coverage.
+  It also covers the shared `ScryfallRequestPacer`.
+- `ScryfallBulkCatalogHealthTests` (Magic bulk-file index, gzip streaming and
+  download validation) and `CatalogPriceAuditTests` (targeted price audit
+  scope and throttle stop) are also declared in `BrowseFeatureTests.swift`
+  and are selected by the same workflow. They use local fixtures, not the
+  live Scryfall file.
 - `JustTCGContractTests` lives in `JustTCGContractTests.swift`. When changing
   exact quote/history fallback, include the reviewed Pokémon promo cases,
   quote-lifecycle/expiry guards, and existing-price preservation. Also test
