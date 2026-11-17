@@ -95,7 +95,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var gameBrowseTasks: [CardGame: Task<Void, Never>] = [:]
     private var gameBrowseRevisions: [CardGame: Int] = [:]
     private var setArtworkTasks: [CatalogSetID: Task<CatalogSetArtwork, Error>] = [:]
-    private var nextSetArtworkRequestAt = Date.distantPast
     private static let legacyReleaseOrderDefaultsKey = "pokemonCatalogReleaseOrder.v1"
 
     static func applyingSignedCardArtwork(
@@ -172,6 +171,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private let scryfall: ScryfallService
     private let now: @Sendable () -> Date
     private let magicSession: URLSession
+    private let scryfallPacer: ScryfallRequestPacer
     private let cache: CatalogCacheStore
     private let pokemonTransport: any PokemonBrowseTransport
     private let pokemonPriceSource: (any PokemonBulkPriceSource)?
@@ -250,6 +250,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         priceQuoteService: PriceQuoteService = PriceQuoteService(),
         gameActivationSources: [any GameCatalogActivationSource] = [],
         magicSession: URLSession = .shared,
+        scryfallPacer: ScryfallRequestPacer = .shared,
         now: @escaping @Sendable () -> Date = { .now }
     ) {
         // The old crawl-installed ordering map was unsigned and had no rollback
@@ -280,7 +281,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         self.catalogCoordinator = catalogCoordinator
         self.magicCatalogCoordinator = magicCatalogCoordinator
         self.magicSession = magicSession
-        self.scryfall = ScryfallService(session: magicSession)
+        self.scryfallPacer = scryfallPacer
+        self.scryfall = ScryfallService(session: magicSession, pacer: scryfallPacer)
         self.now = now
     }
 
@@ -843,12 +845,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
             guard let url = BrowseRequestBuilder.scryfallSearchURL(
                 query: "e:\(set.providerID) lang:en game:paper"
             ) else { throw BrowseCatalogError.invalidURL }
-            // Scrolling a lazy grid can expose several sets together. Space
-            // artwork searches instead of sending a burst to the provider.
-            let delay = max(nextSetArtworkRequestAt.timeIntervalSinceNow, 0)
-            nextSetArtworkRequestAt = Date.now.addingTimeInterval(delay + 0.1)
-            if delay > 0 { try await Task.sleep(for: .seconds(delay)) }
-            let (data, response) = try await magicSession.data(for: request(url, scryfall: true))
+            // Scrolling a lazy grid can expose several sets together. The
+            // shared pacer spaces these searches at Scryfall's 2-per-second
+            // search limit instead of sending a burst to the provider.
+            let (data, response) = try await scryfallPacer.data(for: request(url, scryfall: true), session: magicSession)
             if let http = response as? HTTPURLResponse, http.statusCode == 404 {
                 let artwork = CatalogSetArtwork(cardURLs: [], illustrationURLs: [])
                 await cache.storeSetArtwork(artwork, for: set.catalogID)
@@ -2295,7 +2295,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             return magicCatalogRegistry.browseSets
         }
         guard let url = URL(string: "https://api.scryfall.com/sets") else { throw BrowseCatalogError.invalidURL }
-        let (data, response) = try await magicSession.data(for: request(url, scryfall: true))
+        let (data, response) = try await scryfallPacer.data(for: request(url, scryfall: true), session: magicSession)
         try validate(response)
         let rows = try JSONDecoder().decode(ScryfallBrowseSetList.self, from: data).data.filter {
             MagicCatalogPolicy.isBrowseEligible(code: $0.code, setType: $0.setType ?? "", digital: $0.digital)
@@ -2416,6 +2416,16 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     private static let catalogHealthMagicTransport = CatalogHealthScryfallTransport()
 
+    /// Full-catalog Catalog Health reads Scryfall's daily bulk file once
+    /// instead of searching every set. A single-set audit keeps the paced
+    /// search, which is a handful of requests.
+    func catalogHealthMagicBulkSource(
+        progress: @escaping @MainActor (String) -> Void
+    ) -> CatalogHealthMagicBulkSource {
+        CatalogHealthMagicBulkSource(session: magicSession, pacer: scryfallPacer, progress: progress,
+                                     summarize: { Self.magicSummary($0, in: $1) })
+    }
+
     private func magicCards(
         query: String,
         cursor: String?
@@ -2432,7 +2442,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
             url = built
         }
-        let (data, response) = try await magicSession.data(for: request(url, scryfall: true))
+        let (data, response) = try await scryfallPacer.data(for: request(url, scryfall: true), session: magicSession)
         let retrievedAt = Date.now
         if let http = response as? HTTPURLResponse, http.statusCode == 404 {
             return MagicCardsPageResult(
@@ -2468,7 +2478,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         )
     }
 
-    private nonisolated static func magicSummary(_ card: ScryfallCard, in set: CatalogSet) -> CatalogCardSummary {
+    nonisolated static func magicSummary(_ card: ScryfallCard, in set: CatalogSet) -> CatalogCardSummary {
         let evidence = card.magicTreatmentEvidence
         return CatalogCardSummary(
                 game: .magic,
@@ -3562,6 +3572,8 @@ struct CatalogHealthScryfallFailure: LocalizedError {
     let defersProvider: Bool
     var observed = 0
     var httpStatus: Int? = nil
+    /// The failure concerns one set's contents, not provider availability.
+    var setScoped = false
 
     var errorDescription: String? { "Scryfall: \(reason). Retrieved \(observed) printing records before stopping." }
 
@@ -3570,19 +3582,26 @@ struct CatalogHealthScryfallFailure: LocalizedError {
     }
 
     func afterObserving(_ count: Int) -> Self {
-        .init(reason: reason, defersProvider: defersProvider, observed: count, httpStatus: httpStatus)
+        .init(reason: reason, defersProvider: defersProvider, observed: count, httpStatus: httpStatus,
+              setScoped: setScoped)
     }
 }
 
-/// Shared across Catalog Health runs. The normal Browse path keeps its own
-/// behavior. A rate limit or access denial opens the circuit for this export.
+/// Strict transport for Catalog Health's per-set Scryfall searches. Pacing and
+/// rate-limit lockouts come from the process-wide `ScryfallRequestPacer`, so
+/// Browse, the scanner and the export share one budget and one 429 cooldown.
+/// A rate limit or access denial opens the circuit for the rest of this export.
 actor CatalogHealthScryfallTransport {
-    private let clock = ContinuousClock()
-    private var nextStart: ContinuousClock.Instant?
-    private var retryAllowedAt: Date?
+    /// The pacer bucket this transport uses. The enumerator only accepts
+    /// `/cards/search` URLs.
+    private static let searchEndpoint = URL(string: "https://api.scryfall.com/cards/search")!
+
+    private let pacer: ScryfallRequestPacer
     private let pause: @Sendable (Duration) async throws -> Void
 
-    init(pause: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
+    init(pacer: ScryfallRequestPacer = .shared,
+         pause: @escaping @Sendable (Duration) async throws -> Void = { try await Task.sleep(for: $0) }) {
+        self.pacer = pacer
         self.pause = pause
     }
 
@@ -3600,18 +3619,15 @@ actor CatalogHealthScryfallTransport {
                 guard let http = response as? HTTPURLResponse else {
                     throw CatalogHealthScryfallFailure(reason: "non-HTTP response; no retry", defersProvider: true)
                 }
+                await pacer.record(http)
                 let status = http.statusCode
                 if (200..<300).contains(status) { return data }
                 if status == 429 || status == 503,
                    let delay = ScryfallService.retryAfter(
                        from: http.value(forHTTPHeaderField: "Retry-After"), now: .now
                    ) {
-                    retryAllowedAt = Date.now.addingTimeInterval(status == 429 ? max(1, delay) : delay)
                     throw CatalogHealthScryfallFailure(reason: "HTTP \(status); Retry-After \(delay)s; no retry",
                                                       defersProvider: true, httpStatus: status)
-                }
-                if status == 429 {
-                    retryAllowedAt = Date.now.addingTimeInterval(60)
                 }
                 guard [408, 500, 502, 503, 504].contains(status) else {
                     throw CatalogHealthScryfallFailure(reason: "HTTP \(status); no further retry (attempt \(attempt))",
@@ -3637,19 +3653,11 @@ actor CatalogHealthScryfallTransport {
     }
 
     private func waitForRequestSlot() async throws {
-        while true {
-            try Task.checkCancellation()
-            if let retryAllowedAt, retryAllowedAt > .now {
-                throw CatalogHealthScryfallFailure(reason: "provider cooldown is still active; request skipped",
-                                                  defersProvider: true)
-            }
-            let now = clock.now
-            if let nextStart, now < nextStart {
-                try await clock.sleep(until: nextStart)
-            } else {
-                nextStart = now.advanced(by: .milliseconds(200))
-                return
-            }
+        do {
+            try await pacer.acquire(for: Self.searchEndpoint)
+        } catch ScryfallError.rateLimited {
+            throw CatalogHealthScryfallFailure(reason: "provider cooldown is still active; request skipped",
+                                              defersProvider: true)
         }
     }
 }

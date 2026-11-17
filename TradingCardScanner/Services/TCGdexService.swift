@@ -572,10 +572,13 @@ struct ScryfallService: Sendable {
     private static let childSetCache = ScryfallChildSetCache()
     private let breaker: TCGdexCircuitBreaker
     private let session: URLSession
+    private let pacer: ScryfallRequestPacer
 
-    init(breaker: TCGdexCircuitBreaker = .scryfallShared, session: URLSession = .shared) {
+    init(breaker: TCGdexCircuitBreaker = .scryfallShared, session: URLSession = .shared,
+         pacer: ScryfallRequestPacer = .shared) {
         self.breaker = breaker
         self.session = session
+        self.pacer = pacer
     }
     /// Magic 2015 introduced the printed collector-number footer this scanner
     /// reads. Before it there is no printed identifier to have read, so an older
@@ -872,6 +875,9 @@ struct ScryfallService: Sendable {
         guard await breaker.permitsRequest() else {
             throw ScryfallError.providerUnavailable
         }
+        // Shared with Browse and the Catalog Health export: Scryfall counts
+        // every request from this device against the same per-endpoint limit.
+        if let url = request.url { try await pacer.acquire(for: url) }
 
         do {
             let (data, response) = try await session.data(for: request)
@@ -879,6 +885,7 @@ struct ScryfallService: Sendable {
                 await breaker.recordFailure(.unreachable)
                 throw ScryfallError.providerUnavailable
             }
+            await pacer.record(http)
             // A missing card is definitive catalog evidence, but a missing
             // directory/collection endpoint is provider availability trouble
             // from the caller's point of view. The two card endpoints translate
