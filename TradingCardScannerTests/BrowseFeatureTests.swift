@@ -11099,6 +11099,14 @@ final class CatalogPriceAuditTests: XCTestCase {
         XCTAssertEqual(productFinish.mapping, "reviewed_product_finish_not_evaluated")
         productFinish.finish = "holo"
         XCTAssertFalse(ActiveCatalogHealthCSV.isInPriceAuditScope(productFinish, summary: productSummary))
+        // An unreviewed card is never a candidate, even in a set with reviewed
+        // products, so an audit never loads its provider details.
+        let unreviewedInReviewedSet = CatalogCardSummary(game: .pokemon, providerID: "unreviewed",
+            setID: PokemonM26Catalog.catalogSetID, setName: "M26", setCode: "M26",
+            name: "Unreviewed", collectorNumber: "999", thumbnailURL: nil, imageURL: nil)
+        XCTAssertFalse(ActiveCatalogHealthCSV.isPriceAuditCandidate(unreviewedInReviewedSet, findings: []))
+        XCTAssertTrue(ActiveCatalogHealthCSV.isPriceAuditCandidate(
+            PriceAuditPokemonFixture.summary(for: entry, knowsFinish: false), findings: []))
         // A set without reviewed products never loads provider details during an audit.
         let ordinary = CatalogCardSummary(game: .pokemon, providerID: "sv1-1",
             setID: .init(game: .pokemon, providerID: "sv1"), setName: "Scarlet & Violet", setCode: "SVI",

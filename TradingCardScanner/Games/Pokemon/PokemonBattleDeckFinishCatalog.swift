@@ -98,6 +98,11 @@ enum PokemonBattleDeckFinishCatalog {
         }
     }
 
+    /// Whether this exact card has any reviewed finish, whatever its variant.
+    static func hasReviewedFinishes(for summary: CatalogCardSummary) -> Bool {
+        !entries(for: summary).isEmpty
+    }
+
     static func entry(for summary: CatalogCardSummary, variantID: String? = nil) -> Entry? {
         let matches = entries(for: summary)
         if let selected = variantID ?? summary.masterSetVariant?.id {
