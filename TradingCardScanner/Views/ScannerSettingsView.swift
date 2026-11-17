@@ -1224,7 +1224,10 @@ enum ActiveCatalogHealthCSV {
             // already returned; there is no separate marketplace mapping.
             true
         case .pokemon:
-            PokemonTCGCSVMapping.byCardID[summary.providerID] != nil
+            // Only reviewed products name an approved finish lane. A
+            // product-level TCGCSV mapping does not establish which physical
+            // finishes it prices (`reviewed_product_finish_not_evaluated`).
+            PokemonReviewedMarketProduct.setIDs.contains(summary.setID.providerID)
                 || PokemonReviewedMarketProduct.entry(for: summary) != nil
         default:
             findings.contains { $0.mapping == "exact" }
@@ -1232,10 +1235,15 @@ enum ActiveCatalogHealthCSV {
     }
 
     /// Whether one finish of a candidate card is in a price audit's scope.
-    static func isInPriceAuditScope(_ finding: Evidence, game: CardGame) -> Bool {
-        switch game {
-        case .magic, .pokemon: !finding.finish.isEmpty
-        default: finding.mapping == "exact"
+    static func isInPriceAuditScope(_ finding: Evidence, summary: CatalogCardSummary) -> Bool {
+        switch summary.game {
+        case .magic:
+            !finding.finish.isEmpty
+        case .pokemon:
+            !finding.finish.isEmpty
+                && PokemonReviewedMarketProduct.entry(for: summary, variantID: finding.finish)?.variant.id == finding.finish
+        default:
+            finding.mapping == "exact"
         }
     }
 
@@ -1894,7 +1902,10 @@ enum ActiveCatalogHealthCSV {
                         }
                         for original in findings {
                             try Task.checkCancellation()
-                            if scope.isPriceAudit, !isInPriceAuditScope(original, game: game) {
+                            // A candidate whose provider details failed to load has no
+                            // finishes to judge; report the failed lookup instead of
+                            // counting it as excluded.
+                            if scope.isPriceAudit, detailError == nil, !isInPriceAuditScope(original, summary: summary) {
                                 setCoverage.auditExcluded += 1
                                 continue
                             }

@@ -88,13 +88,25 @@ enum ScryfallBulkDataError: LocalizedError, Equatable {
 /// The decompressed file is several hundred megabytes, so cards are never
 /// held in memory together. Building streams the archive once and spools a
 /// compact re-encoding of each kept printing to disk; `cards(inSet:)` reads
-/// back one set at a time. The spool directory is removed when the index is
-/// released.
+/// back one set at a time. A built index records a manifest last, so it can
+/// be reopened for the same Scryfall `updated_at` without downloading again.
 final class ScryfallBulkCardIndex: Sendable {
-    struct Slot: Sendable {
+    struct Slot: Codable, Sendable {
         let offset: UInt64
         let length: Int
     }
+
+    private struct Manifest: Codable {
+        static let currentVersion = 1
+        let version: Int
+        let updatedAt: Date
+        let printingCount: Int
+        let spoolSize: UInt64
+        let slots: [String: [Slot]]
+    }
+
+    private static let manifestName = "manifest.json"
+    private static let spoolName = "printings.jsonl"
 
     /// When Scryfall built the file. Prices in it are no newer than this, so it
     /// is the honest observation time for every price the export reads.
@@ -103,19 +115,38 @@ final class ScryfallBulkCardIndex: Sendable {
     private let spool: URL
     private let directory: URL
     private let slots: [String: [Slot]]
+    private let removesDirectoryOnRelease: Bool
 
     var setCodes: Set<String> { Set(slots.keys) }
 
-    private init(updatedAt: Date, spool: URL, directory: URL, slots: [String: [Slot]], printingCount: Int) {
+    private init(updatedAt: Date, spool: URL, directory: URL, slots: [String: [Slot]], printingCount: Int,
+                 removesDirectoryOnRelease: Bool) {
         self.updatedAt = updatedAt
         self.spool = spool
         self.directory = directory
         self.slots = slots
         self.printingCount = printingCount
+        self.removesDirectoryOnRelease = removesDirectoryOnRelease
     }
 
     deinit {
-        try? FileManager.default.removeItem(at: directory)
+        if removesDirectoryOnRelease { try? FileManager.default.removeItem(at: directory) }
+    }
+
+    /// Reopens an index built by `build(..., persistent: true)`. Returns nil
+    /// unless its manifest matches `updatedAt` and the spool is intact, so a
+    /// build interrupted before its manifest was written is never trusted.
+    static func openPersisted(directory: URL, updatedAt: Date) -> ScryfallBulkCardIndex? {
+        let spool = directory.appendingPathComponent(spoolName)
+        guard let data = try? Data(contentsOf: directory.appendingPathComponent(manifestName)),
+              let manifest = try? JSONDecoder().decode(Manifest.self, from: data),
+              manifest.version == Manifest.currentVersion,
+              manifest.updatedAt == updatedAt, manifest.printingCount > 0,
+              let size = (try? FileManager.default.attributesOfItem(atPath: spool.path))?[.size] as? UInt64,
+              size == manifest.spoolSize else { return nil }
+        return ScryfallBulkCardIndex(updatedAt: manifest.updatedAt, spool: spool, directory: directory,
+                                     slots: manifest.slots, printingCount: manifest.printingCount,
+                                     removesDirectoryOnRelease: false)
     }
 
     /// Printings for one Scryfall set code, in collector-number order.
@@ -143,10 +174,14 @@ final class ScryfallBulkCardIndex: Sendable {
     /// which the index then owns. Any undecodable record, repeated printing,
     /// or truncated archive fails the whole build: a partial index would make
     /// missing printings look like a complete set.
-    static func build(gzipFile: URL, updatedAt: Date, directory: URL) throws -> ScryfallBulkCardIndex {
+    ///
+    /// A `persistent` index writes its manifest last and keeps its directory
+    /// when released; otherwise the directory is removed with the index.
+    static func build(gzipFile: URL, updatedAt: Date, directory: URL,
+                      persistent: Bool = false) throws -> ScryfallBulkCardIndex {
         let manager = FileManager.default
         try manager.createDirectory(at: directory, withIntermediateDirectories: true)
-        let spool = directory.appendingPathComponent("printings.jsonl")
+        let spool = directory.appendingPathComponent(spoolName)
         guard manager.createFile(atPath: spool.path, contents: nil) else {
             throw ScryfallBulkDataError.corrupt("could not create the spool file")
         }
@@ -184,9 +219,17 @@ final class ScryfallBulkCardIndex: Sendable {
                 }
             }
             try writer.write(contentsOf: buffer)
+            try writer.synchronize()
             guard !seen.isEmpty else { throw ScryfallBulkDataError.corrupt("no English paper printings") }
+            if persistent {
+                let manifest = Manifest(version: Manifest.currentVersion, updatedAt: updatedAt,
+                                        printingCount: seen.count, spoolSize: offset, slots: slots)
+                try JSONEncoder().encode(manifest)
+                    .write(to: directory.appendingPathComponent(manifestName), options: .atomic)
+            }
             return ScryfallBulkCardIndex(updatedAt: updatedAt, spool: spool, directory: directory,
-                                         slots: slots, printingCount: seen.count)
+                                         slots: slots, printingCount: seen.count,
+                                         removesDirectoryOnRelease: !persistent)
         } catch {
             try? manager.removeItem(at: directory)
             throw error
@@ -307,6 +350,9 @@ actor CatalogHealthMagicBulkSource {
 
     static let metadataURL = URL(string: "https://api.scryfall.com/bulk-data/default-cards")!
     private static let workDirectoryPrefix = "ScryfallBulk-"
+    /// One cached index generation, reused until Scryfall publishes a newer
+    /// file (about once a day). Caches may be purged by the system at any time.
+    static let cacheDirectoryName = "ScryfallBulkIndex"
 
     private let session: URLSession
     private let pacer: ScryfallRequestPacer
@@ -371,29 +417,44 @@ actor CatalogHealthMagicBulkSource {
         removeAbandonedWorkDirectories()
         await progress("Magic: reading Scryfall bulk data directory…")
         let metadata = try await fetchMetadata()
+        let manager = FileManager.default
+        let cacheRoot = cachesDirectory.appendingPathComponent(Self.cacheDirectoryName)
+        let generation = String(Int64((metadata.updatedAt.timeIntervalSince1970 * 1_000).rounded()))
+        let cached = cacheRoot.appendingPathComponent(generation)
+        if let index = ScryfallBulkCardIndex.openPersisted(directory: cached, updatedAt: metadata.updatedAt) {
+            await progress("Magic: using cached Scryfall card data…")
+            return index
+        }
         let size = ByteCountFormatter.string(fromByteCount: Int64(metadata.compressedSize), countStyle: .file)
         await progress("Magic: downloading Scryfall card data (\(size))…")
         let directory = cachesDirectory.appendingPathComponent(Self.workDirectoryPrefix + UUID().uuidString)
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        do {
-            let archive = try await download(metadata, into: directory)
-            await progress("Magic: indexing Scryfall card data…")
-            let builder = Task.detached(priority: .utility) {
-                defer { try? FileManager.default.removeItem(at: archive) }
-                return try ScryfallBulkCardIndex.build(
-                    gzipFile: archive, updatedAt: metadata.updatedAt,
-                    directory: directory.appendingPathComponent("index"))
-            }
-            let index = try await withTaskCancellationHandler {
-                try await builder.value
-            } onCancel: {
-                builder.cancel()
-            }
-            return index
-        } catch {
-            try? FileManager.default.removeItem(at: directory)
-            throw error
+        try manager.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? manager.removeItem(at: directory) }
+        let archive = try await download(metadata, into: directory)
+        await progress("Magic: indexing Scryfall card data…")
+        let staging = directory.appendingPathComponent("index")
+        let builder = Task.detached(priority: .utility) {
+            defer { try? FileManager.default.removeItem(at: archive) }
+            // Built and released here only to validate; the cache copy below
+            // is reopened from its manifest.
+            _ = try ScryfallBulkCardIndex.build(gzipFile: archive, updatedAt: metadata.updatedAt,
+                                                directory: staging, persistent: true)
         }
+        try await withTaskCancellationHandler {
+            try await builder.value
+        } onCancel: {
+            builder.cancel()
+        }
+        try Task.checkCancellation()
+        // Keep exactly one generation: the file just built replaces older ones.
+        try? manager.removeItem(at: cacheRoot)
+        try manager.createDirectory(at: cacheRoot, withIntermediateDirectories: true)
+        try manager.moveItem(at: staging, to: cached)
+        guard let index = ScryfallBulkCardIndex.openPersisted(directory: cached, updatedAt: metadata.updatedAt) else {
+            try? manager.removeItem(at: cached)
+            throw ScryfallBulkDataError.corrupt("the cached index could not be reopened")
+        }
+        return index
     }
 
     private func fetchMetadata() async throws -> ScryfallBulkDataMetadata {
