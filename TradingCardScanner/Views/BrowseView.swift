@@ -49,15 +49,22 @@ final class BrowseViewModel: ObservableObject {
     private var generation = UUID()
     private var setLoadIDs: [CardGame: UUID] = [:]
     private var sealedModelCancellable: AnyCancellable? = nil
+    private let releaseRailCache: CatalogReleaseRailCache?
+    /// The rail last shown with complete directories, read once so the next
+    /// visit can present it before the directories finish rebuilding.
+    private(set) var cachedReleaseRailSets: [CatalogSet]
 
     init(
         catalog: any BrowseCatalogProviding = BrowseCatalog(),
         sealedModel: SealedBrowseModel? = nil,
         initialGame: CardGame? = nil,
-        includesSealedProducts: Bool = true
+        includesSealedProducts: Bool = true,
+        releaseRailCache: CatalogReleaseRailCache? = nil
     ) {
         self.catalog = catalog
         self.includesSealedProducts = includesSealedProducts
+        self.releaseRailCache = releaseRailCache
+        cachedReleaseRailSets = releaseRailCache?.load() ?? []
         let sealedModel = sealedModel ?? SealedBrowseModel(transport: JustTCGTransport.shared, gameRegistry: catalog.gameRegistry)
         self.sealedModel = sealedModel
         self.selectedGame = initialGame
@@ -209,6 +216,14 @@ final class BrowseViewModel: ObservableObject {
             await self.runSearch(query: query, token: token, cardGames: cardGames)
             if self.generation == token { self.searchTask = nil }
         }
+    }
+
+    /// Records the live rail only when it differs from what was cached, so an
+    /// unchanged catalog costs no write.
+    func rememberReleaseRail(_ rail: [CatalogSet]) {
+        guard let releaseRailCache, rail != cachedReleaseRailSets else { return }
+        cachedReleaseRailSets = rail
+        Task.detached(priority: .utility) { releaseRailCache.store(rail) }
     }
 
     var availableCompletionSets: [CatalogSet] {
@@ -478,16 +493,25 @@ struct BrowseView: View {
     @FocusState private var searchFocused: Bool
     @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
 
-    init(catalog: any BrowseCatalogProviding = BrowseCatalog(), recoveryGame: CardGame? = nil) {
+    init(
+        catalog: any BrowseCatalogProviding = BrowseCatalog(),
+        recoveryGame: CardGame? = nil,
+        releaseRailCache: CatalogReleaseRailCache? = nil
+    ) {
         var selectedCatalog = catalog
+        var selectedRailCache = releaseRailCache
 #if DEBUG
-        if Self.isMissingArtworkReview { selectedCatalog = BrowseMissingArtworkCatalog() }
+        if Self.isMissingArtworkReview {
+            selectedCatalog = BrowseMissingArtworkCatalog()
+            selectedRailCache = nil
+        }
 #endif
         self.catalog = selectedCatalog
         self.recoveryGame = recoveryGame
         _model = StateObject(wrappedValue: BrowseViewModel(catalog: selectedCatalog,
                                                          initialGame: recoveryGame,
-                                                         includesSealedProducts: recoveryGame == nil))
+                                                         includesSealedProducts: recoveryGame == nil,
+                                                         releaseRailCache: selectedRailCache))
     }
 
 #if DEBUG
@@ -554,6 +578,7 @@ struct BrowseView: View {
         }
         .onChange(of: model.sets) { _, _ in
             requestSetCompletionRebuild()
+            if isCatalogLoadedForRail { model.rememberReleaseRail(releaseRail.sets) }
         }
         .onChange(of: model.catalogRevision) { _, _ in
             requestSetCompletionRebuild(invalidateCatalog: true)
@@ -660,6 +685,15 @@ struct BrowseView: View {
         model.gameRegistry.games(supporting: .browse).allSatisfy { model.sets[$0] != nil }
     }
 
+    /// While any directory is still in flight the rail's final contents are
+    /// unknown, but its slot is almost always filled. Reserve it so the game
+    /// rows below do not jump down under the user's finger when it arrives.
+    private var isRailPending: Bool {
+        model.gameRegistry.games(supporting: .browse).contains {
+            model.sets[$0] == nil && model.setErrors[$0] == nil
+        }
+    }
+
     private var releaseRail: CatalogReleaseRail {
         CatalogSetOrdering.releaseRail(from: model.sets.filter { recoveryGame == nil || $0.key == recoveryGame })
     }
@@ -676,9 +710,21 @@ struct BrowseView: View {
             ownershipRevision: projectionStore.revision)
     }
 
+    /// The live rail once every directory has loaded; until then, the rail
+    /// from the previous visit. Both are keyed by set id, so when the live
+    /// rail matches the cached one the swap changes nothing on screen.
+    private var displayedReleaseRail: CatalogReleaseRail? {
+        if isCatalogLoadedForRail { return releaseRail }
+        guard isRailPending else { return nil }
+        let games = Set(recoveryGame.map { [$0] } ?? model.gameRegistry.games(supporting: .browse))
+        let cached = model.cachedReleaseRailSets.filter { games.contains($0.game) }
+        guard !cached.isEmpty else { return nil }
+        return CatalogSetOrdering.releaseRail(from: Dictionary(grouping: cached, by: \.game))
+    }
+
     @ViewBuilder
     private var recentlyReleasedRail: some View {
-        if isCatalogLoadedForRail, !releaseRail.sets.isEmpty {
+        if let releaseRail = displayedReleaseRail, !releaseRail.sets.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
                 Text(releaseRail.title)
                     .font(.title2.bold())
@@ -708,7 +754,46 @@ struct BrowseView: View {
                 }
                 .scrollIndicators(.hidden)
             }
+        } else if isRailPending {
+            releaseRailPlaceholder
         }
+    }
+
+    /// Mirrors `CatalogSetTile`'s rail layout (title, 112pt artwork, name,
+    /// metadata, reserved notice line) so the swap to real tiles is in place.
+    private var releaseRailPlaceholder: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Just released")
+                .font(.title2.bold())
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 12) {
+                    ForEach(0..<CatalogSetOrdering.releaseRailLimit, id: \.self) { _ in
+                        VStack(alignment: .leading, spacing: 7) {
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(.quaternary.opacity(0.65))
+                                .frame(height: CatalogSetTileLayout.rail.artworkHeight)
+                            Text("Placeholder set name")
+                                .font(.subheadline.weight(.semibold))
+                            Text("SET · 100 cards")
+                                .font(.caption)
+                            Text("Some cards are browse only")
+                                .font(.caption.weight(.medium))
+                                .hidden()
+                        }
+                        .containerRelativeFrame(.horizontal) { width, _ in
+                            min(max(width * 0.72, 220), 300)
+                        }
+                    }
+                }
+                .padding(.vertical, 1)
+            }
+            .scrollDisabled(true)
+        }
+        .redacted(reason: .placeholder)
+        .allowsHitTesting(false)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Loading recent sets")
     }
 
     @ViewBuilder private var gameChooser: some View {
@@ -743,7 +828,7 @@ struct BrowseView: View {
                 .padding(16)
             } else {
                 HStack { ProgressView(); Text("Loading \(game.label) sets…") }
-                    .frame(minHeight: 76)
+                    .frame(minHeight: 92) // Matches CatalogGameRow so loaded rows do not shift.
             }
         }
     }

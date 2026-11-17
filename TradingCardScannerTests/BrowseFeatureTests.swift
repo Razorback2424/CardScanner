@@ -3152,6 +3152,49 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertTrue(CatalogSetOrdering.releaseRail(from: [:]).sets.isEmpty)
     }
 
+    @MainActor
+    func testReleaseRailCacheIsReadByTheNextBrowseModel() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cache = CatalogReleaseRailCache(url: root.appendingPathComponent("rail.json"))
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "fresh"),
+            name: "Fresh set",
+            code: "FRSH",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 120,
+            releaseDate: .now.addingTimeInterval(-86_400),
+            sortRank: 1
+        )
+
+        XCTAssertTrue(BrowseViewModel(catalog: EmptyBrowseCatalog(),
+                                      releaseRailCache: cache).cachedReleaseRailSets.isEmpty)
+        cache.store([set])
+        let model = BrowseViewModel(catalog: EmptyBrowseCatalog(), releaseRailCache: cache)
+        XCTAssertEqual(model.cachedReleaseRailSets, [set])
+
+        // An unchanged live rail must not rewrite the file.
+        try FileManager.default.removeItem(at: cache.url)
+        model.rememberReleaseRail([set])
+        try await Task.sleep(for: .milliseconds(200))
+        XCTAssertNil(cache.load())
+
+        let renamed = CatalogSet(
+            catalogID: set.catalogID, name: "Renamed set", code: set.code, logoURL: nil, symbolURL: nil,
+            cardCount: set.cardCount, releaseDate: set.releaseDate, sortRank: set.sortRank
+        )
+        model.rememberReleaseRail([renamed])
+        XCTAssertEqual(model.cachedReleaseRailSets, [renamed])
+        for _ in 0..<50 where cache.load() == nil { try await Task.sleep(for: .milliseconds(20)) }
+        XCTAssertEqual(cache.load(), [renamed])
+    }
+
+    @MainActor
+    func testBrowseModelWithoutReleaseRailCacheStartsEmpty() {
+        XCTAssertTrue(BrowseViewModel(catalog: EmptyBrowseCatalog()).cachedReleaseRailSets.isEmpty)
+    }
+
     func testSealedSetOrderingUsesReleaseDateNewestFirst() {
         let older = SealedSetSummary(
             id: "older",

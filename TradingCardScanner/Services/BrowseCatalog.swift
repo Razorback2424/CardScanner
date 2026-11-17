@@ -403,6 +403,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
 
         await loadPokemonSnapshotIfNeeded()
+        await warmGameBrowseDirectories()
         if let coordinator = catalogCoordinator {
             startCatalogAuthorityRefreshIfNeeded(coordinator)
         }
@@ -439,6 +440,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
         await loadPokemonSnapshotIfNeeded()
         await reconcilePokemonProviderContent()
         await refreshPokemonSnapshot()
+    }
+
+    /// Browse's root release rail waits for every game's directory, and the
+    /// adapter-backed games build their set index on first use (hundreds of
+    /// milliseconds for Yu-Gi-Oh and One Piece). Building them here, after
+    /// the opening handoff, keeps the first Browse visit from paying for it
+    /// while the user is already reaching for the screen.
+    private func warmGameBrowseDirectories() async {
+        for game in gameActivationSources.keys.sorted(by: { $0.rawValue < $1.rawValue }) {
+            guard !Task.isCancelled, wantsCatalogRefresh else { return }
+            _ = try? await sets(for: game)
+        }
     }
 
     func suspendCatalogRefresh() {
@@ -2899,6 +2912,38 @@ extension EnvironmentValues {
     var sharedBrowseCatalog: BrowseCatalog? {
         get { self[SharedBrowseCatalogKey.self] }
         set { self[SharedBrowseCatalogKey.self] = newValue }
+    }
+}
+
+/// The root Browse release rail from the previous visit, so the next visit can
+/// show it before every game's set directory has been rebuilt.
+///
+/// It is presentation only and never an activation authority: a tapped set is
+/// rebased onto the live directory by the set screen (`currentSet(for:)`), and
+/// the live rail replaces the cached one as soon as every directory has loaded.
+struct CatalogReleaseRailCache: Sendable {
+    let url: URL
+
+    static let standard = CatalogReleaseRailCache(url: FileManager.default
+        .urls(for: .cachesDirectory, in: .userDomainMask)
+        .first!
+        .appendingPathComponent("BrowseCatalogCache", isDirectory: true)
+        .appendingPathComponent("ReleaseRail-v1.json"))
+
+    /// At most `CatalogSetOrdering.releaseRailLimit` sets, so this small read
+    /// is safe to perform once when the Browse model is created.
+    func load() -> [CatalogSet]? {
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return try? JSONDecoder().decode([CatalogSet].self, from: data)
+    }
+
+    func store(_ sets: [CatalogSet]) {
+        guard let data = try? JSONEncoder().encode(sets) else { return }
+        try? FileManager.default.createDirectory(
+            at: url.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try? data.write(to: url, options: .atomic)
     }
 }
 

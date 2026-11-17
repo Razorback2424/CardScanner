@@ -143,7 +143,7 @@ struct ContentView: View {
                 .tag(Tab.portfolio)
 
             NavigationStack {
-                BrowseView(catalog: browseCatalog)
+                BrowseView(catalog: browseCatalog, releaseRailCache: .standard)
             }
                 .tabItem {
                     Label("Browse", systemImage: "square.grid.2x2")
