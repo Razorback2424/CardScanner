@@ -2185,3 +2185,81 @@ private actor PriceRefreshTestCounter {
     func increment() { count += 1 }
     var value: Int { count }
 }
+
+/// Collection is pushed onto Portfolio's stack rather than owning one. Host it
+/// the same way and check that it lands as one pushed screen with a back
+/// route, and that showing it does not rewrite the host's path.
+@MainActor
+final class CollectionPushNavigationTests: XCTestCase {
+    private enum HostRoute: Hashable { case collection }
+
+    private final class PathBox: ObservableObject {
+        @Published var path = NavigationPath()
+    }
+
+    private struct Host: View {
+        @ObservedObject var box: PathBox
+        let onOpenBrowse: @MainActor () -> Void
+
+        var body: some View {
+            NavigationStack(path: $box.path) {
+                Text("Portfolio root")
+                    .navigationDestination(for: HostRoute.self) { _ in
+                        CollectionView(
+                            catalog: EmptyUncoveredBrowseCatalog(),
+                            history: PortfolioHistoryStore(),
+                            refresh: PriceRefreshController(),
+                            completionSignal: PriceRefreshCompletionSignal(),
+                            catalogNormalizer: CollectionCatalogNormalizer(),
+                            onOpenScanner: {},
+                            onOpenBrowse: onOpenBrowse,
+                            onRefresh: { .idle },
+                            sort: .constant(.priceHighToLow),
+                            navigationPath: $box.path
+                        )
+                    }
+            }
+        }
+    }
+
+    func testCollectionIsPushedOntoTheHostStackWithItsOwnTitle() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let projection = CollectionProjectionStore()
+        await projection.rebuild(container: container)
+        XCTAssertTrue(projection.isLoaded)
+
+        let box = PathBox()
+        box.path.append(HostRoute.collection)
+        let controller = UIHostingController(rootView: Host(box: box, onOpenBrowse: {})
+            .modelContainer(container)
+            .environmentObject(projection)
+            .environmentObject(PriceSnapshotStore()))
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true; window.rootViewController = nil }
+
+        var navigation: UINavigationController?
+        for _ in 0..<200 {
+            controller.view.layoutIfNeeded()
+            navigation = Self.navigationController(in: controller)
+            if let navigation, navigation.viewControllers.count == 2,
+               navigation.topViewController?.navigationItem.title == "Collection" { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let stack = try XCTUnwrap(navigation, "Collection must render inside the host's stack, not its own")
+        XCTAssertEqual(stack.viewControllers.count, 2, "Collection is one pushed screen above the host root")
+        XCTAssertEqual(stack.topViewController?.navigationItem.title, "Collection")
+        XCTAssertEqual(box.path.count, 1, "Showing Collection must not rewrite the host's path")
+    }
+
+    private static func navigationController(in controller: UIViewController) -> UINavigationController? {
+        var pending = [controller]
+        while let next = pending.popLast() {
+            if let navigation = next as? UINavigationController { return navigation }
+            pending.append(contentsOf: next.children)
+        }
+        return nil
+    }
+}

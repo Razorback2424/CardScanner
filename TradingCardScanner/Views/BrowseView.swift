@@ -517,7 +517,7 @@ struct BrowseView: View {
         .scrollDismissesKeyboard(.interactively)
         .onAppear { model.resumeSearch() }
         .onDisappear { model.suspendSearch() }
-        .navigationTitle("Catalog")
+        .navigationTitle("Browse")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         .toolbar {

@@ -193,16 +193,24 @@ struct CollectionView: View {
     /// Advances once when a refresh pass ends. Observed so the grid re-sorts
     /// then, rather than on every streamed price checkpoint.
     @ObservedObject var completionSignal: PriceRefreshCompletionSignal
-    let opensBrowseOnLaunch: Bool
     let opensMovementDetailsOnLaunch: Bool
     let opensCardDetailOnLaunch: Bool
     let opensCardDetailForCollectionKey: String?
     let waitsForCardDetailCollectionKey: Bool
     let onOpenScanner: @MainActor () -> Void
+    /// Switches to the Browse tab. Collection is pushed inside Portfolio, so
+    /// adding items leaves it where it is rather than stacking Browse on top.
+    let onOpenBrowse: @MainActor () -> Void
     let onRefresh: @MainActor () async -> CollectionRefreshOutcome
     @Binding var sort: CollectionSort
+    /// Owned by the hosting stack (Portfolio). Collection is pushed onto it, and
+    /// its own destinations are appended after it.
+    @Binding var navigationPath: NavigationPath
 
-    @StateObject private var catalogNormalizer: CollectionCatalogNormalizer
+    /// App-scoped and deliberately unobserved: Collection is now pushed and
+    /// popped, and a per-visit normalizer would repeat its catalog pass on
+    /// every visit instead of once per session.
+    private let catalogNormalizer: CollectionCatalogNormalizer
     private let runtimes: CardGameRuntimeContainer?
 
     @State private var searchText = ""
@@ -221,27 +229,18 @@ struct CollectionView: View {
     /// reference rather than an observed object: changing it must not itself
     /// trigger another body evaluation.
     @State private var projectionCache = ProjectionCache()
-    /// The compact phone stack or regular-width detail-column stack. Selection
-    /// lives here rather than in a closure destination so it survives the
-    /// window shrinking to one column and widening back out — resizing must
-    /// never throw away where the user was.
-    @State private var navigationPath = NavigationPath()
     /// A Collection-local guard prevents double taps without disabling a
     /// request that should join an already-running automatic controller pass.
     @State private var collectionRefreshRequestInFlight = false
     @State private var collectionRefreshFeedback: CollectionRefreshFeedback?
-    /// `.doubleColumn` rather than `.automatic`: automatic hides the grid behind a
-    /// toggle in a portrait iPad window, which would land the user on an empty
-    /// detail pane in the one orientation an iPad is most often held.
-    @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
+    /// Debug launch routes open their destination once per Collection visit.
+    @State private var didOpenLaunchDestination = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    /// The collection's destinations, so one hierarchy drives a push on a
-    /// phone-sized window and a second column on an iPad-sized one. Catalog
-    /// routes carry a value identity so they survive removal of the opening copy.
+    /// The collection's destinations, pushed onto the hosting stack after
+    /// Collection itself. Catalog routes carry a value identity so they
+    /// survive removal of the opening copy.
     private enum Destination: Hashable {
-        case browse
         case card(String)
         case catalogCard(CatalogDetailLookup, openingFinishID: String?, collectionKey: String)
         case movement(String)
@@ -254,29 +253,32 @@ struct CollectionView: View {
         history: PortfolioHistoryStore,
         refresh: PriceRefreshController,
         completionSignal: PriceRefreshCompletionSignal,
-        opensBrowseOnLaunch: Bool,
+        catalogNormalizer: CollectionCatalogNormalizer,
         opensMovementDetailsOnLaunch: Bool = false,
         opensCardDetailOnLaunch: Bool = false,
         opensCardDetailForCollectionKey: String? = nil,
         waitsForCardDetailCollectionKey: Bool = false,
         onOpenScanner: @escaping @MainActor () -> Void,
+        onOpenBrowse: @escaping @MainActor () -> Void,
         onRefresh: @escaping @MainActor () async -> CollectionRefreshOutcome,
-        sort: Binding<CollectionSort>
+        sort: Binding<CollectionSort>,
+        navigationPath: Binding<NavigationPath>
     ) {
         self.catalog = catalog
         self.runtimes = runtimes
-        _catalogNormalizer = StateObject(wrappedValue: runtimes?.makeCollectionNormalizer() ?? CollectionCatalogNormalizer())
+        self.catalogNormalizer = catalogNormalizer
         self.history = history
         self.refresh = refresh
         _completionSignal = ObservedObject(wrappedValue: completionSignal)
-        self.opensBrowseOnLaunch = opensBrowseOnLaunch
         self.opensMovementDetailsOnLaunch = opensMovementDetailsOnLaunch
         self.opensCardDetailOnLaunch = opensCardDetailOnLaunch
         self.opensCardDetailForCollectionKey = opensCardDetailForCollectionKey
         self.waitsForCardDetailCollectionKey = waitsForCardDetailCollectionKey
         self.onOpenScanner = onOpenScanner
+        self.onOpenBrowse = onOpenBrowse
         self.onRefresh = onRefresh
         self._sort = sort
+        self._navigationPath = navigationPath
     }
 
     /// Adaptive rather than a fixed pair of columns: the same minimum tile width
@@ -298,35 +300,12 @@ struct CollectionView: View {
         let snapshot = makeSnapshot()
         let optionRows = isShowingFilters ? rowsForOptions(snapshot) : []
 
-        return Group {
-            if horizontalSizeClass == .compact {
-                // On a phone the collection itself is the navigation root. A
-                // split view's empty detail column would otherwise become an
-                // extra back-stop between a card and the collection grid.
-                NavigationStack(path: $navigationPath) {
-                    collectionRoot(snapshot)
-                        .navigationDestination(for: Destination.self) { destination in
-                            destinationView(destination, in: snapshot)
-                        }
-                }
-            } else {
-                NavigationSplitView(columnVisibility: $columnVisibility) {
-                    collectionRoot(snapshot)
-                        // Wider than a stock sidebar, because this column is a
-                        // grid of card art rather than a list of labels — at the
-                        // default width it would show one column and waste the
-                        // room it was given.
-                        .navigationSplitViewColumnWidth(min: 360, ideal: 520)
-                } detail: {
-                    NavigationStack(path: $navigationPath) {
-                        noSelection
-                            .navigationDestination(for: Destination.self) { destination in
-                                destinationView(destination, in: snapshot)
-                            }
-                    }
-                }
+        // Collection is a screen pushed onto the hosting stack on every size
+        // class: its grid fills the width and a card pushes its detail.
+        return collectionRoot(snapshot)
+            .navigationDestination(for: Destination.self) { destination in
+                destinationView(destination, in: snapshot)
             }
-        }
         .modifier(CollectionFilterPresentation(
             isPresented: $isShowingFilters,
             filters: collectionFilters(optionRows, collectionRows: snapshot.all)
@@ -360,17 +339,15 @@ struct CollectionView: View {
             }
         }
         .task {
-            guard opensBrowseOnLaunch, navigationPath.isEmpty else { return }
-            select(.browse)
-        }
-        .task {
-            guard opensMovementDetailsOnLaunch, navigationPath.isEmpty else { return }
+            guard opensMovementDetailsOnLaunch, !didOpenLaunchDestination else { return }
             try? await Task.sleep(for: .milliseconds(300))
             guard let entry = snapshot.entries.first else { return }
-            navigationPath = NavigationPath([Destination.card(entry.id), .movement(entry.id)])
+            didOpenLaunchDestination = true
+            navigationPath.append(Destination.card(entry.id))
+            navigationPath.append(Destination.movement(entry.id))
         }
         .task(id: opensCardDetailOnLaunch ? cardDetailLaunchTaskID : nil) {
-            guard opensCardDetailOnLaunch, navigationPath.isEmpty else { return }
+            guard opensCardDetailOnLaunch, !didOpenLaunchDestination else { return }
             try? await Task.sleep(for: .milliseconds(500))
             let targetID: String?
             if waitsForCardDetailCollectionKey {
@@ -380,7 +357,8 @@ struct CollectionView: View {
             }
             guard let targetID,
                   snapshot.entries.contains(where: { $0.id == targetID }) else { return }
-            navigationPath = NavigationPath([Destination.card(targetID)])
+            didOpenLaunchDestination = true
+            navigationPath.append(Destination.card(targetID))
         }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
@@ -432,13 +410,17 @@ struct CollectionView: View {
                 content(snapshot)
             }
         }
-        // iOS 26 centers a normal inline title when only two trailing actions
-        // remain, while an explicit leading Text becomes a clipped glass
-        // control. This small safe-area row keeps the requested leading title,
-        // exact spacing, and separator without changing the destination stacks.
-        .toolbar(.hidden, for: .navigationBar)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            collectionNavigationHeader
+        .navigationTitle("Collection")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button("Find items to add", systemImage: "plus", action: onOpenBrowse)
+                    .labelStyle(.iconOnly)
+                Button("Settings", systemImage: "gearshape") {
+                    isShowingSettings = true
+                }
+                .labelStyle(.iconOnly)
+            }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if priceSnapshot.loadFailed && projectionStore.isLoaded {
@@ -457,57 +439,6 @@ struct CollectionView: View {
                 .background(.regularMaterial)
             }
         }
-    }
-
-    private var collectionNavigationHeader: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 8) {
-                collectionHeaderTitle.fixedSize()
-                Spacer(minLength: 8)
-                collectionHeaderActions
-            }
-            VStack(alignment: .leading, spacing: 4) {
-                collectionHeaderTitle
-                HStack {
-                    Spacer(minLength: 0)
-                    collectionHeaderActions
-                }
-            }
-            .padding(.vertical, 8)
-        }
-        .padding(.horizontal, 16)
-        .frame(minHeight: 44)
-        .background(Color(uiColor: .systemBackground))
-        .overlay(alignment: .bottom) { Divider() }
-    }
-
-    private var collectionHeaderTitle: some View {
-        Text("Collection")
-            .font(.headline)
-            .fixedSize(horizontal: false, vertical: true)
-            .accessibilityAddTraits(.isHeader)
-    }
-
-    private var collectionHeaderActions: some View {
-        HStack(spacing: 18) {
-                Button {
-                    select(.browse)
-                } label: {
-                    Image(systemName: "plus")
-                        .frame(width: 44, height: 44)
-                }
-                .accessibilityLabel("Find items to add")
-
-                Button {
-                    isShowingSettings = true
-                } label: {
-                    Image(systemName: "gearshape")
-                        .frame(width: 44, height: 44)
-                }
-                .accessibilityLabel("Settings")
-        }
-        .foregroundStyle(.primary)
-        .tint(.primary)
     }
 
     private var loadingCollection: some View {
@@ -531,18 +462,14 @@ struct CollectionView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    /// Replaces whatever the detail column is showing. Replacing rather than
-    /// appending keeps the column one level deep: picking a second card from the
-    /// grid should show that card, not stack it behind the first.
+    /// Pushes one of Collection's destinations onto the hosting stack.
     private func select(_ destination: Destination) {
-        navigationPath = NavigationPath([destination])
+        navigationPath.append(destination)
     }
 
     @ViewBuilder
     private func destinationView(_ destination: Destination, in snapshot: Snapshot) -> some View {
         switch destination {
-        case .browse:
-            BrowseView(catalog: catalog)
         case let .catalogCard(lookup, openingFinishID, collectionKey):
             CollectionCatalogDestination(
                 lookup: lookup, openingFinishID: openingFinishID, catalog: catalog
@@ -638,14 +565,6 @@ struct CollectionView: View {
         )
     }
 
-    private var noSelection: some View {
-        ContentUnavailableView(
-            "No card selected",
-            systemImage: "rectangle.stack",
-            description: Text("Choose a card to see its details.")
-        )
-    }
-
     private func content(_ snapshot: Snapshot) -> some View {
         return ScrollView {
             LazyVStack(spacing: 14) {
@@ -657,10 +576,8 @@ struct CollectionView: View {
                 } else {
                     LazyVGrid(columns: columns, spacing: 28) {
                         ForEach(snapshot.entries) { entry in
-                            // A button driving the detail column's path rather than a
-                            // `NavigationLink`: links push onto the stack that encloses
-                            // them, and the stack that must move is the one in the next
-                            // column over.
+                            // A button rather than a `NavigationLink`, so the push goes
+                            // through `select` and the path the host stack owns.
                             Button {
                                 select(detailDestination(for: entry.row))
                             } label: {
@@ -781,9 +698,7 @@ struct CollectionView: View {
                 }
                 .buttonStyle(.borderedProminent)
 
-                NavigationLink(value: Destination.browse) {
-                    Label("Find Items to Add", systemImage: "plus.circle")
-                }
+                Button("Find Items to Add", systemImage: "plus.circle", action: onOpenBrowse)
                 .buttonStyle(.bordered)
             }
         }

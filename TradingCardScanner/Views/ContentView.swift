@@ -12,9 +12,11 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var scanSummaryStore: ScanSessionSummaryStore
 
+    /// Collection is not a tab: it is pushed from Portfolio, the screen people
+    /// read their collection through. The second tab lands directly on Browse.
     private enum Tab: Hashable {
         case portfolio
-        case collection
+        case browse
         case scan
         case pro
     }
@@ -40,6 +42,9 @@ struct ContentView: View {
     /// app session. Its protected checklist and in-memory caches therefore do
     /// not reset when the user pushes into a set and returns.
     @State private var browseCatalog: BrowseCatalog
+    /// App-scoped so a Collection push does not start another catalog pass.
+    /// Held, not observed: nothing at the root renders its status.
+    @State private var collectionNormalizer: CollectionCatalogNormalizer
     private let runtimes: CardGameRuntimeContainer?
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var collectionSort: CollectionSort = .priceHighToLow
@@ -71,6 +76,9 @@ struct ContentView: View {
     private init(browseCatalog: BrowseCatalog, runtimes: CardGameRuntimeContainer? = nil) {
         self.runtimes = runtimes
         _browseCatalog = State(initialValue: browseCatalog)
+        _collectionNormalizer = State(
+            initialValue: runtimes?.makeCollectionNormalizer() ?? CollectionCatalogNormalizer()
+        )
 #if DEBUG || CARD_FINISH_PERF_HARNESS
         let arguments = ProcessInfo.processInfo.arguments
         let routeIndex = arguments.firstIndex(of: "-ui_debug_route")
@@ -85,7 +93,9 @@ struct ContentView: View {
         #endif
         let initialTab: Tab
         switch debugRoute {
-        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "TrustCardDetail", "CollectionTiles", "CollectionTilesLongContent", "CollectionFinishPerformance", "MagicTreatmentSlice4", "OwnedPriceReview": initialTab = .collection
+        case "Browse": initialTab = .browse
+        // Collection routes (`collectionDebugRoutes`) also land on Portfolio,
+        // which pushes Collection on launch.
         case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "TrustScanReceipt", "GradedLabelCapture": initialTab = .scan
         case "Pro", "ListingPhotos", "Centering", "CenteringStart", "CenteringExpanded", "CenteringOuterControls", "CenteringInnerControls", "CenteringRotation", "CenteringPrecision": initialTab = .pro
@@ -114,36 +124,23 @@ struct ContentView: View {
                 refresh: refresh,
                 history: history,
                 onRefresh: { _ = await refreshAllPrices() },
-                onOpenCollectionSortedByPrice: {
-                    collectionSort = .priceHighToLow
-                    selectedTab = .collection
-                },
-                onOpenScanner: { selectedTab = .scan }
+                onOpenCollectionSortedByPrice: { collectionSort = .priceHighToLow },
+                onOpenScanner: { selectedTab = .scan },
+                collectionDestination: { path in AnyView(collectionView(path: path)) },
+                opensCollectionOnLaunch: isCollectionDebugRoute
             )
                 .tabItem {
                     Label("Portfolio", systemImage: "chart.line.uptrend.xyaxis")
                 }
                 .tag(Tab.portfolio)
 
-            CollectionView(
-                catalog: browseCatalog,
-                runtimes: runtimes,
-                history: history,
-                refresh: refresh,
-                completionSignal: refreshCompletionSignal,
-                opensBrowseOnLaunch: isBrowseDebugRoute,
-                opensMovementDetailsOnLaunch: isMovementDebugRoute,
-                opensCardDetailOnLaunch: isCardDetailDebugRoute || isCardFinishPerformanceDetailRoute,
-                opensCardDetailForCollectionKey: debugCardDetailCollectionKey,
-                waitsForCardDetailCollectionKey: isTrustCardDetailDebugRoute,
-                onOpenScanner: { selectedTab = .scan },
-                onRefresh: { await refreshAllPrices() },
-                sort: $collectionSort
-            )
+            NavigationStack {
+                BrowseView(catalog: browseCatalog)
+            }
                 .tabItem {
-                    Label("Collection", systemImage: "rectangle.stack")
+                    Label("Browse", systemImage: "square.grid.2x2")
                 }
-                .tag(Tab.collection)
+                .tag(Tab.browse)
 
             ScannerView(browseCatalog: browseCatalog)
                 .tabItem {
@@ -335,6 +332,26 @@ struct ContentView: View {
         .environmentObject(writeCoordinator)
     }
 
+    private func collectionView(path: Binding<NavigationPath>) -> CollectionView {
+        CollectionView(
+            catalog: browseCatalog,
+            runtimes: runtimes,
+            history: history,
+            refresh: refresh,
+            completionSignal: refreshCompletionSignal,
+            catalogNormalizer: collectionNormalizer,
+            opensMovementDetailsOnLaunch: isMovementDebugRoute,
+            opensCardDetailOnLaunch: isCardDetailDebugRoute || isCardFinishPerformanceDetailRoute,
+            opensCardDetailForCollectionKey: debugCardDetailCollectionKey,
+            waitsForCardDetailCollectionKey: isTrustCardDetailDebugRoute,
+            onOpenScanner: { selectedTab = .scan },
+            onOpenBrowse: { selectedTab = .browse },
+            onRefresh: { await refreshAllPrices() },
+            sort: $collectionSort,
+            navigationPath: path
+        )
+    }
+
     @MainActor
     private func updateFallbackAvailability() async {
         let actor = await PriceRefreshTargetModelActor.makeBackground(modelContainer: modelContext.container)
@@ -349,9 +366,18 @@ struct ContentView: View {
         "\(scenePhase)-\(hasStartedPortfolio)-\(usesPriceFallback)"
     }
 
-    private var isBrowseDebugRoute: Bool {
 #if DEBUG || CARD_FINISH_PERF_HARNESS
-        return debugRoute == "Browse"
+    /// Routes whose screenshots inspect Collection or a card pushed from it.
+    private static let collectionDebugRoutes: Set<String> = [
+        "SealedArtwork", "CardMovement", "CardDetail", "TrustCardDetail", "CollectionTiles",
+        "CollectionTilesLongContent", "CollectionFinishPerformance", "MagicTreatmentSlice4",
+        "OwnedPriceReview",
+    ]
+#endif
+
+    private var isCollectionDebugRoute: Bool {
+#if DEBUG || CARD_FINISH_PERF_HARNESS
+        return Self.collectionDebugRoutes.contains(debugRoute ?? "")
 #else
         return false
 #endif

@@ -138,6 +138,12 @@ private struct PortfolioDetailsDestination: Identifiable, Hashable {
 
 /// The collection's home screen. It presents the value and accounting already
 /// produced by `PortfolioEngine`; it never recomputes or replays history itself.
+/// Screens Portfolio pushes by value. Collection lives here rather than in a
+/// tab of its own: it is the full list behind Portfolio's summary.
+enum PortfolioRoute: Hashable {
+    case collection
+}
+
 struct PortfolioView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -151,8 +157,16 @@ struct PortfolioView: View {
     let refresh: PriceRefreshController
     @ObservedObject var history: PortfolioHistoryStore
     let onRefresh: @MainActor () async -> Void
+    /// Lets the owner of the collection sort pick price order before "See all"
+    /// pushes Collection.
     let onOpenCollectionSortedByPrice: @MainActor () -> Void
     var onOpenScanner: @MainActor () -> Void = {}
+    /// Builds Collection for this stack. The root owns Collection's services,
+    /// so Portfolio only supplies the path it pushes onto.
+    var collectionDestination: @MainActor (Binding<NavigationPath>) -> AnyView = { _ in AnyView(EmptyView()) }
+    /// Debug routes that land in Collection push it once on launch.
+    var opensCollectionOnLaunch = false
+    @State private var path = NavigationPath()
     @State private var isShowingSettings = false
     @State private var contributorContext: PortfolioContributorContext?
     @State private var detailsDestination: PortfolioDetailsDestination?
@@ -233,7 +247,7 @@ struct PortfolioView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 24) {
@@ -305,6 +319,11 @@ struct PortfolioView: View {
                 }
             }
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Collection", systemImage: "rectangle.stack", action: openCollection)
+                        .labelStyle(.iconOnly)
+                        .accessibilityHint("Opens your full collection")
+                }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if let summary = portfolio.summary {
                         Button("Pricing and data details", systemImage: "info.circle") {
@@ -337,6 +356,21 @@ struct PortfolioView: View {
                 detailsDestination = PortfolioDetailsDestination(summary: summary, historyResult: result)
             }
 #endif
+            .task {
+                // Debug routes only. On iPad a push made while the opening
+                // screen hands off, or an initial non-empty path, is shown as
+                // the root; wait for the stack to settle first.
+                guard opensCollectionOnLaunch else { return }
+                try? await Task.sleep(for: .seconds(1))
+                guard !Task.isCancelled, path.isEmpty else { return }
+                openCollection()
+            }
+            .navigationDestination(for: PortfolioRoute.self) { route in
+                switch route {
+                case .collection:
+                    collectionDestination($path)
+                }
+            }
             .navigationDestination(item: $detailsDestination) { destination in
                 PortfolioDetailsView(
                     portfolio: portfolio,
@@ -747,6 +781,10 @@ struct PortfolioView: View {
         }
     }
 
+    private func openCollection() {
+        path.append(PortfolioRoute.collection)
+    }
+
     @ViewBuilder
     private var bestCardsRail: some View {
         // The publisher orders priced holdings before unpriced holdings, so
@@ -762,9 +800,10 @@ struct PortfolioView: View {
                     Spacer()
                     Button("See all") {
                         onOpenCollectionSortedByPrice()
+                        openCollection()
                     }
                     .font(.subheadline.weight(.semibold))
-                    .accessibilityHint("Opens Collection sorted by price, highest first")
+                    .accessibilityHint("Opens your collection sorted by price, highest first")
                 }
                 // The rail scrolls edge to edge; its heading keeps the page margin.
                 .padding(.horizontal, 16)
@@ -1532,6 +1571,8 @@ private struct PortfolioArtwork: View {
 private struct PortfolioOwnedCardDestination: View {
     @EnvironmentObject private var priceSnapshot: PriceSnapshotStore
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
+    @Environment(\.sharedBrowseCatalog) private var sharedBrowseCatalog
+    @Environment(\.cardGameRuntimes) private var runtimes
     @Query private var cards: [CollectedCard]
     let collectionKey: String
     let holding: PortfolioHoldingSnapshot?
@@ -1555,6 +1596,29 @@ private struct PortfolioOwnedCardDestination: View {
     }
 
     var body: some View {
+        // A catalog-linked raw copy opens the same card page Browse and the
+        // collection use; the owned layer sits on top of it there.
+        if let row = projectionStore.snapshot?.rowsByCollectionKey[collectionKey],
+           row.itemKind == .rawCard, !UnverifiedReportKey.isUnverified(row.id),
+           let providerID = row.catalogProviderID {
+            let catalog = sharedBrowseCatalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
+            if catalog.gameRegistry.supports(row.game, .browse) {
+                CollectionCatalogDestination(
+                    lookup: .init(game: row.game, providerID: providerID, printRun: row.pokemonPrintRun,
+                                  name: row.name, setCode: row.setCode),
+                    openingFinishID: CatalogOwnershipCardSnapshot.catalogFinishID(row.variantID, game: row.game),
+                    catalog: catalog
+                ) { copyDestination }
+            } else {
+                copyDestination
+            }
+        } else {
+            copyDestination
+        }
+    }
+
+    @ViewBuilder
+    private var copyDestination: some View {
         if let card = cards.first {
             // Historical contributor rows do not always carry a live holding.
             // Use the same resolved instrument the collection projection used;
