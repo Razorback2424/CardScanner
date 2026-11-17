@@ -10805,7 +10805,50 @@ final class ScryfallBulkCatalogHealthTests: XCTestCase {
                                                             BulkFixture.downloadURL])
         let leftovers = try FileManager.default.contentsOfDirectory(atPath: directory.path)
             .filter { $0.hasPrefix("ScryfallBulk-") }
-        XCTAssertEqual(leftovers.count, 1, "Only the live index spool remains")
+        XCTAssertTrue(leftovers.isEmpty, "The download work directory is removed once the index is cached")
+        let generations = try FileManager.default.contentsOfDirectory(
+            atPath: directory.appendingPathComponent(CatalogHealthMagicBulkSource.cacheDirectoryName).path)
+        XCTAssertEqual(generations.count, 1)
+    }
+
+    func testLaterExportReusesCachedIndexUntilScryfallPublishesANewerFile() async throws {
+        let gz = try BulkFixture.gzip(Data([BulkFixture.card("a", set: "neo", number: "1"),
+                                             BulkFixture.card("b", set: "dmu", number: "1")].joined(separator: "\n").utf8))
+        ScryfallBulkTestProtocol.stub(metadataSize: gz.count, archive: gz)
+        _ = try await source().entries(for: set("neo"))
+        ScryfallBulkTestProtocol.reset()
+        ScryfallBulkTestProtocol.stub(metadataSize: gz.count, archive: gz)
+        let reused = try await source().entries(for: set("dmu"))
+        XCTAssertEqual(reused.map { $0.0.providerID }, ["b"])
+        XCTAssertEqual(ScryfallBulkTestProtocol.requests(), [CatalogHealthMagicBulkSource.metadataURL.absoluteString],
+                       "An unchanged file must not be downloaded again")
+
+        let cacheRoot = directory.appendingPathComponent(CatalogHealthMagicBulkSource.cacheDirectoryName)
+        let firstGeneration = try FileManager.default.contentsOfDirectory(atPath: cacheRoot.path)
+        let newer = "2026-11-17T22:06:20.476+00:00"
+        ScryfallBulkTestProtocol.reset()
+        ScryfallBulkTestProtocol.stub(metadataSize: gz.count, archive: gz, updatedAt: newer)
+        let refreshed = try await source().entries(for: set("neo"))
+        XCTAssertEqual(refreshed.first?.1.retrievedAt, ScryfallBulkDataMetadata.parseTimestamp(newer))
+        XCTAssertEqual(ScryfallBulkTestProtocol.requests().count, 2, "A newer file is downloaded")
+        let secondGeneration = try FileManager.default.contentsOfDirectory(atPath: cacheRoot.path)
+        XCTAssertEqual(secondGeneration.count, 1, "Only the newest generation is kept")
+        XCTAssertNotEqual(secondGeneration, firstGeneration)
+    }
+
+    func testDamagedCacheIsRebuiltInsteadOfTrusted() async throws {
+        let gz = try BulkFixture.gzip(Data(BulkFixture.card("a", set: "neo", number: "1").utf8))
+        ScryfallBulkTestProtocol.stub(metadataSize: gz.count, archive: gz)
+        _ = try await source().entries(for: set("neo"))
+        let cacheRoot = directory.appendingPathComponent(CatalogHealthMagicBulkSource.cacheDirectoryName)
+        let generation = try XCTUnwrap(try FileManager.default.contentsOfDirectory(atPath: cacheRoot.path).first)
+        let spool = cacheRoot.appendingPathComponent(generation).appendingPathComponent("printings.jsonl")
+        try Data("{}".utf8).write(to: spool)
+        ScryfallBulkTestProtocol.reset()
+        ScryfallBulkTestProtocol.stub(metadataSize: gz.count, archive: gz)
+        let rebuilt = try await source().entries(for: set("neo"))
+        XCTAssertEqual(rebuilt.map { $0.0.providerID }, ["a"])
+        XCTAssertEqual(ScryfallBulkTestProtocol.requests().count, 2, "A damaged cache triggers a fresh download")
     }
 
     func testIncompleteDownloadDefersOnceWithoutRetrying() async throws {
@@ -10902,9 +10945,9 @@ private final class ScryfallBulkTestProtocol: URLProtocol {
     static func reset() { lock.withLock { replies = [:]; log = [] } }
     static func requests() -> [String] { lock.withLock { log } }
 
-    static func stub(metadataSize: Int, archive: Data) {
+    static func stub(metadataSize: Int, archive: Data, updatedAt: String = BulkFixture.updatedAt) {
         let metadata: [String: Any] = [
-            "object": "bulk_data", "type": "default_cards", "updated_at": BulkFixture.updatedAt,
+            "object": "bulk_data", "type": "default_cards", "updated_at": updatedAt,
             "jsonl_download_uri": BulkFixture.downloadURL, "compressed_size": metadataSize,
         ]
         let body = try! JSONSerialization.data(withJSONObject: metadata)
@@ -10988,25 +11031,79 @@ final class CatalogPriceAuditTests: XCTestCase {
 
     @MainActor
     func testAuditStopsAfterRepeatedProviderFailuresOrOneThrottleAndDefersTheRest() async throws {
-        let mapped = try XCTUnwrap(PokemonTCGCSVMapping.byCardID.keys.sorted().first)
+        let reviewed = Array(PokemonM26Catalog.entries.prefix(5))
+        XCTAssertEqual(reviewed.count, 5, "Bundled M26 reviewed products are required for this fixture")
         for (error, expectedCalls) in [(PriceQuoteError.providerUnavailable as Error, 3),
                                        (PokemonTCGCSVError.retryLater as Error, 1)] {
-            let browse = PriceAuditPokemonFixture(mappedID: mapped, error: error)
+            let browse = PriceAuditPokemonFixture(reviewed: reviewed, priceError: error)
             let report = try await ActiveCatalogHealthCSV.makeDocument(
                 runtimes: CardGameRuntimeContainer(runtimes: []), browse: browse,
                 scope: .priceAudit(game: .pokemon, setID: nil), progress: { _ in })
             let calls = await browse.priceCalls
             XCTAssertEqual(calls.count, expectedCalls, "\(error)")
             XCTAssertFalse(calls.contains("unmapped"), "An unmapped card is never priced")
+            XCTAssertFalse(calls.contains(PriceAuditPokemonFixture.productOnlyID),
+                           "A product-level mapping without an approved finish lane is never priced")
             let rows = report.text.components(separatedBy: "\r\n")
             XCTAssertEqual(rows.filter { $0.hasPrefix("\"price_failure\"") }.count, expectedCalls)
             XCTAssertEqual(rows.filter { $0.hasPrefix("\"set_deferred\"") && $0.contains("PRICE_AUDIT_STOPPED") }.count, 1)
             let coverage = try XCTUnwrap(rows.first { $0.hasPrefix("\"set_coverage\"") })
-            // 5 mapped finishes: the unpriced remainder stays visible as unevaluated, and the
-            // unmapped card is counted as excluded rather than silently dropped.
+            // 5 reviewed finishes: the unpriced remainder stays visible as unevaluated,
+            // and the unmapped and product-only cards are counted as excluded.
             XCTAssertTrue(coverage.contains("\"5\",\"0\",\"\(expectedCalls)\",\"5\""), coverage)
-            XCTAssertTrue(coverage.hasSuffix("\"1\""), coverage)
+            XCTAssertTrue(coverage.hasSuffix("\"2\""), coverage)
         }
+    }
+
+    @MainActor
+    func testReviewedCardWhoseDetailsFailIsReportedNotExcluded() async throws {
+        let entry = try XCTUnwrap(PokemonM26Catalog.entries.first)
+        let browse = PriceAuditPokemonFixture(reviewed: [entry], priceError: PriceQuoteError.providerUnavailable,
+                                              knowsFinish: false, includesUnmapped: false)
+        let report = try await ActiveCatalogHealthCSV.makeDocument(
+            runtimes: CardGameRuntimeContainer(runtimes: []), browse: browse,
+            scope: .priceAudit(game: .pokemon, setID: PokemonM26Catalog.catalogSetID), progress: { _ in })
+        let detailLoads = await browse.detailLoads
+        XCTAssertEqual(detailLoads, 1)
+        let rows = report.text.components(separatedBy: "\r\n")
+        let failure = try XCTUnwrap(rows.first { $0.hasPrefix("\"price_failure\"") },
+                                    "A failed lookup for an eligible card must be visible")
+        XCTAssertTrue(failure.contains("PRICE_PROVIDER_UNAVAILABLE"), failure)
+        let coverage = try XCTUnwrap(rows.first { $0.hasPrefix("\"set_coverage\"") })
+        XCTAssertTrue(coverage.hasSuffix("\"0\""), "Nothing was excluded: \(coverage)")
+    }
+
+    func testPokemonScopeRequiresAReviewedFinishLane() throws {
+        let entry = try XCTUnwrap(PokemonM26Catalog.entries.first)
+        let summary = PriceAuditPokemonFixture.summary(for: entry, knowsFinish: true)
+        var approved = ActiveCatalogHealthCSV.Evidence()
+        approved.finish = entry.variant.id
+        XCTAssertTrue(ActiveCatalogHealthCSV.isInPriceAuditScope(approved, summary: summary))
+        var otherFinish = approved
+        otherFinish.finish = entry.variant.id == "holo" ? "reverse" : "holo"
+        XCTAssertFalse(ActiveCatalogHealthCSV.isInPriceAuditScope(otherFinish, summary: summary))
+        // A product-level TCGCSV mapping names no finish lane, so its finishes stay
+        // out of scope unless a reviewed product also approves that exact finish.
+        let productOnly = try XCTUnwrap(PokemonTCGCSVMapping.entries.first { entry in
+            let summary = CatalogCardSummary(game: .pokemon, providerID: entry.cardID,
+                setID: .init(game: .pokemon, providerID: entry.setID), setName: "Set", setCode: "SET",
+                name: entry.productName, collectorNumber: entry.printedNumber,
+                thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
+            return PokemonReviewedMarketProduct.entry(for: summary, variantID: "holo") == nil
+        })
+        let productSummary = CatalogCardSummary(game: .pokemon, providerID: productOnly.cardID,
+            setID: .init(game: .pokemon, providerID: productOnly.setID), setName: "Set", setCode: "SET",
+            name: productOnly.productName, collectorNumber: productOnly.printedNumber,
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
+        var productFinish = ActiveCatalogHealthCSV.printingEvidence(for: productSummary, catalog: nil)[0]
+        XCTAssertEqual(productFinish.mapping, "reviewed_product_finish_not_evaluated")
+        productFinish.finish = "holo"
+        XCTAssertFalse(ActiveCatalogHealthCSV.isInPriceAuditScope(productFinish, summary: productSummary))
+        // A set without reviewed products never loads provider details during an audit.
+        let ordinary = CatalogCardSummary(game: .pokemon, providerID: "sv1-1",
+            setID: .init(game: .pokemon, providerID: "sv1"), setName: "Scarlet & Violet", setCode: "SVI",
+            name: "Pineco", collectorNumber: "1", thumbnailURL: nil, imageURL: nil)
+        XCTAssertFalse(ActiveCatalogHealthCSV.isPriceAuditCandidate(ordinary, findings: []))
     }
 }
 
@@ -11043,42 +11140,59 @@ private actor PriceAuditMagicFixture: BrowseCatalogProviding {
 }
 
 private actor PriceAuditPokemonFixture: BrowseCatalogProviding {
-    let mappedID: String
-    let error: Error
+    static let productOnlyID = PokemonTCGCSVMapping.entries.first?.cardID ?? "product-only"
+    let reviewed: [PokemonM26Catalog.Entry]
+    let priceError: Error
+    let knowsFinish: Bool
+    let includesUnmapped: Bool
     private(set) var priceCalls: [String] = []
+    private(set) var detailLoads = 0
 
-    init(mappedID: String, error: Error) {
-        self.mappedID = mappedID
-        self.error = error
+    init(reviewed: [PokemonM26Catalog.Entry], priceError: Error, knowsFinish: Bool = true,
+         includesUnmapped: Bool = true) {
+        self.reviewed = reviewed
+        self.priceError = priceError
+        self.knowsFinish = knowsFinish
+        self.includesUnmapped = includesUnmapped
     }
 
-    private static func set(_ id: String) -> CatalogSet {
-        CatalogSet(catalogID: .init(game: .pokemon, providerID: id), name: id, code: id.uppercased(),
-                   logoURL: nil, symbolURL: nil, cardCount: nil, releaseDate: nil, sortRank: 0)
+    static func summary(for entry: PokemonM26Catalog.Entry, knowsFinish: Bool) -> CatalogCardSummary {
+        CatalogCardSummary(game: .pokemon, providerID: entry.cardID, setID: PokemonM26Catalog.catalogSetID,
+                           setName: "M26", setCode: "M26", name: entry.name, collectorNumber: entry.number,
+                           thumbnailURL: nil, imageURL: nil, masterSetVariant: knowsFinish ? entry.variant : nil)
     }
+
+    private static let otherSet = CatalogSet(catalogID: .init(game: .pokemon, providerID: "audit-b"), name: "audit-b",
+        code: "AUDIT-B", logoURL: nil, symbolURL: nil, cardCount: nil, releaseDate: nil, sortRank: 1)
+
     func sets(for game: CardGame) async throws -> [CatalogSet] {
-        game == .pokemon ? [Self.set("audit-a"), Self.set("audit-b")] : []
+        guard game == .pokemon else { return [] }
+        let m26 = CatalogSet(catalogID: PokemonM26Catalog.catalogSetID, name: "M26", code: "M26",
+                             logoURL: nil, symbolURL: nil, cardCount: nil, releaseDate: nil, sortRank: 0)
+        return [m26, Self.otherSet]
     }
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
-        let mapped = (1...5).map { number in
-            CatalogCardSummary(game: .pokemon, providerID: mappedID, setID: set.catalogID, setName: set.name,
-                               setCode: set.code, name: "Mapped", collectorNumber: String(number),
-                               thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
-        }
+        let mapped = reviewed.map { Self.summary(for: $0, knowsFinish: knowsFinish) }
+        guard includesUnmapped else { return .init(items: mapped, nextCursor: nil) }
         let unmapped = CatalogCardSummary(game: .pokemon, providerID: "unmapped", setID: set.catalogID,
-                                          setName: set.name, setCode: set.code, name: "Unmapped", collectorNumber: "9",
+                                          setName: set.name, setCode: set.code, name: "Unmapped", collectorNumber: "999",
                                           thumbnailURL: nil, imageURL: nil, masterSetVariant: .normal)
-        return .init(items: [unmapped] + mapped, nextCursor: nil)
+        let productOnly = CatalogCardSummary(game: .pokemon, providerID: Self.productOnlyID, setID: set.catalogID,
+                                             setName: set.name, setCode: set.code, name: "Product Only",
+                                             collectorNumber: "998", thumbnailURL: nil, imageURL: nil,
+                                             masterSetVariant: .holo)
+        return .init(items: [unmapped, productOnly] + mapped, nextCursor: nil)
     }
     func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         .init(items: [], nextCursor: nil)
     }
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        detailLoads += 1
         throw PriceQuoteError.providerUnavailable
     }
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
         priceCalls.append(summary.providerID)
-        throw error
+        throw priceError
     }
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
         AsyncStream { $0.finish() }

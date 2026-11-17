@@ -37,9 +37,12 @@ download (about 80 MB) from the unmetered `data.scryfall.io` origin,
 replacing roughly 750 per-set searches. The download must match the published
 size, every record must decode, gzip's checksum must verify, and printing IDs
 must be unique; otherwise all Magic sets are deferred rather than partially
-reported. English, non-digital paper printings are spooled to a temporary
-directory in Caches, read back one set at a time, and deleted after the
-export. Bulk prices carry the file's `updated_at` as their observation time,
+reported. English, non-digital paper printings are spooled to Caches and
+read back one set at a time. The built index is kept, keyed by the file's
+`updated_at`, and reused until Scryfall publishes a newer file (about daily),
+so repeat reports send only the metadata request. One generation is kept; an
+index without its manifest or with a changed spool size is rebuilt, and the
+system may purge it at any time. Bulk prices carry the file's `updated_at` as their observation time,
 so a file more than 24 hours old reports stale price evidence. CSV rows from
 this source use the `scryfall_bulk_data` evidence scope. A set with no bulk
 printings is a set-level error, not a provider outage. On Nov. 16, 2026 the
@@ -68,9 +71,13 @@ Piece releases without scanning every catalog:
 
 - Only verified printings with an approved exact marketplace mapping are
   priced: One Piece and Lorcana `exact` mappings, supported Yu-Gi-Oh editions
-  with a market product, Pokémon cards with a reviewed TCGplayer product,
-  and each Magic printing's own Scryfall prices. Other finishes are counted
-  in `price_audit_excluded_finishes` and never requested.
+  with a market product, Pokémon finishes whose reviewed TCGplayer product
+  names that exact finish, and each Magic printing's own Scryfall prices.
+  A product-level Pokémon mapping without a reviewed finish lane is not
+  enough. Other finishes are counted in `price_audit_excluded_finishes`
+  (one per card when its finishes were never loaded) and never requested.
+  An eligible card whose provider details fail to load is reported as a
+  pricing failure, not excluded.
 - Prices go through the same resolver as Browse, so cached quotes and the
   grouped, 24-hour-cached hosted feeds are reused. JustTCG is not used.
 - One rate-limit response, or three consecutive provider failures, stops
