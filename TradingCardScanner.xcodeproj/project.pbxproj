@@ -351,6 +351,8 @@
 		F30A00000000000000000015 /* LorcanaPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000015; };
 		F30A00000000000000000016 /* LorcanaPricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000016; };
 		F30A00000000000000000017 /* TCGCSVProductPriceSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000017; };
+		F30A000000000000000ACE02 /* ScryfallBulkCardIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B000000000000000ACE02 /* ScryfallBulkCardIndex.swift */; };
+		F30A000000000000000ACE01 /* ScryfallRequestPacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B000000000000000ACE01 /* ScryfallRequestPacer.swift */; };
 		F40A00000000000000000001 /* YuGiOhCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000001; };
 		F40A00000000000000000002 /* YuGiOhRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000002; };
 		F40A00000000000000000003 /* YuGiOhCatalogAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40B00000000000000000003; };
@@ -751,6 +753,8 @@
 		F30B00000000000000000015 /* LorcanaPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaPriceAdapter.swift; sourceTree = "<group>"; };
 		F30B00000000000000000016 /* LorcanaPricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaPricingTests.swift; sourceTree = "<group>"; };
 		F30B00000000000000000017 /* TCGCSVProductPriceSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGCSVProductPriceSource.swift; sourceTree = "<group>"; };
+		F30B000000000000000ACE02 /* ScryfallBulkCardIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScryfallBulkCardIndex.swift; sourceTree = "<group>"; };
+		F30B000000000000000ACE01 /* ScryfallRequestPacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScryfallRequestPacer.swift; sourceTree = "<group>"; };
 		F40B00000000000000000001 /* YuGiOhCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhCatalog.swift; sourceTree = "<group>"; };
 		F40B00000000000000000002 /* YuGiOhRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhRecognitionAdapter.swift; sourceTree = "<group>"; };
 		F40B00000000000000000003 /* YuGiOhCatalogAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YuGiOh/YuGiOhCatalogAdapter.swift; sourceTree = "<group>"; };
@@ -1079,6 +1083,8 @@
 				B00100B1 /* QuoteCache.swift */,
 				B00100B2 /* PriceQuoteService.swift */,
 				F30B00000000000000000017 /* TCGCSVProductPriceSource.swift */,
+				F30B000000000000000ACE02 /* ScryfallBulkCardIndex.swift */,
+				F30B000000000000000ACE01 /* ScryfallRequestPacer.swift */,
 				B00100B4 /* PriceCheckCoordinator.swift */,
 				B00100B5 /* PriceFallbackQuoteResolver.swift */,
 				B00100B6 /* GradedLabelParser.swift */,
@@ -1556,6 +1562,8 @@
 				F30A00000000000000000015 /* LorcanaPriceAdapter.swift in Sources */,
 				F30A00000000000000000010,
 				F30A00000000000000000017 /* TCGCSVProductPriceSource.swift in Sources */,
+				F30A000000000000000ACE02 /* ScryfallBulkCardIndex.swift in Sources */,
+				F30A000000000000000ACE01 /* ScryfallRequestPacer.swift in Sources */,
 				F11A00000000000000000002 /* PokemonRecognitionAdapter.swift in Sources */,
 				F11A00000000000000000003 /* MagicRecognitionAdapter.swift in Sources */,
 				F12A00000000000000000001 /* GameVariantPolicy.swift in Sources */,

@@ -28,7 +28,12 @@ private struct SettingsContentView: View {
     @State private var isPreparingDiagnosticsExport = false
     @State private var isPreparingCatalogHealthExport = false
     @State private var catalogHealthExportProgress = ""
-    @State private var checkLiveCatalogPrices = true
+    /// Off by default: pricing every finish in all five games is the
+    /// expensive path. Targeted price audits cover mapped finishes instead.
+    @State private var checkLiveCatalogPrices = false
+    @State private var priceAuditGame: CardGame = .onePiece
+    @State private var priceAuditSet: CatalogSet?
+    @State private var isChoosingPriceAuditSet = false
     @State private var catalogHealthExportTask: Task<Void, Never>?
     @State private var isShowingDiagnosticsExporter = false
     @State private var csvExportDocument: CollectionCSVDocument?
@@ -366,7 +371,7 @@ private struct SettingsContentView: View {
         Section {
             DisclosureGroup("Collection Exports & Price Coverage") {
                 Button("Export Catalog Health Report", systemImage: "square.and.arrow.up") {
-                    prepareCatalogHealthExport()
+                    prepareCatalogHealthExport(scope: .fullCatalog(checkPrices: checkLiveCatalogPrices))
                 }
                 .disabled(runtimes == nil || isPreparingCatalogHealthExport || isPreparingCSVExport ||
                           writeCoordinator.activeExclusiveOperation != nil)
@@ -380,7 +385,34 @@ private struct SettingsContentView: View {
                 }
                 Toggle("Check catalog prices", isOn: $checkLiveCatalogPrices)
                     .disabled(isPreparingCatalogHealthExport)
-                Text("Exports catalog issues across all five games, including cards you don’t own. Price checks use Browse prices, which may be cached, and may require many network requests. Turn off to skip price checks.")
+                Text("Exports catalog issues across all five games, including cards you don’t own. Magic reads Scryfall’s daily card file (about 80 MB). Checking every price sends many requests; use a price audit to check mapped prices for one game or set.")
+                    .font(.footnote).foregroundStyle(.secondary)
+
+                Picker("Price audit game", selection: $priceAuditGame) {
+                    ForEach(ActiveCatalogHealthCSV.games, id: \.self) { game in
+                        Text(game.label).tag(game)
+                    }
+                }
+                .disabled(isPreparingCatalogHealthExport)
+                .onChange(of: priceAuditGame) { _, _ in priceAuditSet = nil }
+                Button {
+                    isChoosingPriceAuditSet = true
+                } label: {
+                    LabeledContent("Price audit set", value: priceAuditSet?.name ?? "All sets")
+                }
+                .disabled(runtimes == nil || isPreparingCatalogHealthExport)
+                .sheet(isPresented: $isChoosingPriceAuditSet) {
+                    if let browse = catalogHealthBrowse() {
+                        PriceAuditSetPicker(game: priceAuditGame, browse: browse, selection: $priceAuditSet)
+                    }
+                }
+                Button("Export Price Audit", systemImage: "dollarsign.arrow.circlepath") {
+                    prepareCatalogHealthExport(scope: .priceAudit(game: priceAuditGame, setID: priceAuditSet?.catalogID),
+                                               auditSet: priceAuditSet)
+                }
+                .disabled(runtimes == nil || isPreparingCatalogHealthExport || isPreparingCSVExport ||
+                          writeCoordinator.activeExclusiveOperation != nil)
+                Text("Prices only verified printings with approved marketplace mappings, reusing cached prices and grouped price feeds. Stops early if a provider limits requests. The file lists pricing failures only.")
                     .font(.footnote).foregroundStyle(.secondary)
 
                 Button("Export Cards Excluded from USD Value", systemImage: "dollarsign.circle") {
@@ -468,12 +500,17 @@ private struct SettingsContentView: View {
         }
     }
 
-    private func prepareCatalogHealthExport() {
+    /// The same Browse actor as the running app, including its active catalog
+    /// revisions, in-session price observations and shared Scryfall pacing.
+    private func catalogHealthBrowse() -> BrowseCatalog? {
+        guard let runtimes else { return nil }
+        return (sharedBrowseCatalog as Any as? BrowseCatalog) ?? runtimes.makeBrowseCatalog()
+    }
+
+    private func prepareCatalogHealthExport(scope: ActiveCatalogHealthCSV.Scope, auditSet: CatalogSet? = nil) {
         guard !isPreparingCatalogHealthExport, !isPreparingCSVExport,
-              writeCoordinator.activeExclusiveOperation == nil, let runtimes else { return }
-        // Use the same Browse actor as the running app, including its active
-        // catalog revisions and in-session price observations.
-        let browse = (sharedBrowseCatalog as Any as? BrowseCatalog) ?? runtimes.makeBrowseCatalog()
+              writeCoordinator.activeExclusiveOperation == nil, let runtimes,
+              let browse = catalogHealthBrowse() else { return }
         isPreparingCatalogHealthExport = true
         catalogHealthExportProgress = "Reading active catalog…"
         catalogHealthExportTask = Task { @MainActor in
@@ -483,13 +520,13 @@ private struct SettingsContentView: View {
             }
             do {
                 let document = try await ActiveCatalogHealthCSV.makeDocument(
-                    runtimes: runtimes, browse: browse, checkPrices: checkLiveCatalogPrices
+                    runtimes: runtimes, browse: browse, scope: scope
                 ) { message in
                     catalogHealthExportProgress = message
                 }
                 try Task.checkCancellation()
                 csvExportDocument = document
-                csvExportFilename = "ScanStash Active Catalog Health"
+                csvExportFilename = ActiveCatalogHealthCSV.auditFilename(for: scope, set: auditSet)
                 isShowingCSVExporter = true
             } catch is CancellationError {
                 // A cancelled run never offers a misleading partial report.
@@ -1040,10 +1077,90 @@ private struct JSONExportDocument: FileDocument {
 }
 
     
+/// Chooses one active set for a targeted price audit, or all sets.
+private struct PriceAuditSetPicker: View {
+    let game: CardGame
+    let browse: BrowseCatalog
+    @Binding var selection: CatalogSet?
+    @Environment(\.dismiss) private var dismiss
+    @State private var sets: [CatalogSet] = []
+    @State private var query = ""
+    @State private var loadError: String?
+    @State private var isLoading = true
+
+    private var filtered: [CatalogSet] {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return sets }
+        return sets.filter { $0.name.localizedCaseInsensitiveContains(trimmed) || $0.code.localizedCaseInsensitiveContains(trimmed) }
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                if query.isEmpty {
+                    choice(title: "All sets", subtitle: nil, isSelected: selection == nil) { selection = nil }
+                }
+                if isLoading {
+                    ProgressView()
+                } else if let loadError {
+                    Text(loadError).foregroundStyle(.secondary)
+                } else if filtered.isEmpty, !query.isEmpty {
+                    Text("No matching sets").foregroundStyle(.secondary)
+                }
+                ForEach(filtered) { set in
+                    choice(title: set.name, subtitle: set.code, isSelected: selection?.catalogID == set.catalogID) {
+                        selection = set
+                    }
+                }
+            }
+            .searchable(text: $query, prompt: "Set name or code")
+            .navigationTitle("\(game.label) Sets")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+            .task {
+                do {
+                    sets = try await browse.sets(for: game)
+                } catch is CancellationError {
+                    return
+                } catch {
+                    loadError = error.localizedDescription
+                }
+                isLoading = false
+            }
+        }
+    }
+
+    private func choice(title: String, subtitle: String?, isSelected: Bool, select: @escaping () -> Void) -> some View {
+        Button {
+            select()
+            dismiss()
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).foregroundStyle(.primary)
+                    if let subtitle, !subtitle.isEmpty {
+                        Text(subtitle).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                Spacer(minLength: 8)
+                if isSelected {
+                    Image(systemName: "checkmark").foregroundStyle(.tint)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
 // A read-only report of the catalog Browse actually uses. This deliberately
 // does not scan a user's collection or equate "not checked" with "unpriced".
 enum ActiveCatalogHealthCSV {
-    private static let games: [CardGame] = [.pokemon, .magic, .onePiece, .lorcana, .yuGiOh]
+    static let games: [CardGame] = [.pokemon, .magic, .onePiece, .lorcana, .yuGiOh]
     static let headers = [
         "record_type", "exported_at_utc", "app_build", "game", "set_name", "set_code",
         "active_release_revision", "expected_set_card_count", "enumerated_set_row_count",
@@ -1058,8 +1175,83 @@ enum ActiveCatalogHealthCSV {
         "finish_records", "checked_finishes", "issue_finishes", "unevaluated_finishes",
         "rows_without_finish", "complete_sets", "incomplete_sets", "deferred_sets",
         "actionable_rows", "blocked_price_finishes", "shared_issue_records", "shared_family_codes",
-        "artwork_id"
+        "artwork_id", "price_audit_excluded_finishes"
     ]
+
+    /// What one export examines.
+    enum Scope: Equatable, Sendable {
+        /// Every active set in all five games: identity and coverage, plus
+        /// price evidence when `checkPrices` is on.
+        case fullCatalog(checkPrices: Bool)
+        /// Price checks for one game, optionally one set, limited to verified
+        /// printings with approved marketplace mappings. Only pricing failures
+        /// are exported; catalog identity problems belong to the full report.
+        case priceAudit(game: CardGame, setID: CatalogSetID?)
+
+        var checksPrices: Bool {
+            switch self {
+            case let .fullCatalog(checkPrices): checkPrices
+            case .priceAudit: true
+            }
+        }
+
+        var isPriceAudit: Bool {
+            if case .priceAudit = self { return true }
+            return false
+        }
+    }
+
+    /// Issue codes that describe a failed or unusable price check, as opposed
+    /// to catalog identity or coverage evidence.
+    static let pricingIssueCodes: Set<String> = [
+        "NO_USD_QUOTE", "INVALID_USD_QUOTE", "PRICE_EVIDENCE_STALE", "PRICE_CHECK_NOT_COMPLETED",
+        "PRICE_PROVIDER_UNAVAILABLE", "PRICE_CHECK_FAILED", "PRICE_RESPONSE_INVALID",
+        "PRICE_MAPPING_MISSING", "PRICE_IDENTITY_MISMATCH", "PRICE_UNSUPPORTED",
+        "PRICE_PRINTING_NOT_FOUND", "FINISH_NOT_EVALUATED"
+    ]
+
+    /// Consecutive provider failures after which a price audit stops sending
+    /// requests. A rate-limit response stops it immediately.
+    static let auditProviderFailureLimit = 3
+
+    /// Whether a card can have an approved marketplace mapping at all. Checked
+    /// before loading provider details so an audit never spends a request on a
+    /// card it will not price.
+    static func isPriceAuditCandidate(_ summary: CatalogCardSummary, findings: [Evidence]) -> Bool {
+        switch summary.game {
+        case .magic:
+            // Prices come from the exact Scryfall printing that enumeration
+            // already returned; there is no separate marketplace mapping.
+            true
+        case .pokemon:
+            PokemonTCGCSVMapping.byCardID[summary.providerID] != nil
+                || PokemonReviewedMarketProduct.entry(for: summary) != nil
+        default:
+            findings.contains { $0.mapping == "exact" }
+        }
+    }
+
+    /// Whether one finish of a candidate card is in a price audit's scope.
+    static func isInPriceAuditScope(_ finding: Evidence, game: CardGame) -> Bool {
+        switch game {
+        case .magic, .pokemon: !finding.finish.isEmpty
+        default: finding.mapping == "exact"
+        }
+    }
+
+    /// A provider response that asks the caller to slow down.
+    static func isThrottle(_ error: Error) -> Bool {
+        switch error {
+        case ScryfallError.rateLimited, PokemonTCGCSVError.retryLater: true
+        case let failure as CatalogHealthScryfallFailure: failure.httpStatus == 429
+        default: false
+        }
+    }
+
+    static func auditFilename(for scope: Scope, set: CatalogSet?) -> String {
+        guard case let .priceAudit(game, _) = scope else { return "ScanStash Active Catalog Health" }
+        return ["ScanStash Price Audit", game.label, set?.code].compactMap { $0 }.joined(separator: " - ")
+    }
 
     struct Evidence {
         var finish: String = ""
@@ -1088,6 +1280,13 @@ enum ActiveCatalogHealthCSV {
             actions.append(action)
         }
 
+        mutating func retainIssues(in codes: Set<String>) {
+            let kept = issues.indices.filter { codes.contains(issues[$0]) }
+            issues = kept.map { issues[$0] }
+            details = kept.map { details[$0] }
+            actions = kept.map { actions[$0] }
+        }
+
         mutating func removeIssue(_ code: String) -> Bool {
             guard let index = issues.firstIndex(of: code) else { return false }
             issues.remove(at: index)
@@ -1108,8 +1307,12 @@ enum ActiveCatalogHealthCSV {
         var deferredSets = 0
         var actionableRows = 0
         var blockedPrices = 0
+        /// Finishes a price audit left out because they lack a verified
+        /// printing or an approved marketplace mapping.
+        var auditExcluded = 0
 
         mutating func add(_ other: Self) {
+            auditExcluded += other.auditExcluded
             finishes += other.finishes
             checked += other.checked
             issues += other.issues
@@ -1184,7 +1387,8 @@ enum ActiveCatalogHealthCSV {
             coverage.map { String($0.completeSets) } ?? "", coverage.map { String($0.incompleteSets) } ?? "",
             coverage.map { String($0.deferredSets) } ?? "", coverage.map { String($0.actionableRows) } ?? "",
             coverage.map { String($0.blockedPrices) } ?? "", families.map { String($0.affectedRecords) } ?? "",
-            families?.codes.sorted().joined(separator: "|") ?? "", evidence.artworkID
+            families?.codes.sorted().joined(separator: "|") ?? "", evidence.artworkID,
+            coverage.map { String($0.auditExcluded) } ?? ""
         ])
     }
 
@@ -1466,14 +1670,45 @@ enum ActiveCatalogHealthCSV {
         loadMagicSet: ((CatalogSet) async throws -> [(CatalogCardSummary, CatalogCardDetails)])? = nil,
         progress: @escaping @MainActor (String) -> Void
     ) async throws -> CollectionCSVDocument {
+        try await makeDocument(runtimes: runtimes, browse: browse, scope: .fullCatalog(checkPrices: checkPrices),
+                               loadMagicSet: loadMagicSet, progress: progress)
+    }
+
+    static func makeDocument(
+        runtimes: CardGameRuntimeContainer, browse: any BrowseCatalogProviding,
+        scope: Scope,
+        loadMagicSet: ((CatalogSet) async throws -> [(CatalogCardSummary, CatalogCardDetails)])? = nil,
+        progress: @escaping @MainActor (String) -> Void
+    ) async throws -> CollectionCSVDocument {
+        let checkPrices = scope.checksPrices
         let date = ISO8601DateFormatter().string(from: .now)
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
         var csv = line(headers)
-        let magicLoader = loadMagicSet ?? (browse as? BrowseCatalog).map { catalog in
-            { (set: CatalogSet) in try await catalog.catalogHealthMagicSet(set) }
+        let examinedGames: [CardGame]
+        let auditSetID: CatalogSetID?
+        if case let .priceAudit(game, setID) = scope {
+            examinedGames = [game]
+            auditSetID = setID
+        } else {
+            examinedGames = games
+            auditSetID = nil
+        }
+        // Magic enumeration source. A full report reads Scryfall's daily bulk
+        // file once; a single-set audit is a few paced searches. Scryfall
+        // asks for bulk data whenever many cards are looked up.
+        var magicEvidenceScope = "scryfall_enumeration_response"
+        var magicLoader = loadMagicSet
+        if magicLoader == nil, examinedGames.contains(.magic), let catalog = browse as? BrowseCatalog {
+            if auditSetID != nil {
+                magicLoader = { set in try await catalog.catalogHealthMagicSet(set) }
+            } else {
+                let source = await catalog.catalogHealthMagicBulkSource(progress: progress)
+                magicLoader = { set in try await source.entries(for: set) }
+                magicEvidenceScope = "scryfall_bulk_data"
+            }
         }
         var auditedRevisions: [(CardGameRuntime, Int?, Int?, Int?)] = []
-        for game in games {
+        for game in examinedGames {
             try Task.checkCancellation()
             await progress("Reading \(game.label)…")
             let runtime = runtimes.runtime(for: game)
@@ -1482,7 +1717,7 @@ enum ActiveCatalogHealthCSV {
             var snapshot = await runtime?.activationSource?.currentSnapshot()
             var activeCatalog = snapshot?.catalog ?? runtime?.catalog
             var activeGeneration = activeCatalog?.generation ?? ""
-            let sets: [CatalogSet]
+            var sets: [CatalogSet]
             do {
                 sets = try await browse.sets(for: game)
             } catch {
@@ -1507,6 +1742,22 @@ enum ActiveCatalogHealthCSV {
                 issue.issue("NO_ACTIVE_SETS", "No sets were available from this game's active Browse catalog.", "Verify game activation and rollout")
                 csv.append(row(kind: "game_error", exported: date, build: build, game: game,
                                evidence: issue, generation: activeGeneration, scope: "not_enumerated"))
+            } else if let auditSetID {
+                sets = sets.filter { $0.catalogID == auditSetID }
+                if sets.isEmpty {
+                    var issue = Evidence()
+                    issue.issue("AUDIT_SET_NOT_ACTIVE", "The selected set (\(auditSetID.providerID)) is not in this game's active Browse catalog.",
+                                "Choose a set from the current catalog")
+                    csv.append(row(kind: "game_error", exported: date, build: build, game: game,
+                                   evidence: issue, generation: activeGeneration, scope: "not_enumerated"))
+                }
+            }
+            if scope.isPriceAudit {
+                csv.append(row(kind: "audit_scope", exported: date, build: build, game: game,
+                               set: auditSetID == nil ? nil : sets.first, generation: activeGeneration,
+                               note: "Price audit of \(auditSetID == nil ? "all active sets" : "one set"). Only verified printings with approved marketplace mappings are priced (Magic: each Scryfall printing; Pokémon: reviewed TCGplayer products). Rows list pricing failures only; run the full Catalog Health report for identity issues.",
+                               revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
+                               scope: "price_audit"))
             }
             if [.pokemon, .magic].contains(game) || !checkPrices {
                 var limitation = Evidence()
@@ -1527,10 +1778,23 @@ enum ActiveCatalogHealthCSV {
             var gameCoverage = Coverage()
             var magicDeferredReason: String?
             var consecutiveMagicFailures = 0
+            // A price audit stops sending price requests once a provider
+            // throttles it or fails repeatedly, and reports the rest as deferred.
+            var auditStopReason: String?
+            var consecutiveProviderFailures = 0
             for (index, set) in sets.enumerated() {
                 try Task.checkCancellation()
                 if index.isMultiple(of: 10) || index == sets.count - 1 {
                     await progress("\(game.label): set \(index + 1) of \(sets.count)")
+                }
+                if let auditStopReason {
+                    gameCoverage.deferredSets += 1
+                    var issue = Evidence()
+                    issue.issue("PRICE_AUDIT_STOPPED", auditStopReason, "Retry the audit later; provider limits were reached")
+                    csv.append(row(kind: "set_deferred", exported: date, build: build, game: game,
+                                   set: set, evidence: issue, generation: activeGeneration,
+                                   revision: snapshot?.revision ?? pokemonRevision ?? magicRevision, scope: "set_not_examined"))
+                    continue
                 }
                 if let magicDeferredReason {
                     gameCoverage.deferredSets += 1
@@ -1570,7 +1834,7 @@ enum ActiveCatalogHealthCSV {
                         summaries = cards
                     }
                     var summaryIssue = Evidence()
-                    if [.onePiece, .lorcana, .yuGiOh].contains(game),
+                    if !scope.isPriceAudit, [.onePiece, .lorcana, .yuGiOh].contains(game),
                        let expected = set.cardCount, expected != summaries.count {
                         summaryIssue.issue("SET_BROWSE_COUNT_MISMATCH",
                             "Active set declares \(expected) Browse entries but enumerated \(summaries.count).",
@@ -1593,11 +1857,16 @@ enum ActiveCatalogHealthCSV {
                     for summary in summaries {
                         try Task.checkCancellation()
                         var findings = printingEvidence(for: summary, catalog: activeCatalog)
+                        if scope.isPriceAudit, !isPriceAuditCandidate(summary, findings: findings) {
+                            setCoverage.auditExcluded += findings.count
+                            continue
+                        }
                         var details: CatalogCardDetails?
                         var detailError: Error?
                         // A single printing payload supplies all Magic finishes and USD fields.
                         // Pokémon normally enumerates one expected finish per checklist slot.
-                        if checkPrices && (game == .magic || (game == .pokemon && summary.masterSetVariant == nil)) {
+                        if checkPrices, auditStopReason == nil,
+                           game == .magic || (game == .pokemon && summary.masterSetVariant == nil) {
                             do {
                                 let loaded: CatalogCardDetails
                                 if let fromPage = magicDetails[summary.providerID] {
@@ -1625,11 +1894,19 @@ enum ActiveCatalogHealthCSV {
                         }
                         for original in findings {
                             try Task.checkCancellation()
+                            if scope.isPriceAudit, !isInPriceAuditScope(original, game: game) {
+                                setCoverage.auditExcluded += 1
+                                continue
+                            }
                             var finding = original
                             var status = "not_checked"
                             var amount: Double?
-                            if checkPrices {
+                            var priceError: Error?
+                            if checkPrices, let auditStopReason {
+                                finding.issue("PRICE_CHECK_DEFERRED", auditStopReason, "Retry the audit later")
+                            } else if checkPrices {
                                 if let detailError {
+                                    priceError = detailError
                                     status = recordPriceError(detailError, evidence: &finding)
                                 } else if finding.finish.isEmpty {
                                     finding.issue("FINISH_NOT_EVALUATED", "The active card record does not identify a finish to check.", "Review physical finish evidence")
@@ -1685,12 +1962,30 @@ enum ActiveCatalogHealthCSV {
                                     } catch CatalogLookupError.staleCatalog {
                                         throw CatalogLookupError.staleCatalog
                                     } catch {
+                                        priceError = error
                                         status = recordPriceError(error, evidence: &finding)
                                     }
                                 }
                             }
+                            if scope.isPriceAudit, auditStopReason == nil, status != "not_checked" || priceError != nil {
+                                let throttled = priceError.map(isThrottle) ?? false
+                                if throttled || status == "price_provider_unavailable" {
+                                    consecutiveProviderFailures += 1
+                                } else {
+                                    consecutiveProviderFailures = 0
+                                }
+                                if throttled || consecutiveProviderFailures >= auditProviderFailureLimit {
+                                    auditStopReason = throttled
+                                        ? "A pricing provider asked the audit to slow down at \(set.code) \(summary.collectorNumber). Price checks stopped to respect its limits."
+                                        : "Price checks stopped at \(set.code) \(summary.collectorNumber) after \(consecutiveProviderFailures) consecutive provider failures."
+                                }
+                            }
                             let familyCode = finding.familyCode
                             sharedFamilies.collect(from: &finding, printedCode: familyCode)
+                            if scope.isPriceAudit {
+                                // Identity and coverage findings belong to the full report.
+                                finding.retainIssues(in: pricingIssueCodes)
+                            }
                             let hasIssue = shouldExport(finding)
                             let blockageCodes = ["PRICE_PROVIDER_UNAVAILABLE", "PRICE_CHECK_FAILED",
                                                  "PRICE_RESPONSE_INVALID", "PRICE_CHECK_NOT_COMPLETED", "FINISH_NOT_EVALUATED"]
@@ -1709,14 +2004,15 @@ enum ActiveCatalogHealthCSV {
                                 setCoverage.withoutFinish += 1
                             }
                             guard hasIssue else { continue }
-                            csv.append(row(kind: "card", exported: date, build: build, game: game,
+                            csv.append(row(kind: scope.isPriceAudit ? "price_failure" : "card",
+                                           exported: date, build: build, game: game,
                                            set: set, card: summary, evidence: finding,
                                            priceStatus: status, price: amount,
                                            generation: summary.catalogGeneration ?? activeGeneration,
                                            revision: snapshot?.revision ?? pokemonRevision ?? magicRevision,
                                            scope: !checkPrices ? "pricing_disabled"
                                                : status == "not_checked" || blockageCodes.contains(status.uppercased()) ? "price_check_incomplete"
-                                               : game == .magic && magicDetails[summary.providerID] != nil ? "scryfall_enumeration_response"
+                                               : game == .magic && magicDetails[summary.providerID] != nil ? magicEvidenceScope
                                                : "price_resolver_evidence_may_be_cached"))
                         }
                     }
@@ -1746,7 +2042,7 @@ enum ActiveCatalogHealthCSV {
                         issue.provider = "scryfall"
                         // A response scoped to a single unmatched query does
                         // not establish a wider provider outage.
-                        if scryfallFailure?.httpStatus == 404 {
+                        if scryfallFailure?.httpStatus == 404 || scryfallFailure?.setScoped == true {
                             consecutiveMagicFailures = 0
                         } else {
                             consecutiveMagicFailures += 1

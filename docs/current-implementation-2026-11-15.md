@@ -71,8 +71,10 @@ does **not** yet certify no-customer-key commercial pricing or distribution.
 
 The iPhone report is exposed under **Settings → Advanced → Collection
 Diagnostics → Collection Exports & Price Coverage → Export Catalog Health
-Report**. Its **Check catalog prices** toggle starts on and makes explicit
-per-finish checks, subject to provider and cache limits. When off,
+Report**. Its **Check catalog prices** toggle starts off (changed Nov. 16,
+2026) and, when on, makes explicit per-finish checks, subject to provider and
+cache limits. **Export Price Audit** prices only mapped finishes for one game
+or set; see the [catalog-health guide](../scripts/CATALOG_HEALTH.md). When off,
 `not_checked` is **not** a missing quote. Magic page failures and deferred
 sets must not be interpreted as a complete enumeration. The export can
 include all five game catalogs even if the owner has no cards.

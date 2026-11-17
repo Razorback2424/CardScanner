@@ -5,6 +5,7 @@ import SwiftUI
 import UIKit
 import Vision
 import XCTest
+import zlib
 import PokemonCatalogCore
 @testable import TradingCardScanner
 
@@ -10394,7 +10395,8 @@ final class ActiveCatalogHealthExportTests: XCTestCase {
 
     func testScryfallRateLimitHonorsRetryAfterAcrossCalls() async throws {
         let replies = HealthScryfallReplies([429, 200], retryAfter: "120")
-        let transport = CatalogHealthScryfallTransport(pause: { _ in XCTFail("429 must not be retried") })
+        let transport = CatalogHealthScryfallTransport(pacer: ScryfallRequestPacer(),
+                                                       pause: { _ in XCTFail("429 must not be retried") })
         for expected in ["HTTP 429; Retry-After 120", "cooldown is still active"] {
             do {
                 _ = try await transport.load { await replies.next() }
@@ -10408,10 +10410,74 @@ final class ActiveCatalogHealthExportTests: XCTestCase {
         XCTAssertEqual(calls, 1)
     }
 
+    func testScryfallSearchRequestsStayUnderPublishedTwoPerSecondLimit() async throws {
+        XCTAssertGreaterThan(ScryfallRequestPacer.searchSpacing, .milliseconds(500))
+        XCTAssertGreaterThan(ScryfallRequestPacer.generalSpacing, .milliseconds(100))
+        let replies = HealthScryfallReplies([200, 200, 200])
+        let transport = CatalogHealthScryfallTransport(pacer: ScryfallRequestPacer())
+        let clock = ContinuousClock()
+        let start = clock.now
+        for _ in 0..<3 { _ = try await transport.load { await replies.next() } }
+        XCTAssertGreaterThanOrEqual(clock.now - start, ScryfallRequestPacer.searchSpacing * 2)
+    }
+
+    func testPacerSeparatesSearchAndGeneralBucketsAndIgnoresFileOrigins() throws {
+        let search = try XCTUnwrap(URL(string: "https://api.scryfall.com/cards/search?q=e%3Aneo"))
+        XCTAssertEqual(ScryfallRequestPacer.bucket(for: search), .search)
+        for path in ["/cards/named", "/cards/random", "/cards/collection"] {
+            XCTAssertEqual(ScryfallRequestPacer.bucket(for: try XCTUnwrap(URL(string: "https://api.scryfall.com" + path))), .search)
+        }
+        XCTAssertEqual(ScryfallRequestPacer.bucket(for: try XCTUnwrap(URL(string: "https://api.scryfall.com/sets"))), .general)
+        XCTAssertEqual(ScryfallRequestPacer.bucket(for: try XCTUnwrap(URL(string: "https://api.scryfall.com/cards/neo/1/en"))), .general)
+        XCTAssertNil(ScryfallRequestPacer.bucket(for: try XCTUnwrap(URL(string: "https://data.scryfall.io/default-cards/x.jsonl.gz"))))
+        XCTAssertNil(ScryfallRequestPacer.bucket(for: try XCTUnwrap(URL(string: "https://cards.scryfall.io/large/front/a.jpg"))))
+    }
+
+    func testPacerLockoutAfter429BlocksEveryCallerForAtLeastThirtySeconds() async throws {
+        final class Clock: @unchecked Sendable { var date = Date(timeIntervalSince1970: 1_000) }
+        let clock = Clock()
+        let pacer = ScryfallRequestPacer(searchSpacing: .zero, generalSpacing: .zero, now: { clock.date })
+        let search = try XCTUnwrap(URL(string: "https://api.scryfall.com/cards/search"))
+        let sets = try XCTUnwrap(URL(string: "https://api.scryfall.com/sets"))
+        let limited = try XCTUnwrap(HTTPURLResponse(url: search, statusCode: 429, httpVersion: nil,
+                                                    headerFields: ["Retry-After": "2"]))
+        await pacer.record(limited)
+        for url in [search, sets] {
+            do {
+                try await pacer.acquire(for: url)
+                XCTFail("A 429 must quiet every Scryfall caller")
+            } catch let ScryfallError.rateLimited(retryAfter) {
+                XCTAssertEqual(try XCTUnwrap(retryAfter), 30, accuracy: 0.001)
+            }
+        }
+        // File origins are never paced or locked out.
+        try await pacer.acquire(for: try XCTUnwrap(URL(string: "https://data.scryfall.io/file.jsonl.gz")))
+        clock.date = clock.date.addingTimeInterval(30)
+        try await pacer.acquire(for: sets)
+        await pacer.recordRateLimit(retryAfter: 90)
+        let remaining = await pacer.lockoutRemaining
+        XCTAssertEqual(try XCTUnwrap(remaining), 90, accuracy: 0.001)
+    }
+
+    func testCancelledWaiterDoesNotDelayLaterSearch() async throws {
+        let pacer = ScryfallRequestPacer(searchSpacing: .milliseconds(400))
+        let search = try XCTUnwrap(URL(string: "https://api.scryfall.com/cards/search"))
+        try await pacer.acquire(for: search)
+        let waiter = Task { try await pacer.acquire(for: search) }
+        waiter.cancel()
+        _ = try? await waiter.value
+        let clock = ContinuousClock()
+        let start = clock.now
+        try await pacer.acquire(for: search)
+        // The cancelled waiter claimed nothing, so this waits one spacing, not two.
+        XCTAssertLessThan(clock.now - start, .milliseconds(750))
+    }
+
     func testScryfallTemporaryFailureRecoversAndPersistentFailureStopsAfterOneRetry() async throws {
         for results in [[503, 200], [503, 503, 200]] {
             let replies = HealthScryfallReplies(results)
-            let transport = CatalogHealthScryfallTransport(pause: { XCTAssertEqual($0, .seconds(1)) })
+            let transport = CatalogHealthScryfallTransport(pacer: ScryfallRequestPacer(),
+                                                           pause: { XCTAssertEqual($0, .seconds(1)) })
             do {
                 _ = try await transport.load { await replies.next() }
                 XCTAssertEqual(results[1], 200)
@@ -10597,6 +10663,422 @@ private actor HealthExportFixture: BrowseCatalogProviding {
         """
         let card = try JSONDecoder().decode(ScryfallCard.self, from: Data(json.utf8))
         return .init(card: .magic(card), set: Self.fixtureSet())
+    }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { $0.finish() }
+    }
+}
+
+// MARK: - Scryfall bulk data for Catalog Health
+
+final class ScryfallBulkCatalogHealthTests: XCTestCase {
+    private var directory: URL!
+
+    override func setUpWithError() throws {
+        directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ScryfallBulkTests-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    }
+
+    override func tearDownWithError() throws {
+        ScryfallBulkTestProtocol.reset()
+        try? FileManager.default.removeItem(at: directory)
+    }
+
+    private func archive(_ lines: [String], name: String = "bulk.jsonl.gz") throws -> URL {
+        let url = directory.appendingPathComponent(name)
+        try BulkFixture.gzip(Data(lines.joined(separator: "\n").utf8)).write(to: url)
+        return url
+    }
+
+    func testIndexKeepsEnglishPaperPrintingsGroupedBySetInCollectorOrder() throws {
+        let updated = Date(timeIntervalSince1970: 1_800_000_000)
+        let file = try archive([
+            BulkFixture.card("a", set: "neo", number: "10"),
+            BulkFixture.card("b", set: "neo", number: "2"),
+            BulkFixture.card("c", set: "neo", number: "3", lang: "ja"),
+            BulkFixture.card("d", set: "neo", number: "4", digital: true),
+            BulkFixture.card("e", set: "neo", number: "5", games: ["arena"]),
+            BulkFixture.card("f", set: "DMU", number: "1"),
+        ])
+        let indexDirectory = directory.appendingPathComponent("index")
+        var index: ScryfallBulkCardIndex? = try ScryfallBulkCardIndex.build(
+            gzipFile: file, updatedAt: updated, directory: indexDirectory)
+        XCTAssertEqual(index?.printingCount, 3)
+        XCTAssertEqual(index?.setCodes, ["neo", "dmu"])
+        XCTAssertEqual(try index?.cards(inSet: "NEO").map(\.id), ["b", "a"])
+        XCTAssertEqual(try index?.cards(inSet: "dmu").first?.prices?.usd, "1.25")
+        XCTAssertEqual(try index?.cards(inSet: "missing").count, 0)
+        XCTAssertEqual(index?.updatedAt, updated)
+        index = nil
+        XCTAssertFalse(FileManager.default.fileExists(atPath: indexDirectory.path),
+                       "The spool must be removed with the index")
+    }
+
+    func testIndexRejectsTruncatedRepeatedAndUnreadableArchives() throws {
+        let good = try BulkFixture.gzip(Data([BulkFixture.card("a", set: "neo", number: "1"),
+                                               BulkFixture.card("b", set: "neo", number: "2")]
+            .joined(separator: "\n").utf8))
+        let truncated = directory.appendingPathComponent("truncated.gz")
+        try good.dropLast(12).write(to: truncated)
+        let cases: [(String, URL)] = [
+            ("truncated", truncated),
+            ("repeated", try archive([BulkFixture.card("a", set: "neo", number: "1"),
+                                      BulkFixture.card("A", set: "neo", number: "1")], name: "dup.gz")),
+            ("unreadable", try archive([BulkFixture.card("a", set: "neo", number: "1"), "{not json"], name: "bad.gz")),
+        ]
+        for (label, file) in cases {
+            let target = directory.appendingPathComponent("index-\(label)")
+            XCTAssertThrowsError(try ScryfallBulkCardIndex.build(gzipFile: file, updatedAt: .now, directory: target),
+                                 label) { error in
+                guard case ScryfallBulkDataError.corrupt = error else {
+                    return XCTFail("\(label): unexpected \(error)")
+                }
+            }
+            XCTAssertFalse(FileManager.default.fileExists(atPath: target.path), "\(label) left a partial spool")
+        }
+    }
+
+    func testLineReaderHandlesTinyChunksConcatenatedMembersAndCRLF() throws {
+        let text = "first line\r\nsecond \u{00E9}\n\nthird"
+        let bytes = Data(text.utf8)
+        let split = bytes.count / 2
+        let file = directory.appendingPathComponent("members.gz")
+        try (BulkFixture.gzip(bytes.prefix(split)) + BulkFixture.gzip(bytes.suffix(from: split))).write(to: file)
+        var lines: [String] = []
+        try GzipLineReader.forEachLine(in: file, chunkSize: 3) { lines.append(String(decoding: $0, as: UTF8.self)) }
+        XCTAssertEqual(lines, ["first line", "second \u{00E9}", "third"])
+    }
+
+    func testMetadataRejectsForeignHostsWrongTypeAndImplausibleSizes() throws {
+        let good = ScryfallBulkDataMetadata(type: "default_cards", updatedAt: .now,
+            downloadURL: URL(string: "https://data.scryfall.io/default-cards/x.jsonl.gz")!, compressedSize: 10)
+        XCTAssertNoThrow(try good.validated(expectedType: "default_cards"))
+        let rejects = [
+            ScryfallBulkDataMetadata(type: "all_cards", updatedAt: .now, downloadURL: good.downloadURL, compressedSize: 10),
+            ScryfallBulkDataMetadata(type: "default_cards", updatedAt: .now,
+                                     downloadURL: URL(string: "https://evil.example/x.gz")!, compressedSize: 10),
+            ScryfallBulkDataMetadata(type: "default_cards", updatedAt: .now,
+                                     downloadURL: URL(string: "http://data.scryfall.io/x.gz")!, compressedSize: 10),
+            ScryfallBulkDataMetadata(type: "default_cards", updatedAt: .now, downloadURL: good.downloadURL, compressedSize: 0),
+        ]
+        for metadata in rejects {
+            XCTAssertThrowsError(try metadata.validated(expectedType: "default_cards"))
+        }
+        XCTAssertNotNil(ScryfallBulkDataMetadata.parseTimestamp("2026-11-16T22:06:20.476+00:00"))
+        XCTAssertNotNil(ScryfallBulkDataMetadata.parseTimestamp("2026-11-16T22:06:20+00:00"))
+    }
+
+    private func source(pacer: ScryfallRequestPacer = ScryfallRequestPacer(searchSpacing: .zero, generalSpacing: .zero))
+        -> CatalogHealthMagicBulkSource {
+        CatalogHealthMagicBulkSource(session: ScryfallBulkTestProtocol.session(), pacer: pacer,
+                                     cachesDirectory: directory, progress: { _ in },
+                                     summarize: { BrowseCatalog.magicSummary($0, in: $1) })
+    }
+
+    private func set(_ code: String) -> CatalogSet {
+        CatalogSet(catalogID: .init(game: .magic, providerID: code), name: code.uppercased(), code: code.uppercased(),
+                   logoURL: nil, symbolURL: nil, cardCount: nil, releaseDate: nil, sortRank: 0)
+    }
+
+    func testBulkSourceDownloadsOnceAndServesEverySetFromTheFile() async throws {
+        let gz = try BulkFixture.gzip(Data([BulkFixture.card("a", set: "neo", number: "2"),
+                                             BulkFixture.card("b", set: "neo", number: "1"),
+                                             BulkFixture.card("c", set: "dmu", number: "7")].joined(separator: "\n").utf8))
+        ScryfallBulkTestProtocol.stub(metadataSize: gz.count, archive: gz)
+        let source = source()
+        let neo = try await source.entries(for: set("neo"))
+        XCTAssertEqual(neo.map { $0.0.providerID }, ["b", "a"])
+        let expected = try XCTUnwrap(ScryfallBulkDataMetadata.parseTimestamp(BulkFixture.updatedAt))
+        XCTAssertTrue(neo.allSatisfy { $0.1.retrievedAt == expected },
+                      "Bulk prices are observed when Scryfall built the file, not when the app read it")
+        let dmu = try await source.entries(for: set("dmu"))
+        XCTAssertEqual(dmu.count, 1)
+        do {
+            _ = try await source.entries(for: set("zzz"))
+            XCTFail("A set with no printings must not look complete")
+        } catch let failure as CatalogHealthScryfallFailure {
+            XCTAssertTrue(failure.setScoped)
+            XCTAssertFalse(failure.defersProvider)
+        }
+        XCTAssertEqual(ScryfallBulkTestProtocol.requests(), [CatalogHealthMagicBulkSource.metadataURL.absoluteString,
+                                                            BulkFixture.downloadURL])
+        let leftovers = try FileManager.default.contentsOfDirectory(atPath: directory.path)
+            .filter { $0.hasPrefix("ScryfallBulk-") }
+        XCTAssertEqual(leftovers.count, 1, "Only the live index spool remains")
+    }
+
+    func testIncompleteDownloadDefersOnceWithoutRetrying() async throws {
+        let gz = try BulkFixture.gzip(Data(BulkFixture.card("a", set: "neo", number: "1").utf8))
+        ScryfallBulkTestProtocol.stub(metadataSize: gz.count + 5, archive: gz)
+        let source = source()
+        for _ in 0..<2 {
+            do {
+                _ = try await source.entries(for: set("neo"))
+                XCTFail("A short download must not produce a report")
+            } catch let failure as CatalogHealthScryfallFailure {
+                XCTAssertTrue(failure.defersProvider)
+                XCTAssertTrue(failure.reason.contains("incomplete"), failure.reason)
+            }
+        }
+        XCTAssertEqual(ScryfallBulkTestProtocol.requests().count, 2, "The failure is remembered, not retried per set")
+        let leftovers = try FileManager.default.contentsOfDirectory(atPath: directory.path)
+            .filter { $0.hasPrefix("ScryfallBulk-") }
+        XCTAssertTrue(leftovers.isEmpty)
+    }
+
+    func testMetadataRateLimitLocksTheSharedPacer() async throws {
+        ScryfallBulkTestProtocol.stubRateLimit(retryAfter: "5")
+        let pacer = ScryfallRequestPacer(searchSpacing: .zero, generalSpacing: .zero)
+        do {
+            _ = try await source(pacer: pacer).entries(for: set("neo"))
+            XCTFail("Expected deferral")
+        } catch let failure as CatalogHealthScryfallFailure {
+            XCTAssertTrue(failure.defersProvider)
+            XCTAssertEqual(failure.httpStatus, 429)
+        }
+        let remaining = await pacer.lockoutRemaining
+        XCTAssertGreaterThan(try XCTUnwrap(remaining), 29)
+    }
+}
+
+private enum BulkFixture {
+    static let updatedAt = "2026-11-16T22:06:20.476+00:00"
+    static let downloadURL = "https://data.scryfall.io/default-cards/default-cards-20261116.jsonl.gz"
+
+    static func card(_ id: String, set: String, number: String, lang: String = "en",
+                     digital: Bool = false, games: [String] = ["paper"]) -> String {
+        let object: [String: Any] = [
+            "object": "card", "id": id, "name": "Card \(id)", "set": set, "set_name": set.uppercased(),
+            "collector_number": number, "lang": lang, "digital": digital, "games": games,
+            "finishes": ["nonfoil", "foil"], "prices": ["usd": "1.25", "usd_foil": NSNull()],
+            "oracle_text": "Fields the app does not model are ignored.", "legalities": ["standard": "legal"],
+        ]
+        let data = try! JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
+        return String(decoding: data, as: UTF8.self)
+    }
+
+    static func gzip(_ input: Data) throws -> Data {
+        var stream = z_stream()
+        guard deflateInit2_(&stream, Z_DEFAULT_COMPRESSION, Z_DEFLATED, 15 + 16, 8, Z_DEFAULT_STRATEGY,
+                            ZLIB_VERSION, Int32(MemoryLayout<z_stream>.size)) == Z_OK else {
+            throw ScryfallBulkDataError.corrupt("test deflate init")
+        }
+        defer { deflateEnd(&stream) }
+        var output = Data()
+        var buffer = [UInt8](repeating: 0, count: 16 * 1_024)
+        var bytes = [UInt8](input)
+        var status = Z_OK
+        try bytes.withUnsafeMutableBufferPointer { inBuffer in
+            stream.next_in = inBuffer.baseAddress
+            stream.avail_in = uInt(inBuffer.count)
+            repeat {
+                let produced = buffer.withUnsafeMutableBufferPointer { out -> Int in
+                    stream.next_out = out.baseAddress
+                    stream.avail_out = uInt(out.count)
+                    status = deflate(&stream, Z_FINISH)
+                    return out.count - Int(stream.avail_out)
+                }
+                output.append(contentsOf: buffer[0..<produced])
+            } while status == Z_OK
+            guard status == Z_STREAM_END else { throw ScryfallBulkDataError.corrupt("test deflate \(status)") }
+        }
+        return output
+    }
+}
+
+private final class ScryfallBulkTestProtocol: URLProtocol {
+    private struct Reply { let status: Int; let headers: [String: String]; let body: Data }
+    private static let lock = NSLock()
+    nonisolated(unsafe) private static var replies: [String: Reply] = [:]
+    nonisolated(unsafe) private static var log: [String] = []
+
+    static func session() -> URLSession {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [ScryfallBulkTestProtocol.self]
+        return URLSession(configuration: configuration)
+    }
+
+    static func reset() { lock.withLock { replies = [:]; log = [] } }
+    static func requests() -> [String] { lock.withLock { log } }
+
+    static func stub(metadataSize: Int, archive: Data) {
+        let metadata: [String: Any] = [
+            "object": "bulk_data", "type": "default_cards", "updated_at": BulkFixture.updatedAt,
+            "jsonl_download_uri": BulkFixture.downloadURL, "compressed_size": metadataSize,
+        ]
+        let body = try! JSONSerialization.data(withJSONObject: metadata)
+        lock.withLock {
+            replies[CatalogHealthMagicBulkSource.metadataURL.absoluteString] =
+                Reply(status: 200, headers: ["Content-Type": "application/json"], body: body)
+            replies[BulkFixture.downloadURL] = Reply(status: 200, headers: ["Content-Type": "application/gzip"], body: archive)
+        }
+    }
+
+    static func stubRateLimit(retryAfter: String) {
+        lock.withLock {
+            replies[CatalogHealthMagicBulkSource.metadataURL.absoluteString] =
+                Reply(status: 429, headers: ["Retry-After": retryAfter], body: Data())
+        }
+    }
+
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+
+    override func startLoading() {
+        let key = request.url?.absoluteString ?? ""
+        let reply = Self.lock.withLock { () -> Reply? in
+            Self.log.append(key)
+            return Self.replies[key]
+        } ?? Reply(status: 404, headers: [:], body: Data())
+        let response = HTTPURLResponse(url: request.url!, statusCode: reply.status, httpVersion: "HTTP/1.1",
+                                       headerFields: reply.headers)!
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: reply.body)
+        client?.urlProtocolDidFinishLoading(self)
+    }
+
+    override func stopLoading() {}
+}
+
+// MARK: - Targeted price audit
+
+final class CatalogPriceAuditTests: XCTestCase {
+    @MainActor
+    func testMagicAuditExaminesOnlyTheChosenSetAndListsOnlyPricingFailures() async throws {
+        let browse = PriceAuditMagicFixture()
+        var attempted: [String] = []
+        let chosen = PriceAuditMagicFixture.set("second")
+        let report = try await ActiveCatalogHealthCSV.makeDocument(
+            runtimes: CardGameRuntimeContainer(runtimes: []), browse: browse,
+            scope: .priceAudit(game: .magic, setID: chosen.catalogID),
+            loadMagicSet: { set in
+                attempted.append(set.providerID)
+                let page = try await browse.cards(in: set, cursor: nil)
+                let card = try XCTUnwrap(page.items.first)
+                return [(card, try await browse.details(for: card))]
+            }, progress: { _ in })
+        XCTAssertEqual(attempted, ["second"])
+        let rows = report.text.components(separatedBy: "\r\n").dropFirst().filter { !$0.isEmpty }
+        XCTAssertTrue(rows.allSatisfy { $0.contains(",\"magic\",") }, "An audit examines one game")
+        XCTAssertEqual(rows.filter { $0.hasPrefix("\"audit_scope\"") }.count, 1)
+        XCTAssertFalse(rows.contains { $0.hasPrefix("\"card\"") })
+        let failures = rows.filter { $0.hasPrefix("\"price_failure\"") }
+        XCTAssertEqual(failures.count, 1)
+        let failure = try XCTUnwrap(failures.first)
+        XCTAssertTrue(failure.contains("\"etched\""))
+        XCTAssertTrue(failure.contains("NO_USD_QUOTE"))
+        XCTAssertFalse(failure.contains("MARKET_PRODUCT_ID_MISSING"),
+                       "Marketplace identity evidence belongs to the full report")
+        XCTAssertTrue(failure.contains("CATALOG_NOTICE") == false)
+        XCTAssertEqual(ActiveCatalogHealthCSV.auditFilename(for: .priceAudit(game: .magic, setID: chosen.catalogID), set: chosen),
+                       "ScanStash Price Audit - \(CardGame.magic.label) - SECOND")
+        XCTAssertEqual(ActiveCatalogHealthCSV.auditFilename(for: .fullCatalog(checkPrices: false), set: nil),
+                       "ScanStash Active Catalog Health")
+    }
+
+    @MainActor
+    func testAuditForAnInactiveSetReportsItInsteadOfAnEmptySuccess() async throws {
+        let report = try await ActiveCatalogHealthCSV.makeDocument(
+            runtimes: CardGameRuntimeContainer(runtimes: []), browse: PriceAuditMagicFixture(),
+            scope: .priceAudit(game: .magic, setID: .init(game: .magic, providerID: "retired")),
+            loadMagicSet: { _ in XCTFail("No set should be enumerated"); return [] }, progress: { _ in })
+        XCTAssertTrue(report.text.contains("AUDIT_SET_NOT_ACTIVE"))
+    }
+
+    @MainActor
+    func testAuditStopsAfterRepeatedProviderFailuresOrOneThrottleAndDefersTheRest() async throws {
+        let mapped = try XCTUnwrap(PokemonTCGCSVMapping.byCardID.keys.sorted().first)
+        for (error, expectedCalls) in [(PriceQuoteError.providerUnavailable as Error, 3),
+                                       (PokemonTCGCSVError.retryLater as Error, 1)] {
+            let browse = PriceAuditPokemonFixture(mappedID: mapped, error: error)
+            let report = try await ActiveCatalogHealthCSV.makeDocument(
+                runtimes: CardGameRuntimeContainer(runtimes: []), browse: browse,
+                scope: .priceAudit(game: .pokemon, setID: nil), progress: { _ in })
+            let calls = await browse.priceCalls
+            XCTAssertEqual(calls.count, expectedCalls, "\(error)")
+            XCTAssertFalse(calls.contains("unmapped"), "An unmapped card is never priced")
+            let rows = report.text.components(separatedBy: "\r\n")
+            XCTAssertEqual(rows.filter { $0.hasPrefix("\"price_failure\"") }.count, expectedCalls)
+            XCTAssertEqual(rows.filter { $0.hasPrefix("\"set_deferred\"") && $0.contains("PRICE_AUDIT_STOPPED") }.count, 1)
+            let coverage = try XCTUnwrap(rows.first { $0.hasPrefix("\"set_coverage\"") })
+            // 5 mapped finishes: the unpriced remainder stays visible as unevaluated, and the
+            // unmapped card is counted as excluded rather than silently dropped.
+            XCTAssertTrue(coverage.contains("\"5\",\"0\",\"\(expectedCalls)\",\"5\""), coverage)
+            XCTAssertTrue(coverage.hasSuffix("\"1\""), coverage)
+        }
+    }
+}
+
+private actor PriceAuditMagicFixture: BrowseCatalogProviding {
+    static func set(_ id: String) -> CatalogSet {
+        CatalogSet(catalogID: .init(game: .magic, providerID: id), name: id.capitalized, code: id.uppercased(),
+                   logoURL: nil, symbolURL: nil, cardCount: 1, releaseDate: nil, sortRank: 0)
+    }
+    func sets(for game: CardGame) async throws -> [CatalogSet] {
+        game == .magic ? [Self.set("first"), Self.set("second")] : []
+    }
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [.init(game: .magic, providerID: "printing-\(set.providerID)", setID: set.catalogID,
+            setName: set.name, setCode: set.code, name: "Fixture Card", collectorNumber: "1",
+            thumbnailURL: nil, imageURL: nil, magicFinishIDs: ["nonfoil", "foil", "etched"],
+            collectionAvailabilityNotice: "Reprint")], nextCursor: nil)
+    }
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [], nextCursor: nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        // No marketplace IDs: a full report flags MARKET_PRODUCT_ID_MISSING; an audit does not.
+        let json = """
+        {"object":"card","id":"\(summary.providerID)","name":"Fixture Card","set":"tst","set_name":"Fixture",
+         "collector_number":"1","lang":"en","digital":false,"finishes":["nonfoil","foil","etched"],
+         "prices":{"usd":"2.15","usd_foil":"5.80","usd_etched":null}}
+        """
+        let card = try JSONDecoder().decode(ScryfallCard.self, from: Data(json.utf8))
+        return .init(card: .magic(card), set: Self.set(summary.setID.providerID))
+    }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { $0.finish() }
+    }
+}
+
+private actor PriceAuditPokemonFixture: BrowseCatalogProviding {
+    let mappedID: String
+    let error: Error
+    private(set) var priceCalls: [String] = []
+
+    init(mappedID: String, error: Error) {
+        self.mappedID = mappedID
+        self.error = error
+    }
+
+    private static func set(_ id: String) -> CatalogSet {
+        CatalogSet(catalogID: .init(game: .pokemon, providerID: id), name: id, code: id.uppercased(),
+                   logoURL: nil, symbolURL: nil, cardCount: nil, releaseDate: nil, sortRank: 0)
+    }
+    func sets(for game: CardGame) async throws -> [CatalogSet] {
+        game == .pokemon ? [Self.set("audit-a"), Self.set("audit-b")] : []
+    }
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        let mapped = (1...5).map { number in
+            CatalogCardSummary(game: .pokemon, providerID: mappedID, setID: set.catalogID, setName: set.name,
+                               setCode: set.code, name: "Mapped", collectorNumber: String(number),
+                               thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
+        }
+        let unmapped = CatalogCardSummary(game: .pokemon, providerID: "unmapped", setID: set.catalogID,
+                                          setName: set.name, setCode: set.code, name: "Unmapped", collectorNumber: "9",
+                                          thumbnailURL: nil, imageURL: nil, masterSetVariant: .normal)
+        return .init(items: [unmapped] + mapped, nextCursor: nil)
+    }
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [], nextCursor: nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        throw PriceQuoteError.providerUnavailable
+    }
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
+        priceCalls.append(summary.providerID)
+        throw error
     }
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
         AsyncStream { $0.finish() }
