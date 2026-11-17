@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftData
 import SwiftUI
 
@@ -142,6 +143,11 @@ struct CatalogCardDetailView: View {
     @State private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
     @State private var showsGradedPicker = false
     @State private var historyVariantID: String?
+    @State private var historyPoints: [JustTCGHistoryPoint] = []
+    @State private var photoTargetKey: String?
+    @State private var isChoosingPhoto = false
+    @State private var photoItem: PhotosPickerItem?
+    @State private var shareTarget: CatalogCopyShareTarget?
     @State private var mappedPrices: [String: PriceLookup] = [:]
     @State private var failedPriceVariantIDs: Set<String> = []
     @State private var priceRetryID = 0
@@ -211,6 +217,21 @@ struct CatalogCardDetailView: View {
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
+        // Owning a copy layers its actions onto the same page rather than
+        // sending the holder to a second, differently built card screen.
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if let details { copyMenu(details.card) }
+            }
+        }
+        .photosPicker(isPresented: $isChoosingPhoto, selection: $photoItem, matching: .images)
+        .task(id: photoItem) {
+            guard let item = photoItem, let key = photoTargetKey else { return }
+            await savePhoto(item, for: key)
+        }
+        .sheet(item: $shareTarget) { target in
+            CatalogCopyShareSheet(collectionKey: target.id, price: target.price)
+        }
         .alert(
             addAlertTitle,
             isPresented: Binding(
@@ -272,19 +293,26 @@ struct CatalogCardDetailView: View {
 
     private func content(_ details: CatalogCardDetails) -> some View {
         let reviewedPrinting = PokemonDeltaReignCatalog.printing(for: summary)
+        let heroCopy = selectedVariant(details.card).flatMap { copyTargets(for: $0, card: details.card).first }
         return VStack(spacing: 20) {
-            CatalogArtworkView(
-                thumbnailURL: summary.thumbnailURL,
-                imageURL: reviewedPrinting == nil ? details.card.displayImageURL ?? summary.imageURL : reviewedPrinting?.imageURL,
-                prefersFullSize: true,
-                game: summary.game,
-                setCode: summary.setCode,
-                collectorNumber: summary.collectorNumber,
-                limitlessArtworkAuthorized: summary.limitlessArtworkAuthorized,
-                providerID: summary.providerID,
-                providerSetID: summary.setID.providerID
-            )
-                .frame(maxHeight: 470)
+            if let heroCopy {
+                // A photo of the holder's own copy replaces the catalog scan.
+                CollectionDetailArtworkSource(collectionKey: heroCopy.collectionKey,
+                    legacyFilename: projectionStore.snapshot?.rowsByCollectionKey[heroCopy.collectionKey]?.userArtworkFilename) { filename in
+                    if let image = CollectionArtworkStore.image(filename: filename) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                            .frame(maxHeight: 470)
+                            .accessibilityLabel("Your photo of \(details.card.name)")
+                    } else {
+                        catalogArtwork(details, reviewedPrinting: reviewedPrinting)
+                    }
+                }
+            } else {
+                catalogArtwork(details, reviewedPrinting: reviewedPrinting)
+            }
 
             identityHeader(details)
 
@@ -295,9 +323,7 @@ struct CatalogCardDetailView: View {
                selectedVariant(details.card) != nil {
                 browsePriceHistorySection()
             }
-            if !finishVariants(details.card).isEmpty {
-                priceSection(details.card)
-            }
+            finishesSection(details.card)
 
             treatmentSection(details.card)
             if let notice = details.catalogNotice {
@@ -313,16 +339,6 @@ struct CatalogCardDetailView: View {
                 }
                 .disabled(isWritePending)
             }
-            if catalogCardSelection == nil {
-                if let variant = selectedVariant(details.card) {
-                    let slot = ownedSlot(for: variant, card: details.card)
-                    ForEach(slot.copyKeys, id: \.self) { key in
-                        savedCopyLink(key, personalOnly: !UnverifiedReportKey.hasReport(key))
-                    }
-                }
-                ownedSection(details.card)
-            }
-
             if let catalogCardSelection {
                 Button {
                     catalogCardSelection(details, summary)
@@ -333,88 +349,181 @@ struct CatalogCardDetailView: View {
                 .buttonStyle(.borderedProminent)
                 .accessibilityHint("Resolve the saved scan using this catalog printing")
                 .disabled(details.collectionWriteUnavailableReason != nil)
-            } else {
-                VStack(spacing: 12) {
-                    // Raw copies are added from their price rows. This button
-                    // remains only where no row can carry a quantity control.
-                    if !showsInlineQuantityControls(details) {
-                        Button { prepareAdd(details.card) } label: {
-                            HStack(spacing: 10) {
-                                if isWritePending { ProgressView().accessibilityLabel("Saving collection change") }
-                                Label(
-                                    summary.masterSetVariant.map { "Add \($0.label) Copy" } ?? "Add to Collection",
-                                    systemImage: "plus.circle.fill"
-                                )
-                            }
-                            .font(.body.weight(.semibold))
-                            .frame(maxWidth: .infinity, minHeight: 52)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .buttonBorderShape(.capsule)
-                        .disabled(isQuantityLocked || !catalog.gameRegistry.supports(summary.game, .collectionWrite)
-                            || !PokemonVariantPolicy.allowsAcquisition(of: details.card, finish: summary.masterSetVariant,
-                                printRun: summary.pokemonPrintRun)
-                            || details.collectionWriteUnavailableReason != nil)
+            } else if !showsInlineQuantityControls(details) {
+                // Raw copies are added from their finish tiles. This button
+                // remains only where no tile can carry a quantity control.
+                Button { prepareAdd(details.card) } label: {
+                    HStack(spacing: 10) {
+                        if isWritePending { ProgressView().accessibilityLabel("Saving collection change") }
+                        Label(
+                            summary.masterSetVariant.map { "Add \($0.label) Copy" } ?? "Add to Collection",
+                            systemImage: "plus.circle.fill"
+                        )
                     }
-
-                    if catalog.gameRegistry.supports(summary.game, [.collectionWrite, .gradedPricing]) {
-                        // A slab is a distinct object with a grade the user chooses.
-                        Button { showsGradedPicker = true } label: {
-                            HStack(spacing: 10) {
-                                Image(systemName: "checkmark.seal.fill")
-                                    .foregroundStyle(.primary)
-                                Text("Add Graded Copy")
-                            }
-                            .font(.body.weight(.semibold))
-                            .foregroundStyle(.primary)
-                            .frame(maxWidth: .infinity, minHeight: 52)
-                            .contentShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-                        .appPillGlass(tint: Color.accentColor.opacity(0.22), fallbackTintOpacity: 1, interactive: true)
-                        .disabled(isQuantityLocked || details.collectionWriteUnavailableReason != nil)
-                    }
+                    .font(.body.weight(.semibold))
+                    .frame(maxWidth: .infinity, minHeight: 52)
                 }
-                .confirmationDialog(
-                    "Choose a finish",
-                    isPresented: $showsFinishChoice,
-                    titleVisibility: .visible
-                ) {
-                    ForEach(finishOptions) { variant in
-                        Button(variant.label) { commit(ResolvedVariant(variant: variant, resolution: .userConfirmed)) }
-                    }
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("Add the physical version you own.")
-                }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+                .disabled(isQuantityLocked || !catalog.gameRegistry.supports(summary.game, .collectionWrite)
+                    || !PokemonVariantPolicy.allowsAcquisition(of: details.card, finish: summary.masterSetVariant,
+                        printRun: summary.pokemonPrintRun)
+                    || details.collectionWriteUnavailableReason != nil)
             }
 
-            if !needsCatalogResolution,
-               let destination = TCGplayerLinkBuilder.destination(for: details.card,
-                    variant: selectedVariant(details.card), pokemonPrintRun: summary.pokemonPrintRun) {
-                CardDetailMarketplaceButton(destination: destination)
-            }
-            DisclosureGroup("Printing details") {
-                VStack(alignment: .leading, spacing: 8) {
-                    LabeledContent("Set", value: details.set.name)
-                    LabeledContent("Card number", value: summary.printedCollectorNumber ?? "Unnumbered")
-                    if let rarity = CardRarityToken(raw: details.card.rarity) {
-                        LabeledContent("Rarity", value: rarity.label)
-                    }
-                    if let run = summary.pokemonPrintRun {
-                        LabeledContent("Print run", value: run.label)
-                    }
-                    let treatments = details.card.magicTreatments(for: selectedVariant(details.card))
-                    if !treatments.isEmpty {
-                        LabeledContent("Treatment", value: treatments.map(\.label).formatted(.list(type: .and)))
-                    }
-                }
-                .font(.subheadline)
-                .padding(.top, 8)
-            }
+            referenceList(details)
         }
         .padding(20)
         .contentWidthLimit(.standard)
+        .confirmationDialog(
+            "Choose a finish",
+            isPresented: $showsFinishChoice,
+            titleVisibility: .visible
+        ) {
+            ForEach(finishOptions) { variant in
+                Button(variant.label) { commit(ResolvedVariant(variant: variant, resolution: .userConfirmed)) }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Add the physical version you own.")
+        }
+    }
+
+    private func catalogArtwork(_ details: CatalogCardDetails,
+                                reviewedPrinting: PokemonDeltaReignCatalog.Printing?) -> some View {
+        CatalogArtworkView(
+            thumbnailURL: summary.thumbnailURL,
+            imageURL: reviewedPrinting == nil ? details.card.displayImageURL ?? summary.imageURL : reviewedPrinting?.imageURL,
+            prefersFullSize: true,
+            game: summary.game,
+            setCode: summary.setCode,
+            collectorNumber: summary.collectorNumber,
+            limitlessArtworkAuthorized: summary.limitlessArtworkAuthorized,
+            providerID: summary.providerID,
+            providerSetID: summary.setID.providerID
+        )
+        .frame(maxHeight: 470)
+    }
+
+    /// The selected finish's saved copies, oldest first.
+    private func copyTargets(for variant: PhysicalVariant, card: IdentifiedCard) -> [CatalogOwnedEntryTarget] {
+        guard catalogCardSelection == nil else { return [] }
+        return ownedSlot(for: variant, card: card).targets.sorted { $0.dateAdded < $1.dateAdded }
+    }
+
+    @ViewBuilder
+    private func copyMenu(_ card: IdentifiedCard) -> some View {
+        let targets = selectedVariant(card).map { copyTargets(for: $0, card: card) } ?? []
+        if !targets.isEmpty {
+            Menu {
+                if targets.count == 1, let target = targets.first {
+                    copyActions(target)
+                } else {
+                    ForEach(targets) { target in
+                        Menu("\(target.variantLabel) · added \(target.dateAdded.formatted(.dateTime.month(.abbreviated).day()))") {
+                            copyActions(target)
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.title3.weight(.semibold))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.white)
+            }
+            .accessibilityLabel("Your copy actions")
+            .accessibilityHint("Share, see history, set a photo, or record a sale or trade.")
+            .disabled(isWritePending)
+        }
+    }
+
+    @ViewBuilder
+    private func copyActions(_ target: CatalogOwnedEntryTarget) -> some View {
+        let row = projectionStore.snapshot?.rowsByCollectionKey[target.collectionKey]
+        Button {
+            shareTarget = .init(id: target.collectionKey, price: row?.price ?? .unknown)
+        } label: {
+            Label("Share", systemImage: "square.and.arrow.up")
+        }
+        NavigationLink {
+            CollectionCardHistoryView(collectionKey: target.collectionKey, cardName: target.cardName)
+        } label: {
+            Label("Collection History", systemImage: "clock.arrow.circlepath")
+        }
+        Divider()
+        CollectionDetailArtworkSource(collectionKey: target.collectionKey,
+                                      legacyFilename: row?.userArtworkFilename) { filename in
+            Button {
+                photoTargetKey = target.collectionKey
+                isChoosingPhoto = true
+            } label: {
+                Label(filename == nil ? "Choose Photo" : "Replace Photo", systemImage: "photo.badge.plus")
+            }
+            if filename != nil {
+                Button("Use Catalog Artwork", role: .destructive) { removePhoto(for: target.collectionKey) }
+            }
+        }
+        Divider()
+        Button {
+            dispositionTarget = CollectionDispositionTarget(
+                collectionKey: target.collectionKey, treatments: target.treatments,
+                cardName: target.cardName, quantity: target.quantity, kind: .sold)
+        } label: {
+            Label("Record Sale or Trade…", systemImage: "arrow.left.arrow.right")
+        }
+        .disabled(isQuantityLocked)
+    }
+
+    private func savePhoto(_ item: PhotosPickerItem, for collectionKey: String) async {
+        guard !isWritePending else { return }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        isWritePending = true
+        defer {
+            isWritePending = false
+            photoItem = nil
+        }
+        do {
+            guard let data = try await item.loadTransferable(type: Data.self) else {
+                return presentPhotoFailure("The photo couldn't be loaded.")
+            }
+            guard !Task.isCancelled, generation.isCurrent(token) else { return }
+            let writer = await CollectionDetailWriter.makeBackground(modelContainer: modelContext.container)
+            let filename = try await writer.saveArtwork(data: data, collectionKey: collectionKey,
+                                                        shouldContinue: shouldContinue)
+            guard generation.isCurrent(token) else { return }
+            if filename == nil { presentPhotoFailure("The photo couldn't be prepared.") }
+        } catch is CancellationError {
+        } catch {
+            guard generation.isCurrent(token) else { return }
+            presentPhotoFailure(error.localizedDescription)
+        }
+    }
+
+    private func removePhoto(for collectionKey: String) {
+        guard !isWritePending else { return }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        let shouldContinue = generation.continuation(for: token)
+        let container = modelContext.container
+        isWritePending = true
+        Task { @MainActor in
+            defer { isWritePending = false }
+            do {
+                let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
+                try await writer.removeArtwork(collectionKey: collectionKey, shouldContinue: shouldContinue)
+            } catch is CancellationError {
+            } catch {
+                guard generation.isCurrent(token) else { return }
+                presentPhotoFailure(error.localizedDescription)
+            }
+        }
+    }
+
+    private func presentPhotoFailure(_ message: String) {
+        addAlertTitle = "Couldn't save photo"
+        addFailure = message
     }
 
     private func showsInlineQuantityControls(_ details: CatalogCardDetails) -> Bool {
@@ -451,51 +560,6 @@ struct CatalogCardDetailView: View {
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        }
-    }
-
-    /// Raw copies are counted on their price rows. This lists only owned items
-    /// no row accounts for: graded slabs, and any raw entry whose finish does
-    /// not match a priced variant. Nothing owned may silently disappear.
-    @ViewBuilder private func ownedSection(_ card: IdentifiedCard) -> some View {
-        let rows = otherOwnedRows(card)
-        if !rows.isEmpty {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(rows.allSatisfy { $0.itemKind != .rawCard } ? "Graded copies" : "Other copies")
-                    .font(.headline)
-                ForEach(rows) { row in
-                    HStack {
-                        Label(row.ownedDisplayLabel,
-                              systemImage: row.itemKind == .rawCard ? "rectangle.portrait" : "checkmark.seal.fill")
-                            .symbolRenderingMode(.hierarchical)
-                        Spacer()
-                        Text("×\(projectionStore.snapshot?.rowsByCollectionKey[row.collectionKey]?.quantity ?? row.quantity)")
-                            .monospacedDigit().foregroundStyle(.secondary)
-                    }
-                    .accessibilityElement(children: .combine)
-                    savedCopyLink(row.collectionKey, personalOnly: false)
-                }
-            }
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        }
-    }
-
-    @ViewBuilder
-    private func savedCopyLink(_ key: String, personalOnly: Bool) -> some View {
-        if let copyHistory, let row = projectionStore.snapshot?.rowsByCollectionKey[key] {
-            NavigationLink {
-                CollectionCardDestination(row: row, unpricedReason: nil, artworkReason: nil,
-                    isLogicalConflict: (projectionStore.snapshot?.physicalRowCountsByKey[key] ?? 0) > 1,
-                    history: copyHistory, personalOnly: personalOnly,
-                    onRemoved: { snapshot in
-                        present(.init(message: "Removed from Collection", undo: .restore(snapshot)))
-                    })
-            } label: {
-                Text(UnverifiedReportKey.hasReport(key) ? "Linked copy details" : "Saved copy details")
-                    .frame(minHeight: 44)
-            }
         }
     }
 
@@ -555,111 +619,316 @@ struct CatalogCardDetailView: View {
         return variants
     }
 
-    private func priceSection(_ card: IdentifiedCard) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if finishVariants(card).count > 1 {
-                Text("Finishes").font(.headline).accessibilityAddTraits(.isHeader)
+    /// Every finish is a tile that charts on tap and counts its own copies,
+    /// so the grid is both the price comparison and the collection editor.
+    /// Owned items no finish accounts for (graded slabs, unmatched raw
+    /// entries) join the grid as their own tiles: nothing owned may silently
+    /// disappear.
+    @ViewBuilder
+    private func finishesSection(_ card: IdentifiedCard) -> some View {
+        let variants = finishVariants(card)
+        let others = catalogCardSelection == nil ? otherOwnedRows(card) : []
+        let canAddGraded = catalogCardSelection == nil
+            && catalog.gameRegistry.supports(summary.game, [.collectionWrite, .gradedPricing])
+        if !variants.isEmpty || !others.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(variants.isEmpty ? "Copies" : "Finishes")
+                        .font(.title3.weight(.bold))
+                        .accessibilityAddTraits(.isHeader)
+                    Spacer()
+                    if variants.count > 1 {
+                        Text("Tap to chart").font(.subheadline).foregroundStyle(.secondary)
+                    }
+                }
+                LazyVGrid(columns: finishColumns, spacing: 8) {
+                    ForEach(variants) { variant in
+                        finishTile(variant, card: card)
+                    }
+                    ForEach(others) { row in
+                        otherCopyTile(row)
+                    }
+                    if canAddGraded {
+                        addGradedTile
+                    }
+                }
+                if catalogCardSelection == nil, let variant = selectedVariant(card) {
+                    copyLinks(for: variant, card: card)
+                }
             }
-            ForEach(finishVariants(card)) { variant in
-                variantPriceRow(variant, card: card)
+            .id("catalog-market-prices")
+            .confirmationDialog(
+                decrementTarget.map { "Remove a \($0.variantLabel) copy?" } ?? "",
+                isPresented: Binding(get: { decrementTarget != nil }, set: { if !$0 { decrementTarget = nil } }),
+                titleVisibility: .visible,
+                presenting: decrementTarget
+            ) { target in
+                Button(target.quantity == 1 ? "Remove from Collection" : "Remove 1 Copy", role: .destructive) {
+                    decrement(target)
+                }
+                .disabled(isQuantityLocked)
+                Button("Record Sale or Trade…") {
+                    dispositionTarget = CollectionDispositionTarget(
+                        collectionKey: target.collectionKey, treatments: target.treatments,
+                        cardName: target.cardName, quantity: target.quantity, kind: .sold)
+                }
+                .disabled(isQuantityLocked)
+                Button("Cancel", role: .cancel) {}
+            } message: { target in
+                Text(target.quantity == 1
+                     ? "This is your only \(target.variantLabel) copy."
+                     : "You own \(target.quantity) \(target.variantLabel) copies.")
             }
-        }
-        .id("catalog-market-prices")
-        .confirmationDialog(
-            decrementTarget.map { "Remove a \($0.variantLabel) copy?" } ?? "",
-            isPresented: Binding(get: { decrementTarget != nil }, set: { if !$0 { decrementTarget = nil } }),
-            titleVisibility: .visible,
-            presenting: decrementTarget
-        ) { target in
-            Button(target.quantity == 1 ? "Remove from Collection" : "Remove 1 Copy", role: .destructive) {
-                decrement(target)
-            }
-            .disabled(isQuantityLocked)
-            Button("Record Sale or Trade…") {
-                dispositionTarget = CollectionDispositionTarget(
-                    collectionKey: target.collectionKey, treatments: target.treatments,
-                    cardName: target.cardName, quantity: target.quantity, kind: .sold)
-            }
-            .disabled(isQuantityLocked)
-            Button("Cancel", role: .cancel) {}
-        } message: { target in
-            Text(target.quantity == 1
-                 ? "This is your only \(target.variantLabel) copy."
-                 : "You own \(target.quantity) \(target.variantLabel) copies.")
+        } else if canAddGraded {
+            addGradedTile
         }
     }
 
-    private func variantPriceRow(_ variant: PhysicalVariant, card: IdentifiedCard) -> some View {
-        let slot = ownedSlot(for: variant, card: card)
-        let selected = selectedVariant(card)?.id == variant.id
-        let isOnlyFinish = finishVariants(card).count == 1
-        let showControls = details.map(showsInlineQuantityControls) ?? false
-        let layout = dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
-            : AnyLayout(HStackLayout(alignment: .center, spacing: 8))
-        let shape = RoundedRectangle(cornerRadius: 14)
-        return layout {
-            Button { historyVariantID = variant.id } label: {
-                HStack(spacing: 10) {
-                    if !isOnlyFinish {
-                        Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(selected ? Color.accentColor : Color.secondary)
-                            .accessibilityHidden(true)
-                    }
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(variant.label).font(.body.weight(.semibold))
-                        // A sole finish's price is the headline above.
-                        if !isOnlyFinish, catalog.gameRegistry.supports(summary.game, .pricing), !needsCatalogResolution {
-                            priceValue(priceDisplay(for: variant, card: card, slot: slot))
-                        }
-                        if slot.hasConflict || slot.hasUnverifiedQualifiers {
-                            Text("Saved copies need review").font(.caption).foregroundStyle(.secondary)
-                        } else if slot.price.entriesDisagree {
-                            Text("Saved prices differ").font(.caption).foregroundStyle(.secondary)
-                        }
-                    }
-                    .fixedSize(horizontal: false, vertical: true)
-                }
-                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                .multilineTextAlignment(.leading)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityAddTraits(selected ? .isSelected : [])
+    private var finishColumns: [GridItem] {
+        let count = dynamicTypeSize.isAccessibilitySize ? 1 : 2
+        return Array(repeating: GridItem(.flexible(), spacing: 8, alignment: .top), count: count)
+    }
 
-            if showControls, projectionStore.isLoaded, !projectionStore.loadFailed {
-                VStack(alignment: .trailing, spacing: 0) {
+    private static let tileShape = RoundedRectangle(cornerRadius: 16, style: .continuous)
+
+    private func finishTile(_ variant: PhysicalVariant, card: IdentifiedCard) -> some View {
+        let slot = ownedSlot(for: variant, card: card)
+        let isOnlyFinish = finishVariants(card).count == 1
+        let selected = !isOnlyFinish && selectedVariant(card)?.id == variant.id
+        let showsPrice = !isOnlyFinish && catalog.gameRegistry.supports(summary.game, .pricing) && !needsCatalogResolution
+        let ownershipReady = catalogCardSelection == nil && projectionStore.isLoaded && !projectionStore.loadFailed
+        let showControls = ownershipReady && (details.map(showsInlineQuantityControls) ?? false)
+        return VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(variant.label)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(2)
+                Spacer(minLength: 0)
+                if showsPrice, priceDisplay(for: variant, card: card, slot: slot).state() == .stale {
+                    Image(systemName: "clock")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .accessibilityLabel("Stale price")
+                }
+            }
+                .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
+                .accessibilityAction { historyVariantID = variant.id }
+            HStack(alignment: .center, spacing: 6) {
+                VStack(alignment: .leading, spacing: 2) {
+                    if showsPrice {
+                        tilePrice(priceDisplay(for: variant, card: card, slot: slot))
+                    }
+                    if slot.hasConflict || slot.hasUnverifiedQualifiers {
+                        Text("Copies need review").font(.caption2).foregroundStyle(.secondary)
+                    } else if slot.price.entriesDisagree {
+                        Text("Saved prices differ").font(.caption2).foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .layoutPriority(1)
+                if showControls {
                     CatalogQuantityStepper(
                         quantity: slot.quantity, variantLabel: variant.label,
                         canIncrease: canAdd(variant, card: card) && !slot.hasConflict
                             && slot.quantity < CollectionQuantityLimits.maximum,
                         canDecrease: slot.copyKeys.count == 1 && slot.targets.count == 1 && !slot.hasConflict,
                         isUpdating: isQuantityLocked,
+                        // Several saved entries: − asks which one, by date added.
+                        decreaseChoices: slot.copyKeys.count > 1 && !slot.hasConflict ? slot.targets : [],
                         onIncrease: { add(variant, card: card) },
-                        onDecrease: { decrementTarget = slot.targets.first }
+                        onDecrease: { decrementTarget = slot.targets.first },
+                        onChooseDecrease: { decrementTarget = $0 }
                     )
-                    if slot.copyKeys.count > 1, !slot.targets.isEmpty, !slot.hasConflict {
-                        Menu("Manage copies") {
-                            ForEach(slot.targets) { target in
-                                Button("\(target.dateAdded.formatted(date: .abbreviated, time: .shortened)) · \(target.quantity) owned") {
-                                    decrementTarget = target
-                                }
-                            }
-                        }
-                        .font(.caption)
-                        .frame(minHeight: 44)
-                        .disabled(isQuantityLocked)
-                    }
+                } else if ownershipReady {
+                    Text("\(slot.quantity) owned").font(.caption).foregroundStyle(.secondary)
                 }
-            } else if catalogCardSelection == nil, projectionStore.isLoaded, !projectionStore.loadFailed {
-                Text("\(slot.quantity) owned").font(.subheadline).foregroundStyle(.secondary)
             }
+            .frame(minHeight: 44)
         }
-        .padding(12)
-        .background(selected && !isOnlyFinish ? Color.accentColor.opacity(0.12) : Color.primary.opacity(0.07), in: shape)
-        .overlay { shape.strokeBorder(selected && !isOnlyFinish ? Color.accentColor : .clear) }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .background(selected ? Color.accentColor.opacity(0.13) : Color.primary.opacity(0.07), in: Self.tileShape)
+        .overlay { Self.tileShape.strokeBorder(selected ? Color.accentColor : .clear, lineWidth: 1) }
+        .contentShape(Self.tileShape)
+        .onTapGesture { historyVariantID = variant.id }
+        .animation(.snappy(duration: 0.2), value: selected)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("catalog-price-row-\(variant.id)")
+    }
+
+    @ViewBuilder private func tilePrice(_ display: PriceDisplay) -> some View {
+        if let amount = display.amount {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(amount.formatted(.currency(code: display.currencyCode)))
+                    .font(.system(.body, design: .rounded).weight(.semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(PortfolioPalette.value)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            }
+        } else {
+            Text(display.state() == .unavailable ? "No USD price" : "No price yet")
+                .font(.subheadline)
+                .foregroundStyle(.tertiary)
+        }
+    }
+
+    /// A slab or an unmatched raw entry: shown with its count, opened for
+    /// its own history and actions.
+    @ViewBuilder private func otherCopyTile(_ row: CatalogOwnershipCardSnapshot) -> some View {
+        let quantity = projectionStore.snapshot?.rowsByCollectionKey[row.collectionKey]?.quantity ?? row.quantity
+        let label = HStack(alignment: .top, spacing: 8) {
+            VStack(alignment: .leading, spacing: 4) {
+                Label(row.itemKind == .rawCard ? "Raw" : "Graded",
+                      systemImage: row.itemKind == .rawCard ? "rectangle.portrait" : "checkmark.seal.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text(row.ownedDisplayLabel)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(2)
+                Text("\(quantity) owned").font(.caption).foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.bold))
+                .foregroundStyle(.tertiary)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, minHeight: 72, alignment: .topLeading)
+        .background(Color.primary.opacity(0.07), in: Self.tileShape)
+        .contentShape(Self.tileShape)
+        if let destination = copyDestination(row.collectionKey, personalOnly: false) {
+            NavigationLink { destination } label: { label }
+                .buttonStyle(.plain)
+        } else {
+            label.accessibilityElement(children: .combine)
+        }
+    }
+
+    private var addGradedTile: some View {
+        Button { showsGradedPicker = true } label: {
+            Label("Add graded copy", systemImage: "plus")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.accentColor)
+                .frame(maxWidth: .infinity, minHeight: 64)
+                .overlay {
+                    Self.tileShape.strokeBorder(Color.primary.opacity(0.18),
+                                                style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                }
+                .contentShape(Self.tileShape)
+        }
+        .buttonStyle(.plain)
+        .disabled(isQuantityLocked || details?.collectionWriteUnavailableReason != nil)
+    }
+
+    /// The selected finish's saved copies, one quiet line each. The holder's
+    /// own result lives here, beside the copy it belongs to, rather than
+    /// competing with the market change above.
+    @ViewBuilder
+    private func copyLinks(for variant: PhysicalVariant, card: IdentifiedCard) -> some View {
+        let slot = ownedSlot(for: variant, card: card)
+        VStack(spacing: 0) {
+            ForEach(slot.copyKeys, id: \.self) { key in
+                if let row = projectionStore.snapshot?.rowsByCollectionKey[key], !UnverifiedReportKey.hasReport(key) {
+                    copyLine(label: variant.label, key: key, row: row, isOnlyCopy: slot.copyKeys.count == 1,
+                             isLinkedReport: false)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 4)
+                        .frame(minHeight: 32)
+                } else if let row = projectionStore.snapshot?.rowsByCollectionKey[key],
+                   let destination = copyDestination(key, personalOnly: false) {
+                    // A linked report still needs its own verify/undo controls.
+                    NavigationLink { destination } label: {
+                        HStack(spacing: 8) {
+                            copyLine(label: variant.label, key: key, row: row, isOnlyCopy: slot.copyKeys.count == 1,
+                                     isLinkedReport: UnverifiedReportKey.hasReport(key))
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding(.horizontal, 4)
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+
+    private func copyLine(label: String, key: String, row: CollectionRow, isOnlyCopy: Bool,
+                          isLinkedReport: Bool) -> Text {
+        let added = row.dateAdded.formatted(.dateTime.month(.abbreviated).day())
+        var line = Text(isLinkedReport ? "Linked \(label) copy · added \(added)"
+                        : isOnlyCopy ? "Added \(added)"
+                        : "\(label) copy added \(added)")
+            .foregroundStyle(.secondary)
+        if let copyHistory, case let .recorded(detail) = copyHistory.movementState(for: key) {
+            let start = copyHistory.range.requestedStart(now: .now, calendar: .current, earliest: nil)
+            let period = copyHistory.range == .all || row.dateAdded >= start
+                ? "since" : copyHistory.range.pastPeriodPhrase
+            line = line
+                + Text(" · ").foregroundStyle(.secondary)
+                + Text(PortfolioHistoryDisplay.signedCurrency(detail.totalImpact))
+                    .foregroundStyle(PortfolioPalette.direction(detail.totalImpact))
+                + Text(" \(period)").foregroundStyle(.secondary)
+        }
+        return line.font(.footnote)
+    }
+
+    private func copyDestination(_ key: String, personalOnly: Bool) -> CollectionCardDestination? {
+        guard let copyHistory, let row = projectionStore.snapshot?.rowsByCollectionKey[key] else { return nil }
+        return CollectionCardDestination(row: row, unpricedReason: nil, artworkReason: nil,
+            isLogicalConflict: (projectionStore.snapshot?.physicalRowCountsByKey[key] ?? 0) > 1,
+            history: copyHistory, personalOnly: personalOnly,
+            onRemoved: { snapshot in
+                present(.init(message: "Removed from Collection", undo: .restore(snapshot)))
+            })
+    }
+
+    /// Reference material as one quiet list: in-app pages push, the
+    /// marketplace leaves the app and says so with its trailing arrow.
+    @ViewBuilder
+    private func referenceList(_ details: CatalogCardDetails) -> some View {
+        let destination = needsCatalogResolution ? nil : TCGplayerLinkBuilder.destination(
+            for: details.card, variant: selectedVariant(details.card), pokemonPrintRun: summary.pokemonPrintRun)
+        let variant = selectedVariant(details.card)
+        let showsPriceDetails = catalog.gameRegistry.supports(summary.game, .pricing) && !needsCatalogResolution
+            && variant != nil
+        CardDetailListGroup {
+            if showsPriceDetails, let variant {
+                let price = priceDisplay(for: variant, card: details.card, slot: ownedSlot(for: variant, card: details.card))
+                NavigationLink {
+                    CardPriceDetailsView(attribution: price.detailAttribution, points: historyPoints,
+                                         currentPrice: price.amount == nil ? nil : price,
+                                         mentionsPortfolioImpact: false)
+                } label: {
+                    CardDetailListRow(title: "Price details", systemImage: "chart.xyaxis.line")
+                }
+                .buttonStyle(.plain)
+                CardDetailListDivider()
+            }
+            NavigationLink {
+                CatalogPrintingDetailsView(details: details, summary: summary,
+                                           variant: selectedVariant(details.card))
+            } label: {
+                CardDetailListRow(title: "Printing details", systemImage: "list.bullet.rectangle")
+            }
+            .buttonStyle(.plain)
+            if let destination {
+                CardDetailListDivider()
+                Link(destination: destination.url) {
+                    CardDetailListRow(title: destination.title, systemImage: "cart", isExternal: true)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(destination.accessibilityLabel)
+                .accessibilityHint("Opens TCGplayer in your browser.")
+                .accessibilityIdentifier("card-detail-tcgplayer-link")
+            }
+        }
     }
 
     private func priceDisplay(for variant: PhysicalVariant, card: IdentifiedCard, slot: CatalogFinishOwnership) -> PriceDisplay {
@@ -672,25 +941,6 @@ struct CatalogCardDetailView: View {
             at: details?.retrievedAt ?? .distantPast)
         if case let .price(quote) = lookup { return PriceDisplay(quote) }
         return .unknown
-    }
-
-    @ViewBuilder private func priceValue(_ display: PriceDisplay) -> some View {
-        if let amount = display.amount {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(amount.formatted(.currency(code: display.currencyCode)))
-                    .font(.title3.weight(.semibold))
-                    .monospacedDigit()
-                    .foregroundStyle(PortfolioPalette.value)
-                if display.state() == .stale {
-                    Label("Stale", systemImage: "clock")
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(.secondary)
-                        .accessibilityLabel("Stale price")
-                }
-            }
-        } else {
-            Text(display.state() == .unavailable ? "No USD price" : "Not priced yet").foregroundStyle(.secondary)
-        }
     }
 
     // MARK: - Inline quantity
@@ -934,8 +1184,14 @@ struct CatalogCardDetailView: View {
                 slot.map { priceDisplay(for: finish, card: details.card, slot: $0) }
             } ?? .unknown
             let request = CardMarketHistoryRequest(card: details.card, variant: variant, printRun: summary.pokemonPrintRun)
+            let firstCopy = variant.flatMap { copyTargets(for: $0, card: details.card).first }
             CardMarketHistoryPanel(request: request, currentPrice: currentPrice.amount == nil ? nil : currentPrice,
-                                   headlinePrice: currentPrice)
+                                   headlinePrice: currentPrice, showsDetails: false,
+                                   loadedPoints: $historyPoints,
+                                   ownership: firstCopy.map { copy in
+                                       PriceHistoryOwnership(since: copy.dateAdded,
+                                           tint: copyHistory?.movementState(for: copy.collectionKey).ownedTint)
+                                   })
                 .id(request)
                 // The panel insets its own rows; align them with the header.
                 .padding(.horizontal, -16)
@@ -1319,48 +1575,105 @@ struct CatalogOwnershipChange: Identifiable {
 }
 
 /// Owned quantity and two independent controls for one finish.
+/// Compact counter for a finish tile: a lone + until a copy is owned, then
+/// − n +. With several saved entries, − asks which one to act on.
 struct CatalogQuantityStepper: View {
     let quantity: Int
     let variantLabel: String
     let canIncrease: Bool
     let canDecrease: Bool
     let isUpdating: Bool
+    var decreaseChoices: [CatalogOwnedEntryTarget] = []
     let onIncrease: () -> Void
     let onDecrease: () -> Void
+    var onChooseDecrease: (CatalogOwnedEntryTarget) -> Void = { _ in }
 
     var body: some View {
         HStack(spacing: 0) {
-            Button(action: onDecrease) {
-                Image(systemName: "minus")
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+            if quantity > 0 {
+                decreaseControl
+                Text("\(quantity)")
+                    .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(.primary)
+                    .frame(minWidth: 14)
+                    .contentTransition(.numericText())
+                    .accessibilityLabel("\(quantity) \(variantLabel) owned")
             }
-            .disabled(quantity == 0 || !canDecrease || isUpdating)
-            .accessibilityLabel("Remove a \(variantLabel) copy")
-
-            Text("\(quantity)")
-                .font(.system(.body, design: .rounded).weight(.semibold))
-                .monospacedDigit()
-                .frame(minWidth: 20)
-                .contentTransition(.numericText())
-                .accessibilityLabel("\(quantity) \(variantLabel) owned")
             Button(action: onIncrease) {
                 Image(systemName: "plus")
-                    .frame(width: 44, height: 44)
+                    .frame(width: 30, height: 44)
                     .contentShape(Rectangle())
             }
             .disabled(!canIncrease || isUpdating)
             .accessibilityLabel(quantity == 0 ? "Add a \(variantLabel) copy" : "Add another \(variantLabel) copy")
         }
-        .font(.body.weight(.semibold))
+        .font(.subheadline.weight(.bold))
         .buttonStyle(.borderless)
-        .foregroundStyle(quantity > 0 ? Color.primary : Color.accentColor)
-        .background(quantity > 0 ? Color.accentColor.opacity(0.22) : Color.primary.opacity(0.08), in: Capsule())
-        .overlay(Capsule().strokeBorder(Color.accentColor.opacity(quantity > 0 ? 0.5 : 0.25), lineWidth: 1))
+        .foregroundStyle(Color.accentColor)
+        .background {
+            Capsule()
+                .fill(Color.accentColor.opacity(quantity > 0 ? 0.22 : 0.14))
+                .frame(height: 32)
+        }
         .opacity(isUpdating ? 0.6 : 1)
         .animation(.snappy(duration: 0.2), value: quantity)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("catalog-quantity-\(variantLabel)")
+    }
+
+    @ViewBuilder private var decreaseControl: some View {
+        let image = Image(systemName: "minus")
+            .frame(width: 30, height: 44)
+            .contentShape(Rectangle())
+        if decreaseChoices.count > 1 {
+            Menu {
+                ForEach(decreaseChoices) { target in
+                    Button("Added \(target.dateAdded.formatted(date: .abbreviated, time: .shortened)) · \(target.quantity) owned") {
+                        onChooseDecrease(target)
+                    }
+                }
+            } label: { image }
+            .disabled(isUpdating)
+            .accessibilityLabel("Remove a \(variantLabel) copy")
+        } else {
+            Button(action: onDecrease) { image }
+                .disabled(!canDecrease || isUpdating)
+                .accessibilityLabel("Remove a \(variantLabel) copy")
+        }
+    }
+}
+
+private struct CatalogPrintingDetailsView: View {
+    let details: CatalogCardDetails
+    let summary: CatalogCardSummary
+    let variant: PhysicalVariant?
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                Text(details.card.name)
+                    .font(.title2.bold())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                LabeledContent("Set", value: details.set.name)
+                LabeledContent("Card number", value: summary.printedCollectorNumber ?? "Unnumbered")
+                if let rarity = CardRarityToken(raw: details.card.rarity) {
+                    LabeledContent("Rarity", value: rarity.label)
+                }
+                if let run = summary.pokemonPrintRun {
+                    LabeledContent("Print run", value: run.label)
+                }
+                let treatments = details.card.magicTreatments(for: variant)
+                if !treatments.isEmpty {
+                    LabeledContent("Treatment", value: treatments.map(\.label).formatted(.list(type: .and)))
+                }
+            }
+            .font(.callout)
+            .padding(20)
+            .contentWidthLimit(.standard)
+        }
+        .navigationTitle("Printing details")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -1404,6 +1717,7 @@ struct OwnedPriceReviewView: View {
         .environmentObject(completions)
         .environment(\.cardGameRuntimes, nil)
         .environment(\.sharedBrowseCatalog, nil)
+        .environment(\.catalogCopyHistory, history)
         .task {
             guard fixture == nil else { return }
             do {
@@ -1436,8 +1750,8 @@ private struct OwnedPriceReviewFixture {
         let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
         {"id":"fixture-001","localId":"001","name":"Price consistency fixture",
          "set":{"id":"fixture","name":"Pricing review","cardCount":{"total":1,"official":1}},
-         "variants":{"firstEdition":false,"normal":false,"holo":true,"reverse":false}}
-        """#.utf8))
+         "variants":{"firstEdition":false,"normal":MULTI,"holo":true,"reverse":MULTI}}
+        """#.replacingOccurrences(of: "MULTI", with: state.contains("multi") ? "true" : "false").utf8))
         let identified = IdentifiedCard.pokemon(card, setCode: "FIX")
         let printRun: PokemonPrintRun? = state.contains("first-edition") ? .firstEdition : nil
         let set = CatalogSet(catalogID: CatalogSetID(game: .pokemon, providerID: "fixture", pokemonPrintRun: printRun),
@@ -1621,3 +1935,36 @@ struct MagicTreatmentSlice4DebugView: View {
     }
 }
 #endif
+
+private struct CatalogCopyShareTarget: Identifiable {
+    let id: String
+    let price: PriceDisplay
+}
+
+/// Shares a saved copy from the card page, with its own photo when it has one.
+private struct CatalogCopyShareSheet: View {
+    @Query private var cards: [CollectedCard]
+    let price: PriceDisplay
+
+    init(collectionKey: String, price: PriceDisplay) {
+        _cards = Query(filter: #Predicate<CollectedCard> { $0.collectionKey == collectionKey },
+                       sort: [SortDescriptor(\.dateAdded, order: .forward)])
+        self.price = price
+    }
+
+    var body: some View {
+        if let card = cards.first {
+            CollectionDetailArtworkSource(collectionKey: card.collectionKey,
+                                          legacyFilename: card.userArtworkFilename) { filename in
+                let source = CatalogCardArtworkSource(collectedCard: card, prefersFullSize: true)
+                CollectionShareSheet(
+                    identity: CardShareIdentity(collectedCard: card),
+                    price: CardSharePrice(collectedCard: card, display: price),
+                    showsFinishSheen: CollectionShareSheet.showsFinishSheen(for: card),
+                    localArtworkFilename: filename,
+                    remoteArtworkURLs: [source.primaryURL].compactMap { $0 } + source.fallbacks
+                )
+            }
+        }
+    }
+}

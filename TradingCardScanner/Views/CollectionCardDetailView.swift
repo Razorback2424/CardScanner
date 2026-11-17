@@ -285,9 +285,9 @@ private struct CollectionCardDetailContent: View {
                                 model: historyModel, range: history.range)
                                 .id("card-price-valuation")
                             priceHistorySection(model: historyModel)
-                            marketplaceSection
-                            ownershipSection
+                            ownershipSection(model: historyModel)
                                 .id("card-ownership")
+                            detailsSection(model: historyModel)
                         }
 
                         if isLogicalConflict {
@@ -467,21 +467,10 @@ private struct CollectionCardDetailContent: View {
         return CollectionShareSheet(
             identity: CardShareIdentity(collectedCard: card),
             price: CardSharePrice(collectedCard: card, display: price),
-            showsFinishSheen: showsShareFinishSheen,
+            showsFinishSheen: CollectionShareSheet.showsFinishSheen(for: card),
             localArtworkFilename: localArtworkFilename,
             remoteArtworkURLs: [source.primaryURL].compactMap { $0 } + source.fallbacks
         )
-    }
-
-    /// The same finishes the detail hero animates; a still pose stands in for
-    /// the live sheen in the shared image.
-    private var showsShareFinishSheen: Bool {
-        guard card.itemKind == .rawCard,
-              let variant = card.variant,
-              let resolution = card.variantResolution,
-              resolution != .catalogSilent,
-              resolution != .imported else { return false }
-        return [PhysicalVariant.holo.id, PhysicalVariant.reverse.id, PhysicalVariant.foil.id].contains(variant.id)
     }
 
     @ViewBuilder
@@ -1062,30 +1051,109 @@ private struct CollectionCardDetailContent: View {
         )
     }
 
-    private var ownershipSection: some View {
-        VStack(spacing: 0) {
-            CardDetailOwnershipPanel(
-                quantity: displayedQuantity,
-                holdingTotal: holdingTotal,
-                allowsQuantityIncrease: card.allowsQuantityAggregation,
-                isUpdating: isOwnershipWritePending,
-                onDecrease: { updateQuantity(displayedQuantity - 1) },
-                onIncrease: { updateQuantity(displayedQuantity + 1) }
-            ) {
-                printingDetailsDestination
+    /// This copy as the same tile the catalog grid uses: its finish, how
+    /// many, and a counter. The holder's own result is one quiet line under
+    /// it, kept apart from the market change above.
+    private func ownershipSection(model: PriceHistoryChartModel) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(detailFinishLabel ?? "Copies owned")
+                        .font(.subheadline.weight(.semibold))
+                    if isOwnershipWritePending {
+                        ProgressView().controlSize(.mini).accessibilityLabel("Saving collection change")
+                    } else if displayedQuantity > 1, let holdingTotal {
+                        Text("\(holdingTotal) total")
+                            .font(.caption)
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                CatalogQuantityStepper(
+                    quantity: displayedQuantity,
+                    variantLabel: detailFinishLabel ?? card.name,
+                    canIncrease: card.allowsQuantityAggregation
+                        && displayedQuantity < CollectionQuantityLimits.maximum,
+                    canDecrease: displayedQuantity > 0,
+                    isUpdating: isOwnershipWritePending,
+                    onIncrease: { updateQuantity(displayedQuantity + 1) },
+                    onDecrease: { updateQuantity(displayedQuantity - 1) }
+                )
             }
-            Button {
-                presentDisposition()
-            } label: {
-                Label("Record sale or trade", systemImage: "arrow.left.arrow.right")
-                    .font(.body)
-                    .frame(maxWidth: .infinity, minHeight: 48)
-                    .contentShape(Rectangle())
-            }
-            .disabled(isOwnershipWritePending || displayedQuantity <= 0)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .frame(minHeight: 56)
+            .background(Color.primary.opacity(0.07), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+            copyResultLine()
+                .padding(.horizontal, 4)
         }
         .padding(.horizontal, 16)
-        .padding(.top, 24)
+        .padding(.top, 28)
+    }
+
+    private func copyResultLine() -> some View {
+        let added = card.dateAdded.formatted(.dateTime.month(.abbreviated).day())
+        var line = Text("Added \(added)").foregroundStyle(.secondary)
+        if case let .recorded(detail) = history.movementState(for: card.collectionKey) {
+            let start = history.range.requestedStart(now: .now, calendar: .current, earliest: nil)
+            let period = history.range == .all || card.dateAdded >= start
+                ? "since" : history.range.pastPeriodPhrase
+            line = line
+                + Text(" · ").foregroundStyle(.secondary)
+                + Text(PortfolioHistoryDisplay.signedCurrency(detail.totalImpact))
+                    .foregroundStyle(PortfolioPalette.direction(detail.totalImpact))
+                + Text(" \(period)").foregroundStyle(.secondary)
+        }
+        return line.font(.footnote)
+            .accessibilityIdentifier("card-portfolio-impact")
+    }
+
+    /// Reference material and the one exit action, as a quiet list:
+    /// in-app pages push, the marketplace says it leaves with a trailing arrow.
+    private func detailsSection(model: PriceHistoryChartModel) -> some View {
+        VStack(spacing: 12) {
+            CardDetailListGroup {
+                NavigationLink {
+                    CardPriceDetailsView(
+                        attribution: price.detailAttribution,
+                        points: marketHistory,
+                        currentPrice: model.currentPrice
+                    )
+                } label: {
+                    CardDetailListRow(title: "Price details", systemImage: "chart.xyaxis.line")
+                }
+                .buttonStyle(.plain)
+                CardDetailListDivider()
+                NavigationLink {
+                    printingDetailsDestination
+                } label: {
+                    CardDetailListRow(title: "Printing details", systemImage: "list.bullet.rectangle")
+                }
+                .buttonStyle(.plain)
+                if let destination = TCGplayerLinkBuilder.destination(for: card) {
+                    CardDetailListDivider()
+                    Link(destination: destination.url) {
+                        CardDetailListRow(title: destination.title, systemImage: "cart", isExternal: true)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(destination.accessibilityLabel)
+                    .accessibilityHint("Opens TCGplayer in your browser.")
+                    .accessibilityIdentifier("card-detail-tcgplayer-link")
+                }
+            }
+            CardDetailListGroup {
+                Button { presentDisposition() } label: {
+                    CardDetailListRow(title: "Record sale or trade", systemImage: "arrow.left.arrow.right",
+                                      tint: Color.accentColor, showsDisclosure: false)
+                }
+                .buttonStyle(.plain)
+                .disabled(isOwnershipWritePending || displayedQuantity <= 0)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 20)
     }
 
     private func makePriceHistoryModel() -> PriceHistoryChartModel {
@@ -1205,7 +1273,6 @@ private struct CollectionCardDetailContent: View {
     @ViewBuilder
     private func priceHistorySection(model: PriceHistoryChartModel) -> some View {
         let movement = history.movementState(for: card.collectionKey)
-        let ownedSince = model.ownershipMarkerDate(for: card.dateAdded)
         VStack(spacing: 0) {
             MarketHistoryChartContent(model: model, hasHistory: !marketHistory.isEmpty,
                                       isLoading: isLoadingMarketHistory, error: marketHistoryError,
@@ -1216,26 +1283,6 @@ private struct CollectionCardDetailContent: View {
                                       retry: { marketHistoryRetry += 1 })
                 .accessibilityIdentifier("price-history-\(priceHistoryInstrumentKey)")
 
-            CardDetailPortfolioImpactView(state: movement, range: history.range, ownedSince: ownedSince)
-                .padding(.horizontal, 16)
-                .padding(.top, 20)
-
-            DisclosureGroup {
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(price.detailAttribution, id: \.self) { Text($0) }
-                    Text("History uses JustTCG prices. Portfolio impact uses price changes recorded while owned.")
-                    MarketHistoryExplanation(points: marketHistory, currentPrice: model.currentPrice)
-                }
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top, 8)
-            } label: {
-                Text("Price details").frame(minHeight: 44)
-            }
-            .font(.subheadline)
-            .padding(.horizontal, 16)
-            .padding(.top, 10)
 
             if price.refreshFailed {
                 Label("Last refresh failed", systemImage: "exclamationmark.triangle")
@@ -1317,15 +1364,6 @@ private struct CollectionCardDetailContent: View {
 
     private var ungradedReferenceRecord: PriceRecord? {
         PriceStore.authoritativeRecord(in: ungradedReferenceRecords)
-    }
-
-    @ViewBuilder
-    private var marketplaceSection: some View {
-        if let destination = TCGplayerLinkBuilder.destination(for: card) {
-            CardDetailMarketplaceButton(destination: destination)
-                .padding(.horizontal, 16)
-                .padding(.top, 20)
-        }
     }
 
     private var conflictNotice: some View {
@@ -2511,130 +2549,84 @@ struct CollectionDispositionSheet: View {
     }
 }
 
-private struct CardDetailOwnershipPanel<Details: View>: View {
-    let quantity: Int
-    let holdingTotal: String?
-    let allowsQuantityIncrease: Bool
-    let isUpdating: Bool
-    let onDecrease: () -> Void
-    let onIncrease: () -> Void
-    private let details: Details
-
-    init(
-        quantity: Int,
-        holdingTotal: String?,
-        allowsQuantityIncrease: Bool,
-        isUpdating: Bool,
-        onDecrease: @escaping () -> Void,
-        onIncrease: @escaping () -> Void,
-        @ViewBuilder details: () -> Details
-    ) {
-        self.quantity = quantity
-        self.holdingTotal = holdingTotal
-        self.allowsQuantityIncrease = allowsQuantityIncrease
-        self.isUpdating = isUpdating
-        self.onDecrease = onDecrease
-        self.onIncrease = onIncrease
-        self.details = details()
-    }
+/// The grouped surface the card detail's reference rows share.
+struct CardDetailListGroup<Content: View>: View {
+    @ViewBuilder let content: Content
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 12) {
-                Text("Owned")
-                    .font(.system(size: 17))
-                if isUpdating {
-                    ProgressView()
-                        .controlSize(.small)
-                        .accessibilityLabel("Saving collection change")
-                }
-                Spacer(minLength: 12)
-                quantityControl
-                    .disabled(isUpdating)
-            }
-            .padding(.horizontal, 14)
-            .frame(minHeight: 60)
-
-            // With one copy this repeats the unit price already shown above.
-            if quantity > 1 {
-                divider
-                HStack(spacing: 12) {
-                    Text("Collection value")
-                        .font(.system(size: 17))
-                    Spacer(minLength: 12)
-                    Text(holdingTotal ?? "Unavailable")
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .foregroundStyle(holdingTotal == nil ? .secondary : PortfolioPalette.money)
-                        .contentTransition(.numericText())
-                }
-                .padding(.horizontal, 14)
-                .frame(minHeight: 56)
-            }
-
-            divider
-
-            NavigationLink {
-                details
-            } label: {
-                HStack(spacing: 12) {
-                    Text("Printing details")
-                        .font(.system(size: 17))
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                    Spacer(minLength: 8)
-                    Image(systemName: "chevron.right")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.tertiary)
-                }
-                .padding(.horizontal, 14)
-                .frame(minHeight: 56)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Printing details")
-        }
-        .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Ownership")
+        VStack(spacing: 0) { content }
+            .background(Color.primary.opacity(0.07), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
+}
 
-    private var divider: some View {
+struct CardDetailListDivider: View {
+    var body: some View {
         Rectangle()
-            .fill(Color.white.opacity(0.14))
+            .fill(Color.primary.opacity(0.12))
             .frame(height: 0.5)
-            .padding(.leading, 14)
+            .padding(.leading, 50)
     }
+}
 
-    private var quantityControl: some View {
-        HStack(spacing: 0) {
-            Button(action: onDecrease) {
-                Image(systemName: "minus")
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+struct CardDetailListRow: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let title: String
+    let systemImage: String
+    var tint: Color? = nil
+    var isExternal = false
+    var showsDisclosure = true
+
+    var body: some View {
+        HStack(spacing: 12) {
+            // At accessibility sizes the title needs the whole width.
+            if !dynamicTypeSize.isAccessibilitySize {
+                Image(systemName: systemImage)
+                    .font(.body)
+                    .foregroundStyle(tint.map(AnyShapeStyle.init) ?? AnyShapeStyle(.secondary))
+                    .frame(width: 24)
             }
-            .disabled(quantity <= 0)
-            .accessibilityLabel("Decrease quantity")
-
-            Text("\(quantity)")
-                .font(.system(size: 17, weight: .semibold, design: .rounded))
-                .monospacedDigit()
-                .frame(minWidth: 28)
-                .contentTransition(.numericText())
-
-            Button(action: onIncrease) {
-                Image(systemName: "plus")
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+            Text(title)
+                .font(.body)
+                .foregroundStyle(tint.map(AnyShapeStyle.init) ?? AnyShapeStyle(.primary))
+                .multilineTextAlignment(.leading)
+            Spacer(minLength: 8)
+            if showsDisclosure {
+                Image(systemName: isExternal ? "arrow.up.right" : "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
             }
-            .disabled(!allowsQuantityIncrease || quantity >= CollectionQuantityLimits.maximum)
-            .accessibilityLabel("Increase quantity")
         }
-        .buttonStyle(.borderless)
-        .background(Color.white.opacity(0.10), in: Capsule())
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Owned, \(quantity)")
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, minHeight: 50, alignment: .leading)
+        .contentShape(Rectangle())
+    }
+}
+
+struct CardPriceDetailsView: View {
+    let attribution: [String]
+    let points: [JustTCGHistoryPoint]
+    let currentPrice: PriceDisplay?
+    var mentionsPortfolioImpact = true
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(attribution, id: \.self) { Text($0) }
+                Text(mentionsPortfolioImpact
+                     ? "History uses JustTCG prices. Portfolio impact uses price changes recorded while owned."
+                     : "History uses JustTCG prices.")
+                MarketHistoryExplanation(points: points, currentPrice: currentPrice)
+            }
+            .font(.callout)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
+            .contentWidthLimit(.standard)
+        }
+        .navigationTitle("Price details")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -2746,7 +2738,7 @@ private struct CollectionSetDestination: View {
     }
 }
 
-private struct CollectionCardHistoryView: View {
+struct CollectionCardHistoryView: View {
     @Query private var activities: [CollectionActivity]
     let cardName: String
 
@@ -3117,6 +3109,12 @@ struct CardMarketHistoryPanel: View {
     /// When set, the panel leads with the card's headline price and market
     /// change, so the number and the line that explains it stay together.
     var headlinePrice: PriceDisplay? = nil
+    /// False when the host lists Price details with its other reference rows;
+    /// it then reads the loaded series through `loadedPoints`.
+    var showsDetails = true
+    var loadedPoints: Binding<[JustTCGHistoryPoint]>? = nil
+    /// The owned layer: when set, the chart marks when this copy was added.
+    var ownership: PriceHistoryOwnership? = nil
     @State private var points: [JustTCGHistoryPoint] = []
     @State private var range: PortfolioHistoryRange = .threeMonths
     @State private var selection = PriceHistorySelection()
@@ -3145,19 +3143,23 @@ struct CardMarketHistoryPanel: View {
             MarketHistoryChartContent(model: model, hasHistory: !points.isEmpty, isLoading: isLoading,
                                       error: error, direction: direction, range: $range,
                                       selection: selection, requiresAPIKey: requiresAPIKey,
+                                      ownership: ownership,
                                       retry: { retryID += 1 })
-            DisclosureGroup {
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(model.currentPrice?.detailAttribution ?? [], id: \.self) { Text($0) }
-                    MarketHistoryExplanation(points: points, currentPrice: model.currentPrice)
+            if showsDetails {
+                DisclosureGroup {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(model.currentPrice?.detailAttribution ?? [], id: \.self) { Text($0) }
+                        MarketHistoryExplanation(points: points, currentPrice: model.currentPrice)
+                    }
+                    .font(.caption).foregroundStyle(.secondary)
+                } label: {
+                    Text("Price details").frame(minHeight: 44)
                 }
-                .font(.caption).foregroundStyle(.secondary)
-            } label: {
-                Text("Price details").frame(minHeight: 44)
+                .font(.subheadline).padding(.horizontal, 16)
             }
-            .font(.subheadline).padding(.horizontal, 16)
         }
         .fixedSize(horizontal: false, vertical: true)
+        .onChange(of: points, initial: true) { _, newValue in loadedPoints?.wrappedValue = newValue }
         .task(id: MarketHistoryLoadID(request: request, retry: retryID)) { await load() }
         .task(id: runtimes?.runtime(for: request.game)?.catalog?.generation) {
             guard request.requiresCatalogMapping else { return }
@@ -4503,5 +4505,18 @@ enum CollectionArtworkStore {
                 // store-ready sweep.
             }
         }
+    }
+}
+
+extension CollectionShareSheet {
+    /// The same finishes the detail hero animates; a still pose stands in for
+    /// the live sheen in the shared image.
+    static func showsFinishSheen(for card: CollectedCard) -> Bool {
+        guard card.itemKind == .rawCard,
+              let variant = card.variant,
+              let resolution = card.variantResolution,
+              resolution != .catalogSilent,
+              resolution != .imported else { return false }
+        return [PhysicalVariant.holo.id, PhysicalVariant.reverse.id, PhysicalVariant.foil.id].contains(variant.id)
     }
 }
