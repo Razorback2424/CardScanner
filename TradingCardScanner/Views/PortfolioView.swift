@@ -325,7 +325,9 @@ struct PortfolioView: View {
                         .accessibilityHint("Opens your full collection")
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
-                    if let summary = portfolio.summary {
+                    // A last-known launch value has no data details of its
+                    // own yet; they arrive with this launch's replay.
+                    if let summary = portfolio.summary, !summary.isProvisional {
                         Button("Pricing and data details", systemImage: "info.circle") {
                             detailsDestination = PortfolioDetailsDestination(
                                 summary: summary,
@@ -437,6 +439,7 @@ struct PortfolioView: View {
         guard let summary = portfolio.summary else {
             return !portfolio.integrityDefects.isEmpty
         }
+        if summary.isProvisional { return false }
         if !summary.isAuthoritative || !summary.defects.isEmpty { return true }
         return !(activeHistoryResult?.accounting?.unexplained ?? .zero).isZero
     }

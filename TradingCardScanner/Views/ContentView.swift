@@ -25,7 +25,7 @@ struct ContentView: View {
     /// These services are owned by the root but deliberately not observed here.
     /// Their child views subscribe only to the fields they render, so a price
     /// checkpoint cannot re-evaluate the complete tab tree.
-    @State private var portfolio = PortfolioEngine()
+    @State private var portfolio: PortfolioEngine
     @State private var priceSnapshot = PriceSnapshotStore()
     @State private var projectionStore = CollectionProjectionStore()
     @State private var setCompletionStore = CatalogSetCompletionStore()
@@ -102,9 +102,17 @@ struct ContentView: View {
         default: initialTab = .portfolio
         }
         _selectedTab = State(initialValue: initialTab)
+        // Debug routes seed exact fixtures; a last-known value from another
+        // run would make their captures depend on history.
+        let usesLaunchSnapshot = debugRoute == nil
 #else
         _selectedTab = State(initialValue: .portfolio)
+        let usesLaunchSnapshot = true
 #endif
+        _portfolio = State(initialValue: PortfolioEngine(
+            launchSnapshots: usesLaunchSnapshot ? .shared : nil,
+            launchStoreID: CollectionStorageGeneration.shared.currentToken()?.storeID
+        ))
     }
 
 #if DEBUG && LOCAL_ONLY_SIGNING

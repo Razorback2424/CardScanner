@@ -185,6 +185,7 @@
 		A0010087 /* PortfolioEpoch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010087 /* PortfolioEpoch.swift */; };
 		A0010088 /* PortfolioClose.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010088 /* PortfolioClose.swift */; };
 		A0010089 /* PortfolioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010089 /* PortfolioEngine.swift */; };
+		A00F0001 /* PortfolioLaunchSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00F0001 /* PortfolioLaunchSnapshot.swift */; };
 		A001008A /* PortfolioDailyClose.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001008A /* PortfolioDailyClose.swift */; };
 		A001008B /* PortfolioHistoryEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001008B /* PortfolioHistoryEngine.swift */; };
 		A001008C /* PortfolioHistoryTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001008C /* PortfolioHistoryTypes.swift */; };
@@ -583,6 +584,7 @@
 		B0010087 /* PortfolioEpoch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEpoch.swift; sourceTree = "<group>"; };
 		B0010088 /* PortfolioClose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioClose.swift; sourceTree = "<group>"; };
 		B0010089 /* PortfolioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEngine.swift; sourceTree = "<group>"; };
+		B00F0001 /* PortfolioLaunchSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioLaunchSnapshot.swift; sourceTree = "<group>"; };
 		B001008A /* PortfolioDailyClose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioDailyClose.swift; sourceTree = "<group>"; };
 		B001008B /* PortfolioHistoryEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioHistoryEngine.swift; sourceTree = "<group>"; };
 		B001008C /* PortfolioHistoryTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioHistoryTypes.swift; sourceTree = "<group>"; };
@@ -1075,6 +1077,7 @@
 				B0010087 /* PortfolioEpoch.swift */,
 				B0010088 /* PortfolioClose.swift */,
 				B0010089 /* PortfolioEngine.swift */,
+				B00F0001 /* PortfolioLaunchSnapshot.swift */,
 				B001008B /* PortfolioHistoryEngine.swift */,
 				B0010090 /* LogicalCollection.swift */,
 				B0010091 /* PortfolioReplay.swift */,
@@ -1637,6 +1640,7 @@
 				A0010087 /* PortfolioEpoch.swift in Sources */,
 				A0010088 /* PortfolioClose.swift in Sources */,
 				A0010089 /* PortfolioEngine.swift in Sources */,
+				A00F0001 /* PortfolioLaunchSnapshot.swift in Sources */,
 				A001008A /* PortfolioDailyClose.swift in Sources */,
 				A001008B /* PortfolioHistoryEngine.swift in Sources */,
 				A001008C /* PortfolioHistoryTypes.swift in Sources */,

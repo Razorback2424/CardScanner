@@ -234,3 +234,152 @@ final class AppOpeningTests: XCTestCase {
         XCTAssertEqual(result.unpricedCount, Int.max)
     }
 }
+
+/// Launch opens on the last value Portfolio published instead of a blank
+/// calculating screen, without letting that cached value stand in for truth.
+@MainActor
+final class PortfolioLaunchSnapshotTests: XCTestCase {
+    private var defaults: UserDefaults!
+    private var suiteName: String!
+
+    override func setUp() {
+        super.setUp()
+        suiteName = "PortfolioLaunchSnapshotTests-\(UUID().uuidString)"
+        defaults = UserDefaults(suiteName: suiteName)
+    }
+
+    override func tearDown() {
+        defaults.removePersistentDomain(forName: suiteName)
+        super.tearDown()
+    }
+
+    func testSnapshotIsScopedToItsStoreAndRecordsOnlyTrustedNonEmptySummaries() {
+        let store = PortfolioLaunchSnapshotStore(defaults: defaults)
+        let storeID = UUID()
+        store.record(summary(value: 1_234_5600, copies: 12), storeID: storeID)
+        XCTAssertEqual(store.load(storeID: storeID)?.valueTenThousandths, 1_234_5600)
+        XCTAssertEqual(store.load(storeID: storeID)?.copyCount, 12)
+        XCTAssertNil(store.load(storeID: UUID()), "Another store must never open on this value")
+        XCTAssertNil(store.load(storeID: nil))
+
+        var untrusted = summary(value: 9, copies: 1)
+        untrusted.isAuthoritative = false
+        store.record(untrusted, storeID: storeID)
+        var defective = summary(value: 9, copies: 1)
+        defective.defects = [LedgerIntegrityDefect(reason: .unreadableStore, collectionKey: "store:test",
+                                                   detail: "Injected", canRepairQuantity: false)]
+        store.record(defective, storeID: storeID)
+        store.record(summary(value: 9, copies: 1), storeID: nil)
+        XCTAssertEqual(store.load(storeID: storeID)?.valueTenThousandths, 1_234_5600,
+                       "Only an authoritative, defect-free summary of a known store replaces the snapshot")
+
+        store.record(summary(value: 0, copies: 0), storeID: storeID)
+        XCTAssertNil(store.load(storeID: storeID), "An emptied collection clears its snapshot")
+    }
+
+    func testEngineOpensOnProvisionalValueAndKeepsItUntilReplayReplacesIt() async throws {
+        let storeID = UUID()
+        let store = PortfolioLaunchSnapshotStore(defaults: defaults)
+        store.record(summary(value: 500_0000, copies: 7), storeID: storeID)
+        let gate = LaunchReplayGate()
+        let engine = PortfolioEngine(computationProvider: { _, epoch, through, zone in
+            await gate.wait()
+            return Self.computation(value: 612_5000, copies: 8, epoch: epoch, through: through, zone: zone)
+        }, launchSnapshots: store, launchStoreID: storeID)
+
+        let opened = try XCTUnwrap(engine.summary)
+        XCTAssertEqual(opened.currentValue, Money(tenThousandths: 500_0000))
+        XCTAssertEqual(opened.copyCount, 7)
+        XCTAssertTrue(opened.isProvisional)
+        XCTAssertFalse(opened.isAuthoritative, "History and closes must not render from a cached value")
+
+        let context = try makeContext()
+        engine.recompute(context: context)
+        await Task.yield()
+        XCTAssertTrue(engine.isRecomputing)
+        XCTAssertEqual(engine.summary?.currentValue, Money(tenThousandths: 500_0000),
+                       "The replay must not blank the last known value")
+        XCTAssertEqual(engine.summary?.isProvisional, true)
+
+        await gate.open()
+        await engine.recomputeAndWait(context: context)
+        let replayed = try XCTUnwrap(engine.summary)
+        XCTAssertFalse(replayed.isProvisional)
+        XCTAssertEqual(replayed.currentValue, Money(tenThousandths: 612_5000))
+        XCTAssertEqual(replayed.copyCount, 8)
+    }
+
+    func testUnreadableFirstReplayDoesNotVouchForTheCachedValue() async throws {
+        let storeID = UUID()
+        let store = PortfolioLaunchSnapshotStore(defaults: defaults)
+        store.record(summary(value: 500_0000, copies: 7), storeID: storeID)
+        let engine = PortfolioEngine(computationProvider: { _, epoch, through, zone in
+            var computation = Self.computation(value: 0, copies: 0, epoch: epoch, through: through, zone: zone)
+            computation.defects = [LedgerIntegrityDefect(reason: .unreadableStore, collectionKey: "store:test",
+                                                         detail: "Injected", canRepairQuantity: false)]
+            computation.isAuthoritative = false
+            return computation
+        }, launchSnapshots: store, launchStoreID: storeID)
+        XCTAssertNotNil(engine.summary)
+
+        await engine.recomputeAndWait(context: try makeContext())
+        XCTAssertNil(engine.summary, "A failed first read shows “Value unavailable”, not a stale number")
+        XCTAssertEqual(engine.integrityDefects.first?.reason, .unreadableStore)
+    }
+
+    func testOpeningReleasesImmediatelyWithTheCachedCopyCount() async throws {
+        let storeID = UUID()
+        let store = PortfolioLaunchSnapshotStore(defaults: defaults)
+        store.record(summary(value: 500_0000, copies: 312), storeID: storeID)
+        let engine = PortfolioEngine(launchSnapshots: store, launchStoreID: storeID)
+        let opening = AppOpeningModel()
+        let ready = expectation(description: "Cached value releases the opening")
+        let observation = opening.$portfolioReady.filter { $0 != nil }.prefix(1).sink { _ in ready.fulfill() }
+        defer { observation.cancel() }
+        let controller = UIHostingController(rootView: AppOpeningReadinessReporter(
+            portfolio: engine, skipsPortfolio: false, holdsOpening: false, revealBudget: .seconds(30)
+        ).environmentObject(opening))
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        await fulfillment(of: [ready], timeout: 2)
+        XCTAssertEqual(opening.portfolioReady, .some(312))
+    }
+
+    private func summary(value: Int64, copies: Int) -> PortfolioSummary {
+        PortfolioSummary(currentValue: Money(tenThousandths: value), copyCount: copies)
+    }
+
+    private func makeContext() throws -> ModelContext {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                                           configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        return ModelContext(container)
+    }
+
+    nonisolated private static func computation(
+        value: Int64, copies: Int, epoch: Date, through: Date, zone: String
+    ) -> PortfolioReplaySnapshotBuilder.Computation {
+        let replay = PortfolioReplayEngine.replay(PortfolioReplayInput(events: [], observations: [],
+            epoch: epoch, through: through, timeZoneIdentifier: zone))
+        return PortfolioReplaySnapshotBuilder.Computation(
+            valuation: PortfolioEngine.CurrentValuation(value: Money(tenThousandths: value), copiesHeld: copies),
+            defects: [], isAuthoritative: true, replay: replay, coverage: PortfolioCoverageIndex(), holdings: [])
+    }
+}
+
+private actor LaunchReplayGate {
+    private var isOpen = false
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    func wait() async {
+        if isOpen { return }
+        await withCheckedContinuation { waiters.append($0) }
+    }
+
+    func open() {
+        isOpen = true
+        waiters.forEach { $0.resume() }
+        waiters = []
+    }
+}

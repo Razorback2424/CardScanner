@@ -44,6 +44,10 @@ struct PortfolioSummary: Equatable, Sendable {
     /// not simultaneously publish a supposedly trustworthy close; doing so is
     /// what turns an integrity diagnostic into an ornament.
     var isAuthoritative = true
+    /// The last known value from a previous launch, shown while this launch's
+    /// first replay runs. Always non-authoritative, but not a defect: it does
+    /// not ask for attention, only for the replay that replaces it.
+    var isProvisional = false
 }
 
 /// Current, authoritative presentation metadata for a logical owned position.
@@ -120,11 +124,26 @@ typealias PortfolioComputationProvider = @Sendable (
 @MainActor
 final class PortfolioEngine: ObservableObject {
     private let computationProvider: PortfolioComputationProvider?
+    /// Nil for headless and test engines: only the app's foreground engine
+    /// opens on, and records, the last known value.
+    private let launchSnapshots: PortfolioLaunchSnapshotStore?
+    /// The store the running replay reads, when it is the active session.
+    private var launchSnapshotStoreID: UUID?
 
     init(
-        computationProvider: PortfolioComputationProvider? = nil
+        computationProvider: PortfolioComputationProvider? = nil,
+        launchSnapshots: PortfolioLaunchSnapshotStore? = nil,
+        launchStoreID: UUID? = nil
     ) {
         self.computationProvider = computationProvider
+        self.launchSnapshots = launchSnapshots
+        // Open on the last value this store published so launch never shows a
+        // blank calculating screen. It is provisional and deliberately not a
+        // `lastUsableSummary`: an unreadable first replay must still say
+        // "Value unavailable" rather than vouch for a cached number.
+        if let snapshot = launchSnapshots?.load(storeID: launchStoreID) {
+            status = .ready(snapshot.provisionalSummary)
+        }
     }
 
     enum Status: Equatable {
@@ -382,12 +401,14 @@ final class PortfolioEngine: ObservableObject {
         isRecomputing = true
         // A retained summary remains the display value while its replacement is
         // calculated. Only a genuine cold start has no honest value to show.
-        if lastUsableSummary == nil {
+        // A provisional launch value stays up for the same reason.
+        if lastUsableSummary == nil, summary?.isProvisional != true {
             status = .computing
         }
 
         let storage = CollectionStorageGeneration.shared
         let token = storage.activeSession()?.container === container ? storage.currentToken() : nil
+        launchSnapshotStoreID = token?.storeID
         let shouldContinue: StorageGenerationContinuation = token.map { storage.continuation(for: $0) } ?? { true }
         let computationProvider = self.computationProvider
         computationTask = Task { @MainActor [weak self] in
@@ -623,6 +644,7 @@ final class PortfolioEngine: ObservableObject {
         lastUsableSummary = summary
         replaySummary = summary
         status = .ready(summary)
+        launchSnapshots?.record(summary, storeID: launchSnapshotStoreID)
         // Observers see this only after both persistence and presentation settle.
         inputRevision &+= 1
     }
