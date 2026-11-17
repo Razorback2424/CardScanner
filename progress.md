@@ -1,3 +1,17 @@
+# 2026-11-17 — Browse tab; Collection moves under Portfolio
+
+The tabs are now Portfolio, Browse, Scan and Pro. Collection is pushed from
+Portfolio (a toolbar button, or "See all" beside "Your best cards", which sorts
+by price); its **+** and empty-state "Find Items to Add" switch to the Browse
+tab. On iPad, Collection is a full-width grid whose cards push their detail;
+the split view is gone. The Catalog screen is now titled Browse. The decision
+is recorded in [the Browse spec](docs/plans/browse_screen_spec.md) §1.
+Evidence: 242 focused simulator tests pass on branch
+`feat/browse-tab-navigation` (Browse, Collection push, Portfolio, detail and
+opening classes), plus debug-route screenshots on an iPhone 17 and an iPad Air
+simulator. Tapping through the tab switch by hand and device testing have not
+been done.
+
 # 2026-11-16 — Scryfall pacing, Magic bulk data and targeted price audit
 
 Catalog Health's Magic searches were spaced 200 ms apart, above Scryfall's

@@ -17,8 +17,9 @@ Current implementation state:
   The [pagination follow-up](../../app_review_fix_plan.md#browse-pagination-render-investigation--2026-11-05)
   owns the fix and its verification; older Browse counts below are
   historical evidence, not a verification of this change.
-- `CollectionView.Destination.browse` pushes Catalog from the Collection tab;
-  Browse is not a fifth native tab.
+- Browse is the second native tab (Portfolio, Browse, Scan, Pro) as of
+  2026-11-17; Collection is pushed from Portfolio, and its **+** switches to
+  the Browse tab. See §1.
 - Unified card/sealed search, game-level Cards/Sealed navigation, cached sealed
   browsing, release rail, game summaries, set sorting/progress, artwork
   fallbacks, and grouped Pokémon finish tiles are implemented.
@@ -46,8 +47,8 @@ Baseline checked against:
 Use one hierarchy:
 
 ```text
-Collection tab
-└── Catalog
+Browse tab
+└── Browse (formerly titled "Catalog")
     ├── search result (card or sealed product)
     └── game
         ├── Cards
@@ -60,11 +61,14 @@ Sealed is a content kind within a game, not a second top-level game directory. T
 identity remains independent from `CatalogSetID`; this plan changes navigation, not catalog
 identity. Do not join card sets to `SealedSetSummary` by name, code, or fuzzy matching.
 
-Keep Catalog as a push destination owned by the Collection tab. `CollectionView.Destination.browse`
-already establishes that route, and `ContentView.Tab` intentionally has Portfolio, Collection,
-Scan, and Pro. Therefore Collection remaining selected on Catalog and its descendants is the
-correct tab state. Do not rename the Collection tab, add a Catalog tab, or remove Portfolio in this
-slice. Screenshot acceptance must assert that Collection stays selected while Catalog is open.
+**Navigation decision, 2026-11-17 (supersedes the earlier "Catalog is a Collection child" rule).**
+`ContentView.Tab` is Portfolio, Browse, Scan, and Pro. The Browse tab hosts `BrowseView` at its
+root. Collection is no longer a tab: Portfolio pushes it (toolbar button, or "See all" beside
+"Your best cards", which sorts by price), and Collection's **+** and empty-state "Find Items to Add"
+switch to the Browse tab rather than pushing Browse. On iPad, Collection is a full-width pushed grid
+whose cards push their detail; the former split view is gone. Card detail and unresolved-scan
+recovery still push `BrowseView` inside their own stacks. Screenshot acceptance must assert that
+Browse is the selected tab while the Browse root and its descendants are open.
 
 ## 2. Implementation map and type-level contract
 
@@ -688,7 +692,7 @@ test target rather than failing a test.
 
 ### UI / screenshot matrix
 
-Capture the actual Collection → Catalog route at minimum in:
+Capture the actual Browse tab route at minimum in:
 
 1. credentials configured, default Dynamic Type, light mode;
 2. credentials absent, default Dynamic Type, light mode;
