@@ -50,6 +50,7 @@ class MagicCatalogWorkflowTests(unittest.TestCase):
 
     def test_candidate_retention_and_publication_safeguards_remain(self):
         for expected in ('actions/upload-artifact@v4', 'Manual publication is required',
+                         'validated candidate is retained as an artifact',
                          '::warning title=Magic catalog needs manual publication::',
                          'authority|newSet|unknown)', 'publish_environment="magic-catalog-production"'):
             self.assertIn(expected, self.prepare)

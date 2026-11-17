@@ -193,7 +193,7 @@ jobs:
             echo "- Approval required: $requires_approval"
             echo "- Publish environment: $publish_environment"
             if [ "${{ github.event_name }}" = "schedule" ] && [ "$requires_approval" = "true" ]; then
-              echo "- Manual publication is required: run this workflow with publish enabled; it revalidates the live catalog and waits for production approval."
+              echo "- Manual publication is required; the validated candidate is retained as an artifact. Run this workflow with publish enabled to revalidate the live catalog and request production approval."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ github.event_name }}" = "schedule" ] && [ "$requires_approval" = "true" ]; then
