@@ -24,6 +24,7 @@ Do not run live capture or regenerate committed resources just to verify a code 
 - `generate_pokemon_snapshot.sh` runs an app-hosted `xcodebuild test` (one `BrowseFeatureTests` method) and requires `POKEMON_SNAPSHOT_DERIVED_DATA_PATH` on the external SSD.
 - `ui_build_and_shoot.sh` uninstalls the app (deleting simulator data) unless `UI_PRESERVE_APP_DATA=1`, and defaults `DERIVED_DATA` to `/tmp`. See [`../TradingCardScanner/Views/AGENTS.md`](../TradingCardScanner/Views/AGENTS.md).
 - `audit_game_boundaries.sh` currently fails on existing legacy branches; compare before/after rather than treating failure as new.
+- `publish_one_piece_local.py` **deploys production** with the operator's Firebase login. It is the fallback when GitHub macOS runners cannot run the One Piece publish job: it repeats that job's signature, predecessor and namespace-preservation checks in a fresh `origin/main` worktree, refuses while a shared-site GitHub run is queued or running, asks for confirmation, then reads both origins back. Signing still happens only in GitHub. Pass `--work-dir` on the external SSD.
 
 ## Data contracts
 
