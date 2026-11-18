@@ -20,6 +20,7 @@ import unicodedata
 from urllib.error import HTTPError
 from urllib.parse import parse_qs, urlsplit
 
+import catalog_exceptions
 from capture_pokemon_tcgcsv import BASE, CATEGORY, DELAY, USER_AGENT, capture, groups_in, is_priority
 from market_price_feeds import (FEED_PATH, MAX_FILE_BYTES, NAMESPACE, ORIGIN, instant, packed, read_http,
                                 scope_from_repo, stamp, validate_site)
@@ -42,6 +43,10 @@ APP_INPUTS = ("Config", "TradingCardScanner", "TradingCardScannerTests", "Tradin
               "PokemonCatalogCore", "MagicCatalogCore", "OnePieceCatalogCore",
               "publisher/pokemon-battle-deck-finishes.json", "publisher/pokemon-deck-exclusive-normals.json",
               "publisher/pokemon-delta-reign-printings.json", "publisher/pokemon-mcdonalds-2026.json")
+# Review-queue reason codes (docs/catalog-reconciliation-playbook.md). A row's
+# match category names its reason; exact matches fall through to price and lane checks.
+MATCH_REASONS = {"possibleBaseIdentity": "possibleBaseIdentity", "sameSetIdentityCandidate": "sameSetIdentityCandidate",
+                 "unmatched": "unmatchedProduct", "mappedSetAbsent": "mappedSetAbsent"}
 AUDIT_TEST = "TradingCardScannerTests/PokemonCatalogCoordinatorTests/testExportPokemonTCGCSVAuditInventoryWhenRequested"
 
 
@@ -282,6 +287,28 @@ def compare(products, groups, inventory, scope, hosted):
     return rows
 
 
+def review_reason(row):
+    """One reason code per review-queue row."""
+    if row["match"] != "exactProduct":
+        return MATCH_REASONS[row["match"]]
+    if "missingFromHostedFeed" in row["hostedPrice"]:
+        return "missingHostedQuote"
+    if "staleHostedQuote" in row["hostedPrice"]:
+        return "staleHostedQuote"
+    if row["unverifiedAppLanes"]:
+        return "unverifiedAppLane"
+    return "exactSurfaceReview"
+
+
+def review_ledger(review):
+    return [catalog_exceptions.row(
+        "pokemon", str(row["groupID"]), f"product:{row['productID']}", row["reason"],
+        f"{row['group']}: {row['name']}",
+        {"match": row["match"], "number": row["number"], "lanes": sorted(row["lanes"]),
+         "appIDs": sorted({card["id"] for card in row["appCandidates"]} | {card["appID"] for card in row["exactAppMatches"]}),
+         "hostedPrice": row["hostedPrice"]}) for row in review]
+
+
 def catalog_changes(previous, current, incomplete_groups=()):
     previous, current = ({pid: row for pid, row in products.items() if row["groupID"] not in incomplete_groups}
                          for products in (previous, current))
@@ -314,6 +341,8 @@ def write_report(repo, capture_root, output, previous_report=None):
     review.sort(key=lambda row: ("missingFromHostedFeed" not in row["hostedPrice"],
                                  row["groupID"] != 1840, not row["possibleMissingStandardFinish"],
                                  not REVIEW_TREATMENT.search(row["name"]), -row["productID"]))
+    for row in review:
+        row["reason"] = review_reason(row)
     by_group = defaultdict(Counter)
     for row in rows:
         by_group[row["group"]][row["match"]] += 1
@@ -329,22 +358,25 @@ def write_report(repo, capture_root, output, previous_report=None):
                "incompleteUpstreamGroups": incomplete, "signedCatalogRevision": inventory["revision"],
                "appSets": len(inventory["sets"]), "appCards": sum(len(entry["cards"]) for entry in inventory["sets"]),
                "hostedPriceBuild": hosted_build, "matches": dict(Counter(row["match"] for row in rows)),
-               "priorityQueue": len(review), "groups": dict(by_group), "marketChanges": delta,
+               "priorityQueue": len(review), "reviewReasons": dict(Counter(row["reason"] for row in review).most_common()),
+               "groups": dict(by_group), "marketChanges": delta,
                "coverageChanges": coverage_delta}
     (output / "comparison.json").write_bytes(packed({"summary": summary, "cards": rows}))
     with (output / "review-queue.csv").open("w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        writer.writerow(["Group", "Product ID", "Product", "Marketplace Number", "Number Evidence", "Market Lanes",
+        writer.writerow(["Reason", "Group", "Product ID", "Product", "Marketplace Number", "Number Evidence", "Market Lanes",
                          "Comparison", "Possible Missing Standard Finish", "Exact Surface Needs Review", "App IDs", "Scan Results",
                          "Hosted Price", "TCGplayer"])
         for row in review:
-            writer.writerow([row["group"], row["productID"], row["name"], row["number"], row["numberSource"],
+            writer.writerow([row["reason"], row["group"], row["productID"], row["name"], row["number"], row["numberSource"],
                              " | ".join(row["lanes"]), row["match"], row["possibleMissingStandardFinish"],
                              row["exactSurfaceNeedsReview"], " | ".join(sorted({card["id"] for card in row["appCandidates"]}
                                  | {card["appID"] for card in row["exactAppMatches"]})),
                              " | ".join(sorted({card["scanResult"] for card in row["appCandidates"] + row["exactAppMatches"]})),
                              row["hostedPrice"], f"https://www.tcgplayer.com/product/{row['productID']}"])
     (output / "summary.json").write_bytes(packed(summary))
+    catalog_exceptions.write_ledger(output / "review-ledger.json", review_ledger(review),
+                                    source={"tcgcsvBuild": source_build, "signedCatalogRevision": inventory["revision"]})
     print(f"Compared {len(products):,} products across {len(groups)} groups with signed revision {inventory['revision']}", flush=True)
     print(f"Priority review queue has {len(review):,} entries. Reports in {output}", flush=True)
 

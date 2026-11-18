@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Reviewed set-to-TCGCSV-group links for the batch finish certifier. Used only where the audit's PROMO_SETS and exact group name or code matches find no group or several. Each link pins the exact group name; a renamed or missing group stops the batch. A link only chooses which market inventory is compared: every certification gate still applies.",
+  "links": [
+    {"setID": "bw1", "groupID": 1400, "groupName": "Black and White", "reason": "Code BLW is shared with BW Trainer Kit: Excadrill & Zoroark; the main set group is the exact series name."},
+    {"setID": "bw11", "groupID": 1409, "groupName": "Legendary Treasures", "reason": "Code LTR is shared with the Radiant Collection subset group; the main set group carries the exact set name."},
+    {"setID": "col1", "groupID": 1415, "groupName": "Call of Legends", "reason": "Code CL is shared with Trading Card Game Classic; the group name is exact."},
+    {"setID": "ex7", "groupID": 1428, "groupName": "EX Team Rocket Returns", "reason": "Code RR is shared with Rising Rivals; TCGplayer prefixes EX-era sets with EX."},
+    {"setID": "pl2", "groupID": 1367, "groupName": "Rising Rivals", "reason": "Code RR is shared with EX Team Rocket Returns; the group name is exact."},
+    {"setID": "g1", "groupID": 1728, "groupName": "Generations", "reason": "Code GEN is shared with the Radiant Collection subset group; the main set group carries the exact set name."},
+    {"setID": "swsh12.5gg", "groupID": 17689, "groupName": "SWSH: Crown Zenith: Galarian Gallery", "reason": "The Galarian Gallery subset has its own group; code CRZ is shared with the main Crown Zenith group."},
+    {"setID": "swsh5", "groupID": 2765, "groupName": "SWSH05: Battle Styles", "reason": "Code BST also names EX Battle Stadium; the SWSH05 group carries the exact set name."},
+    {"setID": "xy9", "groupID": 1701, "groupName": "XY - BREAKpoint", "reason": "Code BKP is shared with Burger King Promos; TCGplayer prefixes XY sets with 'XY - '."},
+    {"setID": "cel25cc", "groupID": 2931, "groupName": "Celebrations: Classic Collection", "reason": "TCGplayer names the subset 'Celebrations: Classic Collection' with code CCC."},
+    {"setID": "sm1", "groupID": 1863, "groupName": "SM Base Set", "reason": "TCGplayer names Sun & Moon 'SM Base Set' with code SM01."},
+    {"setID": "sm2", "groupID": 1919, "groupName": "SM - Guardians Rising", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sm3", "groupID": 1957, "groupName": "SM - Burning Shadows", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sm4", "groupID": 2071, "groupName": "SM - Crimson Invasion", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sm5", "groupID": 2178, "groupName": "SM - Ultra Prism", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sm6", "groupID": 2209, "groupName": "SM - Forbidden Light", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sm8", "groupID": 2328, "groupName": "SM - Lost Thunder", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sm9", "groupID": 2377, "groupName": "SM - Team Up", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sm10", "groupID": 2420, "groupName": "SM - Unbroken Bonds", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sm11", "groupID": 2464, "groupName": "SM - Unified Minds", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sm12", "groupID": 2534, "groupName": "SM - Cosmic Eclipse", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
+    {"setID": "sma", "groupID": 2594, "groupName": "Hidden Fates: Shiny Vault", "reason": "TCGplayer names the Hidden Fates Shiny Vault subset 'Hidden Fates: Shiny Vault'."},
+    {"setID": "swsh1", "groupID": 2585, "groupName": "SWSH01: Sword & Shield Base Set", "reason": "TCGplayer names Sword & Shield 'SWSH01: Sword & Shield Base Set'."},
+    {"setID": "ru1", "groupID": 1433, "groupName": "Rumble", "reason": "TCGplayer names Pokémon Rumble 'Rumble'."}
+  ]
+}

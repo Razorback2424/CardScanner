@@ -22,6 +22,1573 @@
         ]
       },
       "reviewedAt": "2026-11-12"
+    },
+    "cel25": {
+      "tcgplayerGroupID": 2867,
+      "evidence": "docs/research/pokemon-finish-coverage/captures/cel25/2026-11-18/report.json",
+      "cards": {
+        "cel25-1": [
+          "holo"
+        ],
+        "cel25-2": [
+          "holo"
+        ],
+        "cel25-3": [
+          "holo"
+        ],
+        "cel25-4": [
+          "holo"
+        ],
+        "cel25-5": [
+          "holo"
+        ],
+        "cel25-6": [
+          "holo"
+        ],
+        "cel25-7": [
+          "holo"
+        ],
+        "cel25-8": [
+          "holo"
+        ],
+        "cel25-9": [
+          "holo"
+        ],
+        "cel25-10": [
+          "holo"
+        ],
+        "cel25-11": [
+          "holo"
+        ],
+        "cel25-12": [
+          "holo"
+        ],
+        "cel25-13": [
+          "holo"
+        ],
+        "cel25-14": [
+          "holo"
+        ],
+        "cel25-15": [
+          "holo"
+        ],
+        "cel25-16": [
+          "holo"
+        ],
+        "cel25-17": [
+          "holo"
+        ],
+        "cel25-18": [
+          "holo"
+        ],
+        "cel25-19": [
+          "holo"
+        ],
+        "cel25-20": [
+          "holo"
+        ],
+        "cel25-21": [
+          "holo"
+        ],
+        "cel25-22": [
+          "holo"
+        ],
+        "cel25-23": [
+          "holo"
+        ],
+        "cel25-24": [
+          "holo"
+        ],
+        "cel25-25": [
+          "holo"
+        ]
+      },
+      "reviewedAt": "2026-11-18"
+    },
+    "sv01": {
+      "tcgplayerGroupID": 22873,
+      "evidence": "docs/research/pokemon-finish-coverage/captures/sv01/2026-11-18/report.json",
+      "cards": {
+        "sv01-001": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-002": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-003": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-004": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-005": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-006": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-007": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-008": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-009": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-010": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-011": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-012": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-013": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-014": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-015": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-016": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-017": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-018": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-019": [
+          "holo"
+        ],
+        "sv01-020": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-021": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-022": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-023": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-024": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-025": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-026": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-027": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-028": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-029": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-030": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-031": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-032": [
+          "holo"
+        ],
+        "sv01-033": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-034": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-035": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-036": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-037": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-038": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-039": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-040": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-041": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-042": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-043": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-044": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-045": [
+          "holo"
+        ],
+        "sv01-046": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-047": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-048": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-049": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-050": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-051": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-052": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-053": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-054": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-055": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-056": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-057": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-058": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-059": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-060": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-061": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-062": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-063": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-064": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-065": [
+          "holo"
+        ],
+        "sv01-066": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-067": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-068": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-069": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-070": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-071": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-072": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-073": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-074": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-075": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-076": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-077": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-078": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-079": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-080": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-081": [
+          "holo"
+        ],
+        "sv01-082": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-083": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-084": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-085": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-086": [
+          "holo"
+        ],
+        "sv01-087": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-088": [
+          "holo"
+        ],
+        "sv01-089": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-090": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-091": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-092": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-093": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-094": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-095": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-096": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-097": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-098": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-099": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-100": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-101": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-102": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-103": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-104": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-105": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-106": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-107": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-108": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-109": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-110": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-111": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-112": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-113": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-114": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-115": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-116": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-117": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-118": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-119": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-120": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-121": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-122": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-123": [
+          "holo"
+        ],
+        "sv01-124": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-125": [
+          "holo"
+        ],
+        "sv01-126": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-127": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-128": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-129": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-130": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-131": [
+          "holo"
+        ],
+        "sv01-132": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-133": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-134": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-135": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-136": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-137": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-138": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-139": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-140": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-141": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-142": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-143": [
+          "holo"
+        ],
+        "sv01-144": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-145": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-146": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-147": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-148": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-149": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-150": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-151": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-152": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-153": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-154": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-155": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-156": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-157": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-158": [
+          "holo"
+        ],
+        "sv01-159": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-160": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-161": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-162": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-163": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-164": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-165": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-166": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-167": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-168": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-169": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-170": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-171": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-172": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-173": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-174": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-175": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-176": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-177": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-178": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-179": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-180": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-181": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-182": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-183": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-184": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-185": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-186": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-187": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-188": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-189": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-190": [
+          "holo",
+          "reverse"
+        ],
+        "sv01-191": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-192": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-193": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-194": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-195": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-196": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-197": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-198": [
+          "normal",
+          "reverse"
+        ],
+        "sv01-199": [
+          "holo"
+        ],
+        "sv01-200": [
+          "holo"
+        ],
+        "sv01-201": [
+          "holo"
+        ],
+        "sv01-202": [
+          "holo"
+        ],
+        "sv01-203": [
+          "holo"
+        ],
+        "sv01-204": [
+          "holo"
+        ],
+        "sv01-205": [
+          "holo"
+        ],
+        "sv01-206": [
+          "holo"
+        ],
+        "sv01-207": [
+          "holo"
+        ],
+        "sv01-208": [
+          "holo"
+        ],
+        "sv01-209": [
+          "holo"
+        ],
+        "sv01-210": [
+          "holo"
+        ],
+        "sv01-211": [
+          "holo"
+        ],
+        "sv01-212": [
+          "holo"
+        ],
+        "sv01-213": [
+          "holo"
+        ],
+        "sv01-214": [
+          "holo"
+        ],
+        "sv01-215": [
+          "holo"
+        ],
+        "sv01-216": [
+          "holo"
+        ],
+        "sv01-217": [
+          "holo"
+        ],
+        "sv01-218": [
+          "holo"
+        ],
+        "sv01-219": [
+          "holo"
+        ],
+        "sv01-220": [
+          "holo"
+        ],
+        "sv01-221": [
+          "holo"
+        ],
+        "sv01-222": [
+          "holo"
+        ],
+        "sv01-223": [
+          "holo"
+        ],
+        "sv01-224": [
+          "holo"
+        ],
+        "sv01-225": [
+          "holo"
+        ],
+        "sv01-226": [
+          "holo"
+        ],
+        "sv01-227": [
+          "holo"
+        ],
+        "sv01-228": [
+          "holo"
+        ],
+        "sv01-229": [
+          "holo"
+        ],
+        "sv01-230": [
+          "holo"
+        ],
+        "sv01-231": [
+          "holo"
+        ],
+        "sv01-232": [
+          "holo"
+        ],
+        "sv01-233": [
+          "holo"
+        ],
+        "sv01-234": [
+          "holo"
+        ],
+        "sv01-235": [
+          "holo"
+        ],
+        "sv01-236": [
+          "holo"
+        ],
+        "sv01-237": [
+          "holo"
+        ],
+        "sv01-238": [
+          "holo"
+        ],
+        "sv01-239": [
+          "holo"
+        ],
+        "sv01-240": [
+          "holo"
+        ],
+        "sv01-241": [
+          "holo"
+        ],
+        "sv01-242": [
+          "holo"
+        ],
+        "sv01-243": [
+          "holo"
+        ],
+        "sv01-244": [
+          "holo"
+        ],
+        "sv01-245": [
+          "holo"
+        ],
+        "sv01-246": [
+          "holo"
+        ],
+        "sv01-247": [
+          "holo"
+        ],
+        "sv01-248": [
+          "holo"
+        ],
+        "sv01-249": [
+          "holo"
+        ],
+        "sv01-250": [
+          "holo"
+        ],
+        "sv01-251": [
+          "holo"
+        ],
+        "sv01-252": [
+          "holo"
+        ],
+        "sv01-253": [
+          "holo"
+        ],
+        "sv01-254": [
+          "holo"
+        ],
+        "sv01-255": [
+          "holo"
+        ],
+        "sv01-256": [
+          "holo"
+        ],
+        "sv01-257": [
+          "holo"
+        ],
+        "sv01-258": [
+          "holo"
+        ]
+      },
+      "reviewedAt": "2026-11-18"
+    },
+    "swsh12.5gg": {
+      "tcgplayerGroupID": 17689,
+      "evidence": "docs/research/pokemon-finish-coverage/captures/swsh12.5gg/2026-11-18/report.json",
+      "cards": {
+        "swsh12.5gg-GG01": [
+          "holo"
+        ],
+        "swsh12.5gg-GG02": [
+          "holo"
+        ],
+        "swsh12.5gg-GG03": [
+          "holo"
+        ],
+        "swsh12.5gg-GG04": [
+          "holo"
+        ],
+        "swsh12.5gg-GG05": [
+          "holo"
+        ],
+        "swsh12.5gg-GG06": [
+          "holo"
+        ],
+        "swsh12.5gg-GG07": [
+          "holo"
+        ],
+        "swsh12.5gg-GG08": [
+          "holo"
+        ],
+        "swsh12.5gg-GG09": [
+          "holo"
+        ],
+        "swsh12.5gg-GG10": [
+          "holo"
+        ],
+        "swsh12.5gg-GG11": [
+          "holo"
+        ],
+        "swsh12.5gg-GG12": [
+          "holo"
+        ],
+        "swsh12.5gg-GG13": [
+          "holo"
+        ],
+        "swsh12.5gg-GG14": [
+          "holo"
+        ],
+        "swsh12.5gg-GG15": [
+          "holo"
+        ],
+        "swsh12.5gg-GG16": [
+          "holo"
+        ],
+        "swsh12.5gg-GG17": [
+          "holo"
+        ],
+        "swsh12.5gg-GG18": [
+          "holo"
+        ],
+        "swsh12.5gg-GG19": [
+          "holo"
+        ],
+        "swsh12.5gg-GG20": [
+          "holo"
+        ],
+        "swsh12.5gg-GG21": [
+          "holo"
+        ],
+        "swsh12.5gg-GG22": [
+          "holo"
+        ],
+        "swsh12.5gg-GG23": [
+          "holo"
+        ],
+        "swsh12.5gg-GG24": [
+          "holo"
+        ],
+        "swsh12.5gg-GG25": [
+          "holo"
+        ],
+        "swsh12.5gg-GG26": [
+          "holo"
+        ],
+        "swsh12.5gg-GG27": [
+          "holo"
+        ],
+        "swsh12.5gg-GG28": [
+          "holo"
+        ],
+        "swsh12.5gg-GG29": [
+          "holo"
+        ],
+        "swsh12.5gg-GG30": [
+          "holo"
+        ],
+        "swsh12.5gg-GG31": [
+          "holo"
+        ],
+        "swsh12.5gg-GG32": [
+          "holo"
+        ],
+        "swsh12.5gg-GG33": [
+          "holo"
+        ],
+        "swsh12.5gg-GG34": [
+          "holo"
+        ],
+        "swsh12.5gg-GG35": [
+          "holo"
+        ],
+        "swsh12.5gg-GG36": [
+          "holo"
+        ],
+        "swsh12.5gg-GG37": [
+          "holo"
+        ],
+        "swsh12.5gg-GG38": [
+          "holo"
+        ],
+        "swsh12.5gg-GG39": [
+          "holo"
+        ],
+        "swsh12.5gg-GG40": [
+          "holo"
+        ],
+        "swsh12.5gg-GG41": [
+          "holo"
+        ],
+        "swsh12.5gg-GG42": [
+          "holo"
+        ],
+        "swsh12.5gg-GG43": [
+          "holo"
+        ],
+        "swsh12.5gg-GG44": [
+          "holo"
+        ],
+        "swsh12.5gg-GG45": [
+          "holo"
+        ],
+        "swsh12.5gg-GG46": [
+          "holo"
+        ],
+        "swsh12.5gg-GG47": [
+          "holo"
+        ],
+        "swsh12.5gg-GG48": [
+          "holo"
+        ],
+        "swsh12.5gg-GG49": [
+          "holo"
+        ],
+        "swsh12.5gg-GG50": [
+          "holo"
+        ],
+        "swsh12.5gg-GG51": [
+          "holo"
+        ],
+        "swsh12.5gg-GG52": [
+          "holo"
+        ],
+        "swsh12.5gg-GG53": [
+          "holo"
+        ],
+        "swsh12.5gg-GG54": [
+          "holo"
+        ],
+        "swsh12.5gg-GG55": [
+          "holo"
+        ],
+        "swsh12.5gg-GG56": [
+          "holo"
+        ],
+        "swsh12.5gg-GG57": [
+          "holo"
+        ],
+        "swsh12.5gg-GG58": [
+          "holo"
+        ],
+        "swsh12.5gg-GG59": [
+          "holo"
+        ],
+        "swsh12.5gg-GG60": [
+          "holo"
+        ],
+        "swsh12.5gg-GG61": [
+          "holo"
+        ],
+        "swsh12.5gg-GG62": [
+          "holo"
+        ],
+        "swsh12.5gg-GG63": [
+          "holo"
+        ],
+        "swsh12.5gg-GG64": [
+          "holo"
+        ],
+        "swsh12.5gg-GG65": [
+          "holo"
+        ],
+        "swsh12.5gg-GG66": [
+          "holo"
+        ],
+        "swsh12.5gg-GG67": [
+          "holo"
+        ],
+        "swsh12.5gg-GG68": [
+          "holo"
+        ],
+        "swsh12.5gg-GG69": [
+          "holo"
+        ],
+        "swsh12.5gg-GG70": [
+          "holo"
+        ]
+      },
+      "reviewedAt": "2026-11-18"
+    },
+    "swsh3.5": {
+      "tcgplayerGroupID": 2685,
+      "evidence": "docs/research/pokemon-finish-coverage/captures/swsh3.5/2026-11-18/report.json",
+      "cards": {
+        "swsh3.5-1": [
+          "holo"
+        ],
+        "swsh3.5-2": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-3": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-4": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-5": [
+          "holo"
+        ],
+        "swsh3.5-6": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-7": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-8": [
+          "holo"
+        ],
+        "swsh3.5-9": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-10": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-11": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-12": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-13": [
+          "holo"
+        ],
+        "swsh3.5-14": [
+          "holo"
+        ],
+        "swsh3.5-15": [
+          "holo"
+        ],
+        "swsh3.5-16": [
+          "holo"
+        ],
+        "swsh3.5-17": [
+          "holo"
+        ],
+        "swsh3.5-18": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-19": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-20": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-21": [
+          "holo"
+        ],
+        "swsh3.5-22": [
+          "holo"
+        ],
+        "swsh3.5-23": [
+          "holo"
+        ],
+        "swsh3.5-24": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-25": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-26": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-27": [
+          "holo"
+        ],
+        "swsh3.5-28": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-29": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-30": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-31": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-32": [
+          "holo"
+        ],
+        "swsh3.5-33": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-34": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-35": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-36": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-37": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-38": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-39": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-40": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-41": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-42": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-43": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-44": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-45": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-46": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-47": [
+          "holo"
+        ],
+        "swsh3.5-48": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-49": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-50": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-51": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-52": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-53": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-54": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-55": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-56": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-57": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-58": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-59": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-60": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-61": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-62": [
+          "holo",
+          "reverse"
+        ],
+        "swsh3.5-63": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-64": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-65": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-66": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-67": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-68": [
+          "normal",
+          "reverse"
+        ],
+        "swsh3.5-69": [
+          "holo"
+        ],
+        "swsh3.5-70": [
+          "holo"
+        ],
+        "swsh3.5-71": [
+          "holo"
+        ],
+        "swsh3.5-72": [
+          "holo"
+        ],
+        "swsh3.5-73": [
+          "holo"
+        ],
+        "swsh3.5-74": [
+          "holo"
+        ],
+        "swsh3.5-75": [
+          "holo"
+        ],
+        "swsh3.5-76": [
+          "holo"
+        ],
+        "swsh3.5-77": [
+          "holo"
+        ],
+        "swsh3.5-78": [
+          "holo"
+        ],
+        "swsh3.5-79": [
+          "holo"
+        ],
+        "swsh3.5-80": [
+          "holo"
+        ]
+      },
+      "reviewedAt": "2026-11-18"
     }
   }
 }

@@ -1,0 +1,1847 @@
+{
+  "schemaVersion": 2,
+  "captureRevision": "2026-11-18",
+  "setID": "swsh12.5gg",
+  "setName": "Crown Zenith Galarian Gallery",
+  "tcgplayerGroupID": 17689,
+  "standard": "Each numbered checklist card must agree with the matching TCGplayer products on exact finishes, or have a cited resolution. Every conflict, unmatched number and Normal review must be resolved. Market listings are evidence of membership. Physical or retail evidence resolves disagreements.",
+  "capturedAt": "2026-11-18T21:54:49+00:00",
+  "sourceBuild": "2026-11-18T20:05:56+0000",
+  "checklistSources": {
+    "sets/f931b298778cace5.json": "0c15bab6b0cde8ef25c72a70f330b5ee9dbd59ec3ba591caa1d5e74f71bec691"
+  },
+  "finishEvidenceSHA256": "89f8ee6773c0ee201afa2ee89ebad0ffdcd7e12002db0b8097aabcc03264ccec",
+  "marketSources": {
+    "products": {
+      "url": "https://tcgcsv.com/tcgplayer/3/17689/products",
+      "sha256": "4e8d2045e103baae2e6f6dd8d52f6d79b68f3e497be35ddf4ef919e0950db8f7"
+    },
+    "prices": {
+      "url": "https://tcgcsv.com/tcgplayer/3/17689/prices",
+      "sha256": "d765f69f13d18a58dcfb61afda57f7de273720a252cf2bb1bd31604fec5f5094"
+    }
+  },
+  "cards": {
+    "swsh12.5gg-GG01": {
+      "number": "GG01",
+      "name": "Hisuian Voltorb",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478017,
+          "name": "Hisuian Voltorb",
+          "number": "GG01/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG02": {
+      "number": "GG02",
+      "name": "Kricketune",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478019,
+          "name": "Kricketune",
+          "number": "GG02/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG03": {
+      "number": "GG03",
+      "name": "Magmortar",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478020,
+          "name": "Magmortar",
+          "number": "GG03/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG04": {
+      "number": "GG04",
+      "name": "Oricorio",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478021,
+          "name": "Oricorio",
+          "number": "GG04/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG05": {
+      "number": "GG05",
+      "name": "Lapras",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477049,
+          "name": "Lapras",
+          "number": "GG05/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG06": {
+      "number": "GG06",
+      "name": "Manaphy",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478023,
+          "name": "Manaphy",
+          "number": "GG06/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG07": {
+      "number": "GG07",
+      "name": "Keldeo",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478024,
+          "name": "Keldeo",
+          "number": "GG07/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG08": {
+      "number": "GG08",
+      "name": "Electivire",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478025,
+          "name": "Electivire",
+          "number": "GG08/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG09": {
+      "number": "GG09",
+      "name": "Toxtricity",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478026,
+          "name": "Toxtricity",
+          "number": "GG09/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG10": {
+      "number": "GG10",
+      "name": "Mew",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478027,
+          "name": "Mew",
+          "number": "GG10/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG11": {
+      "number": "GG11",
+      "name": "Lunatone",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478028,
+          "name": "Lunatone",
+          "number": "GG11/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG12": {
+      "number": "GG12",
+      "name": "Deoxys",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478029,
+          "name": "Deoxys",
+          "number": "GG12/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG13": {
+      "number": "GG13",
+      "name": "Diancie",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478030,
+          "name": "Diancie",
+          "number": "GG13/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG14": {
+      "number": "GG14",
+      "name": "Comfey",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478031,
+          "name": "Comfey",
+          "number": "GG14/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG15": {
+      "number": "GG15",
+      "name": "Solrock",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478032,
+          "name": "Solrock",
+          "number": "GG15/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG16": {
+      "number": "GG16",
+      "name": "Absol",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478034,
+          "name": "Absol",
+          "number": "GG16/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG17": {
+      "number": "GG17",
+      "name": "Thievul",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477056,
+          "name": "Thievul",
+          "number": "GG17/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG18": {
+      "number": "GG18",
+      "name": "Magnezone",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478036,
+          "name": "Magnezone",
+          "number": "GG18/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG19": {
+      "number": "GG19",
+      "name": "Altaria",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 475444,
+          "name": "Altaria",
+          "number": "GG19/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG20": {
+      "number": "GG20",
+      "name": "Latias",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478038,
+          "name": "Latias",
+          "number": "GG20/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG21": {
+      "number": "GG21",
+      "name": "Hisuian Goodra",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478039,
+          "name": "Hisuian Goodra",
+          "number": "GG21/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG22": {
+      "number": "GG22",
+      "name": "Ditto",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 475445,
+          "name": "Ditto",
+          "number": "GG22/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG23": {
+      "number": "GG23",
+      "name": "Dunsparce",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478041,
+          "name": "Dunsparce",
+          "number": "GG23/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG24": {
+      "number": "GG24",
+      "name": "Miltank",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478043,
+          "name": "Miltank",
+          "number": "GG24/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG25": {
+      "number": "GG25",
+      "name": "Bibarel",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 475643,
+          "name": "Bibarel",
+          "number": "GG25/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG26": {
+      "number": "GG26",
+      "name": "Riolu",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478045,
+          "name": "Riolu",
+          "number": "GG26/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG27": {
+      "number": "GG27",
+      "name": "Swablu",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478046,
+          "name": "Swablu",
+          "number": "GG27/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG28": {
+      "number": "GG28",
+      "name": "Duskull",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478047,
+          "name": "Duskull",
+          "number": "GG28/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG29": {
+      "number": "GG29",
+      "name": "Bidoof",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478048,
+          "name": "Bidoof",
+          "number": "GG29/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG30": {
+      "number": "GG30",
+      "name": "Pikachu",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478058,
+          "name": "Pikachu",
+          "number": "GG30/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG31": {
+      "number": "GG31",
+      "name": "Turtwig",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478059,
+          "name": "Turtwig",
+          "number": "GG31/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG32": {
+      "number": "GG32",
+      "name": "Paras",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478061,
+          "name": "Paras",
+          "number": "GG32/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG33": {
+      "number": "GG33",
+      "name": "Poochyena",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478062,
+          "name": "Poochyena",
+          "number": "GG33/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG34": {
+      "number": "GG34",
+      "name": "Mareep",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478063,
+          "name": "Mareep",
+          "number": "GG34/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG35": {
+      "number": "GG35",
+      "name": "Leafeon VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477060,
+          "name": "Leafeon VSTAR",
+          "number": "GG35/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG36": {
+      "number": "GG36",
+      "name": "Entei V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478065,
+          "name": "Entei V",
+          "number": "GG36/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG37": {
+      "number": "GG37",
+      "name": "Simisear VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478066,
+          "name": "Simisear VSTAR",
+          "number": "GG37/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG38": {
+      "number": "GG38",
+      "name": "Suicune V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478067,
+          "name": "Suicune V",
+          "number": "GG38/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG39": {
+      "number": "GG39",
+      "name": "Lumineon V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478068,
+          "name": "Lumineon V",
+          "number": "GG39/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG40": {
+      "number": "GG40",
+      "name": "Glaceon VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477061,
+          "name": "Glaceon VSTAR",
+          "number": "GG40/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG41": {
+      "number": "GG41",
+      "name": "Raikou V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478069,
+          "name": "Raikou V",
+          "number": "GG41/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG42": {
+      "number": "GG42",
+      "name": "Zeraora VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477062,
+          "name": "Zeraora VMAX",
+          "number": "GG42/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG43": {
+      "number": "GG43",
+      "name": "Zeraora VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478071,
+          "name": "Zeraora VSTAR",
+          "number": "GG43/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG44": {
+      "number": "GG44",
+      "name": "Mewtwo VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477057,
+          "name": "Mewtwo VSTAR",
+          "number": "GG44/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG45": {
+      "number": "GG45",
+      "name": "Deoxys VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477354,
+          "name": "Deoxys VMAX",
+          "number": "GG45/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG46": {
+      "number": "GG46",
+      "name": "Deoxys VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477059,
+          "name": "Deoxys VSTAR",
+          "number": "GG46/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG47": {
+      "number": "GG47",
+      "name": "Hatterene VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478074,
+          "name": "Hatterene VMAX",
+          "number": "GG47/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG48": {
+      "number": "GG48",
+      "name": "Zacian V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478075,
+          "name": "Zacian V",
+          "number": "GG48/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG49": {
+      "number": "GG49",
+      "name": "Drapion V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478076,
+          "name": "Drapion V",
+          "number": "GG49/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG50": {
+      "number": "GG50",
+      "name": "Darkrai VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478077,
+          "name": "Darkrai VSTAR",
+          "number": "GG50/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG51": {
+      "number": "GG51",
+      "name": "Hisuian Samurott V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478078,
+          "name": "Hisuian Samurott V",
+          "number": "GG51/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG52": {
+      "number": "GG52",
+      "name": "Hisuian Samurott VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478079,
+          "name": "Hisuian Samurott VSTAR",
+          "number": "GG52/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG53": {
+      "number": "GG53",
+      "name": "Hoopa V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477181,
+          "name": "Hoopa V",
+          "number": "GG53/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG54": {
+      "number": "GG54",
+      "name": "Zamazenta V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478081,
+          "name": "Zamazenta V",
+          "number": "GG54/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG55": {
+      "number": "GG55",
+      "name": "Regigigas VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478083,
+          "name": "Regigigas VSTAR",
+          "number": "GG55/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG56": {
+      "number": "GG56",
+      "name": "Hisuian Zoroark VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477050,
+          "name": "Hisuian Zoroark VSTAR",
+          "number": "GG56/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG57": {
+      "number": "GG57",
+      "name": "Adaman",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478085,
+          "name": "Adaman",
+          "number": "GG57/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG58": {
+      "number": "GG58",
+      "name": "Cheren's Care",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478086,
+          "name": "Cheren's Care",
+          "number": "GG58/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG59": {
+      "number": "GG59",
+      "name": "Colress's Experiment",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478087,
+          "name": "Colress's Experiment",
+          "number": "GG59/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG60": {
+      "number": "GG60",
+      "name": "Cynthia's Ambition",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477052,
+          "name": "Cynthia's Ambition",
+          "number": "GG60/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG61": {
+      "number": "GG61",
+      "name": "Gardenia's Vigor",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 477058,
+          "name": "Gardenia's Vigor",
+          "number": "GG61/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG62": {
+      "number": "GG62",
+      "name": "Grant",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478091,
+          "name": "Grant",
+          "number": "GG62/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG63": {
+      "number": "GG63",
+      "name": "Irida",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478092,
+          "name": "Irida",
+          "number": "GG63/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG64": {
+      "number": "GG64",
+      "name": "Melony",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478093,
+          "name": "Melony",
+          "number": "GG64/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG65": {
+      "number": "GG65",
+      "name": "Raihan",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478095,
+          "name": "Raihan",
+          "number": "GG65/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG66": {
+      "number": "GG66",
+      "name": "Roxanne",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478096,
+          "name": "Roxanne",
+          "number": "GG66/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG67": {
+      "number": "GG67",
+      "name": "Origin Forme Palkia VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478097,
+          "name": "Origin Forme Palkia VSTAR (Secret)",
+          "number": "GG67/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG68": {
+      "number": "GG68",
+      "name": "Origin Forme Dialga VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478099,
+          "name": "Origin Forme Dialga VSTAR (Secret)",
+          "number": "GG68/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG69": {
+      "number": "GG69",
+      "name": "Giratina VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478100,
+          "name": "Giratina VSTAR (Secret)",
+          "number": "GG69/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh12.5gg-GG70": {
+      "number": "GG70",
+      "name": "Arceus VSTAR",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 478101,
+          "name": "Arceus VSTAR (Secret)",
+          "number": "GG70/GG70",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    }
+  },
+  "resolutions": {}
+}

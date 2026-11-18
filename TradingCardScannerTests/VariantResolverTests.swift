@@ -1326,6 +1326,23 @@ final class VariantResolverTests: XCTestCase {
         XCTAssertTrue(PokemonFinishCoverage.standardVariantIDs.allSatisfy { PhysicalVariant.resolving($0).id == $0 })
     }
 
+    func testFinishCoverageStatusDistinguishesCertifiedFromProjectedPokemonCards() throws {
+        PokemonFinishCoverage.$certifiedForTesting.withValue(["fixture-1": [.holo]]) {
+            XCTAssertEqual(PokemonFinishCoverage.status(cardID: "fixture-1"), .certified)
+            XCTAssertEqual(PokemonFinishCoverage.status(cardID: "fixture-2"), .projected)
+            XCTAssertNil(PokemonFinishCoverage.detailNotice(game: .pokemon, providerID: "fixture-1"))
+            XCTAssertEqual(PokemonFinishCoverage.detailNotice(game: .pokemon, providerID: "fixture-2"),
+                           "Finishes not yet confirmed")
+            // Other games never carry the Pokémon certificate note.
+            XCTAssertNil(PokemonFinishCoverage.detailNotice(game: .magic, providerID: "fixture-2"))
+        }
+        // The bundled certificate still decodes, and every certified card reads as certified.
+        XCTAssertFalse(PokemonFinishCoverage.sets.isEmpty)
+        for cardID in PokemonFinishCoverage.certified.keys {
+            XCTAssertEqual(PokemonFinishCoverage.status(cardID: cardID), .certified, cardID)
+        }
+    }
+
     func testResolutionCertaintyDoesNotReuseAutomaticRevisitSemantics() {
         XCTAssertTrue(VariantResolution.uniqueInCatalog.isAutomatic)
         XCTAssertEqual(VariantResolution.uniqueInCatalog.certainty, .catalogCertain)

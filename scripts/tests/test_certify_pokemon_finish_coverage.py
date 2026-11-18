@@ -8,6 +8,7 @@ from unittest.mock import patch
 
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
+import catalog_exceptions
 import certify_pokemon_finish_coverage as coverage
 
 
@@ -471,6 +472,198 @@ class PokemonFinishCoverageTests(unittest.TestCase):
         changed = self.report("changed")["cards"]
         self.assertEqual(changed["sample-002"]["checklist"], ["cosmos", "holo", "normal"])
         self.assertEqual(changed["sample-001"]["checklist"], ["energy", "normal", "pokeBall", "reverse"])
+
+
+class FakeMarket:
+    """An offline stand-in for SnapshotMarket keyed by group."""
+
+    def __init__(self, groups, documents):
+        self.build = "2026-11-10T20:00:00Z"
+        self.directory = Path("fake-capture")
+        self.groups = groups
+        self.documents = documents
+
+    def fetch(self, url, limit=None):
+        if url == coverage.MARKER:
+            return self.build.encode()
+        group, resource = url.rsplit("/", 2)[-2:]
+        return json.dumps(self.documents[int(group)][resource]).encode()
+
+    def products(self, group_id):
+        return coverage.numbered_products(self.fetch(f"{coverage.BASE}/{group_id}/products"),
+                                          self.fetch(f"{coverage.BASE}/{group_id}/prices"), group_id)
+
+
+class PokemonFinishCoverageBatchTests(unittest.TestCase):
+    setUp = PokemonFinishCoverageTests.setUp
+    fetch = PokemonFinishCoverageTests.fetch
+
+    def market(self, extra=None):
+        extra = extra or {}
+        documents = {55: {"products": self.fixture["products"], "prices": self.fixture["prices"]}, **extra}
+        groups = [{"groupId": 55, "name": "Sample Set", "categoryId": 3}]
+        groups += [{"groupId": gid, "name": names["name"], "categoryId": 3}
+                   for gid, names in extra.items()]
+        return FakeMarket(groups, {gid: {k: v for k, v in docs.items() if k != "name"} for gid, docs in documents.items()})
+
+    def batch(self, market=None, revision=None):
+        path = self.root / "ledger.json"
+        result = coverage.batch(self.root, None, path, certify_revision=revision, fetch_market=market or self.market())
+        return result, catalog_exceptions.read_ledger(path)
+
+    def keep_only(self, *card_ids, products=(11, 14)):
+        self.fixture["snapshot"] = [slot for slot in self.fixture["snapshot"] if slot["providerID"] in card_ids]
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        self.fixture["products"]["results"] = [row for row in self.fixture["products"]["results"]
+                                               if row["productId"] in products]
+        self.fixture["prices"]["results"] = [row for row in self.fixture["prices"]["results"]
+                                             if row["productId"] in products]
+
+    def test_report_all_ledgers_each_pending_card_with_one_reason_and_writes_nothing(self):
+        coverage_path = self.snapshot / "finish-coverage.json"
+        before = coverage_path.read_bytes()
+        result, rows = self.batch()
+        self.assertEqual(result["statuses"], {"sample": "pending"})
+        self.assertEqual({row["identity"]: row["reason"] for row in rows}, {
+            "sample-002": "normalNeedsReview", "sample-003": "unmatchedMarket",
+            "sample/market:99": "unmatchedMarketProduct",
+        })
+        self.assertTrue(all(row["game"] == "pokemon" and row["set"] == "sample" for row in rows))
+        self.assertEqual(coverage_path.read_bytes(), before)
+        self.assertFalse(self.capture.parent.exists())
+
+    def test_certify_all_uses_unchanged_single_set_certification_for_fully_agreeing_sets(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        result, rows = self.batch(revision="batch")
+        self.assertEqual(rows, [])
+        self.assertEqual(result["newlyCertified"], ["sample"])
+        certificate = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]
+        self.assertEqual(certificate["cards"], {"sample-001": ["normal", "reverse"], "tcgplayer:14": ["pokeBall"]})
+        self.assertEqual(certificate["tcgplayerGroupID"], 55)
+        capture = coverage.capture_directory(self.root, "sample", "batch")
+        self.assertEqual(coverage.read_json(capture / "report.json")["resolutions"], {})
+        # The certificate replays through the ordinary single-set path, and a rerun is a no-op.
+        self.assertEqual(coverage.certify(self.root, "sample", revision="batch"), 2)
+        again, _ = self.batch(revision="batch")
+        self.assertEqual(again["statuses"], {"sample": "certified"})
+        self.assertEqual(again["newlyCertified"], [])
+
+    def test_agreement_beyond_the_bundled_checklist_slots_stays_open(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.fixture["snapshot"] = [slot for slot in self.fixture["snapshot"]
+                                    if slot["masterSetVariant"]["id"] != "reverse"]
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        self.ledger.append({"provider_id": "sample-001", "set_id": "sample", "collector_number": "001",
+                            "required_minimum_finishes": "reverse", "extra_observed_finishes_requiring_review": ""})
+        coverage.write_json(self.snapshot / "finish-minimums.json", coverage.minimum_table(self.ledger, set()))
+        result, rows = self.batch(revision="batch")
+        self.assertEqual([(row["identity"], row["reason"]) for row in rows], [("sample-001", "checklistMissingFinish")])
+        self.assertEqual(result["newlyCertified"], [])
+        self.assertEqual(coverage.read_json(self.snapshot / "finish-coverage.json")["sets"], {})
+
+    def test_finish_differences_split_into_targetable_reasons(self):
+        row = {"name": "A", "number": "1", "products": [{"productId": 1}], "normalNeedsReview": False,
+               "status": "conflict"}
+        cases = [(["normal"], ["normal", "reverse"], "marketExtraLane"),
+                 (["normal", "reverse"], ["normal"], "standardFinishNotListed"),
+                 (["cosmos", "holo"], ["holo"], "parallelFinishNotListed"),
+                 (["normal"], ["holo"], "finishConflict"),
+                 (["holo"], ["holo"], None)]
+        for required, market, reason in cases:
+            with self.subTest(required=required, market=market):
+                self.assertEqual(coverage.card_reason("a-1", dict(row, required=required, market=market))[0], reason)
+        self.assertEqual(coverage.card_reason("a-1", dict(row, required=["holo"], market=["holo"], products=[]))[0],
+                         "unmatchedMarket")
+
+    def test_set_level_blockers_replace_the_comparison(self):
+        coverage.write_json(self.snapshot / "manifest.json", {"entries": [
+            {"providerID": "sample", "resource": "sets/opaque.json",
+             "set": {"name": "Sample Set", "catalogID": {"pokemonPrintRun": "firstEdition"}}},
+            {"providerID": "sample", "resource": "sets/opaque.json",
+             "set": {"name": "Sample Set", "catalogID": {"pokemonPrintRun": "unlimited"}}},
+        ]})
+        _, rows = self.batch()
+        self.assertEqual({row["reason"] for row in rows}, {"multiplePrintRuns"})
+        self.assertIn("set:sample", {row["identity"] for row in rows})
+        self.assertNotIn("sample/market:99", {row["identity"] for row in rows})
+
+        unlinked = FakeMarket([{"groupId": 55, "name": "Another Set", "categoryId": 3}], {})
+        _, rows = self.batch(unlinked)
+        self.assertEqual({row["reason"] for row in rows}, {"noMarketGroup", "multiplePrintRuns"})
+
+    def test_reviewed_group_links_replace_automatic_links_and_pin_the_group_name(self):
+        entries = [{"providerID": "sample", "set": {"name": "Sample Set", "code": "SMP"}}]
+        groups = [{"groupId": 55, "name": "Sample Set"}, {"groupId": 56, "name": "SMP Trainer Kit", "abbreviation": "SMP"},
+                  {"groupId": 57, "name": "Prefixed - Sample"}]
+        self.assertEqual(coverage.group_links(groups, entries)["sample"], {55, 56})
+        reviewed = {"links": [{"setID": "sample", "groupID": 55, "groupName": "Sample Set", "reason": "Exact name."}]}
+        self.assertEqual(coverage.group_links(groups, entries, reviewed)["sample"], {55})
+        with self.assertRaisesRegex(ValueError, "no longer named"):
+            coverage.group_links(groups, entries, {"links": [dict(reviewed["links"][0], groupName="Renamed")]})
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            coverage.group_links(groups, entries, {"links": reviewed["links"] * 2})
+        with self.assertRaisesRegex(ValueError, "Invalid"):
+            coverage.group_links(groups, entries, {"links": [dict(reviewed["links"][0], reason="")]})
+
+    def cosmos_setup(self, title="Example One - 1/4 (Cosmos Holo)", lane="Holofoil", number="001/004"):
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.fixture["snapshot"].append(dict(self.fixture["snapshot"][0], masterSetVariant={"id": "cosmos"}))
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        coverage.write_json(self.snapshot / "manifest.json", {"entries": [
+            {"providerID": "sample", "resource": "sets/opaque.json", "officialCount": 4, "set": {"name": "Sample Set"}},
+        ]})
+        coverage.write_json(self.root / coverage.AppearanceRules.PATH, {"schemaVersion": 1, "rules": [{
+            "id": "cosmos-test", "finish": "cosmos", "titleQualifiers": ["Cosmos Holo"], "lanes": ["Holofoil"],
+            "groups": [{"groupID": 77, "groupName": "Deck Exclusives"}], "reason": "Test rule."}]})
+        product = {"productId": 70, "categoryId": 3, "groupId": 77, "name": title,
+                   "extendedData": [{"name": "Number", "value": number}]}
+        return self.market({
+            77: {"name": "Deck Exclusives", "products": {"success": True, "errors": [], "results": [product]},
+                 "prices": {"success": True, "errors": [], "results": [{"productId": 70, "subTypeName": lane}]}}})
+
+    def test_cosmos_appearance_rule_certifies_with_a_cited_resolution(self):
+        market = self.cosmos_setup()
+        result, rows = self.batch(market, revision="batch")
+        self.assertEqual(rows, [])
+        self.assertEqual(result["reconciledCards"], 1)
+        certificate = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]
+        self.assertEqual(certificate["cards"]["sample-001"], ["cosmos", "normal", "reverse"])
+        report_value = coverage.read_json(coverage.capture_directory(self.root, "sample", "batch") / "report.json")
+        resolution = report_value["resolutions"]["sample-001"]
+        self.assertEqual(resolution["citation"], "publisher/pokemon-finish-appearances.json")
+        self.assertIn("[70]", resolution["reason"])
+        self.assertEqual(report_value["cards"]["sample-001"]["status"], "conflict")
+
+    def test_cosmos_appearance_rule_rejects_inexact_evidence(self):
+        cases = {
+            "wrong lane": dict(lane="Normal"),
+            "wrong denominator": dict(title="Example One - 1/5 (Cosmos Holo)", number="001/005"),
+            "extra qualifier": dict(title="Example One - 1/4 (Cosmos Holo) (Stamped)"),
+            "other name": dict(title="Example Two - 1/4 (Cosmos Holo)"),
+            "no denominator": dict(title="Example One (Cosmos Holo)", number="001"),
+        }
+        for label, overrides in cases.items():
+            with self.subTest(label):
+                self.setUp()
+                _, rows = self.batch(self.cosmos_setup(**overrides))
+                self.assertEqual([(row["identity"], row["reason"]) for row in rows],
+                                 [("sample-001", "parallelFinishNotListed")])
+        self.setUp()
+        market = self.cosmos_setup(title="Example One (Cosmos Holo)")
+        _, rows = self.batch(market)
+        self.assertEqual(rows, [], "A title without a number still matches on the number field")
+
+    def test_cosmos_appearance_rule_refuses_a_name_number_shared_with_another_set(self):
+        market = self.cosmos_setup()
+        other = self.snapshot / "sets/other.json"
+        coverage.write_json(other, [dict(self.fixture["snapshot"][0], providerID="other-001",
+                                         setID={"providerID": "other"})])
+        manifest = coverage.read_json(self.snapshot / "manifest.json")
+        manifest["entries"].append({"providerID": "other", "resource": "sets/other.json", "officialCount": 4,
+                                    "set": {"name": "Other Set"}})
+        coverage.write_json(self.snapshot / "manifest.json", manifest)
+        _, rows = self.batch(market)
+        self.assertIn(("sample-001", "parallelFinishNotListed"), [(row["identity"], row["reason"]) for row in rows])
 
 
 if __name__ == "__main__":

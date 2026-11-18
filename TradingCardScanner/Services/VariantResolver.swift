@@ -94,6 +94,25 @@ enum PokemonFinishCoverage {
         #endif
         return certified[cardID]
     }
+
+    /// Whether a card's finish list is a reviewed certificate or a projection
+    /// from the checklist and minimum evidence.
+    enum Status: Equatable, Sendable {
+        case certified
+        case projected
+    }
+
+    static let projectedNotice = "Finishes not yet confirmed"
+
+    static func status(cardID: String) -> Status {
+        variants(cardID: cardID) == nil ? .projected : .certified
+    }
+
+    /// A quiet card-detail note for a Pokémon card whose finishes are projected.
+    /// Set-level badges deliberately stay off for Pokémon.
+    static func detailNotice(game: CardGame, providerID: String) -> String? {
+        game == .pokemon && status(cardID: providerID) == .projected ? projectedNotice : nil
+    }
 }
 
 /// Exact, additive minimums from the retained 457-row source ledger. These are

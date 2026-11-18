@@ -78,7 +78,7 @@ Pokémon and Yu-Gi-Oh can follow it.
 | --- | --- | --- | --- |
 | One Piece | Bandai card list, TCGCSV category 68 | `reconcile_one_piece_*`, `audit_one_piece_coverage.py`, `certify_one_piece_coverage.py` ([publisher guide](../OnePieceCatalogCore/README.md)) | Signed remote catalog |
 | Lorcana | LorcanaJSON, TCGCSV category 71 | `build_lorcana_discovery_catalog.py`, `build_lorcana_market_catalog.py`, `audit_catalog_coverage.py` | Bundled seed |
-| Pokémon | TCGdex checklist, TCGCSV category 3 | `capture_pokemon_tcgcsv.py`, `audit_pokemon_tcgcsv.py`, `certify_pokemon_finish_coverage.py` | Signed set directory; finish coverage bundled |
+| Pokémon | TCGdex checklist, TCGCSV category 3 | `capture_pokemon_tcgcsv.py`, `audit_pokemon_tcgcsv.py` (review ledger), `certify_pokemon_finish_coverage.py` (`report-all` / `certify-all`; reviewed rules in `publisher/pokemon-finish-coverage-groups.json` and `publisher/pokemon-finish-appearances.json`) | Signed set directory; finish coverage bundled |
 | Yu-Gi-Oh | YGOPRODeck, TCGCSV category 2, Konami inventories | `build_yugioh_catalog.py` and helpers | Bundled seed |
 | Magic | Scryfall (live) | Treatment and printing-family builders | Live; no reconciliation backlog |
 

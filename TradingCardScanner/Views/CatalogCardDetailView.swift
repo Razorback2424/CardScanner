@@ -730,6 +730,13 @@ struct CatalogCardDetailView: View {
                         addGradedTile
                     }
                 }
+                if !variants.isEmpty,
+                   let notice = PokemonFinishCoverage.detailNotice(game: card.game, providerID: card.providerID) {
+                    Text(notice)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("card-detail-finishes-projected")
+                }
                 if catalogCardSelection == nil, let variant = selectedVariant(card) {
                     copyLinks(for: variant, card: card)
                 }

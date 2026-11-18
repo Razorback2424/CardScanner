@@ -1,0 +1,2323 @@
+{
+  "schemaVersion": 2,
+  "captureRevision": "2026-11-18",
+  "setID": "swsh3.5",
+  "setName": "Champion's Path",
+  "tcgplayerGroupID": 2685,
+  "standard": "Each numbered checklist card must agree with the matching TCGplayer products on exact finishes, or have a cited resolution. Every conflict, unmatched number and Normal review must be resolved. Market listings are evidence of membership. Physical or retail evidence resolves disagreements.",
+  "capturedAt": "2026-11-18T21:54:50+00:00",
+  "sourceBuild": "2026-11-18T20:05:56+0000",
+  "checklistSources": {
+    "sets/384b18c75971014e.json": "08e8eb94e8159009f3a4bdb6dca5a0d62226173494e799ed4ddee2db80d59fe4"
+  },
+  "finishEvidenceSHA256": "89f8ee6773c0ee201afa2ee89ebad0ffdcd7e12002db0b8097aabcc03264ccec",
+  "marketSources": {
+    "products": {
+      "url": "https://tcgcsv.com/tcgplayer/3/2685/products",
+      "sha256": "e4365554844741380ca00a6a2559c8b2308b07d1590391cf07c3377f5480389d"
+    },
+    "prices": {
+      "url": "https://tcgcsv.com/tcgplayer/3/2685/prices",
+      "sha256": "9311018af9f51a8e95c8d98bef1bbfd2cccc81bbef45f2351c47e60018e10a1b"
+    }
+  },
+  "cards": {
+    "swsh3.5-1": {
+      "number": "1",
+      "name": "Venusaur V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 222990,
+          "name": "Venusaur V",
+          "number": "01/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-2": {
+      "number": "2",
+      "name": "Weedle",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 222995,
+          "name": "Weedle",
+          "number": "02/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-3": {
+      "number": "3",
+      "name": "Kakuna",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 222997,
+          "name": "Kakuna",
+          "number": "03/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-4": {
+      "number": "4",
+      "name": "Beedrill",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 222998,
+          "name": "Beedrill",
+          "number": "04/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-5": {
+      "number": "5",
+      "name": "Eldegoss V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223001,
+          "name": "Eldegoss V",
+          "number": "05/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-6": {
+      "number": "6",
+      "name": "Vulpix",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223002,
+          "name": "Vulpix",
+          "number": "06/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-7": {
+      "number": "7",
+      "name": "Victini",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223003,
+          "name": "Victini",
+          "number": "07/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-8": {
+      "number": "8",
+      "name": "Incineroar V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 222329,
+          "name": "Incineroar V",
+          "number": "08/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-9": {
+      "number": "9",
+      "name": "Sizzlipede",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223004,
+          "name": "Sizzlipede",
+          "number": "09/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-10": {
+      "number": "10",
+      "name": "Centiskorch",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223005,
+          "name": "Centiskorch",
+          "number": "10/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-11": {
+      "number": "11",
+      "name": "Carvanha",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223006,
+          "name": "Carvanha",
+          "number": "11/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-12": {
+      "number": "12",
+      "name": "Sharpedo",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223007,
+          "name": "Sharpedo",
+          "number": "12/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-13": {
+      "number": "13",
+      "name": "Wailord V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223008,
+          "name": "Wailord V",
+          "number": "013/073",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-14": {
+      "number": "14",
+      "name": "Drednaw V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223009,
+          "name": "Drednaw V",
+          "number": "14/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-15": {
+      "number": "15",
+      "name": "Drednaw VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223010,
+          "name": "Drednaw VMAX",
+          "number": "15/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-16": {
+      "number": "16",
+      "name": "Gardevoir V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 222327,
+          "name": "Gardevoir V",
+          "number": "16/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-17": {
+      "number": "17",
+      "name": "Gardevoir VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 222328,
+          "name": "Gardevoir VMAX",
+          "number": "17/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-18": {
+      "number": "18",
+      "name": "Hatenna",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223011,
+          "name": "Hatenna",
+          "number": "18/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-19": {
+      "number": "19",
+      "name": "Hattrem",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223012,
+          "name": "Hattrem",
+          "number": "19/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-20": {
+      "number": "20",
+      "name": "Hatterene",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223013,
+          "name": "Hatterene",
+          "number": "20/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-21": {
+      "number": "21",
+      "name": "Galarian Cursola V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223014,
+          "name": "Galarian Cursola V",
+          "number": "21/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-22": {
+      "number": "22",
+      "name": "Alcremie V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223015,
+          "name": "Alcremie V",
+          "number": "22/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-23": {
+      "number": "23",
+      "name": "Alcremie VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223016,
+          "name": "Alcremie VMAX",
+          "number": "23/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-24": {
+      "number": "24",
+      "name": "Machop",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223017,
+          "name": "Machop",
+          "number": "24/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-25": {
+      "number": "25",
+      "name": "Machoke",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223018,
+          "name": "Machoke",
+          "number": "25/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-26": {
+      "number": "26",
+      "name": "Machamp",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223019,
+          "name": "Machamp",
+          "number": "26/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-27": {
+      "number": "27",
+      "name": "Lucario V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 222330,
+          "name": "Lucario V",
+          "number": "27/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-28": {
+      "number": "28",
+      "name": "Zygarde",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223020,
+          "name": "Zygarde",
+          "number": "28/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-29": {
+      "number": "29",
+      "name": "Rockruff",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223021,
+          "name": "Rockruff",
+          "number": "29/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-30": {
+      "number": "30",
+      "name": "Lycanroc",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223022,
+          "name": "Lycanroc",
+          "number": "30/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-31": {
+      "number": "31",
+      "name": "Rolycoly",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223023,
+          "name": "Rolycoly",
+          "number": "31/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-32": {
+      "number": "32",
+      "name": "Grapploct V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223024,
+          "name": "Grapploct V",
+          "number": "32/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-33": {
+      "number": "33",
+      "name": "Ekans",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223025,
+          "name": "Ekans",
+          "number": "33/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-34": {
+      "number": "34",
+      "name": "Arbok",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223026,
+          "name": "Arbok",
+          "number": "34/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-35": {
+      "number": "35",
+      "name": "Galarian Zigzagoon",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223027,
+          "name": "Galarian Zigzagoon",
+          "number": "35/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-36": {
+      "number": "36",
+      "name": "Galarian Linoone",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223036,
+          "name": "Galarian Linoone",
+          "number": "36/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-37": {
+      "number": "37",
+      "name": "Galarian Obstagoon",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223037,
+          "name": "Galarian Obstagoon",
+          "number": "37/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-38": {
+      "number": "38",
+      "name": "Absol",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223038,
+          "name": "Absol",
+          "number": "38/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-39": {
+      "number": "39",
+      "name": "Purrloin",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223039,
+          "name": "Purrloin",
+          "number": "39/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-40": {
+      "number": "40",
+      "name": "Liepard",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223040,
+          "name": "Liepard",
+          "number": "40/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-41": {
+      "number": "41",
+      "name": "Scraggy",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223041,
+          "name": "Scraggy",
+          "number": "41/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-42": {
+      "number": "42",
+      "name": "Scrafty",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223042,
+          "name": "Scrafty",
+          "number": "42/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-43": {
+      "number": "43",
+      "name": "Trubbish",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223043,
+          "name": "Trubbish",
+          "number": "43/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-44": {
+      "number": "44",
+      "name": "Inkay",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223044,
+          "name": "Inkay",
+          "number": "44/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-45": {
+      "number": "45",
+      "name": "Malamar",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223045,
+          "name": "Malamar",
+          "number": "45/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-46": {
+      "number": "46",
+      "name": "Nickit",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223046,
+          "name": "Nickit",
+          "number": "46/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-47": {
+      "number": "47",
+      "name": "Duraludon V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223047,
+          "name": "Duraludon V",
+          "number": "47/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-48": {
+      "number": "48",
+      "name": "Swablu",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223048,
+          "name": "Swablu",
+          "number": "48/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-49": {
+      "number": "49",
+      "name": "Altaria",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223049,
+          "name": "Altaria",
+          "number": "49/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-50": {
+      "number": "50",
+      "name": "Bede",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223050,
+          "name": "Bede",
+          "number": "50/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-51": {
+      "number": "51",
+      "name": "Full Heal",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223051,
+          "name": "Full Heal",
+          "number": "51/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-52": {
+      "number": "52",
+      "name": "Great Ball",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223052,
+          "name": "Great Ball",
+          "number": "52/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-53": {
+      "number": "53",
+      "name": "Hop",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223053,
+          "name": "Hop",
+          "number": "53/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-54": {
+      "number": "54",
+      "name": "Hyper Potion",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223054,
+          "name": "Hyper Potion",
+          "number": "54/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-55": {
+      "number": "55",
+      "name": "Kabu",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223055,
+          "name": "Kabu",
+          "number": "55/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-56": {
+      "number": "56",
+      "name": "Marnie",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223056,
+          "name": "Marnie",
+          "number": "56/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-57": {
+      "number": "57",
+      "name": "Milo",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223057,
+          "name": "Milo",
+          "number": "57/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-58": {
+      "number": "58",
+      "name": "Piers",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223058,
+          "name": "Piers",
+          "number": "58/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-59": {
+      "number": "59",
+      "name": "Poké Ball",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223059,
+          "name": "Poke Ball",
+          "number": "59/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-60": {
+      "number": "60",
+      "name": "Pokémon Center Lady",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223060,
+          "name": "Pokemon Center Lady",
+          "number": "60/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-61": {
+      "number": "61",
+      "name": "Potion",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223061,
+          "name": "Potion",
+          "number": "61/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-62": {
+      "number": "62",
+      "name": "Professor's Research (Professor Magnolia)",
+      "checklist": [
+        "holo",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223062,
+          "name": "Professor's Research [Professor Magnolia]",
+          "number": "62/73",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-63": {
+      "number": "63",
+      "name": "Rotom Bike",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223063,
+          "name": "Rotom Bike",
+          "number": "63/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-64": {
+      "number": "64",
+      "name": "Rotom Phone",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223064,
+          "name": "Rotom Phone",
+          "number": "64/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-65": {
+      "number": "65",
+      "name": "Sonia",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223065,
+          "name": "Sonia",
+          "number": "65/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-66": {
+      "number": "66",
+      "name": "Suspicious Food Tin",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223066,
+          "name": "Suspicious Food Tin",
+          "number": "66/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-67": {
+      "number": "67",
+      "name": "Team Yell Grunt",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223067,
+          "name": "Team Yell Grunt",
+          "number": "67/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-68": {
+      "number": "68",
+      "name": "Turffield Stadium",
+      "checklist": [
+        "normal",
+        "reverse"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 223939,
+          "name": "Turffield Stadium",
+          "number": "68/73",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-69": {
+      "number": "69",
+      "name": "Drednaw V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223068,
+          "name": "Drednaw V (Full Art)",
+          "number": "69/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-70": {
+      "number": "70",
+      "name": "Gardevoir V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223069,
+          "name": "Gardevoir V (Full Art)",
+          "number": "70/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-71": {
+      "number": "71",
+      "name": "Galarian Cursola V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223070,
+          "name": "Galarian Cursola V (Full Art)",
+          "number": "71/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-72": {
+      "number": "72",
+      "name": "Grapploct V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223071,
+          "name": "Grapploct V (Full Art)",
+          "number": "72/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-73": {
+      "number": "73",
+      "name": "Hop",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223072,
+          "name": "Hop (Full Art)",
+          "number": "73/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-74": {
+      "number": "74",
+      "name": "Charizard VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223073,
+          "name": "Charizard VMAX (Secret)",
+          "number": "74/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-75": {
+      "number": "75",
+      "name": "Drednaw VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223074,
+          "name": "Drednaw VMAX (Secret)",
+          "number": "75/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-76": {
+      "number": "76",
+      "name": "Gardevoir VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223075,
+          "name": "Gardevoir VMAX (Secret)",
+          "number": "76/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-77": {
+      "number": "77",
+      "name": "Kabu",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223076,
+          "name": "Kabu (Secret)",
+          "number": "77/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-78": {
+      "number": "78",
+      "name": "Piers",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223077,
+          "name": "Piers (Secret)",
+          "number": "78/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-79": {
+      "number": "79",
+      "name": "Charizard V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223078,
+          "name": "Charizard V (Secret)",
+          "number": "79/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh3.5-80": {
+      "number": "80",
+      "name": "Suspicious Food Tin",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 223079,
+          "name": "Suspicious Food Tin (Secret)",
+          "number": "80/73",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    }
+  },
+  "resolutions": {}
+}

@@ -1,3 +1,28 @@
+# 2026-11-18 — Pokémon finish coverage: batch certifier and first reconcilers
+
+`certify_pokemon_finish_coverage.py` gains `report-all` and `certify-all`. They
+replay one TCGCSV capture offline against all 146 bundled sets and write a
+reason-coded ledger. `certify-all` certifies a set only when every card agrees
+and no set-level blocker applies; it runs the unchanged single-set `report` and
+`certify` steps. It also requires the agreed finishes to equal the bundled
+checklist slots, as `testCertifiedFinishCoverageIsCompleteAndConsistent`
+already does.
+
+Against TCGCSV build 2026-11-18T20:05:56+0000:
+- Certified sets: 1 → 5 (cel25, sv01, swsh3.5, swsh12.5gg added); 438 cards.
+- Open ledger rows: 10,640 → 9,897.
+- Reviewed set↔group links closed most link gaps: `noMarketGroup` 2,567 → 52,
+  `ambiguousMarketGroup` 1,200 → 103.
+- The Cosmos Holo appearance rule supplies exact cross-group evidence for 53
+  cards. None sits in a set that is otherwise clean yet.
+- Largest open reason: `checklistMissingFinish` (2,629). Market and ledger
+  evidence agree on more finishes than the bundled TCGdex slots list. This is
+  an owner decision, not a reconciler.
+
+`audit_pokemon_tcgcsv.py`'s review queue gains a Reason column and
+`review-ledger.json`. In the app, a Pokémon card without a certificate shows
+"Finishes not yet confirmed" under its finishes. Set badges stay off.
+
 # 2026-11-18 — Shared catalog reconciliation foundation
 
 The method behind One Piece revision 7 is recorded in the

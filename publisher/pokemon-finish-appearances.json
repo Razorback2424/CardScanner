@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Reviewed rules that let the batch finish certifier accept a parallel finish whose only market listing is in a cross-set exclusives group. A rule closes a card only when every gate passes: the product title is exactly '<card name> - <number>/<official count> (<qualifier>)', the number and printed denominator match the card's set, no other bundled set shares that name, number and denominator, the product's price lanes are exactly the rule's lanes, no evidence group lists more than one such product, and the card's other required finishes already agree with its own set group. The certifier writes a cited resolution pointing at this file; certify() then applies its unchanged checks.",
+  "rules": [
+    {
+      "id": "cosmos-holo-exclusives",
+      "finish": "cosmos",
+      "titleQualifiers": ["Cosmos Holo", "Cosmos Holofoil"],
+      "lanes": ["Holofoil"],
+      "groups": [
+        {"groupID": 1840, "groupName": "Deck Exclusives"},
+        {"groupID": 2289, "groupName": "Blister Exclusives"},
+        {"groupID": 2374, "groupName": "Miscellaneous Cards & Products"}
+      ],
+      "reason": "Cosmos Holo printings of numbered set cards were sold in theme decks, blisters and collection boxes. TCGplayer lists them under these cross-set groups rather than the set group. Groups whose contents carry an implied stamp (Prize Pack Series, League & Championship, Trick or Trade) are deliberately excluded."
+    }
+  ]
+}
