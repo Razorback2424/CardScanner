@@ -29,7 +29,7 @@ class OnePieceWorkflowTests(unittest.TestCase):
                       'test_one_piece_base_market_mappings.py', 'test_one_piece_pinned_keys.py'):
             self.assertIn(check, portable)
         self.assertNotIn('swift test --package-path OnePieceCatalogCore', portable)
-        self.assertIn('runs-on: macos-15', core)
+        self.assertIn('runs-on: ubuntu-24.04', core)
         self.assertIn('swift test --package-path OnePieceCatalogCore', core)
         for name in ('sign-reviewed-artifact', 'publish-reviewed-artifact'):
             self.assertIn('needs: [validate, validate-catalog-core]', job(self.text, name))
@@ -37,9 +37,10 @@ class OnePieceWorkflowTests(unittest.TestCase):
     def test_signing_and_publication_retain_protected_verification(self):
         signing = job(self.text, 'sign-reviewed-artifact')
         publishing = job(self.text, 'publish-reviewed-artifact')
+        self.assertIn('runs-on: ubuntu-24.04', signing)
+        self.assertIn('runs-on: macos-15', publishing)
         for content, environment in ((signing, 'one-piece-catalog-signing'),
                                      (publishing, 'one-piece-catalog-production')):
-            self.assertIn('runs-on: macos-15', content)
             self.assertIn(f'environment: {environment}', content)
             self.assertIn("github.ref == 'refs/heads/main'", content)
             self.assertIn('python3 scripts/one_piece_pinned_keys.py', content)
