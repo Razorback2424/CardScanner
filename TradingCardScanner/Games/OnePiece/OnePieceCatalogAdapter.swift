@@ -22,7 +22,12 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
         }
         let resolved = try resolution(for: printing, canonical: canonical)
         return .init(card: resolved.card, set: set, retrievedAt: resolved.retrievedAt,
-            collectionWriteUnavailableReason: printing.status == .verified ? nil : "This printing needs review before it can be added.")
+            collectionWriteUnavailableReason: printing.status == .verified ? nil
+                : registry.knownUnpricedPrintingIDs.contains(printing.id)
+                    ? "TCGplayer hasn't recorded a sale of this printing, so its finish isn't confirmed yet. You can add it once it is."
+                    : registry.knownNoPhotoPrintingIDs.contains(printing.id)
+                        ? "TCGplayer lists this printing without a photo, so its art isn't confirmed yet. You can add it once it is."
+                        : "This printing needs review before it can be added.")
     }
 
     func validateVariantCorrection(printingID: String, variantID: String?) throws {

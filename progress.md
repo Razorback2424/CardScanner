@@ -1,3 +1,19 @@
+# 2026-11-18 — One Piece catalog revision 7 candidate
+
+Unsigned revision 7 is staged in
+[publisher/one-piece/production/revision-7](publisher/one-piece/production/revision-7/README.md):
+6,993 printings, 2,670 of 2,969 cards certified complete, and 173 Bandai rows
+still under "Printing needs review" (684 in revision 6). New reviewed scripts
+cover the coverage certifier, reprints, stamped event packs, tiered promos,
+errata holds and promo binding; see the
+[publisher guide](OnePieceCatalogCore/README.md). In the app, Browse's
+"Partial catalog" badge now describes a set's own contents. Known printings
+TCGplayer has never priced, or lists without a photo, show "Not yet priced" or
+"Art not yet confirmed" on their row. Evidence: publisher validation of the
+candidate against the live revision 6 envelope; 138 One Piece script tests; 215
+simulator tests (OnePieceIntegrationTests and BrowseFeatureTests). Signing,
+publication and device testing have not been done.
+
 # 2026-11-17 — Browse tab; Collection moves under Portfolio
 
 The tabs are now Portfolio, Browse, Scan and Pro. Collection is pushed from

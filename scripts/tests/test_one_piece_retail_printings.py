@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from reconcile_one_piece_retail_printings import (
     PRB01_MANGA_SPEC, candidate_product_claims, exact_artwork_match, exact_digital_artwork_match, listing_treatment, market_agrees,
-    photographic_artwork_match, promotion_label, promotion_treatment, replay_resolution, retailer_listings, reviewed_promo_artwork,
+    photographic_artwork_match, plain_title_product_reprint, promotion_label, promotion_treatment, replay_resolution, retailer_listings, reviewed_promo_artwork, tcgplayer_listings,
     treatment_matches_alias,
 )
 from normalize_one_piece_sources import Document
@@ -128,6 +128,42 @@ class OnePieceRetailPrintingsTests(unittest.TestCase):
         self.assertFalse(treatment_matches_alias("Manga", "OP01-120_r2", {**product, "extendedData": []}, "foil"))
         self.assertFalse(treatment_matches_alias("Parallel", "OP01-120_r2", product, "foil"))
         self.assertFalse(treatment_matches_alias("Reprint", "OP01-120_p1", product, "foil"))
+
+    def test_plain_titled_reprint_needs_bandai_reprint_alias_and_foreign_number(self):
+        # ST-15 lists Jozu OP02-008 under its plain title in the deck's own group.
+        self.assertTrue(plain_title_product_reprint("", "OP02-008_r1", "OP02-008", "ST15"))
+        self.assertTrue(plain_title_product_reprint("", "OP06-100_r2", "OP06-100", "ST28"))
+        self.assertFalse(plain_title_product_reprint("", "OP02-008_p1", "OP02-008", "ST15"))
+        self.assertFalse(plain_title_product_reprint("", "OP02-008", "OP02-008", "ST15"))
+        self.assertFalse(plain_title_product_reprint("", "ST15-001_r1", "ST15-001", "ST15"))
+        self.assertFalse(plain_title_product_reprint("Parallel", "OP02-008_r1", "OP02-008", "ST15"))
+        self.assertFalse(plain_title_product_reprint("", "OP02-008_r1", "OP02-008", None))
+        self.assertFalse(plain_title_product_reprint("", "OP02-008_r0", "OP02-008", "ST15"))
+        self.assertFalse(plain_title_product_reprint("", "OP02-0080_r1", "OP02-008", "ST15"))
+
+    def test_tcgplayer_listings_need_one_number_and_one_finish_lane(self):
+        root = "https://tcgcsv.com/tcgplayer/68/24282/"
+        def product(pid, number="OP09-006", group=24282):
+            fields = [{"name": "Number", "value": number}] if number else []
+            return {"productId": pid, "name": "Howling Gab (Reprint)", "categoryId": 68, "groupId": group,
+                    "extendedData": fields}
+        class Market:
+            manifest = {"captures": {root + "products": {"sourceURL": root + "products", "payloadSHA256": "a" * 64,
+                                                         "observedAt": "2026-11-17T00:00:00+00:00"}}}
+            def fetch_json(self, url):
+                return {root + "products": {"results": [product(1), product(2), product(3, None), product(4, group=9),
+                                                        product(5)]},
+                        root + "prices": {"results": [{"productId": 1, "subTypeName": "Normal"},
+                                                      {"productId": 2, "subTypeName": "Normal"},
+                                                      {"productId": 2, "subTypeName": "Foil"},
+                                                      {"productId": 3, "subTypeName": "Normal"},
+                                                      {"productId": 4, "subTypeName": "Normal"}]}}[url]
+        listings = list(tcgplayer_listings(Market(), "24282"))
+        self.assertEqual([listing["sourceID"] for listing, _ in listings], ["1"])
+        listing, receipt = listings[0]
+        self.assertEqual((listing["provider"], listing["finish"], listing["imageProductID"]), ("tcgplayer", "normal", "1"))
+        self.assertEqual(listing["imageURL"], "https://product-images.tcgplayer.com/fit-in/600x600/1.jpg")
+        self.assertEqual(receipt["sourceURL"], root + "products")
 
     def test_marketplace_conflicts_hold_exact_retailer_printing(self):
         listing = {"number": "OP09-042", "imageProductID": "596971", "finish": "normal"}

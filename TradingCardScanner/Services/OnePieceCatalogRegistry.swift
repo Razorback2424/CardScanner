@@ -13,6 +13,15 @@ struct OnePieceCatalogRegistry: Sendable {
     let artworkURLByID: [UUID: URL]
     let productsByID: [String: OnePieceProduct]
     let variantsByID: [String: OnePieceVariantDescriptor]
+    /// Provisional printings whose existence is documented but which TCGplayer has
+    /// never priced, so their finish is unconfirmed. They are known, not unresolved.
+    let knownUnpricedPrintingIDs: Set<UUID>
+    /// Provisional printings TCGplayer lists without a photo, so their art is unconfirmed.
+    let knownNoPhotoPrintingIDs: Set<UUID>
+    static let unpricedEvidenceField = "marketplaceFinishLanes"
+    static let noPhotoEvidenceField = "marketplacePhoto"
+    /// Known printings held only for a marketplace gap; they do not make a set partial.
+    var knownGapPrintingIDs: Set<UUID> { knownUnpricedPrintingIDs.union(knownNoPhotoPrintingIDs) }
     var generation: String { verifiedRelease.payloadFingerprint }
     var retrievedAt: Date { verifiedRelease.verifiedAt }
     var supportedNumbers: Set<String> { Set(canonicalByPrintedNumber.keys) }
@@ -40,6 +49,15 @@ struct OnePieceCatalogRegistry: Sendable {
         })
         productsByID = Dictionary(uniqueKeysWithValues: release.registry.products.map { ($0.id, $0) })
         variantsByID = Dictionary(uniqueKeysWithValues: release.registry.variants.map { ($0.id, $0) })
+        func gap(_ field: String) -> Set<UUID> {
+            let evidence = Set(release.observations.lazy.filter { $0.printedEvidence[field] == "none" }.map(\.id))
+            return evidence.isEmpty ? [] : Set(release.registry.printings.lazy.filter {
+                $0.status == .provisional && $0.supportedVariantIDs.isEmpty
+                    && ($0.review?.evidence.contains { evidence.contains($0.observationID) } ?? false)
+            }.map(\.id))
+        }
+        knownUnpricedPrintingIDs = gap(Self.unpricedEvidenceField)
+        knownNoPhotoPrintingIDs = gap(Self.noPhotoEvidenceField).subtracting(knownUnpricedPrintingIDs)
     }
 
     /// Exact Bandai artwork from a hash-matched render observation. No guessed

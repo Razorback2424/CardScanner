@@ -47,6 +47,29 @@ PROMO_DISTRIBUTION_ALIASES = {
     "Tournament Kit 2025 Vol.2": "Tournament Pack 2025 Vol. 2",
     "Illustration Box Vol.7": "One Piece Card Game Illustration Box Vol. 7",
     "Illustration Box Vol.8": "One Piece Card Game Illustration Box Vol. 8",
+    # Reviewed 2026-11-18: each Bandai distribution matched exactly one TCGplayer
+    # promo title by artwork across its cards. Tiered events (Participant,
+    # Finalist, Winner) are separate stamped printings and stay unaliased.
+    "3rd Anniversary Event": "3rd Anniversary Winner",
+    "DODGERS ONE PIECE NIGHT": "Dodgers x ONE PIECE",
+    "Included in Pirates Party Card Vol.2": "Pirates Party Vol. 2",
+    "ONE PIECE CARD GAME and Football Team DORTMUND collaboration event": "BVB x One Piece Campaign",
+    "ONE PIECE DAY Dallas -Card Game Celebration-": "One Piece Day Dallas 2025",
+    "Official Playmat & Card Set -Whole Cake Island Arc-": "Whole Cake Island Arc",
+    "One Piece Card Game x PSA Exclusive Promo Card": "PSA Magazine",
+    "Pirates League Store Qualifier": "2025 Pirates League Store Qualifier Winner",
+    "Pre-Release OP02": "Pre-Release",
+    "Pre-Release OP04": "Pre-Release Tournament",
+    "Pre-Release OP08": "Two Legends Pre-Release",
+    "Regional 2024 wave2": "Championship 2024",
+    "Regional 25-26 Season1": "Championship 25-26 Regionals Season 1",
+    "Store Treasure Cup August – September 2024": "Store Treasure Cup 2024",
+    "Treasure Cup August – September": "Treasure Cup 2024",
+    "Treasure Cup November-December": "Treasure Cup 2024",
+    "Treasure Cup February 2025": "Treasure Cup 2025",
+    "Treasure Cup May 2025~": "Treasure Cup 2025",
+    "Treasure Cup November 2025~": "Treasure Cup 2025",
+    "Winner prize for Sealed Battle 2023 Vol.1": "Sealed Battle 2023 Vol. 1",
 }
 REFERENCE_REGION_ERROR_LIMIT = 0.019
 COMPARISON_SIZE = (84, 117)
@@ -123,6 +146,32 @@ def retailer_listings(document, group_id):
             yield {"provider": "coretcg", "number": numbers.pop(), "title": titles[0].text(), "path": path,
                    "sourceID": f"{group_id}:{listing[1]}", "finish": lane[2].lower(), "lane": lanes[0],
                    "imageURL": images[0], "imageProductID": image[1]}
+
+
+def tcgplayer_listings(market, group_id):
+    """TCGplayer's own product records as listings, from a complete TCGCSV snapshot.
+
+    A product needs one printed number and exactly one price lane. That lane
+    is the marketplace's finish for the exact product; category 68 is English.
+    Unlike CoreTCG pages, the export also lists products that are out of stock.
+    """
+    products_url = MARKET_ROOT + group_id + "/products"
+    receipt = market.manifest["captures"][products_url]
+    lanes = defaultdict(set)
+    for row in market.fetch_json(MARKET_ROOT + group_id + "/prices")["results"]:
+        lanes[row["productId"]].add(row["subTypeName"])
+    for row in market.fetch_json(products_url)["results"]:
+        numbers = [field["value"] for field in row.get("extendedData", []) if field["name"] == "Number"]
+        lane = lanes.get(row["productId"], set())
+        if row.get("categoryId") != 68 or str(row.get("groupId")) != group_id or len(numbers) != 1 \
+                or len(lane) != 1 or next(iter(lane)) not in {"Normal", "Foil"}:
+            continue
+        product_id = str(row["productId"])
+        yield {"provider": "tcgplayer", "number": numbers[0], "title": row["name"],
+               "path": "https://www.tcgplayer.com/product/" + product_id, "sourceID": product_id,
+               "finish": next(iter(lane)).lower(), "lane": "TCGplayer - " + next(iter(lane)),
+               "imageURL": f"https://product-images.tcgplayer.com/fit-in/600x600/{product_id}.jpg",
+               "imageProductID": product_id}, receipt
 
 
 def coretcg_listings(retail_root, receipts, source_url, group_id):
@@ -265,6 +314,20 @@ def treatment_matches_alias(label, alias, market_product, finish):
                     for field in market_product["extendedData"]))
 
 
+def plain_title_product_reprint(label, alias, number, native_prefix):
+    """Accept a plain-titled reprint listed in the reprinting product's own group.
+
+    Collectors and TCGplayer treat a deck or premium-booster reprint as its own
+    product filed under the product that reprinted it, separate from the
+    original set's card. ST-15 to ST-20 and ST-31 onward title those listings
+    without "(Reprint)". Bandai's ``_r`` presentation, a number from another
+    set and the reprinting product's own marketplace group identify it instead.
+    """
+    return (label == "" and native_prefix is not None
+            and re.fullmatch(re.escape(number) + r"_r[1-9][0-9]*", alias) is not None
+            and not number.startswith(native_prefix + "-"))
+
+
 def candidate_product_claims(candidate_matches):
     """Count claims independently of shared collector numbers or treatment labels."""
     return Counter(match[4]["imageProductID"] for match in candidate_matches.values())
@@ -284,7 +347,8 @@ def replay_resolution(row):
 
 
 def build_retail_additions(release, product_rules, bandai_root, retail_root, artwork_root, market, artwork_capture=None,
-                           eb05_roots=(), promo_root=None, promo_photo_reviews=None, evidence_report=None):
+                           eb05_roots=(), promo_root=None, promo_photo_reviews=None, evidence_report=None,
+                           tcgplayer=False, tcgplayer_promos=False):
     from io import BytesIO
     from PIL import Image, ImageChops, ImageStat
 
@@ -340,7 +404,16 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                     for row in printings.values() for alias in row["sourceAliases"]}
     known_market_ids = {mapping["productID"] for row in printings.values() for mapping in row["marketMappings"]
                         if mapping["provider"] == "tcgplayer"}
+    # Products already named by a printing's own evidence or alias cannot claim another printing.
+    retained_observations = {row["id"]: row for row in release["observations"]}
+    known_market_ids |= {retained_observations[item["observationID"]]["printedEvidence"]["retailerReferenceProductID"]
+                         for row in printings.values() for item in (row.get("review") or {}).get("evidence", [])
+                         if "retailerReferenceProductID" in retained_observations[item["observationID"]]["printedEvidence"]}
+    known_market_ids |= {alias["sourceID"] for row in printings.values() for alias in row["sourceAliases"]
+                         if alias["provider"] == "tcgplayer"}
     products_by_id = {product["id"]: product for product in registry["products"]}
+    retained_identities = {(row.get("releaseID"), row["canonicalCardID"], row.get("treatment"))
+                           for row in printings.values() if row["status"] != "superseded"}
     names = {row["printedNumber"]: row["name"] for row in registry["canonicalCards"] if row["language"] == "en"}
     candidate_matches = {}
     stats = Counter()
@@ -371,12 +444,15 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                 renders[alias] = url
         return series, source, compare([inventory], release)[0]["rows"], renders
 
+    native_prefixes = {product["productID"]: product.get("prefix") for product in product_rules["products"]}
     grouped_sources = defaultdict(list)
     for product in product_rules["products"]:
         source_url, group_id = product["retailerStartURL"], product["retailerGroupID"]
+        key = product["productID"], group_id, product["manufacturerListURL"]
         if source_url in retail:
-            key = product["productID"], group_id, product["manufacturerListURL"]
             grouped_sources[key].append(coretcg_listings(retail_root, retail, source_url, group_id))
+        if tcgplayer:
+            grouped_sources[key].append(tcgplayer_listings(market, group_id))
     if eb05_roots:
         if EB05_PRODUCT[0] not in products_by_id:
             raise ValueError("EB-05 needs its Bandai discovery product in the baseline registry")
@@ -384,10 +460,14 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
     promo_renders = defaultdict(dict)
     promo_labels = defaultdict(set)
     known_artwork = set()
-    if promo_root is not None:
+    if promo_root is not None or tcgplayer_promos:
         known_artwork = {(row["canonicalCardID"], artworks[row["artworkID"]].get("imageSHA256"))
                          for row in printings.values()}
-        retained_promos = list(coretcg_listings(promo_root, captures(promo_root), PROMO_START, PROMO_GROUP))
+        retained_promos = (list(coretcg_listings(promo_root, captures(promo_root), PROMO_START, PROMO_GROUP))
+                           if promo_root is not None else [])
+        if tcgplayer_promos:
+            # The complete TCGCSV promo group also lists products that are out of stock.
+            retained_promos += list(tcgplayer_listings(market, PROMO_GROUP))
         for series in PROMO_SERIES:
             url = "https://en.onepiece-cardgame.com/cardlist/?series=" + series
             grouped_sources[(f"product:bandai-series:{series}", PROMO_GROUP, url)].append(retained_promos)
@@ -486,13 +566,15 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                                          "digitalComparisonMaxRelativeError": f"{relative_error:.4f}"})
                     image_detail = ("The retailer digital render matches the Bandai presentation at the regions "
                                     "that distinguish it from every official sibling.")
-            if selected is None and promotion:
+            if selected is None:
+                # Early-set marketplace images are photographs, not digital renders.
+                # The structural comparison still holds same-art siblings.
                 photographic = photographic_artwork_match(comparison, references)
                 if photographic is not None:
                     selected, errors = photographic
                     image_fields = {"photographicStructureErrors": ",".join(f"{error:.4f}" for error in errors)}
                     image_detail = "The retailer photo matches the distinct Bandai design across three image regions."
-                elif promo_photo_reviews:
+                elif promotion and promo_photo_reviews:
                     selected = reviewed_promo_artwork(listing, label[0], art_urls, artwork, promo_photo_reviews)
                     if selected is not None:
                         image_fields["artworkReview"] = "reviewed-photo-pair"
@@ -556,13 +638,15 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                     mark(series, [row], "promotion-distribution-mismatch")
                     continue
             elif existing is not None:
-                if (listing["provider"] != "coretcg" or existing["status"] != "provisional" or existing["supportedVariantIDs"]
+                if (listing["provider"] not in {"coretcg", "tcgplayer"} or existing["status"] != "provisional" or existing["supportedVariantIDs"]
                         or existing["releaseID"] != release_id or existing.get("review") is None
                         or artworks[existing["artworkID"]].get("imageSHA256") != image_source["payloadSHA256"]):
                     stats["held-identity-needs-review"] += 1
                     mark(series, [row], "held-identity-requires-separate-review")
                     continue
                 treatment = existing.get("treatment")
+            elif plain_title_product_reprint(label, alias, number, native_prefixes.get(release_id)):
+                pass
             elif (not treatment_matches_alias(label, alias, market_products[int(listing["imageProductID"])],
                                                listing["finish"])
                   or (not label and alias != number)):
@@ -573,6 +657,11 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                 treatment = "Manga artwork (non-textured foil)"
                 image_review[1]["marketplacePrintingSpecification"] = PRB01_MANGA_SPEC
             identity = (printing_release, "one-piece:en:" + number, treatment)
+            if existing is None and identity in retained_identities:
+                # An earlier batch may hold this physical printing under another alias.
+                stats["existing-printing-identity-in-release"] += 1
+                mark(series, [row], "release-already-has-this-printing-identity")
+                continue
             if (series, alias) in candidate_matches:
                 raise ValueError("Two retailer groups claim the same Bandai presentation")
             candidate_matches[(series, alias)] = (
@@ -637,13 +726,15 @@ def build_retail_additions(release, product_rules, bandai_root, retail_root, art
                                    "observationIDs": [render_id]})
         evidence = [
             ("printedIdentity", list_id, "Exact collector number and artwork alias in the English Bandai product list."),
-            ("language", finish_id, "The retailer explicitly lists this printing in English."),
+            ("language", finish_id, "The marketplace lists this product in its English One Piece category."
+             if listing["provider"] == "tcgplayer" else "The retailer explicitly lists this printing in English."),
             ("artwork", render_id, image_detail),
             ("release", list_id, "Bandai lists this exact artwork in the reviewed release."),
             ("distribution" if distribution is not None else "treatment", finish_id,
              "The retailer title names the exact Bandai distribution." if distribution is not None else
              "The retailer title and uniquely matching official artwork identify the treatment."),
-            ("finish", finish_id, "The retailer explicitly specifies the English printing's physical finish."),
+            ("finish", finish_id, "The marketplace lists only this finish lane for the exact product."
+             if listing["provider"] == "tcgplayer" else "The retailer explicitly specifies the English printing's physical finish."),
         ]
         if distribution is not None and treatment is not None:
             evidence.append(("treatment", finish_id, "The retailer explicitly names the alternate artwork."))
@@ -695,15 +786,22 @@ def main():
     parser.add_argument("--market-captures", type=Path, required=True, help="Retained category 68 TCGCSV snapshot")
     parser.add_argument("--fetch-missing-artwork", action="store_true",
                         help="Capture missing artwork references from the supplied product pages")
+    parser.add_argument("--tcgplayer-listings", action="store_true",
+                        help="Also use TCGplayer products from the market snapshot as listings for --products groups")
+    parser.add_argument("--tcgplayer-promos", action="store_true",
+                        help="Use the TCGplayer promo group from the market snapshot as promo listings")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--evidence-report", type=Path,
                         help="Optional read-only alias-level evidence/rejection report")
     args = parser.parse_args()
-    if (args.products is None) != (args.retail_captures is None):
-        parser.error("--products and --retail-captures must be supplied together")
-    if args.products is None and not args.eb05_retail_captures and args.promo_retail_captures is None:
+    if args.retail_captures is not None and args.products is None:
+        parser.error("--retail-captures requires --products")
+    if args.products is not None and args.retail_captures is None and not args.tcgplayer_listings:
+        parser.error("--products needs --retail-captures or --tcgplayer-listings")
+    if (args.products is None and not args.eb05_retail_captures and args.promo_retail_captures is None
+            and not args.tcgplayer_promos):
         parser.error("Supply booster, EB-05, or promo captures")
-    if args.reviewed_promo_photos and not args.promo_retail_captures:
+    if args.reviewed_promo_photos and not (args.promo_retail_captures or args.tcgplayer_promos):
         parser.error("Reviewed promo photos require the retained promo listings")
     if args.output.exists():
         raise ValueError("Retail printing additions already exist")
@@ -726,7 +824,8 @@ def main():
         result, stats = build_retail_additions(json.loads(args.release.read_bytes()), products,
                                                args.bandai_captures, args.retail_captures, args.artwork_captures,
                                                market, artwork_capture, args.eb05_retail_captures,
-                                               args.promo_retail_captures, reviews, evidence_report=evidence_rows)
+                                               args.promo_retail_captures, reviews, evidence_report=evidence_rows,
+                                               tcgplayer=args.tcgplayer_listings, tcgplayer_promos=args.tcgplayer_promos)
         atomic_json(args.output, result)
         if args.evidence_report is not None:
             atomic_json(args.evidence_report, {
