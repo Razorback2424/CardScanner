@@ -47,6 +47,9 @@ class OnePieceWorkflowTests(unittest.TestCase):
             self.assertIn('--reviewed-payload-sha256', content)
             self.assertIn('one-piece-catalog-publisher verify', content)
         self.assertIn('one-piece-catalog-publisher sign', signing)
+        self.assertLess(signing.index('catalog_release_preflight.py --game one-piece --payload'),
+                        signing.index('one-piece-catalog-publisher sign'))
+        self.assertIn('catalog_release_preflight.py --game one-piece --envelope', signing)
         self.assertIn('cmp "$artifact_root/manifest.json" "$artifact_root/verified-manifest.json"', signing)
         self.assertIn('group: scanstash-catalog-production-hosting', publishing)
         self.assertIn('cancel-in-progress: false', publishing)

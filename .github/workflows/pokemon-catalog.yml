@@ -14,6 +14,7 @@ on:
       - "scripts/restore_pokemon_catalog_releases.sh"
       - "scripts/restore_catalog_hosting_site.sh"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
+      - "scripts/catalog_release_preflight.py"
       - "firebase.json"
       - ".firebaserc.example"
       - ".github/workflows/pokemon-catalog.yml"
@@ -30,6 +31,7 @@ on:
       - "scripts/restore_pokemon_catalog_releases.sh"
       - "scripts/restore_catalog_hosting_site.sh"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
+      - "scripts/catalog_release_preflight.py"
       - "firebase.json"
       - ".firebaserc.example"
       - ".github/workflows/pokemon-catalog.yml"
@@ -152,6 +154,8 @@ jobs:
           mkdir -p publisher/candidate publisher/reports
           cp "$source"/{catalog-payload.json,pokemon-catalog-snapshot.json,review-report.json} publisher/candidate/
           cp "$source/review-report.json" publisher/reports/production.json
+      - name: Check the catalog size budget
+        run: python3 scripts/catalog_release_preflight.py --game pokemon --payload publisher/candidate/pokemon-catalog-snapshot.json
       - name: Classify the production candidate
         id: prepare
         run: |
