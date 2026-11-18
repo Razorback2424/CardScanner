@@ -18,6 +18,7 @@ import subprocess
 import sys
 import uuid
 from build_lorcana_market_catalog import MARKET_LANES_BY_FINISH, validate_previous, validate_source_universes
+import catalog_exceptions
 
 
 class CatalogIntegrityError(ValueError):
@@ -62,6 +63,7 @@ class Audit:
         self.repo = Path(repo).resolve()
         self.sources = {}
         self.discrepancies = []
+        self.ledger = []  # catalog_exceptions rows for games that emit a reason-coded ledger
 
     def text(self, path):
         target = (self.repo / path).resolve()
@@ -580,6 +582,32 @@ def validate_lorcana_market_capture(printings, directory):
     return sum(map(len, by_group.values()))
 
 
+def lorcana_hold_reason(row, universes, reviewed_holds):
+    """One stable reason code per browse-only row, for the exceptions ledger.
+
+    A reviewed hold in lorcana_promo_distributions.json wins: it records why the
+    promo reconciler could not close that card. Other codes describe the row's
+    root cause, most specific first."""
+    if row['id'] in reviewed_holds:
+        hold = reviewed_holds[row['id']]
+        return hold['reason'], hold['detail']
+    if 'serial numbered' in row['name'].lower():
+        return 'heldSerialized', 'Serial-numbered copy; each number is its own collectible and needs an owner policy'
+    if row['footer'] is not None and footer_key(row['footer']) in universes:
+        return 'incompleteFamily', 'Physical family is incomplete'
+    unnumbered = row.get('unnumberedSetMarker') or row['printedIdentifier'].startswith('EN • Q') or '(Oversized)' in row['name']
+    if row['footer'] is None and (unnumbered or row['id'].startswith('lorcanajson:')):
+        return 'noFooter', 'Unnumbered card or Quest component; no collector number to identify a printing'
+    if not row['id'].startswith('lorcanajson:'):
+        return 'marketOnly', ('Marketplace product with no publisher card' +
+                              ('' if row['footer'] else ' and no inspected printed footer'))
+    if len(row['foilTypes']) > 2:
+        return 'multipleFoilPatterns', 'Multiple foil patterns require exact evidence'
+    if row['setCode'].isdigit():
+        return 'expansionReview', 'Expansion printing or distribution requires physical review'
+    return 'promoDistribution', 'Promo, product, or scenario distribution has no reviewed distribution rule'
+
+
 def lorcana(audit, baseline_ref=None, publisher_gallery=None, market_capture=None):
     root = Path('TradingCardScanner/LorcanaCatalogSeed')
     discovery = audit.json(root / 'discovery.json')
@@ -632,19 +660,14 @@ def lorcana(audit, baseline_ref=None, publisher_gallery=None, market_capture=Non
         gallery['sha256'] = hashlib.sha256(raw).hexdigest()
     verified_mappings = validate_lorcana_market_capture(printings.values(), market_capture) if market_capture is not None else None
     held = [row for identity, row in sources.items() if identity not in physical_sources]
+    reviewed_holds = {hold['sourceCardID']: hold for hold in
+                      audit.json('scripts/lorcana_promo_distributions.json').get('holds', [])}
     for row in held:
-        if row['footer'] is None:
-            reason = 'Unnumbered or unverified footer'
-        elif footer_key(row['footer']) in universes:
-            reason = 'Incomplete physical family'
-        elif len(row['foilTypes']) > 2:
-            reason = 'Multiple foil patterns require exact evidence'
-        elif row['setCode'].isdigit():
-            reason = 'Expansion printing or distribution requires physical review'
-        else:
-            reason = 'Promo, product, or scenario distribution requires physical review'
+        reason, detail = lorcana_hold_reason(row, universes, reviewed_holds)
         audit.gap('lorcana', 'discoveryOnly', row['id'], row['setCode'],
-            f"{row['name']} | {row['printedIdentifier']} | {reason}")
+            f"{row['name']} | {row['printedIdentifier']} | {reason}: {detail}")
+        audit.ledger.append(catalog_exceptions.row('lorcana', row['setCode'], row['id'], reason, detail,
+            dict(name=row['name'], printedIdentifier=row['printedIdentifier'])))
     return dict(discoveryGeneratedOn=discovery['generatedOn'], physicalReviewedAtFoundationSeconds=market['reviewedAt'],
         discoveryRows=len(sources), sourceSetCounts=counts(row['setCode'] for row in sources.values()),
         sealedProducts=len(discovery['sealed']), reviewedPhysicalPrintings=len(printings), reviewedFooterFamilies=len(families),
@@ -728,7 +751,7 @@ def run(repo, lorcana_baseline_ref=None, lorcana_publisher_gallery=None, lorcana
     discrepancies = sorted(audit.discrepancies, key=lambda row: tuple(row[key] for key in ['game', 'code', 'scope', 'identity', 'detail']))
     return dict(schemaVersion=1, boundary='Offline retained-data census. No network, signing, publication, catalog promotion, camera test, or claim of all-card completeness.',
         games=results, structuralErrors=errors, discrepancyCounts=counts(row['game'] for row in discrepancies),
-        sources=dict(sorted(audit.sources.items()))), discrepancies
+        sources=dict(sorted(audit.sources.items())), ledger=audit.ledger), discrepancies
 
 
 def main():
@@ -742,6 +765,10 @@ def main():
     summary, discrepancies = run(args.repo, args.lorcana_baseline_ref, args.lorcana_publisher_gallery,
                                  args.lorcana_market_capture)
     args.output.mkdir(parents=True, exist_ok=True)
+    # The reason-coded ledger (see catalog_exceptions.py) is its own file so passes can diff it.
+    catalog_exceptions.write_ledger(args.output / 'ledger.json', summary.pop('ledger'),
+        source={path: receipt['sha256'] for path, receipt in summary['sources'].items()
+                if 'Lorcana' in path or 'lorcana' in path})
     (args.output / 'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n', encoding='utf-8')
     with (args.output / 'discrepancies.csv').open('w', newline='', encoding='utf-8') as stream:
         writer = csv.DictWriter(stream, fieldnames=['game', 'code', 'identity', 'scope', 'disposition', 'detail'], lineterminator='\n')

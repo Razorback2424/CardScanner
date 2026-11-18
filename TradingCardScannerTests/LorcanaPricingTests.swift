@@ -1141,10 +1141,10 @@ final class LorcanaPricingTests: XCTestCase {
     #if DEBUG && LOCAL_ONLY_SIGNING
     func testNormalAppRegistersReviewedPricingAndPreservesDiscoveryAndSealed() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
-        XCTAssertEqual(catalog.cardsByID.count, 3_595)
+        XCTAssertEqual(catalog.cardsByID.count, 3_602)
         XCTAssertEqual(catalog.products.count, 188)
-        XCTAssertEqual(catalog.registry.physicalCatalog?.manifest.physicalPrintings.count, 3_426)
-        XCTAssertEqual(LorcanaPriceAdapter.priceAuthority(catalog.registry).identityByPriceKey.count, 6_288)
+        XCTAssertEqual(catalog.registry.physicalCatalog?.manifest.physicalPrintings.count, 3_576)
+        XCTAssertEqual(LorcanaPriceAdapter.priceAuthority(catalog.registry).identityByPriceKey.count, 6_432)
         let module = try XCTUnwrap(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
         XCTAssertTrue(module.descriptor.capabilities.contains(.pricing))
         XCTAssertTrue(module.descriptor.capabilities.contains(.collectionWrite))
@@ -1203,7 +1203,7 @@ final class LorcanaPricingTests: XCTestCase {
         let model = bound.makeScannerModel()
         model.start(context: host.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
         defer { model.viewDisappeared() }
-        guard case let .identified(subject) = LorcanaDiscoveryRecognizer(catalog: catalog).identify([.init(text: "26/P2 EN 7")])
+        guard case let .identified(subject) = LorcanaDiscoveryRecognizer(catalog: catalog).identify([.init(text: "15/P2 EN 1")])
         else { return XCTFail() }
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
         let filed = await waitUntil { !model.unresolvedScans.isEmpty }
@@ -1211,8 +1211,10 @@ final class LorcanaPricingTests: XCTestCase {
         XCTAssertNil(model.pendingIdentityChoice)
         XCTAssertNil(model.pendingChoice)
         XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
+        // 15/P2 EN 1 is the held Moana/Vaiana "Adventurer of Land and Sea" pair.
         XCTAssertEqual(model.unresolvedScans.first?.printingCandidates.count, 2)
-        XCTAssertTrue(model.note?.text.contains("needs review") == true)
+        let noted = await waitUntil { model.note?.text.contains("needs review") == true }
+        XCTAssertTrue(noted, "Held printings explain why they were filed for review")
         XCTAssertEqual(try host.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 0)
     }
 

@@ -1,0 +1,846 @@
+{
+ "schemaVersion": 1,
+ "reviewedAt": "2026-11-18",
+ "policy": [
+  "Each Lorcana promo prints its own footer (number/P1-P4, DIS, PD1 or RPH), so one footer is one printing. TCGplayer files each as its own product; this file follows that convention.",
+  "stamp is null when the printed footer alone distinguishes the printing. Lorcana promos print their own promo number rather than an event stamp.",
+  "finishes maps each publisher finish pattern to the TCGplayer price lanes reviewed for the distribution. TCGplayer labels single-foil promos Cold Foil or Holofoil inconsistently across releases, so rules split by printed set where the label changes.",
+  "physicalReleaseEvidence is the publisher card gallery, which lists every selected card with its printed footer and finish (checked by audit_catalog_coverage.py --lorcana-publisher-gallery).",
+  "expectedCount pins the cards a rule selects; expectedProducts (default expectedCount) pins the TCGplayer products it matches. A new card or product is drift that needs a reviewed edit here.",
+  "holds lists every selected card that cannot be reconciled, with its reason. The reconciler refuses to write when its holds differ from this list.",
+  "Edge cases follow what collectors and the main references do. Where they genuinely disagree, the catalog gives the user more choice, but never shows a guess as fact or a price that belongs to another card."
+ ],
+ "rules": [
+  {
+   "id": "p1-organized-play",
+   "kind": "organizedPlay",
+   "label": "Organized Play",
+   "setCode": "P1",
+   "distribution": "Organized Play",
+   "groupID": 23234,
+   "expectedCount": 17,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ],
+    "Lava": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p1-promo",
+   "kind": "promo",
+   "label": "Promo",
+   "setCode": "P1",
+   "distribution": "Promo",
+   "groupID": 23234,
+   "expectedCount": 6,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p1-gen-con-2023",
+   "kind": "event",
+   "label": "Gen Con 2023",
+   "setCode": "P1",
+   "distribution": "Gen Con 2023",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "None": [
+     "Normal"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p1-gamescom-2023",
+   "kind": "event",
+   "label": "Gamescom 2023",
+   "setCode": "P1",
+   "distribution": "Gamescom 2023",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "None": [
+     "Normal"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p1-spiel-essen-2023",
+   "kind": "event",
+   "label": "Spiel Essen 2023",
+   "setCode": "P1",
+   "distribution": "Spiel Essen 2023",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "None": [
+     "Normal"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p2-organized-play",
+   "kind": "organizedPlay",
+   "label": "Organized Play",
+   "setCode": "P2",
+   "distribution": "Organized Play",
+   "groupID": 23234,
+   "expectedCount": 22,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ],
+    "VerticalWave": [
+     "Holofoil"
+    ],
+    "None": [
+     "Normal"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p2-promo",
+   "kind": "promo",
+   "label": "Promo",
+   "setCode": "P2",
+   "distribution": "Promo",
+   "groupID": 23234,
+   "expectedCount": 6,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ],
+    "Glitter": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p2-villainous-boardgame",
+   "kind": "retail",
+   "label": "Disney Villainous: Introduction to Evil board game",
+   "setCode": "P2",
+   "distribution": "'Disney Villainous: Introduction to Evil' boardgame",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p2-palace-heist-victory",
+   "kind": "questVictory",
+   "label": "Illumineer's Quest: Palace Heist victory card",
+   "setCode": "P2",
+   "distribution": "'Illumineer's Quest: Palace Heist' victory card",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "SeaWave": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p2-moana-2-release",
+   "kind": "release",
+   "label": "Moana 2 release",
+   "setCode": "P2",
+   "distribution": "'Moana 2' release",
+   "groupID": 23234,
+   "expectedCount": 2,
+   "expectedProducts": 1,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p2-into-the-inklands-bundle",
+   "kind": "giftSet",
+   "label": "Into the Inklands bundle",
+   "setCode": "P2",
+   "distribution": "Into the Inklands bundle",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Glitter": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p2-lilo-gift-set",
+   "kind": "giftSet",
+   "label": "Lilo Gift Set",
+   "setCode": "P2",
+   "distribution": "Lilo Gift Set",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Glitter": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p2-stitch-gift-set",
+   "kind": "giftSet",
+   "label": "Stitch Gift Set",
+   "setCode": "P2",
+   "distribution": "Stitch Gift Set",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "SeaWave": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-organized-play-sets-9-10",
+   "kind": "organizedPlay",
+   "label": "Organized Play",
+   "setCode": "P3",
+   "distribution": "Organized Play",
+   "printedSets": [
+    "9",
+    "10"
+   ],
+   "groupID": 23234,
+   "expectedCount": 11,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ],
+    "None": [
+     "Normal"
+    ],
+    "Magma": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-organized-play-sets-11-12",
+   "kind": "organizedPlay",
+   "label": "Organized Play",
+   "setCode": "P3",
+   "distribution": "Organized Play",
+   "printedSets": [
+    "11",
+    "12"
+   ],
+   "groupID": 23234,
+   "expectedCount": 11,
+   "finishes": {
+    "Silver": [
+     "Holofoil"
+    ],
+    "None": [
+     "Normal"
+    ],
+    "Magma": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-promo",
+   "kind": "promo",
+   "label": "Promo",
+   "setCode": "P3",
+   "distribution": "Promo",
+   "groupID": 23234,
+   "expectedCount": 11,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ],
+    "Glitter": [
+     "Holofoil"
+    ],
+    "RainbowPillars": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-disney-cruise",
+   "kind": "cruise",
+   "label": "Disney Cruise",
+   "setCode": "P3",
+   "distribution": "Disney Cruise",
+   "groupID": 23234,
+   "expectedCount": 6,
+   "finishes": {
+    "Silver": [
+     "Holofoil"
+    ],
+    "CalendarWave": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-parks-and-stores-set-7",
+   "kind": "parksAndStores",
+   "label": "Disney Parks & Stores",
+   "setCode": "P3",
+   "distribution": "Disney Parks & Stores",
+   "printedSets": [
+    "7"
+   ],
+   "groupID": 23234,
+   "expectedCount": 2,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-parks-and-stores",
+   "kind": "parksAndStores",
+   "label": "Disney Parks & Stores",
+   "setCode": "P3",
+   "distribution": "Disney Parks & Stores",
+   "printedSets": [
+    "4",
+    "9",
+    "12"
+   ],
+   "groupID": 23234,
+   "expectedCount": 4,
+   "finishes": {
+    "Silver": [
+     "Holofoil"
+    ],
+    "FreeForm2": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-wilds-unknown-prerelease",
+   "kind": "prerelease",
+   "label": "Wilds Unknown Prerelease Pack",
+   "setCode": "P3",
+   "distribution": "'Wilds Unknown' Prerelease Pack",
+   "groupID": 23234,
+   "expectedCount": 6,
+   "finishes": {
+    "Satin": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-fabled-starter-set",
+   "kind": "retail",
+   "label": "Fabled Collection Starter Set",
+   "setCode": "P3",
+   "distribution": "'Fabled' Collection Starter Set",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Glitter": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-fabled-booster-display",
+   "kind": "retail",
+   "label": "Fabled booster display",
+   "setCode": "P3",
+   "distribution": "'Fabled' booster display",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-whispers-bring-a-friend",
+   "kind": "organizedPlay",
+   "label": "Whispers in the Well Bring a Friend",
+   "setCode": "P3",
+   "distribution": "'Whispers in the Well' Bring a Friend",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-whispers-booster-display",
+   "kind": "retail",
+   "label": "Whispers in the Well booster display",
+   "setCode": "P3",
+   "distribution": "'Whispers in the Well' booster display",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-zootopia-2-release",
+   "kind": "release",
+   "label": "Zootopia 2 release",
+   "setCode": "P3",
+   "distribution": "'Zootopia 2' release",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Glitter": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-elsa-gift-box",
+   "kind": "giftSet",
+   "label": "Elsa Gift Box",
+   "setCode": "P3",
+   "distribution": "Elsa Gift Box",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Glitter": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-scrooge-gift-box",
+   "kind": "giftSet",
+   "label": "Scrooge McDuck Gift Box",
+   "setCode": "P3",
+   "distribution": "Scrooge McDuck Gift Box",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Glitter": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p3-gen-con-2025",
+   "kind": "event",
+   "label": "Gen Con 2025",
+   "setCode": "P3",
+   "distribution": "Gen Con 2025",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p4-organized-play",
+   "kind": "organizedPlay",
+   "label": "Organized Play",
+   "setCode": "P4",
+   "distribution": "Organized Play",
+   "groupID": 23234,
+   "expectedCount": 7,
+   "finishes": {
+    "Silver": [
+     "Holofoil"
+    ],
+    "None": [
+     "Normal"
+    ],
+    "Magma": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "p4-promo",
+   "kind": "promo",
+   "label": "Promo",
+   "setCode": "P4",
+   "distribution": "Promo",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "dis-parks-and-stores",
+   "kind": "parksAndStores",
+   "label": "Disney Parks & Stores",
+   "setCode": "DIS",
+   "distribution": "Disney Parks & Stores",
+   "groupID": 23234,
+   "expectedCount": 7,
+   "finishes": {
+    "FreeForm2": [
+     "Holofoil"
+    ],
+    "Silver": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo",
+    "Rare"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "pd1-promo",
+   "kind": "promo",
+   "label": "Promo",
+   "setCode": "PD1",
+   "distribution": "Promo",
+   "groupID": 23234,
+   "expectedCount": 4,
+   "finishes": {
+    "Glitter": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "pd1-great-hunny-rescue-victory",
+   "kind": "questVictory",
+   "label": "Illumineer's Quest: The Great Hunny Rescue victory card",
+   "setCode": "PD1",
+   "distribution": "'Illumineer's Quest: The Great Hunny Rescue' victory card",
+   "groupID": 24734,
+   "expectedCount": 2,
+   "finishes": {
+    "Satin": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "pd1-quest-of-wonders-lorebook",
+   "kind": "book",
+   "label": "Quest of Wonders: An Illumineer's Lorebook",
+   "setCode": "PD1",
+   "distribution": "'Quest of Wonders: An Illumineer's Lorebook'",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "FreeForm2": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "rph-challenge",
+   "kind": "challenge",
+   "label": "Ravensburger Play Hub Challenge",
+   "setCode": "RPH",
+   "distribution": "Challenge",
+   "groupID": 23234,
+   "expectedCount": 6,
+   "expectedProducts": 4,
+   "finishes": {
+    "Silver": [
+     "Holofoil"
+    ],
+    "None": [
+     "Normal"
+    ],
+    "Tinsel": [
+     "Holofoil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  },
+  {
+   "id": "rph-promo",
+   "kind": "promo",
+   "label": "Promo",
+   "setCode": "RPH",
+   "distribution": "Promo",
+   "groupID": 23234,
+   "expectedCount": 1,
+   "finishes": {
+    "Silver": [
+     "Cold Foil"
+    ]
+   },
+   "marketRarities": [
+    "Promo"
+   ],
+   "stamp": null,
+   "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
+  }
+ ],
+ "holds": [],
+ "sharedFooterPrintings": [
+  {
+   "printedIdentifier": "26/P2 • EN • 7",
+   "members": [
+    {
+     "sourceCardID": "lorcanajson:en:1433",
+     "nameVariant": "moana",
+     "artworkLabel": "Moana title"
+    },
+    {
+     "sourceCardID": "lorcanajson:en:1663",
+     "nameVariant": "vaiana",
+     "artworkLabel": "Vaiana title"
+    }
+   ],
+   "rationale": "Two printings. The publisher gallery lists Moana (culture_invariant_id 1433) and Vaiana (1663) as separate English cards with their own card image (promo2_26 and promo2_26vaiana), name and flavor text, under the same footer. Vaiana is the title used in several European countries for the Moana 2 cinema giveaway. A collector can tell the two apart at a glance. TCGplayer lists only Moana (product 601112), so Moana keeps that price and Vaiana is \"Not yet priced\": the Moana price is never shown for Vaiana. The shared footer opens a printing choice at scan time.",
+   "sources": [
+    "https://cards.disneylorcana.com/en-US/",
+    "https://lorcanaplayer.com/franchise/moana",
+    "https://www.brandsuntapped.com/ravensburger-and-odeon-ready-disney-lorcana-promo-card-for-moana-2/"
+   ]
+  }
+ ],
+ "noMarketPrintings": [
+  {
+   "sourceCardID": "lorcanajson:en:1663",
+   "printedIdentifier": "26/P2 • EN • 7",
+   "rationale": "Vaiana is its own printing (see sharedFooterPrintings) and TCGplayer has no Vaiana product.",
+   "sources": [
+    "https://cards.disneylorcana.com/en-US/"
+   ]
+  },
+  {
+   "sourceCardID": "lorcanajson:en:3559",
+   "printedIdentifier": "6/RPH • EN • 14",
+   "rationale": "Real printing: the publisher gallery lists Honey Lemon - Testing the Limits 6/RPH EN 14 (nonfoil). TCGplayer has no product in the 2026-11-18 snapshot (it lists 1-5/RPH). A true gap: addable and \"Not yet priced\", and it does not make the set partial.",
+   "sources": [
+    "https://cards.disneylorcana.com/en-US/",
+    "https://tcgcsv.com/tcgplayer/71/23234/products"
+   ]
+  },
+  {
+   "sourceCardID": "lorcanajson:en:3560",
+   "printedIdentifier": "7/RPH • EN • 14",
+   "rationale": "Real printing: the publisher gallery lists Honey Lemon - Testing the Limits 7/RPH EN 14 (Tinsel foil). TCGplayer has no product in the 2026-11-18 snapshot. A true gap: addable and \"Not yet priced\", and it does not make the set partial.",
+   "sources": [
+    "https://cards.disneylorcana.com/en-US/",
+    "https://tcgcsv.com/tcgplayer/71/23234/products"
+   ]
+  }
+ ],
+ "research": [
+  {
+   "topic": "Silver promo price lanes",
+   "finding": "TCGplayer files each single-foil promo as one product with one price lane, but names that lane Cold Foil for some releases and Holofoil for others (for example Organized Play Silver promos from sets 9-10 are Cold Foil and from sets 11-13 Holofoil). The rules pin the lane each release actually uses in the 2026-11-18 snapshot, split by printed set where it changes, so a lane change is drift that needs review. Both lanes mean the same physical foil card; neither is a second finish.",
+   "sources": [
+    "https://tcgcsv.com/tcgplayer/71/23234/prices"
+   ]
+  },
+  {
+   "topic": "Serial-numbered promos",
+   "finding": "Collectors and TCGplayer treat a serial-numbered card as its own card, one product per tier, but not one printing per serial number. The serialized gold Mickey Mouse - Brave Little Tailor is 5/C1 EN 1, a Disney Lorcana Challenge Top 4/Top 8 prize, and TCGplayer lists it as product 554628 with no price. It is filed as its own printing in lorcana_product_evidence.json, addable and \"Not yet priced\". The three serialized Hades - Dark Usurper products (Challenge Top 8, Winner, World Championship Top 8) have no public printed footer, so they stay held.",
+   "sources": [
+    "https://www.cgccards.com/news/article/13016/",
+    "https://disneylorcana.com/en/news/2024/03/challenge-announcement/",
+    "https://mightymeeple.com/products/hades-dark-usurper-serial-numbered-disney-lorcana-challenge-top-8-28-promo-cards"
+   ]
+  },
+  {
+   "topic": "New Challenge products without a publisher card",
+   "finding": "Eight products new in the 2026-11-18 snapshot (Ursula - Deceiver, Be Prepared, Gaston - Superior Archer, Madam Mim - Resourceful Trickster, each Normal and Foil, numbered 2-5 and 14-17) have no publisher card and no public listing that shows their printed footer. They stay marketOnly until the footer can be read.",
+   "sources": [
+    "https://tcgcsv.com/tcgplayer/71/23234/products"
+   ]
+  }
+ ]
+}

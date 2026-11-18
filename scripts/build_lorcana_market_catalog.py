@@ -249,6 +249,8 @@ def build(discovery, sources, baseline, assignments, review_later_expansions=Fal
                          for r in payload.get('coverage', {}).get('productEvidence', [])
                          if r.get('physicalReleaseEvidence')}
     reviewed_products.update({r['sourceID']: r for r in payload.get('coverage', {}).get('publishedCards', [])})
+    # Reviewed real printings that TCGplayer does not list yet: addable, never priced.
+    reviewed_products.update({r['sourceCardID']: r for r in payload.get('coverage', {}).get('noMarketPrintings', [])})
     by_footer = collections.defaultdict(list)
     for row in rows:
         if row['footer']:
@@ -339,10 +341,14 @@ def build(discovery, sources, baseline, assignments, review_later_expansions=Fal
         gift_pair = len(members) == 2 and len(oversized) == 1 and len(standard) == 1
         printing_variants = {reviewed_products.get(r['id'], {}).get('printingVariant') for r in members}
         corrected_pair = len(members) == 2 and printing_variants == {'original', 'corrected'}
+        # Two reviewed cards printed with one footer but different card names (for
+        # example Moana and its European title Vaiana) are separate printings.
+        name_variants = [reviewed_products.get(r['id'], {}).get('nameVariant') for r in members]
+        name_pair = len(members) == 2 and all(name_variants) and len(set(name_variants)) == 2
         reason = None
         if product_review and product_review.get('printingVariant') and not corrected_pair:
             reason = 'Corrected printing evidence requires both original and corrected records'
-        elif len(members) != 1 and not (gift_pair or corrected_pair):
+        elif len(members) != 1 and not (gift_pair or corrected_pair or name_pair):
             reason = 'Multiple source physical candidates'
         elif finishes is None:
             reason = 'Outside reviewed ordinary/Enchanted physical policy'
@@ -364,6 +370,9 @@ def build(discovery, sources, baseline, assignments, review_later_expansions=Fal
         expected_rarity = 'Promo' if disney100 else row['rarity']
         if fixed_product:
             expected_rarity = fixed_product.get('marketRarityOverrides', {}).get(f['collectorNumber'], fixed_product['marketRarity'])
+        elif product_review and product_review.get('marketRarity'):
+            # TCGplayer files promos as "Promo" while the publisher says "Special".
+            expected_rarity = product_review['marketRarity']
         matches = []
         siblings = []
         for p in products:
@@ -396,7 +405,7 @@ def build(discovery, sources, baseline, assignments, review_later_expansions=Fal
             and matches[0]['productId'] == split[0]
             and split_products[split[1]]['name'] == market_name + ' (Foil)'
             and [x['value'] for x in split_products[split[1]]['extendedData'] if x['name'] == 'Rarity'] == [row['rarity']])
-        published_without_market = product_review and 'sourceID' in product_review and 'productID' not in product_review
+        published_without_market = product_review and 'productID' not in product_review
         physical_only = (approved_without_market or fixed_product or published_without_market) and not matches and not siblings
         if not physical_only and (len(matches) != 1 or (len(siblings) != 1 and not split_valid)):
             reason = reason or 'Missing/ambiguous exact title-number join or qualified sibling'
@@ -421,6 +430,8 @@ def build(discovery, sources, baseline, assignments, review_later_expansions=Fal
         member_key = key
         if gift_pair:
             member_key += ':' + size
+        elif name_pair:
+            member_key += ':' + product_review['nameVariant']
         elif corrected_pair:
             member_key += ':' + product_review['printingVariant']
         artwork, printing = [allocate(member_key + ':' + kind) for kind in ('artwork', 'printing')]
