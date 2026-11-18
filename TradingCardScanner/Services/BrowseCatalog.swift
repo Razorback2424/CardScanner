@@ -3519,7 +3519,8 @@ enum PokemonMasterSetDefinition {
             && ["gold", "rainbow"].contains(variantID ?? "") && cardID != "sv03.5-205"
     }
 
-    private static let rarityFinishAliasSetIDs: Set<String> = [
+    /// Mirrored by publisher/pokemon-finish-conventions.json (treatmentAliases); a test keeps them equal.
+    static let rarityFinishAliasSetIDs: Set<String> = [
         "me02", "me04", "sv03.5", "sv05", "sv06", "sv06.5", "sv07", "sv08", "sv08.5", "sv09", "sv10",
         "swsh2", "swsh3", "swsh4", "swsh4.5", "swsh5", "swsh6", "swsh7", "swsh8", "swsh9",
         "swsh10", "swsh10.5", "swsh10tg", "swsh11", "swsh11tg", "swsh12", "swsh12tg"

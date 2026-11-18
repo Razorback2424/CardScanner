@@ -40,6 +40,20 @@ enum PokemonFinishCoverage {
         let reviewedAt: String
         let evidence: String
         let cards: [String: [String]]
+        /// How a certificate differs from the bundled checklist slots, per card.
+        /// Optional: certificates that match their slots omit it.
+        let slotChanges: [String: SlotChange]?
+    }
+
+    /// Every difference is checked against the set's evidence report by
+    /// `testCertifiedFinishCoverageIsCompleteAndConsistent`.
+    struct SlotChange: Decodable, Equatable {
+        /// Aggregate placeholders the checklist reader already removes.
+        let aggregate: [String]?
+        /// Finishes the market and audited evidence prove beyond the slots.
+        let added: [String]?
+        /// Slots a reviewed convention or Normal review excludes.
+        let removed: [String]?
     }
 
     private struct Table: Decodable {

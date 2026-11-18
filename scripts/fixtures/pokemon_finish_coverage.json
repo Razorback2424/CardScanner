@@ -6,6 +6,11 @@
         "tcgplayerGroupID": 55,
         "evidence": "docs/research/pokemon-finish-coverage/captures/sample/initial/report.json",
         "reviewedAt": "2026-11-10",
+        "slotChanges": {
+          "sample-001": {"added": ["holo"]},
+          "sample-002": {"removed": ["normal"]},
+          "sample-003": {"added": ["cosmos"]}
+        },
         "cards": {
           "sample-001": ["holo", "normal", "reverse"],
           "sample-002": ["holo"],

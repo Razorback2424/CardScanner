@@ -25,6 +25,12 @@
     {"setID": "sm12", "groupID": 2534, "groupName": "SM - Cosmic Eclipse", "reason": "TCGplayer prefixes SM sets with 'SM - ' and uses numbered codes."},
     {"setID": "sma", "groupID": 2594, "groupName": "Hidden Fates: Shiny Vault", "reason": "TCGplayer names the Hidden Fates Shiny Vault subset 'Hidden Fates: Shiny Vault'."},
     {"setID": "swsh1", "groupID": 2585, "groupName": "SWSH01: Sword & Shield Base Set", "reason": "TCGplayer names Sword & Shield 'SWSH01: Sword & Shield Base Set'."},
-    {"setID": "ru1", "groupID": 1433, "groupName": "Rumble", "reason": "TCGplayer names Pokémon Rumble 'Rumble'."}
+    {"setID": "ru1", "groupID": 1433, "groupName": "Rumble", "reason": "TCGplayer names Pokémon Rumble 'Rumble'."},
+    {"setID": "bog", "groupID": 1455, "groupName": "Best of Promos", "reason": "The nine 2002 Best of Game promos are TCGplayer's 'Best of Promos', numbered N/009. Winner-stamped copies in the same group are separate printings and stay open."}
+  ],
+  "unlinked": [
+    {"setID": "exu", "reason": "TCGplayer lists the Unown Collection inside 'EX Unseen Forces' (group 1398, shared with ex10) as 'Unown (A)' with number A/28. Linking needs a per-set product filter and a letter-number name rule, so it stays open."},
+    {"setID": "fut2020", "reason": "TCGplayer files the five Futsal promos inside 'Miscellaneous Cards & Products'. A whole-group comparison would ledger thousands of foreign products; it needs a group-subset capture format."},
+    {"setID": "xya", "reason": "The six Yellow A alternates are split across 'Alternate Art Promos' and their own set groups (for example Trainers' Mail 92a in XY - Roaring Skies), so no single group holds the set."}
   ]
 }

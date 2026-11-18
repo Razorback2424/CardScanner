@@ -548,7 +548,7 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
         self.assertEqual(again["statuses"], {"sample": "certified"})
         self.assertEqual(again["newlyCertified"], [])
 
-    def test_agreement_beyond_the_bundled_checklist_slots_stays_open(self):
+    def test_agreement_beyond_the_bundled_checklist_slots_is_certified_and_recorded(self):
         self.keep_only("sample-001", "tcgplayer:14")
         self.fixture["snapshot"] = [slot for slot in self.fixture["snapshot"]
                                     if slot["masterSetVariant"]["id"] != "reverse"]
@@ -557,9 +557,16 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
                             "required_minimum_finishes": "reverse", "extra_observed_finishes_requiring_review": ""})
         coverage.write_json(self.snapshot / "finish-minimums.json", coverage.minimum_table(self.ledger, set()))
         result, rows = self.batch(revision="batch")
-        self.assertEqual([(row["identity"], row["reason"]) for row in rows], [("sample-001", "checklistMissingFinish")])
-        self.assertEqual(result["newlyCertified"], [])
-        self.assertEqual(coverage.read_json(self.snapshot / "finish-coverage.json")["sets"], {})
+        self.assertEqual(rows, [])
+        certificate = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]
+        self.assertEqual(certificate["cards"]["sample-001"], ["normal", "reverse"])
+        # The app's consistency test checks this difference against the evidence report.
+        self.assertEqual(certificate["slotChanges"], {"sample-001": {"added": ["reverse"]}})
+
+    def test_certificates_matching_their_slots_record_no_changes(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.batch(revision="batch")
+        self.assertNotIn("slotChanges", coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"])
 
     def test_finish_differences_split_into_targetable_reasons(self):
         row = {"name": "A", "number": "1", "products": [{"productId": 1}], "normalNeedsReview": False,
@@ -605,6 +612,121 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Invalid"):
             coverage.group_links(groups, entries, {"links": [dict(reviewed["links"][0], reason="")]})
 
+    def conventions(self, **conventions):
+        coverage.write_json(self.root / coverage.Conventions.PATH, {"schemaVersion": 1, **conventions})
+
+    def convention(self, **fields):
+        return {"id": "test", "decision": "Test convention.", "sources": ["https://example.com"], **fields}
+
+    def lane_prices(self, product_id, lanes):
+        self.fixture["prices"]["results"] = [row for row in self.fixture["prices"]["results"]
+                                             if row["productId"] != product_id]
+        self.fixture["prices"]["results"] += [{"productId": product_id, "subTypeName": lane, "marketPrice": price}
+                                              for lane, price in lanes.items()]
+
+    def test_reverse_lane_convention_needs_a_sold_reverse_on_the_cards_own_product(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.fixture["snapshot"] = [slot for slot in self.fixture["snapshot"]
+                                    if slot["masterSetVariant"]["id"] != "reverse"]
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        for price, certified in ((None, False), (0, False), (0.25, True)):
+            with self.subTest(price=price):
+                self.setUp()
+                self.keep_only("sample-001", "tcgplayer:14")
+                self.fixture["snapshot"] = [slot for slot in self.fixture["snapshot"]
+                                            if slot["masterSetVariant"]["id"] != "reverse"]
+                coverage.write_json(self.slots, self.fixture["snapshot"])
+                self.lane_prices(11, {"Normal": 0.5, "Reverse Holofoil": price})
+                self.conventions(reverseLane=self.convention(excludeSetIDs=[]))
+                result, rows = self.batch(revision="batch")
+                if not certified:
+                    self.assertEqual([(row["identity"], row["reason"]) for row in rows],
+                                     [("sample-001", "marketExtraLane")])
+                    continue
+                self.assertEqual(rows, [])
+                certificate = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]
+                self.assertEqual(certificate["cards"]["sample-001"], ["normal", "reverse"])
+                self.assertEqual(certificate["slotChanges"]["sample-001"], {"added": ["reverse"]})
+        self.setUp()
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.fixture["snapshot"] = [slot for slot in self.fixture["snapshot"]
+                                    if slot["masterSetVariant"]["id"] != "reverse"]
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        self.conventions(reverseLane=self.convention(excludeSetIDs=["sample"]))
+        _, rows = self.batch()
+        self.assertEqual([row["reason"] for row in rows], ["marketExtraLane"], "An excluded set keeps the row open")
+
+    def test_normal_placeholder_convention_excludes_an_unsold_historical_normal(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.historical["cards"] = {"sample-001": {"setID": "sample", "number": "001", "minimum": ["reverse"],
+                                                   "normalNeedsReview": True}}
+        coverage.write_json(self.historical_path, self.historical)
+        self.lane_prices(11, {"Reverse Holofoil": 1.0})
+        _, rows = self.batch()
+        self.assertEqual([row["reason"] for row in rows], ["normalNeedsReview"], "No convention, no decision")
+        self.conventions(historicalNormalPlaceholder=self.convention(setIDs=["sample"]))
+        result, rows = self.batch(revision="batch")
+        self.assertEqual(rows, [])
+        certificate = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]
+        self.assertEqual(certificate["cards"]["sample-001"], ["reverse"])
+        self.assertEqual(certificate["slotChanges"]["sample-001"], {"removed": ["normal"]})
+        report_value = coverage.read_json(coverage.capture_directory(self.root, "sample", "batch") / "report.json")
+        self.assertEqual(report_value["resolutions"]["sample-001"]["normalReview"], "exclude")
+
+    def test_normal_placeholder_convention_keeps_a_sold_normal_open(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.historical["cards"] = {"sample-001": {"setID": "sample", "number": "001", "minimum": ["reverse"],
+                                                   "normalNeedsReview": True}}
+        coverage.write_json(self.historical_path, self.historical)
+        self.conventions(historicalNormalPlaceholder=self.convention(setIDs=["sample"]))
+        _, rows = self.batch()
+        self.assertEqual([(row["identity"], row["reason"]) for row in rows], [("sample-001", "normalNeedsReview")])
+
+    def test_treatment_alias_convention_keeps_only_the_priced_holo_printing(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        holo = dict(self.fixture["snapshot"][0], providerID="sample-005", collectorNumber="005", name="Example Five",
+                    masterSetVariant={"id": "holo"})
+        self.fixture["snapshot"] += [holo, dict(holo, masterSetVariant={"id": "rainbow"})]
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        self.fixture["products"]["results"].append({"productId": 50, "categoryId": 3, "groupId": 55,
+            "name": "Example Five (Secret)", "extendedData": [{"name": "Number", "value": "005/004"}]})
+        self.lane_prices(50, {"Holofoil": 9.0})
+        _, rows = self.batch()
+        self.assertEqual([(row["identity"], row["reason"]) for row in rows], [("sample-005", "parallelFinishNotListed")])
+        self.conventions(treatmentAliases=self.convention(finishes=["gold", "rainbow"], setIDs=["sample"],
+                                                          exceptCardIDs=["sample-005"]))
+        _, rows = self.batch()
+        self.assertEqual([row["identity"] for row in rows], ["sample-005"], "An excepted card stays open")
+        self.conventions(treatmentAliases=self.convention(finishes=["gold", "rainbow"], setIDs=["sample"],
+                                                          exceptCardIDs=[]))
+        _, rows = self.batch(revision="batch")
+        self.assertEqual(rows, [])
+        certificate = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]
+        self.assertEqual(certificate["cards"]["sample-005"], ["holo"])
+        self.assertEqual(certificate["slotChanges"]["sample-005"], {"removed": ["rainbow"]})
+
+    def test_ex_set_logo_reverse_convention_reads_the_reverse_lane_as_the_stamped_reverse(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        stamp = "pokemonStamp|normal|set-logo|"
+        self.fixture["snapshot"] = [dict(slot, masterSetVariant={"id": stamp})
+                                    if slot["masterSetVariant"]["id"] == "reverse" else slot
+                                    for slot in self.fixture["snapshot"]]
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        _, rows = self.batch()
+        self.assertEqual([row["reason"] for row in rows], ["finishConflict"])
+        self.conventions(setLogoReverseHolo=self.convention(setIDs=["sample"]),
+                         reverseLane=self.convention(excludeSetIDs=[]))
+        _, rows = self.batch(revision="batch")
+        self.assertEqual(rows, [])
+        certificate = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]
+        self.assertEqual(certificate["cards"]["sample-001"], ["normal", stamp])
+        self.assertNotIn("slotChanges", certificate)
+
+    def test_conventions_need_a_decision_and_sources(self):
+        self.conventions(reverseLane={"id": "x", "excludeSetIDs": []})
+        with self.assertRaisesRegex(ValueError, "decision and sources"):
+            self.batch()
+
     def cosmos_setup(self, title="Example One - 1/4 (Cosmos Holo)", lane="Holofoil", number="001/004"):
         self.keep_only("sample-001", "tcgplayer:14")
         self.fixture["snapshot"].append(dict(self.fixture["snapshot"][0], masterSetVariant={"id": "cosmos"}))
@@ -612,9 +734,10 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
         coverage.write_json(self.snapshot / "manifest.json", {"entries": [
             {"providerID": "sample", "resource": "sets/opaque.json", "officialCount": 4, "set": {"name": "Sample Set"}},
         ]})
-        coverage.write_json(self.root / coverage.AppearanceRules.PATH, {"schemaVersion": 1, "rules": [{
-            "id": "cosmos-test", "finish": "cosmos", "titleQualifiers": ["Cosmos Holo"], "lanes": ["Holofoil"],
-            "groups": [{"groupID": 77, "groupName": "Deck Exclusives"}], "reason": "Test rule."}]})
+        self.conventions(appearances=[{
+            "id": "cosmos-test", "finishes": {"cosmos": ["Holofoil"]}, "titleQualifiers": ["Cosmos Holo"],
+            "groups": [{"groupID": 77, "groupName": "Deck Exclusives"}], "decision": "Test rule.",
+            "sources": ["https://example.com"]}])
         product = {"productId": 70, "categoryId": 3, "groupId": 77, "name": title,
                    "extendedData": [{"name": "Number", "value": number}]}
         return self.market({
@@ -630,7 +753,7 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
         self.assertEqual(certificate["cards"]["sample-001"], ["cosmos", "normal", "reverse"])
         report_value = coverage.read_json(coverage.capture_directory(self.root, "sample", "batch") / "report.json")
         resolution = report_value["resolutions"]["sample-001"]
-        self.assertEqual(resolution["citation"], "publisher/pokemon-finish-appearances.json")
+        self.assertEqual(resolution["citation"], "publisher/pokemon-finish-conventions.json")
         self.assertIn("[70]", resolution["reason"])
         self.assertEqual(report_value["cards"]["sample-001"]["status"], "conflict")
 
