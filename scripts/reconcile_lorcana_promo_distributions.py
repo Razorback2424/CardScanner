@@ -51,8 +51,8 @@ FOREIGN = re.compile(r'\((?:JP|CS) Exclusive\)')
 QUALIFIED = re.compile(r'(?P<name>.+) \((?P<qualifier>[^()]+)\)')
 # Fields this pass adds to a record. A record carrying ``distributionRule`` is
 # owned by this pass and is recomputed on every run.
-PHYSICAL_FIELDS = ('distribution', 'distributionID', 'distributionRule', 'foilTypes', 'groupID', 'layout',
-                   'marketLane', 'marketRarity', 'physicalReleaseEvidence', 'sourceName', 'stamp')
+PHYSICAL_FIELDS = ('artworkLabel', 'distribution', 'distributionID', 'distributionRule', 'foilTypes', 'groupID', 'layout',
+                   'marketLane', 'marketRarity', 'nameVariant', 'physicalReleaseEvidence', 'sourceName', 'stamp')
 
 
 class RuleError(ValueError):
@@ -88,7 +88,24 @@ def load_rules(document):
         if hold['sourceCardID'] in holds or not re.fullmatch(r'[a-z][A-Za-z0-9]*', hold['reason']) or not hold['detail']:
             raise RuleError(f"Duplicate or invalid reviewed hold: {hold['sourceCardID']}")
         holds[hold['sourceCardID']] = hold
-    return rules, holds
+    # Reviewed real printings that TCGplayer does not list: addable, shown "Not yet priced".
+    no_market = {}
+    for entry in document.get('noMarketPrintings', []):
+        if entry['sourceCardID'] in no_market or not entry.get('rationale') or not entry.get('sources'):
+            raise RuleError(f"Duplicate or unexplained no-market printing: {entry['sourceCardID']}")
+        no_market[entry['sourceCardID']] = entry
+    # Reviewed cards that share one printed footer but are physically different cards.
+    shared = {}
+    for group in document.get('sharedFooterPrintings', []):
+        variants = [m['nameVariant'] for m in group['members']]
+        if not all(m.get('artworkLabel') for m in group['members']):
+            raise RuleError(f"Shared-footer members need a distinguishing label: {group['printedIdentifier']}")
+        if len(set(variants)) != len(variants) or len(variants) < 2 or not group.get('rationale') or not group.get('sources'):
+            raise RuleError(f"Invalid shared-footer group: {group['printedIdentifier']}")
+        for member in group['members']:
+            shared[member['sourceCardID']] = dict(member, printedIdentifier=group['printedIdentifier'],
+                                                  memberIDs={m['sourceCardID'] for m in group['members']})
+    return rules, holds, no_market, shared
 
 
 def selects(rule, row):
@@ -132,7 +149,7 @@ def load_market(directory, group):
 
 def reconcile(rows, market, rules_document, evidence, source_links=None):
     """Return (evidence document, report). ``market`` maps group ID to load_market()."""
-    rules, declared = load_rules(rules_document)
+    rules, declared, no_market, shared = load_rules(rules_document)
     source_links = source_links or {}
     records = [dict(r) for r in evidence['records']]
     for record in records:  # Recompute everything this pass owns.
@@ -154,8 +171,11 @@ def reconcile(rows, market, rules_document, evidence, source_links=None):
                 if row['id'] in owner:
                     raise RuleError(f"{row['id']} is selected by {owner[row['id']]} and {rule['id']}")
                 owner[row['id']] = rule['id']
-    footers = collections.Counter(footer_key(r['footer']) for r in rows if r['footer'])
-    holds, accepted, summary = {}, [], {}
+    footers = collections.defaultdict(set)
+    for r in rows:
+        if r['footer']:
+            footers[footer_key(r['footer'])].add(r['id'])
+    holds, accepted, accepted_without_market, summary = {}, [], [], {}
     def hold(row, reason, detail):
         holds[row['id']] = dict(sourceCardID=row['id'], printedIdentifier=row['printedIdentifier'],
                                 reason=reason, detail=detail)
@@ -174,11 +194,18 @@ def reconcile(rows, market, rules_document, evidence, source_links=None):
             if not footer or len(patterns) != 1 or patterns[0] not in rule['finishes']:
                 hold(row, 'finishOutsideRule', f"Finish {patterns} is not one the rule {rule['id']} lists")
                 continue
-            if footers[footer_key(footer)] > 1:
-                hold(row, 'sharedFooter', f"{footers[footer_key(footer)]} discovery cards print {row['printedIdentifier']}")
+            sharing = footers[footer_key(footer)]
+            reviewed_share = shared.get(row['id'])
+            if len(sharing) > 1 and not (reviewed_share and reviewed_share['memberIDs'] == sharing
+                                         and reviewed_share['printedIdentifier'] == row['printedIdentifier']):
+                hold(row, 'sharedFooter', f"{len(sharing)} discovery cards print {row['printedIdentifier']}")
                 continue
             matches = [p for p in group['products'] if not FOREIGN.search(p['name'])
                        and number_matches(p, footer) and title_matches(p['name'], row['name'])]
+            reviewed_gap = no_market.get(row['id'])
+            if not matches and reviewed_gap and reviewed_gap['printedIdentifier'] == row['printedIdentifier']:
+                accepted_without_market.append((rule, row))
+                continue
             if len(matches) != 1:
                 hold(row, 'noMarketProduct' if not matches else 'ambiguousMarketProduct',
                      f"{len(matches)} products in group {rule['groupID']} match number {footer['collectorNumber']} and title")
@@ -218,7 +245,7 @@ def reconcile(rows, market, rules_document, evidence, source_links=None):
                     hold(row, 'ruleCountDrift', f"Rule {rule['id']} expects {expected_products} products; matched {len(matched)}")
             accepted = [a for a in accepted if a[0] is not rule]
         summary[rule['id']] = dict(selected=len(selected),
-                                   reconciled=sum(1 for a in accepted if a[0] is rule),
+                                   reconciled=sum(1 for a in accepted + accepted_without_market if a[0] is rule),
                                    held=sum(1 for r in selected if r['id'] in holds))
     for rule, row, product, lanes, rarity in accepted:
         identity = product['productId']
@@ -245,15 +272,33 @@ def reconcile(rows, market, rules_document, evidence, source_links=None):
             record['sourceName'] = row['name']
         if rule.get('stamp'):
             record['stamp'] = rule['stamp']
+        if row['id'] in shared:
+            record.update(nameVariant=shared[row['id']]['nameVariant'], artworkLabel=shared[row['id']]['artworkLabel'])
+    gaps = []
+    for rule, row in accepted_without_market:
+        entry = dict(sourceCardID=row['id'], expectedName=row['name'], printedIdentifier=row['printedIdentifier'],
+                     groupID=rule['groupID'], foilTypes=row['foilTypes'], layout=row['layout'],
+                     distribution=rule['label'], distributionID='promo-' + rule['id'], distributionRule=rule['id'],
+                     physicalReleaseEvidence=rule['physicalReleaseEvidence'], marketLane=None)
+        if rule.get('stamp'):
+            entry['stamp'] = rule['stamp']
+        if row['id'] in shared:
+            entry.update(nameVariant=shared[row['id']]['nameVariant'], artworkLabel=shared[row['id']]['artworkLabel'])
+        gaps.append(entry)
+    unused = sorted(set(no_market) - {row['id'] for _, row in accepted_without_market})
     computed = {(h['sourceCardID'], h['reason']) for h in holds.values()}
     reviewed = {(h['sourceCardID'], h['reason']) for h in declared.values()}
     report = dict(schemaVersion=1, rules=summary,
                   reconciled=sorted(row['id'] for _, row, _, _, _ in accepted),
                   holds=sorted(holds.values(), key=lambda h: h['sourceCardID']),
+                  reconciledWithoutMarket=sorted(row['id'] for _, row in accepted_without_market),
                   unreviewedHolds=sorted(computed - reviewed), staleReviewedHolds=sorted(reviewed - computed),
+                  staleNoMarketPrintings=unused,
                   marketSHA256={str(k): v['sha256'] for k, v in sorted(market.items())})
     output = dict(evidence)
     output['records'] = records  # Curated order is kept; new records follow it.
+    if gaps or 'noMarketPrintings' in output:
+        output['noMarketPrintings'] = sorted(gaps, key=lambda g: g['sourceCardID'])
     return output, report
 
 
@@ -283,12 +328,14 @@ def main(argv=None):
         args.report.write_text(json.dumps(report, indent=1, sort_keys=True, ensure_ascii=False) + '\n')
     print(f"{len(report['reconciled'])} reconciled; {len(report['holds'])} held "
           f"({collections.Counter(h['reason'] for h in report['holds']).most_common()})")
-    if report['unreviewedHolds'] or report['staleReviewedHolds']:
+    if report['unreviewedHolds'] or report['staleReviewedHolds'] or report['staleNoMarketPrintings']:
         print('Holds differ from the reviewed rule file; nothing written.', file=sys.stderr)
         for key in report['unreviewedHolds']:
             print('  unreviewed hold:', *key, file=sys.stderr)
         for key in report['staleReviewedHolds']:
             print('  stale reviewed hold:', *key, file=sys.stderr)
+        for key in report['staleNoMarketPrintings']:
+            print('  no-market printing now has a product or no longer qualifies:', key, file=sys.stderr)
         return 1
     args.output.write_text(json.dumps(evidence, indent=2, ensure_ascii=False) + '\n')
     return 0

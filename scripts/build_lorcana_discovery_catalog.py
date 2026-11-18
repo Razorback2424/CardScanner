@@ -245,6 +245,16 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
             rarity='Promo', layout=proof['layout'], sourceSetCode=printed['printedSetMarker'],
             unnumberedSetMarker=None, recognitionTitles=[], imageURL=proof['reference'], thumbnailURL=proof['reference'],
             foilTypes=proof['foilTypes'], distribution=proof['distribution']))
+    # Reviewed real printings with no marketplace product. Each binds one publisher
+    # card exactly and grants no market mapping; the physical builder does the rest.
+    no_market = evidence.get('noMarketPrintings', [])
+    for proof in no_market:
+        row = rows_by_id.get(proof['sourceCardID'])
+        if (not row or row['printedIdentifier'] != proof['printedIdentifier'] or row['name'] != proof['expectedName']
+                or row['foilTypes'] != proof['foilTypes'] or not proof['physicalReleaseEvidence'].startswith('https://')
+                or 'productID' in proof or proof.get('marketLane') is not None
+                or proof['sourceCardID'] in {r.get('sourceCardID') for r in evidence['records']}):
+            raise ValueError(f"Invalid no-market Lorcana printing evidence: {proof['sourceCardID']}")
     return dict(schemaVersion=1, generatedOn=source['metadata']['generatedOn'],
                 cards=sorted(cards + supplemental, key=lambda c: c['id']), sealed=sorted(sealed, key=lambda p: p['id']),
                 coverage=dict(cardSource='https://lorcanajson.org/files/current/en/allCards.json',
@@ -253,7 +263,7 @@ def build(cards_path, groups_path, products_directory, evidence_path=None):
                               sets=source['sets'], productGroups=product_receipts,
                               supplementalCardCount=len(supplemental), joinedProductIDs=joined_products,
                               productJoins=product_joins, excludedProducts=excluded_products, productEvidence=evidence['records'],
-                              publishedCards=published,
+                              publishedCards=published, noMarketPrintings=no_market,
                               sealedCount=len(sealed)))
 
 

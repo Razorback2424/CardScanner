@@ -7,7 +7,8 @@
   "finishes maps each publisher finish pattern to the TCGplayer price lanes reviewed for the distribution. TCGplayer labels single-foil promos Cold Foil or Holofoil inconsistently across releases, so rules split by printed set where the label changes.",
   "physicalReleaseEvidence is the publisher card gallery, which lists every selected card with its printed footer and finish (checked by audit_catalog_coverage.py --lorcana-publisher-gallery).",
   "expectedCount pins the cards a rule selects; expectedProducts (default expectedCount) pins the TCGplayer products it matches. A new card or product is drift that needs a reviewed edit here.",
-  "holds lists every selected card that cannot be reconciled, with its reason. The reconciler refuses to write when its holds differ from this list."
+  "holds lists every selected card that cannot be reconciled, with its reason. The reconciler refuses to write when its holds differ from this list.",
+  "Edge cases follow what collectors and the main references do. Where they genuinely disagree, the catalog gives the user more choice, but never shows a guess as fact or a price that belongs to another card."
  ],
  "rules": [
   {
@@ -201,7 +202,7 @@
    "distribution": "'Moana 2' release",
    "groupID": 23234,
    "expectedCount": 2,
-   "expectedProducts": 0,
+   "expectedProducts": 1,
    "finishes": {
     "Silver": [
      "Cold Foil"
@@ -765,30 +766,81 @@
    "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/"
   }
  ],
- "holds": [
+ "holds": [],
+ "sharedFooterPrintings": [
   {
-   "sourceCardID": "lorcanajson:en:1433",
    "printedIdentifier": "26/P2 • EN • 7",
-   "reason": "sharedFooter",
-   "detail": "Owner decision: LorcanaJSON lists Moana and Vaiana (the European name) at the same footer 26/P2 EN 7, and TCGplayer has one product (601112, Moana). Is Vaiana its own printing, or a regional name for one printing?"
-  },
+   "members": [
+    {
+     "sourceCardID": "lorcanajson:en:1433",
+     "nameVariant": "moana",
+     "artworkLabel": "Moana title"
+    },
+    {
+     "sourceCardID": "lorcanajson:en:1663",
+     "nameVariant": "vaiana",
+     "artworkLabel": "Vaiana title"
+    }
+   ],
+   "rationale": "Two printings. The publisher gallery lists Moana (culture_invariant_id 1433) and Vaiana (1663) as separate English cards with their own card image (promo2_26 and promo2_26vaiana), name and flavor text, under the same footer. Vaiana is the title used in several European countries for the Moana 2 cinema giveaway. A collector can tell the two apart at a glance. TCGplayer lists only Moana (product 601112), so Moana keeps that price and Vaiana is \"Not yet priced\": the Moana price is never shown for Vaiana. The shared footer opens a printing choice at scan time.",
+   "sources": [
+    "https://cards.disneylorcana.com/en-US/",
+    "https://lorcanaplayer.com/franchise/moana",
+    "https://www.brandsuntapped.com/ravensburger-and-odeon-ready-disney-lorcana-promo-card-for-moana-2/"
+   ]
+  }
+ ],
+ "noMarketPrintings": [
   {
    "sourceCardID": "lorcanajson:en:1663",
    "printedIdentifier": "26/P2 • EN • 7",
-   "reason": "sharedFooter",
-   "detail": "Owner decision: Vaiana is the European name of Moana at 26/P2 EN 7, and TCGplayer has no Vaiana product. One printing with two names, or two printings?"
+   "rationale": "Vaiana is its own printing (see sharedFooterPrintings) and TCGplayer has no Vaiana product.",
+   "sources": [
+    "https://cards.disneylorcana.com/en-US/"
+   ]
   },
   {
    "sourceCardID": "lorcanajson:en:3559",
    "printedIdentifier": "6/RPH • EN • 14",
-   "reason": "noMarketProduct",
-   "detail": "Real printing listed by the publisher (nonfoil Honey Lemon), but TCGplayer has no product yet. No existing builder path makes a LorcanaJSON card addable without a product."
+   "rationale": "Real printing: the publisher gallery lists Honey Lemon - Testing the Limits 6/RPH EN 14 (nonfoil). TCGplayer has no product in the 2026-11-18 snapshot (it lists 1-5/RPH). A true gap: addable and \"Not yet priced\", and it does not make the set partial.",
+   "sources": [
+    "https://cards.disneylorcana.com/en-US/",
+    "https://tcgcsv.com/tcgplayer/71/23234/products"
+   ]
   },
   {
    "sourceCardID": "lorcanajson:en:3560",
    "printedIdentifier": "7/RPH • EN • 14",
-   "reason": "noMarketProduct",
-   "detail": "Real printing listed by the publisher (Tinsel foil Honey Lemon), but TCGplayer has no product yet. No existing builder path makes a LorcanaJSON card addable without a product."
+   "rationale": "Real printing: the publisher gallery lists Honey Lemon - Testing the Limits 7/RPH EN 14 (Tinsel foil). TCGplayer has no product in the 2026-11-18 snapshot. A true gap: addable and \"Not yet priced\", and it does not make the set partial.",
+   "sources": [
+    "https://cards.disneylorcana.com/en-US/",
+    "https://tcgcsv.com/tcgplayer/71/23234/products"
+   ]
+  }
+ ],
+ "research": [
+  {
+   "topic": "Silver promo price lanes",
+   "finding": "TCGplayer files each single-foil promo as one product with one price lane, but names that lane Cold Foil for some releases and Holofoil for others (for example Organized Play Silver promos from sets 9-10 are Cold Foil and from sets 11-13 Holofoil). The rules pin the lane each release actually uses in the 2026-11-18 snapshot, split by printed set where it changes, so a lane change is drift that needs review. Both lanes mean the same physical foil card; neither is a second finish.",
+   "sources": [
+    "https://tcgcsv.com/tcgplayer/71/23234/prices"
+   ]
+  },
+  {
+   "topic": "Serial-numbered promos",
+   "finding": "Collectors and TCGplayer treat a serial-numbered card as its own card, one product per tier, but not one printing per serial number. The serialized gold Mickey Mouse - Brave Little Tailor is 5/C1 EN 1, a Disney Lorcana Challenge Top 4/Top 8 prize, and TCGplayer lists it as product 554628 with no price. It is filed as its own printing in lorcana_product_evidence.json, addable and \"Not yet priced\". The three serialized Hades - Dark Usurper products (Challenge Top 8, Winner, World Championship Top 8) have no public printed footer, so they stay held.",
+   "sources": [
+    "https://www.cgccards.com/news/article/13016/",
+    "https://disneylorcana.com/en/news/2024/03/challenge-announcement/",
+    "https://mightymeeple.com/products/hades-dark-usurper-serial-numbered-disney-lorcana-challenge-top-8-28-promo-cards"
+   ]
+  },
+  {
+   "topic": "New Challenge products without a publisher card",
+   "finding": "Eight products new in the 2026-11-18 snapshot (Ursula - Deceiver, Be Prepared, Gaston - Superior Archer, Madam Mim - Resourceful Trickster, each Normal and Foil, numbered 2-5 and 14-17) have no publisher card and no public listing that shows their printed footer. They stay marketOnly until the footer can be read.",
+   "sources": [
+    "https://tcgcsv.com/tcgplayer/71/23234/products"
+   ]
   }
  ]
 }

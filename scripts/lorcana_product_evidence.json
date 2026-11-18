@@ -754,7 +754,17 @@
       "printedIdentifier": "5/C1 • EN • 1",
       "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/554628.jpg",
       "bodySHA256": "cecda2bc154f83a773c5990b6989e63ce4a860ce77fa523636b3f5630146c6c4",
-      "expectedName": "Mickey Mouse - Brave Little Tailor (Serial Numbered)"
+      "expectedName": "Mickey Mouse - Brave Little Tailor (Serial Numbered)",
+      "groupID": 23234,
+      "foilTypes": [
+        "Foil"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Lorcana Challenge Top 4/Top 8 prize (serial numbered)",
+      "distributionID": "challenge-year-1-serial-numbered-prize",
+      "stamp": "Serial numbered",
+      "physicalReleaseEvidence": "https://www.cgccards.com/news/article/13016/",
+      "marketLane": null
     },
     {
       "productID": 616373,
@@ -2340,6 +2350,28 @@
       "marketRarity": "Promo"
     },
     {
+      "productID": 601112,
+      "expectedName": "Moana - Adventurer of Land and Sea",
+      "sourceCardID": "lorcanajson:en:1433",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "26/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Moana 2 release",
+      "distributionID": "promo-p2-moana-2-release",
+      "distributionRule": "p2-moana-2-release",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo",
+      "nameVariant": "moana",
+      "artworkLabel": "Moana title"
+    },
+    {
       "productID": 614149,
       "expectedName": "Mickey Mouse - Pirate Captain",
       "sourceCardID": "lorcanajson:en:1430",
@@ -3696,6 +3728,55 @@
       "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
       "marketLane": "Cold Foil",
       "marketRarity": "Promo"
+    }
+  ],
+  "noMarketPrintings": [
+    {
+      "sourceCardID": "lorcanajson:en:1663",
+      "expectedName": "Vaiana - Adventurer of Land and Sea",
+      "printedIdentifier": "26/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Moana 2 release",
+      "distributionID": "promo-p2-moana-2-release",
+      "distributionRule": "p2-moana-2-release",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "nameVariant": "vaiana",
+      "artworkLabel": "Vaiana title"
+    },
+    {
+      "sourceCardID": "lorcanajson:en:3559",
+      "expectedName": "Honey Lemon - Testing the Limits",
+      "printedIdentifier": "6/RPH • EN • 14",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Ravensburger Play Hub Challenge",
+      "distributionID": "promo-rph-challenge",
+      "distributionRule": "rph-challenge",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null
+    },
+    {
+      "sourceCardID": "lorcanajson:en:3560",
+      "expectedName": "Honey Lemon - Testing the Limits",
+      "printedIdentifier": "7/RPH • EN • 14",
+      "groupID": 23234,
+      "foilTypes": [
+        "Tinsel"
+      ],
+      "layout": "normal",
+      "distribution": "Ravensburger Play Hub Challenge",
+      "distributionID": "promo-rph-challenge",
+      "distributionRule": "rph-challenge",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null
     }
   ]
 }

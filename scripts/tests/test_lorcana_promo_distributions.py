@@ -111,6 +111,37 @@ class PromoDistributionTests(unittest.TestCase):
         self.rows.append(dict(card(4, '3', 'Vaiana - Mischievous Cub'), distribution='Other'))
         self.assertEqual(self.held(self.run_pass()[1])['lorcanajson:en:1'], 'sharedFooter')
 
+    def test_reviewed_shared_footer_and_no_market_printing_are_reconciled(self):
+        self.rows.append(card(4, '3', 'Vaiana - Mischievous Cub'))
+        self.rules['rules'][0].update(expectedCount=4, expectedProducts=3)
+        self.rules['sharedFooterPrintings'] = [dict(printedIdentifier='3/P2 • EN • 5', rationale='Publisher lists both',
+            sources=['https://example.com/gallery'],
+            members=[dict(sourceCardID='lorcanajson:en:1', nameVariant='nala', artworkLabel='Nala title'),
+                     dict(sourceCardID='lorcanajson:en:4', nameVariant='vaiana', artworkLabel='Vaiana title')])]
+        # Without a reviewed no-market entry the second card is held, never priced as the first.
+        self.assertEqual(self.held(self.run_pass()[1]), {'lorcanajson:en:4': 'noMarketProduct'})
+        self.rules['noMarketPrintings'] = [dict(sourceCardID='lorcanajson:en:4', printedIdentifier='3/P2 • EN • 5',
+                                                rationale='Real printing, no product', sources=['https://example.com/gallery'])]
+        evidence, report = self.run_pass(links={'lorcanajson:en:4': 561996})
+        self.assertEqual(self.held(report), {})
+        self.assertEqual(report['reconciledWithoutMarket'], ['lorcanajson:en:4'])
+        gap = evidence['noMarketPrintings'][0]
+        self.assertNotIn('productID', gap)
+        self.assertIsNone(gap['marketLane'])
+        self.assertEqual((gap['nameVariant'], gap['artworkLabel']), ('vaiana', 'Vaiana title'))
+        nala = next(r for r in evidence['records'] if r['productID'] == 561996)
+        self.assertEqual((nala['sourceCardID'], nala['nameVariant']), ('lorcanajson:en:1', 'nala'))
+        self.assertEqual(self.run_pass(evidence=copy.deepcopy(evidence))[0], evidence)
+        # A reviewed shared footer must name every card that prints it.
+        self.rows.append(dict(card(5, '3', 'Third - Card'), distribution='Other'))
+        self.assertEqual(self.held(self.run_pass()[1])['lorcanajson:en:1'], 'sharedFooter')
+
+    def test_no_market_entry_goes_stale_when_a_product_appears(self):
+        self.rules['noMarketPrintings'] = [dict(sourceCardID='lorcanajson:en:1', printedIdentifier='3/P2 • EN • 5',
+                                                rationale='Real printing', sources=['https://example.com/gallery'])]
+        report = self.run_pass()[1]
+        self.assertEqual(report['staleNoMarketPrintings'], ['lorcanajson:en:1'])
+
     def test_existing_records_are_upgraded_or_block_on_conflict(self):
         alias = dict(productID=561996, expectedName='Nala - Mischievous Cub', sourceCardID='lorcanajson:en:1',
                      reference='https://example.com/scan.jpg', bodySHA256='a' * 64)
@@ -188,6 +219,41 @@ class PromoPromotionThroughBuilderTests(unittest.TestCase):
             (root / 'discovery.json').write_text(json.dumps(dict(cards=rows, coverage=dict(productEvidence=evidence['records']))))
             _, _, report = build(root / 'discovery.json', root, root / 'base.json', {})
             self.assertEqual(report['decisions'][0]['status'], 'held')
+
+
+class SharedFooterNoMarketBuilderTests(unittest.TestCase):
+    def test_name_pair_becomes_two_printings_and_the_unlisted_one_is_unpriced(self):
+        moana, vaiana = card(1, '26', 'Moana - Adventurer'), card(2, '26', 'Vaiana - Adventurer')
+        products = [product(601112, '26', 'Moana - Adventurer')]
+        common = dict(groupID=GROUP, foilTypes=['Silver'], layout='normal', distribution='Moana 2 release',
+                      distributionID='promo-p2-moana-2-release', physicalReleaseEvidence='https://example.com/gallery')
+        record = dict(common, productID=601112, expectedName='Moana - Adventurer', sourceCardID=moana['id'],
+                      printedIdentifier=moana['printedIdentifier'], reference='https://example.com/p', bodySHA256='b' * 64,
+                      marketLane='Cold Foil', marketRarity='Promo', nameVariant='moana', artworkLabel='Moana title')
+        gap = dict(common, sourceCardID=vaiana['id'], expectedName=vaiana['name'], printedIdentifier=vaiana['printedIdentifier'],
+                   marketLane=None, nameVariant='vaiana', artworkLabel='Vaiana title')
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def run(gaps):
+                (root / 'discovery.json').write_text(json.dumps(dict(cards=[moana, vaiana],
+                    coverage=dict(productEvidence=[record], noMarketPrintings=gaps))))
+                return build(root / 'discovery.json', root, root / 'base.json', {})
+            (root / 'base.json').write_text(json.dumps(dict(schemaVersion=2, reviewedAt=1, canonicalCards=[],
+                physicalPrintings=[], printFamilies=[], universes=[], corrections=[])))
+            (root / 'groups-selected.json').write_text(json.dumps([dict(code='CC2', groupID=GROUP)]))
+            (root / f'{GROUP}-products.json').write_text(json.dumps(dict(success=True, errors=[], results=products)))
+            (root / f'{GROUP}-prices.json').write_text(json.dumps(dict(success=True, errors=[],
+                results=[dict(productId=601112, subTypeName='Cold Foil')])))
+            manifest, _, report = run([gap])
+            by_label = {p['artworkLabel']: p for p in manifest['physicalPrintings']}
+            self.assertEqual(set(by_label), {'Moana title', 'Vaiana title'})
+            self.assertEqual(len(by_label['Moana title']['marketMappings']), 1)
+            self.assertEqual(by_label['Vaiana title']['marketMappings'], [])
+            self.assertNotEqual(by_label['Moana title']['identity']['artworkID'], by_label['Vaiana title']['identity']['artworkID'])
+            self.assertEqual(len(manifest['universes'][0]['printingIDs']), 2)
+            # Without the reviewed Vaiana entry, the shared footer stays held.
+            manifest, _, report = run([])
+            self.assertEqual(manifest['physicalPrintings'], [])
 
 
 class LedgerReasonTests(unittest.TestCase):
