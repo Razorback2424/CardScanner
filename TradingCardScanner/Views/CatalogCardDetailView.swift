@@ -239,15 +239,15 @@ struct CatalogCardDetailView: View {
             CatalogCopyShareSheet(request: request)
         }
         .sheet(item: $catalogShare) { share in
-            if let price = share.price {
-                BuyCheckShareSheet(identity: share.identity, price: price,
-                                   artworkURLs: share.artworkURLs, historyRequest: share.historyRequest,
-                                   title: "Share card")
-            } else {
-                CollectionShareSheet(options: [CollectionShareOption(id: "catalog", identity: share.identity,
-                    finishLabel: share.identity.finish, price: nil, showsFinishSheen: false,
-                    localArtworkFilename: nil, remoteArtworkURLs: share.artworkURLs)])
-            }
+            // Sharing a card is the point; a trade price check is one tap further.
+            CollectionShareSheet(
+                options: [CollectionShareOption(id: "catalog", identity: share.identity,
+                    finishLabel: share.identity.finish, price: share.price, showsFinishSheen: false,
+                    localArtworkFilename: nil, remoteArtworkURLs: share.artworkURLs)],
+                priceCheck: share.price.map {
+                    .init(identity: share.identity, price: $0, artworkURLs: share.artworkURLs,
+                          historyRequest: share.historyRequest)
+                })
         }
         .alert(
             addAlertTitle,

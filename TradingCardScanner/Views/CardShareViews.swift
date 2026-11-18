@@ -1090,7 +1090,17 @@ private struct ShareTrendChart: View {
 /// Several options mean the holder owns several finishes of one card; they can
 /// share one copy, or every finish at once to compare them.
 struct CollectionShareSheet: View {
+    /// What a trade price check needs: offered beside a plain card share for
+    /// a card the user does not own.
+    struct PriceCheck {
+        let identity: CardShareIdentity
+        let price: CardSharePrice
+        let artworkURLs: [URL]
+        let historyRequest: CardMarketHistoryRequest?
+    }
+
     let options: [CollectionShareOption]
+    var priceCheck: PriceCheck?
     var artworkLoader: CardShareArtworkLoader.Load = CardShareArtworkLoader.load
 
     @Environment(\.dismiss) private var dismiss
@@ -1108,10 +1118,12 @@ struct CollectionShareSheet: View {
     @State private var loadedArtworkSource: ArtworkSource?
     @State private var accent: ArtworkAccent?
     @State private var rendered: UIImage?
+    @State private var showsPriceCheck = false
 
-    init(options: [CollectionShareOption], initialOptionID: String? = nil,
+    init(options: [CollectionShareOption], initialOptionID: String? = nil, priceCheck: PriceCheck? = nil,
          artworkLoader: @escaping CardShareArtworkLoader.Load = CardShareArtworkLoader.load) {
         self.options = options
+        self.priceCheck = priceCheck
         self.artworkLoader = artworkLoader
         let initial = options.first { $0.id == initialOptionID } ?? options.first
         _selectedID = State(initialValue: initial?.id ?? "")
@@ -1271,6 +1283,13 @@ struct CollectionShareSheet: View {
         .task(id: renderKey) {
             rendered = image.flatMap { CardShareRenderer.render($0) }
         }
+        .sheet(isPresented: $showsPriceCheck) {
+            if let priceCheck {
+                BuyCheckShareSheet(identity: priceCheck.identity, price: priceCheck.price,
+                                   artworkURLs: priceCheck.artworkURLs, historyRequest: priceCheck.historyRequest,
+                                   title: "Trade price check", artworkLoader: artworkLoader)
+            }
+        }
     }
 
     private var optionsCard: some View {
@@ -1284,6 +1303,10 @@ struct CollectionShareSheet: View {
                 Divider().padding(.leading, 16)
             }
             priceRow
+            if priceCheck != nil {
+                Divider().padding(.leading, 16)
+                priceCheckRow
+            }
         }
         // The preview scales down to make room; the controls keep their text.
         .fixedSize(horizontal: false, vertical: true)
@@ -1367,6 +1390,30 @@ struct CollectionShareSheet: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
         .frame(minHeight: 60)
+    }
+
+    /// A secondary path for trades: asking price against market, with trend.
+    private var priceCheckRow: some View {
+        Button { showsPriceCheck = true } label: {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Price check for a trade")
+                        .font(.body.weight(.semibold))
+                    Text("Compare an asking price to market")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .frame(minHeight: 60)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     private var priceRowDetail: String {
@@ -1760,6 +1807,13 @@ struct CardShareReviewView: View {
                 Group {
                     if state.hasPrefix("buy") {
                         BuyCheckShareSheet(identity: identity, price: price, artworkURLs: [artworkURL], historyRequest: nil,
+                            artworkLoader: loadArtwork)
+                    } else if state == "unowned" {
+                        CollectionShareSheet(options: [CollectionShareOption(id: "catalog", identity: identity,
+                                finishLabel: identity.finish, price: price, showsFinishSheen: false,
+                                localArtworkFilename: nil, remoteArtworkURLs: [artworkURL])],
+                            priceCheck: .init(identity: identity, price: price, artworkURLs: [artworkURL],
+                                              historyRequest: nil),
                             artworkLoader: loadArtwork)
                     } else if state.hasPrefix("finishes") {
                         CollectionShareSheet(options: finishOptions,
