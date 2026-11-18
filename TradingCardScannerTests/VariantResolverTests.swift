@@ -1,3 +1,4 @@
+import CryptoKit
 import XCTest
 import SwiftData
 import PokemonCatalogCore
@@ -1271,26 +1272,85 @@ final class VariantResolverTests: XCTestCase {
             from: Data(contentsOf: bundle.appendingPathComponent("finish-minimums.json")))
         let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
         for (setID, certificate) in PokemonFinishCoverage.sets {
-            XCTAssertTrue(FileManager.default.fileExists(atPath: repo.appendingPathComponent(certificate.evidence).path),
-                certificate.evidence)
+            let evidenceURL = repo.appendingPathComponent(certificate.evidence)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: evidenceURL.path), certificate.evidence)
+            // The evidence report justifies every difference between a certificate and its slots.
+            let report = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: evidenceURL)) as? [String: Any])
+            let rows = try XCTUnwrap(report["cards"] as? [String: [String: Any]], setID)
+            let resolutions = report["resolutions"] as? [String: [String: Any]] ?? [:]
+            XCTAssertTrue(Set((certificate.slotChanges ?? [:]).keys).isSubset(of: certificate.cards.keys), setID)
             let entries = manifest.entries.filter { $0.providerID == setID }
             XCTAssertFalse(entries.isEmpty, setID)
             var seen = Set<String>()
             for entry in entries {
                 // Read the bundled slots before read-time projections can mask drift.
-                let cards = try decoder.decode([CatalogCardSummary].self,
-                    from: Data(contentsOf: bundle.appendingPathComponent(entry.resource)))
+                let bytes = try Data(contentsOf: bundle.appendingPathComponent(entry.resource))
+                let cards = try decoder.decode([CatalogCardSummary].self, from: bytes)
+                let aggregatesApply = PokemonFinishMinimumCatalog.aggregateChecklistSources[entry.resource]
+                    == SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
                 for (cardID, slots) in Dictionary(grouping: cards, by: \.providerID) {
                     seen.insert(cardID)
                     let expected = Set(try XCTUnwrap(certificate.cards[cardID], cardID))
-                    XCTAssertEqual(Set(slots.compactMap { $0.masterSetVariant?.id }), expected, cardID)
+                    let slotIDs = Set(slots.compactMap { $0.masterSetVariant?.id })
+                    let change = certificate.slotChanges?[cardID]
+                    let aggregate = Set(change?.aggregate ?? [])
+                    let added = Set(change?.added ?? [])
+                    let removed = Set(change?.removed ?? [])
                     XCTAssertTrue(slots.allSatisfy { $0.masterSetVariant != nil }, cardID)
                     XCTAssertNil(minimums[cardID], cardID)
+                    XCTAssertEqual(slotIDs.subtracting(aggregate).subtracting(removed).union(added), expected, cardID)
+                    XCTAssertTrue(added.isDisjoint(with: slotIDs.subtracting(aggregate)), cardID)
+                    XCTAssertTrue(removed.isSubset(of: slotIDs.subtracting(aggregate)), cardID)
+                    // Aggregate placeholders: only the reader's own reviewed aggregates.
+                    for finish in aggregate {
+                        let patterns = finish == "holo" ? PokemonFinishMinimumCatalog.holoAggregates[cardID]
+                            : finish == "reverse" ? PokemonFinishMinimumCatalog.reverseAggregates[cardID] : nil
+                        XCTAssertTrue(aggregatesApply && patterns != nil && slotIDs.contains(finish), "\(cardID) \(finish)")
+                    }
+                    guard !added.isEmpty || !removed.isEmpty else { continue }
+                    let row = try XCTUnwrap(rows[cardID], cardID)
+                    let resolution = resolutions[cardID]
+                    let market = Set(row["market"] as? [String] ?? [])
+                    let resolved = Set(resolution?["finishes"] as? [String] ?? [])
+                    // An added finish is a market lane or a cited, reviewed resolution.
+                    XCTAssertTrue(added.isSubset(of: market.union(resolved)), cardID)
+                    // A removed slot needs a cited resolution, or is a Normal excluded by review.
+                    for finish in removed {
+                        let normalExcluded = finish == "normal" && (row["normalNeedsReview"] as? Bool) == true
+                            && resolution?["normalReview"] as? String == "exclude"
+                        XCTAssertTrue(normalExcluded || (resolution?["citation"] as? String).map { !$0.isEmpty } == true,
+                            "\(cardID) removes \(finish)")
+                    }
+                    if let citation = resolution?["citation"] as? String, !citation.hasPrefix("http") {
+                        XCTAssertTrue(FileManager.default.fileExists(atPath: repo.appendingPathComponent(citation).path), citation)
+                    }
                     XCTAssertEqual(Set(try XCTUnwrap(PokemonFinishCoverage.certified[cardID]).map(\.id)), expected, cardID)
                 }
             }
             XCTAssertEqual(seen, Set(certificate.cards.keys), setID)
         }
+    }
+
+    func testTreatmentAliasConventionMatchesTheAppAliasSets() throws {
+        let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        let data = try Data(contentsOf: repo.appendingPathComponent("publisher/pokemon-finish-conventions.json"))
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let aliases = try XCTUnwrap(json["treatmentAliases"] as? [String: Any])
+        XCTAssertEqual(Set(try XCTUnwrap(aliases["setIDs"] as? [String])), PokemonMasterSetDefinition.rarityFinishAliasSetIDs)
+        XCTAssertEqual(aliases["finishes"] as? [String], ["gold", "rainbow"])
+        for cardID in try XCTUnwrap(aliases["exceptCardIDs"] as? [String]) {
+            XCTAssertFalse(PokemonMasterSetDefinition.rarityFinishAliasesHolo("gold", cardID: cardID), cardID)
+        }
+    }
+
+    func testCertificateDecoderAcceptsOptionalSlotChanges() throws {
+        let set: [String: Any] = ["tcgplayerGroupID": 1, "reviewedAt": "2026-11-18", "evidence": "fixture.json",
+                                  "cards": ["fixture-1": ["holo"]],
+                                  "slotChanges": ["fixture-1": ["added": ["holo"], "removed": ["normal"]]]]
+        let data = try JSONSerialization.data(withJSONObject: ["schemaVersion": 1, "sets": ["fixture": set]])
+        let decoded = try XCTUnwrap(PokemonFinishCoverage.decodeSets(from: data)["fixture"])
+        XCTAssertEqual(decoded.slotChanges?["fixture-1"],
+                       PokemonFinishCoverage.SlotChange(aggregate: nil, added: ["holo"], removed: ["normal"]))
     }
 
     func testDecodedPokemonCardUsesOnlyCertifiedFinishesForCoverage() throws {
@@ -1324,6 +1384,23 @@ final class VariantResolverTests: XCTestCase {
         XCTAssertEqual(Set(decoded.keys), ["accepted"])
         XCTAssertEqual(decoded["accepted"]?.cards["fixture-1"], accepted)
         XCTAssertTrue(PokemonFinishCoverage.standardVariantIDs.allSatisfy { PhysicalVariant.resolving($0).id == $0 })
+    }
+
+    func testFinishCoverageStatusDistinguishesCertifiedFromProjectedPokemonCards() throws {
+        PokemonFinishCoverage.$certifiedForTesting.withValue(["fixture-1": [.holo]]) {
+            XCTAssertEqual(PokemonFinishCoverage.status(cardID: "fixture-1"), .certified)
+            XCTAssertEqual(PokemonFinishCoverage.status(cardID: "fixture-2"), .projected)
+            XCTAssertNil(PokemonFinishCoverage.detailNotice(game: .pokemon, providerID: "fixture-1"))
+            XCTAssertEqual(PokemonFinishCoverage.detailNotice(game: .pokemon, providerID: "fixture-2"),
+                           "Finishes not yet confirmed")
+            // Other games never carry the Pokémon certificate note.
+            XCTAssertNil(PokemonFinishCoverage.detailNotice(game: .magic, providerID: "fixture-2"))
+        }
+        // The bundled certificate still decodes, and every certified card reads as certified.
+        XCTAssertFalse(PokemonFinishCoverage.sets.isEmpty)
+        for cardID in PokemonFinishCoverage.certified.keys {
+            XCTAssertEqual(PokemonFinishCoverage.status(cardID: cardID), .certified, cardID)
+        }
     }
 
     func testResolutionCertaintyDoesNotReuseAutomaticRevisitSemantics() {

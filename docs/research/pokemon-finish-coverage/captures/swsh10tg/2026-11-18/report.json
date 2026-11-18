@@ -1,0 +1,826 @@
+{
+  "schemaVersion": 2,
+  "captureRevision": "2026-11-18",
+  "setID": "swsh10tg",
+  "setName": "Astral Radiance Trainer Gallery",
+  "tcgplayerGroupID": 3068,
+  "standard": "Each numbered checklist card must agree with the matching TCGplayer products on exact finishes, or have a cited resolution. Every conflict, unmatched number and Normal review must be resolved. Market listings are evidence of membership. Physical or retail evidence resolves disagreements.",
+  "capturedAt": "2026-11-18T22:23:18+00:00",
+  "sourceBuild": "2026-11-18T20:05:56+0000",
+  "checklistSources": {
+    "sets/84bf5d439398e5c6.json": "219395df211277385d1c56dca75b5d77b67c0226ae0a1e66976906b0acb28b47"
+  },
+  "finishEvidenceSHA256": "89f8ee6773c0ee201afa2ee89ebad0ffdcd7e12002db0b8097aabcc03264ccec",
+  "marketSources": {
+    "products": {
+      "url": "https://tcgcsv.com/tcgplayer/3/3068/products",
+      "sha256": "3388bc763fb1aca43cfed8947ad98eb1ba6df317f64acdfeea64ecf012de4c10"
+    },
+    "prices": {
+      "url": "https://tcgcsv.com/tcgplayer/3/3068/prices",
+      "sha256": "34a4e4b409417e4bfd55014daeeeee3917251d47e399f2b5c4934b1c69f4d90a"
+    }
+  },
+  "cards": {
+    "swsh10tg-TG01": {
+      "number": "TG01",
+      "name": "Abomasnow",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272472,
+          "name": "Abomasnow",
+          "number": "TG01/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG02": {
+      "number": "TG02",
+      "name": "Flapple",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272473,
+          "name": "Flapple",
+          "number": "TG02/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG03": {
+      "number": "TG03",
+      "name": "Kingdra",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272474,
+          "name": "Kingdra",
+          "number": "TG03/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG04": {
+      "number": "TG04",
+      "name": "Frosmoth",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272475,
+          "name": "Frosmoth",
+          "number": "TG04/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG05": {
+      "number": "TG05",
+      "name": "Gardevoir",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272476,
+          "name": "Gardevoir",
+          "number": "TG05/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG06": {
+      "number": "TG06",
+      "name": "Wyrdeer",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272477,
+          "name": "Wyrdeer",
+          "number": "TG06/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG07": {
+      "number": "TG07",
+      "name": "Falinks",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272478,
+          "name": "Falinks",
+          "number": "TG07/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG08": {
+      "number": "TG08",
+      "name": "Kleavor",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272479,
+          "name": "Kleavor",
+          "number": "TG08/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG09": {
+      "number": "TG09",
+      "name": "Mightyena",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272480,
+          "name": "Mightyena",
+          "number": "TG09/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG10": {
+      "number": "TG10",
+      "name": "Galarian Obstagoon",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272481,
+          "name": "Galarian Obstagoon",
+          "number": "TG10/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG11": {
+      "number": "TG11",
+      "name": "Bronzong",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272482,
+          "name": "Bronzong",
+          "number": "TG11/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG12": {
+      "number": "TG12",
+      "name": "Hoothoot",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272483,
+          "name": "Hoothoot",
+          "number": "TG12/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG13": {
+      "number": "TG13",
+      "name": "Starmie V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272484,
+          "name": "Starmie V",
+          "number": "TG13/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG14": {
+      "number": "TG14",
+      "name": "Ice Rider Calyrex V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272485,
+          "name": "Ice Rider Calyrex V",
+          "number": "TG14/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG15": {
+      "number": "TG15",
+      "name": "Ice Rider Calyrex VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272486,
+          "name": "Ice Rider Calyrex VMAX",
+          "number": "TG15/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG16": {
+      "number": "TG16",
+      "name": "Galarian Articuno V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272487,
+          "name": "Galarian Articuno V",
+          "number": "TG16/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG17": {
+      "number": "TG17",
+      "name": "Shadow Rider Calyrex V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272488,
+          "name": "Shadow Rider Calyrex V",
+          "number": "TG17/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG18": {
+      "number": "TG18",
+      "name": "Shadow Rider Calyrex VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272489,
+          "name": "Shadow Rider Calyrex VMAX",
+          "number": "TG18/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG19": {
+      "number": "TG19",
+      "name": "Galarian Zapdos V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272491,
+          "name": "Galarian Zapdos V",
+          "number": "TG19/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG20": {
+      "number": "TG20",
+      "name": "Galarian Moltres V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272492,
+          "name": "Galarian Moltres V",
+          "number": "TG20/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG21": {
+      "number": "TG21",
+      "name": "Zacian V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272493,
+          "name": "Zacian V",
+          "number": "TG21/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG22": {
+      "number": "TG22",
+      "name": "Zamazenta V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272494,
+          "name": "Zamazenta V",
+          "number": "TG22/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG23": {
+      "number": "TG23",
+      "name": "Garchomp V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272495,
+          "name": "Garchomp V",
+          "number": "TG23/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG24": {
+      "number": "TG24",
+      "name": "Allister",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272496,
+          "name": "Allister",
+          "number": "TG24/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG25": {
+      "number": "TG25",
+      "name": "Bea",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272497,
+          "name": "Bea",
+          "number": "TG25/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG26": {
+      "number": "TG26",
+      "name": "Melony",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272498,
+          "name": "Melony",
+          "number": "TG26/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG27": {
+      "number": "TG27",
+      "name": "Milo",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272499,
+          "name": "Milo",
+          "number": "TG27/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG28": {
+      "number": "TG28",
+      "name": "Piers",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272500,
+          "name": "Piers",
+          "number": "TG28/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh10tg-TG29": {
+      "number": "TG29",
+      "name": "Ice Rider Calyrex VMAX",
+      "checklist": [
+        "gold",
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "gold",
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272501,
+          "name": "Ice Rider Calyrex VMAX (Secret)",
+          "number": "TG29/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict"
+    },
+    "swsh10tg-TG30": {
+      "number": "TG30",
+      "name": "Shadow Rider Calyrex VMAX",
+      "checklist": [
+        "gold",
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "gold",
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 272502,
+          "name": "Shadow Rider Calyrex VMAX (Secret)",
+          "number": "TG30/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict"
+    }
+  },
+  "resolutions": {
+    "swsh10tg-TG29": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['gold-rainbow-single-printing']. gold-rainbow-single-printing: gold is the numbered holo printing"
+    },
+    "swsh10tg-TG30": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['gold-rainbow-single-printing']. gold-rainbow-single-printing: gold is the numbered holo printing"
+    }
+  }
+}

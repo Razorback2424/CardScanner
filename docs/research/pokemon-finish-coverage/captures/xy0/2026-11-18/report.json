@@ -1,0 +1,1194 @@
+{
+  "schemaVersion": 2,
+  "captureRevision": "2026-11-18",
+  "setID": "xy0",
+  "setName": "Kalos Starter Set",
+  "tcgplayerGroupID": 1522,
+  "standard": "Each numbered checklist card must agree with the matching TCGplayer products on exact finishes, or have a cited resolution. Every conflict, unmatched number and Normal review must be resolved. Market listings are evidence of membership. Physical or retail evidence resolves disagreements.",
+  "capturedAt": "2026-11-18T22:23:20+00:00",
+  "sourceBuild": "2026-11-18T20:05:56+0000",
+  "checklistSources": {
+    "sets/684061bcf497835d.json": "38369574d5c8af15ea923a73b060d5f4b44af09922de6841b0b835cd06319e33"
+  },
+  "finishEvidenceSHA256": "89f8ee6773c0ee201afa2ee89ebad0ffdcd7e12002db0b8097aabcc03264ccec",
+  "marketSources": {
+    "products": {
+      "url": "https://tcgcsv.com/tcgplayer/3/1522/products",
+      "sha256": "5eac883e4cd15991dbd7728403224eef743f59fb8b34059d23b713e6c619889b"
+    },
+    "prices": {
+      "url": "https://tcgcsv.com/tcgplayer/3/1522/prices",
+      "sha256": "fed4e3a8c72cac56ca3d0a72b36acc5a9c2663f2f72b2a660be9b6126873f6ff"
+    }
+  },
+  "cards": {
+    "xy0-1": {
+      "number": "1",
+      "name": "Weedle",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 90549,
+          "name": "Weedle",
+          "number": "1/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-2": {
+      "number": "2",
+      "name": "Pansage",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 87939,
+          "name": "Pansage",
+          "number": "2/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-3": {
+      "number": "3",
+      "name": "Chespin",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [
+        "holo",
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 84271,
+          "name": "Chespin",
+          "number": "3/39",
+          "subtypes": [
+            "Holofoil",
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy0-4": {
+      "number": "4",
+      "name": "Quilladin",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [
+        "holo",
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 88490,
+          "name": "Quilladin",
+          "number": "4/39",
+          "subtypes": [
+            "Holofoil",
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy0-5": {
+      "number": "5",
+      "name": "Chesnaught",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [
+        "holo",
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 84268,
+          "name": "Chesnaught",
+          "number": "5/39",
+          "subtypes": [
+            "Holofoil",
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy0-6": {
+      "number": "6",
+      "name": "Slugma",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 89348,
+          "name": "Slugma",
+          "number": "6/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-7": {
+      "number": "7",
+      "name": "Pansear",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 87946,
+          "name": "Pansear",
+          "number": "7/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-8": {
+      "number": "8",
+      "name": "Fennekin",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [
+        "holo",
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 85411,
+          "name": "Fennekin",
+          "number": "8/39",
+          "subtypes": [
+            "Holofoil",
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy0-9": {
+      "number": "9",
+      "name": "Braixen",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [
+        "holo",
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 83949,
+          "name": "Braixen",
+          "number": "9/39",
+          "subtypes": [
+            "Holofoil",
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy0-10": {
+      "number": "10",
+      "name": "Delphox",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [
+        "holo",
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 84753,
+          "name": "Delphox",
+          "number": "10/39",
+          "subtypes": [
+            "Holofoil",
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy0-11": {
+      "number": "11",
+      "name": "Panpour",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 87931,
+          "name": "Panpour",
+          "number": "11/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-12": {
+      "number": "12",
+      "name": "Froakie",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [
+        "holo",
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 85569,
+          "name": "Froakie",
+          "number": "12/39",
+          "subtypes": [
+            "Holofoil",
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy0-13": {
+      "number": "13",
+      "name": "Frogadier",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [
+        "holo",
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 85571,
+          "name": "Frogadier",
+          "number": "13/39",
+          "subtypes": [
+            "Holofoil",
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy0-14": {
+      "number": "14",
+      "name": "Greninja",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [
+        "holo",
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 85903,
+          "name": "Greninja",
+          "number": "14/39",
+          "subtypes": [
+            "Holofoil",
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy0-15": {
+      "number": "15",
+      "name": "Clauncher",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 84326,
+          "name": "Clauncher",
+          "number": "15/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-16": {
+      "number": "16",
+      "name": "Poochyena",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 88302,
+          "name": "Poochyena",
+          "number": "16/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-17": {
+      "number": "17",
+      "name": "Mightyena",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 87449,
+          "name": "Mightyena",
+          "number": "17/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-18": {
+      "number": "18",
+      "name": "Inkay",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 86285,
+          "name": "Inkay",
+          "number": "18/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-19": {
+      "number": "19",
+      "name": "Pawniard",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 87973,
+          "name": "Pawniard",
+          "number": "19/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-20": {
+      "number": "20",
+      "name": "Bisharp",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 83847,
+          "name": "Bisharp",
+          "number": "20/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-21": {
+      "number": "21",
+      "name": "Honedge",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 86167,
+          "name": "Honedge",
+          "number": "21/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-22": {
+      "number": "22",
+      "name": "Snubbull",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 89418,
+          "name": "Snubbull",
+          "number": "22/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-23": {
+      "number": "23",
+      "name": "Granbull",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 85867,
+          "name": "Granbull",
+          "number": "23/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-24": {
+      "number": "24",
+      "name": "Swirlix",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 89708,
+          "name": "Swirlix",
+          "number": "24/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-25": {
+      "number": "25",
+      "name": "Farfetch'd",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 85390,
+          "name": "Farfetch'd",
+          "number": "25/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-26": {
+      "number": "26",
+      "name": "Snorlax",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 89394,
+          "name": "Snorlax",
+          "number": "26/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-27": {
+      "number": "27",
+      "name": "Miltank",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 87468,
+          "name": "Miltank",
+          "number": "27/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-28": {
+      "number": "28",
+      "name": "Skitty",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 89272,
+          "name": "Skitty",
+          "number": "28/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-29": {
+      "number": "29",
+      "name": "Bidoof",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 83831,
+          "name": "Bidoof",
+          "number": "29/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-30": {
+      "number": "30",
+      "name": "Bunnelby",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 84047,
+          "name": "Bunnelby",
+          "number": "30/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-31": {
+      "number": "31",
+      "name": "Fletchling",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 85508,
+          "name": "Fletchling",
+          "number": "31/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-32": {
+      "number": "32",
+      "name": "Furfrou",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 85587,
+          "name": "Furfrou (32)",
+          "number": "32/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-33": {
+      "number": "33",
+      "name": "Furfrou",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 85588,
+          "name": "Furfrou (33)",
+          "number": "33/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-34": {
+      "number": "34",
+      "name": "Crushing Hammer",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 84507,
+          "name": "Crushing Hammer",
+          "number": "34/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-35": {
+      "number": "35",
+      "name": "Poké Ball",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 88194,
+          "name": "Poke Ball",
+          "number": "35/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-36": {
+      "number": "36",
+      "name": "Pokémon Catcher",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 88211,
+          "name": "Pokemon Catcher",
+          "number": "36/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-37": {
+      "number": "37",
+      "name": "Potion",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 88349,
+          "name": "Potion",
+          "number": "37/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-38": {
+      "number": "38",
+      "name": "Switch",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 89723,
+          "name": "Switch",
+          "number": "38/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    },
+    "xy0-39": {
+      "number": "39",
+      "name": "Tierno",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal"
+      ],
+      "market": [
+        "normal"
+      ],
+      "products": [
+        {
+          "productId": 89911,
+          "name": "Tierno",
+          "number": "39/39",
+          "subtypes": [
+            "Normal"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal"
+      ]
+    }
+  },
+  "resolutions": {}
+}

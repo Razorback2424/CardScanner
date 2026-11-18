@@ -90,6 +90,33 @@ class PokemonTCGCSVAuditTests(unittest.TestCase):
         self.assertEqual(row["match"], "mappedSetAbsent")
         self.assertEqual(row["appCandidates"], [])
 
+    def test_review_rows_carry_one_reason_from_their_match_category(self):
+        base = {"productID": 1, "groupID": 1840, "group": "Deck Exclusives", "name": "Magmortar", "number": "021/103",
+                "lanes": {"Normal": 0.1}, "appCandidates": [{"id": "me06-021"}], "exactAppMatches": [],
+                "hostedPrice": "outsideReviewedMirror", "unverifiedAppLanes": [], "match": "exactProduct"}
+        cases = [
+            (dict(base, match="possibleBaseIdentity"), "possibleBaseIdentity"),
+            (dict(base, match="sameSetIdentityCandidate"), "sameSetIdentityCandidate"),
+            (dict(base, match="unmatched"), "unmatchedProduct"),
+            (dict(base, match="mappedSetAbsent"), "mappedSetAbsent"),
+            # The match category outranks a price-feed gap on the same row.
+            (dict(base, match="unmatched", hostedPrice="Normal=missingFromHostedFeed"), "unmatchedProduct"),
+            (dict(base, hostedPrice="Normal=missingFromHostedFeed"), "missingHostedQuote"),
+            (dict(base, hostedPrice="Normal=staleHostedQuote"), "staleHostedQuote"),
+            (dict(base, unverifiedAppLanes=["Normal"]), "unverifiedAppLane"),
+            (base, "exactSurfaceReview"),
+        ]
+        review = []
+        for index, (row, reason) in enumerate(cases):
+            with self.subTest(reason=reason):
+                self.assertEqual(audit.review_reason(row), reason)
+            review.append(dict(row, productID=index + 1, reason=reason))
+        rows = audit.review_ledger(review)
+        self.assertEqual([row["reason"] for row in rows], [reason for _, reason in cases])
+        self.assertEqual(rows[0]["identity"], "product:1")
+        self.assertEqual(rows[0]["set"], "1840")
+        self.assertEqual(rows[0]["evidence"]["appIDs"], ["me06-021"])
+
     def test_daily_diff_uses_finishes_and_availability_and_ignores_price_amounts(self):
         product = {"groupID": 1840, "name": "Magmortar", "number": "021/103", "numberSource": "marketField",
                    "lanes": {"Normal": 0.09}}

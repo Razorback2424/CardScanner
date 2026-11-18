@@ -1,0 +1,826 @@
+{
+  "schemaVersion": 2,
+  "captureRevision": "2026-11-18",
+  "setID": "swsh11tg",
+  "setName": "Lost Origin Trainer Gallery",
+  "tcgplayerGroupID": 3172,
+  "standard": "Each numbered checklist card must agree with the matching TCGplayer products on exact finishes, or have a cited resolution. Every conflict, unmatched number and Normal review must be resolved. Market listings are evidence of membership. Physical or retail evidence resolves disagreements.",
+  "capturedAt": "2026-11-18T22:23:18+00:00",
+  "sourceBuild": "2026-11-18T20:05:56+0000",
+  "checklistSources": {
+    "sets/d680bc0865ad368f.json": "d4fd95f6b72ef86b1a6fe14a7c520779c0d38e44652833a6d310fc5d41700e6e"
+  },
+  "finishEvidenceSHA256": "89f8ee6773c0ee201afa2ee89ebad0ffdcd7e12002db0b8097aabcc03264ccec",
+  "marketSources": {
+    "products": {
+      "url": "https://tcgcsv.com/tcgplayer/3/3172/products",
+      "sha256": "684831de86e76a026f0c3e5c6d351ad4d7d2f07e2431c5580df34453cff4cd2c"
+    },
+    "prices": {
+      "url": "https://tcgcsv.com/tcgplayer/3/3172/prices",
+      "sha256": "980aad7d79c0274ccf79c7f6cb4b1e83208a9d2e31abfdd74ce321ddd1500a8a"
+    }
+  },
+  "cards": {
+    "swsh11tg-TG01": {
+      "number": "TG01",
+      "name": "Parasect",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284253,
+          "name": "Parasect",
+          "number": "TG01/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG02": {
+      "number": "TG02",
+      "name": "Roserade",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284254,
+          "name": "Roserade",
+          "number": "TG02/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG03": {
+      "number": "TG03",
+      "name": "Charizard",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284251,
+          "name": "Charizard",
+          "number": "TG03/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG04": {
+      "number": "TG04",
+      "name": "Chandelure",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284255,
+          "name": "Chandelure",
+          "number": "TG04/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG05": {
+      "number": "TG05",
+      "name": "Pikachu",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284258,
+          "name": "Pikachu",
+          "number": "TG05/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG06": {
+      "number": "TG06",
+      "name": "Gengar",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284266,
+          "name": "Gengar",
+          "number": "TG06/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG07": {
+      "number": "TG07",
+      "name": "Banette",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284267,
+          "name": "Banette",
+          "number": "TG07/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG08": {
+      "number": "TG08",
+      "name": "Hisuian Arcanine",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284268,
+          "name": "Hisuian Arcanine",
+          "number": "TG08/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG09": {
+      "number": "TG09",
+      "name": "Spiritomb",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284269,
+          "name": "Spiritomb",
+          "number": "TG09/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG10": {
+      "number": "TG10",
+      "name": "Snorlax",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284270,
+          "name": "Snorlax",
+          "number": "TG10/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG11": {
+      "number": "TG11",
+      "name": "Castform",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284271,
+          "name": "Castform",
+          "number": "TG11/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG12": {
+      "number": "TG12",
+      "name": "Orbeetle V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284272,
+          "name": "Orbeetle V",
+          "number": "TG12/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG13": {
+      "number": "TG13",
+      "name": "Orbeetle VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284273,
+          "name": "Orbeetle VMAX",
+          "number": "TG13/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG14": {
+      "number": "TG14",
+      "name": "Centiskorch V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284275,
+          "name": "Centiskorch V",
+          "number": "TG14/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG15": {
+      "number": "TG15",
+      "name": "Centiskorch VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284276,
+          "name": "Centiskorch VMAX",
+          "number": "TG15/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG16": {
+      "number": "TG16",
+      "name": "Pikachu V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284278,
+          "name": "Pikachu V",
+          "number": "TG16/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG17": {
+      "number": "TG17",
+      "name": "Pikachu VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284283,
+          "name": "Pikachu VMAX",
+          "number": "TG17/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG18": {
+      "number": "TG18",
+      "name": "Enamorus V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284284,
+          "name": "Enamorus V",
+          "number": "TG18/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG19": {
+      "number": "TG19",
+      "name": "Gallade V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284286,
+          "name": "Gallade V",
+          "number": "TG19/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG20": {
+      "number": "TG20",
+      "name": "Crobat V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284290,
+          "name": "Crobat V",
+          "number": "TG20/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG21": {
+      "number": "TG21",
+      "name": "Eternatus V",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284294,
+          "name": "Eternatus V",
+          "number": "TG21/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG22": {
+      "number": "TG22",
+      "name": "Eternatus VMAX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284295,
+          "name": "Eternatus VMAX",
+          "number": "TG22/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG23": {
+      "number": "TG23",
+      "name": "Adventurer's Discovery",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284296,
+          "name": "Adventurer's Discovery",
+          "number": "TG23/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG24": {
+      "number": "TG24",
+      "name": "Boss's Orders",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284297,
+          "name": "Boss's Orders",
+          "number": "TG24/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG25": {
+      "number": "TG25",
+      "name": "Cook",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284298,
+          "name": "Cook",
+          "number": "TG25/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG26": {
+      "number": "TG26",
+      "name": "Kabu",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284299,
+          "name": "Kabu",
+          "number": "TG26/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG27": {
+      "number": "TG27",
+      "name": "Nessa",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284300,
+          "name": "Nessa",
+          "number": "TG27/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG28": {
+      "number": "TG28",
+      "name": "Opal",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284301,
+          "name": "Opal",
+          "number": "TG28/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "agree"
+    },
+    "swsh11tg-TG29": {
+      "number": "TG29",
+      "name": "Pikachu VMAX",
+      "checklist": [
+        "gold",
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "gold",
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284302,
+          "name": "Pikachu VMAX (Secret)",
+          "number": "TG29/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict"
+    },
+    "swsh11tg-TG30": {
+      "number": "TG30",
+      "name": "Mew VMAX",
+      "checklist": [
+        "gold",
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "gold",
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 284303,
+          "name": "Mew VMAX (Secret)",
+          "number": "TG30/TG30",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict"
+    }
+  },
+  "resolutions": {
+    "swsh11tg-TG29": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['gold-rainbow-single-printing']. gold-rainbow-single-printing: gold is the numbered holo printing"
+    },
+    "swsh11tg-TG30": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['gold-rainbow-single-printing']. gold-rainbow-single-printing: gold is the numbered holo printing"
+    }
+  }
+}

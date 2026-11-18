@@ -40,6 +40,20 @@ enum PokemonFinishCoverage {
         let reviewedAt: String
         let evidence: String
         let cards: [String: [String]]
+        /// How a certificate differs from the bundled checklist slots, per card.
+        /// Optional: certificates that match their slots omit it.
+        let slotChanges: [String: SlotChange]?
+    }
+
+    /// Every difference is checked against the set's evidence report by
+    /// `testCertifiedFinishCoverageIsCompleteAndConsistent`.
+    struct SlotChange: Decodable, Equatable {
+        /// Aggregate placeholders the checklist reader already removes.
+        let aggregate: [String]?
+        /// Finishes the market and audited evidence prove beyond the slots.
+        let added: [String]?
+        /// Slots a reviewed convention or Normal review excludes.
+        let removed: [String]?
     }
 
     private struct Table: Decodable {
@@ -93,6 +107,25 @@ enum PokemonFinishCoverage {
         if let certifiedForTesting { return certifiedForTesting[cardID] }
         #endif
         return certified[cardID]
+    }
+
+    /// Whether a card's finish list is a reviewed certificate or a projection
+    /// from the checklist and minimum evidence.
+    enum Status: Equatable, Sendable {
+        case certified
+        case projected
+    }
+
+    static let projectedNotice = "Finishes not yet confirmed"
+
+    static func status(cardID: String) -> Status {
+        variants(cardID: cardID) == nil ? .projected : .certified
+    }
+
+    /// A quiet card-detail note for a Pokémon card whose finishes are projected.
+    /// Set-level badges deliberately stay off for Pokémon.
+    static func detailNotice(game: CardGame, providerID: String) -> String? {
+        game == .pokemon && status(cardID: providerID) == .projected ? projectedNotice : nil
     }
 }
 

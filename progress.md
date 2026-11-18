@@ -1,3 +1,42 @@
+# 2026-11-18 — Pokémon finish coverage: batch certifier and collector conventions
+
+`certify_pokemon_finish_coverage.py` gains `report-all` and `certify-all`. They
+replay one TCGCSV capture offline against all 146 bundled sets and write a
+reason-coded ledger. `certify-all` certifies a set only when every card agrees,
+or carries a cited resolution from a reviewed convention, and no set-level
+blocker applies. It runs the unchanged single-set `report` and `certify` steps.
+
+The owner's principle: follow collector expectations, and where references
+disagree, allow more choice without presenting guesses as fact. The
+conventions are recorded with sources in
+[collector conventions](docs/research/pokemon-finish-coverage/collector-conventions.md)
+and `publisher/pokemon-finish-conventions.json`. They cover:
+- reverse-holo lanes;
+- the historical Normal placeholder;
+- EX-era set-logo reverses;
+- Gold/Rainbow single printings;
+- Cosmos and set-name stamp appearances (Prize Pack excluded as stamped).
+
+Certificates now record `slotChanges`.
+`testCertifiedFinishCoverageIsCompleteAndConsistent` checks every difference
+from the bundled slots against the evidence report, instead of requiring
+equality.
+
+Against TCGCSV build 2026-11-18T20:05:56+0000:
+- Certified sets: 1 → 17; 1,618 cards.
+- Open ledger rows: 10,640 → 5,179.
+- Largest open reasons:
+  - `unmatchedMarketProduct` 895 and `unmatchedMarket` 852 (title-matching
+    tails);
+  - `parallelFinishNotListed` 854 (event stamps not yet decided);
+  - `multiplePrintRuns` 848;
+  - clean cards in sets blocked by reviewed Energy or artwork families: 504
+    and 146.
+
+`audit_pokemon_tcgcsv.py`'s review queue gains a Reason column and
+`review-ledger.json`. In the app, a Pokémon card without a certificate shows
+"Finishes not yet confirmed" under its finishes. Set badges stay off.
+
 # 2026-11-18 — Lorcana promo distributions reconciled
 
 Step 1 of the [reconciliation playbook](docs/catalog-reconciliation-playbook.md)

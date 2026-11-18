@@ -15,6 +15,12 @@ Each capture keeps its own checklist and market bytes, receipt and review.
 Replay accepts these directories and older flat reports with a retained
 market cache. Use --legacy-snapshot with the matching archived bundle when
 the current checklist has changed since a flat report was captured.
+
+Batch pass (docs/catalog-reconciliation-playbook.md): report-all replays one
+complete capture_pokemon_tcgcsv.py snapshot offline against every bundled set
+and writes a reason-coded ledger. certify-all also captures and certifies, with
+the unchanged single-set report and certify rules, each set whose every card
+is a mechanical agree with no set-level blocker. It never writes resolutions.
 """
 from __future__ import annotations
 
@@ -30,12 +36,17 @@ from urllib.error import URLError
 from urllib.parse import urlsplit
 
 from audit_pokemon_finish_repairs import ROOT, ledger, minimum_table
+from audit_pokemon_tcgcsv import allowed_sets
+from capture_pokemon_tcgcsv import BASE, CATEGORY, DELAY, USER_AGENT, groups_in
+import catalog_exceptions
 from market_price_feeds import digest, packed, read_http, stamp, validate_response
+from one_piece_tcgcsv_capture import TCGCSVSnapshot
 
 SNAPSHOT = Path("TradingCardScanner/PokemonChecklistSnapshot")
 EVIDENCE = Path("docs/research/pokemon-finish-coverage")
 CAPTURES = EVIDENCE / "captures"
 MARKER = "https://tcgcsv.com/last-updated.txt"
+GROUP_LINKS = Path("publisher/pokemon-finish-coverage-groups.json")
 REPORT_VERSION = 2
 FIRST_REVISION = "initial"
 STANDARD = (
@@ -513,6 +524,14 @@ def require_ledger_supersession(root, card_id, finishes, resolution, evidence):
         raise ValueError(f"{card_id} omits reviewed ledger finishes without supersession: {details}")
 
 
+def unnumbered_energy_ids(root, set_id):
+    path = root / SNAPSHOT / "reviewed-unnumbered-energy.json"
+    if not path.is_file():
+        return set()
+    return {card["providerID"] for family in read_json(path)["families"]
+            if family["providerSetID"] == set_id for card in family["cards"]}
+
+
 def certify(root, set_id, *, revision=FIRST_REVISION):
     capture = capture_directory(root, set_id, revision)
     report_path = capture / "report.json"
@@ -533,13 +552,16 @@ def certify(root, set_id, *, revision=FIRST_REVISION):
         family["providerSetID"] == set_id for family in read_json(reviewed_artwork)["families"]
     ):
         raise ValueError(f"{set_id} has reviewed artwork printings outside the captured checklist.")
-    reviewed_energy = root / SNAPSHOT / "reviewed-unnumbered-energy.json"
-    if reviewed_energy.is_file() and any(
-        family["providerSetID"] == set_id for family in read_json(reviewed_energy)["families"]
-    ):
-        raise ValueError(f"{set_id} has reviewed unnumbered Energy outside the numbered comparison.")
+    # Reviewed unnumbered Energy (collector convention, see
+    # docs/research/pokemon-finish-coverage/collector-conventions.md) is its own
+    # printing keyed by a TCGplayer product ID. It stays outside the numbered
+    # certificate and keeps its reviewed finishes as a projection, so it no
+    # longer blocks the set. It must never enter the certificate itself.
+    reviewed_energy_ids = unnumbered_energy_ids(root, set_id)
     audited = ledger()
     cards, sources, _, evidence = current_inputs(root, set_id, minimum_table(audited, set()))
+    if reviewed_energy_ids & set(cards):
+        raise ValueError(f"{set_id} certificate would include reviewed unnumbered Energy")
     if report_value["checklistSources"] != sources:
         raise ValueError("Evidence does not match the bundled set and checklist bytes")
     if report_value.get("finishEvidenceSHA256") != evidence.sha256:
@@ -597,6 +619,10 @@ def certify(root, set_id, *, revision=FIRST_REVISION):
     if pending:
         raise ValueError(f"{len(pending)} unresolved cards: {', '.join(pending[:12])}")
     new_set = {"tcgplayerGroupID": group_id, "evidence": report_path.relative_to(root).as_posix(), "cards": certified}
+    # Record how each certificate differs from the bundled checklist slots, so the
+    # app's consistency test can check every difference against this evidence.
+    if changes := slot_changes(root / SNAPSHOT, set_id, cards, certified):
+        new_set["slotChanges"] = changes
     previous = coverage["sets"].get(set_id, {})
     reviewed_at = previous.get("reviewedAt") if all(previous.get(key) == value for key, value in new_set.items()) else None
     coverage["sets"][set_id] = {**new_set, "reviewedAt": reviewed_at or stamp()[:10]}
@@ -605,6 +631,403 @@ def certify(root, set_id, *, revision=FIRST_REVISION):
     write_json(coverage_path, coverage)
     write_json(minimums_path, table)
     return len(certified)
+
+
+class SnapshotMarket:
+    """Serve one completed TCGCSV Pokémon capture as hash-verified bytes, offline."""
+
+    def __init__(self, directory):
+        directory = Path(directory)
+        if not (directory / "captures.json").is_file():
+            completed = sorted(path.parent for path in directory.glob("*/captures.json")
+                               if read_json(path).get("complete") is True)
+            if len(completed) != 1:
+                raise ValueError("Pass one completed Pokémon TCGCSV capture directory")
+            directory = completed[0]
+        self.directory = directory
+        self.snapshot = TCGCSVSnapshot(directory, USER_AGENT, DELAY, offline=True, category_id=CATEGORY)
+        if self.snapshot.manifest.get("complete") is not True:
+            raise ValueError("Expected a completed Pokémon TCGCSV capture")
+        self.build = self.snapshot.upstream_build
+        self.groups = groups_in(self.snapshot)
+
+    def fetch(self, url, limit=None):
+        if url == MARKER:
+            return self.build.encode()
+        self.snapshot.fetch_json(url)
+        record = self.snapshot.manifest["captures"][url]
+        raw = (self.directory / record["rawFile"]).read_bytes()
+        if digest(raw) != record["payloadSHA256"]:
+            raise ValueError(f"Retained response bytes changed: {record['rawFile']}")
+        return raw
+
+    def products(self, group_id):
+        return numbered_products(*(self.fetch(f"{BASE}/{group_id}/{resource}") for resource in ("products", "prices")),
+                                 group_id)
+
+
+def group_links(groups, entries, reviewed=None):
+    """Set ↔ group links: the audit's PROMO_SETS plus exact group-name or code matches.
+
+    A reviewed link (publisher/pokemon-finish-coverage-groups.json) replaces the
+    automatic result for its set only. It must name an existing group exactly,
+    and no group may be reviewed for two sets.
+    """
+    inventory = {"sets": [{"id": entry["providerID"], "name": entry["set"]["name"], "code": entry["set"].get("code") or ""}
+                          for entry in entries]}
+    links = defaultdict(set)
+    for group in groups:
+        for set_id in allowed_sets(group, inventory):
+            links[set_id].add(group["groupId"])
+    names = {group["groupId"]: group["name"] for group in groups}
+    set_ids = {entry["providerID"] for entry in entries}
+    seen_sets, seen_groups = set(), set()
+    for link in (reviewed or {}).get("links", []):
+        set_id, group_id = link["setID"], link["groupID"]
+        if (set_id in seen_sets or group_id in seen_groups or set_id not in set_ids
+                or not isinstance(link.get("reason"), str) or not link["reason"].strip()):
+            raise ValueError(f"Invalid or duplicate reviewed group link for {set_id}")
+        if names.get(group_id) != link["groupName"]:
+            raise ValueError(f"Reviewed group {group_id} for {set_id} is no longer named {link['groupName']!r}")
+        seen_sets.add(set_id)
+        seen_groups.add(group_id)
+        links[set_id] = {group_id}
+    return links
+
+
+def slot_variants(snapshot, entries):
+    result = defaultdict(set)
+    for entry in entries:
+        for slot in read_json(snapshot / entry["resource"]):
+            variant = slot.get("masterSetVariant")
+            # A slot without a variant can never equal a certificate.
+            result[slot["providerID"]].add(variant["id"] if variant else "")
+    return result
+
+
+def slot_changes(snapshot, set_id, cards, certified):
+    """Per card: aggregate placeholders removed by the checklist reader, then
+    finishes the certificate adds to or removes from the remaining slots."""
+    raw = slot_variants(snapshot, checklist_entries(snapshot, set_id))
+    changes = {}
+    for card_id, finishes in sorted(certified.items()):
+        slots, base, finishes = raw.get(card_id, set()), set(cards[card_id]["checklist"]), set(finishes)
+        change = {key: sorted(values) for key, values in (
+            ("aggregate", slots - base), ("added", finishes - base), ("removed", base - finishes)) if values}
+        if change:
+            changes[card_id] = change
+    return changes
+
+
+STANDARD_FINISHES = {"normal", "holo", "reverse"}
+# A set-level blocker that makes a per-card comparison meaningless.
+STRUCTURAL_BLOCKERS = {"noMarketGroup", "ambiguousMarketGroup", "multiplePrintRuns"}
+
+
+def card_reason(card_id, row, market=None, required=None):
+    """One reason code per pending comparison row, refined from compare()'s status."""
+    if card_id.startswith("market:"):
+        product_ids = [product["productId"] for product in row["products"]]
+        return "unmatchedMarketProduct", f"Market product {product_ids} matches no checklist card"
+    if row["normalNeedsReview"] or row.get("signedNormalNeedsReview"):
+        return "normalNeedsReview", "Historical or signed Normal is flagged for review"
+    if not row["products"]:
+        return "unmatchedMarket", f"No market product matches {row['name']} #{row['number']}"
+    market = set(row["market"] if market is None else market)
+    required = set(row["required"] if required is None else required)
+    if market == required:
+        return None, ""
+    missing, extra = sorted(required - market), sorted(market - required)
+    detail = f"Required {sorted(required)}; market lanes {sorted(market)}"
+    if extra and not missing:
+        return "marketExtraLane", detail
+    if missing and not extra:
+        return ("standardFinishNotListed" if set(missing) <= STANDARD_FINISHES else "parallelFinishNotListed"), detail
+    return "finishConflict", detail
+
+
+class Conventions:
+    """Reviewed collector conventions (publisher/pokemon-finish-conventions.json).
+
+    Each convention turns retained market evidence into a cited resolution. It
+    never closes a card on its own: certify() re-checks the resolution with
+    its unchanged gates, and the certificate records every slot difference.
+    """
+
+    PATH = Path("publisher/pokemon-finish-conventions.json")
+    PACK_PATTERNS = {"pokeBall", "masterBall", "duskBall", "friendBall", "quickBall", "loveBall",
+                     "energy", "team-rocket", "tinsel"}
+
+    def __init__(self, root, market, manifest):
+        path = root / self.PATH
+        document = read_json(path) if path.is_file() else {"schemaVersion": 1}
+        if document.get("schemaVersion") != 1:
+            raise ValueError("Unsupported finish conventions")
+        self.market = market
+        self.appearances = document.get("appearances", [])
+        self.reverse_lane = document.get("reverseLane")
+        self.stamped_reverse = document.get("setLogoReverseHolo")
+        self.energy_reverse = document.get("energyReverseHolo")
+        self.aliases = document.get("treatmentAliases")
+        self.normal_placeholder = document.get("historicalNormalPlaceholder")
+        for convention in [*self.appearances, self.reverse_lane, self.stamped_reverse, self.energy_reverse, self.aliases,
+                           self.normal_placeholder]:
+            if convention is not None and (not convention.get("decision") or not convention.get("sources")):
+                raise ValueError(f"Convention {convention.get('id')} needs a decision and sources")
+        names = {group["groupId"]: group["name"] for group in market.groups}
+        self.products, self.prices = {}, {}
+        for rule in self.appearances:
+            if not rule.get("titleQualifiers") or not rule.get("finishes"):
+                raise ValueError(f"Appearance rule {rule.get('id')} needs qualifiers and finish lanes")
+            for group in rule["groups"]:
+                if names.get(group["groupID"]) != group["groupName"]:
+                    raise ValueError(f"Appearance group {group['groupID']} is no longer named {group['groupName']!r}")
+                if group["groupID"] not in self.products:
+                    self.products[group["groupID"]] = market.products(group["groupID"])
+        # (name, number, official count) → sets, so a shared denominator cannot claim the wrong set.
+        self.identities = defaultdict(set)
+        self.set_names = {}
+        for entry in manifest["entries"]:
+            count = entry.get("officialCount")
+            self.set_names[entry["providerID"]] = entry["set"]["name"]
+            for slot in read_json(root / SNAPSHOT / entry["resource"]):
+                self.identities[name_key(slot["name"]), local_number(slot["collectorNumber"]), count].add(entry["providerID"])
+
+    def lane_prices(self, group_id):
+        if group_id not in self.prices:
+            rows = validate_response(self.market.fetch(f"{BASE}/{group_id}/prices"), 3, group_id, "prices")
+            self.prices[group_id] = {(row["productId"], row["subTypeName"]): row.get("marketPrice") for row in rows}
+        return self.prices[group_id]
+
+    def appearance(self, set_id, official_count, card, finish):
+        """(rule, product IDs) proving `finish` from a cross-group listing, or None."""
+        for rule in self.appearances:
+            lanes = rule["finishes"].get(finish)
+            if lanes is None:
+                continue
+            if self.identities.get((name_key(card["name"]), local_number(card["number"]), official_count)) != {set_id}:
+                return None
+            qualifiers = [value.replace("{setName}", self.set_names[set_id]) for value in rule["titleQualifiers"]]
+            found = []
+            for group in rule["groups"]:
+                matches = [product for product in self.products[group["groupID"]].get(local_number(card["number"]), [])
+                           if self.matches(qualifiers, lanes, card, official_count, product)]
+                if len(matches) > 1:
+                    return None
+                found.extend(product["productId"] for product in matches)
+            if found:
+                return rule, sorted(found)
+        return None
+
+    @staticmethod
+    def matches(qualifiers, lanes, card, official_count, product):
+        name = product["name"]
+        qualifier = next((value for value in qualifiers if name.endswith(f" ({value})")), None)
+        if qualifier is None or "/" not in product["number"]:
+            return False
+        title = name.removesuffix(f" ({qualifier})")
+        numerator, denominator = (part.strip() for part in product["number"].split("/", 1))
+        if local_number(denominator) != str(official_count):
+            return False
+        # The title either repeats the full printed number or carries none.
+        stem, separator, printed = title.rpartition(" - ")
+        if separator and [local_number(part) for part in printed.split("/")] != [
+                local_number(numerator), local_number(denominator)]:
+            return False
+        return (name_key(stem if separator else title) == name_key(card["name"])
+                and local_number(numerator) == local_number(card["number"])
+                and set(product["subtypes"]) == set(lanes))
+
+    @staticmethod
+    def set_logo_stamp(finish):
+        parts = finish.split("|")
+        return len(parts) == 4 and parts[0] == "pokemonStamp" and parts[2] == "set-logo" and not parts[3]
+
+    def reconcile(self, set_id, card_id, official_count, row, group):
+        """(resolution, effective market, effective required) for one comparison row."""
+        market, required = set(row["market"]), set(row["required"])
+        if row.get("signedNormalNeedsReview") or not row["products"]:
+            return None, market, required
+        finishes, notes, used, normal_review = set(required), [], set(), None
+        # A whole-set Normal placeholder: the historical checklist marks Normal for review,
+        # no audited minimum asserts it, and the card's own products sell no Normal lane.
+        rule = self.normal_placeholder
+        if row["normalNeedsReview"]:
+            if (rule is None or set_id not in rule["setIDs"] or "normal" in required
+                    or any("Normal" in product["subtypes"] for product in row["products"])):
+                return None, market, required
+            normal_review = "exclude"
+            notes.append(f"{rule['id']}: no Normal lane on TCGplayer products "
+                         f"{[product['productId'] for product in row['products']]}")
+            used.add(rule["id"])
+        # EX Team Rocket Returns to EX Power Keepers: the Reverse Holofoil lane is the set-logo stamped reverse.
+        rule = self.stamped_reverse
+        stamps = [finish for finish in finishes if self.set_logo_stamp(finish)]
+        if (rule and set_id in rule["setIDs"] and "reverse" in market and "reverse" not in finishes
+                and len(stamps) == 1):
+            market.discard("reverse")
+            market.add(stamps[0])
+            notes.append(f"{rule['id']}: Reverse Holofoil lane is {stamps[0]}")
+            used.add(rule["id"])
+        # EX Hidden Legends and EX FireRed & LeafGreen: the one Reverse Holofoil lane is the
+        # energy-pattern reverse, and the checklist's plain reverse slot is that same printing.
+        rule = self.energy_reverse
+        if (rule and set_id in rule["setIDs"] and "reverse" in market and "energy" not in market
+                and {"reverse", "energy"} <= finishes):
+            market.discard("reverse")
+            market.add("energy")
+            finishes.discard("reverse")
+            notes.append(f"{rule['id']}: Reverse Holofoil lane is the energy-pattern reverse; "
+                         "the plain reverse slot is the same printing")
+            used.add(rule["id"])
+        # Gold and rainbow secret rares are one printing; the market lists one Holofoil product.
+        rule = self.aliases
+        if rule and set_id in rule["setIDs"] and card_id not in rule["exceptCardIDs"] and "holo" in finishes:
+            for alias in sorted(finishes & set(rule["finishes"]) - market):
+                finishes.discard(alias)
+                notes.append(f"{rule['id']}: {alias} is the numbered holo printing")
+                used.add(rule["id"])
+        for finish in sorted(finishes - market - STANDARD_FINISHES):
+            found = self.appearance(set_id, official_count, row, finish)
+            if found:
+                market.add(finish)
+                notes.append(f"{found[0]['id']}: {finish} from TCGplayer products {found[1]}")
+                used.add(found[0]["id"])
+        # A Reverse Holofoil lane with sales on the card's own product is a reverse holo printing.
+        rule = self.reverse_lane
+        if (rule and market - finishes == {"reverse"} and set_id not in rule["excludeSetIDs"]
+                and not finishes & self.PACK_PATTERNS and not any(self.set_logo_stamp(f) for f in finishes)):
+            prices = self.lane_prices(group)
+            sold = [product["productId"] for product in row["products"]
+                    if "Reverse Holofoil" in product["subtypes"]
+                    and type(price := prices.get((product["productId"], "Reverse Holofoil"))) in (int, float)
+                    and price > 0]
+            if sold:
+                finishes.add("reverse")
+                notes.append(f"{rule['id']}: Reverse Holofoil sales on TCGplayer products {sold}")
+                used.add(rule["id"])
+        if not notes or market != finishes:
+            return None, market, finishes
+        resolution = {"finishes": sorted(finishes), "citation": self.PATH.as_posix(),
+                      "reason": f"Conventions {sorted(used)}. " + "; ".join(notes)}
+        if normal_review:
+            resolution["normalReview"] = normal_review
+        return resolution, market, finishes
+
+
+def assess_set(root, set_id, market, links, coverage, audited_minimums, *, artwork_sets, energy_sets, rules=None):
+    """Measure one set against the snapshot.
+
+    Returns (status, group, ledger rows, resolutions). Only a set with no rows
+    is certifiable; resolutions come from reviewed collector conventions.
+    """
+    snapshot = root / SNAPSHOT
+    entries = checklist_entries(snapshot, set_id)
+    if set_id in coverage["sets"]:
+        return "certified", coverage["sets"][set_id]["tcgplayerGroupID"], [], {}
+    blockers = []
+    groups = sorted(links.get(set_id, ()))
+    if not groups:
+        blockers.append(("noMarketGroup", "No TCGCSV group links to this set"))
+    elif len(groups) > 1:
+        blockers.append(("ambiguousMarketGroup", f"Several TCGCSV groups link to this set: {groups}"))
+    if len({entry["set"].get("catalogID", {}).get("pokemonPrintRun") for entry in entries}) > 1:
+        blockers.append(("multiplePrintRuns", "Schema 1 certificates are keyed by provider card ID"))
+    if set_id in artwork_sets:
+        blockers.append(("artworkFamily", "Reviewed artwork printings sit outside the captured checklist"))
+    cards, _, _, evidence = current_inputs(root, set_id, audited_minimums)
+    try:
+        require_audited_minimum_projection(root, cards, evidence, already_certified=False)
+    except ValueError as error:
+        blockers.append(("minimumsDrift", str(error)))
+    structural = next((blocker for blocker in blockers if blocker[0] in STRUCTURAL_BLOCKERS), None)
+    group = groups[0] if len(groups) == 1 else None
+    comparison = None if structural else compare_current(cards, market.products(group), evidence)
+    official_count = entries[0].get("officialCount")
+    rows, resolutions = [], {}
+    for card_id in sorted(comparison or cards):
+        row = comparison[card_id] if comparison else None
+        if row is None:
+            reason, detail = structural
+        else:
+            resolution, effective, required = (None, None, None) if (
+                card_id.startswith("market:") or rules is None) else rules.reconcile(
+                set_id, card_id, official_count, row, group)
+            reason, detail = (None, "") if resolution else card_reason(card_id, row, effective, required)
+            if reason is None and blockers:
+                reason, detail = blockers[0]
+            if reason is None and resolution:
+                resolutions[card_id] = resolution
+        if reason is None:
+            continue
+        evidence_row = {"groupID": group}
+        if row:
+            evidence_row.update(status=row["status"], productIDs=[product["productId"] for product in row["products"]])
+            if not card_id.startswith("market:"):
+                evidence_row.update(required=row["required"], market=row["market"])
+        # Market keys repeat across sets; card IDs are already set-scoped.
+        identity = f"{set_id}/{card_id}" if card_id.startswith("market:") else card_id
+        rows.append(catalog_exceptions.row("pokemon", set_id, identity, reason, detail, evidence_row))
+    for reason, detail in blockers:
+        rows.append(catalog_exceptions.row("pokemon", set_id, f"set:{set_id}", reason, detail, {"groups": groups}))
+    return ("certifiable" if not rows else "pending"), group, rows, resolutions
+
+
+def batch(root, source, ledger_path, *, certify_revision=None, fetch_market=None, reconcile=True):
+    """Replay every bundled set offline; with certify_revision, certify each fully resolved set."""
+    market = fetch_market or SnapshotMarket(source)
+    snapshot = root / SNAPSHOT
+    manifest = read_json(snapshot / "manifest.json")
+    set_ids = sorted({entry["providerID"] for entry in manifest["entries"]})
+    reviewed_links = root / GROUP_LINKS
+    links = group_links(market.groups, manifest["entries"],
+                        read_json(reviewed_links) if reviewed_links.is_file() and reconcile else None)
+    rules = Conventions(root, market, manifest) if reconcile else None
+
+    def families(filename):
+        path = snapshot / filename
+        return {family["providerSetID"] for family in read_json(path)["families"]} if path.is_file() else set()
+
+    artwork_sets, energy_sets = families("reviewed-artwork-printings.json"), families("reviewed-unnumbered-energy.json")
+    before = sorted(read_json(snapshot / "finish-coverage.json")["sets"])
+    newly_certified, statuses, rows, resolved = [], {}, [], 0
+    audited_minimums = minimum_table(ledger(), set())
+    for set_id in set_ids:
+        coverage = read_json(snapshot / "finish-coverage.json")
+        status, group, set_rows, resolutions = assess_set(
+            root, set_id, market, links, coverage, audited_minimums,
+            artwork_sets=artwork_sets, energy_sets=energy_sets, rules=rules)
+        if status == "certifiable" and certify_revision is not None:
+            captured = report(root, set_id, group, market.fetch, revision=certify_revision)
+            if resolutions:
+                captured["resolutions"] = resolutions
+                write_json(capture_directory(root, set_id, certify_revision) / "report.json", captured)
+            certify(root, set_id, revision=certify_revision)
+            newly_certified.append(set_id)
+            status = "certified"
+        if status in ("certifiable", "certified"):
+            resolved += len(resolutions)
+        statuses[set_id] = status
+        rows.extend(set_rows)
+    after = sorted(read_json(snapshot / "finish-coverage.json")["sets"])
+    source_pin = {"tcgcsvBuild": market.build, "tcgcsvCapture": market.directory.name,
+                  "checklistFingerprint": manifest.get("directoryFingerprint"), "reconcilers": reconcile,
+                  "certifiedSetsBefore": len(before), "certifiedSetsAfter": len(after),
+                  "certifiableSets": sorted(set_id for set_id, status in statuses.items() if status == "certifiable"),
+                  "newlyCertifiedSets": newly_certified}
+    document = catalog_exceptions.write_ledger(ledger_path, rows, source=source_pin)
+    return {"sets": len(set_ids), "before": before, "after": after, "statuses": statuses,
+            "newlyCertified": newly_certified, "reconciledCards": resolved, "summary": document["summary"]}
+
+
+def print_batch(result):
+    counts = defaultdict(int)
+    for status in result["statuses"].values():
+        counts[status] += 1
+    print(f"{result['sets']} sets: certified {len(result['before'])} → {len(result['after'])}; {dict(counts)}; "
+          f"{result['reconciledCards']} cards resolved by reviewed rules in certifiable sets")
+    for reason, count in result["summary"]["byReason"].get("pokemon", {}).items():
+        print(f"  {count:6d}  {reason}")
 
 
 def main():
@@ -622,6 +1045,15 @@ def main():
     certify_parser = commands.add_parser("certify")
     certify_parser.add_argument("set_id")
     certify_parser.add_argument("--revision", default=FIRST_REVISION)
+    for name in ("report-all", "certify-all"):
+        batch_parser = commands.add_parser(name)
+        batch_parser.add_argument("--source", required=True, type=Path,
+                                  help="Completed capture_pokemon_tcgcsv.py snapshot (or its --root with one capture)")
+        batch_parser.add_argument("--ledger", required=True, type=Path, help="Reason-coded ledger to write")
+        batch_parser.add_argument("--no-reconcilers", action="store_true",
+                                  help="Measure the baseline without reviewed group links or appearance rules")
+        if name == "certify-all":
+            batch_parser.add_argument("--revision", required=True, help="Capture revision name for each new certificate")
     args = parser.parse_args()
     try:
         if args.command == "report":
@@ -630,6 +1062,10 @@ def main():
                       for status in ("agree", "conflict", "unmatched")}
             print(f"{args.set_id}: {counts}")
             print(capture_directory(ROOT, args.set_id, evidence["captureRevision"]) / "report.json")
+        elif args.command in ("report-all", "certify-all"):
+            print_batch(batch(ROOT, args.source, args.ledger, certify_revision=getattr(args, "revision", None),
+                              reconcile=not args.no_reconcilers))
+            print(args.ledger)
         elif args.command == "replay":
             result = replay(ROOT, args.reports, args.market_cache, legacy_snapshot=args.legacy_snapshot)
             write_json(args.output, result)
