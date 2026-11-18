@@ -156,10 +156,85 @@ extension CardShareIdentity {
         )
     }
 
+    /// A catalog printing nobody owns yet, at the finish being looked at.
+    init(catalogCard card: IdentifiedCard, setName: String?, finish: String?, edition: String?) {
+        self.init(
+            name: card.name,
+            setCode: card.setCode,
+            setName: setName ?? card.setName,
+            number: CardShareNumber(card.displayCardNumber),
+            badge: nil,
+            rarity: CardShareRarity(raw: card.rarity, game: card.game, pokemonSetID: card.setID),
+            finish: finish,
+            edition: edition
+        )
+    }
+
     static func gradeText(for card: CollectedCard) -> String? {
         guard let company = card.gradingCompany else { return nil }
         return card.cardGrade?.display(company: company)
             ?? [company.label, card.gradeRaw].compactMap { $0 }.joined(separator: " ")
+    }
+}
+
+/// One owned copy the collection share can show: its facts without a finish,
+/// plus the finish the holder recorded, so the sheet can state or hide it.
+/// A raw finish and each graded slab are separate options.
+struct CollectionShareOption: Identifiable {
+    let id: String
+    let identity: CardShareIdentity
+    /// What the copy picker calls it: `Foil`, `PSA 10 · Holo`.
+    let choiceLabel: String
+    /// A slab is shared on its own; it never joins the finish comparison.
+    let isGraded: Bool
+    /// Nil when nothing trustworthy is known, such as sealed product or a
+    /// finish the catalog never specified.
+    let finishLabel: String?
+    let price: CardSharePrice?
+    let showsFinishSheen: Bool
+    let localArtworkFilename: String?
+    let remoteArtworkURLs: [URL]
+
+    init(id: String, identity: CardShareIdentity, finishLabel: String?, price: CardSharePrice?,
+         showsFinishSheen: Bool, localArtworkFilename: String?, remoteArtworkURLs: [URL], isGraded: Bool? = nil) {
+        self.id = id
+        self.isGraded = isGraded ?? (identity.gradeBadge != nil)
+        self.identity = identity.replacingFinish(nil)
+        let finish = finishLabel?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false ? finishLabel : nil
+        self.finishLabel = finish
+        let parts = [identity.gradeBadge?.text, finish].compactMap { $0 }
+        self.choiceLabel = parts.isEmpty ? "Your copy" : parts.joined(separator: " · ")
+        self.price = price
+        self.showsFinishSheen = showsFinishSheen
+        self.localArtworkFilename = localArtworkFilename
+        self.remoteArtworkURLs = remoteArtworkURLs
+    }
+
+    @MainActor
+    init(collectedCard card: CollectedCard, price: PriceDisplay, localArtworkFilename: String?) {
+        let source = CatalogCardArtworkSource(collectedCard: card, prefersFullSize: true)
+        self.init(
+            id: card.collectionKey,
+            identity: CardShareIdentity(collectedCard: card),
+            finishLabel: Self.finishLabel(for: card),
+            price: CardSharePrice(collectedCard: card, display: price),
+            showsFinishSheen: CollectionShareSheet.showsFinishSheen(for: card),
+            localArtworkFilename: localArtworkFilename,
+            remoteArtworkURLs: [source.primaryURL].compactMap { $0 } + source.fallbacks,
+            isGraded: card.itemKind == .gradedCard
+        )
+    }
+
+    /// Owned copies state their finish even when it is the standard one: a
+    /// friend wants to know a pull was the nonfoil, not just that it wasn't foil.
+    static func finishLabel(for card: CollectedCard) -> String? {
+        guard card.itemKind != .sealedProduct,
+              let variant = card.variant,
+              variant.id != PhysicalVariant.firstEdition.id,
+              // Imported and catalog-silent finishes are not established
+              // enough to tell someone else.
+              card.variantResolution.map({ $0.certainty != .unresolved }) ?? false else { return nil }
+        return variant.label
     }
 }
 
@@ -197,7 +272,32 @@ struct CollectionShareImage: View {
     let price: CardSharePrice?
     let artwork: CardShareArtwork?
     let showsFinishSheen: Bool
+    /// Every owned finish, shared together. Empty for a single copy, whose
+    /// finish (if stated) rides in `identity`.
+    var finishes: [CardShareFinishLine] = []
+    /// The artwork's own colour, as the card detail page uses it.
+    var accent: ArtworkAccent? = nil
     var now: Date = .now
+
+    private var footerSource: String? {
+        (price ?? finishes.lazy.compactMap(\.price).first)?.sourceLine(now: now)
+    }
+
+    private func priceAmount(_ price: CardSharePrice) -> some View {
+        Text(price.formattedAmount())
+            .font(.system(size: 27, weight: .heavy))
+            .tracking(-0.5)
+            .monospacedDigit()
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+    }
+
+    private func priceBasis(_ price: CardSharePrice) -> some View {
+        Text(price.basis)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(CardShareStyle.tertiaryText)
+            .lineLimit(1)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -209,37 +309,45 @@ struct CollectionShareImage: View {
                 Spacer(minLength: 24)
             }
 
-            ShareIdentityBlock(identity: identity)
+            // Artwork gives up room first; the facts never do.
+            ShareIdentityBlock(identity: finishes.isEmpty ? identity : identity.replacingFinish(nil), accent: accent)
+                .layoutPriority(1)
 
             if artwork == nil {
                 Spacer(minLength: 24)
             }
 
-            if let price {
-                HStack(alignment: .firstTextBaseline, spacing: 12) {
-                    Text(price.formattedAmount())
-                        .font(.system(size: 27, weight: .heavy))
-                        .tracking(-0.5)
-                        .monospacedDigit()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                    Spacer(minLength: 0)
-                    Text(price.basis)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(CardShareStyle.tertiaryText)
-                        .lineLimit(1)
+            if !finishes.isEmpty {
+                ShareFinishList(finishes: finishes)
+                    .layoutPriority(1)
+                    .padding(.top, 14)
+                    .overlay(alignment: .top) { ShareHairline() }
+                    .padding(.top, 14)
+            } else if let price {
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                        priceAmount(price)
+                        Spacer(minLength: 0)
+                        priceBasis(price)
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        priceAmount(price)
+                        priceBasis(price)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .layoutPriority(1)
                 .padding(.top, 14)
                 .overlay(alignment: .top) { ShareHairline() }
                 .padding(.top, 14)
             }
 
-            ShareFooter(printing: identity.printingDetail, source: price?.sourceLine(now: now))
+            ShareFooter(printing: identity.edition, source: footerSource)
                 .padding(.top, 22)
         }
         .padding(EdgeInsets(top: 28, leading: 24, bottom: 24, trailing: 24))
         .frame(width: CardShareStyle.canvas.width, height: CardShareStyle.canvas.height)
-        .background { ShareGround(glow: true) }
+        .background { ShareGround(glow: true, accent: accent) }
         .foregroundStyle(CardShareStyle.primaryText)
         .environment(\.colorScheme, .dark)
     }
@@ -268,15 +376,15 @@ struct BuyCheckShareImage: View {
                 } else {
                     Spacer(minLength: 24)
                 }
-                ShareIdentityBlock(identity: identity)
+                ShareIdentityBlock(identity: identity, accent: nil)
                 if artwork == nil { Spacer(minLength: 24) }
             }
-            stats.padding(.top, 18)
+            stats.padding(.top, 18).layoutPriority(1)
             if let trend {
                 trendBlock(trend).padding(.top, 18)
             }
 
-            ShareFooter(printing: identity.printingDetail, source: footerSource)
+            ShareFooter(printing: identity.edition, source: footerSource)
                 .padding(.top, 22)
         }
         .padding(EdgeInsets(top: 28, leading: 24, bottom: 24, trailing: 24))
@@ -297,22 +405,25 @@ struct BuyCheckShareImage: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(identity.name)
                         .font(.system(size: 20, weight: .bold))
-                        .tracking(-0.3)
-                        .lineLimit(3)
-                        .minimumScaleFactor(0.75)
-                    HStack(spacing: 8) {
-                        if let code = identity.setCode {
-                            ShareSetCodeChip(code: code, size: 10)
-                        }
-                        if let number = identity.number {
-                            ShareNumberText(number: number, size: 17)
-                        }
-                    }
+                        .fontWidth(.expanded)
+                        .tracking(-0.4)
+                        .lineLimit(4)
+                        .minimumScaleFactor(0.7)
+                    // Same order and voice as the card page: set, then code
+                    // and number.
                     if let name = identity.setName {
                         Text(name)
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(CardShareStyle.secondaryText)
+                            .font(.system(size: 14, weight: .bold))
+                            .fontWidth(.expanded)
+                            .foregroundStyle(ShareIdentityBlock.fallbackSetTint)
                             .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if let designation = ShareIdentityBlock.designation(for: identity) {
+                        designation
+                            .font(.system(size: 14, weight: .bold))
+                            .fontWidth(.expanded)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
                     }
                     if let rarity = identity.rarity {
                         ShareRarityLabel(rarity: rarity)
@@ -320,11 +431,14 @@ struct BuyCheckShareImage: View {
                     if let grade = identity.gradeBadge {
                         ShareBadge(badge: grade, size: 12)
                     }
+                    if let finish = identity.finish {
+                        ShareBadge(badge: .finish(finish), size: 12)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         } else {
-            ShareIdentityBlock(identity: identity)
+            ShareIdentityBlock(identity: identity, accent: nil)
         }
     }
 
@@ -443,11 +557,24 @@ struct BuyCheckShareImage: View {
 
 private struct ShareGround: View {
     let glow: Bool
+    var accent: ArtworkAccent? = nil
 
     var body: some View {
         ZStack {
             CardShareStyle.ground
-            if glow {
+            if glow, let accent, !accent.isNeutral {
+                // The card detail page's wash, so the image looks like the
+                // page it was shared from.
+                LinearGradient(
+                    stops: [
+                        .init(color: accent.deep.opacity(0.75), location: 0),
+                        .init(color: accent.deep.opacity(0.35), location: 0.45),
+                        .init(color: CardShareStyle.ground, location: 0.85)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            } else if glow {
                 RadialGradient(
                     colors: [CardShareStyle.iris.opacity(0.18), CardShareStyle.iris.opacity(0)],
                     center: UnitPoint(x: 0.5, y: 0.3),
@@ -546,55 +673,181 @@ private struct ShareFinishSheen: View {
     }
 }
 
+/// The card detail page's identity header, at share scale: expanded bold
+/// name, the set name in the artwork's colour beside its code and number,
+/// then rarity, grade and finish.
 private struct ShareIdentityBlock: View {
     let identity: CardShareIdentity
+    let accent: ArtworkAccent?
+
+    /// `CardDetailIdentityHeader`'s dark-mode set link, before artwork colour.
+    static let fallbackSetTint = Color(red: 0.30, green: 0.75, blue: 0.79)
+
+    private var setTint: Color {
+        if let accent, !accent.isNeutral { return accent.ink }
+        return Self.fallbackSetTint
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            HStack(alignment: .firstTextBaseline, spacing: 14) {
-                Text(identity.name)
-                    .font(.system(size: 24, weight: .bold))
-                    .tracking(-0.4)
-                    .lineLimit(3)
-                    .minimumScaleFactor(0.75)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                if let number = identity.number {
-                    ShareNumberText(number: number, size: 20)
-                        .layoutPriority(1)
-                }
-            }
-            if identity.setCode != nil || identity.setName != nil {
-                HStack(spacing: 8) {
-                    if let code = identity.setCode {
-                        ShareSetCodeChip(code: code, size: 11)
-                    }
-                    if let setName = identity.setName {
-                        Text(setName)
-                            .font(.system(size: 15, weight: .medium))
-                            .foregroundStyle(CardShareStyle.secondaryText)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-            }
-            if identity.rarity != nil || identity.gradeBadge != nil {
+        VStack(alignment: .leading, spacing: 7) {
+            Text(identity.name)
+                .font(.system(size: 27, weight: .bold))
+                .fontWidth(.expanded)
+                .tracking(-0.6)
+                .lineLimit(3)
+                .minimumScaleFactor(0.7)
+                // Never squeezed to a line by the artwork; three at most.
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 2)
+            if identity.setName != nil || designation != nil {
                 ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 12) { rarityAndGrade }
-                        .fixedSize()
-                    VStack(alignment: .leading, spacing: 8) { rarityAndGrade }
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        setName
+                        if identity.setName != nil, designation != nil {
+                            Circle()
+                                .fill(CardShareStyle.mutedText)
+                                .frame(width: 4, height: 4)
+                                .alignmentGuide(.firstTextBaseline) { $0[.bottom] + 5 }
+                        }
+                        designation
+                    }
+                    .fixedSize()
+                    VStack(alignment: .leading, spacing: 3) {
+                        setName
+                        designation
+                    }
                 }
-                .padding(.top, 4)
+                .font(.system(size: 15, weight: .bold))
+                .fontWidth(.expanded)
+            }
+            if identity.rarity != nil || identity.gradeBadge != nil || identity.finish != nil {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) {
+                        rarityLabel
+                        badges
+                    }
+                    .fixedSize()
+                    // Rarity names run long; the grade and finish stay paired
+                    // while they fit, and stack when a finish name is long.
+                    VStack(alignment: .leading, spacing: 8) {
+                        rarityLabel
+                        HStack(spacing: 8) { badges }.fixedSize()
+                    }
+                    VStack(alignment: .leading, spacing: 8) {
+                        rarityLabel
+                        badges
+                    }
+                }
+                .padding(.top, 3)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     @ViewBuilder
-    private var rarityAndGrade: some View {
+    private var setName: some View {
+        if let name = identity.setName {
+            Text(name)
+                .foregroundStyle(setTint)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var designation: Text? { Self.designation(for: identity) }
+
+    /// `FIN 159`, or `TST 087/165` with the set total quieter.
+    static func designation(for identity: CardShareIdentity) -> Text? {
+        let code = identity.setCode.map { Text($0.uppercased()) }
+        let number = identity.number.map { number in
+            Text(number.primary) + Text(number.total ?? "").foregroundStyle(CardShareStyle.mutedText)
+        }
+        switch (code, number) {
+        case let (code?, number?): return code + Text(" ") + number
+        case let (code?, nil): return code
+        case let (nil, number?): return number
+        case (nil, nil): return nil
+        }
+    }
+
+    @ViewBuilder
+    private var rarityLabel: some View {
         if let rarity = identity.rarity {
             ShareRarityLabel(rarity: rarity)
         }
+    }
+
+    @ViewBuilder
+    private var badges: some View {
         if let grade = identity.gradeBadge {
             ShareBadge(badge: grade, size: 12)
+        }
+        if let finish = identity.finish {
+            ShareBadge(badge: .finish(finish), size: 12)
+        }
+    }
+}
+
+/// Every owned finish of one card: what was pulled, and, with prices on, how
+/// the finishes compare.
+private struct ShareFinishList: View {
+    static let visibleLimit = 5
+    let finishes: [CardShareFinishLine]
+
+    private var visible: ArraySlice<CardShareFinishLine> { finishes.prefix(Self.visibleLimit) }
+    private var hiddenCount: Int { max(0, finishes.count - Self.visibleLimit) }
+    private var basis: String? { finishes.lazy.compactMap(\.price).first?.basis }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("FINISHES OWNED")
+                    .font(.system(size: 11, weight: .bold))
+                    .tracking(0.8)
+                    .foregroundStyle(CardShareStyle.mutedText)
+                Spacer(minLength: 8)
+                if let basis {
+                    Text(basis)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(CardShareStyle.tertiaryText)
+                        .lineLimit(1)
+                }
+            }
+            if basis == nil {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) { badges }.fixedSize()
+                    VStack(alignment: .leading, spacing: 6) { badges }
+                }
+            } else {
+                ForEach(visible) { finish in
+                    HStack(alignment: .center, spacing: 12) {
+                        ShareBadge(badge: .finish(finish.label), size: 12)
+                        Spacer(minLength: 0)
+                        // The amount is the point of the comparison: it keeps
+                        // its full width and a long finish name shortens.
+                        Text(finish.price?.formattedAmount() ?? "—")
+                            .font(.system(size: 19, weight: .heavy))
+                            .tracking(-0.3)
+                            .monospacedDigit()
+                            .lineLimit(1)
+                            .fixedSize()
+                            .foregroundStyle(finish.price == nil ? CardShareStyle.mutedText : CardShareStyle.primaryText)
+                    }
+                }
+            }
+            if hiddenCount > 0 {
+                Text("+\(hiddenCount) more")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(CardShareStyle.mutedText)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var badges: some View {
+        ForEach(visible) { finish in
+            ShareBadge(badge: .finish(finish.label), size: 12)
         }
     }
 }
@@ -621,7 +874,8 @@ private struct ShareRarityLabel: View {
                 .fixedSize()
                 .accessibilityHidden(true)
             Text(rarity.label)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.system(size: 15, weight: .bold))
+                .fontWidth(.expanded)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .foregroundStyle(tint)
@@ -674,58 +928,18 @@ private struct ShareRarityLabel: View {
     }
 }
 
-/// `087` bright and `/165` quiet: the card's own number is what a collector
-/// looks for.
-private struct ShareNumberText: View {
-    let number: CardShareNumber
-    let size: CGFloat
-
-    var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 0) {
-            Text(number.primary)
-                .foregroundStyle(CardShareStyle.primaryText)
-            if let total = number.total {
-                Text(total)
-                    .fontWeight(.bold)
-                    .foregroundStyle(CardShareStyle.mutedText)
-            }
-        }
-        .font(.system(size: size, weight: .heavy))
-        .monospacedDigit()
-        .tracking(-0.2)
-        .lineLimit(1)
-        .fixedSize()
-    }
-}
-
-private struct ShareSetCodeChip: View {
-    let code: String
-    let size: CGFloat
-
-    var body: some View {
-        let shape = RoundedRectangle(cornerRadius: 5, style: .continuous)
-        Text(code.uppercased())
-            .font(.system(size: size, weight: .heavy))
-            .tracking(0.7)
-            .foregroundStyle(CardShareStyle.primaryText)
-            .lineLimit(1)
-            .fixedSize()
-            .padding(.horizontal, 6)
-            .frame(height: size + 10)
-            .background(Color.white.opacity(0.10), in: shape)
-            .overlay { shape.strokeBorder(Color.white.opacity(0.16), lineWidth: 1) }
-    }
-}
-
 private struct ShareBadge: View {
     let badge: CardShareIdentity.Badge
     let size: CGFloat
 
     var body: some View {
+        // Ideal width is the whole label; when the canvas is narrower it
+        // shortens rather than running off the image.
         let label = Text(badge.text)
             .font(.system(size: size, weight: .bold))
+            .fontWidth(.expanded)
             .lineLimit(1)
-            .fixedSize()
+            .truncationMode(.middle)
             .padding(.horizontal, 9)
             .frame(height: size + 11)
         switch badge {
@@ -872,49 +1086,159 @@ private struct ShareTrendChart: View {
 // MARK: - Sheets
 
 /// Shared from a card or product in the collection.
+///
+/// Several options mean the holder owns several finishes of one card; they can
+/// share one copy, or every finish at once to compare them.
 struct CollectionShareSheet: View {
-    let identity: CardShareIdentity
-    let price: CardSharePrice?
-    let showsFinishSheen: Bool
-    let localArtworkFilename: String?
-    let remoteArtworkURLs: [URL]
+    let options: [CollectionShareOption]
     var artworkLoader: CardShareArtworkLoader.Load = CardShareArtworkLoader.load
 
     @Environment(\.dismiss) private var dismiss
     /// Remembers the last choice: someone who shares prices usually keeps
     /// sharing them, and someone who does not should never be surprised.
     @AppStorage("cardShare.includesPrice") private var includesPrice = false
+    /// On by default: telling a friend it was the foil is usually the point.
+    @AppStorage("cardShare.includesFinish") private var includesFinish = true
+    @State private var selectedID: String
+    @State private var sharesAllFinishes = false
     @StateObject private var artwork = CardShareArtworkState()
     @State private var artworkAttempt = 0
+    /// The source `artwork` was loaded from, so a newly chosen copy never goes
+    /// out wearing the previous copy's photo.
+    @State private var loadedArtworkSource: ArtworkSource?
+    @State private var accent: ArtworkAccent?
     @State private var rendered: UIImage?
+
+    init(options: [CollectionShareOption], initialOptionID: String? = nil,
+         artworkLoader: @escaping CardShareArtworkLoader.Load = CardShareArtworkLoader.load) {
+        self.options = options
+        self.artworkLoader = artworkLoader
+        let initial = options.first { $0.id == initialOptionID } ?? options.first
+        _selectedID = State(initialValue: initial?.id ?? "")
+    }
+
+    init(identity: CardShareIdentity, price: CardSharePrice?, showsFinishSheen: Bool,
+         localArtworkFilename: String?, remoteArtworkURLs: [URL],
+         artworkLoader: @escaping CardShareArtworkLoader.Load = CardShareArtworkLoader.load) {
+        self.init(options: [CollectionShareOption(id: "share", identity: identity, finishLabel: identity.finish,
+            price: price, showsFinishSheen: showsFinishSheen, localArtworkFilename: localArtworkFilename,
+            remoteArtworkURLs: remoteArtworkURLs)], artworkLoader: artworkLoader)
+    }
+
+    private struct ArtworkSource: Hashable {
+        let localFilename: String?
+        let remoteURLs: [URL]
+    }
+
+    private struct ArtworkRequest: Hashable {
+        let source: ArtworkSource
+        let attempt: Int
+    }
 
     private struct RenderKey: Equatable {
         let includesPrice: Bool
+        let includesFinish: Bool
+        let selectedID: String
+        let showsAllFinishes: Bool
         let artworkRevision: Int
+        let artworkIsCurrent: Bool
+        let accent: ArtworkAccent?
     }
 
-    private var sharedPrice: CardSharePrice? { includesPrice ? price : nil }
+    private var current: CollectionShareOption? {
+        options.first { $0.id == selectedID } ?? options.first
+    }
 
-    private var image: CollectionShareImage {
-        CollectionShareImage(identity: identity, price: sharedPrice, artwork: artwork.artwork, showsFinishSheen: showsFinishSheen)
+    /// One raw copy per finish, in the order the card page lists them: what
+    /// "All finishes" compares. Slabs are shared one at a time.
+    private var finishOptions: [CollectionShareOption] {
+        var seen: Set<String> = []
+        return options.filter { option in
+            guard !option.isGraded, let label = option.finishLabel else { return false }
+            return seen.insert(label.lowercased()).inserted
+        }
+    }
+
+    /// Picker labels, numbered only where two copies would otherwise read the
+    /// same (two PSA 10 Holo slabs).
+    private var choiceLabels: [String: String] {
+        let totals = Dictionary(grouping: options, by: \.choiceLabel).mapValues(\.count)
+        var seen: [String: Int] = [:]
+        var labels: [String: String] = [:]
+        for option in options {
+            let label = option.choiceLabel
+            guard totals[label, default: 0] > 1 else { labels[option.id] = label; continue }
+            seen[label, default: 0] += 1
+            labels[option.id] = "\(label) (\(seen[label]!))"
+        }
+        return labels
+    }
+
+    private var showsAllFinishes: Bool {
+        sharesAllFinishes && includesFinish && finishOptions.count > 1
+    }
+
+    private var currentSource: ArtworkSource? {
+        current.map { ArtworkSource(localFilename: $0.localArtworkFilename, remoteURLs: $0.remoteArtworkURLs) }
+    }
+
+    private var displayedArtwork: CardShareArtwork? {
+        loadedArtworkSource == currentSource ? artwork.artwork : nil
+    }
+
+    private var identity: CardShareIdentity? {
+        guard let current else { return nil }
+        return includesFinish && !showsAllFinishes ? current.identity.replacingFinish(current.finishLabel) : current.identity
+    }
+
+    private var sharedPrice: CardSharePrice? {
+        includesPrice && !showsAllFinishes ? current?.price : nil
+    }
+
+    private var finishLines: [CardShareFinishLine] {
+        guard showsAllFinishes else { return [] }
+        return finishOptions.map {
+            CardShareFinishLine(id: $0.id, label: $0.finishLabel ?? "", price: includesPrice ? $0.price : nil)
+        }
+    }
+
+    private var availablePrice: CardSharePrice? {
+        showsAllFinishes ? finishOptions.lazy.compactMap(\.price).first : current?.price
+    }
+
+    private var image: CollectionShareImage? {
+        guard let identity, let current else { return nil }
+        return CollectionShareImage(identity: identity, price: sharedPrice, artwork: displayedArtwork,
+            showsFinishSheen: includesFinish && !showsAllFinishes && current.showsFinishSheen,
+            finishes: finishLines, accent: accent)
     }
 
     private var summary: String {
-        CardShareSummary.text(identity: identity, price: sharedPrice)
+        guard let identity else { return "" }
+        return CardShareSummary.text(identity: identity, price: sharedPrice, finishes: finishLines)
+    }
+
+    private var renderKey: RenderKey {
+        RenderKey(includesPrice: includesPrice, includesFinish: includesFinish, selectedID: selectedID,
+            showsAllFinishes: showsAllFinishes, artworkRevision: artwork.revision,
+            artworkIsCurrent: loadedArtworkSource == currentSource, accent: accent)
     }
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
-                CardSharePreview(content: image, summary: summary)
-                priceRow
-                if artwork.artwork == nil {
+                if let image {
+                    CardSharePreview(content: image, summary: summary)
+                }
+                optionsCard
+                if displayedArtwork == nil, let current {
                     CardShareArtworkStatus(isLoading: artwork.isLoading,
-                        canRetry: artwork.revision > 0 && (localArtworkFilename?.isEmpty == false || !remoteArtworkURLs.isEmpty)) {
+                        canRetry: artwork.revision > 0
+                            && (current.localArtworkFilename?.isEmpty == false || !current.remoteArtworkURLs.isEmpty)) {
                         artworkAttempt += 1
                     }
                 }
-                CardShareButton(rendered: rendered, title: identity.name, message: summary)
+                CardShareButton(rendered: rendered, title: identity?.name ?? "", message: summary)
             }
             .padding(.horizontal, 20)
             .padding(.top, 4)
@@ -931,12 +1255,101 @@ struct CollectionShareSheet: View {
         .presentationDragIndicator(.visible)
         .presentationBackground(CardShareStyle.sheetBackground)
         .preferredColorScheme(.dark)
-        .task(id: artworkAttempt) {
-            await artwork.load(localFilename: localArtworkFilename, remoteURLs: remoteArtworkURLs, using: artworkLoader)
+        .task(id: currentSource.map { ArtworkRequest(source: $0, attempt: artworkAttempt) }) {
+            guard let source = currentSource else { return }
+            await artwork.load(localFilename: source.localFilename, remoteURLs: source.remoteURLs, using: artworkLoader)
+            guard !Task.isCancelled else { return }
+            loadedArtworkSource = source
         }
-        .task(id: RenderKey(includesPrice: includesPrice, artworkRevision: artwork.revision)) {
-            rendered = CardShareRenderer.render(image)
+        .task(id: currentSource) {
+            guard let source = currentSource else { return }
+            let sampled = await ArtworkAccentStore.accent(localFilename: source.localFilename,
+                remoteURL: source.remoteURLs.first, fallbackRemoteURL: source.remoteURLs.dropFirst().first)
+            guard !Task.isCancelled else { return }
+            accent = sampled
         }
+        .task(id: renderKey) {
+            rendered = image.flatMap { CardShareRenderer.render($0) }
+        }
+    }
+
+    private var optionsCard: some View {
+        VStack(spacing: 0) {
+            if options.count > 1 {
+                copyPicker
+                Divider().padding(.leading, 16)
+            }
+            if options.contains(where: { $0.finishLabel != nil }) {
+                finishSection
+                Divider().padding(.leading, 16)
+            }
+            priceRow
+        }
+        // The preview scales down to make room; the controls keep their text.
+        .fixedSize(horizontal: false, vertical: true)
+        .background(CardShareStyle.rowBackground, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    /// Which owned copy goes out: each raw finish, each slab, or every finish
+    /// together for comparison.
+    private var copyPicker: some View {
+        let labels = choiceLabels
+        return ScrollViewReader { proxy in ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(options) { option in
+                    CardShareChoiceChip(title: labels[option.id] ?? option.choiceLabel,
+                                        systemImage: option.isGraded ? "checkmark.seal.fill" : nil,
+                                        isSelected: !showsAllFinishes && option.id == current?.id) {
+                        selectedID = option.id
+                        sharesAllFinishes = false
+                    }
+                    .id(option.id)
+                }
+                if includesFinish && finishOptions.count > 1 {
+                    CardShareChoiceChip(title: "All finishes", systemImage: "square.stack",
+                                        isSelected: showsAllFinishes) {
+                        sharesAllFinishes = true
+                    }
+                    .id("all-finishes")
+                }
+            }
+        }
+        // The copy the sheet opened on may sit past the edge.
+        .onAppear { proxy.scrollTo(selectedID, anchor: .center) }
+        }
+        // Scroll edge to edge within the card, aligned with the text.
+        .contentMargins(.horizontal, 16, for: .scrollContent)
+        .padding(.vertical, 6)
+        // Several choices stay visible at once even at the largest sizes.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Copy to share")
+    }
+
+    private var finishSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Toggle(isOn: $includesFinish) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Finish")
+                        .font(.body.weight(.semibold))
+                    Text(finishRowDetail)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .tint(CardShareStyle.mint)
+            .disabled(current?.finishLabel == nil && !showsAllFinishes)
+
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .frame(minHeight: 60)
+    }
+
+    private var finishRowDetail: String {
+        guard includesFinish else { return "Card details, without the finish" }
+        if showsAllFinishes { return "All \(finishOptions.count) finishes you own" }
+        return current?.finishLabel ?? "Not recorded for this copy"
     }
 
     private var priceRow: some View {
@@ -950,18 +1363,48 @@ struct CollectionShareSheet: View {
             }
         }
         .tint(CardShareStyle.mint)
-        .disabled(price == nil)
+        .disabled(availablePrice == nil)
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
         .frame(minHeight: 60)
-        .background(CardShareStyle.rowBackground, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var priceRowDetail: String {
-        guard let price else { return "No market price available yet" }
+        guard let price = availablePrice else { return "No market price available yet" }
         guard includesPrice else { return "Card details, without the price" }
-        if let source = price.source { return "\(price.basis) from \(source)" }
-        return price.basis
+        let basis = showsAllFinishes ? "\(price.basis) per finish" : price.basis
+        if let source = price.source { return "\(basis) from \(source)" }
+        return basis
+    }
+}
+
+/// A one-tap choice among a few short options.
+private struct CardShareChoiceChip: View {
+    let title: String
+    var systemImage: String? = nil
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 5) {
+                if let systemImage {
+                    Image(systemName: systemImage).font(.footnote.weight(.semibold))
+                }
+                Text(title)
+            }
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+                .padding(.horizontal, 14)
+                .frame(minHeight: 36)
+                .foregroundStyle(isSelected ? AppPalette.ink : Color.primary)
+                .background(isSelected ? AnyShapeStyle(CardShareStyle.mint) : AnyShapeStyle(Color.white.opacity(0.10)),
+                            in: Capsule())
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -973,6 +1416,8 @@ struct BuyCheckShareSheet: View {
     /// Nil where market history is not available for this item, such as a
     /// graded price check. The image then goes out without a chart.
     let historyRequest: CardMarketHistoryRequest?
+    /// A scan result is a price check; a card page shares a card.
+    var title = "Share price check"
     var artworkLoader: CardShareArtworkLoader.Load = CardShareArtworkLoader.load
 
     @Environment(\.cardGameRuntimes) private var runtimes
@@ -1027,7 +1472,7 @@ struct BuyCheckShareSheet: View {
             .padding(.horizontal, 20)
             .padding(.top, 4)
             .padding(.bottom, 12)
-            .navigationTitle("Share price check")
+            .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -1261,6 +1706,13 @@ private struct CardShareReviewState {
     }
 }
 
+private extension CardShareIdentity {
+    func withGrade(_ grade: String) -> CardShareIdentity {
+        CardShareIdentity(name: name, setCode: setCode, setName: setName, number: number,
+                          badge: .grade(grade), rarity: rarity, finish: finish, edition: edition)
+    }
+}
+
 struct CardShareReviewView: View {
     @State private var isPresented = true
     @State private var loadAttempts = 0
@@ -1287,6 +1739,19 @@ struct CardShareReviewView: View {
             source: state == "graded" ? "JustTCG" : "TCGplayer", asOf: .now)
     }
 
+    /// Several owned finishes of one card, as the card page offers them.
+    private var finishOptions: [CollectionShareOption] {
+        [("normal", "Normal", 0.25), ("holo", "Holo", 1.8), ("reverse", "Reverse Holo", 0.9)].map { id, label, amount in
+            CollectionShareOption(id: id, identity: identity, finishLabel: label,
+                price: CardSharePrice(amount: amount, currencyCode: "USD", basis: "Near Mint market",
+                    source: "TCGplayer", asOf: .now),
+                showsFinishSheen: id != "normal", localArtworkFilename: nil, remoteArtworkURLs: [artworkURL])
+        } + [CollectionShareOption(id: "psa10", identity: identity.replacingFinish(nil).withGrade("PSA 10"),
+            finishLabel: "Holo",
+            price: CardSharePrice(amount: 42, currencyCode: "USD", basis: "PSA 10 market", source: "JustTCG", asOf: .now),
+            showsFinishSheen: false, localArtworkFilename: nil, remoteArtworkURLs: [artworkURL])]
+    }
+
     var body: some View {
         Button("Open share sheet") { isPresented = true }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -1296,6 +1761,9 @@ struct CardShareReviewView: View {
                     if state.hasPrefix("buy") {
                         BuyCheckShareSheet(identity: identity, price: price, artworkURLs: [artworkURL], historyRequest: nil,
                             artworkLoader: loadArtwork)
+                    } else if state.hasPrefix("finishes") {
+                        CollectionShareSheet(options: finishOptions,
+                            initialOptionID: state.contains("graded") ? "psa10" : "holo", artworkLoader: loadArtwork)
                     } else {
                         CollectionShareSheet(identity: identity, price: state == "no-price" ? nil : price,
                             showsFinishSheen: !["normal", "graded", "sealed"].contains(state), localArtworkFilename: nil,

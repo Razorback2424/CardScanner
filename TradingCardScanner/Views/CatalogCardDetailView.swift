@@ -147,7 +147,8 @@ struct CatalogCardDetailView: View {
     @State private var photoTargetKey: String?
     @State private var isChoosingPhoto = false
     @State private var photoItem: PhotosPickerItem?
-    @State private var shareTarget: CatalogCopyShareTarget?
+    @State private var shareRequest: CatalogCopyShareRequest?
+    @State private var catalogShare: CatalogUnownedShare?
     @State private var mappedPrices: [String: PriceLookup] = [:]
     @State private var failedPriceVariantIDs: Set<String> = []
     @State private var priceRetryID = 0
@@ -221,7 +222,12 @@ struct CatalogCardDetailView: View {
         // sending the holder to a second, differently built card screen.
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                if let details { copyMenu(details.card) }
+                if let details {
+                    HStack {
+                        shareButton(details.card)
+                        copyMenu(details.card)
+                    }
+                }
             }
         }
         .photosPicker(isPresented: $isChoosingPhoto, selection: $photoItem, matching: .images)
@@ -229,8 +235,19 @@ struct CatalogCardDetailView: View {
             guard let item = photoItem, let key = photoTargetKey else { return }
             await savePhoto(item, for: key)
         }
-        .sheet(item: $shareTarget) { target in
-            CatalogCopyShareSheet(collectionKey: target.id, price: target.price)
+        .sheet(item: $shareRequest) { request in
+            CatalogCopyShareSheet(request: request)
+        }
+        .sheet(item: $catalogShare) { share in
+            if let price = share.price {
+                BuyCheckShareSheet(identity: share.identity, price: price,
+                                   artworkURLs: share.artworkURLs, historyRequest: share.historyRequest,
+                                   title: "Share card")
+            } else {
+                CollectionShareSheet(options: [CollectionShareOption(id: "catalog", identity: share.identity,
+                    finishLabel: share.identity.finish, price: nil, showsFinishSheen: false,
+                    localArtworkFilename: nil, remoteArtworkURLs: share.artworkURLs)])
+            }
         }
         .alert(
             addAlertTitle,
@@ -432,19 +449,80 @@ struct CatalogCardDetailView: View {
                     .foregroundStyle(.white)
             }
             .accessibilityLabel("Your copy actions")
-            .accessibilityHint("Share, see history, set a photo, or record a sale or trade.")
+            .accessibilityHint("See history, set a photo, or record a sale or trade.")
             .disabled(isWritePending)
         }
+    }
+
+    /// Everything owned of this card that can be shared: one raw copy per
+    /// finish in the page's finish order, then every copy no finish tile
+    /// accounts for, graded slabs included.
+    private func shareableCopies(_ card: IdentifiedCard) -> [CatalogCopyShareRequest.Copy] {
+        guard catalogCardSelection == nil else { return [] }
+        let finishCopies = finishVariants(card).compactMap { copyTargets(for: $0, card: card).first?.collectionKey }
+        let keys = finishCopies + otherOwnedRows(card).map(\.collectionKey)
+        return keys.map { key in
+            .init(collectionKey: key, price: projectionStore.snapshot?.rowsByCollectionKey[key]?.price ?? .unknown)
+        }
+    }
+
+    /// One tap to share, on every card page. Owned copies share as the
+    /// holder's own (finish, grade, photo); a card nobody owns shares as a
+    /// price check of the finish on screen, for a want or a trade.
+    @ViewBuilder
+    private func shareButton(_ card: IdentifiedCard) -> some View {
+        if catalogCardSelection == nil {
+            let copies = shareableCopies(card)
+            Button {
+                if copies.isEmpty {
+                    catalogShare = unownedShare(card)
+                } else {
+                    let selected = selectedVariant(card).flatMap { copyTargets(for: $0, card: card).first }
+                    shareRequest = CatalogCopyShareRequest(
+                        copies: copies,
+                        initialKey: selected?.collectionKey ?? copies[0].collectionKey
+                    )
+                }
+            } label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.title3.weight(.semibold))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.white)
+            }
+            .accessibilityLabel("Share card")
+            .accessibilityHint(copies.isEmpty
+                ? "Shares an image of this card with its market price."
+                : (copies.count > 1
+                    ? "Shares an image of one of your copies, or all of your finishes."
+                    : "Shares an image of your copy, with or without its finish and price."))
+        }
+    }
+
+    /// The finish on screen, its current price and its history: the same
+    /// facts the page shows, nothing estimated.
+    private func unownedShare(_ card: IdentifiedCard) -> CatalogUnownedShare {
+        let variants = finishVariants(card)
+        let variant = selectedVariant(card)
+        // With one finish there is nothing to tell apart; a standard finish
+        // then goes unstated, as elsewhere.
+        let finish = variants.count > 1 ? variant?.label : CardShareIdentity.finishBadge(for: variant)?.text
+        let display = variant.map { priceDisplay(for: $0, card: card, slot: ownedSlot(for: $0, card: card)) } ?? .unknown
+        let pricing = catalog.gameRegistry.supports(summary.game, .pricing)
+        let price = pricing ? CardSharePrice(display: display,
+            basis: CardSharePrice.basis(itemKind: .rawCard, gradeLabel: nil, source: display.source)) : nil
+        return CatalogUnownedShare(
+            identity: CardShareIdentity(catalogCard: card, setName: details?.set.name, finish: finish,
+                edition: summary.game == .pokemon ? summary.pokemonPrintRun?.label : nil),
+            price: price,
+            artworkURLs: [card.displayImageURL ?? summary.imageURL, summary.thumbnailURL].compactMap { $0 },
+            historyRequest: pricing && variant != nil
+                ? CardMarketHistoryRequest(card: card, variant: variant, printRun: summary.pokemonPrintRun) : nil
+        )
     }
 
     @ViewBuilder
     private func copyActions(_ target: CatalogOwnedEntryTarget) -> some View {
         let row = projectionStore.snapshot?.rowsByCollectionKey[target.collectionKey]
-        Button {
-            shareTarget = .init(id: target.collectionKey, price: row?.price ?? .unknown)
-        } label: {
-            Label("Share", systemImage: "square.and.arrow.up")
-        }
         NavigationLink {
             CollectionCardHistoryView(collectionKey: target.collectionKey, cardName: target.cardName)
         } label: {
@@ -1936,35 +2014,56 @@ struct MagicTreatmentSlice4DebugView: View {
 }
 #endif
 
-private struct CatalogCopyShareTarget: Identifiable {
-    let id: String
-    let price: PriceDisplay
+private struct CatalogUnownedShare: Identifiable {
+    let id = UUID()
+    let identity: CardShareIdentity
+    /// Nil when the page has no usable price; the card is still shareable.
+    let price: CardSharePrice?
+    let artworkURLs: [URL]
+    let historyRequest: CardMarketHistoryRequest?
 }
 
-/// Shares a saved copy from the card page, with its own photo when it has one.
+private struct CatalogCopyShareRequest: Identifiable {
+    struct Copy {
+        let collectionKey: String
+        let price: PriceDisplay
+    }
+
+    let id = UUID()
+    let copies: [Copy]
+    let initialKey: String
+}
+
+/// Shares saved copies from the card page, each with its own photo when it
+/// has one: raw finishes and graded slabs of the same card.
 private struct CatalogCopyShareSheet: View {
     @Query private var cards: [CollectedCard]
-    let price: PriceDisplay
+    @Query private var overrides: [LocalArtworkOverride]
+    let request: CatalogCopyShareRequest
 
-    init(collectionKey: String, price: PriceDisplay) {
-        _cards = Query(filter: #Predicate<CollectedCard> { $0.collectionKey == collectionKey },
+    init(request: CatalogCopyShareRequest) {
+        let keys = request.copies.map(\.collectionKey)
+        _cards = Query(filter: #Predicate<CollectedCard> { keys.contains($0.collectionKey) },
                        sort: [SortDescriptor(\.dateAdded, order: .forward)])
-        self.price = price
+        _overrides = Query(filter: #Predicate<LocalArtworkOverride> { keys.contains($0.collectionKey) },
+                           sort: [SortDescriptor(\.updatedAt, order: .reverse)])
+        self.request = request
+    }
+
+    private var options: [CollectionShareOption] {
+        request.copies.compactMap { copy in
+            guard let card = cards.first(where: { $0.collectionKey == copy.collectionKey }) else { return nil }
+            let override = overrides.first { $0.collectionKey == copy.collectionKey }
+            let filename = CollectionDetailArtworkSource<EmptyView>.effectiveFilename(
+                override: override?.filename, legacy: card.userArtworkFilename)
+            return CollectionShareOption(collectedCard: card, price: copy.price, localArtworkFilename: filename)
+        }
     }
 
     var body: some View {
-        if let card = cards.first {
-            CollectionDetailArtworkSource(collectionKey: card.collectionKey,
-                                          legacyFilename: card.userArtworkFilename) { filename in
-                let source = CatalogCardArtworkSource(collectedCard: card, prefersFullSize: true)
-                CollectionShareSheet(
-                    identity: CardShareIdentity(collectedCard: card),
-                    price: CardSharePrice(collectedCard: card, display: price),
-                    showsFinishSheen: CollectionShareSheet.showsFinishSheen(for: card),
-                    localArtworkFilename: filename,
-                    remoteArtworkURLs: [source.primaryURL].compactMap { $0 } + source.fallbacks
-                )
-            }
+        let options = options
+        if !options.isEmpty {
+            CollectionShareSheet(options: options, initialOptionID: request.initialKey)
         }
     }
 }

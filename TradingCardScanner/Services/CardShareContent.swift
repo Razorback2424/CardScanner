@@ -62,6 +62,13 @@ struct CardShareIdentity: Equatable, Sendable {
         return nil
     }
 
+    /// The same item with its stated finish replaced, or removed with nil. A
+    /// grade stays: it describes the slab, not the printed finish.
+    func replacingFinish(_ finish: String?) -> CardShareIdentity {
+        CardShareIdentity(name: name, setCode: setCode, setName: setName, number: number,
+                          badge: gradeBadge, rarity: rarity, finish: finish, edition: edition)
+    }
+
     /// Standard finishes need no extra label. A known nonstandard finish is
     /// retained even when rarity or grade occupies the primary metadata row.
     static func finishBadge(for variant: PhysicalVariant?) -> Badge? {
@@ -389,6 +396,14 @@ struct CardShareAsk: Equatable, Sendable {
     }
 }
 
+/// One owned finish when several are shared together, with its own price when
+/// prices are included.
+struct CardShareFinishLine: Equatable, Sendable, Identifiable {
+    let id: String
+    let label: String
+    let price: CardSharePrice?
+}
+
 /// The plain text sent alongside the image, so the recipient can copy the
 /// card's name into a search and still read the facts where images load slowly.
 enum CardShareSummary {
@@ -397,10 +412,15 @@ enum CardShareSummary {
         price: CardSharePrice?,
         trend: CardShareTrend? = nil,
         ask: CardShareAsk? = nil,
+        finishes: [CardShareFinishLine] = [],
         now: Date = .now,
         calendar: Calendar = .current,
         locale: Locale = .current
     ) -> String {
+        guard finishes.isEmpty else {
+            return finishesText(identity: identity.replacingFinish(nil), finishes: finishes,
+                                now: now, calendar: calendar, locale: locale)
+        }
         let printed = [identity.setCode, identity.number?.text]
             .compactMap { $0 }
             .joined(separator: " ")
@@ -432,6 +452,30 @@ enum CardShareSummary {
                 asOf: nil
             ).formattedAmount(locale: locale)
             lines.append("Asking \(askAmount) · \(ask.comparisonText)")
+        }
+        return lines.joined(separator: "\n")
+    }
+
+    /// `Nonfoil · $0.25` per finish, then the price basis and source once.
+    /// Without prices, the finishes are listed on one line.
+    private static func finishesText(identity: CardShareIdentity, finishes: [CardShareFinishLine],
+                                     now: Date, calendar: Calendar, locale: Locale) -> String {
+        var lines = [text(identity: identity, price: nil, now: now, calendar: calendar, locale: locale)]
+        let priced = finishes.compactMap(\.price)
+        if priced.isEmpty {
+            lines.append("Finishes: " + finishes.map(\.label).joined(separator: " · "))
+            return lines.joined(separator: "\n")
+        }
+        for finish in finishes {
+            lines.append([finish.label, finish.price?.formattedAmount(locale: locale) ?? "No price"]
+                .joined(separator: " · "))
+        }
+        if let first = priced.first {
+            var line = first.basis
+            if let source = first.sourceLine(now: now, calendar: calendar, locale: locale) {
+                line += " (\(source.replacingOccurrences(of: " · ", with: ", ")))"
+            }
+            lines.append(line)
         }
         return lines.joined(separator: "\n")
     }

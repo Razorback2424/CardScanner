@@ -459,18 +459,13 @@ private struct CollectionCardDetailContent: View {
                 .foregroundStyle(.white)
         }
         .accessibilityLabel("Share card")
-        .accessibilityHint("Shares an image of this card, with or without its price.")
+        .accessibilityHint("Shares an image of this card, with or without its finish and price.")
     }
 
     private var shareSheet: some View {
-        let source = CatalogCardArtworkSource(collectedCard: card, prefersFullSize: true)
-        return CollectionShareSheet(
-            identity: CardShareIdentity(collectedCard: card),
-            price: CardSharePrice(collectedCard: card, display: price),
-            showsFinishSheen: CollectionShareSheet.showsFinishSheen(for: card),
-            localArtworkFilename: localArtworkFilename,
-            remoteArtworkURLs: [source.primaryURL].compactMap { $0 } + source.fallbacks
-        )
+        CollectionShareSheet(options: [
+            CollectionShareOption(collectedCard: card, price: price, localArtworkFilename: localArtworkFilename)
+        ])
     }
 
     @ViewBuilder
