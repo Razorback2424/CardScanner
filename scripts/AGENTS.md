@@ -55,6 +55,16 @@ when changing these boundaries.
 - Not all JSON is generated. `publisher/catalog-input.json` and `publisher/discovery-policy.json` are owner-controlled policy inputs; `scripts/yugioh_*.json` and `lorcana_product_evidence.json` are curated inputs. Their `fixtures/` counterparts are recorded test inputs. Edit the one whose role matches the task.
 - Hosting changes must keep the shared-site preservation contract: restoring other catalog namespaces before deploy (see `restore_catalog_hosting_site.sh` and `test_catalog_hosting_restore.py`).
 
+### Reconciliation passes and release preflight
+
+Work catalog backlogs by root cause, following the
+[reconciliation playbook](../docs/catalog-reconciliation-playbook.md). Every
+pass writes a ledger through `catalog_exceptions.py` (one reason code per open
+row); use its `summarize` and `diff` commands to pick the next batch and to
+confirm what a batch closed. Run `catalog_release_preflight.py` on a candidate
+before signing: it reads each game's size caps from the Swift readers and fails
+within 5% of a cap.
+
 ## Verification
 
 Start with the focused offline test, which is usually named after the script (`scripts/tests/test_<script or area>.py`):

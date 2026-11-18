@@ -1,3 +1,24 @@
+# 2026-11-18 — Shared catalog reconciliation foundation
+
+The method behind One Piece revision 7 is recorded in the
+[reconciliation playbook](docs/catalog-reconciliation-playbook.md) for the
+other games. Two shared scripts back it:
+- `scripts/catalog_exceptions.py`: a reason-coded ledger of open rows, with
+  `summarize` and `diff` between passes.
+- `scripts/catalog_release_preflight.py`: reads each game's size caps from the
+  Swift readers and fails a candidate within 5% of one. The One Piece signing
+  job now runs it on the payload before signing and on the envelope after.
+  The Pokémon production job runs it on the snapshot.
+
+Revision 7 measures 35.68 of 40 MiB (payload) and 47.57 of 64 MiB (envelope).
+Current bundled seeds:
+- Lorcana manifest: 11.56 of 16 MiB.
+- Yu-Gi-Oh catalog: 32.69 of 48 MiB.
+- Pokémon snapshot: 3.99 of 24 MiB.
+
+New tests: `test_catalog_exceptions.py` (6) and
+`test_catalog_release_preflight.py` (5). `test_one_piece_workflow.py` passes.
+
 # 2026-11-18 — One Piece catalog revision 7 candidate
 
 Unsigned revision 7 is staged in

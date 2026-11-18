@@ -42,6 +42,10 @@ on:
       - "scripts/tests/test_one_piece_workflow.py"
       - "scripts/publish_one_piece_local.py"
       - "scripts/tests/test_publish_one_piece_local.py"
+      - "scripts/catalog_release_preflight.py"
+      - "scripts/tests/test_catalog_release_preflight.py"
+      - "scripts/catalog_exceptions.py"
+      - "scripts/tests/test_catalog_exceptions.py"
   workflow_dispatch:
     inputs:
       audit:
@@ -159,6 +163,10 @@ jobs:
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_workflow.py -v
       - name: Test local publication safeguards
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_publish_one_piece_local.py -v
+      - name: Test catalog size preflight and exceptions ledger
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_catalog_release_preflight.py -v
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_catalog_exceptions.py -v
 
   validate-catalog-core:
     if: github.event_name != 'schedule'
@@ -212,6 +220,7 @@ jobs:
             test -n "$PREVIOUS"
             baseline+=(--previous "$PREVIOUS")
           fi
+          python3 scripts/catalog_release_preflight.py --game one-piece --payload "$CANDIDATE"
           swift run --package-path OnePieceCatalogCore one-piece-catalog-publisher sign \
             --input "$CANDIDATE" --trusted-keys "$trusted_keys" --key-id "$KEY_ID" \
             --reviewed-payload-sha256 "$REVIEWED_SHA256" "${baseline[@]}" \
@@ -221,6 +230,7 @@ jobs:
             --reviewed-payload-sha256 "$REVIEWED_SHA256" "${baseline[@]}" \
             --manifest "$artifact_root/verified-manifest.json"
           cmp "$artifact_root/manifest.json" "$artifact_root/verified-manifest.json"
+          python3 scripts/catalog_release_preflight.py --game one-piece --envelope "$artifact_root/release-envelope.json"
       - uses: actions/upload-artifact@v4
         with:
           name: one-piece-signed-artifact-${{ github.run_id }}
