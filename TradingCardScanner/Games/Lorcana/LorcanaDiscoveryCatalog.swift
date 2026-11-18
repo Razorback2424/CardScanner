@@ -71,6 +71,10 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         let entries: [Entry]
     }
 
+    static let browseOnlyNotice = "Browse only"
+    /// Matches One Piece's label for a reviewed printing that has no price yet.
+    static let unpricedNotice = "Not yet priced"
+
     static let descriptor = CardGameDescriptor(game: .lorcana, displayName: "Disney Lorcana", sortOrder: 3,
                                                capabilities: [.scan, .browse, .sealed])
     static let bundled: Result<Self, Error> = Result {
@@ -244,6 +248,12 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
             physicalSources[resolved.physicalPrintingID] = source
         }
         sourceByPhysicalID = physicalSources
+        let hasReviewedManifest = registry.physicalCatalog != nil
+        // A reviewed printing with no market mapping is a real, addable printing that
+        // has no price yet (the generator's `verifiedUnpriced` status).
+        let unpricedPrintingIDs = Set((registry.physicalCatalog?.manifest.physicalPrintings ?? [])
+            .filter { $0.status != .superseded && ($0.marketMappings ?? []).isEmpty }
+            .map { $0.id.uuidString.lowercased() })
         var sets: [CatalogSetID: CatalogSet] = [:]
         var summaries: [CatalogSetID: [CatalogCardSummary]] = [:]
         for (id, rows) in Dictionary(grouping: payload.cards, by: \.setID) {
@@ -254,7 +264,13 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
             let first = ordered[0]
             guard ordered.allSatisfy({ $0.setName == first.setName }) else { throw BrowseCatalogError.badResponse }
             let date = first.releaseDate.flatMap { releaseDates[$0] }
-            let incomplete = payload.coverage.sets[first.setCode]?.hasAllCards == false || first.setCode == "C3"
+            // "Partial catalog" describes this set's own contents: a card in it is still
+            // held (browse only). A reviewed printing that is only missing a price is a
+            // known gap, labelled on its own row, and does not make the set partial.
+            // Without a reviewed manifest every row is browse only, so only the source's
+            // own completeness can mark a set partial.
+            let incomplete = hasReviewedManifest ? ordered.contains { physicalCards[$0.id]?.isEmpty ?? true }
+                : payload.coverage.sets[first.setCode]?.hasAllCards == false
             let upcoming = (date ?? .distantPast) > asOf
             let name = first.setName + " · EN" + (incomplete ? " · Partial catalog" : upcoming ? " · Upcoming" : "")
             let rows = ordered.flatMap { card -> [CatalogCardSummary] in
@@ -271,20 +287,23 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
                         setID: id, setName: name, setCode: card.setCode, name: title, collectorNumber: number,
                         thumbnailURL: printing?.thumbnailImageURL ?? card.thumbnailURL,
                         imageURL: printing?.displayImageURL ?? card.imageURL, catalogGeneration: catalogGeneration,
-                        collectionAvailabilityNotice: printing == nil ? "Browse only" : nil, searchFields: fields)
+                        collectionAvailabilityNotice: printing.map {
+                            unpricedPrintingIDs.contains($0.physicalPrintingID) ? Self.unpricedNotice : nil
+                        } ?? Self.browseOnlyNotice, searchFields: fields)
                 }
             }
             var set = CatalogSet(catalogID: id, name: name, code: first.setCode,
                 logoURL: nil, symbolURL: nil, cardCount: rows.count, releaseDate: date,
                 sortRank: Int(first.setCode) ?? 0)
-            let browseOnlyCount = rows.filter { $0.collectionAvailabilityNotice != nil }.count
+            let addable = rows.filter { $0.collectionAvailabilityNotice != Self.browseOnlyNotice }
+            let browseOnlyCount = rows.count - addable.count
             if browseOnlyCount > 0 {
                 set.collectionAvailabilityNotice = browseOnlyCount == rows.count
                     ? "Browse only" : "Some cards are browse only"
             }
             // Keep discovery rows visible while completion counts explicit
             // reviewed UUID targets rather than inferring ownership from aliases.
-            set.physicalPrintingIDs = Set(rows.filter { $0.collectionAvailabilityNotice == nil }.map(\.providerID))
+            set.physicalPrintingIDs = Set(addable.map(\.providerID))
             set.artworkFallbackURLs = Array(rows.compactMap(\.thumbnailURL).prefix(3))
             sets[id] = set; summaries[id] = rows
         }

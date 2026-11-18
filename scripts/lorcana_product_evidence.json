@@ -2,11 +2,26 @@
   "schemaVersion": 1,
   "reviewedAt": "2026-11-12",
   "nonfoilCompanions": {
-    "lorcanajson:en:1189": {"printedIdentifier": "3/C1 • EN • 2", "reference": "https://lorcanaplayer.com/set/challenge-set-1/"},
-    "lorcanajson:en:1190": {"printedIdentifier": "4/C1 • EN • 1", "reference": "https://lorcanaplayer.com/set/challenge-set-1/"},
-    "lorcanajson:en:1198": {"printedIdentifier": "8/C1 • EN • 1", "reference": "https://lorcanaplayer.com/set/challenge-set-1/"},
-    "lorcanajson:en:1664": {"printedIdentifier": "9/C1 • EN • 6", "reference": "https://lorcanaplayer.com/set/challenge-set-1/"},
-    "lorcanajson:en:1199": {"printedIdentifier": "10/C1 • EN • 1", "reference": "https://www.disneylorcana.com/en-GB/news/2025/10/2025-10-prizes-and-promos"}
+    "lorcanajson:en:1189": {
+      "printedIdentifier": "3/C1 • EN • 2",
+      "reference": "https://lorcanaplayer.com/set/challenge-set-1/"
+    },
+    "lorcanajson:en:1190": {
+      "printedIdentifier": "4/C1 • EN • 1",
+      "reference": "https://lorcanaplayer.com/set/challenge-set-1/"
+    },
+    "lorcanajson:en:1198": {
+      "printedIdentifier": "8/C1 • EN • 1",
+      "reference": "https://lorcanaplayer.com/set/challenge-set-1/"
+    },
+    "lorcanajson:en:1664": {
+      "printedIdentifier": "9/C1 • EN • 6",
+      "reference": "https://lorcanaplayer.com/set/challenge-set-1/"
+    },
+    "lorcanajson:en:1199": {
+      "printedIdentifier": "10/C1 • EN • 1",
+      "reference": "https://www.disneylorcana.com/en-GB/news/2025/10/2025-10-prizes-and-promos"
+    }
   },
   "publishedCards": [
     {
@@ -17,7 +32,9 @@
       "bodySHA256": "8ecaa73dba806e043c46ac6e88c879d4bc0814c52832ea22c93f4878a8681087",
       "groupID": 23234,
       "releaseDate": "2026-08-28",
-      "foilTypes": ["Foil"],
+      "foilTypes": [
+        "Foil"
+      ],
       "layout": "normal",
       "distribution": "Challenge Championships Top 32",
       "distributionID": "challenge-2026-championship-top-32",
@@ -295,99 +312,209 @@
       "printedIdentifier": "57/P3 • EN • 12",
       "expectedName": "Buzz Lightyear - Space Ranger",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/692489_400w.jpg",
-      "bodySHA256": "44892abfb6f9a5c928ed85200417461acf5e4260420f77aee33f9c72b9168d7c"
-    }
-    ,
+      "bodySHA256": "44892abfb6f9a5c928ed85200417461acf5e4260420f77aee33f9c72b9168d7c",
+      "groupID": 23234,
+      "foilTypes": [
+        "RainbowPillars"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 692490,
       "sourceCardID": "lorcanajson:en:3235",
       "printedIdentifier": "58/P3 • EN • 13",
       "expectedName": "Sulley - The New Boss",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/692490_400w.jpg",
-      "bodySHA256": "5abd3da4e9082b6ab9a3bf7675d09d65f81effec8c29ecb1590196d3657875ba"
-    }
-    ,
+      "bodySHA256": "5abd3da4e9082b6ab9a3bf7675d09d65f81effec8c29ecb1590196d3657875ba",
+      "groupID": 23234,
+      "foilTypes": [
+        "RainbowPillars"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 692491,
       "sourceCardID": "lorcanajson:en:3236",
       "printedIdentifier": "60/P3 • EN • 13",
       "expectedName": "Woody - Helping a Friend",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/692491_400w.jpg",
-      "bodySHA256": "aa2f43ebd54c6656efed975b7c1dfe05ebc42486ce45ae990c075d3dd053ad8a"
-    }
-    ,
+      "bodySHA256": "aa2f43ebd54c6656efed975b7c1dfe05ebc42486ce45ae990c075d3dd053ad8a",
+      "groupID": 23234,
+      "foilTypes": [
+        "RainbowPillars"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 705078,
       "sourceCardID": "lorcanajson:en:3217",
       "printedIdentifier": "9/P4 • EN • 13",
       "expectedName": "Morph - Little Imitator",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705078_400w.jpg",
-      "bodySHA256": "ad400bc5b6b7b04bad0dbacb25d0971bc466b4fac91d899bb4b63edfddf2b046"
-    }
-    ,
+      "bodySHA256": "ad400bc5b6b7b04bad0dbacb25d0971bc466b4fac91d899bb4b63edfddf2b046",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p4-organized-play",
+      "distributionRule": "p4-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 705079,
       "sourceCardID": "lorcanajson:en:3219",
       "printedIdentifier": "11/P4 • EN • 13",
       "expectedName": "Randall Boggs - Scary Smart",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705079_400w.jpg",
-      "bodySHA256": "5fe1d42502a606d0a5ca0c78af58eeeda94500a414280ed4433312a2f81aa534"
-    }
-    ,
+      "bodySHA256": "5fe1d42502a606d0a5ca0c78af58eeeda94500a414280ed4433312a2f81aa534",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p4-organized-play",
+      "distributionRule": "p4-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 705080,
       "sourceCardID": "lorcanajson:en:3218",
       "printedIdentifier": "10/P4 • EN • 13",
       "expectedName": "Meilin Lee - Lead Vocalist",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705080_400w.jpg",
-      "bodySHA256": "c86a13980ce8965c2839c382a2b9a5572fb084e487f9bfddd3ba507327720eab"
-    }
-    ,
+      "bodySHA256": "c86a13980ce8965c2839c382a2b9a5572fb084e487f9bfddd3ba507327720eab",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p4-organized-play",
+      "distributionRule": "p4-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 705081,
       "sourceCardID": "lorcanajson:en:3222",
       "printedIdentifier": "14/P4 • EN • 13",
       "expectedName": "If I Didn't Have You",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705081_400w.jpg",
-      "bodySHA256": "8f8223c10d6649b77e89c5893d8bcf27c0f50d0c12aa32a8407b2b77ca332187"
-    }
-    ,
+      "bodySHA256": "8f8223c10d6649b77e89c5893d8bcf27c0f50d0c12aa32a8407b2b77ca332187",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p4-organized-play",
+      "distributionRule": "p4-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 705082,
       "sourceCardID": "lorcanajson:en:3221",
       "printedIdentifier": "13/P4 • EN • 13",
       "expectedName": "Belle - Always Reading",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705082_400w.jpg",
-      "bodySHA256": "12e40fb4002786d110c786af3d546fc71a853d8e5c3e1cb78604f2cdfc113fdb"
-    }
-    ,
+      "bodySHA256": "12e40fb4002786d110c786af3d546fc71a853d8e5c3e1cb78604f2cdfc113fdb",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p4-organized-play",
+      "distributionRule": "p4-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 705083,
       "sourceCardID": "lorcanajson:en:3220",
       "printedIdentifier": "12/P4 • EN • 13",
       "expectedName": "Tigger - Hunny Barbarian",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705083_400w.jpg",
-      "bodySHA256": "a722d685d90eff2f8092545f349a3218bc46048437823bfad841d596721edfc9"
-    }
-    ,
+      "bodySHA256": "a722d685d90eff2f8092545f349a3218bc46048437823bfad841d596721edfc9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p4-promo",
+      "distributionRule": "p4-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 705086,
       "sourceCardID": "lorcanajson:en:3251",
       "printedIdentifier": "4/DIS • EN • 13",
       "expectedName": "Maleficent - Exultant Spellcaster",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705086_400w.jpg",
-      "bodySHA256": "110836aed37e2cf54e2b6b29b735e2f12e6a31f8e47a096595c179bc312ec9d6"
-    }
-    ,
+      "bodySHA256": "110836aed37e2cf54e2b6b29b735e2f12e6a31f8e47a096595c179bc312ec9d6",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-dis-parks-and-stores",
+      "distributionRule": "dis-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 709896,
       "sourceCardID": "lorcanajson:en:3574",
       "printedIdentifier": "16/PD1 • EN • 13",
       "expectedName": "With a Few Good Friends",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/709896_400w.jpg",
-      "bodySHA256": "230ea100e12db735bb4e9c2280eb0a5349f34e88c64c2fd0f366cf8bbd2f4913"
-    }
-    ,
+      "bodySHA256": "230ea100e12db735bb4e9c2280eb0a5349f34e88c64c2fd0f366cf8bbd2f4913",
+      "groupID": 24734,
+      "foilTypes": [
+        "Satin"
+      ],
+      "layout": "normal",
+      "distribution": "Illumineer's Quest: The Great Hunny Rescue victory card",
+      "distributionID": "promo-pd1-great-hunny-rescue-victory",
+      "distributionRule": "pd1-great-hunny-rescue-victory",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 711353,
       "sourceCardID": "lorcanajson:en:3586",
@@ -395,8 +522,7 @@
       "expectedName": "Angel - Siren Singer",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711353_400w.jpg",
       "bodySHA256": "4069ee782bdac86543cc824f39c1b40142fc9dd0174ccf70733270bc88cb1239"
-    }
-    ,
+    },
     {
       "productID": 711355,
       "sourceCardID": "lorcanajson:en:3587",
@@ -404,8 +530,7 @@
       "expectedName": "Pocahontas - Following the Wind",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711355_400w.jpg",
       "bodySHA256": "adbb67b7dd8a9c34f9fb51e2696d6d080c63daad14136e68ea3460268733468e"
-    }
-    ,
+    },
     {
       "productID": 711358,
       "sourceCardID": "lorcanajson:en:3588",
@@ -413,8 +538,7 @@
       "expectedName": "Mushu - Stealthy Dragon",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711358_400w.jpg",
       "bodySHA256": "1c30d3216e96536d339e172ac5be8af7cedf162e851e050fdfc2c2ebd79db772"
-    }
-    ,
+    },
     {
       "productID": 711359,
       "sourceCardID": "lorcanajson:en:3590",
@@ -422,8 +546,7 @@
       "expectedName": "Judy Hopps - Uncovering Clues",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711359_400w.jpg",
       "bodySHA256": "0bb573186a9f6a506a612548dfb979227f973b5e1d298a52a45f6b6acafa8954"
-    }
-    ,
+    },
     {
       "productID": 711360,
       "sourceCardID": "lorcanajson:en:3591",
@@ -431,8 +554,7 @@
       "expectedName": "Mr. Incredible - Taking Out the Trash",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711360_400w.jpg",
       "bodySHA256": "852021e68ca6bec6ecdbcc45356bebc998aafe5341d47a2812781d0a4cc06493"
-    }
-    ,
+    },
     {
       "productID": 711367,
       "sourceCardID": "lorcanajson:en:3585",
@@ -440,53 +562,102 @@
       "expectedName": "Woody - Leader of the Toys",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711367_400w.jpg",
       "bodySHA256": "a7a72c5f80e7db27983171dc9e707ee1025795bc2a1eecf29a83e63beb9c710d"
-    }
-    ,
+    },
     {
       "productID": 711443,
       "sourceCardID": "lorcanajson:en:3226",
       "printedIdentifier": "2/PD1 • EN • 11",
       "expectedName": "Rapunzel - Ethereal Protector",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711443_400w.jpg",
-      "bodySHA256": "d9bde9c32e8686d1d2d7f219fed28e33eb014e6e329c8306ee4ce970dbe28fef"
-    }
-    ,
+      "bodySHA256": "d9bde9c32e8686d1d2d7f219fed28e33eb014e6e329c8306ee4ce970dbe28fef",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-pd1-promo",
+      "distributionRule": "pd1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 711485,
       "sourceCardID": "lorcanajson:en:3594",
       "printedIdentifier": "15/PD1 • EN • 12",
       "expectedName": "Pegasus - Searching High and Low",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711485_400w.jpg",
-      "bodySHA256": "3363d6d00b990e8fafa4c27fa46e511a0d63decfdaf4d9218e58c4c9227f3774"
-    }
-    ,
+      "bodySHA256": "3363d6d00b990e8fafa4c27fa46e511a0d63decfdaf4d9218e58c4c9227f3774",
+      "groupID": 23234,
+      "foilTypes": [
+        "FreeForm2"
+      ],
+      "layout": "normal",
+      "distribution": "Quest of Wonders: An Illumineer's Lorebook",
+      "distributionID": "promo-pd1-quest-of-wonders-lorebook",
+      "distributionRule": "pd1-quest-of-wonders-lorebook",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 712042,
       "sourceCardID": "lorcanajson:en:3246",
       "printedIdentifier": "6/DIS • EN • 10",
       "expectedName": "Mickey Mouse - Amber Champion",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712042_400w.jpg",
-      "bodySHA256": "25e1da2906d496ea9da73bfe58d263c07261d77cec6ce69b20a230e1e3d8b045"
-    }
-    ,
+      "bodySHA256": "25e1da2906d496ea9da73bfe58d263c07261d77cec6ce69b20a230e1e3d8b045",
+      "groupID": 23234,
+      "foilTypes": [
+        "FreeForm2"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-dis-parks-and-stores",
+      "distributionRule": "dis-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 719967,
       "sourceCardID": "lorcanajson:en:3233",
       "printedIdentifier": "18/PD1 • EN • 13",
       "expectedName": "Sulley - Protective Monster",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/719967_400w.jpg",
-      "bodySHA256": "8662afb9b0f2ae282384c77f23f67c37088a44888b8a16565934578c41f56394"
-    }
-    ,
+      "bodySHA256": "8662afb9b0f2ae282384c77f23f67c37088a44888b8a16565934578c41f56394",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-pd1-promo",
+      "distributionRule": "pd1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 719968,
       "sourceCardID": "lorcanajson:en:3234",
       "printedIdentifier": "19/PD1 • EN • 13",
       "expectedName": "Violet Parr - Super Resilient",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/719968_400w.jpg",
-      "bodySHA256": "1791a9ebfc78576b4c754d6fc28f940cd20fa76a2637e6504d067e415b6d693c"
-    }
-    ,
+      "bodySHA256": "1791a9ebfc78576b4c754d6fc28f940cd20fa76a2637e6504d067e415b6d693c",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-pd1-promo",
+      "distributionRule": "pd1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 721876,
       "sourceCardID": "lorcanajson:en:3572",
@@ -495,15 +666,16 @@
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721876_400w.jpg",
       "bodySHA256": "a57fb5ce08b3cbc92d217eb9f4835d583fa4f3863ec54c464641e8b9ed1384e4",
       "groupID": 24734,
-      "foilTypes": ["Satin"],
+      "foilTypes": [
+        "Satin"
+      ],
       "layout": "normal",
       "size": "standard",
       "distribution": "Illumineer’s Quest: The Great Hunny Rescue",
       "distributionID": "great-hunny-rescue-player-deck",
       "physicalReleaseEvidence": "https://disneylorcana.com/en/product/great-hunny-rescue/",
       "marketLane": "Cold Foil"
-    }
-    ,
+    },
     {
       "productID": 721878,
       "sourceCardID": "lorcanajson:en:3573",
@@ -512,15 +684,16 @@
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721878_400w.jpg",
       "bodySHA256": "bc6061025efd682974b74c68b7bdbafd310f702f1224f9657f9b0bff81c892c0",
       "groupID": 24734,
-      "foilTypes": ["Satin"],
+      "foilTypes": [
+        "Satin"
+      ],
       "layout": "normal",
       "size": "standard",
       "distribution": "Illumineer’s Quest: The Great Hunny Rescue",
       "distributionID": "great-hunny-rescue-player-deck",
       "physicalReleaseEvidence": "https://disneylorcana.com/en/product/great-hunny-rescue/",
       "marketLane": "Cold Foil"
-    }
-    ,
+    },
     {
       "productID": 721882,
       "sourceCardID": "lorcanajson:en:3571",
@@ -529,15 +702,16 @@
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721882_400w.jpg",
       "bodySHA256": "43f75a71e1af436f4b9a879f2281c4897459e36365f3c57a772a3c5243b8a87c",
       "groupID": 24734,
-      "foilTypes": ["Satin"],
+      "foilTypes": [
+        "Satin"
+      ],
       "layout": "normal",
       "size": "standard",
       "distribution": "Illumineer’s Quest: The Great Hunny Rescue",
       "distributionID": "great-hunny-rescue-player-deck",
       "physicalReleaseEvidence": "https://disneylorcana.com/en/product/great-hunny-rescue/",
       "marketLane": "Cold Foil"
-    }
-    ,
+    },
     {
       "productID": 721891,
       "sourceCardID": "lorcanajson:en:3570",
@@ -546,30 +720,51 @@
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721891_400w.jpg",
       "bodySHA256": "de6025e8510a6d9b8f7e739dcdd4f8e8e0b3d025512a42c3b21f0fa90662c20c",
       "groupID": 24734,
-      "foilTypes": ["Satin"],
+      "foilTypes": [
+        "Satin"
+      ],
       "layout": "normal",
       "size": "standard",
       "distribution": "Illumineer’s Quest: The Great Hunny Rescue",
       "distributionID": "great-hunny-rescue-player-deck",
       "physicalReleaseEvidence": "https://disneylorcana.com/en/product/great-hunny-rescue/",
       "marketLane": "Cold Foil"
-    }
-    ,
+    },
     {
       "productID": 722667,
       "sourceCardID": "lorcanajson:en:3575",
       "printedIdentifier": "17/PD1 • EN • 14",
       "expectedName": "The Beanstalk - Onward and Upward",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/722667_400w.jpg",
-      "bodySHA256": "1648633802b33ac3c7cbce6eb350635af9e1f5661e35fba55c2f45a68719b887"
-    }
-    ,
+      "bodySHA256": "1648633802b33ac3c7cbce6eb350635af9e1f5661e35fba55c2f45a68719b887",
+      "groupID": 24734,
+      "foilTypes": [
+        "Satin"
+      ],
+      "layout": "landscape",
+      "distribution": "Illumineer's Quest: The Great Hunny Rescue victory card",
+      "distributionID": "promo-pd1-great-hunny-rescue-victory",
+      "distributionRule": "pd1-great-hunny-rescue-victory",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
     {
       "productID": 554628,
       "printedIdentifier": "5/C1 • EN • 1",
       "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/554628.jpg",
       "bodySHA256": "cecda2bc154f83a773c5990b6989e63ce4a860ce77fa523636b3f5630146c6c4",
-      "expectedName": "Mickey Mouse - Brave Little Tailor (Serial Numbered)"
+      "expectedName": "Mickey Mouse - Brave Little Tailor (Serial Numbered)",
+      "groupID": 23234,
+      "foilTypes": [
+        "Foil"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Lorcana Challenge Top 4/Top 8 prize (serial numbered)",
+      "distributionID": "challenge-year-1-serial-numbered-prize",
+      "stamp": "Serial numbered",
+      "physicalReleaseEvidence": "https://www.cgccards.com/news/article/13016/",
+      "marketLane": null
     },
     {
       "productID": 616373,
@@ -783,7 +978,9 @@
       "bodySHA256": "8eb26102d972b105a70ac0812a40d333da3d98543eca33d652a453f5c2d17a08",
       "expectedName": "Mulan - Imperial Soldier (Oversized)",
       "groupID": 22937,
-      "foilTypes": ["Foil"],
+      "foilTypes": [
+        "Foil"
+      ],
       "layout": "normal",
       "size": "oversized",
       "distribution": "The First Chapter gift set",
@@ -798,7 +995,9 @@
       "bodySHA256": "2dedac5571d3b3a1f88a1fae0157c6df3fdd68f29bf68c13ccd5f75c3c69eaa5",
       "expectedName": "Stitch - Covert Agent (Oversized)",
       "groupID": 23367,
-      "foilTypes": ["Foil"],
+      "foilTypes": [
+        "Foil"
+      ],
       "layout": "normal",
       "size": "oversized",
       "distribution": "Into the Inklands gift set",
@@ -813,7 +1012,9 @@
       "bodySHA256": "fa0e2f93729113e845c7b52eebb2fd119537d82ccd37620d1e48a6abaf4d76ff",
       "expectedName": "Tinker Bell - Very Clever Fairy (Oversized)",
       "groupID": 23367,
-      "foilTypes": ["Foil"],
+      "foilTypes": [
+        "Foil"
+      ],
       "layout": "normal",
       "size": "oversized",
       "distribution": "Into the Inklands gift set",
@@ -829,7 +1030,10 @@
       "bodySHA256": "a24652f615fd9a85acf6372f47a1a5e81aabab27036415dedd075be584902053",
       "expectedName": "Bucky - Squirrel Squeak Tutor",
       "groupID": 23303,
-      "foilTypes": ["None", "Silver"],
+      "foilTypes": [
+        "None",
+        "Silver"
+      ],
       "layout": "normal",
       "distribution": "Original Rise of the Floodborn",
       "distributionID": "ordinary-expansion-2",
@@ -845,7 +1049,9 @@
       "bodySHA256": "a55ad105b40424f1dc88ecf945d64c512c1a882967c0718c592ac0ccb91d6425",
       "expectedName": "Bucky - Squirrel Squeak Tutor (Errata Version)",
       "groupID": 23303,
-      "foilTypes": ["Silver"],
+      "foilTypes": [
+        "Silver"
+      ],
       "layout": "normal",
       "distribution": "Azurite Sea booster box promo",
       "distributionID": "azurite-sea-bucky-errata",
@@ -862,7 +1068,10 @@
       "bodySHA256": "600c40a1bd90a1107ba3fb357a228061a5c6ba303e631e9c694ec8a6d2c0ca51",
       "expectedName": "Elsa - Gloves Off",
       "groupID": 23303,
-      "foilTypes": ["None", "Silver"],
+      "foilTypes": [
+        "None",
+        "Silver"
+      ],
       "layout": "normal",
       "distribution": "Original Rise of the Floodborn",
       "distributionID": "ordinary-expansion-2",
@@ -878,7 +1087,10 @@
       "bodySHA256": "4feab92170fcec47bd0fc08efedc5fdae04f294b13d9b64a04117e5cbb569b79",
       "expectedName": "Elsa - Gloves Off (Errata Version)",
       "groupID": 23303,
-      "foilTypes": ["None", "Silver"],
+      "foilTypes": [
+        "None",
+        "Silver"
+      ],
       "layout": "normal",
       "distribution": "Corrected Rise of the Floodborn",
       "distributionID": "rise-of-the-floodborn-elsa-errata",
@@ -892,7 +1104,19 @@
       "sourceCardID": "lorcanajson:en:3245",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/668575_400w.jpg",
       "bodySHA256": "3e3647b970b6059df89933ebab0abe60341ce95d2ceaa79f3ed828aa45640ff8",
-      "expectedName": "Stitch - Rock Star"
+      "expectedName": "Stitch - Rock Star",
+      "printedIdentifier": "3/DIS • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "FreeForm2"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-dis-parks-and-stores",
+      "distributionRule": "dis-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
     },
     {
       "productID": 722695,
@@ -913,28 +1137,80 @@
       "sourceCardID": "lorcanajson:en:3223",
       "expectedName": "Rapunzel - Escaping the Tower (Store Championship Participant)",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705084_400w.jpg",
-      "bodySHA256": "37b0119ca622cb27277989988b85c128e22cac12920d081fc77d9278439b5ab2"
+      "bodySHA256": "37b0119ca622cb27277989988b85c128e22cac12920d081fc77d9278439b5ab2",
+      "printedIdentifier": "15/P4 • EN • 13",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p4-organized-play",
+      "distributionRule": "p4-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo",
+      "sourceName": "Rapunzel - Escaping the Tower"
     },
     {
       "productID": 705085,
       "sourceCardID": "lorcanajson:en:3224",
       "expectedName": "Rapunzel - Escaping the Tower (Store Championship)",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705085_400w.jpg",
-      "bodySHA256": "6300226801d725b9cb51da1358151d25ef43d1b5878ecbadca6ae04c9bdc01be"
+      "bodySHA256": "6300226801d725b9cb51da1358151d25ef43d1b5878ecbadca6ae04c9bdc01be",
+      "printedIdentifier": "16/P4 • EN • 13",
+      "groupID": 23234,
+      "foilTypes": [
+        "Magma"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p4-organized-play",
+      "distributionRule": "p4-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Rapunzel - Escaping the Tower"
     },
     {
       "productID": 712043,
       "sourceCardID": "lorcanajson:en:3248",
       "expectedName": "Buzz Lightyear - Providing Cover (Magical Places Promo)",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712043_400w.jpg",
-      "bodySHA256": "23589e05490d4473897cd9541b35b40933537bc5e0020fb277110a426139f0a9"
+      "bodySHA256": "23589e05490d4473897cd9541b35b40933537bc5e0020fb277110a426139f0a9",
+      "printedIdentifier": "8/DIS • EN • 13",
+      "groupID": 23234,
+      "foilTypes": [
+        "FreeForm2"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-dis-parks-and-stores",
+      "distributionRule": "dis-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Buzz Lightyear - Providing Cover"
     },
     {
       "productID": 712044,
       "sourceCardID": "lorcanajson:en:3247",
       "expectedName": "Elsa - The Fifth Spirit (Magical Places Promo)",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712044_400w.jpg",
-      "bodySHA256": "0a95cf3bbec5db53324a2d905344dec75cdccad4c656c8d23028133c889f9dad"
+      "bodySHA256": "0a95cf3bbec5db53324a2d905344dec75cdccad4c656c8d23028133c889f9dad",
+      "printedIdentifier": "7/DIS • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "FreeForm2"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-dis-parks-and-stores",
+      "distributionRule": "dis-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Elsa - The Fifth Spirit"
     },
     {
       "productID": 711361,
@@ -942,6 +1218,2565 @@
       "expectedName": "Hector Rivera - Gone to Pieces",
       "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711361_200w.jpg",
       "bodySHA256": "e0fd6df5d684b2aaab985f799ad0d4fcbdaaad9b4cabcda5023bdb76cfd420a6"
+    },
+    {
+      "productID": 501773,
+      "expectedName": "Mickey Mouse - Detective",
+      "sourceCardID": "lorcanajson:en:666",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "8/P1 • EN • 1",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 502012,
+      "expectedName": "Heihei - Boat Snack",
+      "sourceCardID": "lorcanajson:en:667",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "9/P1 • EN • 1",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo",
+      "sourceName": "HeiHei - Boat Snack"
+    },
+    {
+      "productID": 502013,
+      "expectedName": "Yzma - Alchemist",
+      "sourceCardID": "lorcanajson:en:668",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "10/P1 • EN • 1",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 518408,
+      "expectedName": "Cinderella - Knight in Training",
+      "sourceCardID": "lorcanajson:en:672",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "14/P1 • EN • 2",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 518411,
+      "expectedName": "Bucky - Squirrel Squeak Tutor",
+      "sourceCardID": "lorcanajson:en:673",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "15/P1 • EN • 2",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 518412,
+      "expectedName": "Minnie Mouse - Wide-Eyed Diver",
+      "sourceCardID": "lorcanajson:en:674",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "16/P1 • EN • 2",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 518413,
+      "expectedName": "Robin Hood - Capable Fighter",
+      "sourceCardID": "lorcanajson:en:675",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "17/P1 • EN • 2",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 538265,
+      "expectedName": "Kit Cloudkicker - Tough Guy",
+      "sourceCardID": "lorcanajson:en:684",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "26/P1 • EN • 3",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 538275,
+      "expectedName": "Jolly Roger - Hook's Ship",
+      "sourceCardID": "lorcanajson:en:685",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "27/P1 • EN • 3",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "landscape",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 538249,
+      "expectedName": "How Far I'll Go",
+      "sourceCardID": "lorcanajson:en:686",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "28/P1 • EN • 3",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 538264,
+      "expectedName": "John Silver - Greedy Treasure Seeker",
+      "sourceCardID": "lorcanajson:en:687",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "29/P1 • EN • 3",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 533447,
+      "expectedName": "Stitch - Rock Star (Store Championship)",
+      "sourceCardID": "lorcanajson:en:688",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "30/P1 • EN • 3",
+      "groupID": 23234,
+      "foilTypes": [
+        "Lava"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Stitch - Rock Star"
+    },
+    {
+      "productID": 551695,
+      "expectedName": "Mickey Mouse - Leader of the Band",
+      "sourceCardID": "lorcanajson:en:950",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "34/P1 • EN • 4",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 551696,
+      "expectedName": "Ursula's Lair - Eye of the Storm",
+      "sourceCardID": "lorcanajson:en:951",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "35/P1 • EN • 4",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "landscape",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 551697,
+      "expectedName": "Hidden Inkcaster",
+      "sourceCardID": "lorcanajson:en:952",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "36/P1 • EN • 4",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 551698,
+      "expectedName": "Mulan - Enemy of Entanglement",
+      "sourceCardID": "lorcanajson:en:953",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "37/P1 • EN • 4",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 551699,
+      "expectedName": "Ursula - Sea Witch Queen (Store Championship)",
+      "sourceCardID": "lorcanajson:en:954",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "38/P1 • EN • 4",
+      "groupID": 23234,
+      "foilTypes": [
+        "Lava"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p1-organized-play",
+      "distributionRule": "p1-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Ursula - Sea Witch Queen"
+    },
+    {
+      "productID": 520857,
+      "expectedName": "Gaston - Arrogant Hunter",
+      "sourceCardID": "lorcanajson:en:682",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "24/P1 • EN • 1",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p1-promo",
+      "distributionRule": "p1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 525095,
+      "expectedName": "Rapunzel - Gifted Artist",
+      "sourceCardID": "lorcanajson:en:689",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "31/P1 • EN • 2",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p1-promo",
+      "distributionRule": "p1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 525093,
+      "expectedName": "Pinocchio - Talkative Puppet",
+      "sourceCardID": "lorcanajson:en:690",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "32/P1 • EN • 2",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p1-promo",
+      "distributionRule": "p1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 525096,
+      "expectedName": "Four Dozen Eggs",
+      "sourceCardID": "lorcanajson:en:691",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "33/P1 • EN • 2",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p1-promo",
+      "distributionRule": "p1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 538247,
+      "expectedName": "Scrooge McDuck - Uncle Moneybags",
+      "sourceCardID": "lorcanajson:en:955",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "39/P1 • EN • 3",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p1-promo",
+      "distributionRule": "p1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 551693,
+      "expectedName": "Flotsam & Jetsam - Entangling Eels",
+      "sourceCardID": "lorcanajson:en:956",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "40/P1 • EN • 4",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p1-promo",
+      "distributionRule": "p1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 510149,
+      "expectedName": "Mickey Mouse - Musketeer",
+      "sourceCardID": "lorcanajson:en:669",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "11/P1 • EN • 1",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Gen Con 2023",
+      "distributionID": "promo-p1-gen-con-2023",
+      "distributionRule": "p1-gen-con-2023",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 501777,
+      "expectedName": "Goofy - Musketeer",
+      "sourceCardID": "lorcanajson:en:670",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "12/P1 • EN • 1",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Gamescom 2023",
+      "distributionID": "promo-p1-gamescom-2023",
+      "distributionRule": "p1-gamescom-2023",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 518895,
+      "expectedName": "Donald Duck - Musketeer",
+      "sourceCardID": "lorcanajson:en:671",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "13/P1 • EN • 1",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Spiel Essen 2023",
+      "distributionID": "promo-p1-spiel-essen-2023",
+      "distributionRule": "p1-spiel-essen-2023",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 561996,
+      "expectedName": "Nala - Mischievous Cub",
+      "sourceCardID": "lorcanajson:en:1182",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "3/P2 • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 561997,
+      "expectedName": "Finders Keepers",
+      "sourceCardID": "lorcanajson:en:1183",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "4/P2 • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 561998,
+      "expectedName": "Chicha - Dedicated Mother",
+      "sourceCardID": "lorcanajson:en:1184",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "5/P2 • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 561999,
+      "expectedName": "Stitch - Team Underdog",
+      "sourceCardID": "lorcanajson:en:1185",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "6/P2 • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 561210,
+      "expectedName": "Mirabel Madrigal - Family Gatherer (Store Championship)",
+      "sourceCardID": "lorcanajson:en:1186",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "7/P2 • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "VerticalWave"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Mirabel Madrigal - Family Gatherer"
+    },
+    {
+      "productID": 593836,
+      "expectedName": "Rescue Rangers Away!",
+      "sourceCardID": "lorcanajson:en:1425",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "10/P2 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 593833,
+      "expectedName": "Honey Lemon - Chemical Genius",
+      "sourceCardID": "lorcanajson:en:1426",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "11/P2 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 593834,
+      "expectedName": "Minnie Mouse - Pirate Lookout",
+      "sourceCardID": "lorcanajson:en:1427",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "12/P2 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 593835,
+      "expectedName": "Wasabi - Methodical Engineer",
+      "sourceCardID": "lorcanajson:en:1428",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "13/P2 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 593837,
+      "expectedName": "Scar - Heartless Hunter (Store Championship)",
+      "sourceCardID": "lorcanajson:en:1429",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "14/P2 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "VerticalWave"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Scar - Heartless Hunter"
+    },
+    {
+      "productID": 620242,
+      "expectedName": "Kronk - Laid Back",
+      "sourceCardID": "lorcanajson:en:1657",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "20/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 620243,
+      "expectedName": "Perdita - Playful Mother",
+      "sourceCardID": "lorcanajson:en:1658",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "21/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 620272,
+      "expectedName": "Li Shang - Newly Promoted",
+      "sourceCardID": "lorcanajson:en:1659",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "22/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 620274,
+      "expectedName": "Snow White - Fairest in the Land",
+      "sourceCardID": "lorcanajson:en:1660",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "23/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 620277,
+      "expectedName": "Hiro Hamada - Armor Designer (Store Championship Participant)",
+      "sourceCardID": "lorcanajson:en:1661",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "24A/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo",
+      "sourceName": "Hiro Hamada - Armor Designer"
+    },
+    {
+      "productID": 620276,
+      "expectedName": "Hiro Hamada - Armor Designer (Store Championship)",
+      "sourceCardID": "lorcanajson:en:1662",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "24B/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "VerticalWave"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Hiro Hamada - Armor Designer"
+    },
+    {
+      "productID": 638040,
+      "expectedName": "Lady - Decisive Dog",
+      "sourceCardID": "lorcanajson:en:1888",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "28/P2 • EN • 8",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 643122,
+      "expectedName": "Aladdin - Vigilant Guard",
+      "sourceCardID": "lorcanajson:en:1889",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "29/P2 • EN • 8",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 647092,
+      "expectedName": "Patch - Playful Pup",
+      "sourceCardID": "lorcanajson:en:1890",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "30/P2 • EN • 8",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 637635,
+      "expectedName": "Pull the Lever!",
+      "sourceCardID": "lorcanajson:en:1891",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "31/P2 • EN • 8",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 634260,
+      "expectedName": "Jafar - High Sultan of Lorcana (Store Champion Participant)",
+      "sourceCardID": "lorcanajson:en:1892",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "32/P2 • EN • 8",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo",
+      "sourceName": "Jafar - High Sultan of Lorcana"
+    },
+    {
+      "productID": 634261,
+      "expectedName": "Jafar - High Sultan of Lorcana (Store Championship)",
+      "sourceCardID": "lorcanajson:en:1893",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "33/P2 • EN • 8",
+      "groupID": 23234,
+      "foilTypes": [
+        "VerticalWave"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p2-organized-play",
+      "distributionRule": "p2-organized-play",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Jafar - High Sultan of Lorcana"
+    },
+    {
+      "productID": 555689,
+      "expectedName": "Kristoff - Reindeer Keeper",
+      "sourceCardID": "lorcanajson:en:1181",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "2/P2 • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p2-promo",
+      "distributionRule": "p2-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 588076,
+      "expectedName": "Aladdin - Intrepid Commander",
+      "sourceCardID": "lorcanajson:en:1424",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "9/P2 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p2-promo",
+      "distributionRule": "p2-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 622945,
+      "expectedName": "Anna - Ice Breaker",
+      "sourceCardID": "lorcanajson:en:1656",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "19/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p2-promo",
+      "distributionRule": "p2-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 648265,
+      "expectedName": "Pluto - Tried and True",
+      "sourceCardID": "lorcanajson:en:1887",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "27/P2 • EN • 8",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p2-promo",
+      "distributionRule": "p2-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 644838,
+      "expectedName": "Minnie Mouse - Daring Defender",
+      "sourceCardID": "lorcanajson:en:1894",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "35/P2 • EN • 8",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p2-promo",
+      "distributionRule": "p2-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 653906,
+      "expectedName": "Mickey Mouse - True Friend (Puzzle Promo)",
+      "sourceCardID": "lorcanajson:en:3595",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "36/P2 • EN • 1",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p2-promo",
+      "distributionRule": "p2-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Mickey Mouse - True Friend"
+    },
+    {
+      "productID": 556435,
+      "expectedName": "Prince John - Gold Lover",
+      "sourceCardID": "lorcanajson:en:1180",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "1/P2 • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Villainous: Introduction to Evil board game",
+      "distributionID": "promo-p2-villainous-boardgame",
+      "distributionRule": "p2-villainous-boardgame",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 648600,
+      "expectedName": "Archimedes - Resourceful Owl",
+      "sourceCardID": "lorcanajson:en:1935",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "34/P2 • EN • 8",
+      "groupID": 23234,
+      "foilTypes": [
+        "SeaWave"
+      ],
+      "layout": "normal",
+      "distribution": "Illumineer's Quest: Palace Heist victory card",
+      "distributionID": "promo-p2-palace-heist-victory",
+      "distributionRule": "p2-palace-heist-victory",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 601112,
+      "expectedName": "Moana - Adventurer of Land and Sea",
+      "sourceCardID": "lorcanajson:en:1433",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "26/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Moana 2 release",
+      "distributionID": "promo-p2-moana-2-release",
+      "distributionRule": "p2-moana-2-release",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo",
+      "nameVariant": "moana",
+      "artworkLabel": "Moana title"
+    },
+    {
+      "productID": 614149,
+      "expectedName": "Mickey Mouse - Pirate Captain",
+      "sourceCardID": "lorcanajson:en:1430",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "18/P2 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Into the Inklands bundle",
+      "distributionID": "promo-p2-into-the-inklands-bundle",
+      "distributionRule": "p2-into-the-inklands-bundle",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 619355,
+      "expectedName": "Lilo - Escape Artist",
+      "sourceCardID": "lorcanajson:en:1431",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "25/P2 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Lilo Gift Set",
+      "distributionID": "promo-p2-lilo-gift-set",
+      "distributionRule": "p2-lilo-gift-set",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 578236,
+      "expectedName": "Stitch - Alien Buccaneer (Stitch Collector's Gift Set Promo)",
+      "sourceCardID": "lorcanajson:en:1423",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "8/P2 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "SeaWave"
+      ],
+      "layout": "normal",
+      "distribution": "Stitch Gift Set",
+      "distributionID": "promo-p2-stitch-gift-set",
+      "distributionRule": "p2-stitch-gift-set",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Stitch - Alien Buccaneer"
+    },
+    {
+      "productID": 648456,
+      "expectedName": "The Queen - Conceited Ruler",
+      "sourceCardID": "lorcanajson:en:2181",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "3/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 650179,
+      "expectedName": "Maleficent - Monstrous Dragon (Store Championship Participant)",
+      "sourceCardID": "lorcanajson:en:2182",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "4/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo",
+      "sourceName": "Maleficent - Monstrous Dragon"
+    },
+    {
+      "productID": 650187,
+      "expectedName": "Maleficent - Monstrous Dragon (Store Championship)",
+      "sourceCardID": "lorcanajson:en:2183",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "5/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Magma"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Maleficent - Monstrous Dragon"
+    },
+    {
+      "productID": 650192,
+      "expectedName": "Cursed Merfolk - Ursula's Handiwork",
+      "sourceCardID": "lorcanajson:en:2185",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "7/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 650195,
+      "expectedName": "Strength of a Raging Fire",
+      "sourceCardID": "lorcanajson:en:2186",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "8/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 650196,
+      "expectedName": "Sisu - Daring Visitor",
+      "sourceCardID": "lorcanajson:en:2187",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "9/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 661799,
+      "expectedName": "Zeus - Missing His Spark",
+      "sourceCardID": "lorcanajson:en:2439",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "18/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 661798,
+      "expectedName": "The Great Illuminary - Abandoned Laboratory",
+      "sourceCardID": "lorcanajson:en:2440",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "19/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "landscape",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 662893,
+      "expectedName": "The Horseman Strikes!",
+      "sourceCardID": "lorcanajson:en:2441",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "20/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 661794,
+      "expectedName": "Daisy Duck - Paranormal Investigator (Store Championship Participant)",
+      "sourceCardID": "lorcanajson:en:2444",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "23/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo",
+      "sourceName": "Daisy Duck - Paranormal Investigator"
+    },
+    {
+      "productID": 662883,
+      "expectedName": "Daisy Duck - Paranormal Investigator (Store Championship)",
+      "sourceCardID": "lorcanajson:en:2445",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "24/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Magma"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-9-10",
+      "distributionRule": "p3-organized-play-sets-9-10",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Daisy Duck - Paranormal Investigator"
+    },
+    {
+      "productID": 673344,
+      "expectedName": "Gramma Tala - Connected to Nature",
+      "sourceCardID": "lorcanajson:en:2706",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "28/P3 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 673347,
+      "expectedName": "White Rabbit - Late Again",
+      "sourceCardID": "lorcanajson:en:2707",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "29/P3 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 673351,
+      "expectedName": "Elisa Maza - Transformed Gargoyle",
+      "sourceCardID": "lorcanajson:en:2708",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "30/P3 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 673342,
+      "expectedName": "Timon - Snowball Swiper",
+      "sourceCardID": "lorcanajson:en:2710",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "32/P3 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 673334,
+      "expectedName": "Tinker Bell - Snowflake Collector (Store Championship Participant)",
+      "sourceCardID": "lorcanajson:en:2711",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "33/P3 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo",
+      "sourceName": "Tinker Bell - Snowflake Collector"
+    },
+    {
+      "productID": 673333,
+      "expectedName": "Tinker Bell - Snowflake Collector (Store Championship)",
+      "sourceCardID": "lorcanajson:en:2712",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "34/P3 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "Magma"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Tinker Bell - Snowflake Collector"
+    },
+    {
+      "productID": 692481,
+      "expectedName": "Lenny - Toy Binoculars",
+      "sourceCardID": "lorcanajson:en:2964",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "49/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692482,
+      "expectedName": "Zipper - Tiny Helper",
+      "sourceCardID": "lorcanajson:en:2965",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "50/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692483,
+      "expectedName": "Will o' the Wisp - Forest Spirit",
+      "sourceCardID": "lorcanajson:en:2966",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "51/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692485,
+      "expectedName": "Woody - Jungle Guide (Store Championship Participant)",
+      "sourceCardID": "lorcanajson:en:2968",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "53/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "marketRarity": "Promo",
+      "sourceName": "Woody - Jungle Guide"
+    },
+    {
+      "productID": 692486,
+      "expectedName": "Woody - Jungle Guide (Store Championship)",
+      "sourceCardID": "lorcanajson:en:2969",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "54/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Magma"
+      ],
+      "layout": "normal",
+      "distribution": "Organized Play",
+      "distributionID": "promo-p3-organized-play-sets-11-12",
+      "distributionRule": "p3-organized-play-sets-11-12",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Woody - Jungle Guide"
+    },
+    {
+      "productID": 650177,
+      "expectedName": "Dumbo - The Flying Elephant",
+      "sourceCardID": "lorcanajson:en:2179",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "1/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 662005,
+      "expectedName": "The Queen - Mirror Seeker",
+      "sourceCardID": "lorcanajson:en:2433",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "12/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 661796,
+      "expectedName": "Jasmine - Soothing Princess",
+      "sourceCardID": "lorcanajson:en:2447",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "26/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 673338,
+      "expectedName": "Beast - Snowfield Troublemaker (31/P3)",
+      "sourceCardID": "lorcanajson:en:2709",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "31/P3 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo",
+      "sourceName": "Beast - Snowfield Troublemaker"
+    },
+    {
+      "productID": 673336,
+      "expectedName": "Stitch - High Badness Level",
+      "sourceCardID": "lorcanajson:en:2713",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "35/P3 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692484,
+      "expectedName": "Dash Parr - Lava Runner",
+      "sourceCardID": "lorcanajson:en:2967",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "52/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692487,
+      "expectedName": "Violet Parr - Learning New Powers",
+      "sourceCardID": "lorcanajson:en:2970",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "55/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 683651,
+      "expectedName": "Stitch - Carefree Snowboarder",
+      "sourceCardID": "lorcanajson:en:2971",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "42/P3 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-p3-promo",
+      "distributionRule": "p3-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 650207,
+      "expectedName": "Mickey Mouse - True Friend (Disney Cruise Promo)",
+      "sourceCardID": "lorcanajson:en:2432",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "10/P3 • EN • 1",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Cruise",
+      "distributionID": "promo-p3-disney-cruise",
+      "distributionRule": "p3-disney-cruise",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Mickey Mouse - True Friend"
+    },
+    {
+      "productID": 650208,
+      "expectedName": "Mickey Mouse - Pirate Captain (Disney Cruise Promo)",
+      "sourceCardID": "lorcanajson:en:2434",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "13/P3 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "CalendarWave"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Cruise",
+      "distributionID": "promo-p3-disney-cruise",
+      "distributionRule": "p3-disney-cruise",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Mickey Mouse - Pirate Captain"
+    },
+    {
+      "productID": 650209,
+      "expectedName": "Goofy - Expert Shipwright (Disney Cruise Promo)",
+      "sourceCardID": "lorcanajson:en:2435",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "14/P3 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "CalendarWave"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Cruise",
+      "distributionID": "promo-p3-disney-cruise",
+      "distributionRule": "p3-disney-cruise",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Goofy - Expert Shipwright"
+    },
+    {
+      "productID": 650211,
+      "expectedName": "Donald Duck - Buccaneer (Disney Cruise Promo)",
+      "sourceCardID": "lorcanajson:en:2436",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "15/P3 • EN • 4",
+      "groupID": 23234,
+      "foilTypes": [
+        "CalendarWave"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Cruise",
+      "distributionID": "promo-p3-disney-cruise",
+      "distributionRule": "p3-disney-cruise",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Donald Duck - Buccaneer"
+    },
+    {
+      "productID": 650213,
+      "expectedName": "Daisy Duck - Pirate Captain (Disney Cruise Promo)",
+      "sourceCardID": "lorcanajson:en:2437",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "16/P3 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "CalendarWave"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Cruise",
+      "distributionID": "promo-p3-disney-cruise",
+      "distributionRule": "p3-disney-cruise",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Daisy Duck - Pirate Captain"
+    },
+    {
+      "productID": 650215,
+      "expectedName": "Minnie Mouse - Pirate Lookout (Disney Cruise Promo)",
+      "sourceCardID": "lorcanajson:en:2438",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "17/P3 • EN • 6",
+      "groupID": 23234,
+      "foilTypes": [
+        "CalendarWave"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Cruise",
+      "distributionID": "promo-p3-disney-cruise",
+      "distributionRule": "p3-disney-cruise",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Minnie Mouse - Pirate Lookout"
+    },
+    {
+      "productID": 651391,
+      "expectedName": "Belle - Apprentice Inventor",
+      "sourceCardID": "lorcanajson:en:2448",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "37/P3 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-p3-parks-and-stores-set-7",
+      "distributionRule": "p3-parks-and-stores-set-7",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 661852,
+      "expectedName": "Mulan - Disguised Soldier",
+      "sourceCardID": "lorcanajson:en:2449",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "38/P3 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-p3-parks-and-stores-set-7",
+      "distributionRule": "p3-parks-and-stores-set-7",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 678645,
+      "expectedName": "Goofy - Set for Adventure",
+      "sourceCardID": "lorcanajson:en:2450",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "39/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-p3-parks-and-stores",
+      "distributionRule": "p3-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 651393,
+      "expectedName": "Beast - Gracious Prince",
+      "sourceCardID": "lorcanajson:en:2461",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "40/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "FreeForm2"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-p3-parks-and-stores",
+      "distributionRule": "p3-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 647598,
+      "expectedName": "Belle - Accomplished Mystic",
+      "sourceCardID": "lorcanajson:en:2462",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "41/P3 • EN • 4",
+      "groupID": 23234,
+      "foilTypes": [
+        "FreeForm2"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-p3-parks-and-stores",
+      "distributionRule": "p3-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692488,
+      "expectedName": "Buzz Lightyear - On the Way",
+      "sourceCardID": "lorcanajson:en:3249",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "56/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-p3-parks-and-stores",
+      "distributionRule": "p3-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692413,
+      "expectedName": "Ariel - Curious Traveler",
+      "sourceCardID": "lorcanajson:en:2958",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "43/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Satin"
+      ],
+      "layout": "normal",
+      "distribution": "Wilds Unknown Prerelease Pack",
+      "distributionID": "promo-p3-wilds-unknown-prerelease",
+      "distributionRule": "p3-wilds-unknown-prerelease",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692476,
+      "expectedName": "Maleficent - Imperious Traveler",
+      "sourceCardID": "lorcanajson:en:2959",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "44/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Satin"
+      ],
+      "layout": "normal",
+      "distribution": "Wilds Unknown Prerelease Pack",
+      "distributionID": "promo-p3-wilds-unknown-prerelease",
+      "distributionRule": "p3-wilds-unknown-prerelease",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692477,
+      "expectedName": "Cruella De Vil - Judgmental Traveler",
+      "sourceCardID": "lorcanajson:en:2960",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "45/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Satin"
+      ],
+      "layout": "normal",
+      "distribution": "Wilds Unknown Prerelease Pack",
+      "distributionID": "promo-p3-wilds-unknown-prerelease",
+      "distributionRule": "p3-wilds-unknown-prerelease",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692478,
+      "expectedName": "Queen of Hearts - Impatient Traveler",
+      "sourceCardID": "lorcanajson:en:2961",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "46/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Satin"
+      ],
+      "layout": "normal",
+      "distribution": "Wilds Unknown Prerelease Pack",
+      "distributionID": "promo-p3-wilds-unknown-prerelease",
+      "distributionRule": "p3-wilds-unknown-prerelease",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692479,
+      "expectedName": "Cinderella - Resourceful Traveler",
+      "sourceCardID": "lorcanajson:en:2962",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "47/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Satin"
+      ],
+      "layout": "normal",
+      "distribution": "Wilds Unknown Prerelease Pack",
+      "distributionID": "promo-p3-wilds-unknown-prerelease",
+      "distributionRule": "p3-wilds-unknown-prerelease",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 692480,
+      "expectedName": "Pocahontas - Steadfast Traveler",
+      "sourceCardID": "lorcanajson:en:2963",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "48/P3 • EN • 12",
+      "groupID": 23234,
+      "foilTypes": [
+        "Satin"
+      ],
+      "layout": "normal",
+      "distribution": "Wilds Unknown Prerelease Pack",
+      "distributionID": "promo-p3-wilds-unknown-prerelease",
+      "distributionRule": "p3-wilds-unknown-prerelease",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 650204,
+      "expectedName": "Tinker Bell - Giant Fairy",
+      "sourceCardID": "lorcanajson:en:2188",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "11/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Fabled Collection Starter Set",
+      "distributionID": "promo-p3-fabled-starter-set",
+      "distributionRule": "p3-fabled-starter-set",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 648450,
+      "expectedName": "Alice - Accidentally Adrift",
+      "sourceCardID": "lorcanajson:en:2180",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "2/P3 • EN • 9",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Fabled booster display",
+      "distributionID": "promo-p3-fabled-booster-display",
+      "distributionRule": "p3-fabled-booster-display",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 661795,
+      "expectedName": "Elsa - Exploring the Unknown",
+      "sourceCardID": "lorcanajson:en:2443",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "22/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Whispers in the Well Bring a Friend",
+      "distributionID": "promo-p3-whispers-bring-a-friend",
+      "distributionRule": "p3-whispers-bring-a-friend",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 661797,
+      "expectedName": "Scar - Eerily Prepared",
+      "sourceCardID": "lorcanajson:en:2442",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "21/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Whispers in the Well booster display",
+      "distributionID": "promo-p3-whispers-booster-display",
+      "distributionRule": "p3-whispers-booster-display",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 662256,
+      "expectedName": "Putting It All Together",
+      "sourceCardID": "lorcanajson:en:2463",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "27/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Zootopia 2 release",
+      "distributionID": "promo-p3-zootopia-2-release",
+      "distributionRule": "p3-zootopia-2-release",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 650189,
+      "expectedName": "Elsa - The Fifth Spirit (Gift Box Promo)",
+      "sourceCardID": "lorcanajson:en:2184",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "6/P3 • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Elsa Gift Box",
+      "distributionID": "promo-p3-elsa-gift-box",
+      "distributionRule": "p3-elsa-gift-box",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Elsa - The Fifth Spirit"
+    },
+    {
+      "productID": 683650,
+      "expectedName": "Scrooge McDuck - S.H.U.S.H. Agent",
+      "sourceCardID": "lorcanajson:en:2714",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "36/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Scrooge McDuck Gift Box",
+      "distributionID": "promo-p3-scrooge-gift-box",
+      "distributionRule": "p3-scrooge-gift-box",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 648264,
+      "expectedName": "Goofy - Emerald Champion",
+      "sourceCardID": "lorcanajson:en:2446",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "25/P3 • EN • 10",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Gen Con 2025",
+      "distributionID": "promo-p3-gen-con-2025",
+      "distributionRule": "p3-gen-con-2025",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 668574,
+      "expectedName": "Rapunzel - Appreciative Artist",
+      "sourceCardID": "lorcanajson:en:3243",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "1/DIS • EN • 4",
+      "groupID": 23234,
+      "foilTypes": [
+        "FreeForm2"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-dis-parks-and-stores",
+      "distributionRule": "dis-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Rare"
+    },
+    {
+      "productID": 668573,
+      "expectedName": "Donald Duck - Pie Slinger",
+      "sourceCardID": "lorcanajson:en:3244",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "2/DIS • EN • 5",
+      "groupID": 23234,
+      "foilTypes": [
+        "FreeForm2"
+      ],
+      "layout": "normal",
+      "distribution": "Disney Parks & Stores",
+      "distributionID": "promo-dis-parks-and-stores",
+      "distributionRule": "dis-parks-and-stores",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 732601,
+      "expectedName": "Beast - Snowfield Troublemaker (1/PD1)",
+      "sourceCardID": "lorcanajson:en:3225",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "1/PD1 • EN • 11",
+      "groupID": 23234,
+      "foilTypes": [
+        "Glitter"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-pd1-promo",
+      "distributionRule": "pd1-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo",
+      "sourceName": "Beast - Snowfield Troublemaker"
+    },
+    {
+      "productID": 722997,
+      "expectedName": "Everyone Knows Juanita",
+      "sourceCardID": "lorcanajson:en:3554",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "1/RPH • EN • 14",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Ravensburger Play Hub Challenge",
+      "distributionID": "promo-rph-challenge",
+      "distributionRule": "rph-challenge",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 722998,
+      "expectedName": "Tramp - Quick on His Feet",
+      "sourceCardID": "lorcanajson:en:3555",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "2/RPH • EN • 14",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Ravensburger Play Hub Challenge",
+      "distributionID": "promo-rph-challenge",
+      "distributionRule": "rph-challenge",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 722999,
+      "expectedName": "Arthur - Novice Blacksmith",
+      "sourceCardID": "lorcanajson:en:3556",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "3/RPH • EN • 14",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Ravensburger Play Hub Challenge",
+      "distributionID": "promo-rph-challenge",
+      "distributionRule": "rph-challenge",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 723002,
+      "expectedName": "Nick Wilde - Providing Backup",
+      "sourceCardID": "lorcanajson:en:3558",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "5/RPH • EN • 14",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Ravensburger Play Hub Challenge",
+      "distributionID": "promo-rph-challenge",
+      "distributionRule": "rph-challenge",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Holofoil",
+      "marketRarity": "Promo"
+    },
+    {
+      "productID": 723000,
+      "expectedName": "Minnie Mouse - Urban Visionary",
+      "sourceCardID": "lorcanajson:en:3557",
+      "reference": "https://tcgcsv.com/tcgplayer/71/23234/products",
+      "bodySHA256": "71bad3f9f2cc193d89344f0a3ab45a9f435a95df77175511ebc661d3d1309b25",
+      "createdByDistributionRule": true,
+      "printedIdentifier": "4/RPH • EN • 14",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Promo",
+      "distributionID": "promo-rph-promo",
+      "distributionRule": "rph-promo",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": "Cold Foil",
+      "marketRarity": "Promo"
+    }
+  ],
+  "noMarketPrintings": [
+    {
+      "sourceCardID": "lorcanajson:en:1663",
+      "expectedName": "Vaiana - Adventurer of Land and Sea",
+      "printedIdentifier": "26/P2 • EN • 7",
+      "groupID": 23234,
+      "foilTypes": [
+        "Silver"
+      ],
+      "layout": "normal",
+      "distribution": "Moana 2 release",
+      "distributionID": "promo-p2-moana-2-release",
+      "distributionRule": "p2-moana-2-release",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null,
+      "nameVariant": "vaiana",
+      "artworkLabel": "Vaiana title"
+    },
+    {
+      "sourceCardID": "lorcanajson:en:3559",
+      "expectedName": "Honey Lemon - Testing the Limits",
+      "printedIdentifier": "6/RPH • EN • 14",
+      "groupID": 23234,
+      "foilTypes": [
+        "None"
+      ],
+      "layout": "normal",
+      "distribution": "Ravensburger Play Hub Challenge",
+      "distributionID": "promo-rph-challenge",
+      "distributionRule": "rph-challenge",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null
+    },
+    {
+      "sourceCardID": "lorcanajson:en:3560",
+      "expectedName": "Honey Lemon - Testing the Limits",
+      "printedIdentifier": "7/RPH • EN • 14",
+      "groupID": 23234,
+      "foilTypes": [
+        "Tinsel"
+      ],
+      "layout": "normal",
+      "distribution": "Ravensburger Play Hub Challenge",
+      "distributionID": "promo-rph-challenge",
+      "distributionRule": "rph-challenge",
+      "physicalReleaseEvidence": "https://cards.disneylorcana.com/en-US/",
+      "marketLane": null
     }
   ]
 }

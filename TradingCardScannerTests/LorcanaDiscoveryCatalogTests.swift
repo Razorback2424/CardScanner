@@ -51,7 +51,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
     func testEverySourceCardIsBrowsableWithArtworkAndFinishMetadata() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundled.get()
         XCTAssertEqual(catalog.cardsByID.values.filter { $0.id.hasPrefix("lorcanajson:") }.count, 3_556)
-        XCTAssertEqual(catalog.cardsByID.count, 3_595)
+        XCTAssertEqual(catalog.cardsByID.count, 3_602)
         var seen: Set<String> = []
         for set in try await catalog.sets() {
             var cursor: String?
@@ -194,7 +194,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         let choices = try await catalog.search(query: "5/204", setIDs: [set.catalogID], cursor: nil)
         XCTAssertEqual(choices.items.count, 2)
         XCTAssertEqual(Set(choices.items.map(\.providerID)).count, 2)
-        XCTAssertTrue(choices.items.allSatisfy { $0.collectionAvailabilityNotice == nil })
+        XCTAssertTrue(choices.items.allSatisfy { $0.collectionAvailabilityNotice != LorcanaDiscoveryCatalog.browseOnlyNotice })
         XCTAssertTrue(choices.items.contains { $0.name.contains("Oversized") })
     }
 
@@ -205,11 +205,12 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         let sets = try await bundled.sets()
         var fromBrowse: [String: CatalogCardSummary] = [:]
         for set in sets {
-            for row in try await bundled.completeLocalCards(in: set) ?? [] where row.collectionAvailabilityNotice == nil {
+            for row in try await bundled.completeLocalCards(in: set) ?? []
+                where row.collectionAvailabilityNotice != LorcanaDiscoveryCatalog.browseOnlyNotice {
                 XCTAssertNil(fromBrowse.updateValue(row, forKey: row.providerID))
             }
         }
-        XCTAssertEqual(fromBrowse.count, 3_426)
+        XCTAssertEqual(fromBrowse.count, 3_576)
         for (footer, universe) in physical.universesByFooter where universe.isComplete {
             let identifier = try LorcanaRecognitionAdapter.identifier(footer, generation: bundled.generation)
             let outcome = try await catalog.lookupOutcome(for: identifier)
@@ -350,10 +351,8 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         for row in rows {
             let details = try await bundled.details(for: row)
             let number = try XCTUnwrap(Int(row.collectorNumber))
-            if number == 5 {
-                XCTAssertNotNil(details.collectionWriteUnavailableReason)
-                continue
-            }
+            // 5/C1 is the serial-numbered gold Mickey: one foil printing, addable, not yet priced.
+            if number == 5 { XCTAssertEqual(row.collectionAvailabilityNotice, LorcanaDiscoveryCatalog.unpricedNotice) }
             XCTAssertNil(details.collectionWriteUnavailableReason)
             let expected: Set<PhysicalVariant> = [3, 4, 8, 9, 10].contains(number) ? [.normal, .foil] : [.foil]
             XCTAssertEqual(Set(details.card.variantEvidence.catalogVariants), expected)
@@ -497,7 +496,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         let recentDetail = try await catalog.details(for: recentCard)
         XCTAssertNotNil(recentDetail.collectionWriteUnavailableReason)
 
-        let firstSet = try XCTUnwrap(sets.first { $0.code == "P1" })
+        let firstSet = try XCTUnwrap(sets.first { $0.code == "P2" })
         XCTAssertEqual(firstSet.collectionAvailabilityNotice, "Some cards are browse only")
         let firstCards = try await catalog.cards(in: firstSet, cursor: nil)
         let reviewedCard = try XCTUnwrap(firstCards.items.first { $0.collectionAvailabilityNotice == nil })
@@ -522,6 +521,59 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         legacy.removeValue(forKey: "collectionAvailabilityNotice")
         let legacyData = try JSONSerialization.data(withJSONObject: legacy)
         XCTAssertNil(try JSONDecoder().decode(CatalogCardSummary.self, from: legacyData).collectionAvailabilityNotice)
+    }
+
+    func testUnpricedReviewedPrintingIsAddableKnownGapThatDoesNotMakeItsSetPartial() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let sets = try await catalog.sets()
+        // Every Promo Set 3 card is reviewed; the Disney Cruise Donald Duck has no price lane yet.
+        let promo = try XCTUnwrap(sets.first { $0.code == "P3" })
+        XCTAssertFalse(promo.name.contains("Partial catalog"))
+        XCTAssertNil(promo.collectionAvailabilityNotice)
+        let rows = try await catalog.completeLocalCards(in: promo) ?? []
+        XCTAssertEqual(promo.physicalPrintingIDs?.count, rows.count)
+        let unpriced = try XCTUnwrap(rows.first { $0.collectorNumber == "15" })
+        XCTAssertEqual(unpriced.collectionAvailabilityNotice, LorcanaDiscoveryCatalog.unpricedNotice)
+        XCTAssertTrue(promo.physicalPrintingIDs?.contains(unpriced.providerID) == true)
+        let detail = try await catalog.details(for: unpriced)
+        XCTAssertNil(detail.collectionWriteUnavailableReason)
+        // Honey Lemon 6/RPH and 7/RPH are real printings TCGplayer does not list yet:
+        // addable, "Not yet priced", and the set is not partial.
+        let gaps = try XCTUnwrap(sets.first { $0.code == "RPH" })
+        XCTAssertFalse(gaps.name.contains("Partial catalog"))
+        let gapRows = try await catalog.completeLocalCards(in: gaps) ?? []
+        XCTAssertEqual(gaps.physicalPrintingIDs?.count, gapRows.count)
+        XCTAssertEqual(gapRows.filter { $0.collectionAvailabilityNotice == LorcanaDiscoveryCatalog.unpricedNotice }
+            .map(\.collectorNumber).sorted(), ["6", "7"])
+        // A set with a held card is partial; one whose cards are all reviewed is not.
+        let held = try XCTUnwrap(sets.first { $0.code == "C3" })
+        XCTAssertTrue(held.name.contains("Partial catalog"))
+        let complete = try XCTUnwrap(sets.first { $0.code == "P1" })
+        XCTAssertFalse(complete.name.contains("Partial catalog"))
+    }
+
+    func testMoanaAndVaianaShareAFooterAsSeparatePrintingsAndNeverSharePrices() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let physical = try XCTUnwrap(catalog.registry.physicalCatalog)
+        let footer = try LorcanaPrintedIdentity(collectorNumber: "26", denominator: "P2", language: "en", printedSetMarker: "7")
+        let printings = physical.manifest.physicalPrintings.filter { $0.identity.footer == footer }
+        XCTAssertEqual(Set(printings.map(\.artworkLabel)), ["Moana title", "Vaiana title"])
+        XCTAssertEqual(physical.universesByFooter[footer]?.isComplete, true)
+        let moana = try XCTUnwrap(printings.first { $0.artworkLabel == "Moana title" })
+        let vaiana = try XCTUnwrap(printings.first { $0.artworkLabel == "Vaiana title" })
+        XCTAssertEqual(moana.marketMappings?.map(\.productID), [601112])
+        XCTAssertTrue(vaiana.marketMappings?.isEmpty ?? true, "Vaiana must never show the Moana price")
+        let sets = try await catalog.sets()
+        let p2 = try XCTUnwrap(sets.first { $0.code == "P2" })
+        let rows = try await catalog.completeLocalCards(in: p2) ?? []
+        let vaianaRow = try XCTUnwrap(rows.first { $0.name.hasPrefix("Vaiana") })
+        XCTAssertEqual(vaianaRow.collectionAvailabilityNotice, LorcanaDiscoveryCatalog.unpricedNotice)
+        XCTAssertNil(try XCTUnwrap(rows.first { $0.name.hasPrefix("Moana") }).collectionAvailabilityNotice)
+        // The shared footer is a printing choice at scan time, never an automatic pick.
+        let identifier = try LorcanaRecognitionAdapter.identifier(footer, generation: catalog.generation)
+        let outcome = try await catalog.lookup(identifier)
+        guard case let .needsPrintingChoice(_, choices) = outcome else { return XCTFail("\(outcome)") }
+        XCTAssertGreaterThanOrEqual(choices.count, 2)
     }
 
     func testAllReviewedUnnumberedCardsRequireExactTitlesAndQuestMarkers() async throws {
@@ -601,7 +653,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
             XCTAssertEqual(resolved.card.name, row.name)
             XCTAssertEqual(try catalog.identifierForRetry(identifier), identifier)
         }
-        XCTAssertEqual(heldCount, 9)
+        XCTAssertEqual(heldCount, 16)
         XCTAssertThrowsError(try catalog.identifierForCatalogSelection(printingID: "tcgcsv:71:unknown", original: original))
     }
 
@@ -611,8 +663,10 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         let p2 = try XCTUnwrap(sets.first { $0.code == "P2" })
         let p2Page = try await catalog.cards(in: p2, cursor: nil)
         XCTAssertTrue(p2Page.items.contains { $0.providerID == "tcgcsv:71:616373" })
+        // Partial catalog describes held cards, which only the reviewed bundle can tell apart.
+        let reviewedSets = try await LorcanaDiscoveryCatalog.bundledMarket.get().sets()
+        XCTAssertTrue(try XCTUnwrap(reviewedSets.first { $0.code == "C3" }).name.contains("Partial catalog"))
         let c3 = try XCTUnwrap(sets.first { $0.code == "C3" })
-        XCTAssertTrue(c3.name.contains("Partial catalog"))
         XCTAssertEqual(c3.cardCount, 2)
         let first = try XCTUnwrap(sets.first { $0.code == "1" })
         let firstPage = try await catalog.cards(in: first, cursor: nil)

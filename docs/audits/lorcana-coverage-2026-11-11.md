@@ -1,6 +1,43 @@
 # Lorcana catalog coverage
 
-**Status** — 2026-11-12 English bundle and verification, based on `7daef56`
+**Status** — 2026-11-12 English bundle and verification, based on `7daef56`.
+The 2026-11-18 promo reconciliation below supersedes the browse-only counts.
+
+## 2026-11-18 promo distribution pass
+
+Following the [reconciliation playbook](../catalog-reconciliation-playbook.md),
+the bundle was rebuilt from a fresh TCGCSV snapshot (build
+`2026-11-18T20:05:56+0000`) and the retained November 8 LorcanaJSON capture.
+`reconcile_lorcana_promo_distributions.py` applies 36 reviewed rules in
+[`lorcana_promo_distributions.json`](../../scripts/lorcana_promo_distributions.json)
+(Organized Play, Disney Parks & Stores, Disney Cruise, prerelease, gift sets,
+events, Quest victory cards). It promoted 149 promo printings. The physical
+bundle now has 3,576 printings and 6,432 finish mappings, all matched in the
+capture. The audit's reason-coded ledger went from 169 browse-only rows to 26:
+
+| Reason | Rows | Meaning |
+| --- | --- | --- |
+| `marketOnly` | 15 | TCGplayer product with no publisher card; 8 are Challenge products new in this snapshot with no public footer |
+| `noFooter` | 8 | Unnumbered Vine Tendril token and oversized Quest components |
+| `heldSerialized` | 3 | Serial-numbered Hades copies with no public printed footer |
+
+Edge cases were settled from collector and reference sources; the rationale
+and citations are in the rule file's `sharedFooterPrintings`,
+`noMarketPrintings` and `research` entries:
+- Moana and Vaiana print the same `26/P2 EN 7`, but the publisher lists them as
+  separate cards with their own image. They are two printings. Moana keeps
+  TCGplayer's price; Vaiana is "Not yet priced". The footer opens a printing
+  choice at scan time.
+- Honey Lemon `6/RPH` and `7/RPH` are real printings with no TCGplayer product.
+  They can be added and show "Not yet priced".
+- The serial-numbered gold Mickey `5/C1` is one printing (collectors and
+  TCGplayer file one product per tier, not per serial number). It can be added
+  and is "Not yet priced".
+
+Browse labels a reviewed printing without a price "Not yet priced". A set is
+"Partial catalog" only when one of its own cards is still browse only.
+Inputs and replay outputs are under
+`CodexBuilds/LorcanaReconciliation-20261118` on the external SSD.
 
 ## Coverage
 
