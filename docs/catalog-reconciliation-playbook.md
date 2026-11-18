@@ -9,6 +9,8 @@ left. That is now live as revision 7. It worked because the work was grouped
 **by root cause, not by card**. This playbook records that method so Lorcana,
 Pokémon and Yu-Gi-Oh can follow it.
 
+Agents continuing this work: follow the step-by-step [agent runbook](catalog-reconciliation-agent-runbook.md), which also lists mistakes already made and blockers that conventions cannot clear.
+
 ## Principles
 
 1. **Capture once, replay offline.** Take one complete, hash-pinned snapshot of
