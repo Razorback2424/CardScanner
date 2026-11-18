@@ -364,6 +364,9 @@ def build(discovery, sources, baseline, assignments, review_later_expansions=Fal
         expected_rarity = 'Promo' if disney100 else row['rarity']
         if fixed_product:
             expected_rarity = fixed_product.get('marketRarityOverrides', {}).get(f['collectorNumber'], fixed_product['marketRarity'])
+        elif product_review and product_review.get('marketRarity'):
+            # TCGplayer files promos as "Promo" while the publisher says "Special".
+            expected_rarity = product_review['marketRarity']
         matches = []
         siblings = []
         for p in products:

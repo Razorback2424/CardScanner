@@ -1,3 +1,15 @@
+# 2026-11-18 — Lorcana promo distributions reconciled
+
+Step 1 of the [reconciliation playbook](docs/catalog-reconciliation-playbook.md)
+rollout. `reconcile_lorcana_promo_distributions.py` applies 36 reviewed rules
+(`scripts/lorcana_promo_distributions.json`) and writes physical evidence that
+the existing builders promote. The rebuilt bundle, from a fresh TCGCSV snapshot,
+has 3,571 printings (was 3,426). Browse-only rows fell from 169 to 31; each has
+a reason in the audit's new `ledger.json`. Browse now shows "Not yet priced"
+for reviewed printings without a price, and marks a set "Partial catalog" only
+when one of its own cards is still browse only. Details and remaining reasons:
+[Lorcana coverage](docs/audits/lorcana-coverage-2026-11-11.md).
+
 # 2026-11-18 — Shared catalog reconciliation foundation
 
 The method behind One Piece revision 7 is recorded in the

@@ -1141,10 +1141,10 @@ final class LorcanaPricingTests: XCTestCase {
     #if DEBUG && LOCAL_ONLY_SIGNING
     func testNormalAppRegistersReviewedPricingAndPreservesDiscoveryAndSealed() async throws {
         let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
-        XCTAssertEqual(catalog.cardsByID.count, 3_595)
+        XCTAssertEqual(catalog.cardsByID.count, 3_602)
         XCTAssertEqual(catalog.products.count, 188)
-        XCTAssertEqual(catalog.registry.physicalCatalog?.manifest.physicalPrintings.count, 3_426)
-        XCTAssertEqual(LorcanaPriceAdapter.priceAuthority(catalog.registry).identityByPriceKey.count, 6_288)
+        XCTAssertEqual(catalog.registry.physicalCatalog?.manifest.physicalPrintings.count, 3_571)
+        XCTAssertEqual(LorcanaPriceAdapter.priceAuthority(catalog.registry).identityByPriceKey.count, 6_431)
         let module = try XCTUnwrap(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
         XCTAssertTrue(module.descriptor.capabilities.contains(.pricing))
         XCTAssertTrue(module.descriptor.capabilities.contains(.collectionWrite))

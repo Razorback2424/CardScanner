@@ -1,6 +1,33 @@
 # Lorcana catalog coverage
 
-**Status** — 2026-11-12 English bundle and verification, based on `7daef56`
+**Status** — 2026-11-12 English bundle and verification, based on `7daef56`.
+The 2026-11-18 promo reconciliation below supersedes the browse-only counts.
+
+## 2026-11-18 promo distribution pass
+
+Following the [reconciliation playbook](../catalog-reconciliation-playbook.md),
+the bundle was rebuilt from a fresh TCGCSV snapshot (build
+`2026-11-18T20:05:56+0000`) and the retained November 8 LorcanaJSON capture.
+`reconcile_lorcana_promo_distributions.py` applies 36 reviewed rules in
+[`lorcana_promo_distributions.json`](../../scripts/lorcana_promo_distributions.json)
+(Organized Play, Disney Parks & Stores, Disney Cruise, prerelease, gift sets,
+events, Quest victory cards). It promoted 145 promo printings, two of them
+"Not yet priced". The physical bundle now has 3,571 printings and 6,431 finish
+mappings, all matched in the capture. The audit's reason-coded ledger went from
+169 browse-only rows to 31:
+
+| Reason | Rows | Meaning |
+| --- | --- | --- |
+| `marketOnly` | 15 | TCGplayer product with no publisher card; 8 are Challenge products new in this snapshot |
+| `noFooter` | 8 | Unnumbered Vine Tendril token and oversized Quest components |
+| `heldSerialized` | 4 | Serial-numbered Mickey and Hades copies |
+| `sharedFooter` | 2 | Moana and Vaiana print the same `26/P2 EN 7`; owner decision |
+| `noMarketProduct` | 2 | Honey Lemon `6/RPH` and `7/RPH`: real printings with no product yet |
+
+Browse labels a reviewed printing without a price "Not yet priced". A set is
+"Partial catalog" only when one of its own cards is still browse only.
+Inputs and replay outputs are under
+`CodexBuilds/LorcanaReconciliation-20261118` on the external SSD.
 
 ## Coverage
 
