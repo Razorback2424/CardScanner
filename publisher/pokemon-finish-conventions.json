@@ -4,7 +4,25 @@
   "reverseLane": {
     "id": "reverse-holo-lane",
     "decision": "A card whose own set-group product has a Reverse Holofoil lane with a positive TCGplayer market price is certified with a reverse holo printing, even when the bundled TCGdex slots omit it. Collectors expect a reverse holo of every non-ultra card from Legendary Collection on, and TCGplayer sells it as a lane of the same product.",
-    "excludeSetIDs": ["ecard1", "ex5", "ex6", "ex7", "ex8", "ex9", "ex10", "ex11", "ex12", "ex13", "ex14", "ex15", "ex16", "me02.5", "sv10.5b", "sv10.5w", "sve"],
+    "excludeSetIDs": [
+      "ecard1",
+      "ex5",
+      "ex6",
+      "ex7",
+      "ex8",
+      "ex9",
+      "ex10",
+      "ex11",
+      "ex12",
+      "ex13",
+      "ex14",
+      "ex15",
+      "ex16",
+      "me02.5",
+      "sv10.5b",
+      "sv10.5w",
+      "sve"
+    ],
     "excludeReason": "Expedition shares one reverse between its holo and non-holo rares; EX Hidden Legends and FireRed & LeafGreen reverses are energy-pattern; EX Team Rocket Returns to Power Keepers reverses are set-logo stamped (setLogoReverseHolo); Ascended Heroes, Black Bolt, White Flare and the SV Energy set use patterned reverses. A plain Reverse Holofoil lane in those sets does not name a single printing.",
     "sources": [
       "https://bulbapedia.bulbagarden.net/wiki/Holofoil (Reverse Holofoil: a reverse counterpart exists for every card in a set except Ultra Rare, Secret Rare and full-art cards; started with Legendary Collection)",
@@ -16,7 +34,38 @@
   "historicalNormalPlaceholder": {
     "id": "historical-normal-placeholder",
     "decision": "These checklists gave every card the same Normal placeholder, and legacy-finish-evidence.json marks it for review. A holo rare is not also sold non-holo: when no audited minimum asserts Normal and the card's own TCGplayer products sell no Normal lane, the certificate records a Normal review decision of exclude. The app already withholds this placeholder (PokemonFinishMinimumCatalog.projectingLegacy). Cards whose audited minimum lists Normal stay open for a person.",
-    "setIDs": ["bw1", "bw11", "bw2", "bw4", "bw6", "bw7", "bw8", "bw9", "ex5.5", "g1", "me06", "sm1", "sm115", "sm12", "sm2", "sm4", "sm5", "sm7", "sm8", "xy1", "xy10", "xy11", "xy2", "xy3", "xy4", "xy5", "xy6", "xy7", "xy8", "xy9"],
+    "setIDs": [
+      "bw1",
+      "bw11",
+      "bw2",
+      "bw4",
+      "bw6",
+      "bw7",
+      "bw8",
+      "bw9",
+      "ex5.5",
+      "g1",
+      "me06",
+      "sm1",
+      "sm115",
+      "sm12",
+      "sm2",
+      "sm4",
+      "sm5",
+      "sm7",
+      "sm8",
+      "xy1",
+      "xy10",
+      "xy11",
+      "xy2",
+      "xy3",
+      "xy4",
+      "xy5",
+      "xy6",
+      "xy7",
+      "xy8",
+      "xy9"
+    ],
     "sources": [
       "TradingCardScanner/PokemonChecklistSnapshot/legacy-finish-evidence.json (retained historical evidence: normalNeedsReview on every card of these sets)",
       "https://bulbapedia.bulbagarden.net/wiki/Holofoil (Holofoil rares are printed with the holofoil artwork; their non-holo counterpart is the reverse, not a Normal print)",
@@ -26,7 +75,18 @@
   "setLogoReverseHolo": {
     "id": "ex-set-logo-reverse",
     "decision": "From EX Team Rocket Returns to EX Power Keepers every reverse holo carries the expansion logo stamp. TCGplayer sells it as the Reverse Holofoil lane of the card's own product, so that lane is evidence for the card's set-logo stamp finish, not a second plain reverse. This matches the app's isPackReversePattern.",
-    "setIDs": ["ex7", "ex8", "ex9", "ex10", "ex11", "ex12", "ex13", "ex14", "ex15", "ex16"],
+    "setIDs": [
+      "ex7",
+      "ex8",
+      "ex9",
+      "ex10",
+      "ex11",
+      "ex12",
+      "ex13",
+      "ex14",
+      "ex15",
+      "ex16"
+    ],
     "sources": [
       "https://bulbapedia.bulbagarden.net/wiki/EX_Team_Rocket_Returns_(TCG) (Reverse Holofoil cards from this expansion onward feature the set logo in the bottom right corner of the artwork)",
       "https://www.tcgplayer.com/product/86445 (EX Team Rocket Returns Kingdra 12/109: Normal, Holofoil and Reverse Holofoil lanes on one product)",
@@ -36,9 +96,42 @@
   "treatmentAliases": {
     "id": "gold-rainbow-single-printing",
     "decision": "A Gold or Rainbow secret rare is one printing. The bundled checklist lists it twice (holo plus the treatment); the certificate keeps the holo printing that TCGplayer prices, matching the app's rarityFinishAliasesHolo. The set list mirrors BrowseCatalog.rarityFinishAliasSetIDs, and a test keeps them equal.",
-    "finishes": ["gold", "rainbow"],
-    "setIDs": ["me02", "me04", "sv03.5", "sv05", "sv06", "sv06.5", "sv07", "sv08", "sv08.5", "sv09", "sv10", "swsh2", "swsh3", "swsh4", "swsh4.5", "swsh5", "swsh6", "swsh7", "swsh8", "swsh9", "swsh10", "swsh10.5", "swsh10tg", "swsh11", "swsh11tg", "swsh12", "swsh12tg"],
-    "exceptCardIDs": ["sv03.5-205"],
+    "finishes": [
+      "gold",
+      "rainbow"
+    ],
+    "setIDs": [
+      "me02",
+      "me04",
+      "sv03.5",
+      "sv05",
+      "sv06",
+      "sv06.5",
+      "sv07",
+      "sv08",
+      "sv08.5",
+      "sv09",
+      "sv10",
+      "swsh2",
+      "swsh3",
+      "swsh4",
+      "swsh4.5",
+      "swsh5",
+      "swsh6",
+      "swsh7",
+      "swsh8",
+      "swsh9",
+      "swsh10",
+      "swsh10.5",
+      "swsh10tg",
+      "swsh11",
+      "swsh11tg",
+      "swsh12",
+      "swsh12tg"
+    ],
+    "exceptCardIDs": [
+      "sv03.5-205"
+    ],
     "exceptReason": "151 Mew 205 gold also names the UPC metal card, a separate object.",
     "sources": [
       "https://api.tcgdex.net/v2/en/cards/swsh11-197 (TCGdex itself lists one variant for Kyurem VMAX 197: type holo, foil rainbow, TCGplayer product 284152)",
@@ -50,17 +143,46 @@
     {
       "id": "cosmos-holo-exclusives",
       "decision": "Cosmos Holo printings of numbered set cards were sold in theme decks, blisters, tins and collection boxes. TCGplayer lists them in cross-set groups; any of its three title spellings counts. Groups whose cards carry an implied stamp are excluded (see Prize Pack below).",
-      "finishes": {"cosmos": ["Holofoil"]},
-      "titleQualifiers": ["Cosmos Holo", "Cosmos Holofoil", "Cosmos Foil"],
+      "finishes": {
+        "cosmos": [
+          "Holofoil"
+        ]
+      },
+      "titleQualifiers": [
+        "Cosmos Holo",
+        "Cosmos Holofoil",
+        "Cosmos Foil"
+      ],
       "groups": [
-        {"groupID": 1840, "groupName": "Deck Exclusives"},
-        {"groupID": 2289, "groupName": "Blister Exclusives"},
-        {"groupID": 2374, "groupName": "Miscellaneous Cards & Products"}
+        {
+          "groupID": 1840,
+          "groupName": "Deck Exclusives"
+        },
+        {
+          "groupID": 2289,
+          "groupName": "Blister Exclusives"
+        },
+        {
+          "groupID": 2374,
+          "groupName": "Miscellaneous Cards & Products"
+        }
       ],
       "excludedGroups": [
-        {"groupID": 22880, "groupName": "Prize Pack Series Cards", "reason": "Every Prize Pack card carries the Play! Pokémon stamp, so its Cosmos printing is a separate stamped printing, not plain Cosmos."},
-        {"groupID": 1539, "groupName": "League & Championship Cards", "reason": "League and championship cards carry event stamps."},
-        {"groupID": 23561, "groupName": "Trick or Trade BOOster Bundle 2024", "reason": "Trick or Trade cards carry the Pikachu pumpkin stamp."}
+        {
+          "groupID": 22880,
+          "groupName": "Prize Pack Series Cards",
+          "reason": "Every Prize Pack card carries the Play! Pokémon stamp, so its Cosmos printing is a separate stamped printing, not plain Cosmos."
+        },
+        {
+          "groupID": 1539,
+          "groupName": "League & Championship Cards",
+          "reason": "League and championship cards carry event stamps."
+        },
+        {
+          "groupID": 23561,
+          "groupName": "Trick or Trade BOOster Bundle 2024",
+          "reason": "Trick or Trade cards carry the Pikachu pumpkin stamp."
+        }
       ],
       "sources": [
         "https://www.tcgplayer.com/product/117600 (Deck Exclusives: Electivire 25/132 (Cosmos Holo))",
@@ -73,20 +195,47 @@
       "id": "set-name-stamp",
       "decision": "A set-logo stamped promo of a numbered set card is its own printing. TCGplayer titles it '<card> - <number> (<Set Name> Stamp)' or '(<Set Name> Stamped)' in Miscellaneous or the era's promo group. The stamp must name the card's own set.",
       "finishes": {
-        "pokemonStamp|holo|set-logo|": ["Holofoil"],
-        "pokemonStamp|cosmos|set-logo|": ["Holofoil"],
-        "pokemonStamp|normal|set-logo|": ["Normal"],
-        "pokemonStamp|reverse|set-logo|": ["Reverse Holofoil"]
+        "pokemonStamp|holo|set-logo|": [
+          "Holofoil"
+        ],
+        "pokemonStamp|cosmos|set-logo|": [
+          "Holofoil"
+        ],
+        "pokemonStamp|normal|set-logo|": [
+          "Normal"
+        ],
+        "pokemonStamp|reverse|set-logo|": [
+          "Reverse Holofoil"
+        ]
       },
-      "titleQualifiers": ["{setName} Stamp", "{setName} Stamped"],
+      "titleQualifiers": [
+        "{setName} Stamp",
+        "{setName} Stamped"
+      ],
       "groups": [
-        {"groupID": 2374, "groupName": "Miscellaneous Cards & Products"},
-        {"groupID": 1861, "groupName": "SM Promos"},
-        {"groupID": 2545, "groupName": "SWSH: Sword & Shield Promo Cards"},
-        {"groupID": 22872, "groupName": "SV: Scarlet & Violet Promo Cards"}
+        {
+          "groupID": 2374,
+          "groupName": "Miscellaneous Cards & Products"
+        },
+        {
+          "groupID": 1861,
+          "groupName": "SM Promos"
+        },
+        {
+          "groupID": 2545,
+          "groupName": "SWSH: Sword & Shield Promo Cards"
+        },
+        {
+          "groupID": 22872,
+          "groupName": "SV: Scarlet & Violet Promo Cards"
+        }
       ],
       "excludedGroups": [
-        {"groupID": 24451, "groupName": "ME: Mega Evolution Promo", "reason": "Its current TCGCSV inventory includes listings without extended data, which the strict market reader rejects. Add it once those listings are complete."}
+        {
+          "groupID": 24451,
+          "groupName": "ME: Mega Evolution Promo",
+          "reason": "Its current TCGCSV inventory includes listings without extended data, which the strict market reader rejects. Add it once those listings are complete."
+        }
       ],
       "sources": [
         "https://www.tcgplayer.com/product/274102 (Corviknight - 156/189 (Darkness Ablaze Stamped))",
@@ -94,5 +243,18 @@
         "https://api.tcgdex.net/v2/en/cards/sv02-135 (TCGdex lists the set-logo stamped holo as a separate variant)"
       ]
     }
-  ]
+  ],
+  "energyReverseHolo": {
+    "id": "ex-energy-reverse",
+    "decision": "In EX Hidden Legends and EX FireRed & LeafGreen the reverse holo is the energy-symbol pattern, so each card has one reverse holo, not a plain reverse plus an Energy reverse. TCGplayer sells it as the single Reverse Holofoil lane of the card's own product, so that lane is evidence for the energy pattern, and the checklist's separate plain reverse slot is the same printing. This matches the app's isPackReversePattern, which already hides the plain reverse beside the Energy slot for these sets.",
+    "setIDs": [
+      "ex5",
+      "ex6"
+    ],
+    "sources": [
+      "https://m.bulbapedia.bulbagarden.net/wiki/Holofoil (EX-era reverse holos use an energy-symbol pattern in the picture window)",
+      "https://facetofacegames.com/products/energy-switch-90112-uncommon-ex6-90-reverse-holo (retailers list one 'Reverse Holo' per EX FireRed & LeafGreen card)",
+      "https://poke-collect.com/en-gb/products/exp-all-91-112-firered-leafgreen-reverse-holofoil (one 'Reverse Holofoil' per card)"
+    ]
+  }
 }

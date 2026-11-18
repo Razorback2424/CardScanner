@@ -171,6 +171,22 @@ as their own products and variants. Three cases are decided:
 - **Result.** `swsh1` was certified (216 cards). `sm1` and `sm9` remain open
   for card-level reasons.
 
+### EX Energy-pattern reverse holo (`ex-energy-reverse`)
+
+- **The problem.** For EX Hidden Legends (`ex5`) and EX FireRed & LeafGreen
+  (`ex6`), the checklist lists both a plain reverse and an Energy-pattern
+  reverse. TCGplayer sells one Reverse Holofoil lane per card.
+- **What collectors expect.** One reverse holo per card, and it carries the
+  energy-symbol pattern. Sources: Bulbapedia's
+  [Holofoil](https://m.bulbapedia.bulbagarden.net/wiki/Holofoil) page, and
+  retailers listing one "Reverse Holo" per card (for example
+  [ex6-90](https://facetofacegames.com/products/energy-switch-90112-uncommon-ex6-90-reverse-holo)).
+- **Decision.** The Reverse Holofoil lane is evidence for the Energy pattern,
+  and the plain reverse slot is the same printing. This matches the app's
+  `isPackReversePattern`.
+- **Result.** About 70 items closed. Neither set is certified yet: both still
+  have World Championship deck stamps, Cracked Ice and extra Normal lanes.
+
 ## Sources not reachable
 
 Bulbapedia returns HTTP 403 to automated fetches. Its statements above come

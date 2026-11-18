@@ -767,9 +767,10 @@ class Conventions:
         self.appearances = document.get("appearances", [])
         self.reverse_lane = document.get("reverseLane")
         self.stamped_reverse = document.get("setLogoReverseHolo")
+        self.energy_reverse = document.get("energyReverseHolo")
         self.aliases = document.get("treatmentAliases")
         self.normal_placeholder = document.get("historicalNormalPlaceholder")
-        for convention in [*self.appearances, self.reverse_lane, self.stamped_reverse, self.aliases,
+        for convention in [*self.appearances, self.reverse_lane, self.stamped_reverse, self.energy_reverse, self.aliases,
                            self.normal_placeholder]:
             if convention is not None and (not convention.get("decision") or not convention.get("sources")):
                 raise ValueError(f"Convention {convention.get('id')} needs a decision and sources")
@@ -867,6 +868,17 @@ class Conventions:
             market.discard("reverse")
             market.add(stamps[0])
             notes.append(f"{rule['id']}: Reverse Holofoil lane is {stamps[0]}")
+            used.add(rule["id"])
+        # EX Hidden Legends and EX FireRed & LeafGreen: the one Reverse Holofoil lane is the
+        # energy-pattern reverse, and the checklist's plain reverse slot is that same printing.
+        rule = self.energy_reverse
+        if (rule and set_id in rule["setIDs"] and "reverse" in market and "energy" not in market
+                and {"reverse", "energy"} <= finishes):
+            market.discard("reverse")
+            market.add("energy")
+            finishes.discard("reverse")
+            notes.append(f"{rule['id']}: Reverse Holofoil lane is the energy-pattern reverse; "
+                         "the plain reverse slot is the same printing")
             used.add(rule["id"])
         # Gold and rainbow secret rares are one printing; the market lists one Holofoil product.
         rule = self.aliases

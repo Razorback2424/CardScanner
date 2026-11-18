@@ -739,6 +739,32 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
         self.assertEqual(certificate["cards"]["sample-001"], ["normal", stamp])
         self.assertNotIn("slotChanges", certificate)
 
+    def test_ex_energy_reverse_convention_reads_the_one_reverse_lane_as_the_energy_pattern(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.fixture["snapshot"] += [dict(slot, masterSetVariant={"id": "energy"})
+                                     for slot in self.fixture["snapshot"]
+                                     if slot["masterSetVariant"]["id"] == "reverse"]
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        _, rows = self.batch()
+        self.assertEqual([row["reason"] for row in rows], ["parallelFinishNotListed"])
+        self.conventions(energyReverseHolo=self.convention(setIDs=["sample"]),
+                         reverseLane=self.convention(excludeSetIDs=[]))
+        _, rows = self.batch(revision="batch")
+        self.assertEqual(rows, [])
+        certificate = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]
+        self.assertEqual(certificate["cards"]["sample-001"], ["energy", "normal"])
+
+    def test_ex_energy_reverse_convention_only_applies_to_its_sets(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.fixture["snapshot"] += [dict(slot, masterSetVariant={"id": "energy"})
+                                     for slot in self.fixture["snapshot"]
+                                     if slot["masterSetVariant"]["id"] == "reverse"]
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        self.conventions(energyReverseHolo=self.convention(setIDs=["ex6"]),
+                         reverseLane=self.convention(excludeSetIDs=[]))
+        _, rows = self.batch(revision="batch")
+        self.assertEqual([row["reason"] for row in rows], ["parallelFinishNotListed"])
+
     def test_conventions_need_a_decision_and_sources(self):
         self.conventions(reverseLane={"id": "x", "excludeSetIDs": []})
         with self.assertRaisesRegex(ValueError, "decision and sources"):
