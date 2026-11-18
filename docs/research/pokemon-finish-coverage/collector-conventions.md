@@ -154,6 +154,23 @@ as their own products and variants. Three cases are decided:
   (`PokemonFinishMinimumCatalog.projectingLegacy`). Cards whose audited minimum
   lists Normal stay open for a person.
 
+### Reviewed unnumbered Energy (`reviewedUnnumberedEnergy`)
+
+- **The problem.** Sets such as Sword & Shield (`swsh1`), Sun & Moon (`sm1`)
+  and Team Up (`sm9`) include basic Energy that has no collector number.
+  Those cards already live in `reviewed-unnumbered-energy.json` as their own
+  printings, keyed by TCGplayer product. Their presence blocked the whole
+  set's numbered certificate.
+- **What collectors expect.** Basic Energy is a separate, unnumbered product
+  line, filed by TCGplayer as its own product per type and finish. It is not
+  part of the set's numbered checklist.
+- **Decision.** The numbered certificate covers only the checklist cards.
+  Reviewed unnumbered Energy keeps its reviewed finishes and still shows
+  "Finishes not yet confirmed". It no longer blocks the set.
+  `certify()` refuses a certificate that would include a reviewed Energy card.
+- **Result.** `swsh1` was certified (216 cards). `sm1` and `sm9` remain open
+  for card-level reasons.
+
 ## Sources not reachable
 
 Bulbapedia returns HTTP 403 to automated fetches. Its statements above come

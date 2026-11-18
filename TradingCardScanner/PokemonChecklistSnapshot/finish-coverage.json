@@ -11950,6 +11950,833 @@
         }
       },
       "reviewedAt": "2026-11-18"
+    },
+    "swsh1": {
+      "tcgplayerGroupID": 2585,
+      "evidence": "docs/research/pokemon-finish-coverage/captures/swsh1/2026-11-18/report.json",
+      "cards": {
+        "swsh1-1": [
+          "holo"
+        ],
+        "swsh1-2": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-3": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-4": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-5": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-6": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-7": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-8": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-9": [
+          "holo"
+        ],
+        "swsh1-10": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-11": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-12": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-13": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-14": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-15": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-16": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-17": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-18": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-19": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-20": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-21": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-22": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-23": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-24": [
+          "holo"
+        ],
+        "swsh1-25": [
+          "holo"
+        ],
+        "swsh1-26": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-27": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-28": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-29": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-30": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-31": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-32": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-33": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-34": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-35": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-36": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-37": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-38": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-39": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-40": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-41": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-42": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-43": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-44": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-45": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-46": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-47": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-48": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-49": [
+          "holo"
+        ],
+        "swsh1-50": [
+          "holo"
+        ],
+        "swsh1-51": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-52": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-53": [
+          "holo"
+        ],
+        "swsh1-54": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-55": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-56": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-57": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-58": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-59": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-60": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-61": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-62": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-63": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-64": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-65": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-66": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-67": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-68": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-69": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-70": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-71": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-72": [
+          "holo"
+        ],
+        "swsh1-73": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-74": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-75": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-76": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-77": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-78": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-79": [
+          "holo"
+        ],
+        "swsh1-80": [
+          "holo"
+        ],
+        "swsh1-81": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-82": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-83": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-84": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-85": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-86": [
+          "holo"
+        ],
+        "swsh1-87": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-88": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-89": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-90": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-91": [
+          "holo"
+        ],
+        "swsh1-92": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-93": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-94": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-95": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-96": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-97": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-98": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-99": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-100": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-101": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-102": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-103": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-104": [
+          "holo"
+        ],
+        "swsh1-105": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-106": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-107": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-108": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-109": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-110": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-111": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-112": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-113": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-114": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-115": [
+          "holo"
+        ],
+        "swsh1-116": [
+          "holo"
+        ],
+        "swsh1-117": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-118": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-119": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-120": [
+          "holo"
+        ],
+        "swsh1-121": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-122": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-123": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-124": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-125": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-126": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-127": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-128": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-129": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-130": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-131": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-132": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-133": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-134": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-135": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-136": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-137": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-138": [
+          "holo"
+        ],
+        "swsh1-139": [
+          "holo"
+        ],
+        "swsh1-140": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-141": [
+          "holo"
+        ],
+        "swsh1-142": [
+          "holo"
+        ],
+        "swsh1-143": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-144": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-145": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-146": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-147": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-148": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-149": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-150": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-151": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-152": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-153": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-154": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-155": [
+          "holo"
+        ],
+        "swsh1-156": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-157": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-158": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-159": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-160": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-161": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-162": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-163": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-164": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-165": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-166": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-167": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-168": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-169": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-170": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-171": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-172": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-173": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-174": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-175": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-176": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-177": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-178": [
+          "holo",
+          "reverse"
+        ],
+        "swsh1-179": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-180": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-181": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-182": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-183": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-184": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-185": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-186": [
+          "normal",
+          "reverse"
+        ],
+        "swsh1-187": [
+          "holo"
+        ],
+        "swsh1-188": [
+          "holo"
+        ],
+        "swsh1-189": [
+          "holo"
+        ],
+        "swsh1-190": [
+          "holo"
+        ],
+        "swsh1-191": [
+          "holo"
+        ],
+        "swsh1-192": [
+          "holo"
+        ],
+        "swsh1-193": [
+          "holo"
+        ],
+        "swsh1-194": [
+          "holo"
+        ],
+        "swsh1-195": [
+          "holo"
+        ],
+        "swsh1-196": [
+          "holo"
+        ],
+        "swsh1-197": [
+          "holo"
+        ],
+        "swsh1-198": [
+          "holo"
+        ],
+        "swsh1-199": [
+          "holo"
+        ],
+        "swsh1-200": [
+          "holo"
+        ],
+        "swsh1-201": [
+          "holo"
+        ],
+        "swsh1-202": [
+          "holo"
+        ],
+        "swsh1-203": [
+          "holo"
+        ],
+        "swsh1-204": [
+          "holo"
+        ],
+        "swsh1-205": [
+          "holo"
+        ],
+        "swsh1-206": [
+          "holo"
+        ],
+        "swsh1-207": [
+          "holo"
+        ],
+        "swsh1-208": [
+          "holo"
+        ],
+        "swsh1-209": [
+          "holo"
+        ],
+        "swsh1-210": [
+          "holo"
+        ],
+        "swsh1-211": [
+          "holo"
+        ],
+        "swsh1-212": [
+          "holo"
+        ],
+        "swsh1-213": [
+          "holo"
+        ],
+        "swsh1-214": [
+          "holo"
+        ],
+        "swsh1-215": [
+          "holo"
+        ],
+        "swsh1-216": [
+          "holo"
+        ]
+      },
+      "slotChanges": {
+        "swsh1-163": {
+          "added": [
+            "reverse"
+          ]
+        }
+      },
+      "reviewedAt": "2026-11-18"
     }
   }
 }

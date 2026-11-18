@@ -524,6 +524,14 @@ def require_ledger_supersession(root, card_id, finishes, resolution, evidence):
         raise ValueError(f"{card_id} omits reviewed ledger finishes without supersession: {details}")
 
 
+def unnumbered_energy_ids(root, set_id):
+    path = root / SNAPSHOT / "reviewed-unnumbered-energy.json"
+    if not path.is_file():
+        return set()
+    return {card["providerID"] for family in read_json(path)["families"]
+            if family["providerSetID"] == set_id for card in family["cards"]}
+
+
 def certify(root, set_id, *, revision=FIRST_REVISION):
     capture = capture_directory(root, set_id, revision)
     report_path = capture / "report.json"
@@ -544,13 +552,16 @@ def certify(root, set_id, *, revision=FIRST_REVISION):
         family["providerSetID"] == set_id for family in read_json(reviewed_artwork)["families"]
     ):
         raise ValueError(f"{set_id} has reviewed artwork printings outside the captured checklist.")
-    reviewed_energy = root / SNAPSHOT / "reviewed-unnumbered-energy.json"
-    if reviewed_energy.is_file() and any(
-        family["providerSetID"] == set_id for family in read_json(reviewed_energy)["families"]
-    ):
-        raise ValueError(f"{set_id} has reviewed unnumbered Energy outside the numbered comparison.")
+    # Reviewed unnumbered Energy (collector convention, see
+    # docs/research/pokemon-finish-coverage/collector-conventions.md) is its own
+    # printing keyed by a TCGplayer product ID. It stays outside the numbered
+    # certificate and keeps its reviewed finishes as a projection, so it no
+    # longer blocks the set. It must never enter the certificate itself.
+    reviewed_energy_ids = unnumbered_energy_ids(root, set_id)
     audited = ledger()
     cards, sources, _, evidence = current_inputs(root, set_id, minimum_table(audited, set()))
+    if reviewed_energy_ids & set(cards):
+        raise ValueError(f"{set_id} certificate would include reviewed unnumbered Energy")
     if report_value["checklistSources"] != sources:
         raise ValueError("Evidence does not match the bundled set and checklist bytes")
     if report_value.get("finishEvidenceSHA256") != evidence.sha256:
@@ -912,8 +923,6 @@ def assess_set(root, set_id, market, links, coverage, audited_minimums, *, artwo
         blockers.append(("multiplePrintRuns", "Schema 1 certificates are keyed by provider card ID"))
     if set_id in artwork_sets:
         blockers.append(("artworkFamily", "Reviewed artwork printings sit outside the captured checklist"))
-    if set_id in energy_sets:
-        blockers.append(("reviewedUnnumberedEnergy", "Reviewed unnumbered Energy sits outside the numbered comparison"))
     cards, _, _, evidence = current_inputs(root, set_id, audited_minimums)
     try:
         require_audited_minimum_projection(root, cards, evidence, already_certified=False)

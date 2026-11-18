@@ -233,6 +233,23 @@ class PokemonFinishCoverageTests(unittest.TestCase):
             coverage.certify(self.root, "sample")
         self.assertEqual(coverage.read_json(self.snapshot / "finish-coverage.json")["sets"], {})
 
+    def test_reviewed_unnumbered_energy_stays_outside_and_no_longer_blocks_the_set(self):
+        coverage.write_json(self.evidence, self.reviewed())
+        energy = self.snapshot / "reviewed-unnumbered-energy.json"
+        coverage.write_json(energy, {"schemaVersion": 1, "families": [{"providerSetID": "sample", "cards": [
+            {"providerID": "tcgplayer:900", "name": "Grass Energy", "finishProducts": {"normal": 900}}]}]})
+        self.assertEqual(coverage.certify(self.root, "sample"), 4)
+        cards = coverage.read_json(self.snapshot / "finish-coverage.json")["sets"]["sample"]["cards"]
+        self.assertNotIn("tcgplayer:900", cards)
+
+    def test_certificate_refuses_a_card_that_is_also_reviewed_unnumbered_energy(self):
+        coverage.write_json(self.evidence, self.reviewed())
+        coverage.write_json(self.snapshot / "reviewed-unnumbered-energy.json", {"schemaVersion": 1, "families": [
+            {"providerSetID": "sample", "cards": [{"providerID": "tcgplayer:14", "name": "Energy"}]}]})
+        with self.assertRaisesRegex(ValueError, "would include reviewed unnumbered Energy"):
+            coverage.certify(self.root, "sample")
+        self.assertEqual(coverage.read_json(self.snapshot / "finish-coverage.json")["sets"], {})
+
     def test_report_edits_cannot_remove_an_unmatched_product_or_clear_a_conflict(self):
         evidence = self.reviewed()
         removed = deepcopy(evidence)
