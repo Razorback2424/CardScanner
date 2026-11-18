@@ -173,6 +173,62 @@ final class CardShareContentTests: XCTestCase {
         """)
     }
 
+    func testOwnedFinishIsStatedEvenWhenStandardAndCanBeRemoved() {
+        let identity = CardShareIdentity(name: "Sorceress's Schemes", setCode: "FIN", setName: "Final Fantasy",
+            number: CardShareNumber("159"), badge: .grade("PSA 10"), finish: "Foil")
+        XCTAssertEqual(identity.replacingFinish("Nonfoil").finish, "Nonfoil")
+        XCTAssertEqual(identity.replacingFinish("Nonfoil").gradeBadge, .grade("PSA 10"), "A grade describes the slab, not the finish")
+        XCTAssertNil(identity.replacingFinish(nil).finish)
+        XCTAssertNil(identity.replacingFinish(nil).printingDetail)
+        XCTAssertEqual(CardShareSummary.text(identity: identity.replacingFinish("Nonfoil"), price: nil, now: now, calendar: calendar, locale: locale),
+            "Sorceress's Schemes · Final Fantasy FIN 159 · PSA 10 · Nonfoil")
+    }
+
+    func testShareOptionNamesSlabsByGradeAndFinish() {
+        let identity = CardShareIdentity(name: "Charizard", setCode: "BS", setName: "Base Set",
+            number: CardShareNumber("4/102"), badge: .grade("PSA 10"), finish: "Holo")
+        let slab = CollectionShareOption(id: "slab", identity: identity, finishLabel: "Holo", price: nil,
+            showsFinishSheen: false, localArtworkFilename: nil, remoteArtworkURLs: [])
+        XCTAssertTrue(slab.isGraded)
+        XCTAssertEqual(slab.choiceLabel, "PSA 10 · Holo")
+        XCTAssertNil(slab.identity.finish, "The sheet decides whether the finish is stated")
+        XCTAssertEqual(slab.identity.gradeBadge, .grade("PSA 10"))
+
+        let raw = CollectionShareOption(id: "raw", identity: identity.replacingFinish(nil).replacingFinish("Holo"),
+            finishLabel: " ", price: nil, showsFinishSheen: false, localArtworkFilename: nil, remoteArtworkURLs: [],
+            isGraded: false)
+        XCTAssertFalse(raw.isGraded)
+        XCTAssertNil(raw.finishLabel)
+    }
+
+    func testSummaryOfAllFinishesListsEachFinishAndItsPrice() {
+        let identity = CardShareIdentity(name: "Sorceress's Schemes", setCode: "FIN", setName: "Final Fantasy",
+            number: CardShareNumber("159"), badge: nil, finish: "Foil")
+        let price = { (amount: Double) in
+            CardSharePrice(amount: amount, currencyCode: "USD", basis: "Market price", source: "Scryfall", asOf: self.now)
+        }
+        let priced = [
+            CardShareFinishLine(id: "a", label: "Nonfoil", price: price(0.25)),
+            CardShareFinishLine(id: "b", label: "Foil", price: price(0.9)),
+            CardShareFinishLine(id: "c", label: "Etched Foil", price: nil)
+        ]
+        XCTAssertEqual(CardShareSummary.text(identity: identity, price: nil, finishes: priced,
+            now: now, calendar: calendar, locale: locale), """
+        Sorceress's Schemes · Final Fantasy FIN 159
+        Nonfoil · $0.25
+        Foil · $0.90
+        Etched Foil · No price
+        Market price (Scryfall, Oct 31)
+        """)
+
+        let unpriced = priced.map { CardShareFinishLine(id: $0.id, label: $0.label, price: nil) }
+        XCTAssertEqual(CardShareSummary.text(identity: identity, price: nil, finishes: unpriced,
+            now: now, calendar: calendar, locale: locale), """
+        Sorceress's Schemes · Final Fantasy FIN 159
+        Finishes: Nonfoil · Foil · Etched Foil
+        """)
+    }
+
     func testSummaryWithoutPriceStatesOnlyIdentity() {
         let identity = CardShareIdentity(name: "Booster Bundle", setCode: nil, setName: "Stormfront Tides", number: nil, badge: nil)
         XCTAssertEqual(CardShareSummary.text(identity: identity, price: nil, now: now, calendar: calendar, locale: locale),
@@ -303,6 +359,64 @@ final class CardShareRenderTests: XCTestCase {
         }
     }
 
+    func testCollectionExportsEveryOwnedFinishWithAndWithoutPrices() throws {
+        let labels = ["Normal", "Holo", "Reverse Holo", "Poké Ball", "Master Ball", "Cosmos Holo"]
+        let lines = labels.enumerated().map { index, label in
+            CardShareFinishLine(id: label, label: label, price: CardSharePrice(amount: Double(index + 1) * 1.5,
+                currencyCode: "USD", basis: "Near Mint market", source: "TCGplayer", asOf: now))
+        }
+        let accent = ArtworkAccent(red: 0.85, green: 0.35, blue: 0.25)
+        try checkExport(CollectionShareImage(identity: identity, price: nil, artwork: artwork(),
+            showsFinishSheen: false, finishes: Array(lines.prefix(3)), accent: accent, now: now), name: "collection-finishes-priced")
+        try checkExport(CollectionShareImage(identity: identity, price: nil, artwork: artwork(),
+            showsFinishSheen: false, finishes: lines, accent: accent, now: now), name: "collection-finishes-overflow")
+        try checkExport(CollectionShareImage(identity: identity, price: nil, artwork: artwork(),
+            showsFinishSheen: false, finishes: lines.prefix(3).map { CardShareFinishLine(id: $0.id, label: $0.label, price: nil) },
+            accent: accent, now: now), name: "collection-finishes-unpriced")
+        try checkExport(CollectionShareImage(identity: identity.replacingFinish("Normal"), price: price, artwork: artwork(),
+            showsFinishSheen: false, accent: accent, now: now), name: "collection-standard-finish-stated")
+    }
+
+    func testExtremeIdentitiesStayInsideTheCanvas() throws {
+        let longName = "Mr. Mime's Extraordinarily Long Tournament Champion ex"
+        let longSet = "Scarlet & Violet—Prismatic Evolutions Elite Trainer Box Promos"
+        let rarity = CardShareRarity(raw: "Special Illustration Rare", game: .pokemon, pokemonSetID: "sv08.5")
+        let slab = CardShareIdentity(name: longName, setCode: "PRE", setName: longSet, number: CardShareNumber("TG30/TG30"),
+            badge: .grade("CGC 9.5 Pristine"), rarity: rarity, finish: "Master Ball Reverse Holo", edition: "1st Edition")
+        let raw = slab.replacingFinish("Master Ball Reverse Holo")
+        let unrated = CardShareIdentity(name: longName, setCode: "PRE", setName: longSet,
+            number: CardShareNumber("TG30/TG30"), badge: nil, rarity: rarity, finish: "Master Ball Reverse Holo")
+        let bigPrice = CardSharePrice(amount: 12_345.67, currencyCode: "USD", basis: "CGC 9.5 Pristine market",
+            source: "JustTCG", asOf: now)
+        for (name, art) in [("art", artwork()), ("no-art", nil)] as [(String, CardShareArtwork?)] {
+            try checkExport(CollectionShareImage(identity: slab, price: bigPrice, artwork: art,
+                showsFinishSheen: false, now: now), name: "edge-slab-\(name)")
+            try checkExport(CollectionShareImage(identity: unrated, price: bigPrice, artwork: art,
+                showsFinishSheen: true, now: now), name: "edge-raw-\(name)")
+            let lines = ["Normal", "Master Ball Reverse Holo", "Poké Ball Reverse Holo", "Cosmos Holo"].enumerated().map {
+                CardShareFinishLine(id: $0.element, label: $0.element, price: $0.offset == 2 ? nil
+                    : CardSharePrice(amount: 9_876.54 / Double($0.offset + 1), currencyCode: "USD",
+                        basis: "Near Mint market", source: "TCGplayer", asOf: now))
+            }
+            try checkExport(CollectionShareImage(identity: raw, price: nil, artwork: art, showsFinishSheen: false,
+                finishes: lines, now: now), name: "edge-all-finishes-\(name)")
+            try checkExport(CollectionShareImage(identity: raw, price: nil, artwork: art, showsFinishSheen: false,
+                finishes: lines.map { CardShareFinishLine(id: $0.id, label: $0.label, price: nil) }, now: now),
+                name: "edge-all-finishes-unpriced-\(name)")
+            try checkExport(BuyCheckShareImage(identity: slab, price: bigPrice,
+                ask: CardShareAsk(text: "11000", market: bigPrice.amount, locale: Locale(identifier: "en_US")),
+                trend: nil, artwork: art, now: now), name: "edge-buy-\(name)")
+        }
+        let points = [(89.0, 9_000.0), (70, 9_400), (50, 10_100), (30, 11_800), (0, 12_345.67)].map {
+            JustTCGHistoryPoint(p: $0.1, t: now.addingTimeInterval(-$0.0 * 86_400).timeIntervalSince1970)
+        }
+        try checkExport(BuyCheckShareImage(identity: unrated, price: bigPrice, ask: nil,
+            trend: CardShareTrend.make(points: points, now: now), artwork: artwork(), now: now), name: "edge-buy-history")
+        let short = CardShareIdentity(name: "Mew", setCode: nil, setName: nil, number: nil, badge: nil)
+        try checkExport(CollectionShareImage(identity: short, price: nil, artwork: nil, showsFinishSheen: false, now: now),
+            name: "edge-minimal")
+    }
+
     func testBuyCheckExportsHistoryAndAskingPricesOutsideHistoryRange() throws {
         let points = [(89.0, 57.32), (70, 56.4), (50, 59), (30, 61.2), (0, 64.2)].map {
             JustTCGHistoryPoint(p: $0.1, t: now.addingTimeInterval(-$0.0 * 86_400).timeIntervalSince1970)
@@ -353,6 +467,10 @@ final class CardShareRenderTests: XCTestCase {
         let image = try XCTUnwrap(CardShareRenderer.render(content))
         XCTAssertEqual(image.cgImage?.width, 1080, name)
         XCTAssertEqual(image.cgImage?.height, 1920, name)
+        // Set TEST_RUNNER_SHARE_EXPORT_DIR to inspect every export as a PNG.
+        if let directory = ProcessInfo.processInfo.environment["SHARE_EXPORT_DIR"], let data = image.pngData() {
+            try data.write(to: URL(fileURLWithPath: directory).appendingPathComponent(name + ".png"))
+        }
         let attachment = XCTAttachment(image: image)
         attachment.name = name
         attachment.lifetime = .keepAlways
