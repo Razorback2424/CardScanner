@@ -348,7 +348,23 @@ struct CardGameRuntimeContainer: Sendable {
         if YuGiOhCatalogBootstrap.requestsDelivery() || YuGiOhBundledLaunch.cachedManifest() == nil {
             Task.detached(priority: .userInitiated) { _ = try? YuGiOhCatalog.bundledHandle.loaded() }
         }
-        return await Task.detached(priority: .userInitiated) { appDefaults() }.value
+        // One Piece verifies a signed release of tens of megabytes, the
+        // slowest seed by far. Prepare it beside the other games instead of
+        // after them; registration order below is unchanged.
+        var onePiece: Task<Result<CardGameRuntime?, Error>, Never>?
+#if DEBUG && LOCAL_ONLY_SIGNING
+        let preparesOnePieceEarly = !OnePieceCatalogBootstrap.isLocalReviewLaunch
+#else
+        let preparesOnePieceEarly = true
+#endif
+        if preparesOnePieceEarly {
+            onePiece = Task.detached(priority: .userInitiated) {
+                Result { try measured(.onePiece) { try OnePieceCatalogBootstrap.configuredRuntime() } }
+            }
+        }
+        let base = await Task.detached(priority: .userInitiated) { baseAppDefaults() }.value
+        guard let prepared = await onePiece?.value else { return withOnePiece(base) }
+        return withOnePiece(base, configuredRuntime: { try prepared.get() })
     }
 
     private static func measured<T>(_ game: CardGame, _ body: () throws -> T) rethrows -> T {
@@ -360,6 +376,11 @@ struct CardGameRuntimeContainer: Sendable {
     }
 
     static func appDefaults() -> Self {
+        withOnePiece(baseAppDefaults())
+    }
+
+    /// Every bundled game except One Piece, in registration order.
+    private static func baseAppDefaults() -> (modules: [CardGameRuntime], unavailable: [CardGameDescriptor]) {
         var modules = measured(.pokemon) { [PokemonGameRuntime().runtime] }
         modules.append(measured(.magic) { MagicGameRuntime().runtime })
         var unavailable: [CardGameDescriptor] = []
@@ -394,6 +415,16 @@ struct CardGameRuntimeContainer: Sendable {
                 .error("Yu-Gi-Oh! seed rejected; existing games remain available")
             unavailable.append(YuGiOhGameRuntime.descriptor)
         }
+        return (modules, unavailable)
+    }
+
+    /// Appends One Piece after the base games. `configuredRuntime` defaults to
+    /// preparing it here; launch passes the result it prepared concurrently.
+    private static func withOnePiece(
+        _ base: (modules: [CardGameRuntime], unavailable: [CardGameDescriptor]),
+        configuredRuntime: () throws -> CardGameRuntime? = { try OnePieceCatalogBootstrap.configuredRuntime() }
+    ) -> Self {
+        var (modules, unavailable) = base
 #if DEBUG && LOCAL_ONLY_SIGNING
         let arguments = ProcessInfo.processInfo.arguments
         if let route = arguments.firstIndex(of: "-ui_debug_route"), arguments.indices.contains(route + 1),
@@ -409,7 +440,7 @@ struct CardGameRuntimeContainer: Sendable {
                 return try! Self(runtimes: modules, unavailableGames: unavailable)
             }
 #endif
-            let configured = try OnePieceCatalogBootstrap.configuredRuntime()
+            let configured = try configuredRuntime()
 #if LOCAL_ONLY_SIGNING
             let module = try configured ?? OnePieceCatalogBootstrap.ownerRuntime()
 #else

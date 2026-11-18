@@ -197,8 +197,13 @@ enum OnePieceCatalogBootstrap {
     }
 #endif
 
+    /// - Parameter preloadsPersistedRelease: start verifying the stored
+    ///   release slots now, in the background. Binding to storage waits on
+    ///   that same load (`loadPersistedOrBundled` runs once), so launch
+    ///   overlaps it with the rest of preparation instead of paying it later.
     static func runtime(configuration: OnePieceCatalogBootstrapConfiguration, seed: Data?,
-                        root: URL? = nil, now: Date = .now) throws -> CardGameRuntime? {
+                        root: URL? = nil, now: Date = .now,
+                        preloadsPersistedRelease: Bool = false) throws -> CardGameRuntime? {
         guard configuration.mode != .disabled else { return nil }
         guard let seed, seed.count <= 48 * 1_024 * 1_024 else {
             throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingSeed
@@ -217,6 +222,9 @@ enum OnePieceCatalogBootstrap {
             try OnePieceCatalogUpdateClient(endpoint: $0, conditionalStateURL: store.conditionalStateURL)
         }
         let coordinator = OnePieceCatalogCoordinator(store: store, client: client, rolloutMode: configuration.mode)
+        if preloadsPersistedRelease {
+            Task(priority: .userInitiated) { _ = await coordinator.currentSnapshot() }
+        }
         // The store has already verified and indexed this bundled envelope.
         var module = OnePieceGameRuntime(registry: registry, coordinator: coordinator)
         if configuration.mode == .remoteValidationOnly { module.capabilities = [] }
@@ -231,6 +239,7 @@ enum OnePieceCatalogBootstrap {
             throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingSeed
         }
         let handle = try FileHandle(forReadingFrom: url); defer { try? handle.close() }
-        return try runtime(configuration: configuration, seed: handle.read(upToCount: 48 * 1_024 * 1_024 + 1))
+        return try runtime(configuration: configuration, seed: handle.read(upToCount: 48 * 1_024 * 1_024 + 1),
+                           preloadsPersistedRelease: true)
     }
 }
