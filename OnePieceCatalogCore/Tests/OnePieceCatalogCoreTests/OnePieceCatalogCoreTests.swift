@@ -285,6 +285,14 @@ final class OnePieceCatalogCoreTests: XCTestCase {
             keyID: keyID, privateKey: key, trustedKeys: keys, previous: bad))
     }
 
+    func testEnvelopeCapHoldsTheLargestAllowedPayload() {
+        let payload = OnePieceCatalogSignature.maximumPayloadBytes
+        let base64 = (payload + 2) / 3 * 4
+        // keyID, signature and JSON punctuation are well under 1 KiB.
+        XCTAssertLessThanOrEqual(base64 + 1_024, OnePieceCatalogSignature.maximumEnvelopeBytes)
+        XCTAssertGreaterThanOrEqual(payload, 37_414_243, "Revision 7's payload must fit")
+    }
+
     /// The built publisher. On macOS the test bundle sits in the build products
     /// folder; on Linux the bundle URL is that folder itself, so check it first.
     static func publisherExecutable() -> URL? {

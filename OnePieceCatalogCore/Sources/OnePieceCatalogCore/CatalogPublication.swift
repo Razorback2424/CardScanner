@@ -31,7 +31,7 @@ public enum OnePieceCatalogPublication {
         guard OnePieceSourceObservation.sha256(candidate) == reviewedSHA256 else {
             throw OnePieceCatalogPublicationError.reviewFingerprintMismatch
         }
-        guard candidate.count <= 32 * 1_024 * 1_024 else { throw OnePieceCatalogSignatureError.oversizedPayload }
+        guard candidate.count <= OnePieceCatalogSignature.maximumPayloadBytes else { throw OnePieceCatalogSignatureError.oversizedPayload }
         let release = try JSONDecoder().decode(OnePieceCatalogRelease.self, from: candidate)
         guard try release.canonicalData() == candidate else { throw OnePieceCatalogPublicationError.nonCanonicalCandidate }
         guard trustedKeys[keyID]?.rawRepresentation == privateKey.publicKey.rawRepresentation else {

@@ -104,7 +104,7 @@ jobs:
           sys.path.insert(0, 'scripts')
           from market_price_feeds import ORIGIN, read_http
 
-          data = read_http(f'{ORIGIN}/one-piece/v1/current.json', 48 * 1024 * 1024, absent_ok=True)
+          data = read_http(f'{ORIGIN}/one-piece/v1/current.json', 64 * 1024 * 1024, absent_ok=True)
           if data is None:
               data = Path('TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json').read_bytes()
           Path(sys.argv[1]).write_bytes(data)

@@ -29,7 +29,8 @@ actor OnePieceCatalogUpdateClient: OnePieceCatalogUpdateFetching {
 
     init(endpoint: URL, configuration: URLSessionConfiguration = .ephemeral,
          conditionalStateURL: URL? = nil) throws {
-        transport = try .init(endpoint: endpoint, configuration: configuration)
+        transport = try .init(endpoint: endpoint, configuration: configuration,
+                              maximumBytes: OnePieceCatalogSignature.maximumEnvelopeBytes)
         self.endpoint = endpoint
         self.conditionalStateURL = conditionalStateURL
         if let conditionalStateURL, let handle = try? FileHandle(forReadingFrom: conditionalStateURL) {

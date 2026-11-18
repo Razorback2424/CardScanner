@@ -32,6 +32,12 @@ public enum OnePieceCatalogSignatureError: Error, Equatable {
 }
 
 public enum OnePieceCatalogSignature {
+    /// Largest canonical payload a release may carry. Revision 7 is about 36 MiB.
+    public static let maximumPayloadBytes = 40 * 1_024 * 1_024
+    /// Largest signed envelope read from disk or the network. Base64 adds a
+    /// third to the payload, so this leaves room above the payload cap.
+    public static let maximumEnvelopeBytes = 64 * 1_024 * 1_024
+
     public static func sign(_ release: OnePieceCatalogRelease, keyID: String,
                             privateKey: Curve25519.Signing.PrivateKey) throws -> OnePieceCatalogReleaseEnvelope {
         guard keyID.hasPrefix("one-piece-"), keyID.count > "one-piece-".count else {
@@ -45,7 +51,7 @@ public enum OnePieceCatalogSignature {
     public static func verify(_ envelope: OnePieceCatalogReleaseEnvelope,
                               trustedKeys: [String: Curve25519.Signing.PublicKey],
                               minimumRevision: Int? = nil, now: Date = .now,
-                              maximumPayloadBytes: Int = 32 * 1_024 * 1_024) throws -> OnePieceVerifiedCatalogRelease {
+                              maximumPayloadBytes: Int = OnePieceCatalogSignature.maximumPayloadBytes) throws -> OnePieceVerifiedCatalogRelease {
         guard envelope.keyID.hasPrefix("one-piece-") else { throw OnePieceCatalogSignatureError.invalidKeyID }
         guard let key = trustedKeys[envelope.keyID] else { throw OnePieceCatalogSignatureError.unknownKey }
         // Bound before base64 allocation. This limits bytes, never candidates.

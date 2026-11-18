@@ -89,7 +89,7 @@ struct OnePieceCatalogPublisher {
             guard let bytes = Data(base64Encoded: value), bytes.count == 32 else { throw CLIError.invalidSigningKey }
             return try Curve25519.Signing.PublicKey(rawRepresentation: bytes)
         }
-        let envelope = try JSONDecoder().decode(OnePieceCatalogReleaseEnvelope.self, from: read("--input", limit: 48 * 1_024 * 1_024))
+        let envelope = try JSONDecoder().decode(OnePieceCatalogReleaseEnvelope.self, from: read("--input", limit: OnePieceCatalogSignature.maximumEnvelopeBytes))
         let verified = try OnePieceCatalogSignature.verify(envelope, trustedKeys: keys)
         if let expected = options["--expected-revision"] {
             guard Int(expected) == verified.release.revision else { throw CLIError.unexpectedRevision }
@@ -112,7 +112,7 @@ struct OnePieceCatalogPublisher {
             guard let value = options[key], !value.isEmpty else { throw CLIError.usage }; return value
         }
         func url(_ path: String) -> URL { URL(fileURLWithPath: path).standardizedFileURL.resolvingSymlinksInPath() }
-        func read(_ path: String, limit: Int = 48 * 1_024 * 1_024) throws -> Data {
+        func read(_ path: String, limit: Int = OnePieceCatalogSignature.maximumEnvelopeBytes) throws -> Data {
             let handle = try FileHandle(forReadingFrom: url(path)); defer { try? handle.close() }
             let bytes = try handle.read(upToCount: limit + 1) ?? Data()
             guard bytes.count <= limit else { throw OnePieceCatalogSignatureError.oversizedPayload }; return bytes
