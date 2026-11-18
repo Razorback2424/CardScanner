@@ -1,0 +1,168 @@
+{
+  "artworks": [
+    {
+      "id": "59E2D9DA-403D-580D-8A8B-705F46564FF2",
+      "imageSHA256": "bce1da13787119401c20ae4ffafe469600e9ed19702c71930c5ca428113a5758",
+      "observationIDs": [
+        "product:bandai-series:569205:EB05-055_p3:render"
+      ]
+    }
+  ],
+  "printings": [
+    {
+      "id": "3F408A87-12E1-5AEF-97B5-C98E57AA54AF",
+      "canonicalCardID": "one-piece:en:EB05-055",
+      "language": "en",
+      "artworkID": "59E2D9DA-403D-580D-8A8B-705F46564FF2",
+      "releaseID": "product:bandai-series:569205",
+      "treatment": "Kentaro Yabuki artwork",
+      "stamp": "Gold stamp",
+      "status": "verified",
+      "supportedVariantIDs": [
+        "foil"
+      ],
+      "sourceAliases": [
+        {
+          "provider": "bandai",
+          "sourceID": "product:bandai-series:569205:EB05-055_p3"
+        },
+        {
+          "provider": "tcgplayer",
+          "sourceID": "722645"
+        }
+      ],
+      "marketMappings": [],
+      "supersedes": [],
+      "review": {
+        "reference": "https://www.tcgplayer.com/product/722645",
+        "evidence": [
+          {
+            "kind": "printedIdentity",
+            "observationID": "product:bandai-series:569205:EB05-055_p3:list",
+            "detail": "Bandai's EB-05 list names this number with presentation EB05-055_p3."
+          },
+          {
+            "kind": "release",
+            "observationID": "product:bandai-series:569205:EB05-055_p3:list",
+            "detail": "Bandai lists this exact presentation in EB-05."
+          },
+          {
+            "kind": "artwork",
+            "observationID": "product:bandai-series:569205:EB05-055_p3:render",
+            "detail": "A visual review matched the TCGplayer photo to this Bandai render; the other three Nami presentations already map to the other TCGplayer products."
+          },
+          {
+            "kind": "language",
+            "observationID": "product:bandai-series:569205:EB05-055_p3:marketplace",
+            "detail": "The marketplace lists this product in its English One Piece category."
+          },
+          {
+            "kind": "treatment",
+            "observationID": "product:bandai-series:569205:EB05-055_p3:marketplace",
+            "detail": "The title names the Kentaro Yabuki artwork."
+          },
+          {
+            "kind": "stamp",
+            "observationID": "product:bandai-series:569205:EB05-055_p3:marketplace",
+            "detail": "The title names the gold stamp, visible on the card's name plate."
+          },
+          {
+            "kind": "finish",
+            "observationID": "product:bandai-series:569205:EB05-055_p3:marketplace",
+            "detail": "The marketplace lists only a Foil lane for this product."
+          }
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "product:bandai-series:569205:EB05-055_p3:list",
+      "kind": "catalog",
+      "language": "en",
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "product:bandai-series:569205:EB05-055_p3"
+      },
+      "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569205",
+      "observedAt": "2026-11-18T14:03:37.316411+00:00",
+      "payloadSHA256": "37b2b6f7cd1cdf3938f7eb2d5b7c0232a0c9c8f8ad2afc04191cd71c30283e67",
+      "productEvidence": [
+        "product:bandai-series:569205"
+      ],
+      "printedEvidence": {
+        "number": "EB05-055",
+        "sourceArtworkAlias": "EB05-055_p3",
+        "productLabel": "EXTRA BOOSTER -ONE PIECE HEROINES EDITION vol.2- [EB-05]",
+        "sourceRole": "manufacturer-product-card-list"
+      }
+    },
+    {
+      "id": "product:bandai-series:569205:EB05-055_p3:render",
+      "kind": "catalog",
+      "language": "en",
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "product:bandai-series:569205:EB05-055_p3"
+      },
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/EB05-055_p3.png?261016",
+      "observedAt": "2026-11-18T17:43:40.052466+00:00",
+      "payloadSHA256": "bce1da13787119401c20ae4ffafe469600e9ed19702c71930c5ca428113a5758",
+      "imageSHA256": "bce1da13787119401c20ae4ffafe469600e9ed19702c71930c5ca428113a5758",
+      "productEvidence": [
+        "product:bandai-series:569205"
+      ],
+      "printedEvidence": {
+        "number": "EB05-055",
+        "sourceArtworkAlias": "EB05-055_p3",
+        "sourceRole": "watermarked-digital-render"
+      }
+    },
+    {
+      "id": "product:bandai-series:569205:EB05-055_p3:marketplace",
+      "kind": "catalog",
+      "language": "en",
+      "alias": {
+        "provider": "tcgplayer",
+        "sourceID": "722645"
+      },
+      "sourceURL": "https://tcgcsv.com/tcgplayer/68/24820/products",
+      "observedAt": "2026-11-18T14:01:59+00:00",
+      "payloadSHA256": "4804a4648b23ae01a8e51edaf46f4daf186f00288f68d8b92ad7e20aa94995a0",
+      "productEvidence": [
+        "product:bandai-series:569205"
+      ],
+      "printedEvidence": {
+        "sourceRole": "marketplace-reviewed-printing",
+        "number": "EB05-055",
+        "name": "Nami (055) (Kentaro Yabuki) (Gold Stamped)",
+        "finishVariantID": "foil",
+        "treatment": "Kentaro Yabuki artwork",
+        "stamp": "Gold stamp",
+        "retailerReferenceProductID": "722645",
+        "retailerImageSHA256": "9293eeb42418dcf068d29db3520022364c788a3095c0e497121715187f557e8b",
+        "matchedBandaiImageSHA256": "bce1da13787119401c20ae4ffafe469600e9ed19702c71930c5ca428113a5758",
+        "artworkReview": "reviewed-photo-pair"
+      }
+    }
+  ],
+  "inventories": [
+    {
+      "provider": "bandai",
+      "snapshotID": "reviewed-eb05-055-p3",
+      "paginationComplete": false,
+      "observationIDs": [
+        "product:bandai-series:569205:EB05-055_p3:list",
+        "product:bandai-series:569205:EB05-055_p3:render"
+      ]
+    },
+    {
+      "provider": "tcgplayer",
+      "snapshotID": "reviewed-eb05-055-p3",
+      "paginationComplete": false,
+      "observationIDs": [
+        "product:bandai-series:569205:EB05-055_p3:marketplace"
+      ]
+    }
+  ]
+}

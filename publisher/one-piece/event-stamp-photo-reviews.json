@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-11-18",
+  "review": "Each marketplace photo shows the base Bandai artwork, text and frame unchanged, with the event's gold stamp overlapping the art. The stamp is what pushes one comparison region past the automatic limit.",
+  "pairs": {
+    "486663": {
+      "number": "OP02-024",
+      "productID": "event:paramount-war-pre-release-cards",
+      "retailerImageSHA256": "2d10dfd3c151dad5ed99cac4160017c08d1ff09342b01ff94616bcdac8c1bf66",
+      "bandaiImageSHA256": "0af6c5ea7bbdf8099f28ff0c5dba5a829f80ca0b47d94d350bda6b9ba788a542"
+    },
+    "486702": {
+      "number": "OP02-118",
+      "productID": "event:paramount-war-pre-release-cards",
+      "retailerImageSHA256": "ee1a3e200324f1ee1a1830276f3dbc588ff374630e5d11cc374d840b6656bd64",
+      "bandaiImageSHA256": "64747efe4e216a186f8e84916000cf1b0d32995cc0e77a60dbf2328591f0f774"
+    },
+    "516855": {
+      "number": "OP04-036",
+      "productID": "event:kingdoms-of-intrigue-pre-release-cards",
+      "retailerImageSHA256": "33f1203d1a1b23c2d83e470452e866ee0c88a758af583e81c5c0168fa05fc9a6",
+      "bandaiImageSHA256": "9ec3221f1bad7db238930011ac1e3cf59d5c5c2778792c00b66dea71f2b24ee2"
+    },
+    "516856": {
+      "number": "OP04-037",
+      "productID": "event:kingdoms-of-intrigue-pre-release-cards",
+      "retailerImageSHA256": "8af39d93925bae7fc198d1f5f25f49b61e3c8c7cc7643a37ad6670e87ec976f6",
+      "bandaiImageSHA256": "7345b4a3b54105a20fde169a4c31a6c5574e644426c88620f1e18bed02933f19"
+    },
+    "516868": {
+      "number": "OP04-055",
+      "productID": "event:kingdoms-of-intrigue-pre-release-cards",
+      "retailerImageSHA256": "60e9a7b6a3350d1ddd5297c845fd364735225f8a15eb89050afe931bf4b747ff",
+      "bandaiImageSHA256": "0530ab8eb850a9854233678807f6ca35a974d4ccc33bc318223c5732b495b703"
+    },
+    "516892": {
+      "number": "OP04-093",
+      "productID": "event:kingdoms-of-intrigue-pre-release-cards",
+      "retailerImageSHA256": "a898b244f86361783c2939cf1df6efa002bbacbddab129b9327dc80a89e5b76b",
+      "bandaiImageSHA256": "61fa318c218bb3766363a959de32008fa5dbc939107f1ce2df20775a95e9d228"
+    },
+    "516907": {
+      "number": "OP04-115",
+      "productID": "event:kingdoms-of-intrigue-pre-release-cards",
+      "retailerImageSHA256": "43ac6867976b10c4b0a55f78d75bd8b42977ed0b341c61923b0cf22a748b51e4",
+      "bandaiImageSHA256": "7a314e84e97f9edcef68420060ee3d253c7e8e80f28e1ccfc1beefc5006e086d"
+    },
+    "541689": {
+      "number": "OP06-040",
+      "productID": "event:wings-of-the-captain-pre-release-cards",
+      "retailerImageSHA256": "8b1a40ad8e8efe09cdfb471224404cf462a56a225fe26f63225de2b497d64b62",
+      "bandaiImageSHA256": "112a1a47b4c80845b5666d7544c716cde546e7f5e8370f6c3a7eccbc744579c9"
+    },
+    "541696": {
+      "number": "OP06-057",
+      "productID": "event:wings-of-the-captain-pre-release-cards",
+      "retailerImageSHA256": "a62f9dc177dde149b02710453f1254ded2a07e6196b2d9a55c22924492cf1d4a",
+      "bandaiImageSHA256": "f498edd25100e5a17b807469ccb444b971bc09d7f61f59a6974a49a95cfee137"
+    },
+    "541701": {
+      "number": "OP06-070",
+      "productID": "event:wings-of-the-captain-pre-release-cards",
+      "retailerImageSHA256": "d35e2dbb6987025104349cf779ad2bff850a896d1b78bf22ebf3ff50c02d7c26",
+      "bandaiImageSHA256": "076e15fe6820ed47d387f061183d14c53779ef352b93c69166e0af377a58f78c"
+    },
+    "541715": {
+      "number": "OP06-105",
+      "productID": "event:wings-of-the-captain-pre-release-cards",
+      "retailerImageSHA256": "29f5e6f616dbd6e773d6df7b0830e5dc5036187113725d07abca689f7e2c897d",
+      "bandaiImageSHA256": "d7568e6e3401954c07702d063d024c7bf0a200c47d264c9d39501bd9519c36ac"
+    },
+    "541736": {
+      "number": "OP06-056",
+      "productID": "event:wings-of-the-captain-pre-release-cards",
+      "retailerImageSHA256": "a123fe75682931524caa7f44fbf632f94db9b87b284e4c90d46cfe1635bb3c02",
+      "bandaiImageSHA256": "030dca87a2baf302b57d7b2bf0f240e382332eba9946a9cfeaee12f4c2da108b"
+    },
+    "541742": {
+      "number": "OP06-078",
+      "productID": "event:wings-of-the-captain-pre-release-cards",
+      "retailerImageSHA256": "d843c4e96c3a63407184efc7e8c71f38450dd6a91f3f843cf0f07b1856d8ba63",
+      "bandaiImageSHA256": "13a116b23a1373dc4f0bce9104c9e0b2c559dfe8a1d3593000d428ff72c40ca7"
+    },
+    "649256": {
+      "number": "OP12-096",
+      "productID": "event:legacy-of-the-master-release-event-cards",
+      "retailerImageSHA256": "1e3e4e4f1b60b062781b6515e98886ae11e4807d613b7a84acd59e4e696282bb",
+      "bandaiImageSHA256": "6de018f681ed09a2792c690e7e34faf4779d4235d3b61b002faf008d43ae59eb"
+    },
+    "649263": {
+      "number": "OP12-080",
+      "productID": "event:legacy-of-the-master-release-event-cards",
+      "retailerImageSHA256": "54fd03e47030a3958ae276bff36cf33cbe53695299d8d6804eb697c0fccecc85",
+      "bandaiImageSHA256": "725125fb98d643deb2ad1f986c24575d5a8e0dc9f6b8dc4e301af7d4a889bf77"
+    },
+    "649264": {
+      "number": "OP12-077",
+      "productID": "event:legacy-of-the-master-release-event-cards",
+      "retailerImageSHA256": "ee763076c7b9899fa849b09326e5be65917b5ac4c105968940e4fdbd494e812c",
+      "bandaiImageSHA256": "15a7025ccfaceb6d79575b311c9a15c8086a0867f03edf8726bf5e720a4276d3"
+    },
+    "649272": {
+      "number": "OP12-057",
+      "productID": "event:legacy-of-the-master-release-event-cards",
+      "retailerImageSHA256": "75f6370c9063ca508003cb68ede08466841b120b98bd5cd1383013fc150d6da7",
+      "bandaiImageSHA256": "03b32819c75d39f7e0d9bcff340088eb85ef671129adbb57df4aa56ac066b531"
+    },
+    "649281": {
+      "number": "OP12-035",
+      "productID": "event:legacy-of-the-master-release-event-cards",
+      "retailerImageSHA256": "205d46ec2b4170f6ca5ab6a7aa04663e1b4ea31b4ffe1ebc3bdf108ea74d7413",
+      "bandaiImageSHA256": "3354646a87979236ff72b972e1dae40fc664a3b19a6c91d18ad39a67654cc66a"
+    },
+    "712687": {
+      "number": "OP17-035",
+      "productID": "event:the-world-s-strongest-warriors-release-event-cards",
+      "retailerImageSHA256": "0e5c4eef4d01c0c573cfb098ee79c5ce12907c87c4386e86cb8f33ccf11e6a29",
+      "bandaiImageSHA256": "6cd72002b61a25084673053d49e7585ad694db5f28bfad594af58a2dcbc0bbbf"
+    },
+    "712696": {
+      "number": "OP17-051",
+      "productID": "event:the-world-s-strongest-warriors-release-event-cards",
+      "retailerImageSHA256": "01d14f011dd8f60c8f5c8bc4a353f0413685970b83d3135e99b3bbd0830e408d",
+      "bandaiImageSHA256": "4a7c822093425a30226701283d19db97af62673aade1b804ea3a2c3aa8b5140f"
+    },
+    "712720": {
+      "number": "OP17-088",
+      "productID": "event:the-world-s-strongest-warriors-release-event-cards",
+      "retailerImageSHA256": "383cb1277683b4b490973512eaafc3e2226ed6ac8f2879bdedb666c7deaa9268",
+      "bandaiImageSHA256": "0fc9777cde5a8e2f4e97b3d39a4423900e931530f9cb0b30b8fa7dfdf1550ff4"
+    }
+  }
+}

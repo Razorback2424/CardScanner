@@ -2092,7 +2092,8 @@ final class OnePieceIntegrationTests: XCTestCase {
                           withMarketMapping: Bool = false,
                           firstStatus: OnePieceReconciliationStatus = .verified,
                           language: String = "en", releaseDate: String? = nil,
-                          includeDiscovery: Bool = false) throws -> OnePieceCatalogRegistry {
+                          includeDiscovery: Bool = false, secondUnpriced: Bool = false,
+                          secondNoPhoto: Bool = false) throws -> OnePieceCatalogRegistry {
         let number = "OP01-120"
         let card = OnePieceCanonicalCard(printedNumber: number, language: language, name: "Fixture Shanks",
             printingCoverageComplete: complete,
@@ -2113,7 +2114,11 @@ final class OnePieceIntegrationTests: XCTestCase {
                 productEvidence: [product.id] + (multiProduct && index == 0 ? ["fixture-bundle"] : []),
                 printedEvidence: includeFooterEvidence
                     ? ["number": number, "blockText": "\(index)", "copyrightText": "Fixture footer \(index)", "finishVariantIDs": "[\"normal\",\"foil\"]"]
-                    : ["number": number, "finishVariantIDs": "[\"normal\",\"foil\"]"]))
+                    : index == 1 && secondUnpriced
+                        ? ["number": number, OnePieceCatalogRegistry.unpricedEvidenceField: "none"]
+                    : index == 1 && secondNoPhoto
+                        ? ["number": number, OnePieceCatalogRegistry.noPhotoEvidenceField: "none"]
+                        : ["number": number, "finishVariantIDs": "[\"normal\",\"foil\"]"]))
             observations.append(observation)
             var mappings: [OnePieceMarketMapping] = []
             if withMarketMapping && index == 0 {
@@ -2143,7 +2148,7 @@ final class OnePieceIntegrationTests: XCTestCase {
                 language: language, region: includeFooterEvidence ? "North America" : nil,
                 releaseID: product.id, blockText: includeFooterEvidence ? "\(index)" : nil,
                 copyrightText: includeFooterEvidence ? "Fixture footer \(index)" : nil,
-                supportedVariantIDs: ["normal", "foil"],
+                supportedVariantIDs: index == 1 && (secondUnpriced || secondNoPhoto) ? [] : ["normal", "foil"],
                 status: index == 1 ? secondStatus : firstStatus, review: review, sourceAliases: [observation.alias],
                 marketMappings: mappings))
         }
@@ -2190,6 +2195,51 @@ final class OnePieceIntegrationTests: XCTestCase {
             throw CatalogLookupError.invalidAdapterOutcome
         }
         return subject.identifier
+    }
+
+    func testKnownUnpricedPrintingIsLabelledWithoutMakingItsSetPartial() async throws {
+        let unpriced = try registry(secondStatus: .provisional, secondUnpriced: true)
+        XCTAssertEqual(unpriced.knownUnpricedPrintingIDs, [uuid(2)])
+        let browse = OnePieceBrowseAdapter(registry: unpriced)
+        let sets = try await browse.sets()
+        let set = try XCTUnwrap(sets.first { $0.providerID == "fixture-release-1" })
+        XCTAssertNil(set.collectionAvailabilityNotice)
+        let cards = try await browse.cards(in: set, cursor: nil).items
+        XCTAssertEqual(cards.map(\.collectionAvailabilityNotice), [OnePieceBrowseAdapter.unpricedNotice])
+        let card = try XCTUnwrap(cards.first)
+        let details = try await browse.details(for: card)
+        XCTAssertTrue(details.collectionWriteUnavailableReason?.contains("TCGplayer") == true)
+
+        // A product listed without a photo is labelled the same way, with its own notice.
+        let noPhoto = try registry(secondStatus: .provisional, secondNoPhoto: true)
+        XCTAssertEqual(noPhoto.knownNoPhotoPrintingIDs, [uuid(2)])
+        let noPhotoBrowse = OnePieceBrowseAdapter(registry: noPhoto)
+        let noPhotoSets = try await noPhotoBrowse.sets()
+        let noPhotoSet = try XCTUnwrap(noPhotoSets.first { $0.providerID == "fixture-release-1" })
+        XCTAssertNil(noPhotoSet.collectionAvailabilityNotice)
+        let noPhotoCards = try await noPhotoBrowse.cards(in: noPhotoSet, cursor: nil).items
+        XCTAssertEqual(noPhotoCards.map(\.collectionAvailabilityNotice), [OnePieceBrowseAdapter.noPhotoNotice])
+
+        // The badge describes the set's own contents: an incomplete card family elsewhere
+        // does not mark it partial, but a card Bandai lists for the set and the catalog lacks does.
+        let familyOpen = OnePieceBrowseAdapter(registry: try registry(complete: false))
+        let familyOpenSets = try await familyOpen.sets()
+        XCTAssertTrue(familyOpenSets.filter { $0.providerID.hasPrefix("fixture-release-") }
+            .allSatisfy { $0.collectionAvailabilityNotice == nil })
+        let discovered = OnePieceBrowseAdapter(registry: try registry(includeDiscovery: true))
+        let discoveredSets = try await discovered.sets()
+        XCTAssertEqual(discoveredSets.first { $0.providerID == "product:bandai-series:569205" }?.collectionAvailabilityNotice,
+                       "Partial catalog")
+
+        // An unresolved hold still marks its set partial and keeps the generic notice.
+        let unresolved = try registry(secondStatus: .provisional)
+        XCTAssertTrue(unresolved.knownUnpricedPrintingIDs.isEmpty)
+        let held = OnePieceBrowseAdapter(registry: unresolved)
+        let heldSets = try await held.sets()
+        let heldSet = try XCTUnwrap(heldSets.first { $0.providerID == "fixture-release-1" })
+        XCTAssertEqual(heldSet.collectionAvailabilityNotice, "Partial catalog")
+        let heldCards = try await held.cards(in: heldSet, cursor: nil).items
+        XCTAssertEqual(heldCards.map(\.collectionAvailabilityNotice), ["Browse only"])
     }
 
     func testRegistryDerivedRecognitionKeepsNumericRepairAndLanguageConservative() throws {

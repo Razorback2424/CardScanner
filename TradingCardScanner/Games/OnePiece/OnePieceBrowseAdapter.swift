@@ -18,6 +18,8 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
     private let cardsBySetID: [CatalogSetID: [CatalogCardSummary]]
     private let searchRows: [SearchRow]
     private let pageSize = 60
+    static let unpricedNotice = "Not yet priced"
+    static let noPhotoNotice = "Art not yet confirmed"
     private struct SearchRow: Sendable {
         let summary: CatalogCardSummary
         let searchableText: String
@@ -79,8 +81,12 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                 cardCount: printings.count + unresolvedNumbers.count,
                 releaseDate: product?.releaseDate.flatMap(OnePieceTextNormalization.releaseDate), sortRank: 0,
                 physicalPrintingIDs: Set(printings.lazy.filter { $0.status == .verified }.map { $0.id.uuidString.lowercased() }))
+            // "Partial catalog" describes this set's own contents: a card Bandai lists for
+            // the set is missing, or a printing in it is unresolved. A known marketplace gap
+            // is labelled on its own row. Card-family completeness elsewhere (for example a
+            // promo of a reprinted card) governs automatic scan selection, not this badge.
             if !unresolvedNumbers.isEmpty || printings.contains(where: {
-                $0.status != .verified || registry.canonicalByID[$0.canonicalCardID]?.printingCoverageComplete != true
+                $0.status != .verified && !registry.knownGapPrintingIDs.contains($0.id)
             }) {
                 set.collectionAvailabilityNotice = "Partial catalog"
             }
@@ -99,7 +105,9 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                     name: name,
                     collectorNumber: canonical.printedNumber, thumbnailURL: image, imageURL: image,
                     catalogGeneration: registry.generation,
-                    collectionAvailabilityNotice: printing.status == .verified ? nil : "Browse only",
+                    collectionAvailabilityNotice: printing.status == .verified ? nil
+                        : registry.knownUnpricedPrintingIDs.contains(printing.id) ? Self.unpricedNotice
+                        : registry.knownNoPhotoPrintingIDs.contains(printing.id) ? Self.noPhotoNotice : "Browse only",
                     searchFields: Self.searchFields(name: name, number: canonical.printedNumber, additionalText: finishSearchTerms))
             }
             let discoveryRows = unresolvedNumbers.compactMap { _, observations -> CatalogCardSummary? in

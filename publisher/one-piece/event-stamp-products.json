@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-11-18",
+  "scope": "English event packs whose official Bandai page states the stamped card population. Labels and release dates follow the TCGplayer group that collectors use for these cards.",
+  "events": [
+    {
+      "productID": "event:paramount-war-pre-release-cards",
+      "label": "Paramount War Pre-Release Cards",
+      "releaseDate": "2023-03-03",
+      "marketplaceGroupID": 22934,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2023/store_tournament_op02/",
+      "specification": [
+        "75 types in total",
+        "Pre-Release Stamped cards are from PARAMOUNT WAR [OP-02] Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569102"
+      ],
+      "prefixes": [
+        "OP02"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Pre-Release stamp"
+    },
+    {
+      "productID": "event:pillars-of-strength-pre-release-cards",
+      "label": "Pillars of Strength Pre-Release Cards",
+      "releaseDate": "2023-06-30",
+      "marketplaceGroupID": 23232,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2023/store_tournament_op03/",
+      "specification": [
+        "77 types in total",
+        "Pre-Release Gold Stamped cards are from Pillars of Strength [OP-03] Common and Uncommon cards."
+      ],
+      "types": 77,
+      "series": [
+        "569103"
+      ],
+      "prefixes": [
+        "OP03"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Pre-Release gold stamp"
+    },
+    {
+      "productID": "event:kingdoms-of-intrigue-pre-release-cards",
+      "label": "Kingdoms of Intrigue Pre-Release Cards",
+      "releaseDate": "2023-09-15",
+      "marketplaceGroupID": 23297,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2023/store_tournament_op04/",
+      "specification": [
+        "75 types in total",
+        "Pre-Release Gold Stamped cards are from Kingdoms of Intrigue [OP-04] Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569104"
+      ],
+      "prefixes": [
+        "OP04"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Pre-Release gold stamp"
+    },
+    {
+      "productID": "event:awakening-of-the-new-era-1st-anniversary-tournament-cards",
+      "label": "Awakening of the New Era: 1st Anniversary Tournament Cards",
+      "releaseDate": "2023-12-08",
+      "marketplaceGroupID": 23368,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2023/1st_anniversary_tournament/",
+      "specification": [
+        "75 types in total",
+        "All cards have the 1st Anniversary gold stamp."
+      ],
+      "types": 75,
+      "series": [
+        "569105"
+      ],
+      "prefixes": [
+        "OP05"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "1st Anniversary gold stamp"
+    },
+    {
+      "productID": "event:wings-of-the-captain-pre-release-cards",
+      "label": "Wings of the Captain Pre-Release Cards",
+      "releaseDate": "2024-03-08",
+      "marketplaceGroupID": 23424,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2024/store_tournament_op06/",
+      "specification": [
+        "75 types in total",
+        "Pre-Release Gold Stamped cards are from Wings of the Captain [OP-06] Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569106"
+      ],
+      "prefixes": [
+        "OP06"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Pre-Release gold stamp"
+    },
+    {
+      "productID": "event:500-years-in-the-future-pre-release-cards",
+      "label": "500 Years in the Future Pre-Release Cards",
+      "releaseDate": "2024-06-21",
+      "marketplaceGroupID": 23512,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2024/store_tournament_op07/",
+      "specification": [
+        "75 types in total",
+        "Pre-Release Gold Stamped cards are from 500YEARS IN THE FUTURE [OP-07] Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569107"
+      ],
+      "prefixes": [
+        "OP07"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Pre-Release gold stamp"
+    },
+    {
+      "productID": "event:two-legends-pre-release-cards",
+      "label": "Two Legends Pre-Release Cards",
+      "releaseDate": "2024-09-06",
+      "marketplaceGroupID": 23737,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2024/store_tournament_op08/",
+      "specification": [
+        "75 types in total",
+        "Pre-Release Gold Stamped cards are from TWO LEGENDS [OP-08] Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569108"
+      ],
+      "prefixes": [
+        "OP08"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Pre-Release gold stamp"
+    },
+    {
+      "productID": "event:emperors-in-the-new-world-2nd-anniversary-tournament-cards",
+      "label": "Emperors in the New World: 2nd Anniversary Tournament Cards",
+      "releaseDate": "2024-12-06",
+      "marketplaceGroupID": 23590,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2024/2nd_anniversary_tournament/",
+      "specification": [
+        "75 types in total",
+        "All cards have the 2nd Anniversary gold stamp."
+      ],
+      "types": 75,
+      "series": [
+        "569109"
+      ],
+      "prefixes": [
+        "OP09"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "2nd Anniversary gold stamp"
+    },
+    {
+      "productID": "event:royal-blood-release-event-cards",
+      "label": "Royal Blood Release Event Cards",
+      "releaseDate": "2025-03-14",
+      "marketplaceGroupID": 24068,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2025/store_tournament_op10/",
+      "specification": [
+        "75 types in total",
+        "Release Gold Stamped cards are from ROYAL BLOOD [OP-10] Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569110"
+      ],
+      "prefixes": [
+        "OP10"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Release gold stamp"
+    },
+    {
+      "productID": "event:a-fist-of-divine-speed-release-event-cards",
+      "label": "A Fist of Divine Speed Release Event Cards",
+      "releaseDate": "2025-05-30",
+      "marketplaceGroupID": 24242,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2025/store_tournament_op11/",
+      "specification": [
+        "75 types in total",
+        "Release Gold Stamped cards are from A FIST OF DIVINE SPEED [OP-11] Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569111"
+      ],
+      "prefixes": [
+        "OP11"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Release gold stamp"
+    },
+    {
+      "productID": "event:legacy-of-the-master-release-event-cards",
+      "label": "Legacy of the Master Release Event Cards",
+      "releaseDate": "2025-08-15",
+      "marketplaceGroupID": 24406,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2025/store_tournament_op12/",
+      "specification": [
+        "75 types in total",
+        "Release Gold Stamped cards are LEGACY OF THE MASTER [OP-12] Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569112"
+      ],
+      "prefixes": [
+        "OP12"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Release gold stamp"
+    },
+    {
+      "productID": "event:carrying-on-his-will-3rd-anniversary-tournament-cards",
+      "label": "Carrying On His Will: 3rd Anniversary Tournament Cards",
+      "releaseDate": "2025-10-31",
+      "marketplaceGroupID": 24498,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2025/store_tournament_op13/",
+      "specification": [
+        "75 types in total",
+        "Release Gold Stamped cards are from CARRYING ON HIS WILL [OP-13] Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569113"
+      ],
+      "prefixes": [
+        "OP13"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Release gold stamp"
+    },
+    {
+      "productID": "event:the-azure-sea-s-seven-release-event-cards",
+      "label": "The Azure Sea's Seven Release Event Cards",
+      "releaseDate": "2026-01-09",
+      "marketplaceGroupID": 24579,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2026/store-tournament-op14/",
+      "specification": [
+        "89 types in total",
+        "Release Gold Stamped cards are THE AZURE SEA’S SEVEN [OP14-EB04] Common and Uncommon cards."
+      ],
+      "types": 89,
+      "series": [
+        "569114"
+      ],
+      "prefixes": [
+        "OP14",
+        "EB04"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Release gold stamp"
+    },
+    {
+      "productID": "event:adventure-on-kami-s-island-release-event-cards",
+      "label": "Adventure on Kami's Island Release Event Cards",
+      "releaseDate": "2026-03-27",
+      "marketplaceGroupID": 24638,
+      "eventURL": "https://en.onepiece-cardgame.com/events/2026/store-tournament-op15/",
+      "specification": [
+        "90 types in total",
+        "Release Gold Stamped cards are OP15-EB04 Common and Uncommon cards."
+      ],
+      "types": 90,
+      "series": [
+        "569115"
+      ],
+      "prefixes": [
+        "OP15",
+        "EB04"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Release gold stamp"
+    },
+    {
+      "productID": "event:the-time-of-battle-release-event-cards",
+      "label": "The Time of Battle Release Event Cards",
+      "releaseDate": "2026-06-05",
+      "marketplaceGroupID": 24677,
+      "eventURL": "https://en.onepiece-cardgame.com/events/store-tournament-op16.html",
+      "specification": [
+        "75 types in total",
+        "Release Gold Stamped cards are OP-16 Common and Uncommon cards."
+      ],
+      "types": 75,
+      "series": [
+        "569116"
+      ],
+      "prefixes": [
+        "OP16"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "Release gold stamp"
+    },
+    {
+      "productID": "event:the-world-s-strongest-warriors-release-event-cards",
+      "label": "The World's Strongest Warriors Release Event Cards",
+      "releaseDate": "2026-08-21",
+      "marketplaceGroupID": 24775,
+      "eventURL": "https://en.onepiece-cardgame.com/events/store-tournament-op17.html",
+      "specification": [
+        "4th Anniversary Tournament Pack",
+        "75 types in total"
+      ],
+      "types": 75,
+      "series": [
+        "569117"
+      ],
+      "prefixes": [
+        "OP17"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "4th Anniversary gold stamp"
+    },
+    {
+      "productID": "event:the-dominance-of-god-release-event-cards",
+      "label": "The Dominance of God Release Event Cards",
+      "releaseDate": "2026-11-13",
+      "marketplaceGroupID": 24834,
+      "eventURL": "https://en.onepiece-cardgame.com/events/store-tournament-op18.html",
+      "specification": [
+        "4th Anniversary Tournament Pack",
+        "75 types in total"
+      ],
+      "types": 75,
+      "series": [
+        "569118"
+      ],
+      "prefixes": [
+        "OP18"
+      ],
+      "rarities": [
+        "C",
+        "UC"
+      ],
+      "stamp": "4th Anniversary gold stamp"
+    }
+  ]
+}

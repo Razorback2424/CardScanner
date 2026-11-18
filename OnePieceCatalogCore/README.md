@@ -149,6 +149,174 @@ Use `--fetch-missing-artwork` to extend an artwork capture with the missing
 references from the retained product pages. Keep captures private. Review the
 batch and the remaining gaps before adding it to the final build.
 
+### TCGplayer product listings
+
+CoreTCG pages list in-stock singles only. Pass `--tcgplayer-listings` to also
+read every `--products` group from the complete TCGCSV snapshot. A TCGplayer
+product counts as a listing only when it has one printed number and exactly
+one Normal or Foil price lane. That lane is its finish evidence, and the
+English One Piece category is its language evidence. `--retail-captures` is
+optional in this mode. The replay holds a new printing whose release, card and
+treatment already exist under another alias, so it cannot duplicate a printing
+recorded by an earlier batch.
+
+Early-set marketplace images are photographs. When the strict digital
+comparison fails, the replay applies the photographic structure comparison
+used for promos to every listing. It still holds siblings that share their art.
+
+### Deck and premium-booster reprints
+
+A card that a starter deck or premium booster reprints from another set is its
+own physical printing. Its release is the product that reprinted it, not the
+original set. TCGplayer files each one as a separate product in the reprinting
+product's group, and the reprint carries print details the original lacks,
+such as the English marker by the copyright line or a newer block icon. Bandai
+lists it under that product with an `_r` artwork alias.
+
+ST-23 to ST-28 and the premium boosters title these listings "(Reprint)".
+ST-15 to ST-20 and ST-31 onward use the plain card name. The retail replay
+accepts a plain-titled listing only when all three hold: the Bandai alias is
+`_r`, the number belongs to another set, and the listing sits in the
+reprinting product's own group. CoreTCG pages list in-stock singles only, so
+use `--tcgplayer-listings` for reprints that have sold out.
+
+### Stamped event-pack printings
+
+Each English pre-release, release-event and anniversary-tournament pack holds
+stamped copies of one booster's Common and Uncommon cards. Bandai's event page
+states the stamp and the number of card types. A stamped copy is its own
+printing, filed under its event product, which carries the TCGplayer group name
+collectors use (for example "Paramount War Pre-Release Cards").
+[`event-stamp-products.json`](../publisher/one-piece/event-stamp-products.json)
+pins one rule per event to the exact specification lines on its page.
+
+```sh
+python3 scripts/reconcile_one_piece_event_stamps.py --release "$CANDIDATE" \
+  --rules publisher/one-piece/event-stamp-products.json \
+  --reviewed-photos publisher/one-piece/event-stamp-photo-reviews.json \
+  --bandai-captures "$BANDAI" --event-captures "$EVENT_PAGES" \
+  --artwork-captures "$ARTWORK" --market-captures "$TCGCSV_ALL" \
+  --output "$AUDIT_DIR/event-stamps.json" --report "$AUDIT_DIR/event-stamps-report.json"
+```
+
+An event is held in full when its page no longer states the pinned lines, or
+when its TCGplayer group lists a different number of cards. A single card is
+held, and the report names the reason, in any of these cases:
+
+- Bandai's base presentation is not a Common or Uncommon.
+- The base printing is not uniquely verified.
+- The TCGplayer title is not plain, or its finish lane is not Normal only.
+- The TCGplayer photo does not match the base Bandai render.
+
+On some Event cards the stamp overlaps the art enough to fail the automatic
+image comparison. Those pairs are accepted only from the reviewed-photo file,
+which pins both exact image hashes. A stamped printing shows the base Bandai
+render; its stamp is recorded in the printing's `stamp` field. Event pages for
+OP-16 to OP-18 were not available on 2026-11-18, so those events have no rule.
+Capture requests are capped at 2,000 per run, so a first capture of every
+event takes two runs. The second run reuses the retained files.
+
+### Tiered promo printings
+
+Promo events often hand out several copies of one artwork with different
+stamps: Participant, Finalist and Winner copies, or online and offline
+regional copies. TCGplayer lists each one as its own product, while Bandai's
+promotion list shows at most one.
+[`reconcile_one_piece_promo_tiers.py`](../scripts/reconcile_one_piece_promo_tiers.py)
+adds each TCGplayer promo product as its own printing under "One Piece
+Promotion Cards". Each printing takes the TCGplayer event text as its
+distribution and the bracketed tier as its stamp. Its docstring lists every
+gate. A product whose art matches an existing printing of the same card is
+held for review, because a stamped copy and an identical reprint look the
+same in a photo. A product with no TCGplayer price lane is also held, since
+it has no finish evidence.
+
+```sh
+python3 scripts/reconcile_one_piece_promo_tiers.py --release "$CANDIDATE" \
+  --coverage "$AUDIT_DIR/coverage.json" --bandai-captures "$BANDAI" \
+  --artwork-captures "$ARTWORK" --market-captures "$TCGCSV_ALL" \
+  --output "$AUDIT_DIR/promo-tiers.json" --report "$AUDIT_DIR/promo-tiers-report.json"
+```
+
+The retail replay's `--tcgplayer-promos` option reads the TCGplayer promo
+group for the one-to-one promo path. `PROMO_DISTRIBUTION_ALIASES` holds
+reviewed name pairs for distributions that Bandai and TCGplayer name
+differently.
+
+### Known printings with a marketplace gap
+
+A printing whose existence is documented, but which TCGplayer has never
+priced (`marketplaceFinishLanes: none`) or lists without a photo
+(`marketplacePhoto: none`), is added as provisional with no finish. It cannot
+be collected, so its card is not a candidate for automatic selection. The
+certifier treats it as known (`known_unpriced`), so it does not hold its card
+family open. Browse labels its row "Not yet priced" or "Art not yet
+confirmed" instead of marking the whole set "Partial catalog". A provisional
+printing without one of these markers, such as a finish conflict, still
+blocks.
+
+### Other reviewed resolvers
+
+- [`resolve_one_piece_errata_holds.py`](../scripts/resolve_one_piece_errata_holds.py)
+  verifies printings held only for Bandai's "Errata Card" note. The original
+  release's TCGplayer group must list exactly one plain product for that card;
+  corrected text appears only in later reprints.
+- [`resolve_one_piece_reprint_appearances.py`](../scripts/resolve_one_piece_reprint_appearances.py)
+  records a starter-deck or PRB-01 `_r` reprint as an appearance of the
+  original printing. It does so only when TCGplayer lists no separate product
+  for it, so collectors trade it as the original card.
+- [`bind_one_piece_promo_entries.py`](../scripts/bind_one_piece_promo_entries.py)
+  connects a missing Bandai promotion-list entry to the promo printing whose
+  photo matched its art.
+- `reconcile_one_piece_promo_tiers.py --group <id>` replays a product group
+  (deck sets, demo decks, revision packs, Super Pre-Release editions) as the
+  reprinting product's own printings. Do not pass booster groups: their
+  products already exist under the booster.
+
+### Card family coverage certification
+
+`printingCoverageComplete` marks a card whose complete physical printing set
+has been verified. It removes the card from Browse's "Partial catalog" rule and
+puts it in the automatic-selection index, so it is set only by
+[`certify_one_piece_coverage.py`](../scripts/certify_one_piece_coverage.py).
+Run it on a candidate that already contains the batch's printings. Then apply
+its additions to that same candidate and build the next revision.
+
+```sh
+python3 scripts/audit_one_piece_coverage.py --offline --capture-root "$BANDAI" \
+  --release "$CANDIDATE" --output "$AUDIT_DIR/coverage.json"
+python3 scripts/certify_one_piece_coverage.py report --release "$CANDIDATE" \
+  --coverage "$AUDIT_DIR/coverage.json" --market-captures "$TCGCSV_ALL" \
+  --output "$AUDIT_DIR/certification.json"
+# Edit only "resolutions" for products listed under unaccountedMarketProducts.
+python3 scripts/certify_one_piece_coverage.py certify --report "$AUDIT_DIR/certification.json" \
+  --release "$CANDIDATE" --coverage "$AUDIT_DIR/coverage.json" \
+  --market-captures "$TCGCSV_ALL" --output "$AUDIT_DIR/certification-additions.json"
+python3 scripts/audit_one_piece_coverage.py --offline --capture-root "$BANDAI" \
+  --release "$CANDIDATE" --output "$AUDIT_DIR/coverage-certified.json" \
+  --discovery-inputs "$AUDIT_DIR/inputs" \
+  --reviewed-additions "$AUDIT_DIR/certification-additions.json"
+```
+
+`$TCGCSV_ALL` must be a complete daily snapshot of every category 68 group.
+The coverage report must cover every Bandai series for that exact candidate.
+A card certifies only when all of the following hold:
+
+- Every Bandai presentation of its number is a verified printing.
+- Every active printing of the card is verified.
+- No Browse discovery remains for the card.
+- Every source observation for the number reconciles to exactly one printing.
+- Every same-number TCGplayer product is accounted for by a reviewed mapping,
+  by the printing's own retailer evidence, or by a unique title match in the
+  printing's release group.
+
+A product that is still unaccounted needs a resolution with a reason and an
+https citation. A resolution either excludes the product or names the printing
+it belongs to. The certification inventories list the family's source
+observations, which the validator requires for automatic selection. The audit
+re-checks these gates when it applies the additions. It also clears a
+certification when Bandai later lists another presentation of that number.
+
 ### Per-artwork retail replay diagnostics
 
 The retail reconciler can now write an **optional read-only evidence report** alongside its ordinary

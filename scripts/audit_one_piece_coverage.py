@@ -20,6 +20,20 @@ from reconcile_one_piece_launch_products import normalized_name
 
 PRINTED_NUMBER = re.compile(r"[A-Z]{1,8}[0-9]{0,3}-[0-9]{3}")
 BROWSE_DISCOVERY = "manufacturer-browse-discovery"
+# A provisional printing whose existence is documented, but which TCGplayer has
+# never priced, so no finish can be confirmed. It is known, not unresolved.
+UNPRICED_FIELD, UNPRICED_VALUE = "marketplaceFinishLanes", "none"
+# Likewise a documented product with no marketplace photo: its art cannot be confirmed.
+NO_PHOTO_FIELD, NO_PHOTO_VALUE = "marketplacePhoto", "none"
+
+
+def known_unpriced(printing, observations):
+    """True for a provisional printing whose existence is documented and which is held only
+    because the marketplace has no price (finish unknown) or no photo (art unknown)."""
+    return printing["status"] == "provisional" and not printing["supportedVariantIDs"] and any(
+        observations[item["observationID"]]["printedEvidence"].get(UNPRICED_FIELD) == UNPRICED_VALUE
+        or observations[item["observationID"]]["printedEvidence"].get(NO_PHOTO_FIELD) == NO_PHOTO_VALUE
+        for item in (printing.get("review") or {}).get("evidence", []) if item["observationID"] in observations)
 
 
 def series_options(document):
@@ -229,7 +243,9 @@ def applying_reviewed_additions(release, additions):
         return list(records.values())
 
     keys = {"artworks", "printings", "observations", "inventories"}
-    if not keys <= additions.keys() or additions.keys() - keys - {"products", "finishUpdates", "productUpdates"}:
+    optional = {"products", "finishUpdates", "productUpdates", "aliasAttachments", "coverageCertifications",
+                "errataResolutions", "appearances"}
+    if not keys <= additions.keys() or additions.keys() - keys - optional:
         raise ValueError("Invalid reviewed additions fields")
     registry = dict(release["registry"])
     for key in ("artworks", "printings"):
@@ -238,13 +254,81 @@ def applying_reviewed_additions(release, additions):
         registry["products"] = merge(registry["products"], additions["products"], lambda row: row["id"])
     if additions.get("productUpdates"):
         registry["products"] = apply_product_updates(registry["products"], additions["productUpdates"])
+    if additions.get("appearances"):
+        registry["appearances"] = merge(registry["appearances"], additions["appearances"],
+                                        lambda row: (row["printingID"].lower(), row["productID"]))
     observations = merge(release["observations"], additions["observations"], lambda row: row["id"])
     if additions.get("finishUpdates"):
         registry["printings"] = apply_finish_updates(registry, observations, additions["finishUpdates"])
+    if additions.get("errataResolutions"):
+        registry = apply_errata_resolutions(registry, observations, additions["errataResolutions"])
+    if additions.get("aliasAttachments") or additions.get("coverageCertifications"):
+        registry = apply_coverage_certifications(registry, observations, additions.get("aliasAttachments", []),
+                                                 additions.get("coverageCertifications", []))
     return dict(release, registry=registry,
                 observations=observations,
                 inventories=merge(release["inventories"], additions["inventories"],
                                   lambda row: (row["provider"], row["snapshotID"])))
+
+
+def apply_errata_resolutions(registry, observations, resolutions):
+    """Verify a printing held only for an errata notice, once one release product is documented.
+
+    Bandai flags some early cards as errata'd. That changes the rules text; the
+    corrected wording appears in later reprints, which are separate printings.
+    When the marketplace lists exactly one product for the card in its original
+    release, the original printing is a single physical card.
+    """
+    printings = {row["id"].lower(): dict(row) for row in registry["printings"]}
+    by_id = {row["id"]: row for row in observations}
+    owners = {(a["provider"], a["sourceID"]) for row in printings.values() for a in row["sourceAliases"]}
+    for resolution in resolutions:
+        key = resolution["printingID"].lower()
+        printing, observation = printings.get(key), by_id.get(resolution["observationID"])
+        if (printing is None or observation is None or printing["status"] != "provisional"
+                or not printing["supportedVariantIDs"] or printing.get("releaseID") not in observation["productEvidence"]
+                or observation["printedEvidence"].get("sourceRole") != "marketplace-single-release-product"
+                or (observation["alias"]["provider"], observation["alias"]["sourceID"]) in owners):
+            raise ValueError("Errata resolution does not match a held printing: " + resolution["printingID"])
+        evidence = {"kind": "release", "observationID": observation["id"], "detail": resolution["detail"]}
+        printings[key] = dict(printing, status="verified", sourceAliases=[*printing["sourceAliases"], observation["alias"]],
+                              review=dict(printing["review"], evidence=[*printing["review"]["evidence"], evidence]))
+        owners.add((observation["alias"]["provider"], observation["alias"]["sourceID"]))
+    return dict(registry, printings=list(printings.values()))
+
+
+def apply_coverage_certifications(registry, observations, attachments, certifications):
+    """Mark reviewed card families complete; see certify_one_piece_coverage.py.
+
+    Re-checks the structural gates against the registry being built, so a
+    certification cannot outlive a later held printing, discovery or unreconciled source.
+    """
+    printings = {row["id"].lower(): dict(row) for row in registry["printings"]}
+    owners = {(a["provider"], a["sourceID"]): row["id"].lower() for row in printings.values() for a in row["sourceAliases"]}
+    for attachment in attachments:
+        key, alias = attachment["printingID"].lower(), attachment["alias"]
+        identity = (alias["provider"], alias["sourceID"])
+        if key not in printings or owners.get(identity, key) != key:
+            raise ValueError("Alias attachment conflicts with a retained printing: " + str(identity))
+        if identity not in owners:
+            printings[key]["sourceAliases"] = [*printings[key]["sourceAliases"], alias]
+            owners[identity] = key
+    cards = {row["id"]: dict(row) for row in registry["canonicalCards"]}
+    for certification in certifications:
+        card_id, reference = certification["canonicalCardID"], certification["reference"]
+        if card_id not in cards or not reference.strip():
+            raise ValueError("Coverage certification needs a known card and review reference: " + card_id)
+        family = [row for row in printings.values() if row["canonicalCardID"] == card_id and row["status"] != "superseded"]
+        number = cards[card_id]["printedNumber"]
+        sources = [row for row in observations if row["kind"] == "catalog"
+                   and row["printedEvidence"].get("number") == number and row["language"] == cards[card_id]["language"]]
+        by_id = {row["id"]: row for row in observations}
+        if (not family or any(row["status"] != "verified" and not known_unpriced(row, by_id) for row in family)
+                or any(row["printedEvidence"].get("sourceRole") == BROWSE_DISCOVERY
+                       or (row["alias"]["provider"], row["alias"]["sourceID"]) not in owners for row in sources)):
+            raise ValueError("Coverage certification no longer holds: " + card_id)
+        cards[card_id] = dict(cards[card_id], printingCoverageComplete=True, coverageReviewReference=reference)
+    return dict(registry, printings=list(printings.values()), canonicalCards=list(cards.values()))
 
 
 def apply_product_updates(products, updates):
@@ -284,8 +368,9 @@ def apply_finish_updates(registry, observations, updates):
         alias = observation["alias"]
         source = urlsplit(observation["sourceURL"])
         artwork_hash = artworks[old["artworkID"]].get("imageSHA256")
-        if (observation["kind"] != "catalog" or alias["provider"] != "coretcg"
-                or source.scheme != "https" or source.netloc != "coretcg.com"
+        if (observation["kind"] != "catalog"
+                or (alias["provider"], source.netloc) not in {("coretcg", "coretcg.com"), ("tcgplayer", "tcgcsv.com")}
+                or source.scheme != "https"
                 or fields.get("sourceRole") != "retailer-exact-printing-specification"
                 or observation["language"] != old["language"]
                 or fields.get("number") != cards[old["canonicalCardID"]]["printedNumber"]
