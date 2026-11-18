@@ -65,11 +65,36 @@ public enum OnePieceCatalogSignature {
         data.base64EncodedString().replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_").replacingOccurrences(of: "=", with: "")
     }
-    private static func decode(_ value: String) -> Data? {
-        guard !value.isEmpty, value.range(of: "^[A-Za-z0-9_-]+$", options: .regularExpression) != nil else { return nil }
-        let base64 = value.replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
-        let padded = base64 + String(repeating: "=", count: (4 - base64.utf8.count % 4) % 4)
-        guard let data = Data(base64Encoded: padded), encode(data) == value else { return nil }
-        return data
+    /// Unpadded base64url → bytes, rejecting any non-canonical encoding.
+    ///
+    /// Equivalent to "only `[A-Za-z0-9_-]`, decodes, and `encode(data) == value`",
+    /// done over bytes: the payload is tens of megabytes, and the regex,
+    /// string replacements and re-encoded comparison cost seconds on device.
+    static func decode(_ value: String) -> Data? {
+        var value = value
+        let standard: Data? = value.withUTF8 { input in
+            guard !input.isEmpty else { return nil }
+            let padding = (4 - input.count % 4) % 4
+            var output = Data(count: input.count + padding)
+            let valid = output.withUnsafeMutableBytes { raw -> Bool in
+                let out = raw.bindMemory(to: UInt8.self)
+                for index in 0..<input.count {
+                    let byte = input[index]
+                    switch byte {
+                    case 65...90, 97...122, 48...57: out[index] = byte // A-Z a-z 0-9
+                    case 45: out[index] = 43                            // - → +
+                    case 95: out[index] = 47                            // _ → /
+                    default: return false
+                    }
+                }
+                for index in input.count..<out.count { out[index] = 61 } // =
+                return true
+            }
+            return valid ? output : nil
+        }
+        guard let standard, let data = Data(base64Encoded: standard) else { return nil }
+        // Canonical form: re-encoding must give back exactly the input, which
+        // rejects non-zero unused bits in the final character.
+        return data.base64EncodedData() == standard ? data : nil
     }
 }

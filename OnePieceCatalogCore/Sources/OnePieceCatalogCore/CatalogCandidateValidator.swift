@@ -31,7 +31,11 @@ public enum OnePieceCatalogCandidateValidator {
         var timestampValidity: [String: Bool] = [:]
         func validTimestamp(_ value: String) -> Bool {
             if let valid = timestampValidity[value] { return valid }
-            let valid = timestamp.date(from: value) != nil || fractionalTimestamp.date(from: value) != nil
+            // Nearly every observation carries its own timestamp, so a formatter
+            // parse per value dominated device launch. The fast path only ever
+            // confirms; anything it does not recognise gets the formatters.
+            let valid = OnePieceTimestampFastPath.isCertainlyValid(value)
+                || timestamp.date(from: value) != nil || fractionalTimestamp.date(from: value) != nil
             timestampValidity[value] = valid
             return valid
         }
@@ -388,5 +392,57 @@ public enum OnePieceCatalogCandidateValidator {
             }
         }
         return issues.sorted { ($0.code, $0.context) < ($1.code, $1.context) }
+    }
+}
+
+/// Recognises the RFC 3339 shapes catalog releases actually use
+/// (`2026-11-15T00:38:45Z`, `…45.123456+09:00`) without a formatter.
+///
+/// It only answers "certainly valid": a `false` means "not recognised here",
+/// and the caller must fall back to `ISO8601DateFormatter`. Every shape and
+/// range it accepts is one both formatters accept, so validation results are
+/// unchanged; only the cost is.
+enum OnePieceTimestampFastPath {
+    static func isCertainlyValid(_ value: String) -> Bool {
+        var value = value
+        return value.withUTF8(check)
+    }
+
+    private static func check(_ b: UnsafeBufferPointer<UInt8>) -> Bool {
+        // YYYY-MM-DDTHH:MM:SS is 19 bytes, then optional .fraction, then zone.
+        guard b.count >= 20 else { return false }
+        func digits(_ start: Int, _ count: Int) -> Int? {
+            var value = 0
+            for i in start..<(start + count) {
+                let d = Int(b[i]) - 48
+                guard (0...9).contains(d) else { return nil }
+                value = value * 10 + d
+            }
+            return value
+        }
+        guard b[4] == 45, b[7] == 45, b[10] == 84, b[13] == 58, b[16] == 58,
+              let year = digits(0, 4), let month = digits(5, 2), let day = digits(8, 2),
+              let hour = digits(11, 2), let minute = digits(14, 2), let second = digits(17, 2),
+              (1970...2999).contains(year), (1...12).contains(month),
+              hour <= 23, minute <= 59, second <= 59 else { return false }
+        let leap = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+        let monthDays = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        guard day >= 1, day <= monthDays[month - 1] else { return false }
+
+        var index = 19
+        if b[index] == 46 { // '.'
+            index += 1
+            let start = index
+            while index < b.count, (48...57).contains(b[index]) { index += 1 }
+            // Only the fraction lengths seen in releases and verified against
+            // the formatter by tests.
+            guard [3, 6].contains(index - start) else { return false }
+        }
+        guard index < b.count else { return false }
+        if b[index] == 90 { return index + 1 == b.count } // 'Z'
+        guard b[index] == 43 || b[index] == 45, b.count - index == 6, b[index + 3] == 58,
+              let offsetHour = digits(index + 1, 2), let offsetMinute = digits(index + 4, 2),
+              offsetHour <= 14, offsetMinute <= 59 else { return false }
+        return true
     }
 }
