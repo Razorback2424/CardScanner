@@ -40,7 +40,7 @@ actor OnePieceCatalogReleaseStore {
                         previous: previous.release.release, allowingRetainedAliasChains: true)
                 }
             }, readData: { url in
-                let maximum = 48 * 1_024 * 1_024
+                let maximum = OnePieceCatalogSignature.maximumEnvelopeBytes
                 let handle = try FileHandle(forReadingFrom: url)
                 defer { try? handle.close() }
                 let data = try handle.read(upToCount: maximum + 1) ?? Data()

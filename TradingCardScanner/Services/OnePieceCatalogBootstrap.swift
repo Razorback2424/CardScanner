@@ -188,8 +188,8 @@ enum OnePieceCatalogBootstrap {
             baseURL: "https://scanstash-catalog-prod.web.app")
         let handle = try FileHandle(forReadingFrom: seedURL)
         defer { try? handle.close() }
-        let seed = try handle.read(upToCount: 48 * 1_024 * 1_024 + 1) ?? Data()
-        guard seed.count <= 48 * 1_024 * 1_024 else { throw OnePieceCatalogSignatureError.oversizedPayload }
+        let seed = try handle.read(upToCount: OnePieceCatalogSignature.maximumEnvelopeBytes + 1) ?? Data()
+        guard seed.count <= OnePieceCatalogSignature.maximumEnvelopeBytes else { throw OnePieceCatalogSignatureError.oversizedPayload }
         let envelope = try JSONDecoder().decode(OnePieceCatalogReleaseEnvelope.self, from: seed)
         let verified = try OnePieceCatalogSignature.verify(envelope, trustedKeys: configuration.keys, now: now)
         return OnePieceGameRuntime(registry: .init(verifiedRelease: verified, includeRecordedArtwork: includeRecordedArtwork),
@@ -200,7 +200,7 @@ enum OnePieceCatalogBootstrap {
     static func runtime(configuration: OnePieceCatalogBootstrapConfiguration, seed: Data?,
                         root: URL? = nil, now: Date = .now) throws -> CardGameRuntime? {
         guard configuration.mode != .disabled else { return nil }
-        guard let seed, seed.count <= 48 * 1_024 * 1_024 else {
+        guard let seed, seed.count <= OnePieceCatalogSignature.maximumEnvelopeBytes else {
             throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingSeed
         }
         let started = Date()
@@ -231,6 +231,6 @@ enum OnePieceCatalogBootstrap {
             throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingSeed
         }
         let handle = try FileHandle(forReadingFrom: url); defer { try? handle.close() }
-        return try runtime(configuration: configuration, seed: handle.read(upToCount: 48 * 1_024 * 1_024 + 1))
+        return try runtime(configuration: configuration, seed: handle.read(upToCount: OnePieceCatalogSignature.maximumEnvelopeBytes + 1))
     }
 }

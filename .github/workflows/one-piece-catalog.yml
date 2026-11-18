@@ -100,7 +100,7 @@ jobs:
           sys.path.insert(0, 'scripts')
           from market_price_feeds import ORIGIN, read_http
 
-          data = read_http(f'{ORIGIN}/one-piece/v1/current.json', 48 * 1024 * 1024, absent_ok=True)
+          data = read_http(f'{ORIGIN}/one-piece/v1/current.json', 64 * 1024 * 1024, absent_ok=True)
           if data is None:
               print('Hosted One Piece catalog returned 404. Auditing the bundled seed.')
               data = Path('TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json').read_bytes()
@@ -162,7 +162,8 @@ jobs:
 
   validate-catalog-core:
     if: github.event_name != 'schedule'
-    runs-on: macos-15
+    # Linux: hosted macOS runners are often unavailable. swift-crypto matches CryptoKit.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Test catalog core and publisher CLI
@@ -171,7 +172,7 @@ jobs:
   sign-reviewed-artifact:
     needs: [validate, validate-catalog-core]
     if: github.event_name == 'workflow_dispatch' && inputs.sign == true && github.ref == 'refs/heads/main'
-    runs-on: macos-15
+    runs-on: ubuntu-24.04
     environment: one-piece-catalog-signing
     env:
       KEY_ID: ${{ vars.ONE_PIECE_CATALOG_KEY_ID }}

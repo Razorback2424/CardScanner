@@ -10,7 +10,7 @@ from market_price_feeds import ORIGIN, read_http
 
 
 NAMESPACE = "one-piece/v1"
-MAX_ENVELOPE_BYTES = 48 * 1024 * 1024
+MAX_ENVELOPE_BYTES = 64 * 1024 * 1024  # OnePieceCatalogSignature.maximumEnvelopeBytes
 
 
 def publication_inputs(approved, manifest, bootstrap, fetch):

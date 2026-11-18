@@ -1,4 +1,8 @@
+#if canImport(CryptoKit)
 import CryptoKit
+#else
+import Crypto
+#endif
 import Foundation
 import XCTest
 @testable import OnePieceCatalogCore
@@ -281,15 +285,28 @@ final class OnePieceCatalogCoreTests: XCTestCase {
             keyID: keyID, privateKey: key, trustedKeys: keys, previous: bad))
     }
 
-    func testPublisherCLISignsVerifiesAndRefusesDifferentExistingArtifacts() throws {
-        var parent = Bundle(for: OnePieceCatalogCoreTests.self).bundleURL.deletingLastPathComponent()
-        var executable: URL?
+    func testEnvelopeCapHoldsTheLargestAllowedPayload() {
+        let payload = OnePieceCatalogSignature.maximumPayloadBytes
+        let base64 = (payload + 2) / 3 * 4
+        // keyID, signature and JSON punctuation are well under 1 KiB.
+        XCTAssertLessThanOrEqual(base64 + 1_024, OnePieceCatalogSignature.maximumEnvelopeBytes)
+        XCTAssertGreaterThanOrEqual(payload, 37_414_243, "Revision 7's payload must fit")
+    }
+
+    /// The built publisher. On macOS the test bundle sits in the build products
+    /// folder; on Linux the bundle URL is that folder itself, so check it first.
+    static func publisherExecutable() -> URL? {
+        var directory = Bundle(for: OnePieceCatalogCoreTests.self).bundleURL
         for _ in 0..<6 {
-            let candidate = parent.appendingPathComponent("one-piece-catalog-publisher")
-            if FileManager.default.isExecutableFile(atPath: candidate.path) { executable = candidate; break }
-            parent.deleteLastPathComponent()
+            let candidate = directory.appendingPathComponent("one-piece-catalog-publisher")
+            if FileManager.default.isExecutableFile(atPath: candidate.path) { return candidate }
+            directory.deleteLastPathComponent()
         }
-        let cli = try XCTUnwrap(executable, "SwiftPM must build the publisher beside the test product")
+        return nil
+    }
+
+    func testPublisherCLISignsVerifiesAndRefusesDifferentExistingArtifacts() throws {
+        let cli = try XCTUnwrap(Self.publisherExecutable(), "SwiftPM must build the publisher beside the test product")
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("OnePiecePublisher-\(UUID())")
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: root) }
@@ -1142,8 +1159,7 @@ final class OnePieceCatalogCoreTests: XCTestCase {
         try registryBytes.write(to: registry)
         try JSONEncoder().encode(release.observations).write(to: observations)
         try JSONEncoder().encode(release.inventories).write(to: inventories)
-        let binary = Bundle(for: Self.self).bundleURL.deletingLastPathComponent().appendingPathComponent("one-piece-catalog-publisher")
-        XCTAssertTrue(FileManager.default.isExecutableFile(atPath: binary.path))
+        let binary = try XCTUnwrap(Self.publisherExecutable(), "SwiftPM must build the publisher beside the test product")
         func run(_ extra: [String], outputPath: String = output.path) throws -> Int32 {
             let process = Process(); process.executableURL = binary
             process.arguments = ["build", "--registry", registry.path, "--observations", observations.path,
