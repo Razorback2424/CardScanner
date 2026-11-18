@@ -1211,8 +1211,10 @@ final class LorcanaPricingTests: XCTestCase {
         XCTAssertNil(model.pendingIdentityChoice)
         XCTAssertNil(model.pendingChoice)
         XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
-        XCTAssertFalse(model.unresolvedScans.first?.printingCandidates.isEmpty ?? true)
-        XCTAssertTrue(model.note?.text.contains("needs review") == true)
+        // 15/P2 EN 1 is the held Moana/Vaiana "Adventurer of Land and Sea" pair.
+        XCTAssertEqual(model.unresolvedScans.first?.printingCandidates.count, 2)
+        let noted = await waitUntil { model.note?.text.contains("needs review") == true }
+        XCTAssertTrue(noted, "Held printings explain why they were filed for review")
         XCTAssertEqual(try host.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 0)
     }
 
