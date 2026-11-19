@@ -131,7 +131,8 @@ public enum PokemonCatalogChangeClassifier {
         } else if classes.contains(.baselineMigration) {
             overall = .baselineMigration
         } else if classes.contains(.contentOnly)
-                    || previousRelease?.checklistInputSHA256 != currentRelease.checklistInputSHA256 {
+                    || previousRelease?.checklistInputSHA256 != currentRelease.checklistInputSHA256
+                    || previousRelease?.cardRaritySHA256 != currentRelease.cardRaritySHA256 {
             overall = .contentOnly
         } else {
             overall = .none

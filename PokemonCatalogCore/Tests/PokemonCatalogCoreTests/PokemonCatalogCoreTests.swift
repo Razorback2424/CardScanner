@@ -6,6 +6,53 @@ import XCTest
 final class PokemonCatalogCoreTests: XCTestCase {
     private let generatedAt = Date(timeIntervalSince1970: 1_768_000_000)
 
+    /// Rarity is display data. It never changes a provider fingerprint, and it
+    /// stays out of the signed checklist inputs: older apps re-encode those to
+    /// check their digest and would reject a catalog that carried it there.
+    func testProviderRarityTravelsInItsOwnSignedTable() throws {
+        let json = Data(#"{"id":"sv3-125","localId":"125","name":"Charizard ex","rarity":"Double Rare","set":{"id":"sv3"}}"#.utf8)
+        let card = try JSONDecoder().decode(PokemonCatalogProviderCard.self, from: json)
+        XCTAssertEqual(card.rarity, "Double Rare")
+        let blank = try JSONDecoder().decode(PokemonCatalogProviderCard.self,
+            from: Data(#"{"id":"x-1","localId":"1","name":"X","rarity":"  "}"#.utf8))
+        XCTAssertNil(blank.rarity)
+        let plain = card.withRarity(nil)
+        XCTAssertFalse(String(decoding: try PokemonCatalogJSON.encode(plain), as: UTF8.self).contains("rarity"))
+        let set = PokemonCatalogProviderSet(id: "sv3", name: "Obsidian Flames",
+            cards: [.init(id: "sv3-125", localID: "125", name: "Charizard ex")])
+        let fingerprint = try XCTUnwrap(PokemonCatalogProviderFingerprint.v1(providerSet: set, cardDetails: [card.id: card]))
+        XCTAssertEqual(fingerprint, PokemonCatalogProviderFingerprint.v1(providerSet: set, cardDetails: [plain.id: plain]))
+
+        let withRarity = ["sv3": PokemonCatalogChecklistInput(providerSet: set, cards: [card])]
+        let table = PokemonCatalogCardRarities.table(withRarity)
+        XCTAssertEqual(table, ["sv3-125": "Double Rare"])
+        let signedInputs = ["sv3": PokemonCatalogChecklistInput(providerSet: set, cards: [plain])]
+        let descriptor = try JSONDecoder().decode(PokemonCatalogSetDescriptor.self, from: JSONSerialization.data(
+            withJSONObject: ["providerSetID": "sv3", "displayName": "Obsidian Flames", "providerFingerprint": fingerprint,
+                             "recognitionKind": "expansion", "rulesVersion": 1, "scanEnabled": false]))
+        func release(rarityDigest: String?) throws -> PokemonCatalogRelease {
+            PokemonCatalogRelease(revision: 1, generatedAt: generatedAt, sets: [descriptor],
+                checklistInputSHA256: try PokemonCatalogChecklistInput.digest(signedInputs),
+                cardRaritySHA256: rarityDigest)
+        }
+        func snapshot(_ rarities: [String: String]?) -> PokemonCatalogSnapshot {
+            PokemonCatalogSnapshot(generatedAt: generatedAt, directoryFingerprint: "x",
+                entries: [.init(providerSetID: "sv3", displayName: "Obsidian Flames", printedCode: nil, officialCount: nil,
+                                releaseOrder: nil, providerFingerprint: fingerprint, cardCount: 1, resource: "sv3")],
+                checklists: [:], checklistInputs: signedInputs, cardRarities: rarities)
+        }
+        let signed = try release(rarityDigest: try PokemonCatalogCardRarities.digest(table))
+        let verified = try snapshot(table).verifiedChecklistInputsWithRarity(for: signed)
+        XCTAssertEqual(verified["sv3"]?.cards.first?.rarity, "Double Rare")
+        // An older app ignores the table and still finds its input digest intact.
+        XCTAssertEqual(try snapshot(table).verifiedChecklistInputs(for: signed), signedInputs)
+        // Tampered, missing, or unsigned tables are refused.
+        XCTAssertThrowsError(try snapshot(["sv3-125": "Hyper Rare"]).verifiedChecklistInputsWithRarity(for: signed))
+        XCTAssertThrowsError(try snapshot(nil).verifiedChecklistInputsWithRarity(for: signed))
+        XCTAssertThrowsError(try snapshot(table).verifiedChecklistInputsWithRarity(for: try release(rarityDigest: nil)))
+        XCTAssertEqual(try snapshot(nil).verifiedChecklistInputsWithRarity(for: try release(rarityDigest: nil)), signedInputs)
+    }
+
     func testPublicationLagReportsReleasedUnsignedSetsPastTheDiscoveryWindow() {
         let day: TimeInterval = 24 * 60 * 60
         let boundary = generatedAt.addingTimeInterval(-30 * day)
@@ -110,6 +157,28 @@ final class PokemonCatalogCoreTests: XCTestCase {
             result.snapshot.entries.first?.artworkFallbackURLs,
             Array(fixture.cards.map(\.image).compactMap { $0 }.prefix(3))
         )
+    }
+
+    func testBuilderSignsRarityOutsideTheChecklistInputs() throws {
+        let base = providerFixture(sets: [.init(id: "sv99", name: "Recorded Test Set", code: "TST",
+            releaseDate: "2026-09-18", imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"])])
+        let fixture = PokemonCatalogProviderFixture(directory: base.directory, sets: base.sets,
+            cards: base.cards.map { $0.withRarity("Illustration Rare") }, secondary: base.secondary)
+        let result = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: [], revision: 1, generatedAt: generatedAt))
+        let inputs = try XCTUnwrap(result.snapshot.checklistInputs)
+        XCTAssertTrue(inputs.values.flatMap(\.cards).allSatisfy { $0.rarity == nil })
+        XCTAssertEqual(Set(result.snapshot.cardRarities?.values.map { $0 } ?? []), ["Illustration Rare"])
+        XCTAssertNotNil(result.release.cardRaritySHA256)
+        let verified = try result.snapshot.verifiedChecklistInputsWithRarity(for: result.release)
+        XCTAssertTrue(verified.values.flatMap(\.cards).allSatisfy { $0.rarity == "Illustration Rare" })
+
+        let unrated = try PokemonCatalogBuilder().build(
+            .init(fixture: base, humanInputs: [], revision: 1, generatedAt: generatedAt))
+        XCTAssertEqual(unrated.release.checklistInputSHA256, result.release.checklistInputSHA256)
+        XCTAssertNil(unrated.release.cardRaritySHA256)
+        XCTAssertEqual(PokemonCatalogChangeClassifier.classify(previousRelease: unrated.release,
+            currentRelease: result.release).changeClass, .contentOnly)
     }
 
     func testParentArtworkIsResolvedByPublisherAndProtectedByClassifier() throws {

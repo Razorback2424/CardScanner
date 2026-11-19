@@ -222,7 +222,7 @@ enum PokemonOfflineCardFactory {
             localId: localID ?? summaries[0].collectorNumber,
             name: summaries[0].name,
             image: summaries.compactMap { imageBaseURL(for: $0.imageURL) }.first,
-            rarity: nil,
+            rarity: summaries.lazy.compactMap(\.rarity).first,
             set: brief,
             variants: variants.isEmpty
                 ? nil

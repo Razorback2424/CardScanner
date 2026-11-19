@@ -220,7 +220,7 @@ public final class PokemonCatalogFilesystemPublisher: @unchecked Sendable {
                 let url = revisionDirectory.appendingPathComponent("pokemon-catalog-snapshot.json")
                 guard let bytes = try? Data(contentsOf: url), bytes.count <= PokemonCatalogSnapshot.maximumPublishedBytes,
                       let snapshot = try? PokemonCatalogJSON.decode(PokemonCatalogSnapshot.self, from: bytes),
-                      (try? snapshot.verifiedChecklistInputs(for: signedBuild.build.release)) != nil else {
+                      (try? snapshot.verifiedChecklistInputsWithRarity(for: signedBuild.build.release)) != nil else {
                     throw PokemonCatalogPublicationError.immutableRevisionConflict(revision)
                 }
             }
@@ -311,7 +311,7 @@ public final class PokemonCatalogFilesystemPublisher: @unchecked Sendable {
             guard snapshotData.count <= PokemonCatalogSnapshot.maximumPublishedBytes else {
                 throw PokemonCatalogPublicationError.checklistTooLarge(bytes: snapshotData.count)
             }
-            _ = try signedBuild.build.snapshot.verifiedChecklistInputs(for: signedBuild.build.release)
+            _ = try signedBuild.build.snapshot.verifiedChecklistInputsWithRarity(for: signedBuild.build.release)
         }
         try snapshotData.write(
             to: directory.appendingPathComponent("pokemon-catalog-snapshot.json"),

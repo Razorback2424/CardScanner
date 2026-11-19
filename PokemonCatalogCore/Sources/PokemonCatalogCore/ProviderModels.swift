@@ -333,6 +333,17 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
     public let variantsDetailed: [PokemonCatalogProviderDetailedVariant]?
     public let hasPlainHoloLane: Bool
     public let hasPlainReverseLane: Bool
+    /// The provider's printed rarity, for display. It is not identity or
+    /// finish evidence, so the provider fingerprints leave it out. Signed
+    /// checklist inputs never carry it: older apps re-encode those inputs to
+    /// check their digest. It travels in the snapshot's own rarity table.
+    public let rarity: String?
+
+    public func withRarity(_ rarity: String?) -> PokemonCatalogProviderCard {
+        PokemonCatalogProviderCard(id: id, localID: localID, name: name, image: image, setID: setID,
+            variants: variants, variantsDetailed: variantsDetailed, hasPlainHoloLane: hasPlainHoloLane,
+            hasPlainReverseLane: hasPlainReverseLane, rarity: rarity)
+    }
 
     public init(
         id: String,
@@ -343,7 +354,8 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         variants: PokemonCatalogProviderVariants? = nil,
         variantsDetailed: [PokemonCatalogProviderDetailedVariant]? = nil,
         hasPlainHoloLane: Bool = false,
-        hasPlainReverseLane: Bool = false
+        hasPlainReverseLane: Bool = false,
+        rarity: String? = nil
     ) {
         self.id = id
         self.localID = localID
@@ -354,10 +366,11 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         self.variantsDetailed = variantsDetailed
         self.hasPlainHoloLane = hasPlainHoloLane
         self.hasPlainReverseLane = hasPlainReverseLane
+        self.rarity = rarity
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id
+        case id, rarity
         case localID = "localId"
         case name
         case image
@@ -416,6 +429,8 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         let lanes = (try? container.decode(Pricing.self, forKey: .pricing))?.tcgplayer
         hasPlainHoloLane = try container.decodeIfPresent(Bool.self, forKey: .hasPlainHoloLane) ?? lanes?.holo ?? false
         hasPlainReverseLane = try container.decodeIfPresent(Bool.self, forKey: .hasPlainReverseLane) ?? lanes?.reverse ?? false
+        rarity = (try? container.decodeIfPresent(String.self, forKey: .rarity))?
+            .trimmingCharacters(in: .whitespacesAndNewlines).nonEmptyRarity
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -429,7 +444,13 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         try container.encodeIfPresent(variantsDetailed, forKey: .variantsDetailed)
         if hasPlainHoloLane { try container.encode(true, forKey: .hasPlainHoloLane) }
         if hasPlainReverseLane { try container.encode(true, forKey: .hasPlainReverseLane) }
+        // Omitted when absent, so inputs signed before rarity keep their digest.
+        try container.encodeIfPresent(rarity, forKey: .rarity)
     }
+}
+
+private extension String {
+    var nonEmptyRarity: String? { isEmpty ? nil : self }
 }
 
 public struct PokemonCatalogProviderFixture: Codable, Equatable, Sendable {

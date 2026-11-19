@@ -1,5 +1,6 @@
 import CryptoKit
 import enum PokemonCatalogCore.PokemonCatalogJSON
+import enum PokemonCatalogCore.PokemonCatalogCardRarities
 import enum PokemonCatalogCore.PokemonCatalogProviderFingerprint
 import struct PokemonCatalogCore.PokemonCatalogChecklistInput
 import struct PokemonCatalogCore.PokemonCatalogProviderCard
@@ -604,6 +605,40 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
         }
         let unreviewedScan = PokemonUnnumberedEnergyEvidence.identifier(year: 2009, generation: adapter.generation)
         XCTAssertThrowsError(try adapter.prepareLookupIdentifier(unreviewedScan))
+    }
+
+    func testSignedChecklistCarriesProviderRarityToOfflineCards() throws {
+        let set = PokemonCatalogProviderSet(id: "sv99", name: "Test Set",
+            cards: [.init(id: "sv99-001", localID: "001", name: "Bulbasaur")],
+            cardCount: .init(total: 1, official: 100))
+        let card = PokemonCatalogProviderCard(id: "sv99-001", localID: "001", name: "Bulbasaur", setID: set.id,
+            variants: .init(firstEdition: false, holo: true, normal: false, reverse: false))
+        let inputs = [set.id: PokemonCatalogChecklistInput(providerSet: set, cards: [card])]
+        let rarities = ["sv99-001": "Illustration Rare"]
+        let fingerprint = try XCTUnwrap(PokemonCatalogProviderFingerprint.v1(providerSet: set, cardDetails: [card.id: card]))
+        let release = PokemonCatalogRelease(revision: 1, generatedAt: .now,
+            sets: [SliceBFixture.descriptor(providerFingerprint: fingerprint)],
+            checklistInputSHA256: try PokemonCatalogChecklistInput.digest(inputs),
+            cardRaritySHA256: try PokemonCatalogCardRarities.digest(rarities))
+        let published = PokemonCatalogSnapshot(generatedAt: release.generatedAt, directoryFingerprint: "x",
+            entries: [.init(providerSetID: set.id, displayName: set.name, printedCode: "TST", officialCount: 100,
+                            releaseOrder: nil, providerFingerprint: fingerprint, cardCount: 1, resource: set.id)],
+            checklists: [:], checklistInputs: inputs, cardRarities: rarities)
+        // The download path verifies the signed table and attaches it.
+        let downloaded = try PokemonCatalogUpdateClient.checklistInputs(
+            from: try PokemonCatalogJSON.encode(published), for: release)
+        let snapshot = try PokemonMasterSetChecklistBuilder.buildSigned(downloaded,
+            registry: .init(release: release), generatedAt: release.generatedAt)
+        let entry = try XCTUnwrap(snapshot.manifest.entries.first)
+        let rows = try XCTUnwrap(snapshot.checklists[entry.set.id])
+        XCTAssertFalse(rows.isEmpty)
+        XCTAssertEqual(Set(rows.map(\.rarity)), ["Illustration Rare"])
+        // Summaries survive the on-device checklist storage round trip.
+        let stored = try JSONDecoder().decode([CatalogCardSummary].self, from: try JSONEncoder().encode(rows))
+        XCTAssertEqual(stored.map(\.rarity), rows.map(\.rarity))
+        let offline = try XCTUnwrap(PokemonOfflineCardFactory.card(
+            in: .init(entry: entry, source: .signed, cards: stored), providerCardID: card.id))
+        XCTAssertEqual(offline.rarity, "Illustration Rare")
     }
 
     func testSignedChecklistCannotSupplyFinishesUnderThePreviousRegistry() async throws {

@@ -191,6 +191,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     /// a scan the resolver could not settle — can only be that slot, so it is
     /// counted rather than shown as missing next to a card the user owns.
     var isSoleSlotForCard = false
+    /// The printed rarity where the offline catalog carries it (Pokémon).
+    var rarity: String? = nil
     var pokemonPrintRun: PokemonPrintRun? { setID.pokemonPrintRun }
     var displayName: String {
         guard game == .pokemon else { return name }
@@ -275,7 +277,13 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             catalogGeneration: catalogGeneration,
             collectionAvailabilityNotice: collectionAvailabilityNotice,
             searchFields: searchFields
-        )
+        ).withRarity(rarity)
+    }
+
+    func withRarity(_ rarity: String?) -> CatalogCardSummary {
+        var value = self
+        value.rarity = rarity
+        return value
     }
 
     enum CodingKeys: String, CodingKey {
@@ -287,6 +295,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         case limitlessArtworkAuthorized
         case magicTreatmentIDsRaw, magicTreatmentQualifiers, magicFinishIDs
         case masterSetVariant, isExpandedMasterSetVariant, isSoleSlotForCard
+        case rarity
     }
 
     init(from decoder: Decoder) throws {
@@ -332,6 +341,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             Bool.self,
             forKey: .isSoleSlotForCard
         ) ?? false
+        rarity = try container.decodeIfPresent(String.self, forKey: .rarity)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -364,6 +374,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         try container.encodeIfPresent(masterSetVariant, forKey: .masterSetVariant)
         try container.encode(isExpandedMasterSetVariant, forKey: .isExpandedMasterSetVariant)
         try container.encode(isSoleSlotForCard, forKey: .isSoleSlotForCard)
+        try container.encodeIfPresent(rarity, forKey: .rarity)
     }
 
     var id: String {
