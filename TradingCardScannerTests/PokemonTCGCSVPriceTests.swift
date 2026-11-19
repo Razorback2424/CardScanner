@@ -592,7 +592,10 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertEqual(built.set.cardCount, 24)
         let original = old.filter { $0.providerID.hasPrefix("mee-") }.sorted { $0.id < $1.id }
         let rebuilt = built.cards.filter { $0.providerID.hasPrefix("mee-") }.sorted { $0.id < $1.id }
-        XCTAssertEqual(rebuilt, original)
+        // Rows keep their identity; rarity is display data the bundled
+        // snapshot may predate.
+        XCTAssertEqual(rebuilt.map { $0.withRarity(nil) }, original.map { $0.withRarity(nil) })
+        XCTAssertTrue(rebuilt.allSatisfy { $0.rarity != nil })
         XCTAssertEqual(Set(built.cards.map(\.collectorNumber)).count, 16)
         XCTAssertEqual(built.officialCount, 8, "Provider count is not a printed denominator on Energy")
         let energySnapshot = PokemonChecklistSnapshot.from(builtSets: [built])

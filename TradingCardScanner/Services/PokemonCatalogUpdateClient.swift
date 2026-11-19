@@ -212,7 +212,7 @@ actor PokemonCatalogUpdateClient {
             throw UpdateError.payloadTooLarge(bytes: data.count)
         }
         return try PokemonCatalogJSON.decode(PokemonCatalogCore.PokemonCatalogSnapshot.self, from: data)
-            .verifiedChecklistInputs(for: release)
+            .verifiedChecklistInputsWithRarity(for: release)
     }
 
     func resetConditionalState() {

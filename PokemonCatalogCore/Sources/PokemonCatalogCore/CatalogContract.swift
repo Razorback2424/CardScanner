@@ -42,6 +42,9 @@ public struct PokemonCatalogRelease: Codable, Equatable, Sendable {
     public let englishExclusions: PokemonCatalogEnglishExclusions?
     /// Authenticates the checklist inputs hosted with this immutable revision.
     public let checklistInputSHA256: String?
+    /// Authenticates the snapshot's card rarity table. Additive: older apps
+    /// ignore both, and releases without it simply carry no rarity.
+    public let cardRaritySHA256: String?
 
     public init(
         schemaVersion: Int = PokemonCatalogRelease.currentSchemaVersion,
@@ -50,7 +53,8 @@ public struct PokemonCatalogRelease: Codable, Equatable, Sendable {
         generatedAt: Date,
         sets: [PokemonCatalogSetDescriptor],
         englishExclusions: PokemonCatalogEnglishExclusions? = nil,
-        checklistInputSHA256: String? = nil
+        checklistInputSHA256: String? = nil,
+        cardRaritySHA256: String? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.catalogKind = catalogKind
@@ -59,6 +63,7 @@ public struct PokemonCatalogRelease: Codable, Equatable, Sendable {
         self.sets = sets
         self.englishExclusions = englishExclusions
         self.checklistInputSHA256 = checklistInputSHA256
+        self.cardRaritySHA256 = cardRaritySHA256
     }
 }
 

@@ -12,6 +12,9 @@ public struct PokemonCatalogSnapshot: Codable, Equatable, Sendable {
     public let entries: [PokemonCatalogSnapshotEntry]
     public let checklists: [String: [PokemonCatalogCardSummary]]
     public let checklistInputs: [String: PokemonCatalogChecklistInput]?
+    /// Display rarity by lowercased provider card ID, authenticated by the
+    /// release's `cardRaritySHA256`.
+    public let cardRarities: [String: String]?
 
     public init(
         schemaVersion: Int = PokemonCatalogSnapshot.currentSchemaVersion,
@@ -20,7 +23,8 @@ public struct PokemonCatalogSnapshot: Codable, Equatable, Sendable {
         directoryFingerprint: String,
         entries: [PokemonCatalogSnapshotEntry],
         checklists: [String: [PokemonCatalogCardSummary]],
-        checklistInputs: [String: PokemonCatalogChecklistInput]? = nil
+        checklistInputs: [String: PokemonCatalogChecklistInput]? = nil,
+        cardRarities: [String: String]? = nil
     ) {
         self.schemaVersion = schemaVersion
         self.rulesVersion = rulesVersion
@@ -29,6 +33,32 @@ public struct PokemonCatalogSnapshot: Codable, Equatable, Sendable {
         self.entries = entries
         self.checklists = checklists
         self.checklistInputs = checklistInputs
+        self.cardRarities = cardRarities
+    }
+
+    /// Checklist inputs with each card's signed rarity attached. A release
+    /// without a rarity digest yields the inputs unchanged.
+    public func verifiedChecklistInputsWithRarity(for release: PokemonCatalogRelease) throws
+        -> [String: PokemonCatalogChecklistInput] {
+        let inputs = try verifiedChecklistInputs(for: release)
+        let rarities = try verifiedCardRarities(for: release)
+        guard !rarities.isEmpty else { return inputs }
+        return inputs.mapValues { input in
+            PokemonCatalogChecklistInput(providerSet: input.providerSet, cards: input.cards.map {
+                $0.withRarity(rarities[$0.id.lowercased()])
+            })
+        }
+    }
+
+    public func verifiedCardRarities(for release: PokemonCatalogRelease) throws -> [String: String] {
+        guard let expected = release.cardRaritySHA256 else {
+            guard cardRarities == nil else { throw PokemonCatalogCandidateValidationError.checklistInputsMismatch }
+            return [:]
+        }
+        guard let cardRarities, try PokemonCatalogCardRarities.digest(cardRarities) == expected else {
+            throw PokemonCatalogCandidateValidationError.checklistInputsMismatch
+        }
+        return cardRarities
     }
 
     public func verifiedChecklistInputs(for release: PokemonCatalogRelease) throws -> [String: PokemonCatalogChecklistInput] {
@@ -57,6 +87,21 @@ public struct PokemonCatalogSnapshot: Codable, Equatable, Sendable {
             }
         }
         return checklistInputs
+    }
+}
+
+public enum PokemonCatalogCardRarities {
+    /// Rarity by lowercased provider card ID, from the inputs' own cards.
+    public static func table(_ inputs: [String: PokemonCatalogChecklistInput]) -> [String: String] {
+        var table: [String: String] = [:]
+        for card in inputs.values.flatMap(\.cards) {
+            if let rarity = card.rarity { table[card.id.lowercased()] = rarity }
+        }
+        return table
+    }
+
+    public static func digest(_ table: [String: String]) throws -> String {
+        try SHA256.hash(data: PokemonCatalogJSON.encode(table)).map { String(format: "%02x", $0) }.joined()
     }
 }
 

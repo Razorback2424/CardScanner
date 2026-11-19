@@ -445,7 +445,7 @@ enum PokemonMasterSetChecklistBuilder {
                                       cardCount: count ?? .init(total: source.cards.count, official: 0))
             let cards = Dictionary(input.cards.map { card in
                 let detail = TCGdexCard(id: card.id, localId: card.localID, name: card.name,
-                    image: card.image, rarity: nil, set: brief,
+                    image: card.image, rarity: card.rarity, set: brief,
                     variants: card.variants.map {
                         .init(firstEdition: $0.firstEdition, holo: $0.holo, normal: $0.normal,
                               reverse: $0.reverse, wPromo: $0.wPromo)
@@ -578,6 +578,8 @@ enum PokemonMasterSetChecklistBuilder {
                             imageURL: imageURL
                         )
                     }
+                    // Display only: keeps rarity available offline.
+                    base.rarity = card.rarity
                     let requirements = PokemonMasterSetDefinition.requiredVariants(for: card)
                     // Retain the identity when the provider is silent, with no
                     // affirmative finish slot. Silence must not create Normal.

@@ -493,7 +493,7 @@ actor PokemonCatalogEngine {
             localId: requestedLocalID,
             name: card.name,
             image: card.images.large.absoluteString,
-            rarity: nil,
+            rarity: card.rarity,
             set: TCGdexSetBrief(
                 id: card.set.id ?? requestedSetID,
                 name: card.set.name,

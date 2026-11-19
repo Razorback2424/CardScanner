@@ -112,7 +112,9 @@ enum CardShareArtworkLayout {
 // MARK: - Identity from app models
 
 extension CardShareIdentity {
-    init(collectedCard card: CollectedCard) {
+    /// `catalogCard` is the same printing from the catalog. A saved copy often
+    /// lacks the rarity the card page shows; the catalog's fills it in.
+    init(collectedCard card: CollectedCard, catalogCard: IdentifiedCard? = nil) {
         let badge: Badge?
         switch card.itemKind {
         case .gradedCard:
@@ -131,8 +133,9 @@ extension CardShareIdentity {
             number: isSealed ? nil : CardShareNumber(card.displayCardNumber),
             badge: badge,
             rarity: isSealed ? nil : CardShareRarity(raw: labels?.rarity ?? card.rarity, game: card.cardGame,
-                pokemonSetID: card.catalogProviderID ?? card.providerID),
-            artworkTreatment: labels?.artworkTreatment,
+                pokemonSetID: card.catalogProviderID ?? card.providerID)
+                ?? CardShareRarity(raw: catalogCard?.rarity, game: card.cardGame, pokemonSetID: catalogCard?.setID),
+            artworkTreatment: isSealed ? nil : labels?.artworkTreatment ?? catalogCard?.artworkTreatment,
             finish: isSealed ? nil : Self.finishBadge(for: card.variant)?.text,
             edition: !isSealed && card.cardGame == .pokemon ? card.pokemonPrintRun?.label : nil
         )
@@ -226,11 +229,12 @@ struct CollectionShareOption: Identifiable {
     }
 
     @MainActor
-    init(collectedCard card: CollectedCard, price: PriceDisplay, localArtworkFilename: String?) {
+    init(collectedCard card: CollectedCard, price: PriceDisplay, localArtworkFilename: String?,
+         catalogCard: IdentifiedCard? = nil) {
         let source = CatalogCardArtworkSource(collectedCard: card, prefersFullSize: true)
         self.init(
             id: card.collectionKey,
-            identity: CardShareIdentity(collectedCard: card),
+            identity: CardShareIdentity(collectedCard: card, catalogCard: catalogCard),
             finishLabel: Self.finishLabel(for: card),
             price: CardSharePrice(collectedCard: card, display: price),
             showsFinishSheen: CollectionShareSheet.showsFinishSheen(for: card),

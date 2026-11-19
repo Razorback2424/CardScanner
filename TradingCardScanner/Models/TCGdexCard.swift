@@ -493,6 +493,7 @@ struct PokemonTCGAPICard: Decodable, Sendable {
     let number: String
     let set: PokemonTCGAPISet
     let images: PokemonTCGAPIImages
+    var rarity: String? = nil
 }
 
 struct PokemonTCGAPISet: Decodable, Sendable {

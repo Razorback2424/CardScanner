@@ -480,13 +480,20 @@ public struct PokemonCatalogBuilder: Sendable {
                 }
             }
         }
+        // Rarity leaves the signed inputs (older apps re-encode them to check
+        // their digest) and travels in its own signed table.
+        let cardRarities = PokemonCatalogCardRarities.table(checklistInputs)
+        checklistInputs = checklistInputs.mapValues {
+            PokemonCatalogChecklistInput(providerSet: $0.providerSet, cards: $0.cards.map { $0.withRarity(nil) })
+        }
         let release = PokemonCatalogRelease(
             catalogKind: PokemonCatalogRelease.currentCatalogKind,
             revision: request.revision,
             generatedAt: request.generatedAt,
             sets: descriptors.sorted(by: descriptorSort),
             englishExclusions: englishExclusions,
-            checklistInputSHA256: checklistInputs.isEmpty ? nil : try PokemonCatalogChecklistInput.digest(checklistInputs)
+            checklistInputSHA256: checklistInputs.isEmpty ? nil : try PokemonCatalogChecklistInput.digest(checklistInputs),
+            cardRaritySHA256: cardRarities.isEmpty ? nil : try PokemonCatalogCardRarities.digest(cardRarities)
         )
         try PokemonCatalogReleaseValidator.validate(
             release,
@@ -502,7 +509,8 @@ public struct PokemonCatalogBuilder: Sendable {
             ),
             entries: sortedEntries,
             checklists: checklists,
-            checklistInputs: checklistInputs.isEmpty ? nil : checklistInputs
+            checklistInputs: checklistInputs.isEmpty ? nil : checklistInputs,
+            cardRarities: cardRarities.isEmpty ? nil : cardRarities
         )
         let classification = PokemonCatalogChangeClassifier.classify(
             previousRelease: request.activeRelease,

@@ -156,6 +156,7 @@ public enum PokemonCatalogCandidateValidator {
         if build.release.checklistInputSHA256 != nil || build.snapshot.checklistInputs != nil {
             _ = try build.snapshot.verifiedChecklistInputs(for: build.release)
         }
+        _ = try build.snapshot.verifiedCardRarities(for: build.release)
 
         for descriptor in build.release.sets {
             for variant in descriptor.additionalVariants ?? [] {
