@@ -20,6 +20,7 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
     let displayCardNumber: String
     let identifier: String
     let rarity: String?
+    let artworkTreatment: String?
     let displayImageURL: URL?
     let thumbnailImageURL: URL?
     let storedImageURL: String?
@@ -36,7 +37,7 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
 
     init(game: CardGame, physicalPrintingID: String, canonicalCardID: String,
          language: String, name: String, setName: String, setCode: String,
-         cardNumber: String, printedIdentifier: String, rarity: String? = nil,
+         cardNumber: String, printedIdentifier: String, rarity: String? = nil, artworkTreatment: String? = nil,
          displayImageURL: URL? = nil, thumbnailImageURL: URL? = nil,
          setReleaseOrder: Int = 0, variantEvidence: VariantEvidence,
          marketProductIDsByVariant: [String: String] = [:]) throws {
@@ -65,6 +66,7 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
         self.displayCardNumber = cardNumber
         self.identifier = printedIdentifier
         self.rarity = rarity
+        self.artworkTreatment = artworkTreatment
         self.displayImageURL = displayImageURL
         self.thumbnailImageURL = thumbnailImageURL
         self.storedImageURL = displayImageURL?.absoluteString
@@ -88,6 +90,7 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
         displayCardNumber = legacy.displayCardNumber
         identifier = legacy.identifier
         rarity = legacy.rarity
+        artworkTreatment = nil
         displayImageURL = legacy.displayImageURL
         thumbnailImageURL = legacy.thumbnailImageURL
         storedImageURL = legacy.storedImageURL

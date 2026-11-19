@@ -8863,3 +8863,28 @@ benchmark skipped, and zero failures. Captures used the existing local
 Collector Tools build flag. The build, `Verified.xcresult`, and captures are
 under `CodexBuilds/ScanStash-CenteringReviewClosure-20261111` on the external SSD.
 See the [centering workflow plan](docs/plans/centering-boundary-evidence-plan.md).
+
+## Card share identity and rarity, 2026-11-18
+
+The bundled One Piece audit found that all 4,153 verified printings across
+130 releases embed the code in the collector number. For 3,065 of those
+printings, the set title repeats that code too. The same formatting test
+covered Pokémon, Magic, Lorcana, and Yu-Gi-Oh!, including reprints with
+distinct release and collector-number codes. Retained Bandai card lists
+provided exact rarity matches for 3,986 verified One Piece printings.
+
+At `6c4be2ad` plus working changes, 65 selected ProfileLocal tests passed
+with no failures or skips on the Share Finish Review iPhone simulator
+using DebugRemoteLocal. This included the two EB05 integration tests,
+share content and rendering, and forward compatibility. Nine targeted
+Python tests passed. The game boundary audit flagged pre-existing
+branches in its central services.
+
+The `CardShareReview` route with `buy-one-piece` showed the full set title,
+`EB05-061` once, `Secret Rare · Alt Art`, the independent Foil badge, and
+the asking price and Share controls within the sheet. The capture uses
+fixture artwork and market history. At Accessibility 3, the card metadata
+fits in the preview and the asking-price field pushes Share below the
+visible sheet. Evidence is on the T7 SSD under
+`CodexBuild/card-share-identity-20261118/nami-final/` and
+`TradingCardScannerDerivedData/card-share-identity-final-20261118.xcresult`.

@@ -123,17 +123,30 @@ extension CardShareIdentity {
             badge = nil
         }
         let isSealed = card.itemKind == .sealedProduct
+        let labels = isSealed ? nil : Self.onePiecePrintingLabels(for: card)
         self.init(
             name: card.name,
             setCode: isSealed ? nil : card.setCode,
             setName: card.setName,
             number: isSealed ? nil : CardShareNumber(card.displayCardNumber),
             badge: badge,
-            rarity: isSealed ? nil : CardShareRarity(raw: card.rarity, game: card.cardGame,
+            rarity: isSealed ? nil : CardShareRarity(raw: labels?.rarity ?? card.rarity, game: card.cardGame,
                 pokemonSetID: card.catalogProviderID ?? card.providerID),
+            artworkTreatment: labels?.artworkTreatment,
             finish: isSealed ? nil : Self.finishBadge(for: card.variant)?.text,
             edition: !isSealed && card.cardGame == .pokemon ? card.pokemonPrintRun?.label : nil
         )
+    }
+
+    private static func onePiecePrintingLabels(for card: CollectedCard)
+        -> (rarity: String?, artworkTreatment: String?)? {
+        guard card.cardGame == .onePiece,
+              let id = card.underlyingPrintingID.flatMap(UUID.init(uuidString:)),
+              let container = card.modelContext?.container,
+              let adapter = CollectionStore.activeCatalogAdapter(for: card.cardGame, in: container) as? OnePieceCatalogAdapter else {
+            return nil
+        }
+        return adapter.printingLabels(for: id)
     }
 
     init(priceCheck result: PriceCheckResult) {
@@ -151,6 +164,7 @@ extension CardShareIdentity {
             badge: badge,
             rarity: CardShareRarity(raw: result.card.rarity, game: result.card.game,
                 pokemonSetID: result.card.setID),
+            artworkTreatment: result.card.artworkTreatment,
             finish: Self.finishBadge(for: result.resolved.variant)?.text,
             edition: result.card.game == .pokemon ? result.resolvedScan.pokemonPrintRun?.label : nil
         )
@@ -165,6 +179,7 @@ extension CardShareIdentity {
             number: CardShareNumber(card.displayCardNumber),
             badge: nil,
             rarity: CardShareRarity(raw: card.rarity, game: card.game, pokemonSetID: card.setID),
+            artworkTreatment: card.artworkTreatment,
             finish: finish,
             edition: edition
         )
@@ -411,7 +426,7 @@ struct BuyCheckShareImage: View {
                         .minimumScaleFactor(0.7)
                     // Same order and voice as the card page: set, then code
                     // and number.
-                    if let name = identity.setName {
+                    if let name = identity.displaySetName {
                         Text(name)
                             .font(.system(size: 14, weight: .bold))
                             .fontWidth(.expanded)
@@ -425,8 +440,8 @@ struct BuyCheckShareImage: View {
                             .lineLimit(1)
                             .minimumScaleFactor(0.8)
                     }
-                    if let rarity = identity.rarity {
-                        ShareRarityLabel(rarity: rarity)
+                    if let label = identity.shareRarityLabel {
+                        ShareRarityLabel(label: label, rarity: identity.rarity)
                     }
                     if let grade = identity.gradeBadge {
                         ShareBadge(badge: grade, size: 12)
@@ -700,11 +715,11 @@ private struct ShareIdentityBlock: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 2)
-            if identity.setName != nil || designation != nil {
+            if identity.displaySetName != nil || designation != nil {
                 ViewThatFits(in: .horizontal) {
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         setName
-                        if identity.setName != nil, designation != nil {
+                        if identity.displaySetName != nil, designation != nil {
                             Circle()
                                 .fill(CardShareStyle.mutedText)
                                 .frame(width: 4, height: 4)
@@ -721,7 +736,7 @@ private struct ShareIdentityBlock: View {
                 .font(.system(size: 15, weight: .bold))
                 .fontWidth(.expanded)
             }
-            if identity.rarity != nil || identity.gradeBadge != nil || identity.finish != nil {
+            if identity.shareRarityLabel != nil || identity.gradeBadge != nil || identity.finish != nil {
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 12) {
                         rarityLabel
@@ -747,7 +762,7 @@ private struct ShareIdentityBlock: View {
 
     @ViewBuilder
     private var setName: some View {
-        if let name = identity.setName {
+        if let name = identity.displaySetName {
             Text(name)
                 .foregroundStyle(setTint)
                 .fixedSize(horizontal: false, vertical: true)
@@ -758,7 +773,7 @@ private struct ShareIdentityBlock: View {
 
     /// `FIN 159`, or `TST 087/165` with the set total quieter.
     static func designation(for identity: CardShareIdentity) -> Text? {
-        let code = identity.setCode.map { Text($0.uppercased()) }
+        let code = identity.designationSetCode.map { Text($0.uppercased()) }
         let number = identity.number.map { number in
             Text(number.primary) + Text(number.total ?? "").foregroundStyle(CardShareStyle.mutedText)
         }
@@ -772,8 +787,8 @@ private struct ShareIdentityBlock: View {
 
     @ViewBuilder
     private var rarityLabel: some View {
-        if let rarity = identity.rarity {
-            ShareRarityLabel(rarity: rarity)
+        if let label = identity.shareRarityLabel {
+            ShareRarityLabel(label: label, rarity: identity.rarity)
         }
     }
 
@@ -855,10 +870,11 @@ private struct ShareFinishList: View {
 /// Familiar rarity marks, adapted for a dark ground. The complete name stays
 /// readable independently of color; a star count is never used as a rating.
 private struct ShareRarityLabel: View {
-    let rarity: CardShareRarity
+    let label: String
+    let rarity: CardShareRarity?
 
     private var tint: Color {
-        switch rarity.tone {
+        switch rarity?.tone ?? .neutral {
         case .neutral: return CardShareStyle.secondaryText
         case .silver: return Color(red: 216 / 255, green: 228 / 255, blue: 246 / 255)
         case .gold: return Color(red: 244 / 255, green: 213 / 255, blue: 140 / 255)
@@ -873,20 +889,19 @@ private struct ShareRarityLabel: View {
             mark
                 .fixedSize()
                 .accessibilityHidden(true)
-            Text(rarity.label)
+            Text(label)
                 .font(.system(size: 15, weight: .bold))
                 .fontWidth(.expanded)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .foregroundStyle(tint)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Rarity")
-        .accessibilityValue(rarity.label)
+        .accessibilityLabel(label)
     }
 
     @ViewBuilder
     private var mark: some View {
-        switch rarity.mark {
+        switch rarity?.mark ?? .none {
         case .circle:
             Circle().frame(width: 8, height: 8)
         case .diamond:
@@ -1466,6 +1481,9 @@ struct BuyCheckShareSheet: View {
     /// A scan result is a price check; a card page shares a card.
     var title = "Share price check"
     var artworkLoader: CardShareArtworkLoader.Load = CardShareArtworkLoader.load
+#if DEBUG
+    var reviewTrend: CardShareTrend? = nil
+#endif
 
     @Environment(\.cardGameRuntimes) private var runtimes
     @Environment(\.dismiss) private var dismiss
@@ -1538,7 +1556,15 @@ struct BuyCheckShareSheet: View {
         .task(id: artworkAttempt) {
             await artwork.load(localFilename: nil, remoteURLs: artworkURLs, using: artworkLoader)
         }
-        .task { await loadHistory() }
+        .task {
+#if DEBUG
+            if let reviewTrend {
+                trend = reviewTrend
+                return
+            }
+#endif
+            await loadHistory()
+        }
         .task(id: renderKey) {
             let key = renderKey
             if let renderedKey, renderedKey.ask != key.ask {
@@ -1756,7 +1782,8 @@ private struct CardShareReviewState {
 private extension CardShareIdentity {
     func withGrade(_ grade: String) -> CardShareIdentity {
         CardShareIdentity(name: name, setCode: setCode, setName: setName, number: number,
-                          badge: .grade(grade), rarity: rarity, finish: finish, edition: edition)
+                          badge: .grade(grade), rarity: rarity, artworkTreatment: artworkTreatment,
+                          finish: finish, edition: edition)
     }
 }
 
@@ -1767,7 +1794,14 @@ struct CardShareReviewView: View {
     private let artworkURL = URL(string: "https://card-share-review.invalid/artwork")!
 
     private var identity: CardShareIdentity {
-        CardShareIdentity(
+        if state == "buy-one-piece" {
+            return CardShareIdentity(
+                name: "Nami", setCode: "EB05", setName: "Extra Booster: One Piece Heroines Edition Vol. 2 · EB05",
+                number: CardShareNumber("EB05-061"), badge: .finish("Foil"),
+                rarity: CardShareRarity(raw: "Secret Rare", game: .onePiece), artworkTreatment: "Alt Art"
+            )
+        }
+        return CardShareIdentity(
             name: state.contains("long") ? "A Very Long Legendary Trading Card Name With Extra Words" : (state == "sealed" ? "Booster Bundle" : "Share test card"),
             setCode: state == "sealed" ? nil : "TST",
             setName: state.contains("long") ? "A Very Long Set Name With Extra Words" : "Test Set",
@@ -1780,8 +1814,20 @@ struct CardShareReviewView: View {
         )
     }
 
+    private var reviewTrend: CardShareTrend? {
+        guard state == "buy-one-piece" else { return nil }
+        let now = Date.now.timeIntervalSince1970
+        let points = [200.0, 150, 40, 25, 24, 23.5].enumerated().map { index, price in
+            JustTCGHistoryPoint(p: price, t: now - Double(5 - index) * 4 * 86_400)
+        }
+        return CardShareTrend.make(points: points)
+    }
+
     private var price: CardSharePrice {
-        CardSharePrice(amount: 64.2, currencyCode: "USD",
+        if state == "buy-one-piece" {
+            return CardSharePrice(amount: 23.5, currencyCode: "USD", basis: "Market price", source: "TCGplayer", asOf: .now)
+        }
+        return CardSharePrice(amount: 64.2, currencyCode: "USD",
             basis: state == "graded" ? "PSA 10 market" : (state == "sealed" ? "Market price" : "Near Mint market"),
             source: state == "graded" ? "JustTCG" : "TCGplayer", asOf: .now)
     }
@@ -1807,7 +1853,8 @@ struct CardShareReviewView: View {
                 Group {
                     if state.hasPrefix("buy") {
                         BuyCheckShareSheet(identity: identity, price: price, artworkURLs: [artworkURL], historyRequest: nil,
-                            artworkLoader: loadArtwork)
+                            title: state == "buy-one-piece" ? "Share card" : "Share price check",
+                            artworkLoader: loadArtwork, reviewTrend: reviewTrend)
                     } else if state == "unowned" {
                         CollectionShareSheet(options: [CollectionShareOption(id: "catalog", identity: identity,
                                 finishLabel: identity.finish, price: price, showsFinishSheen: false,

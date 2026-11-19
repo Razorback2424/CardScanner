@@ -30,6 +30,33 @@ final class CardShareContentTests: XCTestCase {
         XCTAssertNil(CardShareNumber("/165"))
     }
 
+    func testShareDesignationKeepsOneCodeAndPreservesTheReleaseTitle() {
+        let cases: [(String, String, String, String)] = [
+            ("EB05", "Extra Booster: One Piece Heroines Edition Vol. 2 · EB05", "EB05-061",
+             "Extra Booster: One Piece Heroines Edition Vol. 2 EB05-061"),
+            ("OP01", "Romance Dawn [OP-01]", "OP01-120", "Romance Dawn OP01-120"),
+            ("ST01", "Starter Deck (ST-01)", "ST01-014", "Starter Deck ST01-014"),
+            ("OP02", "Kingdoms of Intrigue [OP-04]", "OP02-099", "Kingdoms of Intrigue [OP-04] OP02-099"),
+            ("LOB-EN", "Legend of Blue Eyes White Dragon", "LOB-EN001", "Legend of Blue Eyes White Dragon LOB-EN001"),
+            ("MEW", "151", "087/165", "151 MEW 087/165"),
+            ("FIN", "Final Fantasy", "159", "Final Fantasy FIN 159"),
+            ("10", "Whispers in the Well", "13/204", "Whispers in the Well 10 13/204"),
+            ("10", "Whispers in the Well", "10/204", "Whispers in the Well 10 10/204"),
+            ("OP01", "Example", "OP010-002", "Example OP01 OP010-002")
+        ]
+        for (code, set, number, expected) in cases {
+            let identity = CardShareIdentity(name: "Card", setCode: code, setName: set,
+                number: CardShareNumber(number), badge: nil)
+            XCTAssertEqual(CardShareSummary.text(identity: identity, price: nil), "Card · \(expected)")
+        }
+    }
+
+    func testArtworkTreatmentSurvivesChangingTheFinishAndMissingRarity() {
+        let identity = CardShareIdentity(name: "Card", setCode: nil, setName: nil,
+            number: nil, badge: .finish("Foil"), artworkTreatment: "Alt Art")
+        XCTAssertEqual(CardShareSummary.text(identity: identity.replacingFinish(nil), price: nil), "Card · Alt Art")
+    }
+
     // MARK: - Finish badge
 
     func testStandardFinishesGetNoBadge() {

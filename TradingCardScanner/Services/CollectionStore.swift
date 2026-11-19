@@ -2116,6 +2116,10 @@ struct CollectionStore {
         CollectionStoreSessionRegistry.shared.canInstallCatalogAdapter(adapter, revision: revision, for: container)
     }
 
+    static func activeCatalogAdapter(for game: CardGame, in container: ModelContainer) -> (any GameCatalogAdapter)? {
+        CollectionStoreSessionRegistry.shared.mutationAuthority(for: game, container: container).adapter
+    }
+
     private func requireWritableGame(_ game: CardGame) throws {
         guard gameRegistry.supports(game, .collectionWrite) else {
             throw CardGameSupportError.unsupportedGame(game)

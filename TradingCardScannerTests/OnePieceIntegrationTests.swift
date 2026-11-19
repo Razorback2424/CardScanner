@@ -539,6 +539,35 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertTrue(cards.contains { $0.providerID == scanned.physicalPrintingID.lowercased() })
     }
 
+    @MainActor
+    func testBundledNamiShareDistinguishesStandardAndAlternateArtwork() throws {
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime())
+        let catalog = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter)
+        let alternateID = try XCTUnwrap(UUID(uuidString: "c017092f-db40-5b4e-b968-776697242892"))
+        let standardID = try XCTUnwrap(UUID(uuidString: "f0dfd415-89d1-5370-af7b-015c97286ccc"))
+        let alternate = try catalog.resolution(forPrintingID: alternateID).card
+        let standard = try catalog.resolution(forPrintingID: standardID).card
+        let altShare = CardShareIdentity(catalogCard: alternate, setName: nil, finish: "Foil", edition: nil)
+        let standardShare = CardShareIdentity(catalogCard: standard, setName: nil, finish: "Foil", edition: nil)
+
+        XCTAssertEqual(altShare.shareRarityLabel, "Secret Rare · Alt Art")
+        XCTAssertEqual(standardShare.shareRarityLabel, "Secret Rare")
+        XCTAssertEqual(CardShareSummary.text(identity: altShare, price: nil),
+            "Nami · Extra Booster: One Piece Heroines Edition Vol. 2 EB05-061 · Secret Rare · Alt Art · Foil")
+
+        let container = try ModelContainer(for: CollectedCard.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        CollectionStore.configureCatalogAdapters(try GameCatalogAdapterRegistry(adapters: [catalog]),
+            legacyCorrectionGames: [], for: container)
+        let saved = CollectedCard(collectionKey: alternate.collectionKey(variant: .foil), game: .onePiece,
+            providerID: alternate.providerID, name: alternate.name, setName: alternate.setName,
+            setCode: alternate.setCode, cardNumber: alternate.cardNumber, rarity: nil,
+            imageURL: nil, thumbnailURL: nil, variant: .foil, variantResolution: .uniqueInCatalog)
+        container.mainContext.insert(saved)
+        XCTAssertEqual(CardShareIdentity(collectedCard: saved).shareRarityLabel, "Secret Rare · Alt Art")
+        XCTAssertNil(saved.rarity)
+    }
+
     func testBundledOwnerCatalogResolvesPromoAndPRB01FinishesInScanAndBrowse() async throws {
         let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime())
         let catalog = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter)

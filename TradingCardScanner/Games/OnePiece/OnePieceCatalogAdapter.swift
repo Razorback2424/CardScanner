@@ -6,6 +6,39 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
     var game: CardGame { .onePiece }
     var generation: String { registry.generation }
 
+    private static let printedRarities: [String: String] = {
+        guard let url = Bundle.main.url(forResource: "one-piece-printing-rarities", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let rarities = try? JSONDecoder().decode([String: String].self, from: data) else { return [:] }
+        return rarities
+    }()
+
+    func printingLabels(for id: UUID) -> (rarity: String?, artworkTreatment: String?) {
+        guard let printing = registry.printingByID[id] else { return (nil, nil) }
+        let code = Self.printedRarities[id.uuidString.lowercased()]
+        let rarity: String?
+        switch code {
+        case "C": rarity = "Common"
+        case "UC": rarity = "Uncommon"
+        case "R": rarity = "Rare"
+        case "SR": rarity = "Super Rare"
+        case "SEC": rarity = "Secret Rare"
+        case "L": rarity = "Leader"
+        case "P": rarity = "Promo"
+        case "SP CARD": rarity = "Special Card"
+        case "TR": rarity = "Treasure Rare"
+        default: rarity = code
+        }
+        let treatment = printing.treatment
+        let artworkTreatment: String?
+        switch treatment {
+        case "Standard artwork": artworkTreatment = nil
+        case "Alternate artwork": artworkTreatment = "Alt Art"
+        default: artworkTreatment = treatment?.localizedCaseInsensitiveContains("artwork") == true ? treatment : nil
+        }
+        return (rarity, artworkTreatment)
+    }
+
     func resolution(forPrintingID id: UUID) throws -> CardCatalog.CatalogResolution {
         guard let printing = registry.printingByID[id], printing.status == .verified,
               printing.language == "en",
@@ -176,10 +209,12 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
         let product = printing.releaseID.flatMap { registry.productsByID[$0] }
         let image = registry.artworkURLByID[printing.artworkID]
         let verified = printing.status == .verified
+        let labels = printingLabels(for: printing.id)
         let card = try ResolvedCatalogCard(game: game, physicalPrintingID: printing.id.uuidString.lowercased(),
             canonicalCardID: canonical.id, language: printing.language, name: canonical.name,
             setName: product?.label ?? printing.distributionLabel ?? "One Piece", setCode: OnePieceTextNormalization.prefix(of: canonical.printedNumber) ?? "",
             cardNumber: canonical.printedNumber, printedIdentifier: canonical.printedNumber,
+            rarity: labels.rarity, artworkTreatment: labels.artworkTreatment,
             displayImageURL: image, thumbnailImageURL: image,
             setReleaseOrder: product?.releaseDate.flatMap(OnePieceTextNormalization.releaseDate)
                 .map { Int($0.timeIntervalSince1970 / 86_400) } ?? 0,

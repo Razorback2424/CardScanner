@@ -87,6 +87,17 @@ def source_url(provider, value):
     return url
 
 
+def bandai_printed_rarities(payload):
+    """Read the rarity printed in each official artwork row."""
+    for modal in Document(payload).root.nodes("dl", "modalCol"):
+        info = one(modal.nodes(cls="infoCol"), "Bandai identity")
+        fields = [span.text() for span in info.nodes("span")]
+        alias = modal.attrs.get("id", "")
+        if (len(fields) >= 2 and NUMBER.fullmatch(fields[0]) and fields[1]
+                and re.fullmatch(re.escape(fields[0]) + r"(?:_[a-z]\d+)?", alias)):
+            yield alias, fields[0], fields[1]
+
+
 def normalize_page(capture, payload):
     provider, url = capture["provider"], capture["sourceURL"]
     parsed_url = source_url(provider, url)

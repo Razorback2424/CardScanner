@@ -25,21 +25,64 @@ struct CardShareIdentity: Equatable, Sendable {
     let number: CardShareNumber?
     let badge: Badge?
     let rarity: CardShareRarity?
+    let artworkTreatment: String?
     let finish: String?
     let edition: String?
 
     init(name: String, setCode: String?, setName: String?, number: CardShareNumber?, badge: Badge?,
-         rarity: CardShareRarity? = nil, finish: String? = nil, edition: String? = nil) {
+         rarity: CardShareRarity? = nil, artworkTreatment: String? = nil,
+         finish: String? = nil, edition: String? = nil) {
         self.name = name
         self.setCode = setCode?.trimmingCharacters(in: .whitespaces).nilIfEmpty
         self.setName = setName?.trimmingCharacters(in: .whitespaces).nilIfEmpty
         self.number = number
         self.badge = badge
         self.rarity = rarity
+        self.artworkTreatment = artworkTreatment
         let badgeFinish: String?
         if let badge, case let .finish(label) = badge { badgeFinish = label } else { badgeFinish = nil }
         self.finish = (finish ?? badgeFinish)?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
         self.edition = edition?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
+    }
+
+    /// The full printed number can already carry its set code.
+    var designationSetCode: String? {
+        guard let setCode, let primary = number?.primary else { return setCode }
+        let code = Self.normalizedCode(setCode)
+        guard code.contains(where: \.isLetter) else { return setCode }
+        let parts = primary.uppercased().split(separator: "-")
+        var prefix = ""
+        for part in parts {
+            prefix += part
+            if prefix == code { return nil }
+            // Some Yu-Gi-Oh! codes end in a language code joined to digits.
+            if let last = code.last, last.isLetter, prefix.hasPrefix(code),
+               let next = prefix.dropFirst(code.count).first, next.isNumber { return nil }
+        }
+        return setCode
+    }
+
+    var displaySetName: String? {
+        guard let setName, let setCode else { return setName }
+        let code = Self.normalizedCode(setCode)
+        if Self.normalizedCode(setName) == code { return nil }
+        for (separator, closing) in [(" · ", ""), (" [", "]"), (" (", ")")] {
+            guard closing.isEmpty || setName.hasSuffix(closing),
+                  let range = setName.range(of: separator, options: .backwards) else { continue }
+            let suffix = setName[range.upperBound...].dropLast(closing.count)
+            if Self.normalizedCode(String(suffix)) == code {
+                return String(setName[..<range.lowerBound]).nilIfEmpty
+            }
+        }
+        return setName
+    }
+
+    private static func normalizedCode(_ code: String) -> String {
+        code.trimmingCharacters(in: .whitespaces).uppercased().replacingOccurrences(of: "-", with: "")
+    }
+
+    var shareRarityLabel: String? {
+        [rarity?.label, artworkTreatment].compactMap { $0 }.joined(separator: " · ").nilIfEmpty
     }
 
     /// Edition and finish are independent facts. Older rows sometimes carry
@@ -66,7 +109,8 @@ struct CardShareIdentity: Equatable, Sendable {
     /// grade stays: it describes the slab, not the printed finish.
     func replacingFinish(_ finish: String?) -> CardShareIdentity {
         CardShareIdentity(name: name, setCode: setCode, setName: setName, number: number,
-                          badge: gradeBadge, rarity: rarity, finish: finish, edition: edition)
+                          badge: gradeBadge, rarity: rarity, artworkTreatment: artworkTreatment,
+                          finish: finish, edition: edition)
     }
 
     /// Standard finishes need no extra label. A known nonstandard finish is
@@ -421,13 +465,13 @@ enum CardShareSummary {
             return finishesText(identity: identity.replacingFinish(nil), finishes: finishes,
                                 now: now, calendar: calendar, locale: locale)
         }
-        let printed = [identity.setCode, identity.number?.text]
+        let printed = [identity.designationSetCode?.uppercased(), identity.number?.text]
             .compactMap { $0 }
             .joined(separator: " ")
-        let designation = [identity.setName, printed.nilIfEmpty]
+        let designation = [identity.displaySetName, printed.nilIfEmpty]
             .compactMap { $0 }
             .joined(separator: " ")
-        let firstLine = [identity.name, designation.nilIfEmpty, identity.rarity?.label,
+        let firstLine = [identity.name, designation.nilIfEmpty, identity.shareRarityLabel,
                          identity.gradeBadge?.text, identity.printingDetail]
             .compactMap { $0 }
             .joined(separator: " · ")
