@@ -1,6 +1,6 @@
 # Catalog reconciliation: agent runbook
 
-This is the step-by-step procedure for a coding agent continuing catalog reconciliation (Pokémon finish certification, Lorcana promo distributions, and later Yu-Gi-Oh). Read [the playbook](catalog-reconciliation-playbook.md) first for the method. This page covers how to apply it without making the catalog less accurate or less stable.
+This is the step-by-step procedure for a coding agent continuing catalog reconciliation (Pokémon finish certification, Lorcana promo distributions and Yu-Gi-Oh! correspondence). Read [the playbook](catalog-reconciliation-playbook.md) first for the method. This page covers how to apply it without making the catalog less accurate or less stable.
 
 The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/catalog_release_preflight.py` (size budgets) and `scripts/certify_pokemon_finish_coverage.py`, plus the Lorcana scripts it names.
 
@@ -53,6 +53,36 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
      For Lorcana, run the Lorcana test classes and `BrowseFeatureTests`.
    - Run the release preflight if a signed payload changed.
 9. **Commit one cause per commit,** with the before/after numbers in the message. Update the PR description, saying what closed and what stays open.
+
+## Yu-Gi-Oh!
+
+**How "incomplete" works:**
+- `build_yugioh_catalog.py` marks a printed code incomplete when its TCGplayer products and its YGOPRODeck `card_sets` rows do not correspond exactly.
+- The reasons go to a `<report>.ledger.json` sidecar, never into the seed.
+- An incomplete code **only withholds automatic scan selection**. Every printing can still be chosen explicitly.
+- Automatic selection also needs a reviewed Konami release inventory (`scripts/yugioh_printing_inventories.json`). So clearing correspondence makes the ledger honest but does not make scanning faster by itself.
+- Do not show "Partial catalog" for incompleteness. Browse marks a set partial only when one of its own coded rows cannot be added.
+
+**Pass loop:**
+1. Capture onto the SSD by running the builder without `--offline` into a fresh `--cache-dir`. It takes about 40 minutes for 660 groups.
+2. Replay with `--offline` and pass `--previous-seed TradingCardScanner/YuGiOhCatalogSeed/catalog.json`.
+3. Compare ledgers with `catalog_exceptions.py diff`.
+4. Confirm the candidate changed only what the rule intended: compare printing IDs and fields against the previous build, check that `parentRegressions` is empty, and check that `autoEligibleCodes` is unchanged unless you meant to change it.
+5. Copy the candidate over the bundled seed.
+6. Run every `YuGiOh*Tests` class and `BrowseFeatureTests`.
+
+**Release-name aliases (2026-11-19).**
+- Command: `python3 scripts/reconcile_yugioh_release_names.py <ledger> --refusals <file> [--write --reviewed-at YYYY-MM-DD]`.
+- It proposes `setNameAliases` per group and code prefix when the printed code and the card agree on exactly one YGOPRODeck set name.
+- The decision and its gates are in [`research/yugioh-catalog/release-name-aliases.md`](research/yugioh-catalog/release-name-aliases.md).
+- Result: open rows went from 24,204 to 8,671, and incomplete codes from 12,331 to 4,384, with 0 opened. Only the `correspondence` field changed, on 9,520 rows.
+- Before writing, read every proposal sorted by name similarity, and review the refusals.
+
+**Next Yu-Gi-Oh targets:**
+1. **Prismatic rarity taxonomy for RA01, RA03, RA04 and RA05** (about 600 products). Add rules shaped like the existing reviewed `ra02-prismatic-taxonomy-v1`, each pinned to its group's `expectedProductsSHA256`.
+2. **Common vs Short Print** (328) and **Duel Terminal "Technology Common"** (137). First research whether collectors treat these as the same physical rarity; Short Print is a print-ratio label.
+3. **The 82 refused alias scopes,** in `refusals-1.json` on the SSD.
+4. **Reviewed Konami release inventories for more releases.** This is the only way to make more codes auto-resolve on scan.
 
 ## Mistakes already made (do not repeat)
 

@@ -22,6 +22,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from yugioh_edition_galleries import inventory_hash
 from yugioh_official_inventory import RULE as FAMILY_RULE, extract as extract_inventory, extract_release_calendar, norm
+import catalog_exceptions
 LANES = {"1st Edition": "yugioh1stEdition", "Unlimited": "yugiohUnlimited", "Limited": "yugiohLimited"}
 RARITIES = set("UR SR SCR SE UTR ULR PUR PCR PSR QCSR QCR GR STR CR R C SP SSP MSR ESR GSR PGR".split())
 # Exact numbered releases from the Konami redemption program.
@@ -93,6 +94,22 @@ def corresponding_rarity(gid, code, rarity):
         if gid == rule['groupID'] and code.startswith(rule['codePrefix']):
             return rule['rarities'].get(rarity, rarity)
     return rarity
+
+def release_names(gid, group_name, code, rules=None):
+    """Normalized secondary set names that name this marketplace release.
+
+    The group's own name always counts. A reviewed alias adds one more name, but
+    only for the exact group ID and name it was reviewed against and only for its
+    reviewed code prefixes, so a renamed group or an unrelated code falls back to
+    the exact-name rule. Aliases say which release a group is; they never grant
+    rarity, edition or artwork authority.
+    """
+    names = {norm(group_name)}
+    for alias in (CORRESPONDENCE_RULES if rules is None else rules).get('setNameAliases', []):
+        if (alias['groupID'] == gid and alias['groupName'] == group_name
+                and any(code.startswith(prefix) for prefix in alias['codePrefixes'])):
+            names.add(norm(alias['setName']))
+    return names
 
 def stable(namespace, material):
     return str(uuid.UUID(bytes=hashlib.md5((namespace + material).encode()).digest(), version=3))
@@ -441,7 +458,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
             # equal rarity counts are never evidence of correspondence.
             source_rows = {(card_id, set_name, source_rarity) for card_id, set_name, source_rarity in entries[code]}
             exact = {row for row in source_rows if row[0] == cid
-                     and norm(row[1]) == norm(group["name"]) and norm(row[2]) == norm(
+                     and norm(row[1]) in release_names(gid, group["name"], code) and norm(row[2]) == norm(
                          corresponding_rarity(gid, code, physical_rarity or rarity)
                          if taxonomy_scopes is None or gid in taxonomy_scopes else (physical_rarity or rarity))}
             mapped = review.get("sourcePrintings") if review else None
@@ -587,6 +604,34 @@ def populated_released_groups(seed, previous):
             released.append({"groupID": group["g"], "code": group["a"], "providerDate": str(release_day),
                              "candidatePrintings": count})
     return released
+
+
+def exceptions_ledger(seed, incomplete, cards):
+    """One reason-coded ledger row per (incomplete code, reason); the seed keeps only the codes.
+
+    Evidence lists the code's marketplace rows and its YGOPRODeck source rows so a
+    reconciliation pass can see why the two sides do not correspond.
+    """
+    source = collections.defaultdict(list)
+    for card in cards:
+        for entry in card.get("card_sets", []):
+            source[entry["set_code"]].append({"cardID": card["id"], "setName": entry["set_name"], "rarity": entry["set_rarity"]})
+    groups = {group["g"]: group["n"] for group in seed["sets"]}
+    family = collections.defaultdict(list)
+    for printing in all_printings(seed):
+        if printing["c"]:
+            family[printing["c"]].append(printing)
+    rows = []
+    for code in sorted(incomplete):
+        evidence = {
+            "products": [{"productID": x.get("p"), "groupID": x["g"], "group": groups.get(x["g"], ""), "rarity": x["r"],
+                          "name": x.get("pn", ""), "cardID": seed["cards"][x["k"]]["sourceID"]}
+                         for x in sorted(family[code], key=lambda x: (x["g"], x.get("p") or 0))],
+            "sourceRows": sorted(source.get(code, []), key=lambda x: (x["cardID"], x["setName"], x["rarity"])),
+        }
+        for reason in sorted(incomplete[code]):
+            rows.append(catalog_exceptions.row("yugioh", code.split("-", 1)[0], code, reason, "", evidence))
+    return rows
 
 
 def all_printings(seed):
@@ -870,9 +915,14 @@ def main():
     report += "\n## Source provenance\n\nEach input records URL, cache timestamp, provider timestamp when supplied, and SHA-256.\n\n```json\n" + json.dumps(provenance, indent=2) + "\n```\n"
     # No output changes until every input and invariant passed.
     validate_output(seed, strict=True)
+    ledger = exceptions_ledger(seed, incomplete, cards)
     for path, data in [(args.out, packed(seed)), (args.report, report.encode()),
                        (args.report.with_suffix('.exclusions.json'), packed(excluded)),
                        (args.report.with_suffix('.coverage.json'), packed(coverage))]:
+        if path == args.report:
+            # The reason-coded sidecar stays out of the seed so the app payload does not grow.
+            catalog_exceptions.write_ledger(args.report.with_suffix('.ledger.json'), ledger,
+                source={"generation": seed["generation"], "capturedAt": seed["capturedAt"]})
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix(path.suffix + ".tmp")
         temporary.write_bytes(data)
