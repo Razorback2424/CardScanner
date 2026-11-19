@@ -15,5 +15,6828 @@
         "Prismatic Ultimate Rare": "Ultimate Rare"
       }
     }
+  ],
+  "setNameAliases": [
+    {
+      "id": "release-name-126",
+      "groupID": 126,
+      "groupName": "2003 Collectors Tin",
+      "setName": "Collectible Tins 2003",
+      "codePrefixes": [
+        "BPT-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "BPT-007",
+          "BPT-008",
+          "BPT-009"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-127",
+      "groupID": 127,
+      "groupName": "2004 Collectors Tin",
+      "setName": "Collectible Tins 2004",
+      "codePrefixes": [
+        "CT1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "CT1-EN001",
+          "CT1-EN002",
+          "CT1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-128",
+      "groupID": 128,
+      "groupName": "2005 Collectors Tin",
+      "setName": "Collectible Tins 2005",
+      "codePrefixes": [
+        "CT2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "CT2-EN001",
+          "CT2-EN002",
+          "CT2-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-134",
+      "groupID": 134,
+      "groupName": "2010 Duelist Pack Collection Tin",
+      "setName": "Duelist Pack Collection Tin 2010",
+      "codePrefixes": [
+        "DPCT-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 10,
+        "codes": 10,
+        "exampleCodes": [
+          "DPCT-EN004",
+          "DPCT-ENY01",
+          "DPCT-ENY02"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-136",
+      "groupID": 136,
+      "groupName": "2011 Duelist Pack Tin",
+      "setName": "Duelist Pack Collection Tin 2011",
+      "codePrefixes": [
+        "DPC5-",
+        "DPCT-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "DPC5-EN001",
+          "DPC5-EN002",
+          "DPC5-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-137",
+      "groupID": 137,
+      "groupName": "2012 Premium Collection Tin",
+      "setName": "Premium Collection Tin",
+      "codePrefixes": [
+        "PRC1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 25,
+        "codes": 25,
+        "exampleCodes": [
+          "PRC1-EN001",
+          "PRC1-EN002",
+          "PRC1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-139",
+      "groupID": 139,
+      "groupName": "5D's 2008 Starter Deck",
+      "setName": "Starter Deck: Yu-Gi-Oh! 5D's",
+      "codePrefixes": [
+        "5DS1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 46,
+        "codes": 43,
+        "exampleCodes": [
+          "5DS1-EN001",
+          "5DS1-EN002",
+          "5DS1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-140",
+      "groupID": 140,
+      "groupName": "5D's Starter Deck 2009",
+      "setName": "Starter Deck: Yu-Gi-Oh! 5D's 2009",
+      "codePrefixes": [
+        "5DS2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 43,
+        "codes": 43,
+        "exampleCodes": [
+          "5DS2-EN001",
+          "5DS2-EN002",
+          "5DS2-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-144",
+      "groupID": 144,
+      "groupName": "Ancient Prophecy",
+      "setName": "Ancient Prophecy Sneak Peek Participation Card",
+      "codePrefixes": [
+        "ANPR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "ANPR-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-145",
+      "groupID": 145,
+      "groupName": "Ancient Prophecy SE",
+      "setName": "Ancient Prophecy: Special Edition",
+      "codePrefixes": [
+        "ANPR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "ANPR-ENSE1",
+          "ANPR-ENSE2"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-147",
+      "groupID": 147,
+      "groupName": "Bonds Beyond Time Movie Pack",
+      "setName": "Yu-Gi-Oh! 3D Bonds Beyond Time Movie Pack",
+      "codePrefixes": [
+        "YMP1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 9,
+        "codes": 9,
+        "exampleCodes": [
+          "YMP1-EN001",
+          "YMP1-EN002",
+          "YMP1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-149",
+      "groupID": 149,
+      "groupName": "Champion Pack 1",
+      "setName": "Champion Pack: Game One",
+      "codePrefixes": [
+        "CP01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "CP01-EN001",
+          "CP01-EN002",
+          "CP01-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-150",
+      "groupID": 150,
+      "groupName": "Champion Pack 2",
+      "setName": "Champion Pack: Game Two",
+      "codePrefixes": [
+        "CP02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "CP02-EN001",
+          "CP02-EN002",
+          "CP02-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-151",
+      "groupID": 151,
+      "groupName": "Champion Pack 3",
+      "setName": "Champion Pack: Game Three",
+      "codePrefixes": [
+        "CP03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "CP03-EN001",
+          "CP03-EN002",
+          "CP03-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-152",
+      "groupID": 152,
+      "groupName": "Champion Pack 4",
+      "setName": "Champion Pack: Game Four",
+      "codePrefixes": [
+        "CP04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "CP04-EN001",
+          "CP04-EN002",
+          "CP04-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-153",
+      "groupID": 153,
+      "groupName": "Champion Pack 5",
+      "setName": "Champion Pack: Game Five",
+      "codePrefixes": [
+        "CP05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "CP05-EN001",
+          "CP05-EN002",
+          "CP05-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-154",
+      "groupID": 154,
+      "groupName": "Champion Pack 6",
+      "setName": "Champion Pack: Game Six",
+      "codePrefixes": [
+        "CP06-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "CP06-EN001",
+          "CP06-EN002",
+          "CP06-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-155",
+      "groupID": 155,
+      "groupName": "Champion Pack 7",
+      "setName": "Champion Pack: Game Seven",
+      "codePrefixes": [
+        "CP07-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "CP07-EN001",
+          "CP07-EN002",
+          "CP07-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-156",
+      "groupID": 156,
+      "groupName": "Champion Pack 8",
+      "setName": "Champion Pack: Game Eight",
+      "codePrefixes": [
+        "CP08-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "CP08-EN001",
+          "CP08-EN002",
+          "CP08-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-157",
+      "groupID": 157,
+      "groupName": "Crimson Crisis",
+      "setName": "Crimson Crisis: Special Edition",
+      "codePrefixes": [
+        "CRMS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "CRMS-ENSE1",
+          "CRMS-ENSE2"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-175",
+      "groupID": 175,
+      "groupName": "Dawn of Destiny Xbox",
+      "setName": "Yu-Gi-Oh! The Dawn of Destiny promotional cards",
+      "codePrefixes": [
+        "DOD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 5,
+        "codes": 5,
+        "exampleCodes": [
+          "DOD-002",
+          "DOD-003",
+          "DOD-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-176",
+      "groupID": 176,
+      "groupName": "Destiny Board Traveler Promo",
+      "setName": "Yu-Gi-Oh! Destiny Board Traveler promotional cards",
+      "codePrefixes": [
+        "DBT-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "DBT-EN001",
+          "DBT-EN002",
+          "DBT-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-178",
+      "groupID": 178,
+      "groupName": "Duel Master's Guide",
+      "setName": "Duel Master's Guide promotional cards",
+      "codePrefixes": [
+        "DMG-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DMG-001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-13-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League 13 participation cards",
+      "codePrefixes": [
+        "DL13-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 80,
+        "codes": 20,
+        "exampleCodes": [
+          "DL13-EN001",
+          "DL13-EN002",
+          "DL13-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-14-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League 14 participation cards",
+      "codePrefixes": [
+        "DL14-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 80,
+        "codes": 20,
+        "exampleCodes": [
+          "DL14-EN001",
+          "DL14-EN002",
+          "DL14-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-15-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League 15 participation cards",
+      "codePrefixes": [
+        "DL15-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 80,
+        "codes": 20,
+        "exampleCodes": [
+          "DL15-EN001",
+          "DL15-EN002",
+          "DL15-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-16-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League 16 participation cards",
+      "codePrefixes": [
+        "DL16-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 80,
+        "codes": 20,
+        "exampleCodes": [
+          "DL16-EN001",
+          "DL16-EN002",
+          "DL16-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-17-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League 17 participation cards",
+      "codePrefixes": [
+        "DL17-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 80,
+        "codes": 20,
+        "exampleCodes": [
+          "DL17-EN001",
+          "DL17-EN002",
+          "DL17-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-18-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League 18 participation cards",
+      "codePrefixes": [
+        "DL18-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 80,
+        "codes": 20,
+        "exampleCodes": [
+          "DL18-EN001",
+          "DL18-EN002",
+          "DL18-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-2-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League 2 participation cards",
+      "codePrefixes": [
+        "DL11-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 80,
+        "codes": 20,
+        "exampleCodes": [
+          "DL11-EN001",
+          "DL11-EN002",
+          "DL11-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-2010-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League 2010 participation cards",
+      "codePrefixes": [
+        "DL09-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 80,
+        "codes": 20,
+        "exampleCodes": [
+          "DL09-EN001",
+          "DL09-EN002",
+          "DL09-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-1-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 1 participation cards",
+      "codePrefixes": [
+        "DL1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "DL1-001",
+          "DL1-002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-10-participation-card",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 10 participation card",
+      "codePrefixes": [
+        "DL10-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DL10-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-2-participation-cards",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 2 participation cards",
+      "codePrefixes": [
+        "DL2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "DL2-001",
+          "DL2-002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-3-participation-card",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 3 participation card",
+      "codePrefixes": [
+        "DL3-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DL3-001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-4-participation-card",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 4 participation card",
+      "codePrefixes": [
+        "DL4-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DL4-001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-5-participation-card",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 5 participation card",
+      "codePrefixes": [
+        "DL5-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DL5-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-6-participation-card",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 6 participation card",
+      "codePrefixes": [
+        "DL6-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DL6-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-7-participation-card",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 7 participation card",
+      "codePrefixes": [
+        "DL7-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DL7-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-8-participation-card",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 8 participation card",
+      "codePrefixes": [
+        "DL8-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DL8-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-182-duelist-league-series-9-participation-card",
+      "groupID": 182,
+      "groupName": "Duelist League Promo",
+      "setName": "Duelist League Series 9 participation card",
+      "codePrefixes": [
+        "DL9-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DL9-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-183",
+      "groupID": 183,
+      "groupName": "Duelist of the Roses",
+      "setName": "Yu-Gi-Oh! The Duelists of the Roses promotional cards",
+      "codePrefixes": [
+        "DOR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "DOR-001",
+          "DOR-002",
+          "DOR-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-185",
+      "groupID": 185,
+      "groupName": "Duelist Pack 10: Yusei 3",
+      "setName": "Duelist Pack: Yusei 3",
+      "codePrefixes": [
+        "DP10-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "DP10-EN001",
+          "DP10-EN002",
+          "DP10-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-186",
+      "groupID": 186,
+      "groupName": "Duelist Pack 11: Crow",
+      "setName": "Duelist Pack: Crow",
+      "codePrefixes": [
+        "DP11-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "DP11-EN001",
+          "DP11-EN002",
+          "DP11-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-188",
+      "groupID": 188,
+      "groupName": "Duelist Pack 8: Yusei Fudo",
+      "setName": "Duelist Pack: Yusei",
+      "codePrefixes": [
+        "DP08-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "DP08-EN001",
+          "DP08-EN002",
+          "DP08-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-189",
+      "groupID": 189,
+      "groupName": "Duelist Pack 9: Yusei 2",
+      "setName": "Duelist Pack: Yusei 2",
+      "codePrefixes": [
+        "DP09-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "DP09-EN001",
+          "DP09-EN002",
+          "DP09-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-190",
+      "groupID": 190,
+      "groupName": "Duelist Pack 5: Aster Phoenix",
+      "setName": "Duelist Pack: Aster Phoenix",
+      "codePrefixes": [
+        "DP05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "DP05-EN001",
+          "DP05-EN002",
+          "DP05-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-191",
+      "groupID": 191,
+      "groupName": "Duelist Pack 2: Chazz Princeton",
+      "setName": "Duelist Pack: Chazz Princeton",
+      "codePrefixes": [
+        "DP2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "DP2-EN001",
+          "DP2-EN002",
+          "DP2-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-192",
+      "groupID": 192,
+      "groupName": "Duelist Pack Collection Tin",
+      "setName": "Duelist Pack Collection Tin 2009",
+      "codePrefixes": [
+        "RGBT-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "RGBT-ENPP1",
+          "RGBT-ENPP2",
+          "RGBT-ENPP3"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-193",
+      "groupID": 193,
+      "groupName": "Duelist Pack 1: Jaden Yuki",
+      "setName": "Duelist Pack: Jaden Yuki",
+      "codePrefixes": [
+        "DP1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "DP1-EN001",
+          "DP1-EN002",
+          "DP1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-194",
+      "groupID": 194,
+      "groupName": "Duelist Pack 3: Jaden Yuki 2",
+      "setName": "Duelist Pack: Jaden Yuki 2",
+      "codePrefixes": [
+        "DP03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "DP03-EN001",
+          "DP03-EN002",
+          "DP03-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-196",
+      "groupID": 196,
+      "groupName": "Duelist Pack 4: Zane Truesdale",
+      "setName": "Duelist Pack: Zane Truesdale",
+      "codePrefixes": [
+        "DP04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "DP04-EN001",
+          "DP04-EN002",
+          "DP04-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-200-elemental-energy-special-edition",
+      "groupID": 200,
+      "groupName": "Elemental Energy",
+      "setName": "Elemental Energy: Special Edition",
+      "codePrefixes": [
+        "EEN-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "EEN-ENSE1",
+          "EEN-ENSE2",
+          "EEN-ENSE3"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-200-yu-gi-oh-gx-special-edition",
+      "groupID": 200,
+      "groupName": "Elemental Energy",
+      "setName": "Yu-Gi-Oh! GX Special Edition",
+      "codePrefixes": [
+        "GSE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "GSE-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-202",
+      "groupID": 202,
+      "groupName": "Eternal Duelist Soul",
+      "setName": "Yu-Gi-Oh! The Eternal Duelist Soul promotional cards",
+      "codePrefixes": [
+        "EDS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "EDS-001",
+          "EDS-002",
+          "EDS-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-203",
+      "groupID": 203,
+      "groupName": "Extreme Victory",
+      "setName": "Extreme Victory Sneak Peek Participation Card",
+      "codePrefixes": [
+        "EXVC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "EXVC-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-208",
+      "groupID": 208,
+      "groupName": "Force of the Breaker",
+      "setName": "Force of the Breaker: Special Edition",
+      "codePrefixes": [
+        "FOTB-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "FOTB-ENSE1",
+          "FOTB-ENSE2"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-211",
+      "groupID": 211,
+      "groupName": "Gladiator's Assault SE",
+      "setName": "Gladiator's Assault: Special Edition",
+      "codePrefixes": [
+        "GLAS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "GLAS-ENSE1",
+          "GLAS-ENSE2"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-214",
+      "groupID": 214,
+      "groupName": "Gold Series 2008",
+      "setName": "Gold Series",
+      "codePrefixes": [
+        "GLD1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 45,
+        "codes": 45,
+        "exampleCodes": [
+          "GLD1-EN001",
+          "GLD1-EN002",
+          "GLD1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-218",
+      "groupID": 218,
+      "groupName": "GX Duel Academy GBA Promo",
+      "setName": "Yu-Gi-Oh! GX Duel Academy promotional cards",
+      "codePrefixes": [
+        "GX1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "GX1-EN001",
+          "GX1-EN002",
+          "GX1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-220",
+      "groupID": 220,
+      "groupName": "GX Spirit Caller Promo",
+      "setName": "Yu-Gi-Oh! GX Spirit Caller promotional cards",
+      "codePrefixes": [
+        "GX03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "GX03-EN001",
+          "GX03-EN002",
+          "GX03-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-222",
+      "groupID": 222,
+      "groupName": "GX Tag Force Promo",
+      "setName": "Yu-Gi-Oh! GX Tag Force promotional cards",
+      "codePrefixes": [
+        "GX02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "GX02-EN001",
+          "GX02-EN002",
+          "GX02-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-223",
+      "groupID": 223,
+      "groupName": "GX Ultimate Beginner's Pack 1",
+      "setName": "Yu-Gi-Oh! GX Ultimate Beginner's Pack",
+      "codePrefixes": [
+        "UBP1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 5,
+        "codes": 5,
+        "exampleCodes": [
+          "UBP1-EN001",
+          "UBP1-EN002",
+          "UBP1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-227-hidden-arsenal-4-trishula-s-triumph",
+      "groupID": 227,
+      "groupName": "Hidden Arsenal 4",
+      "setName": "Hidden Arsenal 4: Trishula's Triumph",
+      "codePrefixes": [
+        "HA04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 60,
+        "codes": 60,
+        "exampleCodes": [
+          "HA04-EN001",
+          "HA04-EN002",
+          "HA04-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-227-hidden-arsenal-special-edition",
+      "groupID": 227,
+      "groupName": "Hidden Arsenal 4",
+      "setName": "Hidden Arsenal: Special Edition",
+      "codePrefixes": [
+        "HASE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "HASE-EN001",
+          "HASE-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-228",
+      "groupID": 228,
+      "groupName": "Hidden Arsenal 5: Steelswarm Invasion",
+      "setName": "Hidden Arsenal 5: Steelswarm Invasion: Special Edition",
+      "codePrefixes": [
+        "H5SE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "H5SE-EN001",
+          "H5SE-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-237",
+      "groupID": 237,
+      "groupName": "Invasion of Chaos",
+      "setName": "Invasion of Chaos: Special Edition",
+      "codePrefixes": [
+        "IOC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "IOC-SE1",
+          "IOC-SE2",
+          "IOC-SE3"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-238",
+      "groupID": 238,
+      "groupName": "Duelist Pack 6: Jaden Yuki 3",
+      "setName": "Duelist Pack: Jaden Yuki 3",
+      "codePrefixes": [
+        "DP06-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 25,
+        "codes": 25,
+        "exampleCodes": [
+          "DP06-EN001",
+          "DP06-EN002",
+          "DP06-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-239",
+      "groupID": 239,
+      "groupName": "Duelist Pack 7: Jesse Anderson",
+      "setName": "Duelist Pack: Jesse Anderson",
+      "codePrefixes": [
+        "DP07-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 25,
+        "codes": 25,
+        "exampleCodes": [
+          "DP07-EN001",
+          "DP07-EN002",
+          "DP07-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-245-legendary-collection-2-the-duel-academy-years",
+      "groupID": 245,
+      "groupName": "Legendary Collection 2",
+      "setName": "Legendary Collection 2: The Duel Academy Years",
+      "codePrefixes": [
+        "LC02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 13,
+        "codes": 13,
+        "exampleCodes": [
+          "LC02-EN001",
+          "LC02-EN002",
+          "LC02-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-245-legendary-collection-2-the-duel-academy-years-mega-pack",
+      "groupID": 245,
+      "groupName": "Legendary Collection 2",
+      "setName": "Legendary Collection 2: The Duel Academy Years Mega Pack",
+      "codePrefixes": [
+        "LCGX-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 266,
+        "codes": 266,
+        "exampleCodes": [
+          "LCGX-EN001",
+          "LCGX-EN002",
+          "LCGX-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-248",
+      "groupID": 248,
+      "groupName": "The Lost Millennium",
+      "setName": "The Lost Millennium: Special Edition",
+      "codePrefixes": [
+        "TLM-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "TLM-ENSE1",
+          "TLM-ENSE2",
+          "TLM-ENSE3"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-253",
+      "groupID": 253,
+      "groupName": "McDonald's Promo",
+      "setName": "McDonald's Promotional Cards",
+      "codePrefixes": [
+        "MP1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 15,
+        "codes": 15,
+        "exampleCodes": [
+          "MP1-001",
+          "MP1-002",
+          "MP1-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-254",
+      "groupID": 254,
+      "groupName": "McDonald's Promo Series 2",
+      "setName": "McDonald's Promotional Cards 2",
+      "codePrefixes": [
+        "MDP2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "MDP2-EN001",
+          "MDP2-EN002",
+          "MDP2-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-256",
+      "groupID": 256,
+      "groupName": "Nintendo DS Nightmare of Troubadour",
+      "setName": "Yu-Gi-Oh! Nightmare Troubadour promotional cards",
+      "codePrefixes": [
+        "NTR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "NTR-EN001",
+          "NTR-EN002",
+          "NTR-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-261",
+      "groupID": 261,
+      "groupName": "Photon Shockwave",
+      "setName": "Photon Shockwave Sneak Peek Participation Card",
+      "codePrefixes": [
+        "PHSW-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "PHSW-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-262",
+      "groupID": 262,
+      "groupName": "Power of Chaos: Joey the Passion",
+      "setName": "Yu-Gi-Oh! Power of Chaos: Joey the Passion promotional cards",
+      "codePrefixes": [
+        "PCJ-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "PCJ-EN001",
+          "PCJ-EN002",
+          "PCJ-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-266",
+      "groupID": 266,
+      "groupName": "Premium Pack 1",
+      "setName": "Premium Pack (TCG)",
+      "codePrefixes": [
+        "PP01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 22,
+        "codes": 15,
+        "exampleCodes": [
+          "PP01-EN001",
+          "PP01-EN002",
+          "PP01-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-267",
+      "groupID": 267,
+      "groupName": "Premium Pack 2",
+      "setName": "Premium Pack 2 (TCG)",
+      "codePrefixes": [
+        "PP02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 20,
+        "exampleCodes": [
+          "PP02-EN001",
+          "PP02-EN002",
+          "PP02-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-268",
+      "groupID": 268,
+      "groupName": "PS2 Yugioh GX The Beginning of Destiny",
+      "setName": "Yu-Gi-Oh! GX Tag Force Evolution promotional cards",
+      "codePrefixes": [
+        "GX05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "GX05-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-269",
+      "groupID": 269,
+      "groupName": "Ra Yellow Mega Pack",
+      "setName": "Ra Yellow Mega Pack: Special Edition",
+      "codePrefixes": [
+        "RYMP-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "RYMP-ENSE1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-270",
+      "groupID": 270,
+      "groupName": "Raging Battle",
+      "setName": "Raging Battle Sneak Peek Participation Card",
+      "codePrefixes": [
+        "RGBT-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "RGBT-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-271-duel-disk-yusei-version",
+      "groupID": 271,
+      "groupName": "Raging Battle SE",
+      "setName": "Duel Disk - Yusei Version",
+      "codePrefixes": [
+        "DDY1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DDY1-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-271-raging-battle-special-edition",
+      "groupID": 271,
+      "groupName": "Raging Battle SE",
+      "setName": "Raging Battle: Special Edition",
+      "codePrefixes": [
+        "RGBT-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "RGBT-ENSE1",
+          "RGBT-ENSE2"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-272",
+      "groupID": 272,
+      "groupName": "Reshef of Destruction",
+      "setName": "Yu-Gi-Oh! Reshef of Destruction promotional cards",
+      "codePrefixes": [
+        "ROD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "ROD-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-277",
+      "groupID": 277,
+      "groupName": "Shadow of Infinity",
+      "setName": "Shadow of Infinity: Special Edition",
+      "codePrefixes": [
+        "SOI-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 8,
+        "codes": 4,
+        "exampleCodes": [
+          "SOI-ENSE1",
+          "SOI-ENSE2",
+          "SOI-ENSE3"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-284-force-of-the-breaker-sneak-peek-participation-card",
+      "groupID": 284,
+      "groupName": "Sneak Preview Series 3",
+      "setName": "Force of the Breaker Sneak Peek Participation Card",
+      "codePrefixes": [
+        "FOTB-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "FOTB-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-284-gladiator-s-assault-sneak-peek-participation-card",
+      "groupID": 284,
+      "groupName": "Sneak Preview Series 3",
+      "setName": "Gladiator's Assault Sneak Peek Participation Card",
+      "codePrefixes": [
+        "GLAS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "GLAS-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-284-strike-of-neos-sneak-peek-participation-card",
+      "groupID": 284,
+      "groupName": "Sneak Preview Series 3",
+      "setName": "Strike of Neos Sneak Peek Participation Card",
+      "codePrefixes": [
+        "STON-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "STON-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-284-tactical-evolution-sneak-peek-participation-card",
+      "groupID": 284,
+      "groupName": "Sneak Preview Series 3",
+      "setName": "Tactical Evolution Sneak Peek Participation Card",
+      "codePrefixes": [
+        "TAEV-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "TAEV-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-287",
+      "groupID": 287,
+      "groupName": "Stairway to the Destined Duel",
+      "setName": "Yu-Gi-Oh! Worldwide Edition: Stairway to the Destined Duel promotional cards",
+      "codePrefixes": [
+        "SDD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "SDD-001",
+          "SDD-002",
+          "SDD-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-291",
+      "groupID": 291,
+      "groupName": "Starter Deck 2006",
+      "setName": "Starter Deck 2006: Special Edition",
+      "codePrefixes": [
+        "YSD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YSD-ENS01"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-298",
+      "groupID": 298,
+      "groupName": "Starter Deck: Yugi",
+      "setName": "Summoned Skull Sample promotional card",
+      "codePrefixes": [
+        "SDY-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 1,
+        "exampleCodes": [
+          "SDY-004"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-304",
+      "groupID": 304,
+      "groupName": "Strike of Neos",
+      "setName": "Strike of Neos: Special Edition",
+      "codePrefixes": [
+        "STON-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "STON-ENSE1",
+          "STON-ENSE2"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-306",
+      "groupID": 306,
+      "groupName": "Structure Deck: Dinosaur's Rage",
+      "setName": "Structure Deck: Dinosaur's Rage Special Set",
+      "codePrefixes": [
+        "SD09-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "SD09-ENSS1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-312",
+      "groupID": 312,
+      "groupName": "Structure Deck: Rise of the Dragon Lords",
+      "setName": "Rise of the Dragon Lords Structure Deck",
+      "codePrefixes": [
+        "SDRL-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 37,
+        "codes": 37,
+        "exampleCodes": [
+          "SDRL-EN001",
+          "SDRL-EN002",
+          "SDRL-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-316",
+      "groupID": 316,
+      "groupName": "Structure Deck: Dragons Collide",
+      "setName": "Dragons Collide Structure Deck",
+      "codePrefixes": [
+        "SDDC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 40,
+        "codes": 40,
+        "exampleCodes": [
+          "SDDC-EN001",
+          "SDDC-EN002",
+          "SDDC-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-317",
+      "groupID": 317,
+      "groupName": "Structure Deck: Dragunity Legion",
+      "setName": "Dragunity Legion Structure Deck",
+      "codePrefixes": [
+        "SDDL-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 39,
+        "codes": 39,
+        "exampleCodes": [
+          "SDDL-EN001",
+          "SDDL-EN002",
+          "SDDL-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-318",
+      "groupID": 318,
+      "groupName": "Structure Deck: Gates of the Underworld",
+      "setName": "Gates of the Underworld Structure Deck",
+      "codePrefixes": [
+        "SDGU-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 39,
+        "codes": 39,
+        "exampleCodes": [
+          "SDGU-EN001",
+          "SDGU-EN002",
+          "SDGU-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-319",
+      "groupID": 319,
+      "groupName": "Structure Deck: Lost Sanctuary",
+      "setName": "Lost Sanctuary Structure Deck",
+      "codePrefixes": [
+        "SDLS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 38,
+        "codes": 38,
+        "exampleCodes": [
+          "SDLS-EN001",
+          "SDLS-EN002",
+          "SDLS-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-320",
+      "groupID": 320,
+      "groupName": "Structure Deck: Machina Mayhem",
+      "setName": "Machina Mayhem Structure Deck",
+      "codePrefixes": [
+        "SDMM-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 37,
+        "codes": 37,
+        "exampleCodes": [
+          "SDMM-EN001",
+          "SDMM-EN002",
+          "SDMM-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-321",
+      "groupID": 321,
+      "groupName": "Structure Deck: Marik",
+      "setName": "Structure Deck: Marik (TCG)",
+      "codePrefixes": [
+        "SDMA-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 38,
+        "codes": 38,
+        "exampleCodes": [
+          "SDMA-EN001",
+          "SDMA-EN002",
+          "SDMA-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-322",
+      "groupID": 322,
+      "groupName": "Structure Deck: The Dark Emperor",
+      "setName": "The Dark Emperor Structure Deck",
+      "codePrefixes": [
+        "SDDE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 36,
+        "codes": 36,
+        "exampleCodes": [
+          "SDDE-EN001",
+          "SDDE-EN002",
+          "SDDE-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-323",
+      "groupID": 323,
+      "groupName": "Structure Deck: Warriors' Strike",
+      "setName": "Warriors' Strike Structure Deck",
+      "codePrefixes": [
+        "SDWS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 38,
+        "codes": 38,
+        "exampleCodes": [
+          "SDWS-EN001",
+          "SDWS-EN002",
+          "SDWS-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-324",
+      "groupID": 324,
+      "groupName": "Structure Deck: Zombie World",
+      "setName": "Zombie World Structure Deck",
+      "codePrefixes": [
+        "SDZW-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 37,
+        "codes": 37,
+        "exampleCodes": [
+          "SDZW-EN001",
+          "SDZW-EN002",
+          "SDZW-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-329",
+      "groupID": 329,
+      "groupName": "The Falsebound Kingdom",
+      "setName": "Yu-Gi-Oh! The Falsebound Kingdom promotional cards",
+      "codePrefixes": [
+        "TFK-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "TFK-001",
+          "TFK-002",
+          "TFK-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-330",
+      "groupID": 330,
+      "groupName": "The Legend of Blue Eyes White Dragon",
+      "setName": "Legend of Blue Eyes White Dragon",
+      "codePrefixes": [
+        "LOB-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 127,
+        "codes": 126,
+        "exampleCodes": [
+          "LOB-000",
+          "LOB-001",
+          "LOB-002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-332",
+      "groupID": 332,
+      "groupName": "The Shining Darkness",
+      "setName": "The Shining Darkness Sneak Peek Participation Card",
+      "codePrefixes": [
+        "TSHD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "TSHD-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-333",
+      "groupID": 333,
+      "groupName": "Tournament Pack 1",
+      "setName": "Tournament Pack: 1st Season",
+      "codePrefixes": [
+        "TP1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "TP1-001",
+          "TP1-002",
+          "TP1-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-334",
+      "groupID": 334,
+      "groupName": "Tournament Pack 2",
+      "setName": "Tournament Pack: 2nd Season",
+      "codePrefixes": [
+        "TP2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 30,
+        "codes": 30,
+        "exampleCodes": [
+          "TP2-001",
+          "TP2-002",
+          "TP2-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-335",
+      "groupID": 335,
+      "groupName": "Tournament Pack 3",
+      "setName": "Tournament Pack: 3rd Season",
+      "codePrefixes": [
+        "TP3-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 20,
+        "codes": 20,
+        "exampleCodes": [
+          "TP3-001",
+          "TP3-002",
+          "TP3-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-341",
+      "groupID": 341,
+      "groupName": "Turbo Pack Booster One Pack",
+      "setName": "Turbo Pack: Booster One",
+      "codePrefixes": [
+        "TU01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 21,
+        "codes": 21,
+        "exampleCodes": [
+          "TU01-EN000",
+          "TU01-EN001",
+          "TU01-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-345",
+      "groupID": 345,
+      "groupName": "World Championship 2004: GBA Promo",
+      "setName": "Yu-Gi-Oh! World Championship Tournament 2004 promotional cards",
+      "codePrefixes": [
+        "WC4-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "WC4-001",
+          "WC4-002",
+          "WC4-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-346",
+      "groupID": 346,
+      "groupName": "World Championship 2005: 7 Trials to Glory",
+      "setName": "Yu-Gi-Oh! 7 Trials to Glory: World Championship Tournament 2005 promotional cards",
+      "codePrefixes": [
+        "WC5-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "WC5-EN001",
+          "WC5-EN002",
+          "WC5-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-347",
+      "groupID": 347,
+      "groupName": "World Championship 2006: Ultimate Masters",
+      "setName": "Yu-Gi-Oh! Ultimate Masters: World Championship Tournament 2006 promotional cards",
+      "codePrefixes": [
+        "WC6-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "WC6-EN001",
+          "WC6-EN002",
+          "WC6-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-348",
+      "groupID": 348,
+      "groupName": "World Championship 2007",
+      "setName": "Yu-Gi-Oh! World Championship 2007 promotional cards",
+      "codePrefixes": [
+        "WC07-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "WC07-EN001",
+          "WC07-EN002",
+          "WC07-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-349",
+      "groupID": 349,
+      "groupName": "World Championship 2008",
+      "setName": "Yu-Gi-Oh! World Championship 2008 promotional cards",
+      "codePrefixes": [
+        "WC08-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "WC08-EN001",
+          "WC08-EN002",
+          "WC08-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-351-yu-gi-oh-world-championship-2004-prize-cards",
+      "groupID": 351,
+      "groupName": "World Championship Series",
+      "setName": "Yu-Gi-Oh! World Championship 2004 prize cards",
+      "codePrefixes": [
+        "WCS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "WCS-EN403"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-351-yu-gi-oh-world-championship-2019-japanese-national-qualifiers-prize-cards",
+      "groupID": 351,
+      "groupName": "World Championship Series",
+      "setName": "Yu-Gi-Oh! World Championship 2019 Japanese National Qualifiers prize cards",
+      "codePrefixes": [
+        "2019-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "2019-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-352-yu-gi-oh-5d-s-volume-1-promotional-card",
+      "groupID": 352,
+      "groupName": "Yu-Gi-Oh! 5D's Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Volume 1 promotional card",
+      "codePrefixes": [
+        "YF01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YF01-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-352-yu-gi-oh-5d-s-volume-2-promotional-card",
+      "groupID": 352,
+      "groupName": "Yu-Gi-Oh! 5D's Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Volume 2 promotional card",
+      "codePrefixes": [
+        "YF02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YF02-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-352-yu-gi-oh-5d-s-volume-3-promotional-card",
+      "groupID": 352,
+      "groupName": "Yu-Gi-Oh! 5D's Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Volume 3 promotional card",
+      "codePrefixes": [
+        "YF03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YF03-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-352-yu-gi-oh-5d-s-volume-4-promotional-card",
+      "groupID": 352,
+      "groupName": "Yu-Gi-Oh! 5D's Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Volume 4 promotional card",
+      "codePrefixes": [
+        "YF04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YF04-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-352-yu-gi-oh-5d-s-volume-5-promotional-card",
+      "groupID": 352,
+      "groupName": "Yu-Gi-Oh! 5D's Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Volume 5 promotional card",
+      "codePrefixes": [
+        "YF05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YF05-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-352-yu-gi-oh-5d-s-volume-6-promotional-card",
+      "groupID": 352,
+      "groupName": "Yu-Gi-Oh! 5D's Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Volume 6 promotional card",
+      "codePrefixes": [
+        "YF06-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YF06-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-352-yu-gi-oh-5d-s-volume-7-promotional-card",
+      "groupID": 352,
+      "groupName": "Yu-Gi-Oh! 5D's Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Volume 7 promotional card",
+      "codePrefixes": [
+        "YF07-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YF07-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-352-yu-gi-oh-5d-s-volume-9-promotional-card",
+      "groupID": 352,
+      "groupName": "Yu-Gi-Oh! 5D's Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Volume 9 promotional card",
+      "codePrefixes": [
+        "YF09-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YF09-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-352-yu-gi-oh-5d-s-volume-8-promotional-card",
+      "groupID": 352,
+      "groupName": "Yu-Gi-Oh! 5D's Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's volume 8 promotional card",
+      "codePrefixes": [
+        "YF08-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YF08-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-353",
+      "groupID": 353,
+      "groupName": "Yu-Gi-Oh! 5D's Tag Force Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Tag Force 5 Promotional Cards",
+      "codePrefixes": [
+        "TF05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "TF05-EN001",
+          "TF05-EN002",
+          "TF05-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-356",
+      "groupID": 356,
+      "groupName": "Yu-Gi-Oh! GX Tag Force Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Tag Force 3 promotional cards",
+      "codePrefixes": [
+        "GX06-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "GX06-EN001",
+          "GX06-EN002",
+          "GX06-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-358-yu-gi-oh-r-volume-4-promotional-card",
+      "groupID": 358,
+      "groupName": "Yu-Gi-Oh! R Manga Promo",
+      "setName": "Yu-Gi-Oh! R Volume 4 promotional card",
+      "codePrefixes": [
+        "YR04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YR04-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-358-yu-gi-oh-r-volume-5-promotional-card",
+      "groupID": 358,
+      "groupName": "Yu-Gi-Oh! R Manga Promo",
+      "setName": "Yu-Gi-Oh! R Volume 5 promotional card",
+      "codePrefixes": [
+        "YR05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YR05-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-359",
+      "groupID": 359,
+      "groupName": "Yu-Gi-Oh! The Movie Promo Set",
+      "setName": "Movie Pack",
+      "codePrefixes": [
+        "MOV-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "MOV-EN001",
+          "MOV-EN002",
+          "MOV-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-572",
+      "groupID": 572,
+      "groupName": "2013 Zexal Collection Tin",
+      "setName": "Zexal Collection Tin",
+      "codePrefixes": [
+        "ZTIN-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 24,
+        "codes": 24,
+        "exampleCodes": [
+          "ZTIN-EN001",
+          "ZTIN-EN002",
+          "ZTIN-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-576",
+      "groupID": 576,
+      "groupName": "Cosmo Blazer",
+      "setName": "Cosmo Blazer Sneak Peek Participation Card",
+      "codePrefixes": [
+        "CBLZ-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "CBLZ-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-577",
+      "groupID": 577,
+      "groupName": "Cosmo Blazer SE",
+      "setName": "Cosmo Blazer: Special Edition",
+      "codePrefixes": [
+        "CBLZ-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "CBLZ-ENSE1",
+          "CBLZ-ENSE2"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-578",
+      "groupID": 578,
+      "groupName": "Galactic Overlord",
+      "setName": "Galactic Overlord Sneak Peek Participation Card",
+      "codePrefixes": [
+        "GAOV-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "GAOV-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-584",
+      "groupID": 584,
+      "groupName": "Legendary Collection 3: Yugi's World",
+      "setName": "Legendary Collection 3: Yugi's World Mega Pack",
+      "codePrefixes": [
+        "LCYW-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 306,
+        "codes": 306,
+        "exampleCodes": [
+          "LCYW-EN001",
+          "LCYW-EN002",
+          "LCYW-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-587",
+      "groupID": 587,
+      "groupName": "Return of the Duelist",
+      "setName": "Return of the Duelist Sneak Peek Participation Card",
+      "codePrefixes": [
+        "REDU-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "REDU-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-588",
+      "groupID": 588,
+      "groupName": "Return of the Duelist SE",
+      "setName": "Return of the Duelist: Special Edition",
+      "codePrefixes": [
+        "REDU-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "REDU-ENSE1",
+          "REDU-ENSE2"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-590",
+      "groupID": 590,
+      "groupName": "Structure Deck: Onslaught of the Fire Kings",
+      "setName": "Onslaught of the Fire Kings Structure Deck",
+      "codePrefixes": [
+        "SDOK-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 39,
+        "codes": 39,
+        "exampleCodes": [
+          "SDOK-EN001",
+          "SDOK-EN002",
+          "SDOK-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-591",
+      "groupID": 591,
+      "groupName": "Structure Deck: Realm of the Sea Emperor",
+      "setName": "Realm of the Sea Emperor Structure Deck",
+      "codePrefixes": [
+        "SDRE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 39,
+        "codes": 39,
+        "exampleCodes": [
+          "SDRE-EN001",
+          "SDRE-EN002",
+          "SDRE-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-592",
+      "groupID": 592,
+      "groupName": "Structure Deck: Samurai Warlords",
+      "setName": "Samurai Warlords Structure Deck",
+      "codePrefixes": [
+        "SDWA-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 41,
+        "codes": 41,
+        "exampleCodes": [
+          "SDWA-EN001",
+          "SDWA-EN002",
+          "SDWA-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-599-yu-gi-oh-gx-volume-1-promotional-card",
+      "groupID": 599,
+      "groupName": "Yu-Gi-Oh! GX Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Volume 1 promotional card",
+      "codePrefixes": [
+        "YG01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YG01-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-599-yu-gi-oh-gx-volume-2-promotional-card",
+      "groupID": 599,
+      "groupName": "Yu-Gi-Oh! GX Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Volume 2 promotional card",
+      "codePrefixes": [
+        "YG02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YG02-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-599-yu-gi-oh-gx-volume-3-promotional-card",
+      "groupID": 599,
+      "groupName": "Yu-Gi-Oh! GX Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Volume 3 promotional card",
+      "codePrefixes": [
+        "YG03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YG03-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-599-yu-gi-oh-gx-volume-5-promotional-card",
+      "groupID": 599,
+      "groupName": "Yu-Gi-Oh! GX Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Volume 5 promotional card",
+      "codePrefixes": [
+        "YG05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YG05-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-599-yu-gi-oh-gx-volume-6-promotional-card",
+      "groupID": 599,
+      "groupName": "Yu-Gi-Oh! GX Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Volume 6 promotional card",
+      "codePrefixes": [
+        "YG06-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YG06-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-599-yu-gi-oh-gx-volume-7-promotional-card",
+      "groupID": 599,
+      "groupName": "Yu-Gi-Oh! GX Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Volume 7 promotional card",
+      "codePrefixes": [
+        "YG07-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YG07-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-599-yu-gi-oh-gx-volume-8-promotional-card",
+      "groupID": 599,
+      "groupName": "Yu-Gi-Oh! GX Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Volume 8 promotional card",
+      "codePrefixes": [
+        "YG08-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YG08-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-599-yu-gi-oh-gx-volume-9-promotional-card",
+      "groupID": 599,
+      "groupName": "Yu-Gi-Oh! GX Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Volume 9 promotional card",
+      "codePrefixes": [
+        "YG09-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YG09-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-600-yu-gi-oh-zexal-volume-1-promotional-card",
+      "groupID": 600,
+      "groupName": "Yu-Gi-Oh! ZEXAL Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! ZEXAL Volume 1 promotional card",
+      "codePrefixes": [
+        "YZ01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YZ01-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-600-yu-gi-oh-zexal-volume-2-promotional-card",
+      "groupID": 600,
+      "groupName": "Yu-Gi-Oh! ZEXAL Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! ZEXAL Volume 2 promotional card",
+      "codePrefixes": [
+        "YZ02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YZ02-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-600-yu-gi-oh-zexal-volume-3-promotional-card",
+      "groupID": 600,
+      "groupName": "Yu-Gi-Oh! ZEXAL Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! ZEXAL Volume 3 promotional card",
+      "codePrefixes": [
+        "YZ03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YZ03-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-600-yu-gi-oh-zexal-volume-4-promotional-card",
+      "groupID": 600,
+      "groupName": "Yu-Gi-Oh! ZEXAL Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! ZEXAL Volume 4 promotional card",
+      "codePrefixes": [
+        "YZ04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YZ04-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-600-yu-gi-oh-zexal-volume-5-promotional-card",
+      "groupID": 600,
+      "groupName": "Yu-Gi-Oh! ZEXAL Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! ZEXAL Volume 5 promotional card",
+      "codePrefixes": [
+        "YZ05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YZ05-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-600-yu-gi-oh-zexal-volume-6-promotional-card",
+      "groupID": 600,
+      "groupName": "Yu-Gi-Oh! ZEXAL Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! ZEXAL Volume 6 promotional card",
+      "codePrefixes": [
+        "YZ06-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YZ06-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-600-yu-gi-oh-zexal-volume-7-promotional-card",
+      "groupID": 600,
+      "groupName": "Yu-Gi-Oh! ZEXAL Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! ZEXAL Volume 7 promotional card",
+      "codePrefixes": [
+        "YZ07-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YZ07-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-600-yu-gi-oh-zexal-volume-8-promotional-card",
+      "groupID": 600,
+      "groupName": "Yu-Gi-Oh! ZEXAL Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! ZEXAL Volume 8 promotional card",
+      "codePrefixes": [
+        "YZ08-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YZ08-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-600-yu-gi-oh-zexal-volume-9-promotional-card",
+      "groupID": 600,
+      "groupName": "Yu-Gi-Oh! ZEXAL Manga Promotional Cards",
+      "setName": "Yu-Gi-Oh! ZEXAL Volume 9 promotional card",
+      "codePrefixes": [
+        "YZ09-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YZ09-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1112",
+      "groupID": 1112,
+      "groupName": "Lord of the Tachyon Galaxy",
+      "setName": "Lord of the Tachyon Galaxy Sneak Peek Participation Card",
+      "codePrefixes": [
+        "LTGY-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "LTGY-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1129",
+      "groupID": 1129,
+      "groupName": "Super Starter: V for Victory Power-Up Pack",
+      "setName": "Super Starter Power-Up Pack",
+      "codePrefixes": [
+        "YS13-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 15,
+        "codes": 15,
+        "exampleCodes": [
+          "YS13-ENV01",
+          "YS13-ENV02",
+          "YS13-ENV03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1153",
+      "groupID": 1153,
+      "groupName": "Structure Deck: Saga of Blue-Eyes White Dragon",
+      "setName": "Saga of Blue-Eyes White Dragon Structure Deck",
+      "codePrefixes": [
+        "SDBE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 40,
+        "codes": 40,
+        "exampleCodes": [
+          "SDBE-EN001",
+          "SDBE-EN002",
+          "SDBE-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1157",
+      "groupID": 1157,
+      "groupName": "Legendary Collection 4: Joey's World",
+      "setName": "Legendary Collection 4: Joey's World Mega Pack",
+      "codePrefixes": [
+        "LCJW-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 298,
+        "codes": 298,
+        "exampleCodes": [
+          "LCJW-EN001",
+          "LCJW-EN002",
+          "LCJW-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1280",
+      "groupID": 1280,
+      "groupName": "GX Next Generation Blister Pack Promo",
+      "setName": "GX Next Generation",
+      "codePrefixes": [
+        "GXNG-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "GXNG-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1287",
+      "groupID": 1287,
+      "groupName": "Astral Pack 1",
+      "setName": "Astral Pack One",
+      "codePrefixes": [
+        "AP01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 25,
+        "codes": 25,
+        "exampleCodes": [
+          "AP01-EN001",
+          "AP01-EN002",
+          "AP01-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1288",
+      "groupID": 1288,
+      "groupName": "Astral Pack 2",
+      "setName": "Astral Pack Two",
+      "codePrefixes": [
+        "AP02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 25,
+        "codes": 25,
+        "exampleCodes": [
+          "AP02-EN001",
+          "AP02-EN002",
+          "AP02-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1289",
+      "groupID": 1289,
+      "groupName": "Astral Pack 3",
+      "setName": "Astral Pack Three",
+      "codePrefixes": [
+        "AP03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 26,
+        "codes": 26,
+        "exampleCodes": [
+          "AP03-EN001",
+          "AP03-EN002",
+          "AP03-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1290",
+      "groupID": 1290,
+      "groupName": "Legendary Collection 1",
+      "setName": "Legendary Collection",
+      "codePrefixes": [
+        "LC01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "LC01-EN004",
+          "LC01-EN005",
+          "LC01-EN006"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1300",
+      "groupID": 1300,
+      "groupName": "Battle Pack 2: War of the Giants Round 2",
+      "setName": "War of the Giants: Round 2",
+      "codePrefixes": [
+        "BPW2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 103,
+        "codes": 103,
+        "exampleCodes": [
+          "BPW2-EN001",
+          "BPW2-EN002",
+          "BPW2-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1302",
+      "groupID": 1302,
+      "groupName": "Elemental Hero Collection 1",
+      "setName": "Yu-Gi-Oh! Elemental Hero Collection 1",
+      "codePrefixes": [
+        "EHC1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "EHC1-EN001",
+          "EHC1-EN002",
+          "EHC1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1303",
+      "groupID": 1303,
+      "groupName": "Elemental Hero Collection 2",
+      "setName": "Yu-Gi-Oh! Elemental Hero Collection 2",
+      "codePrefixes": [
+        "EHC2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "EHC2-EN001",
+          "EHC2-EN002",
+          "EHC2-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1307",
+      "groupID": 1307,
+      "groupName": "Structure Deck: Cyber Dragon Revolution",
+      "setName": "Cyber Dragon Revolution Structure Deck",
+      "codePrefixes": [
+        "SDCR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 39,
+        "codes": 38,
+        "exampleCodes": [
+          "SDCR-EN001",
+          "SDCR-EN002",
+          "SDCR-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1309",
+      "groupID": 1309,
+      "groupName": "Astral Pack 4",
+      "setName": "Astral Pack Four",
+      "codePrefixes": [
+        "AP04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 26,
+        "codes": 26,
+        "exampleCodes": [
+          "AP04-EN001",
+          "AP04-EN002",
+          "AP04-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1315",
+      "groupID": 1315,
+      "groupName": "Sneak Preview Series 5",
+      "setName": "Starstrike Blast Sneak Peek Participation Card",
+      "codePrefixes": [
+        "STBL-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "STBL-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1317",
+      "groupID": 1317,
+      "groupName": "Mattel Action Figure Promos: Series 2",
+      "setName": "Mattel Action Figure promotional cards: Series 2",
+      "codePrefixes": [
+        "MF02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "MF02-EN001",
+          "MF02-EN002",
+          "MF02-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1323",
+      "groupID": 1323,
+      "groupName": "Mattel Action Figure Promos: Series 1",
+      "setName": "Mattel Action Figure promotional cards: Series 1",
+      "codePrefixes": [
+        "MF01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "MF01-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1338",
+      "groupID": 1338,
+      "groupName": "Yu-Gi-Oh! GX Tag Force Evolution Promo",
+      "setName": "Yu-Gi-Oh! GX Tag Force Evolution promotional cards",
+      "codePrefixes": [
+        "GX05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "GX05-EN002",
+          "GX05-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1339",
+      "groupID": 1339,
+      "groupName": "Fire Fists Special Editon",
+      "setName": "Fire Fists: Special Edition",
+      "codePrefixes": [
+        "FFSE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "FFSE-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1341",
+      "groupID": 1341,
+      "groupName": "2002 Collectors Tin",
+      "setName": "Booster Pack Collectors Tins 2002",
+      "codePrefixes": [
+        "BPT-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "BPT-001",
+          "BPT-002",
+          "BPT-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1344",
+      "groupID": 1344,
+      "groupName": "Sneak Preview Series 4",
+      "setName": "Crimson Crisis Sneak Peek Participation Card",
+      "codePrefixes": [
+        "CRMS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "CRMS-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1363",
+      "groupID": 1363,
+      "groupName": "Yu-Gi-Oh! 5D's Over the Nexus Promo Cards",
+      "setName": "Yu-Gi-Oh! 5D's World Championship 2011: Over the Nexus promotional cards",
+      "codePrefixes": [
+        "WC11-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "WC11-EN001",
+          "WC11-EN002",
+          "WC11-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1462",
+      "groupID": 1462,
+      "groupName": "Structure Deck: Realm of Light",
+      "setName": "Realm of Light Structure Deck",
+      "codePrefixes": [
+        "SDLI-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 36,
+        "codes": 36,
+        "exampleCodes": [
+          "SDLI-EN001",
+          "SDLI-EN002",
+          "SDLI-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1467",
+      "groupID": 1467,
+      "groupName": "Super Starter: Space-Time Showdown Power-Up Pack",
+      "setName": "Space-Time Showdown Power-Up Pack",
+      "codePrefixes": [
+        "YS14-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 15,
+        "codes": 15,
+        "exampleCodes": [
+          "YS14-ENA01",
+          "YS14-ENA02",
+          "YS14-ENA03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1479",
+      "groupID": 1479,
+      "groupName": "Astral Pack 5",
+      "setName": "Astral Pack Five",
+      "codePrefixes": [
+        "AP05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 26,
+        "codes": 26,
+        "exampleCodes": [
+          "AP05-EN001",
+          "AP05-EN002",
+          "AP05-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1480",
+      "groupID": 1480,
+      "groupName": "Duelist Alliance",
+      "setName": "Duelist Alliance Sneak Peek Participation Card",
+      "codePrefixes": [
+        "DUEA-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DUEA-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1485",
+      "groupID": 1485,
+      "groupName": "2014 Mega-Tins Mega Pack",
+      "setName": "2014 Mega-Tin Mega Pack",
+      "codePrefixes": [
+        "MP14-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 247,
+        "codes": 247,
+        "exampleCodes": [
+          "MP14-EN001",
+          "MP14-EN002",
+          "MP14-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1489",
+      "groupID": 1489,
+      "groupName": "Structure Deck: Geargia Rampage",
+      "setName": "Geargia Rampage Structure Deck",
+      "codePrefixes": [
+        "SDGR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 35,
+        "codes": 35,
+        "exampleCodes": [
+          "SDGR-EN001",
+          "SDGR-EN002",
+          "SDGR-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1491",
+      "groupID": 1491,
+      "groupName": "Legendary Collection 5D's",
+      "setName": "Legendary Collection 5D's Mega Pack",
+      "codePrefixes": [
+        "LC5D-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 260,
+        "codes": 256,
+        "exampleCodes": [
+          "LC5D-EN001",
+          "LC5D-EN002",
+          "LC5D-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1492",
+      "groupID": 1492,
+      "groupName": "Noble Knights of the Round Table Box Set",
+      "setName": "Noble Knights of the Round Table Power-Up Pack",
+      "codePrefixes": [
+        "NKRT-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "NKRT-EN039",
+          "NKRT-EN040",
+          "NKRT-EN041"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1495",
+      "groupID": 1495,
+      "groupName": "Structure Deck: HERO Strike",
+      "setName": "HERO Strike Structure Deck",
+      "codePrefixes": [
+        "SDHS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 45,
+        "codes": 45,
+        "exampleCodes": [
+          "SDHS-EN001",
+          "SDHS-EN002",
+          "SDHS-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1506",
+      "groupID": 1506,
+      "groupName": "Astral Pack 6",
+      "setName": "Astral Pack Six",
+      "codePrefixes": [
+        "AP06-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 28,
+        "codes": 28,
+        "exampleCodes": [
+          "AP06-EN001",
+          "AP06-EN002",
+          "AP06-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1537",
+      "groupID": 1537,
+      "groupName": "Crossed Souls",
+      "setName": "Crossed Souls Sneak Peek Participation Card",
+      "codePrefixes": [
+        "CROS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "CROS-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1544",
+      "groupID": 1544,
+      "groupName": "Starter Deck: Dark Legion",
+      "setName": "Dark Legion Starter Deck",
+      "codePrefixes": [
+        "YS15-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 29,
+        "codes": 29,
+        "exampleCodes": [
+          "YS15-ENL00",
+          "YS15-ENL01",
+          "YS15-ENL02"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1545",
+      "groupID": 1545,
+      "groupName": "Starter Deck: Saber Force",
+      "setName": "Saber Force Starter Deck",
+      "codePrefixes": [
+        "YS15-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 28,
+        "codes": 28,
+        "exampleCodes": [
+          "YS15-ENF00",
+          "YS15-ENF01",
+          "YS15-ENF02"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1572",
+      "groupID": 1572,
+      "groupName": "Astral Pack 7",
+      "setName": "Astral Pack Seven",
+      "codePrefixes": [
+        "AP07-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 27,
+        "codes": 27,
+        "exampleCodes": [
+          "AP07-EN001",
+          "AP07-EN002",
+          "AP07-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1592",
+      "groupID": 1592,
+      "groupName": "Crossed Souls: Advanced Edition",
+      "setName": "Crossed Souls: Advance Edition",
+      "codePrefixes": [
+        "CROS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "CROS-ENAE1",
+          "CROS-ENAE2",
+          "CROS-ENAE3"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1648",
+      "groupID": 1648,
+      "groupName": "Structure Deck: Synchron Extreme",
+      "setName": "Synchron Extreme Structure Deck",
+      "codePrefixes": [
+        "SDSE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 43,
+        "codes": 43,
+        "exampleCodes": [
+          "SDSE-EN001",
+          "SDSE-EN002",
+          "SDSE-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1653",
+      "groupID": 1653,
+      "groupName": "2015 Mega-Tins Mega Pack",
+      "setName": "2015 Mega-Tin Mega Pack",
+      "codePrefixes": [
+        "MP15-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 247,
+        "codes": 247,
+        "exampleCodes": [
+          "MP15-EN001",
+          "MP15-EN002",
+          "MP15-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1671",
+      "groupID": 1671,
+      "groupName": "Astral Pack 8",
+      "setName": "Astral Pack Eight",
+      "codePrefixes": [
+        "AP08-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 27,
+        "codes": 27,
+        "exampleCodes": [
+          "AP08-EN001",
+          "AP08-EN002",
+          "AP08-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1672",
+      "groupID": 1672,
+      "groupName": "King of Games: Yugi's Legendary Decks",
+      "setName": "Yugi's Legendary Decks",
+      "codePrefixes": [
+        "YGLD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 123,
+        "codes": 123,
+        "exampleCodes": [
+          "YGLD-ENA00",
+          "YGLD-ENA01",
+          "YGLD-ENA02"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1674",
+      "groupID": 1674,
+      "groupName": "Structure Deck: Master of Pendulum",
+      "setName": "Master of Pendulum Structure Deck",
+      "codePrefixes": [
+        "SDMP-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 43,
+        "codes": 43,
+        "exampleCodes": [
+          "SDMP-EN001",
+          "SDMP-EN002",
+          "SDMP-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1704",
+      "groupID": 1704,
+      "groupName": "Structure Deck: Emperor of Darkness",
+      "setName": "Emperor of Darkness Structure Deck",
+      "codePrefixes": [
+        "SR01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 41,
+        "codes": 41,
+        "exampleCodes": [
+          "SR01-EN000",
+          "SR01-EN001",
+          "SR01-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1743",
+      "groupID": 1743,
+      "groupName": "Yu-Gi-Oh! ZEXAL World Duel Carnival Promos",
+      "setName": "Yu-Gi-Oh! ZEXAL World Duel Carnival promotional cards",
+      "codePrefixes": [
+        "ZDC1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "ZDC1-EN001",
+          "ZDC1-EN002",
+          "ZDC1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1802",
+      "groupID": 1802,
+      "groupName": "Structure Deck: Rise of the True Dragons",
+      "setName": "Rise of the True Dragons Structure Deck",
+      "codePrefixes": [
+        "SR02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 41,
+        "codes": 41,
+        "exampleCodes": [
+          "SR02-EN000",
+          "SR02-EN001",
+          "SR02-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1820",
+      "groupID": 1820,
+      "groupName": "The Dark Side of Dimensions Movie Pack",
+      "setName": "Yu-Gi-Oh! The Dark Side of Dimensions Movie Pack",
+      "codePrefixes": [
+        "MVP1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 57,
+        "codes": 57,
+        "exampleCodes": [
+          "MVP1-EN001",
+          "MVP1-EN002",
+          "MVP1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1834",
+      "groupID": 1834,
+      "groupName": "2016 Mega-Tins Mega Pack",
+      "setName": "2016 Mega-Tin Mega Pack",
+      "codePrefixes": [
+        "MP16-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 239,
+        "codes": 239,
+        "exampleCodes": [
+          "MP16-EN001",
+          "MP16-EN002",
+          "MP16-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1877",
+      "groupID": 1877,
+      "groupName": "The Dark Side of Dimensions Movie Pack: Gold Edition",
+      "setName": "Yu-Gi-Oh! The Dark Side of Dimensions Movie Pack: Gold Edition",
+      "codePrefixes": [
+        "MVP1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 61,
+        "codes": 61,
+        "exampleCodes": [
+          "MVP1-ENG01",
+          "MVP1-ENG02",
+          "MVP1-ENG03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1878",
+      "groupID": 1878,
+      "groupName": "Structure Deck: Pendulum Domination",
+      "setName": "Pendulum Domination Structure Deck",
+      "codePrefixes": [
+        "SDPD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 43,
+        "codes": 43,
+        "exampleCodes": [
+          "SDPD-EN001",
+          "SDPD-EN002",
+          "SDPD-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1911",
+      "groupID": 1911,
+      "groupName": "Structure Deck: Dinosmasher's Fury",
+      "setName": "Dinosmasher's Fury Structure Deck",
+      "codePrefixes": [
+        "SR04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 39,
+        "codes": 39,
+        "exampleCodes": [
+          "SR04-EN000",
+          "SR04-EN001",
+          "SR04-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1912",
+      "groupID": 1912,
+      "groupName": "Structure Deck: Machine Reactor",
+      "setName": "Machine Reactor Structure Deck",
+      "codePrefixes": [
+        "SR03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 39,
+        "codes": 39,
+        "exampleCodes": [
+          "SR03-EN000",
+          "SR03-EN001",
+          "SR03-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1918-yu-gi-oh-arc-v-volume-1-promotional-card",
+      "groupID": 1918,
+      "groupName": "Yu-Gi-Oh! ARC-V Promo Cards",
+      "setName": "Yu-Gi-Oh! ARC-V Volume 1 promotional card",
+      "codePrefixes": [
+        "YA01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YA01-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1918-yu-gi-oh-arc-v-volume-2-promotional-card",
+      "groupID": 1918,
+      "groupName": "Yu-Gi-Oh! ARC-V Promo Cards",
+      "setName": "Yu-Gi-Oh! ARC-V Volume 2 promotional card",
+      "codePrefixes": [
+        "YA02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YA02-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1918-yu-gi-oh-arc-v-volume-3-promotional-card",
+      "groupID": 1918,
+      "groupName": "Yu-Gi-Oh! ARC-V Promo Cards",
+      "setName": "Yu-Gi-Oh! ARC-V Volume 3 promotional card",
+      "codePrefixes": [
+        "YA03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YA03-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1918-yu-gi-oh-arc-v-volume-4-promotional-card",
+      "groupID": 1918,
+      "groupName": "Yu-Gi-Oh! ARC-V Promo Cards",
+      "setName": "Yu-Gi-Oh! ARC-V Volume 4 promotional card",
+      "codePrefixes": [
+        "YA04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YA04-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1918-yu-gi-oh-arc-v-volume-5-promotional-card",
+      "groupID": 1918,
+      "groupName": "Yu-Gi-Oh! ARC-V Promo Cards",
+      "setName": "Yu-Gi-Oh! ARC-V Volume 5 promotional card",
+      "codePrefixes": [
+        "YA05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YA05-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1918-yu-gi-oh-arc-v-volume-6-promotional-card",
+      "groupID": 1918,
+      "groupName": "Yu-Gi-Oh! ARC-V Promo Cards",
+      "setName": "Yu-Gi-Oh! ARC-V Volume 6 promotional card",
+      "codePrefixes": [
+        "YA06-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YA06-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1918-yu-gi-oh-arc-v-volume-7-promotional-card",
+      "groupID": 1918,
+      "groupName": "Yu-Gi-Oh! ARC-V Promo Cards",
+      "setName": "Yu-Gi-Oh! ARC-V Volume 7 promotional card",
+      "codePrefixes": [
+        "YA07-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YA07-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-5d-s-duel-transer-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Duel Transer promotional cards",
+      "codePrefixes": [
+        "YDT1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "YDT1-EN001",
+          "YDT1-EN002",
+          "YDT1-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-5d-s-tag-force-4-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's Tag Force 4 promotional cards",
+      "codePrefixes": [
+        "TF04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "TF04-EN001",
+          "TF04-EN002",
+          "TF04-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-5d-s-world-championship-2010-reverse-of-arcadia-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! 5D's World Championship 2010: Reverse of Arcadia promotional cards",
+      "codePrefixes": [
+        "WC10-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "WC10-EN001",
+          "WC10-EN002",
+          "WC10-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-capsule-monster-coliseum-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! Capsule Monster Coliseum promotional cards",
+      "codePrefixes": [
+        "CMC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "CMC-EN001",
+          "CMC-EN002",
+          "CMC-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-dark-duel-stories-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! Dark Duel Stories promotional cards",
+      "codePrefixes": [
+        "DDS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "DDS-001",
+          "DDS-002",
+          "DDS-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-forbidden-memories-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! Forbidden Memories promotional cards",
+      "codePrefixes": [
+        "FMR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "FMR-001",
+          "FMR-002",
+          "FMR-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-gx-tag-force-2-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Tag Force 2 promotional cards",
+      "codePrefixes": [
+        "GX04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "GX04-EN001",
+          "GX04-EN002",
+          "GX04-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-legacy-of-the-duelist-link-evolution-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! Legacy of the Duelist: Link Evolution promotional cards",
+      "codePrefixes": [
+        "LOD2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "LOD2-EN001",
+          "LOD2-EN002",
+          "LOD2-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-power-of-chaos-kaiba-the-revenge-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! Power of Chaos: Kaiba the Revenge promotional cards",
+      "codePrefixes": [
+        "PCK-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 3,
+        "codes": 3,
+        "exampleCodes": [
+          "PCK-001",
+          "PCK-002",
+          "PCK-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1921-yu-gi-oh-the-sacred-cards-promotional-cards",
+      "groupID": 1921,
+      "groupName": "Yu-Gi-Oh! Video Game Promotional Cards",
+      "setName": "Yu-Gi-Oh! The Sacred Cards promotional cards",
+      "codePrefixes": [
+        "TSC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 6,
+        "codes": 6,
+        "exampleCodes": [
+          "TSC-001",
+          "TSC-002",
+          "TSC-003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-1991",
+      "groupID": 1991,
+      "groupName": "2017 Mega-Tins Mega Pack",
+      "setName": "2017 Mega-Tin Mega Pack",
+      "codePrefixes": [
+        "MP17-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 239,
+        "codes": 239,
+        "exampleCodes": [
+          "MP17-EN001",
+          "MP17-EN002",
+          "MP17-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2052",
+      "groupID": 2052,
+      "groupName": "Collector's Boxes",
+      "setName": "Yugi & Kaiba Collector Box",
+      "codePrefixes": [
+        "KACB-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 1,
+        "exampleCodes": [
+          "KACB-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2195",
+      "groupID": 2195,
+      "groupName": "Legendary Collection Kaiba",
+      "setName": "Legendary Collection Kaiba Mega Pack",
+      "codePrefixes": [
+        "LCKC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 114,
+        "codes": 110,
+        "exampleCodes": [
+          "LCKC-EN001",
+          "LCKC-EN002",
+          "LCKC-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2197",
+      "groupID": 2197,
+      "groupName": "Mattel Action Figure Promos: Series 3",
+      "setName": "Mattel Action Figure promotional cards: Series 3",
+      "codePrefixes": [
+        "MF03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 9,
+        "codes": 9,
+        "exampleCodes": [
+          "MF03-EN002",
+          "MF03-EN003",
+          "MF03-EN004"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2215-pharaoh-tour-2005-promotional-cards",
+      "groupID": 2215,
+      "groupName": "Pharaoh Tour Promos",
+      "setName": "Pharaoh Tour 2005 promotional cards",
+      "codePrefixes": [
+        "PT1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "PT1-EN001",
+          "PT1-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2215-pharaoh-tour-2006-promotional-cards",
+      "groupID": 2215,
+      "groupName": "Pharaoh Tour Promos",
+      "setName": "Pharaoh Tour 2006 promotional cards",
+      "codePrefixes": [
+        "PT02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "PT02-EN001",
+          "PT02-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2215-pharaoh-tour-2007-promotional-cards",
+      "groupID": 2215,
+      "groupName": "Pharaoh Tour Promos",
+      "setName": "Pharaoh Tour 2007 promotional cards",
+      "codePrefixes": [
+        "PT03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 2,
+        "exampleCodes": [
+          "PT03-EN001",
+          "PT03-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2317",
+      "groupID": 2317,
+      "groupName": "2018 Mega-Tins Mega Pack",
+      "setName": "2018 Mega-Tin Mega Pack",
+      "codePrefixes": [
+        "MP18-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 233,
+        "codes": 233,
+        "exampleCodes": [
+          "MP18-EN001",
+          "MP18-EN002",
+          "MP18-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2322",
+      "groupID": 2322,
+      "groupName": "The Dark Side of Dimensions Movie Pack: Special Edition",
+      "setName": "Yu-Gi-Oh! The Dark Side of Dimensions Movie Pack Special Edition",
+      "codePrefixes": [
+        "MVP1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 4,
+        "codes": 4,
+        "exampleCodes": [
+          "MVP1-ENSE1",
+          "MVP1-ENSE2",
+          "MVP1-ENSE3"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2337",
+      "groupID": 2337,
+      "groupName": "Advent Calendar 2018",
+      "setName": "Yu-Gi-Oh! Advent Calendar (2018)",
+      "codePrefixes": [
+        "AC18-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 24,
+        "codes": 24,
+        "exampleCodes": [
+          "AC18-EN001",
+          "AC18-EN002",
+          "AC18-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2371",
+      "groupID": 2371,
+      "groupName": "Speed Duel Decks: Duelists of Tomorrow",
+      "setName": "Speed Duel Starter Decks: Duelists of Tomorrow",
+      "codePrefixes": [
+        "SS02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 68,
+        "codes": 68,
+        "exampleCodes": [
+          "SS02-ENA01",
+          "SS02-ENA02",
+          "SS02-ENA03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2372",
+      "groupID": 2372,
+      "groupName": "Speed Duel Decks: Destiny Masters",
+      "setName": "Speed Duel Starter Decks: Destiny Masters",
+      "codePrefixes": [
+        "SS01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 63,
+        "codes": 63,
+        "exampleCodes": [
+          "SS01-ENA01",
+          "SS01-ENA02",
+          "SS01-ENA03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2373-cyber-dragon-revolution-structure-deck",
+      "groupID": 2373,
+      "groupName": "Yu-Gi-Oh! Value Boxes",
+      "setName": "Cyber Dragon Revolution Structure Deck",
+      "codePrefixes": [
+        "SDCR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "SDCR-EN038"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2373-machina-mayhem-structure-deck",
+      "groupID": 2373,
+      "groupName": "Yu-Gi-Oh! Value Boxes",
+      "setName": "Machina Mayhem Structure Deck",
+      "codePrefixes": [
+        "SDMM-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "SDMM-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2373-saga-of-blue-eyes-white-dragon-structure-deck",
+      "groupID": 2373,
+      "groupName": "Yu-Gi-Oh! Value Boxes",
+      "setName": "Saga of Blue-Eyes White Dragon Structure Deck",
+      "codePrefixes": [
+        "SDBE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "SDBE-EN040"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2373-structure-deck-machine-re-volt",
+      "groupID": 2373,
+      "groupName": "Yu-Gi-Oh! Value Boxes",
+      "setName": "Structure Deck: Machine Re-Volt",
+      "codePrefixes": [
+        "SD10-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "SD10-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2469",
+      "groupID": 2469,
+      "groupName": "Speed Duel Decks: Ultimate Predators",
+      "setName": "Speed Duel Starter Decks: Ultimate Predators",
+      "codePrefixes": [
+        "SS03-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 63,
+        "codes": 63,
+        "exampleCodes": [
+          "SS03-ENA01",
+          "SS03-ENA02",
+          "SS03-ENA03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2514",
+      "groupID": 2514,
+      "groupName": "Speed Duel: Trials of the Kingdom",
+      "setName": "Speed Duel: Trials of the Kingdom Sneak Peek participation cards",
+      "codePrefixes": [
+        "SBTK-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 10,
+        "codes": 10,
+        "exampleCodes": [
+          "SBTK-ENSP0",
+          "SBTK-ENSP1",
+          "SBTK-ENSP2"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2561",
+      "groupID": 2561,
+      "groupName": "Event Pack Speed Duel",
+      "setName": "Speed Duel: Scars of Battle Launch Event participation card",
+      "codePrefixes": [
+        "EVSD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "EVSD-ENS02"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2577",
+      "groupID": 2577,
+      "groupName": "The Dark Side of Dimensions Movie Pack: Secret Edition",
+      "setName": "Yu-Gi-Oh! The Dark Side of Dimensions Movie Pack Secret Edition",
+      "codePrefixes": [
+        "MVP1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 63,
+        "codes": 63,
+        "exampleCodes": [
+          "MVP1-ENS01",
+          "MVP1-ENS02",
+          "MVP1-ENS03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2625",
+      "groupID": 2625,
+      "groupName": "Eternity Code",
+      "setName": "Eternity Code Premiere! promotional card",
+      "codePrefixes": [
+        "ETCO-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "ETCO-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2637",
+      "groupID": 2637,
+      "groupName": "Speed Duel Decks: Match of the Millennium",
+      "setName": "Speed Duel Starter Decks: Match of the Millennium",
+      "codePrefixes": [
+        "SS04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 67,
+        "codes": 67,
+        "exampleCodes": [
+          "SS04-ENA01",
+          "SS04-ENA02",
+          "SS04-ENA03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2638",
+      "groupID": 2638,
+      "groupName": "Speed Duel Decks: Twisted Nightmares",
+      "setName": "Speed Duel Starter Decks: Twisted Nightmares",
+      "codePrefixes": [
+        "SS05-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 66,
+        "codes": 66,
+        "exampleCodes": [
+          "SS05-ENA01",
+          "SS05-ENA02",
+          "SS05-ENA03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2674",
+      "groupID": 2674,
+      "groupName": "Rise of the Duelist",
+      "setName": "Rise of the Duelist Premiere! promotional card",
+      "codePrefixes": [
+        "ROTD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "ROTD-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2680",
+      "groupID": 2680,
+      "groupName": "2020 Tin of Lost Memories",
+      "setName": "2020 Tin of Lost Memories Mega Pack",
+      "codePrefixes": [
+        "MP20-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 246,
+        "codes": 246,
+        "exampleCodes": [
+          "MP20-EN001",
+          "MP20-EN002",
+          "MP20-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2694",
+      "groupID": 2694,
+      "groupName": "Phantom Rage",
+      "setName": "Phantom Rage Premiere! promotional card",
+      "codePrefixes": [
+        "PHRA-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "PHRA-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2718-crocs-collaboration-card",
+      "groupID": 2718,
+      "groupName": "Miscellaneous Promotional Cards",
+      "setName": "Crocs collaboration card",
+      "codePrefixes": [
+        "CRC1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "CRC1-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2718-dimension-of-chaos",
+      "groupID": 2718,
+      "groupName": "Miscellaneous Promotional Cards",
+      "setName": "Dimension of Chaos",
+      "codePrefixes": [
+        "DOCS-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DOCS-EN045"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2718-dragunity-legion-structure-deck",
+      "groupID": 2718,
+      "groupName": "Miscellaneous Promotional Cards",
+      "setName": "Dragunity Legion Structure Deck",
+      "codePrefixes": [
+        "SDDL-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "SDDL-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2718-generation-force",
+      "groupID": 2718,
+      "groupName": "Miscellaneous Promotional Cards",
+      "setName": "Generation Force",
+      "codePrefixes": [
+        "GENF-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "GENF-EN044"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2718-nike-collaboration-cards",
+      "groupID": 2718,
+      "groupName": "Miscellaneous Promotional Cards",
+      "setName": "Nike collaboration cards",
+      "codePrefixes": [
+        "NKC1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "NKC1-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2718-starstrike-blast",
+      "groupID": 2718,
+      "groupName": "Miscellaneous Promotional Cards",
+      "setName": "Starstrike Blast",
+      "codePrefixes": [
+        "STBL-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "STBL-EN033"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2718-yu-gi-oh-gx-volume-4-promotional-card",
+      "groupID": 2718,
+      "groupName": "Miscellaneous Promotional Cards",
+      "setName": "Yu-Gi-Oh! GX Volume 4 promotional card",
+      "codePrefixes": [
+        "YG04-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "YG04-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2718-yu-gi-oh-tcg-remote-duel-extravaganza-participation-card",
+      "groupID": 2718,
+      "groupName": "Miscellaneous Promotional Cards",
+      "setName": "Yu-Gi-Oh! TCG Remote Duel Extravaganza participation card",
+      "codePrefixes": [
+        "21CC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "21CC-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2718-yu-gi-oh-trading-card-game-tour-2004-promotional-card",
+      "groupID": 2718,
+      "groupName": "Miscellaneous Promotional Cards",
+      "setName": "Yu-Gi-Oh! Trading Card Game Tour 2004 promotional card",
+      "codePrefixes": [
+        "EM1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "EM1-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2749",
+      "groupID": 2749,
+      "groupName": "Blazing Vortex",
+      "setName": "Blazing Vortex Premiere! promotional card",
+      "codePrefixes": [
+        "BLVO-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "BLVO-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2779",
+      "groupID": 2779,
+      "groupName": "Lightning Overdrive",
+      "setName": "Lightning Overdrive Premiere! promotional card",
+      "codePrefixes": [
+        "LIOV-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "LIOV-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-2843",
+      "groupID": 2843,
+      "groupName": "Dawn of Majesty",
+      "setName": "Dawn of Majesty Premiere! promotional card",
+      "codePrefixes": [
+        "DAMA-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "DAMA-ENSP1"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-22881",
+      "groupID": 22881,
+      "groupName": "Legend of Blue Eyes White Dragon (Worldwide English)",
+      "setName": "Legend of Blue Eyes White Dragon",
+      "codePrefixes": [
+        "LOB-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 126,
+        "codes": 126,
+        "exampleCodes": [
+          "LOB-EN000",
+          "LOB-EN001",
+          "LOB-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-22882",
+      "groupID": 22882,
+      "groupName": "Metal Raiders (Worldwide English)",
+      "setName": "Metal Raiders",
+      "codePrefixes": [
+        "MRD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 144,
+        "codes": 144,
+        "exampleCodes": [
+          "MRD-EN000",
+          "MRD-EN001",
+          "MRD-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-22883",
+      "groupID": 22883,
+      "groupName": "Pharaoh's Servant (Worldwide English)",
+      "setName": "Pharaoh's Servant",
+      "codePrefixes": [
+        "PSV-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 105,
+        "codes": 105,
+        "exampleCodes": [
+          "PSV-EN000",
+          "PSV-EN001",
+          "PSV-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-22884",
+      "groupID": 22884,
+      "groupName": "Labyrinth of Nightmare (Worldwide English)",
+      "setName": "Labyrinth of Nightmare",
+      "codePrefixes": [
+        "LON-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 105,
+        "codes": 105,
+        "exampleCodes": [
+          "LON-EN000",
+          "LON-EN001",
+          "LON-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-22885",
+      "groupID": 22885,
+      "groupName": "Legacy of Darkness (Worldwide English)",
+      "setName": "Legacy of Darkness",
+      "codePrefixes": [
+        "LOD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 101,
+        "codes": 101,
+        "exampleCodes": [
+          "LOD-EN000",
+          "LOD-EN001",
+          "LOD-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-22886",
+      "groupID": 22886,
+      "groupName": "Dark Crisis (Worldwide English)",
+      "setName": "Dark Crisis",
+      "codePrefixes": [
+        "DCR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 106,
+        "codes": 106,
+        "exampleCodes": [
+          "DCR-EN000",
+          "DCR-EN001",
+          "DCR-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-22887",
+      "groupID": 22887,
+      "groupName": "Invasion of Chaos (Worldwide English)",
+      "setName": "Invasion of Chaos",
+      "codePrefixes": [
+        "IOC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 112,
+        "codes": 112,
+        "exampleCodes": [
+          "IOC-EN000",
+          "IOC-EN001",
+          "IOC-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-22895",
+      "groupID": 22895,
+      "groupName": "Legendary Collection: 25th Anniversary Edition",
+      "setName": "Legendary Collection",
+      "codePrefixes": [
+        "LC01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 2,
+        "codes": 1,
+        "exampleCodes": [
+          "LC01-EN005"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-22905",
+      "groupID": 22905,
+      "groupName": "Spell Ruler (Worldwide English)",
+      "setName": "Spell Ruler",
+      "codePrefixes": [
+        "SRL-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 104,
+        "codes": 104,
+        "exampleCodes": [
+          "SRL-EN000",
+          "SRL-EN001",
+          "SRL-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23050",
+      "groupID": 23050,
+      "groupName": "Legend of Blue Eyes White Dragon (25th Anniversary Edition)",
+      "setName": "Legend of Blue Eyes White Dragon",
+      "codePrefixes": [
+        "LOB-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 112,
+        "codes": 112,
+        "exampleCodes": [
+          "LOB-EN000",
+          "LOB-EN001",
+          "LOB-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23052",
+      "groupID": 23052,
+      "groupName": "Metal Raiders (25th Anniversary Edition)",
+      "setName": "Metal Raiders",
+      "codePrefixes": [
+        "MRD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 130,
+        "codes": 130,
+        "exampleCodes": [
+          "MRD-EN000",
+          "MRD-EN001",
+          "MRD-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23053",
+      "groupID": 23053,
+      "groupName": "Spell Ruler (25th Anniversary Edition)",
+      "setName": "Spell Ruler",
+      "codePrefixes": [
+        "SRL-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 90,
+        "codes": 90,
+        "exampleCodes": [
+          "SRL-EN000",
+          "SRL-EN001",
+          "SRL-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23054",
+      "groupID": 23054,
+      "groupName": "Pharaoh's Servant (25th Anniversary Edition)",
+      "setName": "Pharaoh's Servant",
+      "codePrefixes": [
+        "PSV-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 104,
+        "codes": 104,
+        "exampleCodes": [
+          "PSV-EN000",
+          "PSV-EN001",
+          "PSV-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23055",
+      "groupID": 23055,
+      "groupName": "Dark Crisis (25th Anniversary Edition)",
+      "setName": "Dark Crisis",
+      "codePrefixes": [
+        "DCR-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 105,
+        "codes": 105,
+        "exampleCodes": [
+          "DCR-EN000",
+          "DCR-EN001",
+          "DCR-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23056",
+      "groupID": 23056,
+      "groupName": "Invasion of Chaos (25th Anniversary Edition)",
+      "setName": "Invasion of Chaos",
+      "codePrefixes": [
+        "IOC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 112,
+        "codes": 112,
+        "exampleCodes": [
+          "IOC-EN000",
+          "IOC-EN001",
+          "IOC-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23469",
+      "groupID": 23469,
+      "groupName": "Legendary Decks II (2020 Reprint)",
+      "setName": "Legendary Decks II",
+      "codePrefixes": [
+        "LDK2-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 132,
+        "codes": 130,
+        "exampleCodes": [
+          "LDK2-ENJ01",
+          "LDK2-ENJ02",
+          "LDK2-ENJ03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23592",
+      "groupID": 23592,
+      "groupName": "Retro Pack (2020 Date Reprint)",
+      "setName": "Retro Pack",
+      "codePrefixes": [
+        "RP01-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 101,
+        "codes": 101,
+        "exampleCodes": [
+          "RP01-EN000",
+          "RP01-EN001",
+          "RP01-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23648",
+      "groupID": 23648,
+      "groupName": "Structure Deck: Saga of Blue Eyes White Dragon (2020 Date Reprint)",
+      "setName": "Saga of Blue-Eyes White Dragon Structure Deck",
+      "codePrefixes": [
+        "SDBE-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 40,
+        "codes": 40,
+        "exampleCodes": [
+          "SDBE-EN001",
+          "SDBE-EN002",
+          "SDBE-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-23984",
+      "groupID": 23984,
+      "groupName": "Legendary Dragon Decks (2020 Date Reprint)",
+      "setName": "Legendary Dragon Decks",
+      "codePrefixes": [
+        "LEDD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 115,
+        "codes": 111,
+        "exampleCodes": [
+          "LEDD-ENA00",
+          "LEDD-ENA01",
+          "LEDD-ENA02"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-24012",
+      "groupID": 24012,
+      "groupName": "Structure Deck: Realm of Light (2020 Date Reprint)",
+      "setName": "Realm of Light Structure Deck",
+      "codePrefixes": [
+        "SDLI-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 36,
+        "codes": 36,
+        "exampleCodes": [
+          "SDLI-EN001",
+          "SDLI-EN002",
+          "SDLI-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-24189",
+      "groupID": 24189,
+      "groupName": "King of Games: Yugi's Legendary Decks (2020 Date Reprint)",
+      "setName": "Yugi's Legendary Decks",
+      "codePrefixes": [
+        "YGLD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 123,
+        "codes": 123,
+        "exampleCodes": [
+          "YGLD-ENA00",
+          "YGLD-ENA01",
+          "YGLD-ENA02"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-24308",
+      "groupID": 24308,
+      "groupName": "2025 Mega-Pack",
+      "setName": "2025 Mega-Pack Tin",
+      "codePrefixes": [
+        "MP25-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 450,
+        "codes": 450,
+        "exampleCodes": [
+          "MP25-EN001",
+          "MP25-EN002",
+          "MP25-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-24352",
+      "groupID": 24352,
+      "groupName": "Retro Pack 2 (2020 Date Reprint)",
+      "setName": "Retro Pack 2",
+      "codePrefixes": [
+        "RP02-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 101,
+        "codes": 101,
+        "exampleCodes": [
+          "RP02-EN000",
+          "RP02-EN001",
+          "RP02-EN002"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-24396",
+      "groupID": 24396,
+      "groupName": "Legendary 5D's Decks",
+      "setName": "Legendary 5D&apos;s Decks",
+      "codePrefixes": [
+        "L5DD-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 115,
+        "codes": 111,
+        "exampleCodes": [
+          "L5DD-ENA01",
+          "L5DD-ENA02",
+          "L5DD-ENA03"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-24460",
+      "groupID": 24460,
+      "groupName": "eFootball Collaboration Promos",
+      "setName": "EFootball collaboration cards",
+      "codePrefixes": [
+        "EFC1-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "EFC1-EN001"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-24506-legendary-collection-kaiba",
+      "groupID": 24506,
+      "groupName": "Legendary Collection Kaiba (2020 Date Reprint)",
+      "setName": "Legendary Collection Kaiba",
+      "codePrefixes": [
+        "LC06-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 1,
+        "codes": 1,
+        "exampleCodes": [
+          "LC06-EN005"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    },
+    {
+      "id": "release-name-24506-legendary-collection-kaiba-mega-pack",
+      "groupID": 24506,
+      "groupName": "Legendary Collection Kaiba (2020 Date Reprint)",
+      "setName": "Legendary Collection Kaiba Mega Pack",
+      "codePrefixes": [
+        "LCKC-"
+      ],
+      "evidence": {
+        "rule": "printed-code-and-card-agree-v1",
+        "products": 114,
+        "codes": 110,
+        "exampleCodes": [
+          "LCKC-EN001",
+          "LCKC-EN002",
+          "LCKC-EN003"
+        ]
+      },
+      "reviewedAt": "2026-11-19",
+      "ledger": {
+        "capturedAt": "2026-11-19T20:58:21+00:00",
+        "generation": "yugioh-en-e82401634774"
+      }
+    }
   ]
 }

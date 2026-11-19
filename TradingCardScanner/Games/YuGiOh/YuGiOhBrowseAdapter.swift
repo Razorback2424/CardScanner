@@ -40,6 +40,14 @@ struct YuGiOhBrowseAdapter: GameBrowseAdapter {
                 var set = CatalogSet(catalogID: id, name: setInfo.name, code: setInfo.abbreviation,
                     logoURL: nil, symbolURL: nil, cardCount: ordered.count, releaseDate: setInfo.releaseDate, sortRank: 0,
                     physicalPrintingIDs: Set(ordered.map { $0.idString }))
+                // "Partial catalog" describes this set's own rows: one of them cannot be
+                // added (identity review or no supported edition). Code-level
+                // incompleteness only withholds automatic scan selection; every such
+                // printing can still be chosen explicitly, so it does not mark the set.
+                // Reference display cards without a printed code are intentional.
+                if ordered.contains(where: { !$0.code.isEmpty && !$0.explicitSelectionSupported }) {
+                    set.collectionAvailabilityNotice = "Partial catalog"
+                }
                 let summaries = ordered.enumerated().map { offset, p in
                     let summary = CatalogCardSummary(game: .yuGiOh, providerID: p.idString, setID: id,
                         setName: p.set.name, setCode: p.set.abbreviation, name: p.browseName, collectorNumber: p.code,

@@ -2962,6 +2962,21 @@ final class YuGiOhResolutionTests: XCTestCase {
         XCTAssertEqual(productIDs, Set(210_873...210_878))
     }
 
+    func testPartialCatalogBadgeReflectsOnlyTheSetsOwnUnaddableRows() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let sets = try await YuGiOhBrowseAdapter(catalog: catalog).sets()
+        var unaddable: Set<String> = [], incomplete: Set<String> = []
+        for p in catalog.printingByID.values {
+            if !p.code.isEmpty && !p.explicitSelectionSupported { unaddable.insert(p.set.providerID) }
+            if catalog.incompleteCodes.contains(p.code) { incomplete.insert(p.set.providerID) }
+        }
+        let badged = Set(sets.filter { $0.collectionAvailabilityNotice == "Partial catalog" }.map(\.catalogID.providerID))
+        XCTAssertFalse(unaddable.isEmpty)
+        XCTAssertEqual(badged, unaddable)
+        // Code-level incompleteness withholds automatic scan selection only; it never badges a set.
+        XCTAssertGreaterThan(incomplete.subtracting(unaddable).count, 0)
+    }
+
     func testBrowseOfficialNameDatesAndOrderedSearchPagination() async throws {
         let browse = YuGiOhBrowseAdapter(catalog: try YuGiOhCatalog.bundled.get())
         let printed = try await browse.search(query: "Yummy★Snatchy", setIDs: [], cursor: nil)
