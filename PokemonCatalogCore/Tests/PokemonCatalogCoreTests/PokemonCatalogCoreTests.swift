@@ -16,6 +16,9 @@ final class PokemonCatalogCoreTests: XCTestCase {
         let blank = try JSONDecoder().decode(PokemonCatalogProviderCard.self,
             from: Data(#"{"id":"x-1","localId":"1","name":"X","rarity":"  "}"#.utf8))
         XCTAssertNil(blank.rarity)
+        let placeholder = try JSONDecoder().decode(PokemonCatalogProviderCard.self,
+            from: Data(#"{"id":"x-1","localId":"1","name":"X","rarity":"None"}"#.utf8))
+        XCTAssertNil(placeholder.rarity)
         let plain = card.withRarity(nil)
         XCTAssertFalse(String(decoding: try PokemonCatalogJSON.encode(plain), as: UTF8.self).contains("rarity"))
         let set = PokemonCatalogProviderSet(id: "sv3", name: "Obsidian Flames",

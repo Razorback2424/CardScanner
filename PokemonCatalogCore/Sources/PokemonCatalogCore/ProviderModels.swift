@@ -450,7 +450,10 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
 }
 
 private extension String {
-    var nonEmptyRarity: String? { isEmpty ? nil : self }
+    /// TCGdex sends the literal "None" for cards it has no rarity for.
+    var nonEmptyRarity: String? {
+        isEmpty || ["none", "unknown", "n/a", "-"].contains(lowercased()) ? nil : self
+    }
 }
 
 public struct PokemonCatalogProviderFixture: Codable, Equatable, Sendable {
