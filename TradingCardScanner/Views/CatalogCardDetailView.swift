@@ -479,6 +479,7 @@ struct CatalogCardDetailView: View {
                 } else {
                     let selected = selectedVariant(card).flatMap { copyTargets(for: $0, card: card).first }
                     shareRequest = CatalogCopyShareRequest(
+                        catalogCard: card,
                         copies: copies,
                         initialKey: selected?.collectionKey ?? copies[0].collectionKey
                     )
@@ -2037,6 +2038,8 @@ private struct CatalogCopyShareRequest: Identifiable {
     }
 
     let id = UUID()
+    /// The page's printing: its rarity stands in when a saved copy has none.
+    let catalogCard: IdentifiedCard
     let copies: [Copy]
     let initialKey: String
 }
@@ -2063,7 +2066,8 @@ private struct CatalogCopyShareSheet: View {
             let override = overrides.first { $0.collectionKey == copy.collectionKey }
             let filename = CollectionDetailArtworkSource<EmptyView>.effectiveFilename(
                 override: override?.filename, legacy: card.userArtworkFilename)
-            return CollectionShareOption(collectedCard: card, price: copy.price, localArtworkFilename: filename)
+            return CollectionShareOption(collectedCard: card, price: copy.price, localArtworkFilename: filename,
+                                         catalogCard: request.catalogCard)
         }
     }
 

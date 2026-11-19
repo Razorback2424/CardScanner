@@ -6,6 +6,27 @@ import UIKit
 /// What a shared card image is allowed to state. Every rule here protects the
 /// recipient from a claim the app cannot stand behind.
 final class CardShareContentTests: XCTestCase {
+
+    /// A saved copy often has no rarity of its own; the card page's catalog
+    /// printing supplies it, but never overrides one the copy already has.
+    @MainActor
+    func testOwnedCopyTakesCatalogRarityOnlyWhenItHasNone() {
+        let catalog = IdentifiedCard.pokemon(TCGdexCard(id: "sv3-125", localId: "125", name: "Charizard ex",
+            image: nil, rarity: "Double Rare",
+            set: .init(id: "sv3", name: "Obsidian Flames", cardCount: .init(total: 230, official: 197)),
+            variants: nil, pricing: nil, variantsDetailed: nil), setCode: "OBF")
+        func saved(rarity: String?) -> CollectedCard {
+            CollectedCard(collectionKey: "sv3-125|holo", game: .pokemon, providerID: "sv3-125",
+                name: "Charizard ex", setName: "Obsidian Flames", setCode: "OBF", cardNumber: "125",
+                rarity: rarity, imageURL: nil, thumbnailURL: nil, variant: .holo,
+                variantResolution: .uniqueInCatalog)
+        }
+        XCTAssertNil(CardShareIdentity(collectedCard: saved(rarity: nil)).shareRarityLabel)
+        XCTAssertEqual(CardShareIdentity(collectedCard: saved(rarity: nil), catalogCard: catalog).shareRarityLabel,
+                       "Double Rare")
+        XCTAssertEqual(CardShareIdentity(collectedCard: saved(rarity: "Rare"), catalogCard: catalog).shareRarityLabel,
+                       "Rare")
+    }
     private let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "UTC")!

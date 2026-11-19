@@ -204,6 +204,9 @@ private struct CollectionCardDetailContent: View {
     @State private var marketHistoryIdentity: [String]?
     @State private var marketHistoryRetry = 0
     @State private var gradedCatalogCard: IdentifiedCard?
+    /// The catalog printing, fetched for a share when the saved copy has no
+    /// rarity of its own.
+    @State private var shareCatalogCard: IdentifiedCard?
     @State private var isLoadingGradedFinishes = false
     @State private var gradedFinishLoadFailed = false
     @State private var gradedFinishRetry = 0
@@ -363,6 +366,7 @@ private struct CollectionCardDetailContent: View {
         // Keep the presentation host alive after the toolbar menu dismisses.
         .photosPicker(isPresented: $isChoosingArtwork, selection: $selectedArtwork, matching: .images)
         .sheet(isPresented: $isSharing) { shareSheet }
+        .task(id: isSharing ? shareCatalogSummary : nil) { await loadShareCatalogCard() }
         .onChange(of: selectedArtwork) { _, item in
             guard let item else { return }
             artworkGeneration &+= 1
@@ -464,7 +468,8 @@ private struct CollectionCardDetailContent: View {
 
     private var shareSheet: some View {
         CollectionShareSheet(options: [
-            CollectionShareOption(collectedCard: card, price: price, localArtworkFilename: localArtworkFilename)
+            CollectionShareOption(collectedCard: card, price: price, localArtworkFilename: localArtworkFilename,
+                                  catalogCard: gradedCatalogCard ?? shareCatalogCard)
         ])
     }
 
@@ -880,7 +885,30 @@ private struct CollectionCardDetailContent: View {
     }
 
     private var gradedFinishSummary: CatalogCardSummary? {
-        guard card.itemKind == .gradedCard, let printingID = card.underlyingPrintingID,
+        card.itemKind == .gradedCard ? catalogSummary : nil
+    }
+
+    /// Only needed when neither the saved copy nor an already loaded catalog
+    /// card can name the rarity.
+    private var shareCatalogSummary: CatalogCardSummary? {
+        guard (card.rarity ?? "").trimmingCharacters(in: .whitespaces).isEmpty,
+              gradedCatalogCard == nil else { return nil }
+        return catalogSummary
+    }
+
+    private func loadShareCatalogCard() async {
+        guard let summary = shareCatalogSummary, shareCatalogCard == nil else { return }
+        let catalog = sharedBrowseCatalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
+        // Best effort: the card still shares without a rarity.
+        guard let details = try? await catalog.details(for: summary),
+              !Task.isCancelled, summary == shareCatalogSummary else { return }
+        shareCatalogCard = details.card
+    }
+
+    /// Pokémon and Magic printings can be addressed from a saved copy; the
+    /// other games keep their rarity on the saved copy.
+    private var catalogSummary: CatalogCardSummary? {
+        guard card.itemKind != .sealedProduct, let printingID = card.underlyingPrintingID,
               card.cardGame == .pokemon || card.cardGame == .magic else { return nil }
         let setID = card.cardGame == .pokemon
             ? printingID.split(separator: "-", maxSplits: 1).first.map(String.init) ?? printingID
