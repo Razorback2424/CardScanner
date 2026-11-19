@@ -274,7 +274,7 @@ struct PortfolioView: View {
                                     .padding(.horizontal, 16)
                             }
 
-                            if summary.isAuthoritative, !isStartingCollection {
+                            if showsDashboard(summary), !isStartingCollection {
                                 VStack(alignment: .leading, spacing: 14) {
                                     PortfolioHistoryView(
                                         history: history,
@@ -289,6 +289,9 @@ struct PortfolioView: View {
                                     .id("most-valuable-cards-owned")
 
                                 biggestMovers { result in
+                                    // Data details describe this launch's
+                                    // replay; the launch screen has none yet.
+                                    guard !summary.isProvisional else { return }
                                     detailsDestination = PortfolioDetailsDestination(
                                         summary: summary,
                                         historyResult: result
@@ -533,6 +536,15 @@ struct PortfolioView: View {
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
+    /// The chart, Showcase and movers render for an authoritative summary, and
+    /// at launch for the provisional one when the previous launch's dashboard
+    /// was cached with it. Without that cache a provisional value stands
+    /// alone rather than above a chart claiming history is being recorded.
+    private func showsDashboard(_ summary: PortfolioSummary) -> Bool {
+        if summary.isAuthoritative { return true }
+        return summary.isProvisional && history.isShowingLaunchResult
+    }
+
     /// The valuation, and nothing that depends on a period.
     ///
     /// The decorative sparkline is gone: there is one authoritative trend
@@ -585,7 +597,7 @@ struct PortfolioView: View {
                 .padding(.vertical, 4)
                 .background(Color.secondary.opacity(0.12), in: Capsule())
                 .accessibilityHidden(true)
-            } else if portfolio.summary?.isAuthoritative == true,
+            } else if let summary = portfolio.summary, showsDashboard(summary),
                       let accounting = activeHistoryResult?.accounting {
                 HStack(spacing: 8) {
                     PortfolioAmountPill(

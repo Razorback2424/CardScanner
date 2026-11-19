@@ -907,6 +907,11 @@ struct StoreRevisionHistoryMonitor: View {
                 contributions: portfolio.contributionIndex
             )
         }
+        // Whatever this launch last showed is what the next one opens on.
+        .onChange(of: history.result) { _, result in
+            guard !history.isShowingLaunchResult else { return }
+            portfolio.recordLaunchPresentation(history: result)
+        }
     }
 }
 

@@ -127,23 +127,52 @@ final class PortfolioEngine: ObservableObject {
     /// Nil for headless and test engines: only the app's foreground engine
     /// opens on, and records, the last known value.
     private let launchSnapshots: PortfolioLaunchSnapshotStore?
+    /// The rest of the dashboard as last published, beside `launchSnapshots`.
+    private let launchPresentations: PortfolioLaunchPresentationStore?
     /// The store the running replay reads, when it is the active session.
     private var launchSnapshotStoreID: UUID?
+    /// The chart/movers result the previous launch last showed, for the
+    /// history store to display until this launch's history replaces it.
+    private(set) var launchHistory: PortfolioHistoryResult?
 
     init(
         computationProvider: PortfolioComputationProvider? = nil,
         launchSnapshots: PortfolioLaunchSnapshotStore? = nil,
+        launchPresentations: PortfolioLaunchPresentationStore? = nil,
         launchStoreID: UUID? = nil
     ) {
         self.computationProvider = computationProvider
         self.launchSnapshots = launchSnapshots
+        self.launchPresentations = launchPresentations
         // Open on the last value this store published so launch never shows a
         // blank calculating screen. It is provisional and deliberately not a
         // `lastUsableSummary`: an unreadable first replay must still say
         // "Value unavailable" rather than vouch for a cached number.
         if let snapshot = launchSnapshots?.load(storeID: launchStoreID) {
             status = .ready(snapshot.provisionalSummary)
+            // The Showcase and movers open on the same publication's holdings.
+            // The first replay replaces them wholesale.
+            if let presentation = launchPresentations?.load(storeID: launchStoreID) {
+                holdings = presentation.holdingSnapshots
+                launchHistory = presentation.history?.result
+            }
         }
+    }
+
+    /// Remembers the dashboard as it stands so the next launch opens on it.
+    /// Only an authoritative, defect-free publication of this launch counts;
+    /// a provisional screen never records itself.
+    func recordLaunchPresentation(history result: PortfolioHistoryResult?) {
+        guard let launchPresentations, let storeID = launchSnapshotStoreID,
+              let summary = replaySummary, summary.isAuthoritative,
+              !summary.isProvisional, summary.defects.isEmpty,
+              summary.copyCount ?? 0 > 0 else { return }
+        launchPresentations.record(PortfolioLaunchPresentation(
+            storeID: storeID,
+            savedAt: .now,
+            holdings: holdings,
+            history: result
+        ))
     }
 
     enum Status: Equatable {
@@ -455,6 +484,14 @@ final class PortfolioEngine: ObservableObject {
     private func retryEpochIfNeeded(container: ModelContainer, now: Date,
                                     shouldContinue: @escaping StorageGenerationContinuation) async {
         guard needsEpochRetry else { return }
+        // Every launch after the first finds the books already open. That path
+        // of `establishIfNeeded` only pins the time zone and rewrites the same
+        // date, so do exactly that here instead of waiting for the write lock.
+        if PortfolioEpoch.startedAt() != nil {
+            _ = PortfolioCalendar.timeZone()
+            needsEpochRetry = false
+            return
+        }
         do {
             let worker = await PortfolioPersistenceActor.makeBackground(modelContainer: container)
             try await worker.establishEpoch(
@@ -584,6 +621,14 @@ final class PortfolioEngine: ObservableObject {
             // Replay closes must agree with independently measured current
             // value before they can become durable accounting evidence.
             if summary.isAuthoritative {
+                // Show the replay now. Saving every close waits for the write
+                // lock and touches each replayed day; the dashboard does not
+                // need to wait for that. Observers that read the saved closes
+                // (history) still only hear `inputRevision` once they exist.
+                publishPresentation(
+                    computation, summary: summary, now: now, timeZone: timeZone,
+                    commitsPublication: false
+                )
                 let startingPriceRevision = livePriceRevision
                 let worker = await PortfolioPersistenceActor.makeBackground(modelContainer: context.container)
                 summary.revisionNote = await worker.publish(
@@ -608,11 +653,16 @@ final class PortfolioEngine: ObservableObject {
         _ computation: PortfolioReplaySnapshotBuilder.Computation,
         summary: PortfolioSummary,
         now: Date,
-        timeZone: TimeZone
+        timeZone: TimeZone,
+        commitsPublication: Bool = true
     ) {
         lastComputedDay = PortfolioCalendar.day(containing: now, in: timeZone)
-        contributionIndex = computation.replay.contributionIndex
-        holdings = computation.holdings
+        // An early presentation is followed by the committed one with the same
+        // replay; skip identical reassignments so views do not redraw twice.
+        if contributionIndex != computation.replay.contributionIndex {
+            contributionIndex = computation.replay.contributionIndex
+        }
+        if holdings != computation.holdings { holdings = computation.holdings }
         performanceFactors = PortfolioPerformanceFactors(
             daily: Dictionary(
                 computation.replay.days.compactMap { day in
@@ -643,7 +693,8 @@ final class PortfolioEngine: ObservableObject {
         // filled in would make the fallback look mysteriously incomplete.
         lastUsableSummary = summary
         replaySummary = summary
-        status = .ready(summary)
+        if status != .ready(summary) { status = .ready(summary) }
+        guard commitsPublication else { return }
         launchSnapshots?.record(summary, storeID: launchSnapshotStoreID)
         // Observers see this only after both persistence and presentation settle.
         inputRevision &+= 1

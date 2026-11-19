@@ -236,7 +236,12 @@ final class PortfolioHistoryStore: ObservableObject {
         }
     }
 
-    @Published private(set) var result: PortfolioHistoryResult?
+    @Published private(set) var result: PortfolioHistoryResult? {
+        didSet { isShowingLaunchResult = false }
+    }
+    /// True while `result` is the previous launch's cached presentation and
+    /// this launch has not computed history of its own yet.
+    @Published private(set) var isShowingLaunchResult = false
     private var cachedInput: PortfolioHistoryInput?
     private var loadRequest: PortfolioHistoryLoadRequest?
     private var inputRevision: UInt = 0
@@ -245,13 +250,20 @@ final class PortfolioHistoryStore: ObservableObject {
     typealias Calculation = @Sendable (PortfolioHistoryInput, PortfolioHistoryRange) async -> PortfolioHistoryResult
     private let calculate: Calculation
 
-    init(calculate: Calculation? = nil) {
+    init(calculate: Calculation? = nil, launchResult: PortfolioHistoryResult? = nil) {
         self.calculate = calculate ?? { input, range in
             await PortfolioHistoryCalculationWorker().calculate(input: input, range: range)
         }
         range = PortfolioHistoryRange(
             rawValue: UserDefaults.standard.string(forKey: "portfolioHistoryRange") ?? ""
         ) ?? .oneMonth
+        // Open on the chart the previous launch last showed, but only for the
+        // period still selected: a 1M chart under a 3M chip is the mismatch
+        // `matches(range:)` exists to prevent.
+        if let launchResult, launchResult.matches(range: range), !launchResult.isEmpty {
+            result = launchResult
+            isShowingLaunchResult = true
+        }
     }
 
     /// Result scoped to the currently selected period.
@@ -283,7 +295,9 @@ final class PortfolioHistoryStore: ObservableObject {
         cachedInput = nil
         guard let summary else {
             loadRequest = nil
-            result = nil
+            // Launch asks before its first replay has published. Keep the
+            // previous launch's chart up until this launch has its own.
+            if !isShowingLaunchResult { result = nil }
             return
         }
         let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current

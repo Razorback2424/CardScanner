@@ -383,3 +383,158 @@ private actor LaunchReplayGate {
         waiters = []
     }
 }
+
+/// Launch renders the whole dashboard from the previous launch's publication,
+/// not just its headline, and hands every part back to this launch's replay.
+@MainActor
+final class PortfolioLaunchPresentationTests: XCTestCase {
+    private var directory: URL!
+    private var defaults: UserDefaults!
+    private var suiteName: String!
+
+    override func setUp() {
+        super.setUp()
+        directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("PortfolioLaunchPresentationTests-\(UUID().uuidString)")
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        suiteName = "PortfolioLaunchPresentationTests-\(UUID().uuidString)"
+        defaults = UserDefaults(suiteName: suiteName)
+    }
+
+    override func tearDown() {
+        try? FileManager.default.removeItem(at: directory)
+        defaults.removePersistentDomain(forName: suiteName)
+        super.tearDown()
+    }
+
+    func testPresentationKeepsShowcaseAndNamedMoversAndRoundTrips() async throws {
+        let storeID = UUID()
+        let holdings = PortfolioHoldingSnapshot.rankedByUnitPrice(
+            (0..<40).map { holding("card-\($0)", unit: $0 < 39 ? Int64(1_000_0000 - $0 * 1_0000) : nil) }
+        )
+        // Movement on 30 keys; only the 25 largest are worth naming.
+        let contributions = Dictionary(uniqueKeysWithValues: (10..<40).map {
+            ("card-\($0)", Money(tenThousandths: Int64($0) * ($0.isMultiple(of: 2) ? 1_0000 : -1_0000)))
+        })
+        let result = history(range: .oneMonth, contributions: contributions)
+        let store = PortfolioLaunchPresentationStore(fileURL: directory.appendingPathComponent("p.json"))
+        store.record(PortfolioLaunchPresentation(
+            storeID: storeID, savedAt: .now, holdings: holdings, history: result
+        ))
+        await store.waitForPendingWrites()
+
+        XCTAssertNil(store.load(storeID: UUID()), "Another store never opens on this dashboard")
+        let loaded = try XCTUnwrap(store.load(storeID: storeID))
+        let keys = loaded.holdingSnapshots.map(\.collectionKey)
+        XCTAssertEqual(Array(keys.prefix(5)), (0..<5).map { "card-\($0)" },
+                       "The Showcase opens in the order it was last ranked")
+        let largestMovers = Set((15..<40).map { "card-\($0)" })
+        XCTAssertEqual(Set(keys), Set((0..<5).map { "card-\($0)" }).union(largestMovers))
+        XCTAssertEqual(Set(loaded.history.map { Array($0.contributions.keys) } ?? []), largestMovers)
+
+        let restored = try XCTUnwrap(loaded.history?.result)
+        XCTAssertEqual(restored.range, result.range)
+        XCTAssertEqual(restored.points, result.points)
+        XCTAssertEqual(restored.accounting, result.accounting)
+        XCTAssertEqual(restored.accountingInterval, result.accountingInterval)
+        XCTAssertEqual(restored.coverage, result.coverage)
+        XCTAssertEqual(restored.contributions["card-39"], Money(tenThousandths: -39_0000))
+        XCTAssertEqual(loaded.holdingSnapshots.first, holdings.first)
+    }
+
+    func testEngineOpensOnCachedDashboardOnlyBesideItsSnapshot() async throws {
+        let storeID = UUID()
+        let snapshots = PortfolioLaunchSnapshotStore(defaults: defaults)
+        let presentations = PortfolioLaunchPresentationStore(fileURL: directory.appendingPathComponent("p.json"))
+        let holdings = [holding("a", unit: 10_0000), holding("b", unit: 5_0000)]
+        let result = history(range: .oneWeek, contributions: ["a": Money(tenThousandths: 1_0000)])
+        presentations.record(PortfolioLaunchPresentation(
+            storeID: storeID, savedAt: .now, holdings: holdings, history: result
+        ))
+        await presentations.waitForPendingWrites()
+
+        let withoutValue = PortfolioEngine(
+            launchSnapshots: snapshots, launchPresentations: presentations, launchStoreID: storeID
+        )
+        XCTAssertTrue(withoutValue.holdings.isEmpty, "No dashboard opens without the value it belongs to")
+        XCTAssertNil(withoutValue.launchHistory)
+
+        snapshots.record(PortfolioSummary(currentValue: Money(tenThousandths: 15_0000), copyCount: 2),
+                         storeID: storeID)
+        let engine = PortfolioEngine(
+            launchSnapshots: snapshots, launchPresentations: presentations, launchStoreID: storeID
+        )
+        XCTAssertEqual(engine.summary?.isProvisional, true)
+        XCTAssertEqual(engine.holdings, holdings)
+        XCTAssertEqual(engine.launchHistory?.points, result.points)
+    }
+
+    func testHistoryStoreKeepsLaunchChartUntilThisLaunchHasHistory() throws {
+        let selected = PortfolioHistoryStore().range
+        let other = PortfolioHistoryRange.allCases.first { $0 != selected }!
+
+        let mismatched = PortfolioHistoryStore(launchResult: history(range: other, contributions: [:]))
+        XCTAssertNil(mismatched.result, "A cached chart never opens under a different period chip")
+
+        let store = PortfolioHistoryStore(launchResult: history(range: selected, contributions: [:]))
+        XCTAssertTrue(store.isShowingLaunchResult)
+        XCTAssertEqual(store.result?.range, selected)
+
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                                           configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        // Launch asks for history before its first replay has published.
+        store.recompute(context: ModelContext(container), summary: nil,
+                        factors: PortfolioPerformanceFactors(), contributions: PortfolioContributionIndex())
+        XCTAssertNotNil(store.result, "The cached chart stays up until this launch replaces it")
+        XCTAssertTrue(store.isShowingLaunchResult)
+    }
+
+    private func holding(_ key: String, unit: Int64?) -> PortfolioHoldingSnapshot {
+        PortfolioHoldingSnapshot(
+            collectionKey: key, name: key, detail: "Set · Holo",
+            artworkURL: URL(string: "https://example.com/\(key).png"),
+            quantity: 2,
+            unitPrice: unit.map { Money(tenThousandths: $0) },
+            holdingValue: unit.map { Money(tenThousandths: $0 * 2) },
+            priceStorageKey: "price:\(key)",
+            artworkGame: .pokemon, artworkSetCode: "sv1", artworkCollectorNumber: "1"
+        )
+    }
+
+    private func history(
+        range: PortfolioHistoryRange, contributions: [String: Money]
+    ) -> PortfolioHistoryResult {
+        let day = Date(timeIntervalSince1970: 1_790_000_000)
+        return PortfolioHistoryResult(
+            range: range,
+            points: [
+                PortfolioHistoryPoint(displayDay: day, instant: day.addingTimeInterval(86_400),
+                                      value: Money(tenThousandths: 100_0000), isLive: false),
+                PortfolioHistoryPoint(displayDay: day.addingTimeInterval(86_400),
+                                      instant: day.addingTimeInterval(90_000),
+                                      value: Money(tenThousandths: 112_5000),
+                                      cumulativeMarketMovement: Money(tenThousandths: 12_5000),
+                                      performanceFactor: Decimal(string: "1.125"), isLive: true),
+            ],
+            accounting: PortfolioHistoryAccounting(
+                anchorValue: Money(tenThousandths: 100_0000), endValue: Money(tenThousandths: 112_5000),
+                market: Money(tenThousandths: 12_5000), added: .zero, removed: .zero, corrections: .zero,
+                pricingAdjustments: .zero, unexplained: .zero
+            ),
+            performanceFactor: Decimal(string: "1.125"),
+            performanceAvailable: true,
+            coverage: PortfolioHistoryCoverage(
+                completeDays: 1, live: PortfolioCoverage(refreshed: 3, carriedForward: 1, state: .partial)
+            ),
+            revisions: [],
+            trackingBeganDate: nil,
+            hasTwoPublishedPoints: true,
+            accountingInterval: PortfolioAccountingInterval(
+                anchorDate: day, includedClosedDays: [], includesLiveDay: true,
+                liveDay: day.addingTimeInterval(86_400)
+            ),
+            contributions: contributions,
+            hasEligibleMarketMovement: true
+        )
+    }
+}

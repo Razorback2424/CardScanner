@@ -35,7 +35,7 @@ struct ContentView: View {
     /// progress publishes on a one-second cadence, and observing it at the root
     /// would rebuild the whole tab tree and repeat collection projection work.
     private let refresh = PriceRefreshController.shared
-    @State private var history = PortfolioHistoryStore()
+    @State private var history: PortfolioHistoryStore
     @State private var writeCoordinator = DerivedStateWriteCoordinator()
     @State private var refreshCompletionSignal = PriceRefreshCompletionSignal()
     /// One catalog actor is shared by every Collection/Browse route in this
@@ -109,10 +109,13 @@ struct ContentView: View {
         _selectedTab = State(initialValue: .portfolio)
         let usesLaunchSnapshot = true
 #endif
-        _portfolio = State(initialValue: PortfolioEngine(
+        let portfolio = PortfolioEngine(
             launchSnapshots: usesLaunchSnapshot ? .shared : nil,
+            launchPresentations: usesLaunchSnapshot ? .shared : nil,
             launchStoreID: CollectionStorageGeneration.shared.currentToken()?.storeID
-        ))
+        )
+        _portfolio = State(initialValue: portfolio)
+        _history = State(initialValue: PortfolioHistoryStore(launchResult: portfolio.launchHistory))
     }
 
 #if DEBUG && LOCAL_ONLY_SIGNING
@@ -610,6 +613,13 @@ struct ContentView: View {
         defer { PerformanceSignpost.endInterval("Launch.backfill", interval, "") }
         do {
             try await Task.detached(priority: .userInitiated) {
+                // Almost every launch has nothing to backfill. Answer that from
+                // a read context so launch never queues for the write lock
+                // behind an unrelated writer just to learn it had no work.
+                let readContext = ModelContext(container)
+                if (try? CollectionStore(context: readContext).existingCollectionBackfillIsCurrent()) == true {
+                    return
+                }
                 try CollectionWriteSerializer.perform(
                     container: container,
                     timeout: .wait
