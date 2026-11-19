@@ -1,3 +1,21 @@
+# 2026-11-18 — Scan light moves to Scan with a brightness slider
+
+At the owner's direction, the Pro-tab **Macro light check** (a ProfileLocal-only
+screen with fixed Off/15%/30% levels) is gone. A flashlight button now sits
+beside Settings in the Scan top bar and is hidden when the active lens has no
+torch. While the light is on, a slider under the top bar sets brightness from
+5% to 100%. The default is 15%, and the last choice is remembered. The light
+starts Off each time Scan regains the camera. It turns off for sheets, Price
+Check, inactivity, interruptions, runtime errors and leaving Scan. An
+unexpected shutoff, such as from heat, clears the request. An eligible lens
+switch carries the light across. Every torch change invalidates spatial
+tracking first. See the [low-light plan](docs/plans/scanner-low-light-plan.md).
+
+Debug on the iOS 27.0 Simulator, against `75c2c16a` plus the working tree:
+`CardLatchTests` ran 92 tests with 0 failures, including 11 new Scan light
+cases that use a stand-in torch. Physical-device brightness, glare and
+duplicate trials are still pending.
+
 # 2026-11-18 — Pokémon finish coverage: batch certifier and collector conventions
 
 `certify_pokemon_finish_coverage.py` gains `report-all` and `certify-all`. They

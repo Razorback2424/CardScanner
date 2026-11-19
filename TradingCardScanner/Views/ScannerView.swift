@@ -464,7 +464,9 @@ private struct ScannerChrome: View {
             setLens: scanner.setLens,
             setFinishLock: model.setFinishLock,
             clearFinishLocks: model.clearFinishLocks,
-            openSettings: openSettings
+            openSettings: openSettings,
+            scannerState: scanner.uiState,
+            setScanLight: scanner.setScanLight
         )
         .equatable()
         // Observe the confirmed camera values without observing per-frame scanner state.
@@ -474,6 +476,8 @@ private struct ScannerChrome: View {
 
     private var topStack: some View {
         VStack(spacing: 10) {
+            ScanLightBrightnessControl(state: scanner.uiState, setLevel: scanner.setScanLightLevel)
+
             // A question owns the screen until it is answered: history steps
             // aside so the only thing above the band is the one decision.
             if !isScanChoicePending {
@@ -891,6 +895,10 @@ private struct ScannerTopBar: View, Equatable {
     let setFinishLock: (VariantLock?, CardGame) -> Void
     let clearFinishLocks: () -> Void
     let openSettings: () -> Void
+    /// Observed only by the light button, so torch changes never re-evaluate
+    /// the bar. Not part of equality: the object is stable for the session.
+    let scannerState: CardScannerUIState
+    let setScanLight: (Bool, Float) -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @Namespace private var glassNamespace
@@ -1010,6 +1018,7 @@ private struct ScannerTopBar: View, Equatable {
             finishLockControl(wrapsSummary: false).fixedSize(horizontal: true, vertical: false)
             identificationSpinner
             Spacer(minLength: 0)
+            lightButton
             settingsButton
         }
     }
@@ -1019,6 +1028,7 @@ private struct ScannerTopBar: View, Equatable {
             HStack(spacing: 8) {
                 purposeControl
                 Spacer(minLength: 0)
+                lightButton
                 settingsButton
             }
             HStack(spacing: 8) {
@@ -1037,6 +1047,11 @@ private struct ScannerTopBar: View, Equatable {
                 .transition(.opacity)
                 .accessibilityLabel("Identifying card")
         }
+    }
+
+    private var lightButton: some View {
+        ScanLightButton(state: scannerState, setScanLight: setScanLight)
+            .appGlassEffectID("scanner-light", in: glassNamespace)
     }
 
     private var settingsButton: some View {
@@ -1063,6 +1078,101 @@ private struct ScannerTopBar: View, Equatable {
         }
         .appGlassEffectID("scanner-settings", in: glassNamespace)
         .accessibilityLabel("Settings")
+    }
+}
+
+/// One tap for the light. It starts at the brightness the user last chose.
+private struct ScanLightButton: View {
+    @ObservedObject var state: CardScannerUIState
+    let setScanLight: (Bool, Float) -> Void
+    @AppStorage(ScanLightLevel.storageKey) private var level = Double(ScanLightLevel.defaultLevel)
+
+    var body: some View {
+        if state.scanLight != .unsupported {
+            button
+                .disabled(state.scanLight == .unavailable)
+                .accessibilityLabel("Scan light")
+                .accessibilityValue(accessibilityValue)
+                .accessibilityAddTraits(.isToggle)
+        }
+    }
+
+    private var isOn: Bool { state.scanLight == .on }
+
+    private var accessibilityValue: String {
+        switch state.scanLight {
+        case .on: return "On"
+        case .unavailable: return "Unavailable"
+        case .off, .unsupported: return "Off"
+        }
+    }
+
+    private func toggle() {
+        setScanLight(!isOn, Float(level))
+    }
+
+    private var glyph: some View {
+        Image(systemName: isOn ? "flashlight.on.fill" : "flashlight.off.fill")
+            .font(.system(size: 16, weight: .semibold))
+            .foregroundStyle(isOn ? .black : .white.opacity(state.scanLight == .unavailable ? 0.45 : 1))
+            .frame(width: 44, height: 44)
+    }
+
+    @ViewBuilder
+    private var button: some View {
+        if #available(iOS 26.0, *) {
+            if isOn {
+                Button(action: toggle) { glyph }
+                    .buttonStyle(.glassProminent)
+                    .tint(.white)
+            } else {
+                Button(action: toggle) { glyph }
+                    .buttonStyle(.glass)
+            }
+        } else {
+            Button(action: toggle) {
+                glyph
+                    .background(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(.black.opacity(0.55)), in: Circle())
+                    .overlay(Circle().stroke(.white.opacity(0.18), lineWidth: 1))
+            }
+            .buttonStyle(.plain)
+        }
+    }
+}
+
+/// Continuous brightness while the light is on, so the user can find the
+/// least light that reads the card instead of picking from fixed steps.
+private struct ScanLightBrightnessControl: View {
+    @ObservedObject var state: CardScannerUIState
+    let setLevel: (Float) -> Void
+    @AppStorage(ScanLightLevel.storageKey) private var level = Double(ScanLightLevel.defaultLevel)
+
+    var body: some View {
+        if state.scanLight == .on {
+            HStack(spacing: 10) {
+                Image(systemName: "sun.min.fill")
+                    .accessibilityHidden(true)
+                Slider(
+                    value: $level,
+                    in: Double(ScanLightLevel.range.lowerBound)...Double(ScanLightLevel.range.upperBound)
+                )
+                .tint(.white)
+                .accessibilityLabel("Scan light brightness")
+                .accessibilityValue(level.formatted(.percent.precision(.fractionLength(0))))
+                Image(systemName: "sun.max.fill")
+                    .accessibilityHidden(true)
+            }
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14)
+            .frame(minHeight: 44)
+            .appPillGlass(interactive: true)
+            .transition(.move(edge: .top).combined(with: .opacity))
+            .onChange(of: level) { _, newLevel in
+                setLevel(Float(newLevel))
+            }
+            .accessibilityIdentifier("scan-light-brightness")
+        }
     }
 }
 

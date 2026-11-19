@@ -30,9 +30,6 @@ struct ProView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var path: [Module]
     @State private var isShowingCollectorTools = false
-#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
-    @State private var isShowingMacroLightCheck = false
-#endif
 
     init() {
 #if DEBUG
@@ -87,13 +84,6 @@ struct ProView: View {
                             }
                         }
                     }
-#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
-                    Button("Macro light check", systemImage: "flashlight.on.fill") {
-                        isShowingMacroLightCheck = true
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-#endif
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 6)
@@ -103,11 +93,6 @@ struct ProView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Pro")
             .sheet(isPresented: $isShowingCollectorTools) { CollectorToolsOfferView() }
-#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
-            .fullScreenCover(isPresented: $isShowingMacroLightCheck) {
-                MacroLightCheckView { isShowingMacroLightCheck = false }
-            }
-#endif
             .task {
                 if !collectorTools.isOwned, collectorTools.displayPrice == nil {
                     await collectorTools.loadProduct()

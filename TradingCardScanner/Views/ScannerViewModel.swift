@@ -2282,6 +2282,7 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func viewDisappeared() {
+        scanner.turnOffScanLight()
         let shouldFinalize = isScannerSessionActive && recognitionEligibility.isSceneActive
         recognitionEligibility.isScannerVisible = false
         visibilityEpoch = UUID()
@@ -2603,6 +2604,9 @@ final class ScannerViewModel: ObservableObject {
             }
             return
         }
+        // Control Center, a system alert or the app switcher covers the
+        // viewfinder. Returning starts with the light off.
+        scanner.turnOffScanLight()
         if isBackgrounded {
             invalidatePendingScan()
         } else {
@@ -2636,6 +2640,7 @@ final class ScannerViewModel: ObservableObject {
         updateScannerConfirmationContext()
         dismissReceipt()
         scanner.pauseRecognition()
+        scanner.turnOffScanLight()
     }
 
     /// Settings can start exclusive collection operations. Release the
@@ -6165,6 +6170,7 @@ final class ScannerViewModel: ObservableObject {
         pendingIdentityChoice = nil
         recognitionEligibility.isBlockedByPresentation = true
         scanner.pauseRecognition()
+        scanner.turnOffScanLight()
         let result = priceCheckCoordinator.present(resolvedScan)
         presentedPriceCheckSubject = resolvedScan.request.subject
         priceCheckResult = result

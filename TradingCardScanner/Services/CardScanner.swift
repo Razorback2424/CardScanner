@@ -487,22 +487,59 @@ enum CameraIssue: Equatable {
     }
 }
 
-#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
-enum MacroLightCheckLevel: Float, Sendable {
-    case off = 0
-    case low = 0.15
-    case medium = 0.30
+/// What the Scan light control shows. Derived on `sessionQueue` from the
+/// active input and the user's request, then mirrored to the main actor.
+enum ScanLightState: Equatable, Sendable {
+    /// The active input has no usable torch. The control is hidden.
+    case unsupported
+    /// The torch exists but is temporarily unavailable, usually from heat.
+    case unavailable
+    case off
+    case on
 }
 
-struct MacroLightCheckReading: Equatable, Sendable {
-    let message: String
-    var canTurnOn = false
-    var commandFailed = false
+/// The brightness range the Scan light slider offers.
+///
+/// The low end stays just above zero because `setTorchModeOn(level:)` rejects
+/// zero; Off is the button, not the bottom of the slider. The default matches
+/// the dimmest output that helped in the Macro check, which keeps glare off foils
+/// and sleeves and keeps battery and heat down.
+enum ScanLightLevel {
+    static let range: ClosedRange<Float> = 0.05...1
+    static let defaultLevel: Float = 0.15
+    static let storageKey = "scanLightLevel"
 
-    static let waiting = Self(message: "Waiting for the Macro camera…")
-    static let noMacro = Self(message: "This device has no supported Macro camera.")
+    static func clamped(_ level: Float) -> Float {
+        guard level.isFinite else { return defaultLevel }
+        return min(max(level, range.lowerBound), range.upperBound)
+    }
 }
-#endif
+
+/// The torch surface the Scan light needs, so the lifecycle can be exercised
+/// without capture hardware.
+protocol ScanLightDevice: AnyObject {
+    var hasTorch: Bool { get }
+    var isTorchAvailable: Bool { get }
+    var isTorchActive: Bool { get }
+    var torchMode: AVCaptureDevice.TorchMode { get }
+    var torchLevel: Float { get }
+    func isTorchModeSupported(_ mode: AVCaptureDevice.TorchMode) -> Bool
+    func setScanLight(level: Float?) throws
+}
+
+extension AVCaptureDevice: ScanLightDevice {
+    /// `nil` turns the torch off. Holds the configuration lock for the change.
+    func setScanLight(level: Float?) throws {
+        try lockForConfiguration()
+        defer { unlockForConfiguration() }
+        if let level {
+            // Heat can lower the ceiling below 1.0; asking for more throws.
+            try setTorchModeOn(level: min(level, AVCaptureDevice.maxAvailableTorchLevel))
+        } else {
+            torchMode = .off
+        }
+    }
+}
 
 private enum CameraScannerError: Error {
     case cameraUnavailable
@@ -718,6 +755,7 @@ final class CardScannerUIState: ObservableObject {
     /// ultra wide, so the toggle must not offer one.
     @Published private(set) var availableLenses: [CameraLens] = []
     @Published private(set) var scanAssistance: ScanAssistance = .none
+    @Published private(set) var scanLight: ScanLightState = .unsupported
     /// Non-nil only after the label has earned its own confirmation window.
     @Published private(set) var slabFraming: GradedSlabEvidence?
     @Published private(set) var slabLabelReadPrompt: SlabLabelReadPrompt?
@@ -760,6 +798,11 @@ final class CardScannerUIState: ObservableObject {
     func setScanAssistance(_ assistance: ScanAssistance) {
         guard scanAssistance != assistance else { return }
         scanAssistance = assistance
+    }
+
+    func setScanLight(_ state: ScanLightState) {
+        guard scanLight != state else { return }
+        scanLight = state
     }
 
     func showSlab(_ evidence: GradedSlabEvidence) {
@@ -918,12 +961,18 @@ final class CardScanner: NSObject, ObservableObject {
     private var lastPausedWhileLiveReportAt: CFAbsoluteTime?
     private static let pausedWhileLiveReportInterval: CFAbsoluteTime = 3
     private var videoInput: AVCaptureDeviceInput?
+    /// The user's Scan light request, owned by `sessionQueue`. `nil` is Off.
+    /// Only a tap on the light button sets it; every lifecycle exit clears it.
+    private var scanLightRequestedLevel: Float?
+    private var scanLightObservations: [NSKeyValueObservation] = []
     private var interruptionObserver: NSObjectProtocol?
     private var interruptionEndedObserver: NSObjectProtocol?
     private var runtimeErrorObserver: NSObjectProtocol?
 #if DEBUG
     private var runtimeRestartOverrideForTesting: (() -> Bool)?
     private var lensAttachmentOverrideForTesting: ((CameraLens) throws -> Void)?
+    private var scanLightDeviceOverrideForTesting: ScanLightDevice?
+    private var scanLightSessionLiveOverrideForTesting: Bool?
 #endif
     /// Written on `sessionQueue`; `uiState.lens` is the main-thread mirror for
     /// the UI.
@@ -1090,6 +1139,8 @@ final class CardScanner: NSObject, ObservableObject {
             object: session,
             queue: nil
         ) { [weak self] notification in
+            // The light belongs to a visible, running viewfinder.
+            self?.turnOffScanLight()
             // iOS reports the ordinary app-background transition through the
             // same interruption notification as real camera contention. It is
             // expected lifecycle, not a camera fault worth showing to the user.
@@ -1161,6 +1212,7 @@ final class CardScanner: NSObject, ObservableObject {
         sessionQueue.async { [weak self] in
             guard let self, self.wantsRunning else { return }
             Self.logger.error("Camera runtime error: code=\(error?.code.rawValue ?? 0)")
+            self.clearScanLightOnSessionQueue()
             DispatchQueue.main.async { [weak self] in self?.onCameraInterruption?() }
             self.setCameraIssue(.configurationFailed)
 
@@ -1307,92 +1359,143 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     private func stopCaptureOnSessionQueue() {
+        // Turn the LED off before the input stops, so it never outlives Scan.
+        clearScanLightOnSessionQueue()
         wantsRunning = false
         startRequestID = UUID()
         if session.isRunning { session.stopRunning() }
     }
 
-#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
-    /// The manual gate checks the same physical input and configuration used by Scan.
-    func checkMacroLight() async -> MacroLightCheckReading {
-        await withCheckedContinuation { continuation in
-            sessionQueue.async { [self] in
-                continuation.resume(returning: macroLightReadingOnSessionQueue(level: nil))
-            }
-        }
-    }
+    // MARK: - Scan light
 
-    func setMacroLightCheckLevel(
-        _ level: MacroLightCheckLevel,
-        onChange: (@MainActor (MacroLightCheckReading) -> Void)? = nil
-    ) {
+    /// The light button. On applies the stored brightness; Off clears the
+    /// request. A request made while the camera is not live is dropped.
+    func setScanLight(on: Bool, level: Float) {
+        let level = ScanLightLevel.clamped(level)
         sessionQueue.async { [self] in
-            let reading = macroLightReadingOnSessionQueue(level: level)
-            if let onChange { DispatchQueue.main.async { onChange(reading) } }
+            scanLightRequestedLevel = on ? level : nil
+            applyScanLightOnSessionQueue()
         }
     }
 
-    private func macroLightReadingOnSessionQueue(level: MacroLightCheckLevel?) -> MacroLightCheckReading {
-        let turningOn = level != nil && level != .off
-        guard currentLens == .macro else {
-            return .init(message: MacroLightCheckReading.noMacro.message, commandFailed: turningOn)
-        }
-        guard let device = videoInput?.device,
-              device.deviceType == CameraLens.macro.deviceType else {
-            return .init(message: MacroLightCheckReading.waiting.message, commandFailed: turningOn)
-        }
-        guard device.hasTorch else {
-            return .init(message: "The Macro camera has no usable torch.", commandFailed: turningOn)
-        }
-
-        // Off is also safe while the session is interrupted or shutting down.
-        var commandFailed = false
-        if level == .off {
-            commandFailed = !applyMacroLightCheckLevel(.off, to: device)
-        }
-        guard device.isTorchModeSupported(.on) else {
-            return .init(message: "The Macro camera has no usable torch.", commandFailed: commandFailed || turningOn)
-        }
-        guard wantsRunning, session.isRunning, !session.isInterrupted else {
-            return .init(message: MacroLightCheckReading.waiting.message, commandFailed: commandFailed || turningOn)
-        }
-        if let level, turningOn {
-            commandFailed = !applyMacroLightCheckLevel(level, to: device)
-        }
-        guard device.isTorchAvailable else {
-            return .init(message: "The Macro torch is temporarily unavailable.", commandFailed: commandFailed)
-        }
-        let light = device.isTorchActive ? "On (\(Int((device.torchLevel * 100).rounded()))%)" : "Off"
-        return .init(message: "Macro torch supported · \(light)", canTurnOn: true, commandFailed: commandFailed)
-    }
-
-    private func applyMacroLightCheckLevel(_ level: MacroLightCheckLevel, to device: AVCaptureDevice) -> Bool {
-        do {
-            try device.lockForConfiguration()
-            defer { device.unlockForConfiguration() }
-            if level == .off {
-                guard device.isTorchModeSupported(.off) else { return false }
-                device.torchMode = .off
-            } else {
-                guard device.isTorchAvailable, device.isTorchModeSupported(.on) else { return false }
-                try device.setTorchModeOn(level: level.rawValue)
-            }
-            return true
-        } catch {
-            return false
-        }
-    }
-
-    func stopMacroLightCheck(onStopped: (@MainActor () -> Void)? = nil) {
+    /// The slider. Changes brightness only while the light is on.
+    func setScanLightLevel(_ level: Float) {
+        let level = ScanLightLevel.clamped(level)
         sessionQueue.async { [self] in
-            if currentLens == .macro, let device = videoInput?.device, device.hasTorch {
-                _ = applyMacroLightCheckLevel(.off, to: device)
-            }
-            stopCaptureOnSessionQueue()
-            if let onStopped { DispatchQueue.main.async { onStopped() } }
+            guard scanLightRequestedLevel != nil, scanLightRequestedLevel != level else { return }
+            scanLightRequestedLevel = level
+            applyScanLightOnSessionQueue()
         }
     }
+
+    /// Lifecycle exits: sheets, inactivity, interruptions and leaving Scan.
+    func turnOffScanLight() {
+        sessionQueue.async { [self] in
+            clearScanLightOnSessionQueue()
+        }
+    }
+
+    private func clearScanLightOnSessionQueue() {
+        scanLightRequestedLevel = nil
+        applyScanLightOnSessionQueue()
+    }
+
+    private var scanLightDevice: ScanLightDevice? {
+#if DEBUG
+        if let device = scanLightDeviceOverrideForTesting { return device }
 #endif
+        return videoInput?.device
+    }
+
+    private var isSessionLiveForScanLight: Bool {
+#if DEBUG
+        if let live = scanLightSessionLiveOverrideForTesting { return wantsRunning && live }
+#endif
+        return wantsRunning && session.isRunning && !session.isInterrupted
+    }
+
+    /// Brings the active input's torch in line with the request and publishes
+    /// the result. Callers must be on `sessionQueue`.
+    private func applyScanLightOnSessionQueue() {
+        guard let device = scanLightDevice else {
+            scanLightRequestedLevel = nil
+            updateUI { $0.setScanLight(.unsupported) }
+            return
+        }
+        guard device.hasTorch, device.isTorchModeSupported(.on) else {
+            scanLightRequestedLevel = nil
+            updateUI { $0.setScanLight(.unsupported) }
+            return
+        }
+
+        let wasLit = device.torchMode != .off
+        let previousLevel = device.torchLevel
+        if let level = scanLightRequestedLevel,
+           isSessionLiveForScanLight,
+           device.isTorchAvailable {
+            if !wasLit || previousLevel != level {
+                // Exposure jumps with the LED. Drop tracking first so the jump
+                // cannot read as the held card leaving the band.
+                invalidateSpatialContinuity()
+                do {
+                    try device.setScanLight(level: level)
+                } catch {
+                    Self.logger.error("Scan light could not turn on")
+                    scanLightRequestedLevel = nil
+                    turnTorchOff(device)
+                }
+            }
+        } else {
+            scanLightRequestedLevel = nil
+            if wasLit {
+                invalidateSpatialContinuity()
+                turnTorchOff(device)
+            }
+        }
+        publishScanLight(for: device)
+    }
+
+    private func turnTorchOff(_ device: ScanLightDevice) {
+        guard device.torchMode != .off, device.isTorchModeSupported(.off) else { return }
+        try? device.setScanLight(level: nil)
+    }
+
+    private func publishScanLight(for device: ScanLightDevice) {
+        let state: ScanLightState
+        if !device.isTorchAvailable {
+            state = .unavailable
+        } else if scanLightRequestedLevel != nil {
+            state = .on
+        } else {
+            state = .off
+        }
+        updateUI { $0.setScanLight(state) }
+    }
+
+    /// Heat, another app or Control Center can change the torch underneath
+    /// Scan. An unexpected shutoff clears the request rather than relighting.
+    private func scanLightHardwareChanged(on device: ScanLightDevice) {
+        guard scanLightDevice === device else { return }
+        if scanLightRequestedLevel != nil,
+           !device.isTorchAvailable || (device.torchMode != .off && !device.isTorchActive) {
+            scanLightRequestedLevel = nil
+            invalidateSpatialContinuity()
+            turnTorchOff(device)
+        }
+        publishScanLight(for: device)
+    }
+
+    private func observeScanLight(on device: AVCaptureDevice) {
+        scanLightObservations = [
+            device.observe(\.isTorchAvailable, options: [.new]) { [weak self] device, _ in
+                self?.sessionQueue.async { self?.scanLightHardwareChanged(on: device) }
+            },
+            device.observe(\.isTorchActive, options: [.new]) { [weak self] device, _ in
+                self?.sessionQueue.async { self?.scanLightHardwareChanged(on: device) }
+            }
+        ]
+    }
+
 
     /// Updates the lifecycle fence used by the confirmation callback. This is
     /// intentionally queued with Vision work so the token belongs to the same
@@ -1924,6 +2027,8 @@ final class CardScanner: NSObject, ObservableObject {
             if !self.session.isRunning {
                 self.session.startRunning()
             }
+            // Scan opens with the light off, even if Control Center left it on.
+            self.clearScanLightOnSessionQueue()
         }
     }
 
@@ -1942,17 +2047,22 @@ final class CardScanner: NSObject, ObservableObject {
             // tracker loss before changing inputs and keep the consumed record.
             self.invalidateSpatialContinuity()
             let previousLens = self.currentLens
+            // Turn the outgoing LED off before detaching it, then relight the
+            // new input only if it can. The request survives the swap.
+            if let outgoing = self.scanLightDevice { self.turnTorchOff(outgoing) }
             do {
                 try self.attachInput(for: newLens)
             } catch {
                 // Put the working lens back rather than leaving the session with no
                 // input, which would freeze the preview on the last frame.
                 try? self.attachInput(for: previousLens)
+                self.clearScanLightOnSessionQueue()
                 return
             }
 
             self.currentLens = newLens
             self.updateUI { $0.setLens(newLens) }
+            self.applyScanLightOnSessionQueue()
         }
     }
 
@@ -2001,6 +2111,7 @@ final class CardScanner: NSObject, ObservableObject {
         defer { session.commitConfiguration() }
 
         if let existing = videoInput {
+            scanLightObservations = []
             session.removeInput(existing)
             videoInput = nil
         }
@@ -2009,6 +2120,7 @@ final class CardScanner: NSObject, ObservableObject {
         guard session.canAddInput(input) else { throw CameraScannerError.cannotAddInput }
         session.addInput(input)
         videoInput = input
+        observeScanLight(on: device)
 
         applyBestPreset()
         try configureCamera(device)
@@ -3290,6 +3402,33 @@ final class CardScanner: NSObject, ObservableObject {
 
     func drainSessionQueueForTesting() {
         sessionQueue.sync {}
+    }
+
+    /// Run the real Scan light request path against a stand-in torch.
+    func simulateScanLightForTesting(device: ScanLightDevice?, sessionLive: Bool = true) {
+        sessionQueue.sync {
+            wantsRunning = true
+            scanLightDeviceOverrideForTesting = device
+            scanLightSessionLiveOverrideForTesting = sessionLive
+        }
+    }
+
+    func setScanLightSessionLiveForTesting(_ live: Bool) {
+        sessionQueue.sync { scanLightSessionLiveOverrideForTesting = live }
+    }
+
+    func receiveScanLightHardwareChangeForTesting() {
+        sessionQueue.sync {
+            if let device = scanLightDevice { scanLightHardwareChanged(on: device) }
+        }
+    }
+
+    var scanLightRequestedLevelForTesting: Float? {
+        sessionQueue.sync { scanLightRequestedLevel }
+    }
+
+    func stopCaptureForTesting() {
+        sessionQueue.sync { stopCaptureOnSessionQueue() }
     }
 
     var wantsRunningForTesting: Bool {

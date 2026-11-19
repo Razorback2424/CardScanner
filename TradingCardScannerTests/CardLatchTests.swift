@@ -105,23 +105,214 @@ final class CardLatchTests: XCTestCase {
         XCTAssertTrue(scanner.isRecognitionPausedForTesting)
     }
 
-#if LOCAL_ONLY_SIGNING && LOCAL_COLLECTOR_TOOLS
-    func testMacroLightReportsFailedOnCommandsWhileWaitingForCamera() async {
-        let scanner = CardScanner()
-        scanner.simulateLensAttachmentsForTesting()
-        let passive = await scanner.checkMacroLight()
-        XCTAssertEqual(passive, .waiting)
 
-        for level in [MacroLightCheckLevel.low, .medium, .off] {
-            let reading = await withCheckedContinuation { continuation in
-                scanner.setMacroLightCheckLevel(level) { continuation.resume(returning: $0) }
+    // MARK: - Scan light
+
+    private final class FakeTorch: ScanLightDevice {
+        var hasTorch = true
+        var isTorchAvailable = true
+        var isTorchActive = false
+        var torchMode: AVCaptureDevice.TorchMode = .off
+        var torchLevel: Float = 0
+        var failsToTurnOn = false
+        var levelsApplied: [Float?] = []
+
+        func isTorchModeSupported(_ mode: AVCaptureDevice.TorchMode) -> Bool { hasTorch }
+
+        func setScanLight(level: Float?) throws {
+            struct TorchFailure: Error {}
+            levelsApplied.append(level)
+            if let level {
+                if failsToTurnOn { throw TorchFailure() }
+                torchMode = .on
+                torchLevel = level
+                isTorchActive = true
+            } else {
+                torchMode = .off
+                torchLevel = 0
+                isTorchActive = false
             }
-            XCTAssertEqual(reading.message, passive.message)
-            XCTAssertFalse(reading.canTurnOn)
-            XCTAssertEqual(reading.commandFailed, level != .off)
         }
     }
-#endif
+
+    /// Scanner publications hop to the main queue; this runs after them.
+    private func settleScanLight(_ scanner: CardScanner) async {
+        scanner.drainSessionQueueForTesting()
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+    }
+
+    func testScanLightTurnsOnAtChosenLevelFollowsSliderAndTurnsOff() async {
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        scanner.simulateScanLightForTesting(device: torch)
+
+        scanner.setScanLight(on: true, level: 0.22)
+        await settleScanLight(scanner)
+        XCTAssertEqual(scanner.uiState.scanLight, .on)
+        XCTAssertEqual(torch.torchLevel, 0.22)
+
+        scanner.setScanLightLevel(0.6)
+        await settleScanLight(scanner)
+        XCTAssertEqual(torch.torchLevel, 0.6)
+        XCTAssertEqual(scanner.scanLightRequestedLevelForTesting, 0.6)
+
+        scanner.setScanLight(on: false, level: 0.6)
+        await settleScanLight(scanner)
+        XCTAssertEqual(torch.torchMode, .off)
+        XCTAssertEqual(scanner.uiState.scanLight, .off)
+        XCTAssertNil(scanner.scanLightRequestedLevelForTesting)
+    }
+
+    func testScanLightSliderDoesNotTurnTheLightOn() async {
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        scanner.simulateScanLightForTesting(device: torch)
+
+        scanner.setScanLightLevel(0.8)
+        await settleScanLight(scanner)
+        XCTAssertEqual(torch.torchMode, .off)
+        XCTAssertTrue(torch.levelsApplied.isEmpty)
+    }
+
+    func testScanLightLevelIsClampedToTheTorchRange() {
+        XCTAssertEqual(ScanLightLevel.clamped(0), ScanLightLevel.range.lowerBound)
+        XCTAssertEqual(ScanLightLevel.clamped(4), 1)
+        XCTAssertEqual(ScanLightLevel.clamped(.nan), ScanLightLevel.defaultLevel)
+        XCTAssertEqual(ScanLightLevel.clamped(0.4), 0.4)
+    }
+
+    func testScanLightIsHiddenWithoutATorch() async {
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        torch.hasTorch = false
+        scanner.simulateScanLightForTesting(device: torch)
+
+        scanner.setScanLight(on: true, level: 0.3)
+        await settleScanLight(scanner)
+        XCTAssertEqual(scanner.uiState.scanLight, .unsupported)
+        XCTAssertNil(scanner.scanLightRequestedLevelForTesting)
+        XCTAssertTrue(torch.levelsApplied.isEmpty)
+    }
+
+    func testScanLightRequestIsDroppedWhileTheCameraIsNotLive() async {
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        scanner.simulateScanLightForTesting(device: torch, sessionLive: false)
+
+        scanner.setScanLight(on: true, level: 0.3)
+        await settleScanLight(scanner)
+        XCTAssertEqual(torch.torchMode, .off)
+        XCTAssertEqual(scanner.uiState.scanLight, .off)
+        XCTAssertNil(scanner.scanLightRequestedLevelForTesting)
+    }
+
+    func testFailedScanLightActivationClearsTheRequest() async {
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        torch.failsToTurnOn = true
+        scanner.simulateScanLightForTesting(device: torch)
+
+        scanner.setScanLight(on: true, level: 0.3)
+        await settleScanLight(scanner)
+        XCTAssertEqual(scanner.uiState.scanLight, .off)
+        XCTAssertNil(scanner.scanLightRequestedLevelForTesting)
+    }
+
+    func testUnavailableTorchDisablesTheLightAndClearsTheRequest() async {
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        scanner.simulateScanLightForTesting(device: torch)
+        scanner.setScanLight(on: true, level: 0.3)
+        await settleScanLight(scanner)
+
+        // Heat shuts the LED off underneath Scan.
+        torch.isTorchAvailable = false
+        torch.isTorchActive = false
+        torch.torchMode = .off
+        scanner.receiveScanLightHardwareChangeForTesting()
+        await settleScanLight(scanner)
+        XCTAssertEqual(scanner.uiState.scanLight, .unavailable)
+        XCTAssertNil(scanner.scanLightRequestedLevelForTesting)
+
+        // Coming back available does not relight without a tap.
+        torch.isTorchAvailable = true
+        scanner.receiveScanLightHardwareChangeForTesting()
+        await settleScanLight(scanner)
+        XCTAssertEqual(scanner.uiState.scanLight, .off)
+        XCTAssertEqual(torch.torchMode, .off)
+    }
+
+    func testUnexpectedTorchShutoffClearsTheRequest() async {
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        scanner.simulateScanLightForTesting(device: torch)
+        scanner.setScanLight(on: true, level: 0.3)
+        await settleScanLight(scanner)
+
+        torch.isTorchActive = false
+        scanner.receiveScanLightHardwareChangeForTesting()
+        await settleScanLight(scanner)
+        XCTAssertNil(scanner.scanLightRequestedLevelForTesting)
+        XCTAssertEqual(torch.torchMode, .off)
+        XCTAssertEqual(scanner.uiState.scanLight, .off)
+    }
+
+    func testLifecycleExitsTurnTheScanLightOff() async {
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        scanner.simulateScanLightForTesting(device: torch)
+
+        scanner.setScanLight(on: true, level: 0.3)
+        scanner.turnOffScanLight()
+        await settleScanLight(scanner)
+        XCTAssertEqual(torch.torchMode, .off)
+        XCTAssertEqual(scanner.uiState.scanLight, .off)
+
+        scanner.setScanLight(on: true, level: 0.3)
+        await settleScanLight(scanner)
+        XCTAssertEqual(torch.torchMode, .on)
+        scanner.stopCaptureForTesting()
+        await settleScanLight(scanner)
+        XCTAssertEqual(torch.torchMode, .off)
+        XCTAssertNil(scanner.scanLightRequestedLevelForTesting)
+        XCTAssertFalse(scanner.wantsRunningForTesting)
+    }
+
+    func testScanLightSurvivesAnEligibleLensSwitch() async {
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        scanner.simulateLensAttachmentsForTesting()
+        scanner.simulateScanLightForTesting(device: torch)
+        scanner.setScanLight(on: true, level: 0.3)
+        await settleScanLight(scanner)
+
+        scanner.setLens(.standard)
+        await settleScanLight(scanner)
+        // Off before detaching the outgoing input, then back on at the same level.
+        XCTAssertEqual(torch.levelsApplied, [0.3, nil, 0.3])
+        XCTAssertEqual(scanner.uiState.scanLight, .on)
+        XCTAssertEqual(scanner.uiState.lens, .standard)
+    }
+
+    func testFailedLensSwitchClearsTheScanLight() async {
+        struct AttachmentFailure: Error {}
+        let scanner = CardScanner()
+        let torch = FakeTorch()
+        scanner.simulateLensAttachmentsForTesting { lens in
+            if lens == .standard { throw AttachmentFailure() }
+        }
+        scanner.simulateScanLightForTesting(device: torch)
+        scanner.setScanLight(on: true, level: 0.3)
+        await settleScanLight(scanner)
+
+        scanner.setLens(.standard)
+        await settleScanLight(scanner)
+        XCTAssertEqual(torch.torchMode, .off)
+        XCTAssertNil(scanner.scanLightRequestedLevelForTesting)
+        XCTAssertEqual(scanner.uiState.scanLight, .off)
+    }
 
     func testRepeatedVisionFailuresRebuildOnceWithoutForgettingConsumedCard() async {
         let scanner = CardScanner()

@@ -1,8 +1,10 @@
 # Scan light for dim rooms
 
-**Status:** 2026-11-11. The lens shortcut is implemented and verified in
-Simulator. ProfileLocal includes the Macro hardware check. Scan light awaits
-that result.
+**Status:** 2026-11-18. The lens shortcut and Scan light are implemented.
+At the owner's direction, Scan light ships in the Scan top bar with a
+continuous brightness slider instead of a fixed output. The separate
+Pro-tab Macro light check was removed. Physical-device trials below are
+still pending.
 
 Revised after code review 2026-11-11.
 
@@ -65,9 +67,13 @@ no visible cue. [Scanner view](../../TradingCardScanner/Views/ScannerView.swift)
 | Lens changes from the Scan menu | Carry an active light request to the new input if it can light and the viewfinder stays active. If the new input cannot light, clear the request and let the button reflect its capability. |
 | Scanner loses the viewfinder or camera | Clear the request and turn the light off when leaving Scan, becoming inactive or backgrounded, presenting a covering sheet (Settings, review or Price Check), or during a camera interruption or reset. Settings clears the request before its lens picker can be used. Returning starts with the request Off, even if Control Center’s flashlight or another client changed the LED while Scan was inactive. |
 
-Use a low, fixed output tuned on hardware. Foils, sleeves and slab cases can
-reflect the LED into the reading band. The user can turn the light off in one
-tap and tilt the card or use diffuse room light.
+While the light is on, a brightness slider appears directly under the top bar
+(5–100%, default 15%). Brightness changes apply live, and the last choice is
+remembered for the next time the user turns the light on. The light itself
+still starts Off on every return to Scan. A continuous control lets the user
+find the least light that reads the card, which limits glare on foils, sleeves
+and slab cases and saves battery and heat. The button stays the only way to
+turn the light on or off; the slider never does.
 
 ## Lens access from the scan screen
 
@@ -137,22 +143,20 @@ gates Scan light, including its torch behavior during a lens switch.
 ## Run the manual check
 
 1. In Xcode, use **TradingCardScanner-ProfileLocal** with your iPhone selected
-   and press Run to install the current build. Open **Pro → Macro light check**
-   and allow Camera if prompted. The check uses the same Macro input as Scan.
-2. Read the status on screen. If the Macro camera has no usable torch, record
-   the message and end the light trial. If it reports temporary unavailability,
-   record that separately from hardware support.
-3. In dim light, hold a raw card 2–5 cm away. Compare **Off**, **Low** and
-   **Medium** at the same distance and angle. Check the footer on a matte
-   card and then on a foil or sleeved card. Try a slab label at its normal
-   working distance. Record the lowest useful setting and any reflection
-   that obscures text.
-4. Tap **Done** and confirm the LED goes off if it was on. Open **Scan** in
-   Collection mode. Hold a test card at a distance both lenses can read. After
-   one add, keep it in the reading band and switch between Macro and Standard
-   under **Camera** in the scan-options menu. Reopen the menu to check the
-   active lens. Check that quantity increased once, then undo the test add if
-   desired.
+   and press Run. Open **Scan** and allow Camera if prompted.
+2. If the flashlight button is missing beside Settings, the active lens has no
+   usable torch. Record that and switch lenses under **Camera** in the
+   scan-options menu.
+3. In dim light, hold a raw card 2–5 cm away. Turn on the light and move the
+   brightness slider from low to high at the same distance and angle. Check the
+   footer on a matte card and then on a foil or sleeved card. Try a slab label
+   at its normal working distance. Record the lowest useful brightness and any
+   reflection that obscures text.
+4. Open Settings, background the app and open Control Center. Each must turn
+   the LED off, and Scan must return with the light Off.
+5. In Collection mode, after one add, keep the card in the reading band and
+   switch between Macro and Standard with the light on. Check that quantity
+   increased once and that the light returns on the new lens if it has a torch.
 
 ## Scan light implementation order
 
