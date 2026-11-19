@@ -236,6 +236,22 @@ enum MagicTreatmentMigration {
             .sorted()
     }
 
+    /// Read-only: true when any Magic row may still need this migration. A
+    /// failed read answers true so the locked path reports the failure.
+    nonisolated private static func hasPendingRows(in container: ModelContainer) -> Bool {
+        let migrationVersion = currentVersion
+        let magicGameRawValue = CardGame.magic.rawValue
+        let count = try? ModelContext(container).fetchCount(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate {
+                    $0.game == magicGameRawValue
+                        && $0.magicTreatmentMigrationVersion < migrationVersion
+                }
+            )
+        )
+        return count.map { $0 > 0 } ?? true
+    }
+
     // Explicitly leave the caller's executor, while retaining its task's
     // cancellation and identity-rewrite authorization. Each synchronous read
     // or transaction creates and releases its own context before an await.
@@ -347,6 +363,11 @@ enum MagicTreatmentMigration {
         }
 
         guard isCurrent(), !Task.isCancelled else { return report }
+        // Launch runs this phase before the first portfolio replay. When no
+        // Magic row is below the current version there is nothing to write, so
+        // answer that from a read context instead of queueing for the write
+        // lock. The locked count below still guards a row that arrives later.
+        if !hasPendingRows(in: container) { return report }
         let networkEvidence = evidenceByExactID
         let failedNetworkExactIDs = failedExactIDs
         do {

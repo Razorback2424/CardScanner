@@ -2539,22 +2539,33 @@ struct CollectionStore {
     /// The watermark is scoped to this active container. A process-wide claim
     /// would let the first store opened on a device suppress the migration for
     /// a second store or a newly delivered CloudKit store.
+    /// The read-only fast path of `backfillExistingCollectionIfNeeded`. Launch
+    /// asks it from a plain read context first so an already-backfilled store
+    /// never waits behind another writer for the collection write lock.
+    func existingCollectionBackfillIsCurrent(
+        defaults: UserDefaults = .standard
+    ) throws -> Bool {
+        let watermarkKey = Self.existingCollectionBackfillVersionKey(for: context.container)
+        let backfillVersion = Self.existingCollectionBackfillVersion
+        guard defaults.integer(forKey: watermarkKey) >= backfillVersion else { return false }
+        let writableGames = gameRegistry.games(supporting: .collectionWrite).map(\.rawValue)
+        let uncovered = try context.fetchCount(FetchDescriptor<CollectedCard>(predicate: #Predicate {
+            writableGames.contains($0.game) && ($0.activityBackfillVersion < backfillVersion || $0.activityBackfillAnchor == nil)
+        }))
+        guard uncovered == 0 else { return false }
+        let legacy = try context.fetch(FetchDescriptor<CollectionActivity>(predicate: #Predicate {
+            $0.kindRaw == "" && ($0.gameRaw == "" || writableGames.contains($0.gameRaw))
+        }))
+        return !legacy.contains(where: { (try? requireWritableActivity($0)) != nil })
+    }
+
     func backfillExistingCollectionIfNeeded(
         defaults: UserDefaults = .standard
     ) throws {
         do {
             let watermarkKey = Self.existingCollectionBackfillVersionKey(for: context.container)
             let backfillVersion = Self.existingCollectionBackfillVersion
-            let writableGames = gameRegistry.games(supporting: .collectionWrite).map(\.rawValue)
-            if defaults.integer(forKey: watermarkKey) >= backfillVersion {
-                let uncovered = try context.fetchCount(FetchDescriptor<CollectedCard>(predicate: #Predicate {
-                    writableGames.contains($0.game) && ($0.activityBackfillVersion < backfillVersion || $0.activityBackfillAnchor == nil)
-                }))
-                let legacy = try context.fetch(FetchDescriptor<CollectionActivity>(predicate: #Predicate {
-                    $0.kindRaw == "" && ($0.gameRaw == "" || writableGames.contains($0.gameRaw))
-                }))
-                if uncovered == 0 && !legacy.contains(where: { (try? requireWritableActivity($0)) != nil }) { return }
-            }
+            if try existingCollectionBackfillIsCurrent(defaults: defaults) { return }
             let allCards = try context.fetch(FetchDescriptor<CollectedCard>())
             let gamesByKey = Dictionary(grouping: allCards, by: \.collectionKey).mapValues { Set($0.map(\.cardGame)) }
             let cards = allCards
