@@ -250,7 +250,9 @@ struct PortfolioView: View {
         NavigationStack(path: $path) {
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 24) {
+                    // Generous section spacing lets the hero, chart,
+                    // Showcase, and movers each read as their own block.
+                    LazyVStack(alignment: .leading, spacing: 36) {
                         if isStartingCollection {
                             ContentUnavailableView {
                                 Label("Start your collection", systemImage: "rectangle.stack.badge.plus")
@@ -319,35 +321,24 @@ struct PortfolioView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
                     Button("Collection", systemImage: "rectangle.stack", action: openCollection)
                         .labelStyle(.iconOnly)
                         .accessibilityHint("Opens your full collection")
-                }
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    // A last-known launch value has no data details of its
-                    // own yet; they arrive with this launch's replay.
-                    if let summary = portfolio.summary, !summary.isProvisional {
-                        Button("Pricing and data details", systemImage: "info.circle") {
-                            detailsDestination = PortfolioDetailsDestination(
-                                summary: summary,
-                                historyResult: nil
-                            )
-                        }
-                        .labelStyle(.iconOnly)
-                        .modifier(
-                            PortfolioAttentionBadge(
-                                refresh: refresh,
-                                needsAttentionFromPortfolio: needsAttentionFromPortfolio
-                            )
-                        )
-                    }
 
+                    // Pricing & Data lives in Settings; the attention dot
+                    // follows it so a problem is still visible from here.
                     Button("Settings", systemImage: "gearshape") {
                         isShowingSettings = true
                     }
                     .labelStyle(.iconOnly)
-                    .accessibilityLabel("Settings")
+                    .modifier(
+                        PortfolioAttentionBadge(
+                            refresh: refresh,
+                            needsAttentionFromPortfolio: needsAttentionFromPortfolio,
+                            accessibilityLabel: "Settings"
+                        )
+                    )
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -398,7 +389,7 @@ struct PortfolioView: View {
             }
         }
         .sheet(isPresented: $isShowingSettings) {
-            SettingsView()
+            SettingsView(pricingDetailsRow: pricingDetailsSettingsRow)
         }
         .alert(
             "Reconciliation failed",
@@ -421,6 +412,37 @@ struct PortfolioView: View {
         } message: {
             Text(removalErrorMessage ?? "Please try again.")
         }
+    }
+
+    /// A last-known launch value has no data details of its own yet; they
+    /// arrive with this launch's replay, so the row appears only then.
+    private var pricingDetailsSettingsRow: AnyView? {
+        guard let summary = portfolio.summary, !summary.isProvisional else { return nil }
+        return AnyView(
+            NavigationLink {
+                PortfolioDetailsView(
+                    portfolio: portfolio,
+                    history: history,
+                    fallbackSummary: summary,
+                    refresh: refresh,
+                    snapshotHistoryResult: nil,
+                    onRemoved: presentUndo(for:)
+                )
+            } label: {
+                Label {
+                    Text("Pricing & Data")
+                } icon: {
+                    Image(systemName: "info.circle")
+                        .modifier(
+                            PortfolioAttentionBadge(
+                                refresh: refresh,
+                                needsAttentionFromPortfolio: needsAttentionFromPortfolio,
+                                accessibilityLabel: nil
+                            )
+                        )
+                }
+            }
+        )
     }
 
     private var portfolioValueAccessibilityLabel: String {
@@ -570,6 +592,14 @@ struct PortfolioView: View {
                         amount: accounting.market,
                         showsArrow: true
                     )
+                    // Name the period beside the number so the change reads
+                    // without a glance down to the range control.
+                    if let range = activeHistoryResult?.range {
+                        Text(range.pastPeriodPhrase)
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
                 }
                 .accessibilityElement(children: .combine)
             }
@@ -798,8 +828,9 @@ struct PortfolioView: View {
         if !ranked.isEmpty {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .firstTextBaseline) {
-                    Text("Your best cards")
+                    Text("Showcase")
                         .font(.title3.weight(.bold))
+                        .accessibilityAddTraits(.isHeader)
                     Spacer()
                     Button("See all") {
                         onOpenCollectionSortedByPrice()
@@ -2288,6 +2319,8 @@ private struct PortfolioRefreshButton: View {
 private struct PortfolioAttentionBadge: ViewModifier {
     @ObservedObject var refresh: PriceRefreshController
     let needsAttentionFromPortfolio: Bool
+    /// The control's name; nil leaves the content's accessibility untouched.
+    let accessibilityLabel: String?
 
     private var needsAttention: Bool {
         switch refresh.fallbackStatus {
@@ -2313,12 +2346,7 @@ private struct PortfolioAttentionBadge: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        content
-            .accessibilityLabel(
-                needsAttention
-                    ? "Pricing and data details, needs attention"
-                    : "Pricing and data details"
-            )
+        labeled(content)
             .overlay(alignment: .topTrailing) {
                 if needsAttention {
                     Circle()
@@ -2334,6 +2362,19 @@ private struct PortfolioAttentionBadge: ViewModifier {
                         .accessibilityHidden(true)
                 }
             }
+    }
+
+    @ViewBuilder
+    private func labeled(_ content: Content) -> some View {
+        if let accessibilityLabel {
+            content.accessibilityLabel(
+                needsAttention
+                    ? "\(accessibilityLabel), pricing and data need attention"
+                    : accessibilityLabel
+            )
+        } else {
+            content
+        }
     }
 }
 

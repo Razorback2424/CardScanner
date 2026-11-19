@@ -64,7 +64,7 @@ identity. Do not join card sets to `SealedSetSummary` by name, code, or fuzzy ma
 **Navigation decision, 2026-11-17 (supersedes the earlier "Catalog is a Collection child" rule).**
 `ContentView.Tab` is Portfolio, Browse, Scan, and Pro. The Browse tab hosts `BrowseView` at its
 root. Collection is no longer a tab: Portfolio pushes it (toolbar button, or "See all" beside
-"Your best cards", which sorts by price), and Collection's **+** and empty-state "Find Items to Add"
+"Showcase", which sorts by price), and Collection's **+** and empty-state "Find Items to Add"
 switch to the Browse tab rather than pushing Browse. On iPad, Collection is a full-width pushed grid
 whose cards push their detail; the former split view is gone. Card detail and unresolved-scan
 recovery still push `BrowseView` inside their own stacks. Screenshot acceptance must assert that

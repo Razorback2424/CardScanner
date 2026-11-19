@@ -8,12 +8,23 @@ import UniformTypeIdentifiers
 /// low-frequency control before finding the one they need.
 struct SettingsView: View {
     @Environment(\.cardGameRuntimes) private var runtimes
+    /// A row only the presenting screen can build, shown under Pricing.
+    /// Portfolio supplies its Pricing & Data link here: low-frequency evidence
+    /// that does not earn a permanent toolbar button.
+    private let pricingDetailsRow: AnyView?
 
-    var body: some View { SettingsContentView(runtimes: runtimes) }
+    init(pricingDetailsRow: AnyView? = nil) {
+        self.pricingDetailsRow = pricingDetailsRow
+    }
+
+    var body: some View {
+        SettingsContentView(runtimes: runtimes, pricingDetailsRow: pricingDetailsRow)
+    }
 }
 
 private struct SettingsContentView: View {
     private let runtimes: CardGameRuntimeContainer?
+    private let pricingDetailsRow: AnyView?
     @EnvironmentObject private var scannerModel: ScannerViewModel
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.dismiss) private var dismiss
@@ -53,8 +64,9 @@ private struct SettingsContentView: View {
     @AppStorage("pokemonMasterSetTier") private var pokemonMasterSetTier: PokemonMasterSetTier = .standard
     @StateObject private var catalogNormalizer: CollectionCatalogNormalizer
 
-    init(runtimes: CardGameRuntimeContainer?) {
+    init(runtimes: CardGameRuntimeContainer?, pricingDetailsRow: AnyView?) {
         self.runtimes = runtimes
+        self.pricingDetailsRow = pricingDetailsRow
         _catalogNormalizer = StateObject(wrappedValue: runtimes?.makeCollectionNormalizer() ?? CollectionCatalogNormalizer())
     }
 
@@ -77,6 +89,10 @@ private struct SettingsContentView: View {
                         }
                     } label: {
                         Label("Pricing", systemImage: "dollarsign.circle")
+                    }
+
+                    if let pricingDetailsRow {
+                        pricingDetailsRow
                     }
 
                     NavigationLink {
