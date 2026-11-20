@@ -180,7 +180,6 @@ struct PortfolioView: View {
     @State private var isShowingSettings = false
     @State private var contributorContext: PortfolioContributorContext?
     @State private var detailsDestination: PortfolioPush<PortfolioDetailsSnapshot>?
-    @State private var additionsDestination: PortfolioPush<PortfolioHistoryResult>?
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var restoringRemovalID: UUID?
     @State private var removalErrorMessage: String?
@@ -388,14 +387,6 @@ struct PortfolioView: View {
                     onRemoved: presentUndo(for:)
                 )
             }
-            .navigationDestination(item: $additionsDestination) { destination in
-                PortfolioAdditionsView(
-                    snapshotResult: destination.snapshot,
-                    holdings: portfolio.holdings,
-                    history: history,
-                    onRemoved: presentUndo(for:)
-                )
-            }
             .navigationDestination(item: $contributorContext) { context in
                 PortfolioContributorsView(
                     context: context,
@@ -426,7 +417,8 @@ struct PortfolioView: View {
                                 accessibilityLabel: nil
                             )
                         )
-                )
+                ),
+                collectionAdditionsRow: collectionAdditionsSettingsRow
             )
         }
         .alert(
@@ -479,6 +471,24 @@ struct PortfolioView: View {
                             )
                         )
                 }
+            }
+        )
+    }
+
+    /// The detailed additions breakdown belongs under Settings > Collection,
+    /// rather than between the portfolio's headline value and its chart.
+    private var collectionAdditionsSettingsRow: AnyView? {
+        guard let result = activeHistoryResult else { return nil }
+        return AnyView(
+            NavigationLink {
+                PortfolioAdditionsView(
+                    snapshotResult: result,
+                    holdings: portfolio.holdings,
+                    history: history,
+                    onRemoved: presentUndo(for:)
+                )
+            } label: {
+                Label("Cards Added", systemImage: "plus.circle")
             }
         )
     }
@@ -650,9 +660,6 @@ struct PortfolioView: View {
                 }
                 .accessibilityElement(children: .combine)
 
-                if let active = activeHistoryResult {
-                    cardsAddedLink(active)
-                }
             }
 
             PriceRefreshActivityRow(
@@ -669,42 +676,6 @@ struct PortfolioView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 2)
         .padding(.bottom, 8)
-    }
-
-    /// Additions are excluded from the market change beside the value, so
-    /// they get their own line here rather than living only in Settings.
-    @ViewBuilder
-    private func cardsAddedLink(_ result: PortfolioHistoryResult) -> some View {
-        let quantity = result.addedQuantities.values.reduce(0, +)
-        let value = result.accounting.map { $0.added + $0.newlyAddedValue } ?? .zero
-        if quantity > 0 || !value.isZero {
-            // Same period wording as the market change beside the value.
-            let period = result.range == .all ? "all time" : "in the \(result.range.pastPeriodPhrase)"
-            let cards = quantity == 1 ? "1 card" : "\(quantity) cards"
-            let title = quantity > 0 ? "\(cards) added \(period)" : "Cards added \(period)"
-            Button {
-                additionsDestination = PortfolioPush(result)
-            } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "plus.circle.fill")
-                        .foregroundStyle(.tint)
-                    Text(title)
-                        .foregroundStyle(.primary)
-                    if !value.isZero {
-                        Text(PortfolioHistoryDisplay.signedCurrency(value))
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                    }
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.tertiary)
-                }
-                .font(.subheadline.weight(.medium))
-                .contentShape(.rect)
-            }
-            .buttonStyle(.plain)
-            .accessibilityHint("Shows the cards added and their value")
-        }
     }
 
     private func integrityWarning(_ defects: [LedgerIntegrityDefect]) -> some View {
