@@ -2,8 +2,8 @@
 
 Source-bound review at `main@146161c`: corrected stale current-sounding
 portfolio navigation, scan correction, signed One Piece catalog revision,
-Lorcana coverage, Pokémon publication scheduling, dated Yu-Gi-Oh counts and
-the expired commercial purchase target. Historical snapshots and live release
+Lorcana coverage, Pokémon publication and 30th pricing scope, dated Yu-Gi-Oh
+counts and the expired commercial purchase target. Historical snapshots and live release
 gates remain distinct. Three broken Swift file/line Markdown links were
 repaired. The [documentation map](docs/README.md) and
 [reconciliation audit](docs/plans/documentation_audit.md) record the scope,
