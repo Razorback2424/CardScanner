@@ -770,8 +770,11 @@ class Conventions:
         self.energy_reverse = document.get("energyReverseHolo")
         self.aliases = document.get("treatmentAliases")
         self.normal_placeholder = document.get("historicalNormalPlaceholder")
+        self.number_remaps = {}
+        for remap in document.get("numberRemaps", []):
+            self.number_remaps[remap["setID"]] = remap
         for convention in [*self.appearances, self.reverse_lane, self.stamped_reverse, self.energy_reverse, self.aliases,
-                           self.normal_placeholder]:
+                           self.normal_placeholder, *self.number_remaps.values()]:
             if convention is not None and (not convention.get("decision") or not convention.get("sources")):
                 raise ValueError(f"Convention {convention.get('id')} needs a decision and sources")
         names = {group["groupId"]: group["name"] for group in market.groups}
@@ -792,6 +795,26 @@ class Conventions:
             self.set_names[entry["providerID"]] = entry["set"]["name"]
             for slot in read_json(root / SNAPSHOT / entry["resource"]):
                 self.identities[name_key(slot["name"]), local_number(slot["collectorNumber"]), count].add(entry["providerID"])
+
+    def _remap_source(self, remap):
+        group_id = remap["groupID"]
+        if group_id not in self.products:
+            self.products[group_id] = self.market.products(group_id)
+        return self.products[group_id]
+
+    def _remap_mapped_ids(self, remap):
+        return {spec["productId"] for spec in remap["mapping"].values()}
+
+    def remap_market_resolution(self, set_id, card_id, row):
+        """Exclude a market row whose products are all accounted for by a number remap."""
+        remap = self.number_remaps.get(set_id)
+        if not remap:
+            return None
+        mapped_ids = self._remap_mapped_ids(remap)
+        if row.get("products") and all(p["productId"] in mapped_ids for p in row["products"]):
+            return {"exclude": True, "citation": self.PATH.as_posix(),
+                    "reason": f"{remap['id']}: products mapped to checklist cards by reviewed number remap"}
+        return None
 
     def lane_prices(self, group_id):
         if group_id not in self.prices:
@@ -846,7 +869,28 @@ class Conventions:
     def reconcile(self, set_id, card_id, official_count, row, group):
         """(resolution, effective market, effective required) for one comparison row."""
         market, required = set(row["market"]), set(row["required"])
-        if row.get("signedNormalNeedsReview") or not row["products"]:
+        if row.get("signedNormalNeedsReview"):
+            return None, market, required
+        if not row["products"]:
+            remap = self.number_remaps.get(set_id)
+            if remap:
+                spec = remap["mapping"].get(row["number"])
+                if spec:
+                    source = self._remap_source(remap)
+                    market_num = local_number(spec["marketNumber"])
+                    for product in source.get(market_num, []):
+                        if product["productId"] == spec["productId"]:
+                            finishes = set()
+                            for subtype in product["subtypes"]:
+                                finish = LANES.get(name_key(subtype))
+                                if finish:
+                                    finishes.add(finish)
+                            if finishes == required:
+                                return ({"finishes": sorted(finishes), "citation": self.PATH.as_posix(),
+                                         "reason": f"{remap['id']}: {row['number']} maps to product "
+                                                    f"{spec['productId']} ({spec['marketNumber']})"},
+                                        finishes, required)
+                            break
             return None, market, required
         finishes, notes, used, normal_review = set(required), [], set(), None
         # A whole-set Normal placeholder: the historical checklist marks Normal for review,
@@ -950,9 +994,14 @@ def assess_set(root, set_id, market, links, coverage, audited_minimums, *, artwo
         if row is None:
             reason, detail = structural
         else:
-            resolution, effective, required = (None, None, None) if (
-                card_id.startswith("market:") or rules is None) else rules.reconcile(
-                set_id, card_id, official_count, row, group)
+            if card_id.startswith("market:") and rules is not None:
+                resolution = rules.remap_market_resolution(set_id, card_id, row)
+                effective, required = None, None
+            elif card_id.startswith("market:") or rules is None:
+                resolution, effective, required = None, None, None
+            else:
+                resolution, effective, required = rules.reconcile(
+                    set_id, card_id, official_count, row, group)
             reason, detail = (None, "") if resolution else card_reason(card_id, row, effective, required)
             if reason is None and blockers:
                 reason, detail = blockers[0]

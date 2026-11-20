@@ -12777,6 +12777,88 @@
         }
       },
       "reviewedAt": "2026-11-18"
+    },
+    "cel25cc": {
+      "tcgplayerGroupID": 2931,
+      "evidence": "docs/research/pokemon-finish-coverage/captures/cel25cc/2026-11-20b/report.json",
+      "cards": {
+        "cel25cc-CC001": [
+          "holo"
+        ],
+        "cel25cc-CC002": [
+          "holo"
+        ],
+        "cel25cc-CC003": [
+          "holo"
+        ],
+        "cel25cc-CC004": [
+          "holo"
+        ],
+        "cel25cc-CC005": [
+          "holo"
+        ],
+        "cel25cc-CC006": [
+          "holo"
+        ],
+        "cel25cc-CC007": [
+          "holo"
+        ],
+        "cel25cc-CC008": [
+          "holo"
+        ],
+        "cel25cc-CC009": [
+          "holo"
+        ],
+        "cel25cc-CC010": [
+          "holo"
+        ],
+        "cel25cc-CC011": [
+          "holo"
+        ],
+        "cel25cc-CC012": [
+          "holo"
+        ],
+        "cel25cc-CC013": [
+          "holo"
+        ],
+        "cel25cc-CC014": [
+          "holo"
+        ],
+        "cel25cc-CC015": [
+          "holo"
+        ],
+        "cel25cc-CC016": [
+          "holo"
+        ],
+        "cel25cc-CC017": [
+          "holo"
+        ],
+        "cel25cc-CC018": [
+          "holo"
+        ],
+        "cel25cc-CC019": [
+          "holo"
+        ],
+        "cel25cc-CC020": [
+          "holo"
+        ],
+        "cel25cc-CC021": [
+          "holo"
+        ],
+        "cel25cc-CC022": [
+          "holo"
+        ],
+        "cel25cc-CC023": [
+          "holo"
+        ],
+        "cel25cc-CC024": [
+          "holo"
+        ],
+        "cel25cc-CC025": [
+          "holo"
+        ]
+      },
+      "reviewedAt": "2026-11-20"
     }
   }
 }

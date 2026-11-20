@@ -1,0 +1,712 @@
+{
+  "schemaVersion": 2,
+  "captureRevision": "2026-11-20",
+  "setID": "cel25cc",
+  "setName": "Celebrations Classic Collection",
+  "tcgplayerGroupID": 2931,
+  "standard": "Each numbered checklist card must agree with the matching TCGplayer products on exact finishes, or have a cited resolution. Every conflict, unmatched number and Normal review must be resolved. Market listings are evidence of membership. Physical or retail evidence resolves disagreements.",
+  "capturedAt": "2026-11-20T19:55:15+00:00",
+  "sourceBuild": "2026-11-18T20:05:56+0000",
+  "checklistSources": {
+    "sets/65fc63de10b2c5f1.json": "62c68d7fd4a44dbea535fcacc9b9ebba515a24a8b0948dc50663daa7dcb26fce"
+  },
+  "finishEvidenceSHA256": "89f8ee6773c0ee201afa2ee89ebad0ffdcd7e12002db0b8097aabcc03264ccec",
+  "marketSources": {
+    "products": {
+      "url": "https://tcgcsv.com/tcgplayer/3/2931/products",
+      "sha256": "94b61966beec4b023b4af53a49220cad06397b7a44de027412948028de148b11"
+    },
+    "prices": {
+      "url": "https://tcgcsv.com/tcgplayer/3/2931/prices",
+      "sha256": "dd244033ce673c7806fc1d5602d260993274b62b9da350be5f7c5fc5a0d5eb63"
+    }
+  },
+  "cards": {
+    "cel25cc-CC001": {
+      "number": "CC001",
+      "name": "Blastoise",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC002": {
+      "number": "CC002",
+      "name": "Charizard",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC003": {
+      "number": "CC003",
+      "name": "Venusaur",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC004": {
+      "number": "CC004",
+      "name": "Imposter Professor Oak",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC005": {
+      "number": "CC005",
+      "name": "Dark Gyarados",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC006": {
+      "number": "CC006",
+      "name": "Here Comes Team Rocket!",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC007": {
+      "number": "CC007",
+      "name": "Rocket's Zapdos",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC008": {
+      "number": "CC008",
+      "name": "_____'s Pikachu",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC009": {
+      "number": "CC009",
+      "name": "Cleffa",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC010": {
+      "number": "CC010",
+      "name": "Shining Magikarp",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC011": {
+      "number": "CC011",
+      "name": "Team Magma's Groudon",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC012": {
+      "number": "CC012",
+      "name": "Rocket's Admin.",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC013": {
+      "number": "CC013",
+      "name": "Mew ex",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC014": {
+      "number": "CC014",
+      "name": "Gardevoir ex",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC015": {
+      "number": "CC015",
+      "name": "Umbreon ☆",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC016": {
+      "number": "CC016",
+      "name": "Claydol",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC017": {
+      "number": "CC017",
+      "name": "Luxray GL LV.X",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC018": {
+      "number": "CC018",
+      "name": "Garchomp C LV.X",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC019": {
+      "number": "CC019",
+      "name": "Donphan",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC020": {
+      "number": "CC020",
+      "name": "Reshiram",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC021": {
+      "number": "CC021",
+      "name": "Zekrom",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC022": {
+      "number": "CC022",
+      "name": "Mewtwo EX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC023": {
+      "number": "CC023",
+      "name": "Xerneas EX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC024": {
+      "number": "CC024",
+      "name": "M Rayquaza EX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "cel25cc-CC025": {
+      "number": "CC025",
+      "name": "Tapu Lele GX",
+      "checklist": [
+        "holo"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched"
+    },
+    "market:107": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250336,
+          "name": "Donphan (Prime)",
+          "number": "107/123",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:109": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250334,
+          "name": "Luxray GL LV.X",
+          "number": "109/111",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:113": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250337,
+          "name": "Reshiram",
+          "number": "113/114",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:114": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250338,
+          "name": "Zekrom",
+          "number": "114/114",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:145": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250335,
+          "name": "Garchomp C LV.X",
+          "number": "145/147",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:15": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250321,
+          "name": "Venusaur",
+          "number": "15/102",
+          "subtypes": [
+            "Holofoil"
+          ]
+        },
+        {
+          "productId": 250323,
+          "name": "Here Comes Team Rocket!",
+          "number": "15/82",
+          "subtypes": [
+            "Holofoil"
+          ]
+        },
+        {
+          "productId": 250324,
+          "name": "Rocket's Zapdos",
+          "number": "15/132",
+          "subtypes": [
+            "Holofoil"
+          ]
+        },
+        {
+          "productId": 250333,
+          "name": "Claydol",
+          "number": "15/106",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:17": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250332,
+          "name": "Umbreon Star",
+          "number": "17/17",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:2": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250319,
+          "name": "Blastoise",
+          "number": "2/102",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:20": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250326,
+          "name": "Cleffa",
+          "number": "20/111",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:24": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250325,
+          "name": "______'s Pikachu",
+          "number": "24/53",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:4": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250320,
+          "name": "Charizard",
+          "number": "4/102",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:54": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250339,
+          "name": "Mewtwo EX",
+          "number": "54/99",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:60": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250342,
+          "name": "Tapu Lele GX",
+          "number": "60/145",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:66": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250327,
+          "name": "Shining Magikarp",
+          "number": "66/64",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:73": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250322,
+          "name": "Imposter Professor Oak",
+          "number": "73/102",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:76": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250341,
+          "name": "M Rayquaza EX",
+          "number": "76/108",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:8": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250294,
+          "name": "Dark Gyarados",
+          "number": "8/82",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:86": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250329,
+          "name": "Rocket's Admin.",
+          "number": "86/109",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:88": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250330,
+          "name": "Mew ex",
+          "number": "88/92",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:9": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250328,
+          "name": "Team Magma's Groudon",
+          "number": "9/95",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:93": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250331,
+          "name": "Gardevoir ex (Delta Species)",
+          "number": "93/101",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    },
+    "market:97": {
+      "status": "unmatched",
+      "products": [
+        {
+          "productId": 250340,
+          "name": "Xerneas EX",
+          "number": "97/146",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ]
+    }
+  },
+  "resolutions": {}
+}
