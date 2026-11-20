@@ -32,7 +32,7 @@ struct PrivacyAndSupportSettingsView: View {
 
             Section("Export and deletion") {
                 Text("CSV transfers your inventory. It is not a full backup: it does not restore custom artwork files, Value History, price observations or activity. CSV import cannot recreate those records.")
-                Text("CSV export is available from Collection & Portfolio settings. Deleting the collection removes its card records and current ownership. Removal activity, price records, and Value History remain on this device.")
+                Text("CSV export is available in Settings > Collection. Deleting the collection removes its card records and current ownership. Removal activity, price records, and Value History remain on this device.")
             }
         }
         .navigationTitle("Privacy & Support")

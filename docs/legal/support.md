@@ -28,12 +28,12 @@ Lorcana metadata uses [LorcanaJSON](https://lorcanajson.org/), and ordinary refe
 
 ## Collection storage
 
-Scanstash 1.0 stores the collection on the device. iCloud collection sync is not available in this release. Use Settings → Collection & Portfolio → Export CSV to keep a portable copy before changing devices or removing app data. CSV is not a complete backup of artwork, settings, or all historical data.
+Scanstash 1.0 stores the collection on the device. iCloud collection sync is not available in this release. Use Settings → Collection → Export CSV to keep a portable copy before changing devices or removing app data. CSV is not a complete backup of artwork, settings, or all historical data.
 
 If the app reports a local storage error, avoid deleting app data and contact Support with the app version, OS version, device model, and coarse error category. Do not send a full collection export unless Support explicitly requests it and you consent.
 
 ## Deletion and privacy requests
 
-Delete Collection in Collection & Portfolio settings removes card records and current ownership, but retains removal activity, inventory events, price records, and Value History. To remove local app files, use iOS Delete App rather than Offload App. Remove your JustTCG key separately first because Keychain entries may persist. Delete exported copies and backups separately using their storage service's controls.
+Delete Entire Collection in Settings → Collection removes card records and current ownership, but retains removal activity, inventory events, price records, and Value History. To remove local app files, use iOS Delete App rather than Offload App. Remove your JustTCG key separately first because Keychain entries may persist. Delete exported copies and backups separately using their storage service's controls.
 
 For help withdrawing permissions, removing local data, or accessing, correcting, or deleting information you emailed us, contact [Info@scan-stash.com](mailto:Info@scan-stash.com). We cannot remotely access your device-local collection. See the [Privacy Policy](privacy-policy.md) for retention and third-party request details.

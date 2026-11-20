@@ -69,9 +69,8 @@ does **not** yet certify no-customer-key commercial pricing or distribution.
 
 ## Two different catalog-health reports
 
-The iPhone report is exposed under **Settings → Advanced → Collection
-Diagnostics → Collection Exports & Price Coverage → Export Catalog Health
-Report**. Its **Check catalog prices** toggle starts off (changed Nov. 16,
+The iPhone report is exposed under **Settings → Diagnostics → Catalog Health →
+Export Catalog Health Report** (Settings reorganized Nov. 19, 2026). Its **Check catalog prices** toggle starts off (changed Nov. 16,
 2026) and, when on, makes explicit per-finish checks, subject to provider and
 cache limits. **Export Price Audit** prices only mapped finishes for one game
 or set; see the [catalog-health guide](../scripts/CATALOG_HEALTH.md). When off,

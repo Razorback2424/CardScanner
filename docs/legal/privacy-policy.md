@@ -59,7 +59,7 @@ If you email us, we receive your email address, message, and any attachments you
 
 ## Retention, deletion, and portability
 
-On-device collection data remains until you delete it or remove the app's data. In Settings → Collection & Portfolio, Export CSV gives you a portable copy of collection records. CSV is not a full backup of custom artwork, settings, or all historical data.
+On-device collection data remains until you delete it or remove the app's data. In Settings → Collection, Export CSV gives you a portable copy of collection records. CSV is not a full backup of custom artwork, settings, or all historical data.
 
 Delete Collection removes card records and current ownership. Removal activity, inventory events, price records, and Value History remain on the device; this action does not erase all app data. To remove the app's local files, use iOS Delete App rather than Offload App. Remove your JustTCG key separately before deleting the app. Copies you saved to Files, Photos, another service, or a device backup must be deleted separately using that service's controls. Device backup and restoration are separate from the app's unavailable iCloud collection sync.
 

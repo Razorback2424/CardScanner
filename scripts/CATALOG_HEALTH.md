@@ -2,10 +2,9 @@
 
 ## On-device active catalog report
 
-In ScanStash, open **Settings → Advanced → Collection Diagnostics →
-Collection Exports & Price Coverage → Export Catalog Health Report**.
-This button sits beside **Export Cards Excluded from USD Value**, but is
-independent of the user's collection and works even if no cards are owned.
+In ScanStash, open **Settings → Diagnostics → Catalog Health → Export Catalog
+Health Report**. It is independent of the user's collection and works even if
+no cards are owned.
 
 The device report exports a CSV from the **currently active Browse catalogs**
 for Pokémon, Magic, One Piece, Lorcana and Yu-Gi-Oh. Card rows contain
