@@ -334,6 +334,42 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertTrue(display.subtitle.contains(display.total.formatted()))
     }
 
+    func testHistoricalSoldAdditionHasExactCatalogDestinationWithoutCurrentHolding() throws {
+        // Historical additions outlive their owned rows. The removal snapshot
+        // retains the same exact printing and print run that Browse expects.
+        var row = CollectionRow(
+            id: "sv08.5-074#holo", game: .pokemon, name: "Eevee",
+            setCode: "sv08.5", setName: "Prismatic Evolutions",
+            setReleaseOrder: 0, cardNumber: "074",
+            variantID: PhysicalVariant.holo.id, variantLabel: PhysicalVariant.holo.label,
+            quantity: 1, dateAdded: .now, price: .unknown
+        )
+        row.catalogProviderID = "sv08.5-074"
+        row.pokemonPrintRun = .firstEdition
+
+        let lookup = try XCTUnwrap(PortfolioCardCatalogRouting.lookup(for: row))
+        XCTAssertEqual(lookup.game, .pokemon)
+        XCTAssertEqual(lookup.providerID, "sv08.5-074")
+        XCTAssertEqual(lookup.printRun, .firstEdition)
+        XCTAssertEqual(lookup.setCode, "sv08.5")
+    }
+
+    func testHistoricalAdditionWithoutVerifiedCatalogIdentityDoesNotGuess() {
+        var row = CollectionRow(
+            id: "csv:pokemon:import-1", game: .pokemon, name: "Eevee",
+            setCode: "sv08.5", setName: "Prismatic Evolutions",
+            setReleaseOrder: 0, cardNumber: "074",
+            variantID: nil, variantLabel: nil,
+            quantity: 1, dateAdded: .now, price: .unknown
+        )
+        XCTAssertNil(PortfolioCardCatalogRouting.lookup(for: row))
+        row.catalogProviderID = "csv:pokemon:import-1"
+        XCTAssertNil(PortfolioCardCatalogRouting.lookup(for: row))
+        row.catalogProviderID = "sv08.5-074"
+        row.itemKind = .gradedCard
+        XCTAssertNil(PortfolioCardCatalogRouting.lookup(for: row))
+    }
+
     private let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(secondsFromGMT: 0)!
