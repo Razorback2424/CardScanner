@@ -6,6 +6,47 @@ QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
+## November 20, 2026 — source-bound documentation reconciliation
+
+**Baseline:** `main@146161c92ad2`, after PRs
+[#54](https://github.com/Razorback2424/CardScanner/pull/54) and
+[#55](https://github.com/Razorback2424/CardScanner/pull/55) merged.
+This is a **risk-weighted documentation/source audit**, not an exhaustive
+line-by-line certification of all historical evidence or a new device/release
+test. The repository inventory exposed 281 Markdown/README/text candidates,
+including 183 under `docs/`. Review prioritized current entry points,
+active implementation plans, release/publisher operator guides and nearby
+dated records. Targeted relative-link validation found three obsolete
+`swift:line` targets in the scan-correction plan; all three now link to
+existing Swift source files without pretending historical line numbers are
+permanent anchors.
+
+| Outdated current-sounding claim | 2026-11-20 disposition and remaining limit |
+| --- | --- |
+| Portfolio shows a weekly Cards Added shortcut; historical sold additions cannot reach unified detail. | **Superseded.** PR #54 moves the shortcut to Settings → Collection; PR #55 routes a historical tile with an exact retained printing through the catalog detail, without guessing unknown identities. Both changes exist on the checked main SHA. Their PR build/static/catalog checks passed, but this documentation review did not repeat device navigation. |
+| Scan correction is not built. | **Superseded.** [Scan correction plan](scan-correction-plan.md) records completed steps 0–4 with simulator/source evidence and open real-phone/tap-through Step 5. Its original “Today” comparison is an explicitly historical baseline. |
+| Production One Piece catalog is revision 2/4. | **Split authority.** The old signed seed and unsigned research candidates retain their dates. The [reconciliation playbook](../catalog-reconciliation-playbook.md) reports signed hosted revision 7 live as of November 18, with 2,670/2,969 canonical cards certified and 173 Bandai review rows. A hosted pointer does not certify a particular phone or App Store release. |
+| Lorcana has only 1,616 ordinary printings/3,232 lanes across eight sets. | **Earlier milestone.** The [November 18 catalog audit](../audits/lorcana-coverage-2026-11-11.md) now reports 3,576 physical printings, 6,432 finish mappings and 26 Browse-only rows. Device/rights/distribution gates remain open. |
+| Pokémon publication baseline is revision 1 and four-hour scheduling is still pending. | **September plan superseded as operational status.** Current [workflow](../../.github/workflows/pokemon-catalog.yml) declares a daily `17 6 * * *` UTC schedule; [November 10 readback](../audits/launch-review-2026-11-10.md#revision-22-recovery-follow-up--2026-11-10) verified signed revision 22 recovery. A retained revision-25 candidate is **not** proof of current publication or activation. |
+| The November 2 first production purchase date is an upcoming launch target. | **Historical owner target.** The date has passed. Keep it for decision provenance; do not imply purchase or invent a replacement deadline. |
+| Yu-Gi-Oh has exactly 47,289 current bundled printings. | **Unreliable undated index count.** The November 12 implementation record notes 47,956 then; the documentation index now labels this as a dated checkpoint and points to the active source for future counts. |
+
+**Preservation rule:** The November 15 source checkpoint, October launch review,
+September Pokémon rollout trace and other dated evidence were not rewritten to
+look like November 20 tests. Current-sounding headers were corrected or given
+explicit provenance boundaries instead. No catalog, runtime, storage,
+release or authorization gate was changed.
+
+**Remaining documentation debt (requires a separate evidence-backed pass):**
+the older October refinement plans, launch review handoffs and archived
+specialty-catalog research contain snapshot-specific TODOs and test counts.
+Assess each against its active authority and inbound links before moving
+anything to `docs/legacy/`; preserve historical evidence and create an old-path
+pointer if callers rely on it. Run a full-repository Markdown path/anchor
+check in a local checkout before declaring *every* link valid. This scoped
+review checked changed documents' relative targets but did not execute a
+full local `git diff --check` or certify external URLs.
+
 ## November 15, 2026 current-source reconciliation
 
 **Baseline:** `main@a8d3103ab24b`, including its five newest
