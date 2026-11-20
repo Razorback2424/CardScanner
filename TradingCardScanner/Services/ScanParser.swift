@@ -601,10 +601,14 @@ enum ScanText {
     /// Pokémon regulation marks (D–J) and the English language mark can be
     /// glued directly to the printed expansion code. Keep the actual code in
     /// capture group 1 so a mark is never mistaken for part of the set code.
+    ///
+    /// A digit zero inside a code (`30C`) also matches the letter `O`: Vision
+    /// reads the small white-on-black code box as `3OC`. Callers canonicalize
+    /// the capture with `pokemonCanonicalSetCode`.
     static func pokemonSetCodeRegex(codes: some Collection<String>) -> NSRegularExpression {
         let alternatives = codes
             .sorted { $0.count == $1.count ? $0 < $1 : $0.count > $1.count }
-            .map(NSRegularExpression.escapedPattern(for:))
+            .map { NSRegularExpression.escapedPattern(for: $0).replacingOccurrences(of: "0", with: "[0O]") }
             .joined(separator: "|")
         guard !alternatives.isEmpty else {
             return try! NSRegularExpression(pattern: "(?!)", options: [])
@@ -613,6 +617,16 @@ enum ScanText {
             pattern: "(?<![A-Z])[D-J]?(\(alternatives))(?:EN)?(?![A-Z])",
             options: []
         )
+    }
+
+    /// Maps a code captured by `pokemonSetCodeRegex` back to its printed form.
+    /// Only a code that prints a digit zero accepts `O` in that position.
+    static func pokemonCanonicalSetCode(_ read: String, codes: some Collection<String>) -> String? {
+        if codes.contains(read) { return read }
+        return codes.first { code in
+            code.contains("0") && code.count == read.count
+                && zip(code, read).allSatisfy { $0 == $1 || ($0 == "0" && $1 == "O") }
+        }
     }
 
     static func matchedSubstrings(_ regex: NSRegularExpression, in text: String) -> [String] {
@@ -740,10 +754,24 @@ enum PokemonHistoricalScanParser {
     }
 
     static func numberEvidence(in lines: [String]) -> PokemonPrintedNumberEvidence? {
-        let readings = ScanText.unique(lines.flatMap(numberReadings))
+        var readings = ScanText.unique(lines.flatMap(numberReadings))
+        if readings.count == 2,
+           let card = readings.first(where: { celebrationPikachuStamp(of: $0).map(readings.contains) == true }) {
+            readings = [card]
+        }
         if !readings.isEmpty { return readings.count == 1 ? readings[0] : nil }
         let standalone = ScanText.unique(lines.compactMap(standaloneNumber))
         return standalone.count == 1 ? standalone[0] : nil
+    }
+
+    /// 30th Celebration Pikachu Rares (`023/128`–`052/128`) also print their
+    /// position in that 30-card run beside the number (`030/128` beside
+    /// `08/30`). The badge confirms the card number rather than competing
+    /// with it, but only when the two agree exactly.
+    private static func celebrationPikachuStamp(of card: PokemonPrintedNumberEvidence) -> PokemonPrintedNumberEvidence? {
+        guard card.scheme == .officialSet, card.denominator == 128,
+              let number = Int(card.localID), (23...52).contains(number) else { return nil }
+        return PokemonPrintedNumberEvidence(localID: String(number - 22), denominator: 30, scheme: .officialSet)
     }
 
     private static func standaloneNumber(in raw: String) -> PokemonPrintedNumberEvidence? {
@@ -1092,7 +1120,8 @@ struct PokemonScanProfile: Sendable {
             .replacingOccurrences(of: "\n", with: " ")
 
         let promoCandidates = promoMatches(in: normalized)
-        let codes = ScanText.matchedCaptureSubstrings(setCodeRegex, in: normalized, group: 1)
+        let codes = ScanText.unique(ScanText.matchedCaptureSubstrings(setCodeRegex, in: normalized, group: 1)
+            .compactMap { ScanText.pokemonCanonicalSetCode($0, codes: vocabulary.expansionCodes) })
         let numbers = numberMatches(in: normalized)
 
         var candidates: [ScanIdentifier] = promoCandidates

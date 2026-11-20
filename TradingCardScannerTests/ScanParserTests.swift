@@ -1647,4 +1647,30 @@ final class ScanParserTests: XCTestCase {
             XCTAssertTrue((3...4).contains(definition.code.count), "\(definition.code) has an unusable length")
         }
     }
+
+    /// `30C` is the only expansion code that prints a digit, and Vision reads
+    /// its white-on-black zero as the letter O.
+    func testThirtiethCelebrationCodeAcceptsLetterOForItsZero() {
+        for lines in [["J 3OC EN 030/128 08/30"], ["3OCEN030/128"], ["J", "30C EN", "030/128", "08/30"]] {
+            guard case let .identified(subject) = RecognitionProfile.pokemonOnly.identify(lines.map { RecognizedLine(text: $0) }) else {
+                return XCTFail("Expected 30C 030/128 from \(lines)")
+            }
+            XCTAssertEqual(subject.identifier.fields.first { $0.key == "printedCode" }?.value, "30C")
+            XCTAssertEqual(subject.identifier.fields.first { $0.key == "localID" }?.value, "030")
+        }
+        // Letter codes do not gain a digit reading, and other misreadings stay unread.
+        XCTAssertEqual(ScanText.pokemonCanonicalSetCode("0BF", codes: ["OBF"]), nil)
+        XCTAssertEqual(RecognitionProfile.pokemonOnly.identify(["J 300 EN 030/128"].map { RecognizedLine(text: $0) }), .nothing)
+    }
+
+    /// The Pikachu Rare badge (`08/30`) confirms `030/128` for the fallback
+    /// rather than making the footer ambiguous, but only when they agree.
+    func testThirtiethCelebrationPikachuBadgeDoesNotHideTheCardNumber() {
+        let card = PokemonPrintedNumberEvidence(localID: "30", denominator: 128, scheme: .officialSet)
+        XCTAssertEqual(PokemonHistoricalScanParser.numberEvidence(in: ["030/128", "08/30"]), card)
+        XCTAssertEqual(PokemonHistoricalScanParser.numberEvidence(in: ["J 3OC EN 030/128 08/30"]), card)
+        XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: ["030/128", "09/30"]))
+        XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: ["060/128", "08/30"]))
+        XCTAssertNil(PokemonHistoricalScanParser.numberEvidence(in: ["030/102", "08/30"]))
+    }
 }
