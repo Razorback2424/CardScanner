@@ -37,6 +37,17 @@ matching printing/finish; historical chart data alone never establishes
 a current quote. The [implementation checkpoint](docs/current-implementation-2026-11-15.md)
 details the source changes and unverified gates.
 
+**Navigation checkpoint (2026-11-20, `main@146161c`):** The current tabs are
+Portfolio, Browse, Scan and Pro. Collection opens from Portfolio. The
+period's **Cards Added** details are available through **Settings → Collection**
+rather than appearing beneath the Portfolio value. Historical added cards
+that have since been sold use their exact retained catalog identity to open
+the same card detail as Browse; if that identity is not known, the app does
+not guess. See [PR #54](https://github.com/Razorback2424/CardScanner/pull/54)
+and [PR #55](https://github.com/Razorback2424/CardScanner/pull/55).
+These source changes passed their executed PR CI checks; direct phone
+interaction has not been newly certified by this documentation review.
+
 ## Three principles
 
 **Fast.** Speed comes from removing interactions that carry no information and
