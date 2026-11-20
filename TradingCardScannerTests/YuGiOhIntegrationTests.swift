@@ -2289,13 +2289,14 @@ final class YuGiOhCatalogTests: XCTestCase {
         XCTAssertEqual(rows.filter { !$0.explicitSelectionSupported }.count, 39)
         XCTAssertEqual(rows.filter(\.isReference).count, 1_097)
         XCTAssertEqual(rows.filter { $0.isReference && $0.explicitSelectionSupported }.count, 1_088)
-        XCTAssertEqual(catalog.autoEligibleCodes.count, 262)
+        XCTAssertEqual(catalog.autoEligibleCodes.count, 274)
+        XCTAssertTrue(["PSV-007", "PSV-095"].allSatisfy(catalog.autoEligibleCodes.contains)) // Short Prints Konami lists as Common
         XCTAssertTrue(catalog.autoEligibleCodes.contains("MP24-EN372"))
         XCTAssertTrue(["DUNE-EN080", "PSV-013"].allSatisfy(catalog.autoEligibleCodes.contains))
         XCTAssertTrue(rows.allSatisfy { !$0.coverageVerified })
-        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.count }, 62_339)
-        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.filter { $0.q != nil }.count }, 58_544)
-        XCTAssertEqual(rows.flatMap(\.membership).filter { $0.t == "providerListing" }.count, 1_724)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.count }, 62_386)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.membership.filter { $0.q != nil }.count }, 58_567)
+        XCTAssertEqual(rows.flatMap(\.membership).filter { $0.t == "providerListing" }.count, 1_766)
         XCTAssertTrue(catalog.printingByID.values.contains { $0.code == "IOC-SE1" && $0.editions == [.limited] })
         let blueEyes = rows.filter { $0.productID == 476160 || $0.productID == 486054 }
         XCTAssertEqual(Set(blueEyes.map(\.id)).count, 2)
@@ -2629,7 +2630,7 @@ final class YuGiOhResolutionTests: XCTestCase {
         let miracle = try XCTUnwrap(catalog.printingsByCode["UP02-EN002"]?.first)
         XCTAssertEqual(miracle.canonicalLinkStatus, "linked")
         XCTAssertEqual(miracle.editions, [.limited])
-        XCTAssertEqual(miracle.membership.first?.s, "2026-11-11T20:05:27+0000")
+        XCTAssertEqual(miracle.membership.first?.s, "2026-11-19T20:04:34+0000")
         let miracleCard = try adapter.resolution(forPrintingID: miracle.id).card
         XCTAssertEqual(miracleCard.marketProductIDsByVariant[YuGiOhEdition.limited.rawValue], "731110")
     }
@@ -2772,7 +2773,10 @@ final class YuGiOhResolutionTests: XCTestCase {
         XCTAssertTrue(release.allSatisfy { $0.editions == [.first] && $0.canonicalLinkStatus == "linked" })
         let grandMaster = release.filter { $0.displayRarity == "Grand Master Rare" }
         XCTAssertEqual(grandMaster.count, 18)
-        XCTAssertTrue(grandMaster.allSatisfy { $0.pricedEditions.isEmpty && $0.membership.first?.t == "independentlyReviewed" })
+        // TCGplayer lists 12 of them since the 2026-11-19 snapshot, still without a market quote.
+        XCTAssertTrue(grandMaster.allSatisfy { $0.membership.allSatisfy { $0.q == nil } })
+        XCTAssertEqual(grandMaster.filter { $0.membership.first?.t == "providerListing" && $0.pricedEditions == [.first] }.count, 12)
+        XCTAssertEqual(grandMaster.filter { $0.membership.first?.t == "independentlyReviewed" && $0.pricedEditions.isEmpty }.count, 6)
 
         let code = "MAMS-EN001"
         guard case let .identified(subject) = YuGiOhRecognitionAdapter(catalog: catalog).identify([.init(text: code)]),
@@ -2798,7 +2802,7 @@ final class YuGiOhResolutionTests: XCTestCase {
             if product == 731472 {
                 XCTAssertNil(printing.membership.first?.q)
             } else {
-                XCTAssertEqual(printing.membership.first?.s, "2026-11-12T20:06:19+0000")
+                XCTAssertEqual(printing.membership.first?.s, "2026-11-19T20:04:34+0000")
             }
         }
     }
@@ -2811,7 +2815,9 @@ final class YuGiOhResolutionTests: XCTestCase {
         let rows = Array(catalog.printingByID.values)
         let thankYou = rows.filter { $0.set.groupID == 24918 }
         XCTAssertEqual(thankYou.count, 60)
-        XCTAssertTrue(thankYou.allSatisfy { $0.editions == [.limited] && $0.pricedEditions.isEmpty })
+        XCTAssertTrue(thankYou.allSatisfy { $0.editions == [.limited] && $0.membership.allSatisfy { $0.q == nil } })
+        // TCGplayer lists 3 of them since the 2026-11-19 snapshot, still without a market quote.
+        XCTAssertEqual(thankYou.filter { !$0.pricedEditions.isEmpty }.count, 3)
         let winner = Dictionary(grouping: rows.filter { $0.set.groupID == 24789 }, by: \.code)
         XCTAssertEqual(winner.count, 40)
         for printings in winner.values {

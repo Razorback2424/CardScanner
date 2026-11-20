@@ -7,6 +7,10 @@ Mega-Pack" vs "2025 Mega-Pack Tin"). The builder only accepts a source printing
 whose set name equals the marketplace group name, so these codes stay
 `unreviewedCorrespondence` even when the printed code and card agree.
 
+When a group holds several sub-releases (waves, Special Edition promos), the
+products under one prefix can name different releases. Then each printed code
+whose products agree on exactly one name gets an alias for that exact code.
+
 An alias is proposed for a (group, code prefix) only when every open product in
 that scope has a canonical card, the same printed code appears in YGOPRODeck for
 that same card, and all of those source rows share exactly one set name. The
@@ -57,12 +61,36 @@ def propose(rows: list[dict]) -> tuple[list[dict], list[dict]]:
                 continue  # unresolved card, or already named exactly: an alias would not be the fix
             scopes[(gid, prefix(code))][product["productID"]] = (code, names)
     aliases, refusals = collections.defaultdict(lambda: {"prefixes": set(), "products": 0, "codes": set()}), []
+    per_code = collections.defaultdict(lambda: {"products": 0, "codes": set()})
     for (gid, code_prefix), products in sorted(scopes.items()):
         # A product whose card has no source row under its printed code neither supports
         # nor contradicts an alias; it stays open whatever the alias says.
         supported = {pid: value for pid, value in products.items() if value[1]}
         candidates = [names for _, names in supported.values()]
         common = set.intersection(*candidates) if candidates else set()
+        if not common and candidates:
+            # One TCGplayer group often holds several sub-releases (Duel Terminal 5a and
+            # 5b, tin waves, Special Edition promos filed under the main set). Fall back
+            # to the printed code: each code whose products agree on exactly one name
+            # gets an alias for that exact code only. Other codes stay open.
+            by_code = collections.defaultdict(list)
+            for code, names in supported.values():
+                by_code[code].append(names)
+            refused_codes = []
+            for code, name_sets in sorted(by_code.items()):
+                agreed = set.intersection(*name_sets)
+                if len(agreed) != 1:
+                    refused_codes.append(code)
+                    continue
+                entry = per_code[(gid, next(iter(agreed)))]
+                entry["codes"].add(code)
+                entry["products"] += len(name_sets)
+            if refused_codes:
+                refusals.append({"groupID": gid, "groupName": group_names[gid], "codePrefix": code_prefix,
+                                 "products": sum(len(by_code[c]) for c in refused_codes),
+                                 "reason": "ambiguousSetName", "codes": refused_codes,
+                                 "setNames": sorted(set().union(*(n for c in refused_codes for n in by_code[c])))})
+            continue
         if len(common) != 1:
             refusals.append({"groupID": gid, "groupName": group_names[gid], "codePrefix": code_prefix,
                              "products": len(products),
@@ -80,6 +108,12 @@ def propose(rows: list[dict]) -> tuple[list[dict], list[dict]]:
                        "codePrefixes": sorted(alias["prefixes"]),
                        "evidence": {"rule": "printed-code-and-card-agree-v1", "products": alias["products"],
                                     "codes": len(alias["codes"]), "exampleCodes": sorted(alias["codes"])[:3]}})
+    for (gid, name), alias in sorted(per_code.items()):
+        result.append({"id": f"release-name-{gid}-codes-" + norm(name).replace(" ", "-"), "groupID": gid,
+                       "groupName": group_names[gid], "setName": name, "codePrefixes": [],
+                       "codes": sorted(alias["codes"]),
+                       "evidence": {"rule": "printed-code-and-card-agree-per-code-v1", "products": alias["products"],
+                                    "codes": len(alias["codes"]), "exampleCodes": sorted(alias["codes"])[:3]}})
     ids = collections.Counter(alias["id"] for alias in result)
     for alias in result:
         if ids[alias["id"]] > 1:
@@ -88,9 +122,18 @@ def propose(rows: list[dict]) -> tuple[list[dict], list[dict]]:
 
 
 def merge(document: dict, aliases: list[dict], reviewed_at: str, ledger_source: dict) -> dict:
-    """Replace generated aliases; keep every other rule untouched."""
+    """Replace generated aliases; keep every other rule untouched.
+
+    An alias identical to one already reviewed keeps its original review record.
+    """
     merged = dict(document)
-    merged["setNameAliases"] = [dict(alias, reviewedAt=reviewed_at, ledger=ledger_source) for alias in aliases]
+    review_keys = ("reviewedAt", "ledger")
+    previous = {alias["id"]: alias for alias in document.get("setNameAliases", [])}
+    def unchanged(alias):
+        old = previous.get(alias["id"])
+        return old is not None and {k: v for k, v in old.items() if k not in review_keys} == alias
+    merged["setNameAliases"] = [previous[alias["id"]] if unchanged(alias)
+                                else dict(alias, reviewedAt=reviewed_at, ledger=ledger_source) for alias in aliases]
     return merged
 
 
