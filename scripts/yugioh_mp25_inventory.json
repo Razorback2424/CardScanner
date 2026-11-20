@@ -1,0 +1,3621 @@
+{
+  "rule": "konami-release-family-v1",
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&sess=1&pid=2000001524000&rp=99999&request_locale=en",
+  "sha256": "b851d858cef353f60d6140531913596bfd8e26d6f9581612f2e14f99bc91cd64",
+  "count": 450,
+  "rows": [
+    {
+      "name": "Yubel - The Loving Defender Forever",
+      "cid": 19493,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Big Gabonga",
+      "cid": 19502,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ancient Gear Dark Golem",
+      "cid": 19847,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Nightmare Apprentice",
+      "cid": 19870,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Shining Sarcophagus",
+      "cid": 19892,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Spell Card \"Monster Reborn\"",
+      "cid": 20029,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Spell Card \"Soul Exchange\"",
+      "cid": 20041,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The Unstoppable Exodia Incarnate",
+      "cid": 20212,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Light and Darkness Dragonlord",
+      "cid": 20213,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mementomictlan Tecuhtlica - Creation King",
+      "cid": 20216,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Millennium Ankh",
+      "cid": 20232,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Surfacing Big Jaws",
+      "cid": 20477,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Heart of the Blue-Eyes",
+      "cid": 20480,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Red-Eyes Black Fullmetal Dragon",
+      "cid": 20481,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Raigeki",
+      "cid": 4343,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 2
+    },
+    {
+      "name": "Harpie's Feather Duster",
+      "cid": 4678,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 3
+    },
+    {
+      "name": "Temple of the Kings",
+      "cid": 5231,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bottomless Trap Hole",
+      "cid": 5400,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Chaos Sorcerer",
+      "cid": 5833,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "D.D. Designator",
+      "cid": 5843,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Miracle Fusion",
+      "cid": 6432,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Starlight Road",
+      "cid": 8609,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Beelze of the Diabolic Dragons",
+      "cid": 11011,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The Monarchs Stormforth",
+      "cid": 11275,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tenacity of the Monarchs",
+      "cid": 11581,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Domain of the True Monarchs",
+      "cid": 11761,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Retaliating \"C\"",
+      "cid": 11829,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gameciel, the Sea Turtle Kaiju",
+      "cid": 12106,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Obliterate!!!",
+      "cid": 12197,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Topologic Bomber Dragon",
+      "cid": 13085,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Red-Eyes Slash Dragon",
+      "cid": 13170,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Infinite Impermanence",
+      "cid": 13631,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Number 90: Galaxy-Eyes Photon Lord",
+      "cid": 13826,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Starliege Photon Blast Dragon",
+      "cid": 13857,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Chaos Dragon Levianeer",
+      "cid": 13912,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dark Armed, the Dragon of Annihilation",
+      "cid": 13974,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Red Rose Dragon",
+      "cid": 14177,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "White Rose Dragon",
+      "cid": 14192,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Duel Link Dragon, the Duel Dragon",
+      "cid": 14335,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Borrelcode Dragon",
+      "cid": 16536,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "True Light",
+      "cid": 16653,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Blue-Eyes Tyrant Dragon",
+      "cid": 16842,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bystial Magnamhut",
+      "cid": 17762,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bystial Druiswurm",
+      "cid": 17764,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bystial Baldrake",
+      "cid": 18149,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Rescue-ACE Hydrant",
+      "cid": 17994,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "S:P Little Knight",
+      "cid": 19188,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Legendary Fire King Ponix",
+      "cid": 19404,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Spirit with Eyes of Blue",
+      "cid": 20609,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Pot of Greed",
+      "cid": 4844,
+      "rarities": [
+        "Starlight Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Dugg Charger",
+      "cid": 19463,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Lo, the Prayers of the Voiceless Voice",
+      "cid": 19474,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Saffira, Dragon Queen of the Voiceless Voice",
+      "cid": 19475,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "EM:P Meowmine",
+      "cid": 19487,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Skull Guardian, Protector of the Voiceless Voice",
+      "cid": 19492,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Grand Entrance",
+      "cid": 19516,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The Black Goat Laughs",
+      "cid": 19533,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Iron Thunder",
+      "cid": 19535,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Silent Swordsman Zero",
+      "cid": 19843,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Silent Magician Zero",
+      "cid": 19844,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gadget Trio",
+      "cid": 19845,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Snake-Eyes Diabellstar",
+      "cid": 19852,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Diabellze the Original Sinkeeper",
+      "cid": 19853,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tenpai Dragon Paidra",
+      "cid": 19857,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gruesome Grave Squirmer",
+      "cid": 19860,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Lightsworn Dragonling",
+      "cid": 19864,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mementotlan Twin Dragon",
+      "cid": 19878,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Centur-Ion Auxila",
+      "cid": 19883,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Minerva, the Athenian Lightsworn",
+      "cid": 19884,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Varudras, the Final Bringer of the End Times",
+      "cid": 19886,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ties That Bind",
+      "cid": 19894,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Nightmare Throne",
+      "cid": 19902,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mementotlan Fusion",
+      "cid": 19904,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Wake Up Centur-Ion!",
+      "cid": 19905,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Metaltronus",
+      "cid": 19910,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Simultaneous Equation Cannons",
+      "cid": 19921,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sengenjin Wakes from a Millennium",
+      "cid": 20180,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Shield of the Millennium Dynasty",
+      "cid": 20182,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Astellar of the White Forest",
+      "cid": 20192,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Elzette of the White Forest",
+      "cid": 20193,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fiendsmith Engraver",
+      "cid": 20196,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tenpai Dragon Genroku",
+      "cid": 20198,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mementotlan Shleepy",
+      "cid": 20199,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Disablaster the Negation Fortress",
+      "cid": 20205,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mulcharmy Purulia",
+      "cid": 20206,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Silvera, Wolf Tamer of the White Forest",
+      "cid": 20217,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Rciela, Sinister Soul of the White Forest",
+      "cid": 20218,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Heretical Phobos Covos",
+      "cid": 20224,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fiendsmith's Requiem",
+      "cid": 20225,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Silhouhatte Rabbit",
+      "cid": 20231,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Wedju Temple",
+      "cid": 20233,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tales of the White Forest",
+      "cid": 20237,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fiendsmith's Tract",
+      "cid": 20240,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Exxod Fires of Rage",
+      "cid": 20247,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dominus Purge",
+      "cid": 20257,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Master",
+      "cid": 20428,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Dungeon",
+      "cid": 20432,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Bikers Gone Wild",
+      "cid": 20488,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Primite Imperial Dragon",
+      "cid": 20489,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Lacrima the Crimson Tears",
+      "cid": 20490,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mermail Shadow Squad",
+      "cid": 20494,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mulcharmy Fuwalos",
+      "cid": 20500,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Azamina Ilia Silvia",
+      "cid": 20506,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Azamina Mu Rcielago",
+      "cid": 20507,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Azamina Moa Regina",
+      "cid": 20509,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Centur-Ion Primera Primus",
+      "cid": 20514,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Legendary Lord Six Samurai - Shi En",
+      "cid": 20515,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Poseidra Abyss, the Atlantean Dragon Lord",
+      "cid": 20519,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fiendsmith's Agnumday",
+      "cid": 20521,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Flying Mary, the Wandering Ghost Ship",
+      "cid": 20523,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Incoming Machine!",
+      "cid": 20526,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The Hallowed Azamina",
+      "cid": 20529,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Deception of the Sinful Spoils",
+      "cid": 20531,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Primite Lordly Lode",
+      "cid": 20534,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Primite Drillbeam",
+      "cid": 20536,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dominus Impulse",
+      "cid": 20555,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Throne",
+      "cid": 20718,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sword Ryzeal",
+      "cid": 20572,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ice Ryzeal",
+      "cid": 20574,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ext Ryzeal",
+      "cid": 20575,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ryzeal Detonator",
+      "cid": 20578,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss <P> White Rabbit",
+      "cid": 20582,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss <P> Chessy Cat",
+      "cid": 20583,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss <P> Dormouse",
+      "cid": 20584,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss <Q> Red Ransom",
+      "cid": 20585,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss <Q> White Binder",
+      "cid": 20586,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss in Underground",
+      "cid": 20588,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss <C> GWC-06",
+      "cid": 20590,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss <C> TB-11",
+      "cid": 20591,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dark Hole",
+      "cid": 4342,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Spell Canceller",
+      "cid": 5594,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Black Garden",
+      "cid": 7904,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Number 11: Big Eye",
+      "cid": 9861,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Vulcan the Divine",
+      "cid": 10461,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mecha Phantom Beast Dracossack",
+      "cid": 10534,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Denko Sekka",
+      "cid": 11373,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Paleozoic Anomalocaris",
+      "cid": 12086,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Paleozoic Opabinia",
+      "cid": 12196,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dragonic Diagram",
+      "cid": 12967,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Danger! Bigfoot!",
+      "cid": 13978,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Danger! Nessie!",
+      "cid": 13979,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Linguriboh",
+      "cid": 14904,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Traptantalizing Tune",
+      "cid": 18311,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Salamangreat of Fire",
+      "cid": 18908,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mementotlan Dark Blade",
+      "cid": 19363,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Blaze, Supreme Ruler of all Dragons",
+      "cid": 19542,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Queen of the Blazing Domain",
+      "cid": 21746,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dragon Gate",
+      "cid": 21747,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bot Herder",
+      "cid": 21748,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Chaos Ruler, the Chaotic Magical Dragon",
+      "cid": 15277,
+      "rarities": [
+        "Prismatic Secret Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Spirit of Yubel",
+      "cid": 19456,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Samsara D Lotus",
+      "cid": 19458,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Clatter Sploder",
+      "cid": 19464,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Boom Mach",
+      "cid": 19465,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Mean Merciless",
+      "cid": 19466,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Phantasmal Summoning Beast",
+      "cid": 19469,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mementotlan Ghattic",
+      "cid": 19472,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Horus the Black Flame Deity",
+      "cid": 19473,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sauravis, Dragon Sage of the Voiceless Voice",
+      "cid": 19476,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Emissary from the House of Wax",
+      "cid": 19479,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Master of Ham",
+      "cid": 19495,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Enigmaster Packbit",
+      "cid": 19497,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin's Crazy Beast",
+      "cid": 19503,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Majespecter Orthrus - Nue",
+      "cid": 19506,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Nightmare Pain",
+      "cid": 19509,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mature Chronicle",
+      "cid": 19510,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dramatic Snake-Eye Chase",
+      "cid": 19517,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Walls of the Imperial Tomb",
+      "cid": 19520,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Prayers of the Voiceless Voice",
+      "cid": 19521,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Barrier of the Voiceless Voice",
+      "cid": 19522,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mutamorphosis",
+      "cid": 19525,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Eternal Favorite",
+      "cid": 19528,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Grand Stampede",
+      "cid": 19530,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Swallow's Cowrie",
+      "cid": 19833,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Veidos the Eruption Dragon of Extinction",
+      "cid": 19835,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Obsidim, the Ashened City",
+      "cid": 19839,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gandora-G the Dragon of Destruction",
+      "cid": 19842,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Moremarshmallon",
+      "cid": 19846,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ancient Gear Commander",
+      "cid": 19849,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Refrain the Melodious Songstress",
+      "cid": 19850,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Couplet the Melodious Songstress",
+      "cid": 19851,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika the Evil Seed",
+      "cid": 19854,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tenpai Dragon Fadra",
+      "cid": 19858,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tenpai Dragon Chundra",
+      "cid": 19859,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Centur-Ion Gargoyle II",
+      "cid": 19862,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Weiss, Lightsworn Archfiend",
+      "cid": 19865,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Wightlord",
+      "cid": 19866,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bacha the Melodious Maestra",
+      "cid": 19876,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Enlightenment Dragon",
+      "cid": 19879,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sangenpai Bident Dragion",
+      "cid": 19880,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sangenpai Transcendent Dragion",
+      "cid": 19881,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Turn Silence",
+      "cid": 19893,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Future Silence",
+      "cid": 19895,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ancient Gear Advance",
+      "cid": 19896,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Melodious Concerto",
+      "cid": 19897,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Bloom",
+      "cid": 19899,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sangen Summoning",
+      "cid": 19900,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Blessing of the Voiceless Voice",
+      "cid": 19903,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Way Where There's a Will",
+      "cid": 19908,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Blink Out",
+      "cid": 19909,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Stronghold the Hidden Fortress",
+      "cid": 19912,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sinful Spoils of Slumber - Morrian",
+      "cid": 19916,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Multi-Universe",
+      "cid": 20062,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Haggard Lizardose",
+      "cid": 20065,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Rekindling the Ashened",
+      "cid": 20070,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Code of Soul",
+      "cid": 19723,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Supreme King Z-ARC - Synchro Universe",
+      "cid": 19722,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Golem that Guards the Millennium Treasures",
+      "cid": 20181,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maiden of the Millennium Moon",
+      "cid": 20183,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fiend Reflection of the Millennium",
+      "cid": 20184,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Light End Sublimation Dragon",
+      "cid": 20189,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dark End Evaporation Dragon",
+      "cid": 20190,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Knight Armed Dragon, the Armored Knight Dragon",
+      "cid": 20191,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Silvy of the White Forest",
+      "cid": 20194,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Rucia of the White Forest",
+      "cid": 20195,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Centur-Ion Atrii",
+      "cid": 20200,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Drytron Nu II",
+      "cid": 20201,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Cosmo Queen the Queen of Prayers",
+      "cid": 20203,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dora Dora",
+      "cid": 20207,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Drytron Meteonis DA Draconids",
+      "cid": 20211,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Diabell, Queen of the White Forest",
+      "cid": 20219,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Madolche Queen Tiarafraise",
+      "cid": 20223,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fiendsmith's Sequence",
+      "cid": 20226,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Madolche Mini Meowcaroons",
+      "cid": 20229,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Obliterate!!! Blaze",
+      "cid": 20234,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dragon's Light and Darkness",
+      "cid": 20236,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Beware the White Forest",
+      "cid": 20238,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Susurrus of the Sinful Spoils",
+      "cid": 20239,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fiendsmith's Sanct",
+      "cid": 20241,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Emblema Salvation",
+      "cid": 20242,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Woes of the White Forest",
+      "cid": 20250,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fiendsmith in Paradise",
+      "cid": 20251,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Magicolloidal Sol",
+      "cid": 20419,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Aerial Eater",
+      "cid": 20427,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Dragon",
+      "cid": 20429,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Cerberus",
+      "cid": 20430,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Archfiend",
+      "cid": 20431,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Maker",
+      "cid": 20433,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Room",
+      "cid": 20434,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Drake Shark",
+      "cid": 20478,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Metal Illusionist",
+      "cid": 20484,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Chaos Allure Queen",
+      "cid": 20487,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mementotlan Akihiron",
+      "cid": 20491,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Abyssrhine, the Atlantean Spirit",
+      "cid": 20493,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Anarchist Monk of the Six Samurai",
+      "cid": 20495,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tactical Trainer of the Six Samurai",
+      "cid": 20496,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Legendary Lord Six Samurai - Enishi",
+      "cid": 20516,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Number C32: Shark Drake LeVeiss",
+      "cid": 20517,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "LeVirtue Dragon",
+      "cid": 20518,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Scourge of the White Forest",
+      "cid": 20532,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Grand Breakout",
+      "cid": 20533,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Primite Roar",
+      "cid": 20535,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Abyss-sting Triaina",
+      "cid": 20538,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Final Bringer of the End Times",
+      "cid": 20540,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Firestorms Over Atlantis",
+      "cid": 20542,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Armor",
+      "cid": 20714,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Fairy",
+      "cid": 20715,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Slime",
+      "cid": 20716,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Giant Mimighoul",
+      "cid": 20717,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Charm",
+      "cid": 20720,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Rescue Hedgehog",
+      "cid": 19410,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fire King Courtier Ulcanix",
+      "cid": 19825,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Splitting Planarian",
+      "cid": 20452,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ryzeal Cross",
+      "cid": 20580,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Metalflame Swordsman",
+      "cid": 20753,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Magician of Chaos",
+      "cid": 14213,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "The King of D.",
+      "cid": 13640,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Elemental HERO Spirit of Neos",
+      "cid": 17403,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Junk Synchron",
+      "cid": 7687,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Number F0: Utopic Future",
+      "cid": 11413,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Astrograph Sorcerer",
+      "cid": 12906,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Accesscode Talker",
+      "cid": 15032,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Destiny HERO - Destroyer Phoenix Enforcer",
+      "cid": 16524,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Red Familiar",
+      "cid": 15002,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Number C101: Silent Honor DARK",
+      "cid": 10932,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Crystal Clear Wing Synchro Dragon",
+      "cid": 16379,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Trickstar Aqua Angel",
+      "cid": 20292,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ally of Justice Cycle Reader",
+      "cid": 8409,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mischief of the Gnomes",
+      "cid": 11631,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Buster Whelp of the Destruction Swordsman",
+      "cid": 12127,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Destruction Sword Memories",
+      "cid": 12474,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gouki Suprex",
+      "cid": 13049,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gouki Re-Match",
+      "cid": 13093,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "F.A. Dawn Dragster",
+      "cid": 13710,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "World Chalice Guardragon Almarduke",
+      "cid": 14282,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gallant Granite",
+      "cid": 14663,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mathmech Superfactorial",
+      "cid": 14755,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tri-Edge Master",
+      "cid": 15466,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Pile Armed Dragon",
+      "cid": 16284,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Piri Reis Map",
+      "cid": 16417,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Number 2: Ninja Shadow Mosquito",
+      "cid": 17645,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Apophis the Swamp Deity",
+      "cid": 17728,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bystial Saronir",
+      "cid": 17763,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mementotlan Tatsunootoshigo",
+      "cid": 19362,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Centur-Ion Phalanx",
+      "cid": 19379,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Centur-Ion True Awakening",
+      "cid": 19380,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Card of Safe Return",
+      "cid": 5123,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mirage of Nightmare",
+      "cid": 5433,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Metamorphosis",
+      "cid": 5539,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Number 95: Galaxy-Eyes Dark Matter Dragon",
+      "cid": 11651,
+      "rarities": [
+        "Ultra Rare"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Geistgrinder Golem",
+      "cid": 19457,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Raidraptor - Noir Lanius",
+      "cid": 19459,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Raidraptor - Bloom Vulture",
+      "cid": 19460,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "White Sunfish",
+      "cid": 19461,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "White Sardine",
+      "cid": 19462,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Majespecter Porcupine - Yamarashi",
+      "cid": 19478,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Magmacho Dragon",
+      "cid": 19481,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Time Reloader",
+      "cid": 19482,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Berserk Archfiend",
+      "cid": 19483,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mokomoko",
+      "cid": 19488,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Jongleur-Ghoul Illusionist",
+      "cid": 19490,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "White Aura Porpoise",
+      "cid": 19496,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Vagnawa the Moon-Eating Dragon",
+      "cid": 19498,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fish Lamp",
+      "cid": 19499,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sorcerer of Sebek",
+      "cid": 19508,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Raidraptor - Roost",
+      "cid": 19512,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "White Reincarnation",
+      "cid": 19513,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ages of Stars and Frost",
+      "cid": 19514,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Grand Bash",
+      "cid": 19515,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Earthbound Fusion",
+      "cid": 19519,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Majespecter Wind",
+      "cid": 19524,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Materialization",
+      "cid": 19526,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Raidraptor - Glorious Bright",
+      "cid": 19529,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Radiance of the Voiceless Voice",
+      "cid": 19531,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Terrors of the Afterroot",
+      "cid": 19534,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Psychic Processor",
+      "cid": 19826,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Psychic Arsenal",
+      "cid": 19827,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Conbirdable",
+      "cid": 19829,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Swarm of Centipedes",
+      "cid": 19830,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sunset Beat",
+      "cid": 19831,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tricorn the Cacophonous Concert",
+      "cid": 19832,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Xyz Force",
+      "cid": 19834,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "King of the Ashened City",
+      "cid": 19836,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Hero of the Ashened City",
+      "cid": 19837,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Priestess of the Ashened City",
+      "cid": 19838,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Awakening of Veidos",
+      "cid": 19840,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ashened for Eternity",
+      "cid": 19841,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Three-Eyed Ghost",
+      "cid": 18661,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mystic Potato",
+      "cid": 18898,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Junk Dragonlet",
+      "cid": 19272,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ultimeat Offering",
+      "cid": 18753,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ancient Gear Tanker",
+      "cid": 19848,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Samurai Beetle",
+      "cid": 19855,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Armored Lizard",
+      "cid": 19856,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Golgoil the Steel Seismic Smasher",
+      "cid": 19867,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mikazukinoyaiba, the Moon Fang Dragon",
+      "cid": 19868,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Talons of Shurilane",
+      "cid": 4791,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dinovatus Docus",
+      "cid": 19871,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Cyclos the Circular Sprite",
+      "cid": 19872,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Fishborg Harpooner",
+      "cid": 19873,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Cooling Embers",
+      "cid": 19874,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Saffira, Divine Dragon of the Voiceless Voice",
+      "cid": 19875,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Troika Griare",
+      "cid": 19885,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Skeletal Soldier",
+      "cid": 19888,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Mantis Monk",
+      "cid": 19889,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Chain Coils",
+      "cid": 19890,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Stag Sovereign",
+      "cid": 19891,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sinful Spoils Struggle",
+      "cid": 19898,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sangen Kaimen",
+      "cid": 19901,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ancient Gear Duel",
+      "cid": 19913,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Grand Pileup",
+      "cid": 19914,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sinful Spoils Subdual",
+      "cid": 19915,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Hunting Dance",
+      "cid": 19917,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Lightsworn Aegis",
+      "cid": 19918,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mirage Mirror Force",
+      "cid": 19919,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Zoma the Earthbound Spirit",
+      "cid": 19920,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Pyrite Knight",
+      "cid": 20057,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Double Dai",
+      "cid": 20059,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Vouiburial, the Dragon Undertaker",
+      "cid": 20063,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Aiza the Dragoness of Deranged Devotion",
+      "cid": 20064,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Shaman of the Ashened City",
+      "cid": 20066,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Spearhead of the Ashened City",
+      "cid": 20067,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Veidos the Dragon of Endless Darkness",
+      "cid": 20068,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Embers of the Ashened",
+      "cid": 20069,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Extinguishing the Ashened",
+      "cid": 20071,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ashened to Endlessness",
+      "cid": 20072,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dandy Whitelion",
+      "cid": 19010,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Pendulum Witch",
+      "cid": 19716,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gimmick Puppet Little Soldiers",
+      "cid": 20186,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gimmick Puppet Rouge Doll",
+      "cid": 20187,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Gimmick Puppet Cattle Scream",
+      "cid": 20188,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Wicked Butterfly",
+      "cid": 20197,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Lord of the Missing Barrows",
+      "cid": 20202,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Paralyzing Mushroom",
+      "cid": 20204,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Broomy",
+      "cid": 20208,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Bettan Bat",
+      "cid": 20209,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Depresspard",
+      "cid": 20210,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "DPH Gendamoore",
+      "cid": 20220,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ragnaraika Selene Snapper",
+      "cid": 20227,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mansion of the Dreadful Dolls",
+      "cid": 20235,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Vesper Girsu",
+      "cid": 20243,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Trap Gatherer",
+      "cid": 20244,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Interdimensional Matter Forwarder",
+      "cid": 20245,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dark Magic Mirror Force",
+      "cid": 20248,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sangen Kaiho",
+      "cid": 20252,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Guardian of the Voiceless Voice",
+      "cid": 20253,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Meteoroa Drytron",
+      "cid": 20255,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Madolche Dessert",
+      "cid": 20256,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Silhouhatte Trick",
+      "cid": 20258,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Vulmina, Statue of the Sacred Dragon",
+      "cid": 20420,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Kuebiko",
+      "cid": 20421,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Dipsea Fiend",
+      "cid": 20422,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Necroquip Princess",
+      "cid": 20423,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Kochobo's Hinamatsuri",
+      "cid": 20425,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Zapper Shrimp",
+      "cid": 20426,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Blazing Bombardment Beast",
+      "cid": 9255,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Centur-Ion Chimerea",
+      "cid": 20492,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Eria the Water Channeler",
+      "cid": 20499,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Tsuru-Puru-Purun",
+      "cid": 20501,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Flipping Feline",
+      "cid": 20502,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "L Magi Mergy",
+      "cid": 20503,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Neverending Nightmare Absorber",
+      "cid": 20504,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Khaos Starsource Dragon",
+      "cid": 20510,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Rubysapphirus, the Adamant Jewel",
+      "cid": 20520,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mermail King - Neptabyss",
+      "cid": 20522,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Aqua Jet Surface",
+      "cid": 20524,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Azamina Debtors",
+      "cid": 20530,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Sangen Furo",
+      "cid": 20537,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Six Strike - Double Assault",
+      "cid": 20539,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Token Support",
+      "cid": 20543,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Virtue Stream",
+      "cid": 20544,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Xyz Poseidon Splash",
+      "cid": 20545,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Puppet Shark",
+      "cid": 20546,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Max Metalmorph",
+      "cid": 20547,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Time Engine",
+      "cid": 20548,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Azamina Determination",
+      "cid": 20549,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Guilt of the Sinful Spoils",
+      "cid": 20550,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Goblin Biker Grand Crisis",
+      "cid": 20551,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Primite Howl",
+      "cid": 20552,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mantman the Ultrahuman",
+      "cid": 20708,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Release Brainwashing",
+      "cid": 20710,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Denial Deity Dotan",
+      "cid": 20711,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Butterfly Fish",
+      "cid": 20712,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "QQ Enneagon",
+      "cid": 20713,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Mimighoul Fork",
+      "cid": 20719,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Cursed Fire King Doom Burst",
+      "cid": 20038,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Node Ryzeal",
+      "cid": 20573,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Palm Ryzeal",
+      "cid": 20576,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ryzeal Duo Drive",
+      "cid": 20577,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ryzeal Plugin",
+      "cid": 20579,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Ryzeal Plasma Hole",
+      "cid": 20581,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss <Q> Hearts Crypter",
+      "cid": 20587,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Maliss <C> MTP-07",
+      "cid": 20589,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "White Dragon Ninja",
+      "cid": 10015,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Denglong, First of the Yang Zing",
+      "cid": 12638,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Performapal Odd-Eyes Dissolver",
+      "cid": 13128,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Danger! Chupacabra!",
+      "cid": 13980,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Danger!? Jackalope?",
+      "cid": 13981,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Yellow Ninja",
+      "cid": 14003,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    },
+    {
+      "name": "Assault Synchron",
+      "cid": 18427,
+      "rarities": [
+        "Common"
+      ],
+      "artwork": 1
+    }
+  ],
+  "groupID": 24308,
+  "codePrefix": "MP25-EN",
+  "language": "en",
+  "rarities": [
+    "Common",
+    "Prismatic Secret Rare",
+    "Starlight Rare",
+    "Ultra Rare"
+  ],
+  "releaseName": "2025 MEGA-PACK TIN",
+  "capturedAt": "2026-11-20T19:56:19.727390+00:00",
+  "productsSHA256": "553276a6fe97a1f376fa56f4d9bf4faaf66d5d44b800a8bfdcd866a41ff7b489",
+  "productIdentitySHA256": "1820825e6464b25865210247e5f4bcfc3c2b7d5b000ab91c6e79d978deb5b5b0"
+}
