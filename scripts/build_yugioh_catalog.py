@@ -95,19 +95,32 @@ def corresponding_rarity(gid, code, rarity):
             return rule['rarities'].get(rarity, rarity)
     return rarity
 
+def source_physical_rarity(rarity, rules=None):
+    """The physical rarity a YGOPRODeck label names.
+
+    Some labels describe pack ratio rather than finish (Short Print, Super Short
+    Print). A reviewed alias maps them to the physical rarity so they correspond
+    only to a product sold as that rarity.
+    """
+    for alias in (CORRESPONDENCE_RULES if rules is None else rules).get('sourceRarityAliases', []):
+        if norm(rarity) in {norm(r) for r in alias['sourceRarities']}:
+            return alias['physicalRarity']
+    return rarity
+
 def release_names(gid, group_name, code, rules=None):
     """Normalized secondary set names that name this marketplace release.
 
     The group's own name always counts. A reviewed alias adds one more name, but
     only for the exact group ID and name it was reviewed against and only for its
-    reviewed code prefixes, so a renamed group or an unrelated code falls back to
-    the exact-name rule. Aliases say which release a group is; they never grant
+    reviewed code prefixes or exact codes, so a renamed group or an unrelated
+    code falls back to the exact-name rule. Aliases say which release a group is; they never grant
     rarity, edition or artwork authority.
     """
     names = {norm(group_name)}
     for alias in (CORRESPONDENCE_RULES if rules is None else rules).get('setNameAliases', []):
         if (alias['groupID'] == gid and alias['groupName'] == group_name
-                and any(code.startswith(prefix) for prefix in alias['codePrefixes'])):
+                and (any(code.startswith(prefix) for prefix in alias.get('codePrefixes', ()))
+                     or code in alias.get('codes', ()))):
             names.add(norm(alias['setName']))
     return names
 
@@ -458,7 +471,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
             # equal rarity counts are never evidence of correspondence.
             source_rows = {(card_id, set_name, source_rarity) for card_id, set_name, source_rarity in entries[code]}
             exact = {row for row in source_rows if row[0] == cid
-                     and norm(row[1]) in release_names(gid, group["name"], code) and norm(row[2]) == norm(
+                     and norm(row[1]) in release_names(gid, group["name"], code) and norm(source_physical_rarity(row[2])) == norm(
                          corresponding_rarity(gid, code, physical_rarity or rarity)
                          if taxonomy_scopes is None or gid in taxonomy_scopes else (physical_rarity or rarity))}
             mapped = review.get("sourcePrintings") if review else None
@@ -506,7 +519,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         source_rows = set(entries[code])
         matched = set().union(*(correspondence.get(x.get("p"), set()) for x in family))
         if matched != source_rows: incomplete[code].add("printingCorrespondenceGap")
-        if not entries[code] or len({x["r"] for x in family}) < len({r for _, _, r in entries[code]}): incomplete[code].add("rarityShortfall")
+        if not entries[code] or len({x["r"] for x in family}) < len({norm(source_physical_rarity(r)) for _, _, r in entries[code]}): incomplete[code].add("rarityShortfall")
         if len({(x["g"], x["r"], x["art"]) for x in family}) < len(entries[code]): incomplete[code].add("printingShortfall")
         labels = [(x["g"], x["r"], x["art"], x["pn"]) for x in family]
         if len(set(labels)) != len(labels): incomplete[code].add("indistinguishable")

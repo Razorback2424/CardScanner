@@ -1211,8 +1211,9 @@ final class LorcanaPricingTests: XCTestCase {
         XCTAssertNil(model.pendingIdentityChoice)
         XCTAssertNil(model.pendingChoice)
         XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
-        // 15/P2 EN 1 is the held Moana/Vaiana "Adventurer of Land and Sea" pair.
-        XCTAssertEqual(model.unresolvedScans.first?.printingCandidates.count, 2)
+        // 15/P2 EN 1 is Mickey Mouse - True Friend: one TCGplayer listing whose physical
+        // printing is still under review. (Moana/Vaiana 26/P2 EN 7 is a reviewed choice now.)
+        XCTAssertEqual(model.unresolvedScans.first?.printingCandidates.map(\.name), ["Mickey Mouse - True Friend"])
         let noted = await waitUntil { model.note?.text.contains("needs review") == true }
         XCTAssertTrue(noted, "Held printings explain why they were filed for review")
         XCTAssertEqual(try host.mainContext.fetchCount(FetchDescriptor<CollectedCard>()), 0)

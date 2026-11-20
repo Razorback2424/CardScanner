@@ -78,11 +78,17 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 - Result: open rows went from 24,204 to 8,671, and incomplete codes from 12,331 to 4,384, with 0 opened. Only the `correspondence` field changed, on 9,520 rows.
 - Before writing, read every proposal sorted by name similarity, and review the refusals.
 
+**Pass 2 (2026-11-20).**
+- **Price receipts.** Replay with `--price-receipt`. `scripts/capture_yugioh_price_receipt.py <cache> --out <receipt>` binds a capture to TCGCSV's snapshot marker by fetching every group's prices again, before the next daily update (about 20:00 UTC), and comparing hashes. Without a receipt, every quote carries the local capture time instead of TCGplayer's snapshot time. PR #52 shipped that way, and `testRealListingOnlyPairAndBundledSnapshotNeverPretendLiveRefresh` caught it.
+- **Previous seed.** Pass the last seed built from a *different* capture as `--previous-seed`. Passing a seed from the same capture adds duplicate history entries.
+- **Code-level release-name aliases.** These cover groups that hold several sub-releases. Always regenerate from the pre-alias baseline ledger: `--write` replaces the whole list.
+- **Rarity taxonomy.** Prismatic rules for RA01, RA03, RA04 and RA05, plus Short Print and Super Short Print read as Common. See [`research/yugioh-catalog/rarity-taxonomy.md`](research/yugioh-catalog/rarity-taxonomy.md).
+- **Result:** open rows went from 8,671 to 5,211 and incomplete codes from 4,384 to 2,689, with 0 opened. `autoEligibleCodes` went from 262 to 274, from the PSV Short Prints that Konami's checklist lists as Common.
+
 **Next Yu-Gi-Oh targets:**
-1. **Prismatic rarity taxonomy for RA01, RA03, RA04 and RA05** (about 600 products). Add rules shaped like the existing reviewed `ra02-prismatic-taxonomy-v1`, each pinned to its group's `expectedProductsSHA256`.
-2. **Common vs Short Print** (328) and **Duel Terminal "Technology Common"** (137). First research whether collectors treat these as the same physical rarity; Short Print is a print-ratio label.
-3. **The 82 refused alias scopes,** in `refusals-1.json` on the SSD.
-4. **Reviewed Konami release inventories for more releases.** This is the only way to make more codes auto-resolve on scan.
+1. **Hidden Arsenal: Chapter 1 Duel Terminal parallels** (137 Common + 25 Ultra codes). These need a source confirming that TCGplayer's "Technology" names and YGOPRODeck's "Parallel Rare" names are the same finish.
+2. **Codes with no YGOPRODeck row** (the largest remaining pattern: about 390 Commons and 130 Super Rares, mostly Speed Duel sets). Check whether YGOPRODeck lists these under another code before treating them as gaps.
+3. **Reviewed Konami release inventories for more releases.** This is still the main way to make more codes auto-resolve on scan.
 
 ## Mistakes already made (do not repeat)
 

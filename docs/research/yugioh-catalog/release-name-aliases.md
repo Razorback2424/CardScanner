@@ -27,9 +27,17 @@ An alias is proposed for a pair of TCGplayer group and code prefix, and only whe
 When the builder applies an alias, it checks:
 - the exact group ID;
 - the exact group name it was reviewed against, so a renamed group falls back to the exact-name rule;
-- the code prefix.
+- the code prefix, or the exact code for a code-level alias.
 
 Rarity is still compared exactly, through the existing scoped rarity taxonomy. An alias grants no edition, artwork, price or automatic-scan authority.
+
+## Groups that hold several sub-releases (2026-11-20)
+
+Some TCGplayer groups hold several YGOPRODeck releases under one prefix: Duel Terminal 5a and 5b, Collectible Tin waves, Sneak Peek and Special Edition promos filed under the main set, Hobby League cards, and Shonen Jump issue promos. No single name then fits the whole prefix, and the scope used to be refused.
+
+The reconciler now falls back to the printed code. Each code whose products agree on exactly one YGOPRODeck name gets an alias for that exact code only (`codes`, with an empty `codePrefixes`). The evidence rule is `printed-code-and-card-agree-per-code-v1`. A code whose products disagree stays open.
+
+Result: 291 code-level aliases over 1,097 products. Refused scopes fell from 82 to 7, and the 293 prefix aliases were unchanged. Regenerating keeps an unchanged alias's original `reviewedAt`.
 
 ## Reprint groups
 
