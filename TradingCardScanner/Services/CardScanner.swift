@@ -3413,6 +3413,19 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+#if targetEnvironment(simulator)
+    /// Screenshot fixture: the simulator has no torch, so stand one in to show
+    /// the light controls.
+    func simulateScanLightOnForScreenshot(level: Float) {
+        sessionQueue.sync {
+            wantsRunning = true
+            scanLightDeviceOverrideForTesting = ScreenshotScanLight()
+            scanLightSessionLiveOverrideForTesting = true
+        }
+        setScanLight(on: true, level: level)
+    }
+#endif
+
     func setScanLightSessionLiveForTesting(_ live: Bool) {
         sessionQueue.sync { scanLightSessionLiveOverrideForTesting = live }
     }
@@ -4266,3 +4279,15 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
 }
+
+#if DEBUG && targetEnvironment(simulator)
+private final class ScreenshotScanLight: ScanLightDevice {
+    let hasTorch = true
+    let isTorchAvailable = true
+    private(set) var torchLevel: Float = 0
+    var isTorchActive: Bool { torchLevel > 0 }
+    var torchMode: AVCaptureDevice.TorchMode { torchLevel > 0 ? .on : .off }
+    func isTorchModeSupported(_ mode: AVCaptureDevice.TorchMode) -> Bool { mode != .auto }
+    func setScanLight(level: Float?) throws { torchLevel = level ?? 0 }
+}
+#endif

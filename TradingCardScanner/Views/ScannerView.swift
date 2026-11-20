@@ -251,6 +251,15 @@ struct ScannerView: View {
                 if longSummary || arguments.contains("camera-options") {
                     model.scanner.simulateLensAttachmentsForTesting()
                     if longSummary { model.seedLongScannerToolbarForScreenshot() }
+                    if arguments.contains("scan-light-on") {
+                        // After launch settles: the first scene-phase change
+                        // turns the light off, as it should on a device.
+                        let scanner = model.scanner
+                        Task { @MainActor in
+                            try? await Task.sleep(for: .seconds(0.5))
+                            scanner.simulateScanLightOnForScreenshot(level: 0.4)
+                        }
+                    }
                     didSeedCameraOptionsFixture = true
                 }
             }
@@ -466,7 +475,8 @@ private struct ScannerChrome: View {
             clearFinishLocks: model.clearFinishLocks,
             openSettings: openSettings,
             scannerState: scanner.uiState,
-            setScanLight: scanner.setScanLight
+            setScanLight: scanner.setScanLight,
+            setScanLightLevel: scanner.setScanLightLevel
         )
         .equatable()
         // Observe the confirmed camera values without observing per-frame scanner state.
@@ -476,8 +486,6 @@ private struct ScannerChrome: View {
 
     private var topStack: some View {
         VStack(spacing: 10) {
-            ScanLightBrightnessControl(state: scanner.uiState, setLevel: scanner.setScanLightLevel)
-
             // A question owns the screen until it is answered: history steps
             // aside so the only thing above the band is the one decision.
             if !isScanChoicePending {
@@ -895,13 +903,18 @@ private struct ScannerTopBar: View, Equatable {
     let setFinishLock: (VariantLock?, CardGame) -> Void
     let clearFinishLocks: () -> Void
     let openSettings: () -> Void
-    /// Observed only by the light button, so torch changes never re-evaluate
-    /// the bar. Not part of equality: the object is stable for the session.
+    /// Observed only inside the options panel, so torch changes never
+    /// re-evaluate the bar. Not part of equality: the object is stable for the
+    /// session.
     let scannerState: CardScannerUIState
     let setScanLight: (Bool, Float) -> Void
+    let setScanLightLevel: (Float) -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @Namespace private var glassNamespace
+    @State private var isShowingOptions = false
+    /// Full Settings is a sheet, so it waits until the popover has gone.
+    @State private var opensSettingsAfterOptions = false
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.purpose == rhs.purpose
@@ -915,6 +928,13 @@ private struct ScannerTopBar: View, Equatable {
 
     var body: some View {
         topBarCluster
+#if DEBUG && targetEnvironment(simulator)
+            .task {
+                guard ProcessInfo.processInfo.arguments.contains("scan-options-open") else { return }
+                try? await Task.sleep(for: .seconds(1))
+                isShowingOptions = true
+            }
+#endif
     }
 
     @ViewBuilder
@@ -984,13 +1004,10 @@ private struct ScannerTopBar: View, Equatable {
     private func finishLockControl(wrapsSummary: Bool) -> some View {
         FinishLockControl(
             subjectMode: subjectMode,
-            lens: lens,
-            availableLenses: availableLenses,
             locks: finishLocks,
             variantLockMenu: variantLockMenu,
             wrapsSummary: wrapsSummary,
             setSubjectMode: setSubjectMode,
-            setLens: setLens,
             setLock: setFinishLock,
             clearLocks: clearFinishLocks,
             glassNamespace: glassNamespace
@@ -1018,8 +1035,7 @@ private struct ScannerTopBar: View, Equatable {
             finishLockControl(wrapsSummary: false).fixedSize(horizontal: true, vertical: false)
             identificationSpinner
             Spacer(minLength: 0)
-            lightButton
-            settingsButton
+            optionsButton
         }
     }
 
@@ -1028,8 +1044,7 @@ private struct ScannerTopBar: View, Equatable {
             HStack(spacing: 8) {
                 purposeControl
                 Spacer(minLength: 0)
-                lightButton
-                settingsButton
+                optionsButton
             }
             HStack(spacing: 8) {
                 finishLockControl(wrapsSummary: true)
@@ -1049,15 +1064,12 @@ private struct ScannerTopBar: View, Equatable {
         }
     }
 
-    private var lightButton: some View {
-        ScanLightButton(state: scannerState, setScanLight: setScanLight)
-            .appGlassEffectID("scanner-light", in: glassNamespace)
-    }
-
-    private var settingsButton: some View {
+    /// One button for everything about the camera itself. The panel holds the
+    /// light and lens and links to full Settings.
+    private var optionsButton: some View {
         Group {
             if #available(iOS 26.0, *) {
-                Button(action: openSettings) {
+                Button { isShowingOptions = true } label: {
                     Image(systemName: "gearshape")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
@@ -1065,7 +1077,7 @@ private struct ScannerTopBar: View, Equatable {
                 }
                 .buttonStyle(.glass)
             } else {
-                Button(action: openSettings) {
+                Button { isShowingOptions = true } label: {
                     Image(systemName: "gearshape")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
@@ -1077,114 +1089,142 @@ private struct ScannerTopBar: View, Equatable {
             }
         }
         .appGlassEffectID("scanner-settings", in: glassNamespace)
-        .accessibilityLabel("Settings")
+        .accessibilityLabel("Scan options")
+        .accessibilityIdentifier("scanner-settings")
+        .popover(isPresented: $isShowingOptions, arrowEdge: .top) {
+            ScanOptionsPanel(
+                scannerState: scannerState,
+                lens: lens,
+                availableLenses: availableLenses,
+                setScanLight: setScanLight,
+                setScanLightLevel: setScanLightLevel,
+                setLens: setLens,
+                openAllSettings: {
+                    opensSettingsAfterOptions = true
+                    isShowingOptions = false
+                }
+            )
+            .presentationCompactAdaptation(.popover)
+            .onDisappear {
+                guard opensSettingsAfterOptions else { return }
+                opensSettingsAfterOptions = false
+                openSettings()
+            }
+        }
     }
 }
 
-/// One tap for the light. It starts at the brightness the user last chose.
-private struct ScanLightButton: View {
-    @ObservedObject var state: CardScannerUIState
+/// The scan settings that change what the camera does right now. Opening this
+/// panel does not pause scanning, so the user can watch the card while choosing
+/// a brightness or a lens. Everything else is in full Settings.
+private struct ScanOptionsPanel: View {
+    @ObservedObject var scannerState: CardScannerUIState
+    let lens: CameraLens
+    let availableLenses: [CameraLens]
     let setScanLight: (Bool, Float) -> Void
+    let setScanLightLevel: (Float) -> Void
+    let setLens: (CameraLens) -> Void
+    let openAllSettings: () -> Void
+
     @AppStorage(ScanLightLevel.storageKey) private var level = Double(ScanLightLevel.defaultLevel)
 
     var body: some View {
-        if state.scanLight != .unsupported {
-            button
-                .disabled(state.scanLight == .unavailable)
-                .accessibilityLabel("Scan light")
-                .accessibilityValue(accessibilityValue)
-                .accessibilityAddTraits(.isToggle)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                if scannerState.scanLight != .unsupported {
+                    lightSection
+                }
+                if availableLenses.count > 1 {
+                    section("Camera") {
+                        Picker("Camera", selection: Binding(get: { lens }, set: setLens)) {
+                            ForEach(availableLenses.reversed()) { option in
+                                Text(option == .macro ? "Macro" : "Standard").tag(option)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .accessibilityIdentifier("scan-options-camera")
+                    }
+                }
+                Divider()
+                Button(action: openAllSettings) {
+                    HStack {
+                        Label("All Settings", systemImage: "gearshape")
+                        Spacer(minLength: 8)
+                        Image(systemName: "chevron.right")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("scan-options-all-settings")
+            }
+            .padding(16)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .frame(idealWidth: 320, maxWidth: 340)
+        .accessibilityIdentifier("scan-options-panel")
+    }
+
+    private func section<Content: View>(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .accessibilityAddTraits(.isHeader)
+            content()
         }
     }
 
-    private var isOn: Bool { state.scanLight == .on }
+    private var isLightOn: Bool { scannerState.scanLight == .on }
 
-    private var accessibilityValue: String {
-        switch state.scanLight {
-        case .on: return "On"
-        case .unavailable: return "Unavailable"
-        case .off, .unsupported: return "Off"
-        }
-    }
-
-    private func toggle() {
-        setScanLight(!isOn, Float(level))
-    }
-
-    private var glyph: some View {
-        Image(systemName: isOn ? "flashlight.on.fill" : "flashlight.off.fill")
-            .font(.system(size: 16, weight: .semibold))
-            .foregroundStyle(isOn ? .black : .white.opacity(state.scanLight == .unavailable ? 0.45 : 1))
-            .frame(width: 44, height: 44)
-    }
-
-    @ViewBuilder
-    private var button: some View {
-        if #available(iOS 26.0, *) {
-            if isOn {
-                Button(action: toggle) { glyph }
-                    .buttonStyle(.glassProminent)
-                    .tint(.white)
-            } else {
-                Button(action: toggle) { glyph }
-                    .buttonStyle(.glass)
+    private var lightSection: some View {
+        section("Light") {
+            Toggle(isOn: Binding(
+                get: { isLightOn },
+                set: { setScanLight($0, Float(level)) }
+            )) {
+                Label("Scan light", systemImage: isLightOn ? "flashlight.on.fill" : "flashlight.off.fill")
             }
-        } else {
-            Button(action: toggle) {
-                glyph
-                    .background(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(.black.opacity(0.55)), in: Circle())
-                    .overlay(Circle().stroke(.white.opacity(0.18), lineWidth: 1))
-            }
-            .buttonStyle(.plain)
-        }
-    }
-}
-
-/// Continuous brightness while the light is on, so the user can find the
-/// least light that reads the card instead of picking from fixed steps.
-private struct ScanLightBrightnessControl: View {
-    @ObservedObject var state: CardScannerUIState
-    let setLevel: (Float) -> Void
-    @AppStorage(ScanLightLevel.storageKey) private var level = Double(ScanLightLevel.defaultLevel)
-
-    var body: some View {
-        if state.scanLight == .on {
-            HStack(spacing: 10) {
-                Image(systemName: "sun.min.fill")
-                    .accessibilityHidden(true)
-                Slider(
-                    value: $level,
-                    in: Double(ScanLightLevel.range.lowerBound)...Double(ScanLightLevel.range.upperBound)
-                )
-                .tint(.white)
-                .accessibilityLabel("Scan light brightness")
-                .accessibilityValue(level.formatted(.percent.precision(.fractionLength(0))))
-                Image(systemName: "sun.max.fill")
-                    .accessibilityHidden(true)
-            }
-            .font(.system(size: 14, weight: .semibold))
-            .foregroundStyle(.white)
-            .padding(.horizontal, 14)
+            .disabled(scannerState.scanLight == .unavailable)
             .frame(minHeight: 44)
-            .appPillGlass(interactive: true)
-            .transition(.move(edge: .top).combined(with: .opacity))
-            .onChange(of: level) { _, newLevel in
-                setLevel(Float(newLevel))
+            .accessibilityIdentifier("scan-light-toggle")
+
+            if scannerState.scanLight == .unavailable {
+                Text("The light is unavailable right now, often because the phone is warm.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else if isLightOn {
+                HStack(spacing: 10) {
+                    Image(systemName: "sun.min.fill")
+                        .accessibilityHidden(true)
+                    Slider(
+                        value: $level,
+                        in: Double(ScanLightLevel.range.lowerBound)...Double(ScanLightLevel.range.upperBound)
+                    )
+                    .accessibilityLabel("Scan light brightness")
+                    .accessibilityValue(level.formatted(.percent.precision(.fractionLength(0))))
+                    .accessibilityIdentifier("scan-light-brightness")
+                    Image(systemName: "sun.max.fill")
+                        .accessibilityHidden(true)
+                }
+                .foregroundStyle(.secondary)
+                .onChange(of: level) { _, newLevel in
+                    setScanLightLevel(Float(newLevel))
+                }
             }
-            .accessibilityIdentifier("scan-light-brightness")
         }
+        .animation(.easeOut(duration: 0.2), value: scannerState.scanLight)
     }
 }
 
 private struct FinishLockControl: View, Equatable {
     let subjectMode: ScanSubjectMode
-    let lens: CameraLens
-    let availableLenses: [CameraLens]
     let locks: [CardGame: VariantLock]
     let variantLockMenu: [GameVariantLockOptions]
     let wrapsSummary: Bool
     let setSubjectMode: (ScanSubjectMode) -> Void
-    let setLens: (CameraLens) -> Void
     let setLock: (VariantLock?, CardGame) -> Void
     let clearLocks: () -> Void
     let glassNamespace: Namespace.ID
@@ -1192,8 +1232,6 @@ private struct FinishLockControl: View, Equatable {
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.subjectMode == rhs.subjectMode && lhs.locks == rhs.locks
-            && lhs.lens == rhs.lens
-            && lhs.availableLenses == rhs.availableLenses
             && lhs.variantLockMenu == rhs.variantLockMenu
             && lhs.wrapsSummary == rhs.wrapsSummary
     }
@@ -1229,22 +1267,6 @@ private struct FinishLockControl: View, Equatable {
                     }
                 }
                 .pickerStyle(.inline)
-            }
-
-            if availableLenses.count > 1 {
-                Section {
-                    Text("Camera")
-                        .font(.caption)
-                        .accessibilityAddTraits(.isHeader)
-
-                    Picker("Camera", selection: Binding(get: { lens }, set: setLens)) {
-                        ForEach(availableLenses.reversed()) { option in
-                            Text(option == .macro ? "Macro, close-up" : "Standard")
-                                .tag(option)
-                        }
-                    }
-                    .pickerStyle(.inline)
-                }
             }
 
             Divider()
