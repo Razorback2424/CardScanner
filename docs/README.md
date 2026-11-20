@@ -83,8 +83,8 @@ passing. The earlier transport retry/cancellation fixes remain covered. Earlier 
 and development archive results below predate these fixes. App Store exports
 and web page/URL work remain owner-deferred.
 
-The [Lorcana normal pricing rollout](research/lorcana-normal-pricing-rollout.md)
-now records 1,616 ordinary mapped printings across eight sets in normal app
+The [October Lorcana normal pricing rollout](research/lorcana-normal-pricing-rollout.md)
+historically recorded 1,616 ordinary mapped printings across eight sets in normal app
 registration, using shared ownership and pricing workflows. The
 [coverage checkpoint](research/lorcana-catalog-coverage.md) retains discovery and
 sealed inventory authority. Older disabled-write/pricing claims are historical
@@ -130,6 +130,7 @@ chronological notes.
 | Low light scanning | [`plans/scanner-low-light-plan.md`](plans/scanner-low-light-plan.md) — proposed scan light, toolbar layout, Macro compatibility and verification. |
 | Raw / graded slab scanning mode | [`plans/explicit-raw-slab-scanning-mode.md`](plans/explicit-raw-slab-scanning-mode.md) — implemented in the 2026-09-23 working tree; initial focused simulator tests pass 166/166 and the review follow-up passes 11/11 targeted non-centering tests. The earlier full simulator run excluded centering-specific classes at the user's request; device/provider acceptance remains open. |
 | Scanner recognition and Needs attention recovery | [`plans/scanner-recognition-remediation.md`](plans/scanner-recognition-remediation.md) — denominator-owned Pokémon inference, conservative fuzzy title agreement, and local-only persistent failure recovery; see the [2026-10-06 cross-game edge-case review](audits/scanner-cross-game-edge-cases-2026-10-06.md) and dated evidence in [`progress.md`](../progress.md). Physical-device and Instruments acceptance remain open. |
+| Fixing a wrong scan / Needs attention picker | [`plans/scan-correction-plan.md`](plans/scan-correction-plan.md) — steps 0–4 implemented by November 20 with source/simulator evidence; tap-through, real-device timing and accessibility acceptance (step 5) remain open. |
 | Release validation and measurement backlog | [`plans/release_followups.md`](plans/release_followups.md) |
 | Browse/Catalog contract | [`plans/browse_screen_spec.md`](plans/browse_screen_spec.md), [`references/browse_success_checklist.md`](../references/browse_success_checklist.md), and the current Browse source/tests |
 | Automatic Pokémon set updates | [`plans/automatic_pokemon_catalog_updates_plan.md`](plans/automatic_pokemon_catalog_updates_plan.md) — historical 2026-09 rollout steps are preserved, but the current publisher workflow has a **daily** production schedule. Signed revision 22 was restored in the 2026-11-10 readback; a retained revision-25 candidate is not proof of publication. Live-revision, device/offline and release gates still require independent checks. |
