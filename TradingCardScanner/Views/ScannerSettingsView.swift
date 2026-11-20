@@ -14,17 +14,25 @@ struct SettingsView: View {
     /// Replaces the Pricing row's icon, so Portfolio can carry its attention
     /// badge down to the row that leads to the problem.
     private let pricingIcon: AnyView?
+    /// Provided by Portfolio when its current history result is available.
+    private let collectionAdditionsRow: AnyView?
 
-    init(pricingDetailsRow: AnyView? = nil, pricingIcon: AnyView? = nil) {
+    init(
+        pricingDetailsRow: AnyView? = nil,
+        pricingIcon: AnyView? = nil,
+        collectionAdditionsRow: AnyView? = nil
+    ) {
         self.pricingDetailsRow = pricingDetailsRow
         self.pricingIcon = pricingIcon
+        self.collectionAdditionsRow = collectionAdditionsRow
     }
 
     var body: some View {
         SettingsContentView(
             runtimes: runtimes,
             pricingDetailsRow: pricingDetailsRow,
-            pricingIcon: pricingIcon
+            pricingIcon: pricingIcon,
+            collectionAdditionsRow: collectionAdditionsRow
         )
     }
 }
@@ -33,6 +41,7 @@ private struct SettingsContentView: View {
     private let runtimes: CardGameRuntimeContainer?
     private let pricingDetailsRow: AnyView?
     private let pricingIcon: AnyView?
+    private let collectionAdditionsRow: AnyView?
     @EnvironmentObject private var scannerModel: ScannerViewModel
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.dismiss) private var dismiss
@@ -305,6 +314,10 @@ private struct SettingsContentView: View {
                 prepareCSVExport(.collection, filename: "ScanStash Collection")
             }
             .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
+
+            if let collectionAdditionsRow {
+                collectionAdditionsRow
+            }
 
             NavigationLink {
                 CollectionActivityLogView()
