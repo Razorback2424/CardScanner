@@ -1,0 +1,5716 @@
+{
+  "schemaVersion": 2,
+  "captureRevision": "2026-11-20c",
+  "setID": "xy8",
+  "setName": "BREAKthrough",
+  "tcgplayerGroupID": 1661,
+  "standard": "Each numbered checklist card must agree with the matching TCGplayer products on exact finishes, or have a cited resolution. Every conflict, unmatched number and Normal review must be resolved. Market listings are evidence of membership. Physical or retail evidence resolves disagreements.",
+  "capturedAt": "2026-11-20T19:59:54+00:00",
+  "sourceBuild": "2026-11-18T20:05:56+0000",
+  "checklistSources": {
+    "sets/91e70ff1979a857b.json": "ec870e4b9af33c5994762a3e50683fab7281e4b4c0fd6e0f91ff5649b58f4296"
+  },
+  "finishEvidenceSHA256": "89f8ee6773c0ee201afa2ee89ebad0ffdcd7e12002db0b8097aabcc03264ccec",
+  "marketSources": {
+    "products": {
+      "url": "https://tcgcsv.com/tcgplayer/3/1661/products",
+      "sha256": "ca4c9077c9dcbf73314b6a9667028e2542efeaf5c12c4985f8a0a42fd08dfb9e"
+    },
+    "prices": {
+      "url": "https://tcgcsv.com/tcgplayer/3/1661/prices",
+      "sha256": "ad64e9020f539aef742f42485afb5974801615da097e25fa35942b8d620accd0"
+    }
+  },
+  "cards": {
+    "xy8-1": {
+      "number": "1",
+      "name": "Paras",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107120,
+          "name": "Paras",
+          "number": "1/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-2": {
+      "number": "2",
+      "name": "Parasect",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107121,
+          "name": "Parasect",
+          "number": "2/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-3": {
+      "number": "3",
+      "name": "Pinsir",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107122,
+          "name": "Pinsir",
+          "number": "3/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-4": {
+      "number": "4",
+      "name": "Cacnea",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107123,
+          "name": "Cacnea",
+          "number": "4/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-5": {
+      "number": "5",
+      "name": "Pansage",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107124,
+          "name": "Pansage",
+          "number": "5/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-6": {
+      "number": "6",
+      "name": "Simisage",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107125,
+          "name": "Simisage",
+          "number": "6/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-7": {
+      "number": "7",
+      "name": "Chespin",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107126,
+          "name": "Chespin (7)",
+          "number": "7/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-8": {
+      "number": "8",
+      "name": "Chespin",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107127,
+          "name": "Chespin (8)",
+          "number": "8/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-9": {
+      "number": "9",
+      "name": "Chespin",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107128,
+          "name": "Chespin (9)",
+          "number": "9/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-10": {
+      "number": "10",
+      "name": "Quilladin",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107129,
+          "name": "Quilladin",
+          "number": "10/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-11": {
+      "number": "11",
+      "name": "Chesnaught",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107130,
+          "name": "Chesnaught",
+          "number": "11/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-12": {
+      "number": "12",
+      "name": "Chesnaught BREAK",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107131,
+          "name": "Chesnaught BREAK",
+          "number": "12/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-13": {
+      "number": "13",
+      "name": "Scatterbug",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107132,
+          "name": "Scatterbug",
+          "number": "13/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-14": {
+      "number": "14",
+      "name": "Spewpa",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107133,
+          "name": "Spewpa",
+          "number": "14/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-15": {
+      "number": "15",
+      "name": "Vivillon",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107134,
+          "name": "Vivillon",
+          "number": "15/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-16": {
+      "number": "16",
+      "name": "Skiddo",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107135,
+          "name": "Skiddo",
+          "number": "16/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-17": {
+      "number": "17",
+      "name": "Gogoat",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107136,
+          "name": "Gogoat",
+          "number": "17/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-18": {
+      "number": "18",
+      "name": "Cyndaquil",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107137,
+          "name": "Cyndaquil",
+          "number": "18/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-19": {
+      "number": "19",
+      "name": "Quilava",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107138,
+          "name": "Quilava",
+          "number": "19/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-20": {
+      "number": "20",
+      "name": "Typhlosion",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107139,
+          "name": "Typhlosion",
+          "number": "20/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-21": {
+      "number": "21",
+      "name": "Houndoom EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107140,
+          "name": "Houndoom EX",
+          "number": "21/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-22": {
+      "number": "22",
+      "name": "M Houndoom EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107141,
+          "name": "M Houndoom EX",
+          "number": "22/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-23": {
+      "number": "23",
+      "name": "Pansear",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107142,
+          "name": "Pansear",
+          "number": "23/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-24": {
+      "number": "24",
+      "name": "Simisear",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107143,
+          "name": "Simisear",
+          "number": "24/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-25": {
+      "number": "25",
+      "name": "Fennekin",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107144,
+          "name": "Fennekin",
+          "number": "25/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-26": {
+      "number": "26",
+      "name": "Braixen",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107145,
+          "name": "Braixen",
+          "number": "26/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-27": {
+      "number": "27",
+      "name": "Goldeen",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107146,
+          "name": "Goldeen",
+          "number": "27/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-28": {
+      "number": "28",
+      "name": "Seaking",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107147,
+          "name": "Seaking",
+          "number": "28/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-29": {
+      "number": "29",
+      "name": "Staryu",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107148,
+          "name": "Staryu",
+          "number": "29/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-30": {
+      "number": "30",
+      "name": "Starmie",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107149,
+          "name": "Starmie",
+          "number": "30/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-31": {
+      "number": "31",
+      "name": "Remoraid",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107150,
+          "name": "Remoraid (31)",
+          "number": "31/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-32": {
+      "number": "32",
+      "name": "Remoraid",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107151,
+          "name": "Remoraid (32)",
+          "number": "32/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-33": {
+      "number": "33",
+      "name": "Octillery",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107152,
+          "name": "Octillery",
+          "number": "33/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-34": {
+      "number": "34",
+      "name": "Glalie EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107153,
+          "name": "Glalie EX",
+          "number": "34/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-35": {
+      "number": "35",
+      "name": "M Glalie EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107154,
+          "name": "M Glalie EX",
+          "number": "35/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-36": {
+      "number": "36",
+      "name": "Piplup",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107155,
+          "name": "Piplup",
+          "number": "36/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-37": {
+      "number": "37",
+      "name": "Prinplup",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107156,
+          "name": "Prinplup",
+          "number": "37/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-38": {
+      "number": "38",
+      "name": "Empoleon",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107157,
+          "name": "Empoleon",
+          "number": "38/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-39": {
+      "number": "39",
+      "name": "Snover",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107158,
+          "name": "Snover",
+          "number": "39/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-40": {
+      "number": "40",
+      "name": "Abomasnow",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107159,
+          "name": "Abomasnow",
+          "number": "40/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-41": {
+      "number": "41",
+      "name": "Panpour",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107160,
+          "name": "Panpour",
+          "number": "41/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-42": {
+      "number": "42",
+      "name": "Simipour",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107161,
+          "name": "Simipour",
+          "number": "42/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-43": {
+      "number": "43",
+      "name": "Vanillite",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107162,
+          "name": "Vanillite",
+          "number": "43/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-44": {
+      "number": "44",
+      "name": "Vanillish",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107163,
+          "name": "Vanillish",
+          "number": "44/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-45": {
+      "number": "45",
+      "name": "Vanilluxe",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107164,
+          "name": "Vanilluxe",
+          "number": "45/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-46": {
+      "number": "46",
+      "name": "Froakie",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107165,
+          "name": "Froakie",
+          "number": "46/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-47": {
+      "number": "47",
+      "name": "Frogadier",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107166,
+          "name": "Frogadier",
+          "number": "47/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-48": {
+      "number": "48",
+      "name": "Pikachu",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107167,
+          "name": "Pikachu",
+          "number": "48/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-49": {
+      "number": "49",
+      "name": "Raichu",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107168,
+          "name": "Raichu",
+          "number": "49/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-50": {
+      "number": "50",
+      "name": "Raichu BREAK",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107169,
+          "name": "Raichu BREAK",
+          "number": "50/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-51": {
+      "number": "51",
+      "name": "Magnemite",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107170,
+          "name": "Magnemite (51)",
+          "number": "51/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-52": {
+      "number": "52",
+      "name": "Magnemite",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107171,
+          "name": "Magnemite (52)",
+          "number": "52/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-53": {
+      "number": "53",
+      "name": "Magneton",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107172,
+          "name": "Magneton",
+          "number": "53/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-54": {
+      "number": "54",
+      "name": "Magnezone",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107173,
+          "name": "Magnezone",
+          "number": "54/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-55": {
+      "number": "55",
+      "name": "Raikou",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107174,
+          "name": "Raikou",
+          "number": "55/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-56": {
+      "number": "56",
+      "name": "Stunfisk",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107175,
+          "name": "Stunfisk",
+          "number": "56/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-57": {
+      "number": "57",
+      "name": "Dedenne",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107176,
+          "name": "Dedenne",
+          "number": "57/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-58": {
+      "number": "58",
+      "name": "Gastly",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107177,
+          "name": "Gastly",
+          "number": "58/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-59": {
+      "number": "59",
+      "name": "Haunter",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107178,
+          "name": "Haunter",
+          "number": "59/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-60": {
+      "number": "60",
+      "name": "Gengar",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107179,
+          "name": "Gengar",
+          "number": "60/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-61": {
+      "number": "61",
+      "name": "Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107180,
+          "name": "Mewtwo EX (61)",
+          "number": "61/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-62": {
+      "number": "62",
+      "name": "Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107181,
+          "name": "Mewtwo EX (62)",
+          "number": "62/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-63": {
+      "number": "63",
+      "name": "M Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107182,
+          "name": "M Mewtwo EX (63)",
+          "number": "63/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-64": {
+      "number": "64",
+      "name": "M Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107183,
+          "name": "M Mewtwo EX (64)",
+          "number": "64/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-65": {
+      "number": "65",
+      "name": "Misdreavus",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107184,
+          "name": "Misdreavus",
+          "number": "65/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-66": {
+      "number": "66",
+      "name": "Mismagius",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107185,
+          "name": "Mismagius",
+          "number": "66/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-67": {
+      "number": "67",
+      "name": "Wobbuffet",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107186,
+          "name": "Wobbuffet",
+          "number": "67/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-68": {
+      "number": "68",
+      "name": "Ralts",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107187,
+          "name": "Ralts (68)",
+          "number": "68/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-69": {
+      "number": "69",
+      "name": "Kirlia",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107188,
+          "name": "Kirlia",
+          "number": "69/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-70": {
+      "number": "70",
+      "name": "Cresselia",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107189,
+          "name": "Cresselia",
+          "number": "70/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-71": {
+      "number": "71",
+      "name": "Woobat",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107190,
+          "name": "Woobat",
+          "number": "71/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-72": {
+      "number": "72",
+      "name": "Swoobat",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107191,
+          "name": "Swoobat",
+          "number": "72/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-73": {
+      "number": "73",
+      "name": "Elgyem",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107192,
+          "name": "Elgyem",
+          "number": "73/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-74": {
+      "number": "74",
+      "name": "Beheeyem",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107193,
+          "name": "Beheeyem",
+          "number": "74/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-75": {
+      "number": "75",
+      "name": "Sandshrew",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107194,
+          "name": "Sandshrew",
+          "number": "75/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-76": {
+      "number": "76",
+      "name": "Sandslash",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107195,
+          "name": "Sandslash",
+          "number": "76/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-77": {
+      "number": "77",
+      "name": "Cubone",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107196,
+          "name": "Cubone",
+          "number": "77/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-78": {
+      "number": "78",
+      "name": "Marowak",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107197,
+          "name": "Marowak",
+          "number": "78/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-79": {
+      "number": "79",
+      "name": "Marowak BREAK",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107198,
+          "name": "Marowak BREAK",
+          "number": "79/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-80": {
+      "number": "80",
+      "name": "Swinub",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107199,
+          "name": "Swinub",
+          "number": "80/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-81": {
+      "number": "81",
+      "name": "Piloswine",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107200,
+          "name": "Piloswine",
+          "number": "81/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-82": {
+      "number": "82",
+      "name": "Mamoswine",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107201,
+          "name": "Mamoswine",
+          "number": "82/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-83": {
+      "number": "83",
+      "name": "Hippopotas",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107202,
+          "name": "Hippopotas",
+          "number": "83/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-84": {
+      "number": "84",
+      "name": "Gallade",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107203,
+          "name": "Gallade",
+          "number": "84/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-85": {
+      "number": "85",
+      "name": "Meloetta",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107204,
+          "name": "Meloetta",
+          "number": "85/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-86": {
+      "number": "86",
+      "name": "Pancham",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107205,
+          "name": "Pancham",
+          "number": "86/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-87": {
+      "number": "87",
+      "name": "Hawlucha",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107206,
+          "name": "Hawlucha",
+          "number": "87/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-88": {
+      "number": "88",
+      "name": "Cacturne",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107207,
+          "name": "Cacturne",
+          "number": "88/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-89": {
+      "number": "89",
+      "name": "Zorua",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107208,
+          "name": "Zorua (89)",
+          "number": "89/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-90": {
+      "number": "90",
+      "name": "Zorua",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107209,
+          "name": "Zorua (90)",
+          "number": "90/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-91": {
+      "number": "91",
+      "name": "Zoroark",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107210,
+          "name": "Zoroark",
+          "number": "91/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-92": {
+      "number": "92",
+      "name": "Zoroark BREAK",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107211,
+          "name": "Zoroark BREAK",
+          "number": "92/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-93": {
+      "number": "93",
+      "name": "Inkay",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107212,
+          "name": "Inkay",
+          "number": "93/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-94": {
+      "number": "94",
+      "name": "Yveltal",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107213,
+          "name": "Yveltal",
+          "number": "94/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-95": {
+      "number": "95",
+      "name": "Bronzor",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107214,
+          "name": "Bronzor",
+          "number": "95/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-96": {
+      "number": "96",
+      "name": "Bronzong",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107215,
+          "name": "Bronzong",
+          "number": "96/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-97": {
+      "number": "97",
+      "name": "Mr. Mime",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107216,
+          "name": "Mr. Mime",
+          "number": "97/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-98": {
+      "number": "98",
+      "name": "Snubbull",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107217,
+          "name": "Snubbull",
+          "number": "98/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-99": {
+      "number": "99",
+      "name": "Granbull",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107218,
+          "name": "Granbull",
+          "number": "99/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-100": {
+      "number": "100",
+      "name": "Ralts",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107219,
+          "name": "Ralts (100)",
+          "number": "100/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-101": {
+      "number": "101",
+      "name": "Flabébé",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107220,
+          "name": "Flabebe",
+          "number": "101/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-102": {
+      "number": "102",
+      "name": "Floette",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107221,
+          "name": "Floette",
+          "number": "102/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-103": {
+      "number": "103",
+      "name": "Florges",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107222,
+          "name": "Florges",
+          "number": "103/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-104": {
+      "number": "104",
+      "name": "Florges BREAK",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107223,
+          "name": "Florges BREAK",
+          "number": "104/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-105": {
+      "number": "105",
+      "name": "Spritzee",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107224,
+          "name": "Spritzee",
+          "number": "105/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-106": {
+      "number": "106",
+      "name": "Aromatisse",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107225,
+          "name": "Aromatisse",
+          "number": "106/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-107": {
+      "number": "107",
+      "name": "Xerneas",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107226,
+          "name": "Xerneas",
+          "number": "107/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-108": {
+      "number": "108",
+      "name": "Axew",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107227,
+          "name": "Axew (108)",
+          "number": "108/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-109": {
+      "number": "109",
+      "name": "Axew",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107228,
+          "name": "Axew (109)",
+          "number": "109/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-110": {
+      "number": "110",
+      "name": "Fraxure",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107229,
+          "name": "Fraxure",
+          "number": "110/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-111": {
+      "number": "111",
+      "name": "Haxorus",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo",
+        "reverse"
+      ],
+      "market": [
+        "holo",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107230,
+          "name": "Haxorus",
+          "number": "111/162",
+          "subtypes": [
+            "Holofoil",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo",
+        "reverse"
+      ]
+    },
+    "xy8-112": {
+      "number": "112",
+      "name": "Noivern",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107231,
+          "name": "Noivern",
+          "number": "112/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-113": {
+      "number": "113",
+      "name": "Noivern BREAK",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107232,
+          "name": "Noivern BREAK",
+          "number": "113/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-114": {
+      "number": "114",
+      "name": "Meowth",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107233,
+          "name": "Meowth",
+          "number": "114/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-115": {
+      "number": "115",
+      "name": "Doduo",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107234,
+          "name": "Doduo (115)",
+          "number": "115/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-116": {
+      "number": "116",
+      "name": "Doduo",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107235,
+          "name": "Doduo (116)",
+          "number": "116/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-117": {
+      "number": "117",
+      "name": "Dodrio",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107237,
+          "name": "Dodrio",
+          "number": "117/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-118": {
+      "number": "118",
+      "name": "Snorlax",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107236,
+          "name": "Snorlax",
+          "number": "118/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-119": {
+      "number": "119",
+      "name": "Hoothoot",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107238,
+          "name": "Hoothoot",
+          "number": "119/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-120": {
+      "number": "120",
+      "name": "Noctowl",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107239,
+          "name": "Noctowl",
+          "number": "120/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-121": {
+      "number": "121",
+      "name": "Teddiursa",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107240,
+          "name": "Teddiursa",
+          "number": "121/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-122": {
+      "number": "122",
+      "name": "Ursaring",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107241,
+          "name": "Ursaring",
+          "number": "122/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-123": {
+      "number": "123",
+      "name": "Smeargle",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107242,
+          "name": "Smeargle",
+          "number": "123/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-124": {
+      "number": "124",
+      "name": "Swablu",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107243,
+          "name": "Swablu",
+          "number": "124/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-125": {
+      "number": "125",
+      "name": "Starly",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107244,
+          "name": "Starly",
+          "number": "125/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-126": {
+      "number": "126",
+      "name": "Staravia",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107245,
+          "name": "Staravia",
+          "number": "126/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-127": {
+      "number": "127",
+      "name": "Staraptor",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107246,
+          "name": "Staraptor",
+          "number": "127/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-128": {
+      "number": "128",
+      "name": "Chatot",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107247,
+          "name": "Chatot",
+          "number": "128/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-129": {
+      "number": "129",
+      "name": "Rufflet",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107248,
+          "name": "Rufflet",
+          "number": "129/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-130": {
+      "number": "130",
+      "name": "Braviary",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107249,
+          "name": "Braviary",
+          "number": "130/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-131": {
+      "number": "131",
+      "name": "Noibat",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107250,
+          "name": "Noibat (131)",
+          "number": "131/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-132": {
+      "number": "132",
+      "name": "Noibat",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107251,
+          "name": "Noibat (132)",
+          "number": "132/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-133": {
+      "number": "133",
+      "name": "Assault Vest",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107252,
+          "name": "Assault Vest",
+          "number": "133/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-134": {
+      "number": "134",
+      "name": "Brigette",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107253,
+          "name": "Brigette",
+          "number": "134/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-135": {
+      "number": "135",
+      "name": "Buddy-Buddy Rescue",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107255,
+          "name": "Buddy-Buddy Rescue",
+          "number": "135/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-136": {
+      "number": "136",
+      "name": "Fisherman",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107254,
+          "name": "Fisherman",
+          "number": "136/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-137": {
+      "number": "137",
+      "name": "Float Stone",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107256,
+          "name": "Float Stone",
+          "number": "137/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-138": {
+      "number": "138",
+      "name": "Giovanni's Scheme",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107257,
+          "name": "Giovanni's Scheme",
+          "number": "138/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-139": {
+      "number": "139",
+      "name": "Glalie Spirit Link",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107258,
+          "name": "Glalie Spirit Link",
+          "number": "139/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-140": {
+      "number": "140",
+      "name": "Heavy Ball",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107259,
+          "name": "Heavy Ball",
+          "number": "140/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-141": {
+      "number": "141",
+      "name": "Heavy Boots",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107260,
+          "name": "Heavy Boots",
+          "number": "141/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-142": {
+      "number": "142",
+      "name": "Houndoom Spirit Link",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107261,
+          "name": "Houndoom Spirit Link",
+          "number": "142/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-143": {
+      "number": "143",
+      "name": "Judge",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107263,
+          "name": "Judge",
+          "number": "143/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-144": {
+      "number": "144",
+      "name": "Mewtwo Spirit Link",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107262,
+          "name": "Mewtwo Spirit Link",
+          "number": "144/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-145": {
+      "number": "145",
+      "name": "Parallel City",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107264,
+          "name": "Parallel City",
+          "number": "145/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-146a": {
+      "number": "146a",
+      "name": "Professor's Letter",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "holo",
+        "normal"
+      ],
+      "market": [],
+      "products": [],
+      "status": "unmatched",
+      "legacyMinimum": [
+        "holo",
+        "normal"
+      ]
+    },
+    "xy8-146": {
+      "number": "146",
+      "name": "Professor's Letter",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107265,
+          "name": "Professor's Letter",
+          "number": "146/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-147": {
+      "number": "147",
+      "name": "Reserved Ticket",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107268,
+          "name": "Reserved Ticket",
+          "number": "147/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-148": {
+      "number": "148",
+      "name": "Skyla",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107266,
+          "name": "Skyla",
+          "number": "148/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-149": {
+      "number": "149",
+      "name": "Super Rod",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107267,
+          "name": "Super Rod",
+          "number": "149/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-150": {
+      "number": "150",
+      "name": "Town Map",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107269,
+          "name": "Town Map",
+          "number": "150/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-151": {
+      "number": "151",
+      "name": "Burning Energy",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107270,
+          "name": "Burning Energy",
+          "number": "151/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-152": {
+      "number": "152",
+      "name": "Rainbow Energy",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": false,
+      "required": [
+        "normal",
+        "reverse"
+      ],
+      "market": [
+        "normal",
+        "reverse"
+      ],
+      "products": [
+        {
+          "productId": 107271,
+          "name": "Rainbow Energy",
+          "number": "152/162",
+          "subtypes": [
+            "Normal",
+            "Reverse Holofoil"
+          ]
+        }
+      ],
+      "status": "agree",
+      "legacyMinimum": [
+        "normal",
+        "reverse"
+      ]
+    },
+    "xy8-153": {
+      "number": "153",
+      "name": "Houndoom EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107272,
+          "name": "Houndoom EX (Full Art)",
+          "number": "153/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-154": {
+      "number": "154",
+      "name": "M Houndoom EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107273,
+          "name": "M Houndoom EX (Full Art)",
+          "number": "154/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-155": {
+      "number": "155",
+      "name": "Glalie EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107274,
+          "name": "Glalie EX (Full Art)",
+          "number": "155/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-156": {
+      "number": "156",
+      "name": "M Glalie EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107275,
+          "name": "M Glalie EX (Full Art)",
+          "number": "156/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-157": {
+      "number": "157",
+      "name": "Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107277,
+          "name": "Mewtwo EX (157 Full Art)",
+          "number": "157/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-158": {
+      "number": "158",
+      "name": "Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107278,
+          "name": "Mewtwo EX (158 Full Art)",
+          "number": "158/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-159": {
+      "number": "159",
+      "name": "M Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107276,
+          "name": "M Mewtwo EX (159 Full Art)",
+          "number": "159/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-160": {
+      "number": "160",
+      "name": "M Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107279,
+          "name": "M Mewtwo EX (160 Full Art)",
+          "number": "160/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-161": {
+      "number": "161",
+      "name": "Brigette",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107280,
+          "name": "Brigette (Full Art)",
+          "number": "161/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-162": {
+      "number": "162",
+      "name": "Giovanni's Scheme",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107281,
+          "name": "Giovanni's Scheme (Full Art)",
+          "number": "162/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-163": {
+      "number": "163",
+      "name": "Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107282,
+          "name": "Mewtwo EX (163 Secret Full Art)",
+          "number": "163/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    },
+    "xy8-164": {
+      "number": "164",
+      "name": "Mewtwo EX",
+      "checklist": [
+        "normal"
+      ],
+      "minimum": [],
+      "normalNeedsReview": true,
+      "required": [
+        "holo"
+      ],
+      "market": [
+        "holo"
+      ],
+      "products": [
+        {
+          "productId": 107283,
+          "name": "Mewtwo EX (164 Secret Full Art)",
+          "number": "164/162",
+          "subtypes": [
+            "Holofoil"
+          ]
+        }
+      ],
+      "status": "conflict",
+      "legacyMinimum": [
+        "holo"
+      ]
+    }
+  },
+  "resolutions": {
+    "xy8-104": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107223]",
+      "normalReview": "exclude"
+    },
+    "xy8-107": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107226]",
+      "normalReview": "exclude"
+    },
+    "xy8-11": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107130]",
+      "normalReview": "exclude"
+    },
+    "xy8-111": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107230]",
+      "normalReview": "exclude"
+    },
+    "xy8-113": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107232]",
+      "normalReview": "exclude"
+    },
+    "xy8-12": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107131]",
+      "normalReview": "exclude"
+    },
+    "xy8-146a": {
+      "finishes": [
+        "holo",
+        "normal"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "xy8-146a-alternate-art-promos: 146a maps to product 177166 (146a/162)"
+    },
+    "xy8-15": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107134]",
+      "normalReview": "exclude"
+    },
+    "xy8-153": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107272]",
+      "normalReview": "exclude"
+    },
+    "xy8-154": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107273]",
+      "normalReview": "exclude"
+    },
+    "xy8-155": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107274]",
+      "normalReview": "exclude"
+    },
+    "xy8-156": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107275]",
+      "normalReview": "exclude"
+    },
+    "xy8-157": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107277]",
+      "normalReview": "exclude"
+    },
+    "xy8-158": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107278]",
+      "normalReview": "exclude"
+    },
+    "xy8-159": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107276]",
+      "normalReview": "exclude"
+    },
+    "xy8-160": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107279]",
+      "normalReview": "exclude"
+    },
+    "xy8-161": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107280]",
+      "normalReview": "exclude"
+    },
+    "xy8-162": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107281]",
+      "normalReview": "exclude"
+    },
+    "xy8-163": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107282]",
+      "normalReview": "exclude"
+    },
+    "xy8-164": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107283]",
+      "normalReview": "exclude"
+    },
+    "xy8-20": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107139]",
+      "normalReview": "exclude"
+    },
+    "xy8-21": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107140]",
+      "normalReview": "exclude"
+    },
+    "xy8-22": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107141]",
+      "normalReview": "exclude"
+    },
+    "xy8-33": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107152]",
+      "normalReview": "exclude"
+    },
+    "xy8-34": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107153]",
+      "normalReview": "exclude"
+    },
+    "xy8-35": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107154]",
+      "normalReview": "exclude"
+    },
+    "xy8-38": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107157]",
+      "normalReview": "exclude"
+    },
+    "xy8-50": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107169]",
+      "normalReview": "exclude"
+    },
+    "xy8-54": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107173]",
+      "normalReview": "exclude"
+    },
+    "xy8-55": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107174]",
+      "normalReview": "exclude"
+    },
+    "xy8-60": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107179]",
+      "normalReview": "exclude"
+    },
+    "xy8-61": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107180]",
+      "normalReview": "exclude"
+    },
+    "xy8-62": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107181]",
+      "normalReview": "exclude"
+    },
+    "xy8-63": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107182]",
+      "normalReview": "exclude"
+    },
+    "xy8-64": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107183]",
+      "normalReview": "exclude"
+    },
+    "xy8-66": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107185]",
+      "normalReview": "exclude"
+    },
+    "xy8-79": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107198]",
+      "normalReview": "exclude"
+    },
+    "xy8-82": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107201]",
+      "normalReview": "exclude"
+    },
+    "xy8-84": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107203]",
+      "normalReview": "exclude"
+    },
+    "xy8-85": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107204]",
+      "normalReview": "exclude"
+    },
+    "xy8-91": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107210]",
+      "normalReview": "exclude"
+    },
+    "xy8-92": {
+      "finishes": [
+        "holo"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107211]",
+      "normalReview": "exclude"
+    },
+    "xy8-94": {
+      "finishes": [
+        "holo",
+        "reverse"
+      ],
+      "citation": "publisher/pokemon-finish-conventions.json",
+      "reason": "Conventions ['historical-normal-placeholder']. historical-normal-placeholder: no Normal lane on TCGplayer products [107213]",
+      "normalReview": "exclude"
+    }
+  }
+}

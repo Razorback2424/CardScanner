@@ -282,6 +282,19 @@
         "https://bulbapedia.bulbagarden.net/wiki/Celebrations_(TCG)#Classic_Collection (Bulbapedia lists the 25 Classic Collection reprints with CC001-CC025 numbering)",
         "https://tcgcsv.com/tcgplayer/3/2931/prices (every product has exactly one Holofoil lane)"
       ]
+    },
+    {
+      "id": "xy8-146a-alternate-art-promos",
+      "decision": "Professor's Letter 146a is an alternate-art print sold in the Premium Trainer's XY Collection. TCGplayer lists it as product 177166 in the Alternate Art Promos group (1938) rather than in BREAKthrough's own group (1661). The product has Normal and Holofoil lanes, matching the card's required finishes exactly.",
+      "setID": "xy8",
+      "groupID": 1938,
+      "mapping": {
+        "146a": {"marketNumber": "146a/162", "productId": 177166}
+      },
+      "sources": [
+        "https://tcgcsv.com/tcgplayer/3/1938/products (Alternate Art Promos group lists Professor's Letter as 146a/162, product 177166)",
+        "https://tcgcsv.com/tcgplayer/3/1938/prices (product 177166 has Normal at $10.12 and Holofoil at $20.15)"
+      ]
     }
   ],
   "energyReverseHolo": {

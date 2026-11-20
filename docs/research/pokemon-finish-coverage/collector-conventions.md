@@ -205,6 +205,20 @@ as their own products and variants. Three cases are decided:
 - **Result.** 47 items closed (25 CC cards + 22 market products), cel25cc
   certified.
 
+## 9. xy8-146a Professor's Letter alternate art promo (`xy8-146a-alternate-art-promos`)
+
+- **Convention ID.** `xy8-146a-alternate-art-promos` in `numberRemaps`.
+- **Observation.** Professor's Letter 146a is an alternate-art print from the
+  Premium Trainer's XY Collection. TCGplayer lists it as product 177166 in the
+  Alternate Art Promos group (1938) rather than BREAKthrough's own group (1661).
+  The product has Normal ($10.12) and Holofoil ($20.15) lanes, matching the
+  card's required finishes exactly.
+- **Sources.** [TCGCSV group 1938 products](https://tcgcsv.com/tcgplayer/3/1938/products),
+  [TCGCSV group 1938 prices](https://tcgcsv.com/tcgplayer/3/1938/prices).
+- **Decision.** A narrow number remap maps xy8-146a to product 177166 in the
+  Alternate Art Promos group.
+- **Result.** 1 item closed, xy8 certified.
+
 ## Sources not reachable
 
 Bulbapedia returns HTTP 403 to automated fetches. Its statements above come
