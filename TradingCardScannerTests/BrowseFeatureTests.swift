@@ -4584,6 +4584,185 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertEqual(InventoryLedger.quantities(from: events)[corrected.collectionKey], 1)
     }
 
+    // MARK: Identity replacement (scan correction, step 1)
+
+    private func scanEevee(_ store: CollectionStore) throws -> (IdentifiedCard, CollectionMutation) {
+        let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
+        let mutation = try store.add(card, resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
+                                     source: .scan)
+        return (card, mutation)
+    }
+
+    private func vaporeon() throws -> IdentifiedCard {
+        let json = #"""
+        {
+          "id": "sv08.5-075", "localId": "075", "name": "Vaporeon",
+          "image": "https://assets.tcgdex.net/en/sv/sv08.5/075", "rarity": "Common",
+          "set": { "id": "sv08.5", "name": "Prismatic Evolutions", "cardCount": { "total": 180, "official": 131 } },
+          "variants": { "firstEdition": false, "holo": false, "normal": true, "reverse": true }
+        }
+        """#
+        return .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "PRE")
+    }
+
+    private func replace(_ store: CollectionStore, scanned: IdentifiedCard, variant: PhysicalVariant? = .normal,
+                         from mutation: CollectionMutation, with card: IdentifiedCard,
+                         to finish: PhysicalVariant? = .normal) throws -> CollectionMutation? {
+        try store.replaceIdentity(
+            of: scanned, variant: variant, printRun: nil,
+            previousCollectionKey: mutation.collectionKey,
+            previousLedgerOperationIDs: mutation.ledgerOperationIDs, activityID: mutation.activityID,
+            with: card, resolved: ResolvedVariant(variant: finish, resolution: .userConfirmed),
+            pokemonPrintRun: nil)
+    }
+
+    func testIdentityReplacementWithSameFinishMovesTheCopyAsACorrection() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let (eevee, scanned) = try scanEevee(store)
+        let vaporeon = try vaporeon()
+
+        let swapped = try XCTUnwrap(try replace(store, scanned: eevee, from: scanned, with: vaporeon))
+
+        XCTAssertNil(store.card(forKey: scanned.collectionKey))
+        XCTAssertEqual(store.card(forKey: swapped.collectionKey)?.name, "Vaporeon")
+        XCTAssertEqual(store.card(forKey: swapped.collectionKey)?.quantity, 1)
+        XCTAssertEqual(swapped.activityID, scanned.activityID)
+        XCTAssertEqual(swapped.ledgerOperationIDs.count, 2)
+        XCTAssertEqual(Array(swapped.ledgerOperationIDs.prefix(1)), scanned.ledgerOperationIDs)
+
+        // The scan's own acquisition moves with the copy, keeping its date.
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        let added = try XCTUnwrap(activities.first { $0.id == scanned.activityID })
+        XCTAssertEqual(added.kind, .added)
+        XCTAssertEqual(added.collectionKey, swapped.collectionKey)
+        XCTAssertEqual(added.name, "Vaporeon")
+        XCTAssertEqual(activities.filter { $0.kind == .corrected }.count, 1)
+        XCTAssertEqual(activities.reduce(0) { $0 + $1.signedQuantity }, 1)
+
+        // A correction, never a sale: no disposal leg anywhere.
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertFalse(events.contains { $0.kind == .dispose })
+        XCTAssertEqual(events.filter { $0.kind == .acquire }.count, 1)
+        XCTAssertEqual(Set(events.filter { $0.kind == .correction }.map(\.deltaQuantity)), [-1, 1])
+        XCTAssertEqual(InventoryLedger.quantities(from: events), [swapped.collectionKey: 1])
+    }
+
+    func testIdentityReplacementToTheSavedCardChangesNothing() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let (eevee, scanned) = try scanEevee(store)
+        let eventCount = try context.fetch(FetchDescriptor<InventoryEvent>()).count
+
+        XCTAssertThrowsError(try replace(store, scanned: eevee, from: scanned, with: eevee)) { error in
+            XCTAssertEqual(error as? CollectionStoreError, .identityUnchanged)
+        }
+        XCTAssertEqual(store.card(forKey: scanned.collectionKey)?.quantity, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, eventCount)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectionActivity>()).count, 1)
+    }
+
+    func testIdentityReplacementChecksTheFinishAgainstTheNewPrinting() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let (eevee, scanned) = try scanEevee(store)
+
+        // Pokémon edition is a print run, never a finish, on any printing.
+        XCTAssertThrowsError(try replace(store, scanned: eevee, from: scanned, with: try vaporeon(),
+                                         to: .firstEdition))
+        XCTAssertEqual(store.card(forKey: scanned.collectionKey)?.quantity, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 1)
+    }
+
+    func testIdentityReplacementIsUnavailableForGradedCopies() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let (eevee, scanned) = try scanEevee(store)
+        store.card(forKey: scanned.collectionKey)?.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        try context.save()
+
+        XCTAssertThrowsError(try replace(store, scanned: eevee, from: scanned, with: try vaporeon())) { error in
+            XCTAssertEqual(error as? CollectionStoreError, .identityReplacementUnavailable)
+        }
+        XCTAssertNotNil(store.card(forKey: scanned.collectionKey))
+    }
+
+    func testIdentityReplacementJoinsAnOwnedCardAndUndoRemovesOnlyTheSwappedCopy() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let vaporeon = try vaporeon()
+        let owned = try store.add(vaporeon, resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+                                  source: .catalog)
+        let (eevee, scanned) = try scanEevee(store)
+
+        let swapped = try XCTUnwrap(try replace(store, scanned: eevee, from: scanned, with: vaporeon))
+        XCTAssertEqual(swapped.collectionKey, owned.collectionKey)
+        XCTAssertEqual(store.card(forKey: owned.collectionKey)?.quantity, 2)
+
+        try store.undo(swapped)
+
+        XCTAssertNil(store.card(forKey: scanned.collectionKey))
+        XCTAssertEqual(store.card(forKey: owned.collectionKey)?.quantity, 1)
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(InventoryLedger.quantities(from: events), [owned.collectionKey: 1])
+        XCTAssertFalse(events.contains { $0.kind == .dispose })
+    }
+
+    func testSwappingBackToTheScannedCardNetsTheLedgerAndUndoRemovesIt() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let (eevee, scanned) = try scanEevee(store)
+        let vaporeon = try vaporeon()
+
+        let swapped = try XCTUnwrap(try replace(store, scanned: eevee, from: scanned, with: vaporeon))
+        let back = try XCTUnwrap(try replace(store, scanned: vaporeon, from: swapped, with: eevee))
+
+        XCTAssertEqual(back.collectionKey, scanned.collectionKey)
+        XCTAssertEqual(back.ledgerOperationIDs.count, 3)
+        XCTAssertNil(store.card(forKey: swapped.collectionKey))
+        XCTAssertEqual(store.card(forKey: scanned.collectionKey)?.quantity, 1)
+        var events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(InventoryLedger.quantities(from: events), [scanned.collectionKey: 1])
+
+        try store.undo(back)
+
+        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertTrue(InventoryLedger.quantities(from: events).isEmpty)
+        XCTAssertFalse(events.contains { $0.kind == .dispose })
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(activities.reduce(0) { $0 + $1.signedQuantity }, 0)
+    }
+
+    func testIdentityReplacementOfARemovedScanReturnsNilWithoutWriting() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let (eevee, scanned) = try scanEevee(store)
+        try store.undo(scanned)
+        let eventCount = try context.fetch(FetchDescriptor<InventoryEvent>()).count
+
+        XCTAssertNil(try replace(store, scanned: eevee, from: scanned, with: try vaporeon()))
+        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, eventCount)
+    }
+
+    func testFailedIdentityReplacementSaveLeavesTheScanUntouched() throws {
+        let context = try makeContext()
+        let (eevee, scanned) = try scanEevee(CollectionStore(context: context))
+        let failing = CollectionStore(context: context) { _ in throw CocoaError(.fileWriteUnknown) }
+
+        XCTAssertThrowsError(try replace(failing, scanned: eevee, from: scanned, with: try vaporeon()))
+
+        let store = CollectionStore(context: context)
+        XCTAssertEqual(store.card(forKey: scanned.collectionKey)?.quantity, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 1)
+        let activity = try XCTUnwrap(try context.fetch(FetchDescriptor<CollectionActivity>()).first)
+        XCTAssertEqual(activity.collectionKey, scanned.collectionKey)
+        XCTAssertEqual(activity.name, "Eevee")
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(InventoryLedger.quantities(from: events), [scanned.collectionKey: 1])
+    }
+
     func testUndoWithMissingLineageDoesNotPartiallyMutateCollection() throws {
         let context = try makeContext()
         let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
@@ -5194,6 +5373,100 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(installed?.card.providerID, card.providerID)
         XCTAssertEqual(installed?.set.catalogID, scope)
         XCTAssertNil(installed?.collectionWriteUnavailableReason)
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set + counts.card, 0)
+    }
+
+    func testInstalledSearchAcceptsPrintedSubsetNumbersAndNamesBesideNumbers() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: transport, checklistStore: store)
+        _ = try await catalog.sets(for: .pokemon)
+        func search(_ query: String) async throws -> Set<String> {
+            Set(try await catalog.searchCards(named: query, game: .pokemon, setIDs: [], cursor: nil).items.map(\.providerID))
+        }
+
+        let trainerGallery: Set = ["swsh9tg-TG05", "swsh10tg-TG05", "swsh11tg-TG05", "swsh12tg-TG05"]
+        let bare = try await search("TG05")
+        XCTAssertEqual(bare, trainerGallery)
+        // The subset total is printed as `TG30` but the set holds 32 TG cards,
+        // so the printed form must read the same as the bare number.
+        let printedSubset = try await search("TG05/TG30")
+        XCTAssertEqual(printedSubset, trainerGallery)
+        let scopedSubset = try await search("BRS TG05/TG30")
+        XCTAssertEqual(scopedSubset, ["swsh9tg-TG05"])
+        let galarianGallery = try await search("GG01/GG70")
+        XCTAssertEqual(galarianGallery, ["swsh12.5gg-GG01"])
+        let radiantCollection = try await search("RC5/RC32")
+        XCTAssertTrue(radiantCollection.contains("g1-RC5"))
+
+        // Astral Radiance and Silver Tempest both print Gardevoir as TG05.
+        let nameThenNumber = try await search("Gardevoir TG05")
+        XCTAssertEqual(nameThenNumber, ["swsh10tg-TG05", "swsh12tg-TG05"])
+        let numberThenName = try await search("TG05 Pikachu")
+        XCTAssertEqual(numberThenName, ["swsh11tg-TG05"])
+        let nameThenPrinted = try await search("Zekrom TG05/TG30")
+        XCTAssertEqual(nameThenPrinted, ["swsh9tg-TG05"])
+        let nameThenSubset = try await search("Charizard RC5")
+        XCTAssertEqual(nameThenSubset, ["g1-RC5"])
+
+        // Existing forms keep their exact results.
+        let fraction = try await search("163/149")
+        XCTAssertEqual(fraction, ["sm1-163"])
+        let scopedFraction = try await search("SUM 163/149")
+        XCTAssertEqual(scopedFraction, ["sm1-163"])
+        let wrongName = try await search("Charizard TG05")
+        XCTAssertTrue(wrongName.isEmpty)
+
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.set + counts.card, 0)
+    }
+
+    func testCardCorrectionSearchesFindTheCardFromWhatTheScannerRead() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let transport = FakePokemonBrowseTransport()
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: .main)
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: transport, checklistStore: store)
+        _ = try await catalog.sets(for: .pokemon)
+        func search(_ query: String) async throws -> Set<String> {
+            Set(try await catalog.searchCards(named: query, game: .pokemon, setIDs: [], cursor: nil).items.map(\.providerID))
+        }
+
+        // A Trainer Gallery reading pre-fills its printed subset number.
+        let subset = ScanIdentifier.pokemonHistorical(.init(
+            number: PokemonPrintedNumberEvidence(localID: "TG05", denominator: 30, scheme: .subset(prefix: "TG")),
+            titleCandidates: ["gardevoir"]))
+        let add = CardCorrectionRequest(game: .pokemon, mode: .add,
+            searchText: PokemonRecognitionAdapter.catalogSearchText(for: subset), titleReadings: ["gardevoir"])
+        XCTAssertEqual(add.initialQuery, "TG05/TG30")
+        let prefilled = try await search(add.initialQuery)
+        XCTAssertEqual(prefilled, ["swsh9tg-TG05", "swsh10tg-TG05", "swsh11tg-TG05", "swsh12tg-TG05"])
+
+        // A modern reading pre-fills the fraction without the set code, so
+        // the same number in another set with that count still shows.
+        let svi = PokemonSetDefinition(printedCode: "SVI", tcgdexSetID: "sv01", officialCount: 198, releaseIndex: 0)
+        let modern = ScanIdentifier.pokemon(setCode: "SVI", cardNumber: "025", printedTotal: 198, setDefinition: svi)
+        XCTAssertEqual(PokemonRecognitionAdapter.catalogSearchText(for: modern), "25/198")
+        let fraction = try await search("25/198")
+        XCTAssertTrue(fraction.contains("sv01-025"))
+
+        // The replaced card is found for the Current row, and its finishes are
+        // the chips a person picks between.
+        let current = CatalogDetailLookup(game: .pokemon, providerID: "g1-RC5", printRun: nil, name: "Charizard", setCode: "GEN")
+        let found = try await current.summary(in: catalog)
+        let summary = try XCTUnwrap(found)
+        XCTAssertEqual(summary.providerID, "g1-RC5")
+        let installed = await catalog.installedDetails(for: summary)
+        let details = try XCTUnwrap(installed)
+        XCTAssertFalse(CardCorrectionPicker.physicalChoices(for: details.card, summary: summary).isEmpty)
+        XCTAssertFalse(CardCorrectionPicker.physicalChoices(for: details.card, summary: summary)
+            .contains { $0.id == PhysicalVariant.firstEdition.id })
+
         let counts = await transport.requestCounts()
         XCTAssertEqual(counts.set + counts.card, 0)
     }
@@ -11247,5 +11520,50 @@ private actor PriceAuditPokemonFixture: BrowseCatalogProviding {
     }
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
         AsyncStream { $0.finish() }
+    }
+}
+
+final class CardCorrectionRequestTests: XCTestCase {
+    func testAddPrefillsTheNumberAndReplaceStartsEmpty() {
+        let add = CardCorrectionRequest(game: .lorcana, mode: .add, searchText: "5/204",
+                                        titleReadings: ["Elsa", " elsa ", "", "Anna"])
+        XCTAssertEqual(add.initialQuery, "5/204")
+        XCTAssertEqual(add.likelyQueries, ["5/204", "Elsa", "Anna"])
+
+        let lookup = CatalogDetailLookup(game: .lorcana, providerID: "x", printRun: nil, name: "Elsa", setCode: "1")
+        let replace = CardCorrectionRequest(game: .lorcana, mode: .replace(current: lookup, variant: nil),
+                                            searchText: "5/204", titleReadings: ["Elsa"])
+        XCTAssertEqual(replace.initialQuery, "")
+        XCTAssertEqual(replace.likelyQueries, ["5/204", "Elsa"])
+    }
+
+    func testWithoutASearchableNumberTheTitleIsUsed() {
+        let add = CardCorrectionRequest(game: .magic, mode: .add, searchText: nil, titleReadings: ["Lightning Bolt"])
+        XCTAssertEqual(add.initialQuery, "Lightning Bolt")
+        XCTAssertEqual(add.likelyQueries, ["Lightning Bolt"])
+        let empty = CardCorrectionRequest(game: .magic, mode: .add, searchText: "  ", titleReadings: [])
+        XCTAssertEqual(empty.initialQuery, "")
+        XCTAssertTrue(empty.likelyQueries.isEmpty)
+    }
+
+    func testEachGameSearchesWithTheFormItsSearchAccepts() throws {
+        let lorcana = try LorcanaRecognitionAdapter.identifier(
+            .init(collectorNumber: "5", denominator: "204", language: "en", printedSetMarker: "1"), generation: "test")
+        XCTAssertEqual(LorcanaRecognitionAdapter.catalogSearchText(for: lorcana), "5/204")
+
+        let onePiece = try ScanIdentifier(game: .onePiece, namespace: "numbered-card",
+            fields: [.init(key: "number", value: "OP01-001")], displayIdentifier: "OP01-001",
+            suppressionIdentity: "number:OP01-001", catalogGeneration: "test")
+        XCTAssertEqual(OnePieceRecognitionAdapter.catalogSearchText(for: onePiece), "OP01-001")
+
+        let yuGiOh = try YuGiOhRecognitionAdapter.identifier(code: "LOB-EN001", generation: "test")
+        XCTAssertEqual(YuGiOhRecognitionAdapter.catalogSearchText(for: yuGiOh), "LOB-EN001")
+
+        // Magic searches by name only, and each adapter ignores other games.
+        let magic = ScanIdentifier.magic(setCode: "MH3", collectorNumber: "123", language: "en")
+        XCTAssertNil(PokemonRecognitionAdapter.catalogSearchText(for: magic))
+        XCTAssertNil(YuGiOhRecognitionAdapter.catalogSearchText(for: lorcana))
+        XCTAssertNil(OnePieceRecognitionAdapter.catalogSearchText(for: yuGiOh))
+        XCTAssertNil(LorcanaRecognitionAdapter.catalogSearchText(for: onePiece))
     }
 }

@@ -1795,6 +1795,103 @@ final class ScannerViewModelTests: XCTestCase {
         )
     }
 
+    private func replacementDetails() throws -> CatalogCardDetails {
+        let json = #"""
+        {
+          "id": "test-set-099", "localId": "099", "name": "Replacement Card", "rarity": "Common",
+          "set": { "id": "test-set", "name": "Test Set", "cardCount": { "total": 109, "official": 109 } },
+          "variants": { "firstEdition": false, "holo": false, "normal": true, "reverse": true }
+        }
+        """#
+        let card = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)),
+                                          setCode: "TST")
+        let set = CatalogSet(catalogID: CatalogSetID(game: .pokemon, providerID: "test-set"), name: "Test Set",
+                             code: "TST", logoURL: nil, symbolURL: nil, cardCount: 109, releaseDate: nil, sortRank: 0)
+        return CatalogCardDetails(card: card, set: set)
+    }
+
+    func testReplacingAScanSwapsTheCardInPlaceAndUndoStillRemovesIt() async throws {
+        let model = try makeModel(variants: [.normal])
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+        let original = try XCTUnwrap(model.sessionScans.first)
+        let details = try replacementDetails()
+
+        let outcome = await model.replace(scanID: original.id, with: details, variant: .normal)
+
+        XCTAssertEqual(outcome, .saved)
+        let swapped = try XCTUnwrap(model.sessionScans.first)
+        XCTAssertEqual(swapped.id, original.id)
+        XCTAssertEqual(swapped.card.providerID, details.card.providerID)
+        XCTAssertEqual(swapped.resolved.variant, .normal)
+        XCTAssertTrue(swapped.isIdentityReplaced)
+        XCTAssertEqual(swapped.displayIdentifier, details.card.identifier)
+        XCTAssertEqual(swapped.mutation.activityID, original.mutation.activityID)
+        XCTAssertEqual(model.recent.first?.id, original.id)
+        XCTAssertEqual(model.receipt?.scanID, original.id)
+        XCTAssertEqual(model.receipt?.name, "Replacement Card")
+
+        let rows = try context().fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.map(\.providerID), [details.card.providerID])
+        let events = try context().fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertFalse(events.contains { $0.kind == .dispose })
+        XCTAssertEqual(InventoryLedger.quantities(from: events), [swapped.mutation.collectionKey: 1])
+
+        let undone = await model.undoScan(scanID: original.id)
+        XCTAssertTrue(undone)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(model.sessionScans.isEmpty)
+    }
+
+    func testFixMatchRequestsStartFromWhatTheScanSaved() async throws {
+        let model = try makeModel(variants: [.normal])
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.sessionScans.count == 1 }
+        let scan = try XCTUnwrap(model.sessionScans.first)
+        let replace = CardCorrectionRequest.replacing(scan, runtimes: nil)
+        XCTAssertEqual(replace.game, scan.card.game)
+        XCTAssertEqual(replace.initialQuery, "")
+        guard case let .replace(current, variant) = replace.mode else { return XCTFail("Expected a replace request") }
+        XCTAssertEqual(current.providerID, scan.card.providerID)
+        XCTAssertEqual(current.printRun, scan.pokemonPrintRun)
+        XCTAssertEqual(variant, scan.resolved.variant)
+        XCTAssertTrue(replace.choosesFinish)
+
+        // A graded Needs attention record takes its finish from the label,
+        // so the sheet doesn't offer finish chips for it.
+        model.fileUnresolvedForTesting(ScanSubject(identifier: scannerIdentifier(),
+            slab: gradedSubject(value: "10", label: "Gem Mint").slab), reason: .noConfirmedMatch)
+        model.fileUnresolvedForTesting(ScanSubject(identifier: scannerIdentifier(), inferredNameReadings: ["pikachu"]),
+                                       reason: .noConfirmedMatch)
+        let slab = try XCTUnwrap(model.unresolvedScans.first { $0.subject.slab != nil })
+        let raw = try XCTUnwrap(model.unresolvedScans.first { $0.subject.slab == nil })
+        XCTAssertFalse(CardCorrectionRequest.adding(slab, runtimes: nil).choosesFinish)
+        let add = CardCorrectionRequest.adding(raw, runtimes: nil)
+        XCTAssertTrue(add.choosesFinish)
+        XCTAssertEqual(add.mode, .add)
+        XCTAssertFalse(add.initialQuery.isEmpty)
+        XCTAssertTrue(add.likelyQueries.contains("pikachu"))
+    }
+
+    func testReplacingAScanWithTheSavedCardWritesNothing() async throws {
+        let model = try makeModel(variants: [.normal])
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+        let original = try XCTUnwrap(model.sessionScans.first)
+        let set = CatalogSet(catalogID: CatalogSetID(game: .pokemon, providerID: "test-set"), name: "Test Set",
+                             code: "TST", logoURL: nil, symbolURL: nil, cardCount: 109, releaseDate: nil, sortRank: 0)
+        let eventCount = try context().fetch(FetchDescriptor<InventoryEvent>()).count
+
+        let outcome = await model.replace(scanID: original.id, with: CatalogCardDetails(card: original.card, set: set),
+                                          variant: original.resolved.variant)
+
+        XCTAssertEqual(outcome, .saved)
+        XCTAssertFalse(try XCTUnwrap(model.sessionScans.first).isIdentityReplaced)
+        XCTAssertEqual(try context().fetch(FetchDescriptor<InventoryEvent>()).count, eventCount)
+    }
+
     func testImpossibleGradedLabelPrintRunIsDroppedBeforePersistence() async throws {
         let model = try makeModel(
             variants: [.normal],
@@ -3720,6 +3817,24 @@ final class ScannerViewModelTests: XCTestCase {
         chooser.dismissChoice()
         XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
         XCTAssertEqual(chooser.unresolvedScans.first?.id, chooserID)
+    }
+
+    func testCatalogSelectionSaveFailureSaysSoOnTheNeedsAttentionRow() async throws {
+        let model = try makeModel(variants: [.normal], collectionAddOverride: { _ in throw ScannerCollectionAddGateError.failed })
+        model.fileUnresolvedForTesting(ScanSubject(identifier: scannerIdentifier()), reason: .noConfirmedMatch)
+        let id = try XCTUnwrap(model.unresolvedScans.first?.id)
+        let details = try catalogRecoveryDetails(game: .pokemon)
+        model.resolveUnresolved(id: id, choice: .catalog(details, printRun: nil, variant: .normal))
+        await assertEventually { model.unresolvedScans.first?.pendingCommit != nil }
+        XCTAssertEqual(model.unresolvedScans.map(\.id), [id])
+        XCTAssertEqual(model.unresolvedResolutionErrors[id], "Couldn't add card. Tap Retry save to try again.")
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+
+        // A new attempt clears the old message before it starts.
+        model.resolveUnresolved(id: id, choice: .retrySave)
+        XCTAssertNil(model.unresolvedResolutionErrors[id])
+        await assertEventually { model.unresolvedResolutionErrors[id] != nil && !model.isIdentificationProcessingForTesting }
+        XCTAssertEqual(model.unresolvedScans.map(\.id), [id])
     }
 
     func testCatalogSelectionCannotCommitAnUnsupportedFinish() async throws {

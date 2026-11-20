@@ -643,6 +643,9 @@ struct RecentScan: Identifiable, Equatable {
     let isGradedPricePending: Bool
     /// True only while the post-commit raw-price task is active.
     let isPricePending: Bool
+    /// True once the collector swapped this scan for a different card. The
+    /// subject still records what the scanner read; `card` is what was saved.
+    let isIdentityReplaced: Bool
 
     var identifier: ScanIdentifier { subject.identifier }
 
@@ -664,7 +667,8 @@ struct RecentScan: Identifiable, Equatable {
         mutation: CollectionMutation,
         price: PriceLookup = .unavailable(nil),
         isGradedPricePending: Bool = false,
-        isPricePending: Bool = false
+        isPricePending: Bool = false,
+        isIdentityReplaced: Bool = false
     ) {
         self.id = id
         self.subject = subject
@@ -677,6 +681,13 @@ struct RecentScan: Identifiable, Equatable {
         self.mutation = mutation
         self.isGradedPricePending = isGradedPricePending
         self.isPricePending = isPricePending
+        self.isIdentityReplaced = isIdentityReplaced
+    }
+
+    /// The set and number shown for this scan. After a swap the scanner's
+    /// reading belongs to the wrong card, so the saved card's own is shown.
+    var displayIdentifier: String {
+        isIdentityReplaced ? card.identifier : subject.identifier.scannerDisplayIdentifier(for: card)
     }
 
     func updating(price: PriceLookup, isPricePending: Bool = false) -> RecentScan {
@@ -691,7 +702,8 @@ struct RecentScan: Identifiable, Equatable {
             mutation: mutation,
             price: price,
             isGradedPricePending: false,
-            isPricePending: isPricePending
+            isPricePending: isPricePending,
+            isIdentityReplaced: isIdentityReplaced
         )
     }
 
@@ -706,7 +718,8 @@ struct RecentScan: Identifiable, Equatable {
             options: options,
             mutation: mutation,
             price: price,
-            isGradedPricePending: isGradedPricePending
+            isGradedPricePending: isGradedPricePending,
+            isIdentityReplaced: isIdentityReplaced
         )
     }
 
@@ -722,7 +735,8 @@ struct RecentScan: Identifiable, Equatable {
             mutation: mutation,
             price: price,
             isGradedPricePending: isGradedPricePending,
-            isPricePending: isPricePending
+            isPricePending: isPricePending,
+            isIdentityReplaced: isIdentityReplaced
         )
     }
 
@@ -737,7 +751,8 @@ struct RecentScan: Identifiable, Equatable {
             options: options,
             mutation: mutation,
             price: price,
-            isGradedPricePending: isGradedPricePending
+            isGradedPricePending: isGradedPricePending,
+            isIdentityReplaced: isIdentityReplaced
         )
     }
 
@@ -1370,11 +1385,15 @@ struct ScanReceipt: Identifiable, Equatable {
     }
 
     func updating(for scan: RecentScan) -> ScanReceipt {
-        ScanReceipt(
+        ScanReceipt(scan: scan, id: id)
+    }
+
+    init(scan: RecentScan, id: UUID = UUID()) {
+        self.init(
             id: id,
             scanID: scan.id,
             name: scan.card.name,
-            identifier: scan.subject.identifier.scannerDisplayIdentifier(for: scan.card),
+            identifier: scan.displayIdentifier,
             variantLabel: [
                 scan.subject.slab.map { $0.grade.display(company: $0.company) },
                 scan.pokemonPrintRun?.label,
@@ -3046,7 +3065,7 @@ final class ScannerViewModel: ObservableObject {
             identity: previous.identity,
             suppressionKey: subject.suppressionKey,
             cardName: previousScan.card.name,
-            printedIdentifier: previousScan.identifier.scannerDisplayIdentifier(for: previousScan.card)
+            printedIdentifier: previousScan.displayIdentifier
         )
         recordInterruption(.heldDuplicate, encounterID: encounterID)
         diagnostic("heldDuplicateOfferPublished")
@@ -3677,6 +3696,7 @@ final class ScannerViewModel: ObservableObject {
         case .retryLookup:
             retryUnresolvedLookup(retryRequest)
         case .retrySave:
+            unresolvedResolutionErrors[id] = nil
             guard let pending = row.pendingCommit else {
                 // Relaunch discards the memory-only commit. Revalidate printed
                 // evidence with the active catalog and ask for a printing again.
@@ -3783,9 +3803,11 @@ final class ScannerViewModel: ObservableObject {
         case let .catalog(details, selectedRun, selectedVariant):
             guard details.card.game == row.game else { return }
             if let reason = details.collectionWriteUnavailableReason {
+                unresolvedResolutionErrors[id] = reason
                 show(ScanNote(text: reason, tone: .problem))
                 return
             }
+            unresolvedResolutionErrors[id] = nil
             let accepted = beginPendingResolution(request: retryRequest, isAdditionalCopy: row.isAdditionalCopy) { [weak self] in
                 guard let self, self.isCurrent(retryRequest) else { return }
                 let card = details.card
@@ -4061,7 +4083,8 @@ final class ScannerViewModel: ObservableObject {
             options: scan.options,
             mutation: mutation,
             price: correctionReceipt.retainedGradedQuote ?? correctedLookup,
-            isGradedPricePending: needsGradedLookup
+            isGradedPricePending: needsGradedLookup,
+            isIdentityReplaced: scan.isIdentityReplaced
         )
 
         if let index = sessionScans.firstIndex(where: { $0.id == scan.id }) {
@@ -4085,6 +4108,115 @@ final class ScannerViewModel: ObservableObject {
         }
         feedback.choiceMade()
         countMetric(.finishCorrection)
+        return .saved
+    }
+
+    /// Swaps a scan the scanner got wrong for the card the collector picked.
+    /// Keeps the scan's id, date added and history, records a correction (not
+    /// a sale), and leaves Undo meaning "remove this card". Slabs are not
+    /// swapped: their cert, label and graded quote would have to move too.
+    @discardableResult
+    func replace(
+        scanID: RecentScan.ID,
+        with details: CatalogCardDetails,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun? = nil
+    ) async -> ScanCorrectionOutcome {
+        guard isStorageGenerationCurrent else { return .failed }
+        guard let collectionWriter else {
+            show(ScanNote(text: "Couldn't change card", tone: .problem))
+            feedback.problem()
+            return .failed
+        }
+        guard let scan = sessionScans.first(where: { $0.id == scanID }),
+              scan.subject.slab == nil,
+              details.card.game == scan.card.game else { return .failed }
+        // Picking the card that is already saved is not a change.
+        if details.card.providerID == scan.card.providerID,
+           variant == scan.resolved.variant, pokemonPrintRun == scan.pokemonPrintRun {
+            return .saved
+        }
+
+        let resolved = ResolvedVariant(variant: variant, resolution: .userConfirmed)
+        let lookup = CardPricing.price(
+            for: details.card,
+            variant: variant,
+            magicTreatments: details.card.magicTreatments(for: variant),
+            pokemonPrintRun: pokemonPrintRun,
+            at: details.retrievedAt
+        )
+
+        let writeSessionID = scannerSessionID
+        beginTrackedWrite(for: writeSessionID)
+        defer { endTrackedWrite(for: writeSessionID) }
+
+        let mutation: CollectionMutation?
+        do {
+            let collectionWriter = await collectionWriter.value
+            mutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                try await collectionWriter.replace(
+                    card: scan.card,
+                    variant: scan.resolved.variant,
+                    printRun: scan.pokemonPrintRun,
+                    previousCollectionKey: scan.mutation.collectionKey,
+                    previousLedgerOperationIDs: scan.mutation.ledgerOperationIDs,
+                    activityID: scan.mutation.activityID,
+                    with: details,
+                    resolved: resolved,
+                    pokemonPrintRun: pokemonPrintRun,
+                    price: lookup
+                )
+            }
+        } catch {
+            guard writeSessionID == scannerSessionID else { return .failed }
+            show(ScanNote(text: "Couldn't change card", tone: .problem))
+            feedback.problem()
+            return .failed
+        }
+        guard writeSessionID == scannerSessionID,
+              isStorageGenerationCurrent else { return .failed }
+        guard let mutation else {
+            show(ScanNote(text: "This scan is no longer in your collection", tone: .problem))
+            feedback.problem()
+            return .sourceMissing
+        }
+
+        var evidence = details.card.variantEvidence
+        if pokemonPrintRun != nil { evidence = evidence.excludingFirstEditionPseudoFinish() }
+        let replacement = RecentScan(
+            id: scan.id,
+            subject: scan.subject,
+            card: details.card,
+            resolved: resolved,
+            pokemonPrintRun: pokemonPrintRun,
+            catalogRetrievedAt: details.retrievedAt,
+            options: VariantResolver.options(for: evidence),
+            mutation: mutation,
+            price: lookup,
+            isIdentityReplaced: true
+        )
+        if let index = sessionScans.firstIndex(where: { $0.id == scan.id }) {
+            sessionScans[index] = replacement
+        }
+        if let index = recent.firstIndex(where: { $0.id == scan.id }) {
+            recent[index] = replacement
+        }
+        if let current = receipt, current.scanID == scan.id {
+            receipt = current.updating(for: replacement)
+        } else {
+            showReceipt(ScanReceipt(scan: replacement))
+        }
+        // The offer was made for the card the scanner picked.
+        if pendingSlabConversionOffer?.scanID == scan.id {
+            dismissSlabConversionOffer()
+        }
+        queueFallbackPrice(
+            for: details.card,
+            variant: variant,
+            pokemonPrintRun: pokemonPrintRun,
+            catalogLookup: lookup
+        )
+        feedback.choiceMade()
         return .saved
     }
 
@@ -5415,6 +5547,7 @@ final class ScannerViewModel: ObservableObject {
         }
         unresolvedScans.removeAll { removedIDs.contains($0.id) }
         sessionUnresolvedIDs.subtract(removedIDs)
+        for id in removedIDs { unresolvedResolutionErrors[id] = nil }
     }
 
     private func uniquePokemonSetOwner(for denominator: Int) -> String? {
@@ -5842,6 +5975,12 @@ final class ScannerViewModel: ObservableObject {
                 isAdditionalCopy: isAdditionalCopy,
                 sessionID: writeSessionID
             )
+            // A pick from Needs attention keeps its row; say so on that row,
+            // which is where the person is looking.
+            if let rowID = candidate.unresolvedScanID,
+               unresolvedScans.contains(where: { $0.id == rowID }) {
+                unresolvedResolutionErrors[rowID] = "Couldn't add card. Tap Retry save to try again."
+            }
             // The authorized write owns its recovery record after a transition,
             // but its abandoned presentation must never return to the scanner.
             guard presentsFeedback else {

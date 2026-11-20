@@ -1419,6 +1419,45 @@ final class YuGiOhWorkflowTests: XCTestCase {
         XCTAssertFalse(recoveredStore.hasValidLineage(correction.ledgerOperationIDs, for: correction.collectionKey, quantity: 1))
         XCTAssertThrowsError(try recoveredStore.undo(correction))
     }
+    func testIdentityReplacementChecksTheEditionAgainstTheNewPrinting() async throws {
+        // The first printing comes in 1st Edition and Unlimited; the second
+        // only in Unlimited. A 1st Edition copy cannot move to the second.
+        var object = YuGiOhFixture.object(count: 2)
+        var rows = try XCTUnwrap(object["printings"] as? [[String: Any]])
+        rows[1]["e"] = ["yugiohUnlimited"]
+        object["printings"] = rows
+        let catalog = try YuGiOhCatalog(data: JSONSerialization.data(withJSONObject: object))
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("YGO-replace-\(UUID())/collection.store")
+        let container = try container(url)
+        _ = try await CardGameRuntimeContainer(runtimes: [catalog.runtime]).bound(to: container)
+        let adapter = YuGiOhCatalogAdapter(catalog: catalog)
+        let ids = try rows.map { try XCTUnwrap(UUID(uuidString: try XCTUnwrap($0["id"] as? String))) }
+        let first = try adapter.resolution(forPrintingID: ids[0]).card
+        let second = try adapter.resolution(forPrintingID: ids[1]).card
+        let context = container.mainContext
+        let store = CollectionStore(context: context)
+        let scanned = try store.add(first, resolved: .init(variant: .yugiohFirstEdition, resolution: .userConfirmed))
+        let eventCount = try context.fetch(FetchDescriptor<InventoryEvent>()).count
+
+        func replace(to edition: PhysicalVariant) throws -> CollectionMutation? {
+            try store.replaceIdentity(of: first, variant: .yugiohFirstEdition, printRun: nil,
+                previousCollectionKey: scanned.collectionKey, previousLedgerOperationIDs: scanned.ledgerOperationIDs,
+                activityID: scanned.activityID, with: second,
+                resolved: .init(variant: edition, resolution: .userConfirmed), pokemonPrintRun: nil)
+        }
+
+        XCTAssertThrowsError(try replace(to: .yugiohFirstEdition))
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).map(\.providerID), [first.providerID])
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, eventCount)
+
+        let swapped = try XCTUnwrap(try replace(to: .yugiohUnlimited))
+        let rowsAfter = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rowsAfter.map(\.providerID), [second.providerID])
+        XCTAssertEqual(rowsAfter.first?.collectionKey, swapped.collectionKey)
+        XCTAssertEqual(InventoryLedger.quantities(from: try context.fetch(FetchDescriptor<InventoryEvent>())),
+                       [swapped.collectionKey: 1])
+    }
+
     func testCyclicCorrectionUndoAfterRetirementReopensWithExactInverseLineage() async throws {
         try await cyclicCorrectionUndo(browseOnly: false, sibling: false)
     }

@@ -565,14 +565,7 @@ actor ScannerCollectionWriter: BackgroundModelActor {
         let (mutation, storageID) = try performOwnershipWrite { context in
             try Task.checkCancellation()
             guard shouldContinue() else { throw CancellationError() }
-            let authority = CollectionStoreSessionRegistry.shared
-                .mutationAuthority(for: details.card.game, container: context.container)
-            try authority.adapter?.validateBrowseAcquisition(
-                printingID: details.card.physicalPrintingID, variantID: resolved.variant?.id)
-            if details.card.game == .pokemon, details.collectionWriteUnavailableReason != nil {
-                throw CollectionStoreError.unverifiedPokemonPrinting
-            }
-            try validatePokemonAcquisition(details.card, finish: resolved.variant, printRun: pokemonPrintRun, in: context)
+            try validateCatalogSelection(details, resolved: resolved, pokemonPrintRun: pokemonPrintRun, in: context)
             let store = CollectionStore(context: context)
             let mutation = try store.add(details.card, resolved: resolved, pokemonPrintRun: pokemonPrintRun,
                 identityResolution: .catalogSelected, setReleaseOrder: details.set.releaseOrder,
@@ -599,6 +592,63 @@ actor ScannerCollectionWriter: BackgroundModelActor {
             collectionKey: mutation.collectionKey,
             shouldContinue: shouldContinue)) ?? false
         return (mutation, storageID, lookup, priceSaved)
+    }
+
+    /// The admission a collector's own catalog pick must pass, shared by a
+    /// Browse addition and a scan's card replacement.
+    private func validateCatalogSelection(
+        _ details: CatalogCardDetails, resolved: ResolvedVariant, pokemonPrintRun: PokemonPrintRun?,
+        in context: ModelContext
+    ) throws {
+        let authority = CollectionStoreSessionRegistry.shared
+            .mutationAuthority(for: details.card.game, container: context.container)
+        try authority.adapter?.validateBrowseAcquisition(
+            printingID: details.card.physicalPrintingID, variantID: resolved.variant?.id)
+        if details.card.game == .pokemon, details.collectionWriteUnavailableReason != nil {
+            throw CollectionStoreError.unverifiedPokemonPrinting
+        }
+        try validatePokemonAcquisition(details.card, finish: resolved.variant, printRun: pokemonPrintRun, in: context)
+    }
+
+    /// Swaps a scanned copy for the card the collector picked. The new card
+    /// passes the same admission as a Browse addition, and its catalog price
+    /// is staged in the same save as the swap. Returns nil when the scanned
+    /// copy is no longer in the collection.
+    func replace(
+        card previousCard: IdentifiedCard,
+        variant previousVariant: PhysicalVariant?,
+        printRun previousPrintRun: PokemonPrintRun?,
+        previousCollectionKey: String,
+        previousLedgerOperationIDs: [UUID],
+        activityID: UUID?,
+        with details: CatalogCardDetails,
+        resolved: ResolvedVariant,
+        pokemonPrintRun: PokemonPrintRun?,
+        price: PriceLookup
+    ) throws -> CollectionMutation? {
+        let signpostID = PerformanceSignpost.makeID()
+        let signpostState = PerformanceSignpost.beginInterval(
+            "scannerPersistence", id: signpostID, "operation=replace")
+        defer { PerformanceSignpost.endInterval("scannerPersistence", signpostState, "operation=replace") }
+
+        return try performOwnershipWrite { context in
+            try validateCatalogSelection(details, resolved: resolved, pokemonPrintRun: pokemonPrintRun, in: context)
+            stagePrice(price, for: details.card, variant: resolved.variant,
+                       pokemonPrintRun: pokemonPrintRun, in: context)
+            let mutation = try CollectionStore(context: context).replaceIdentity(
+                of: previousCard, variant: previousVariant, printRun: previousPrintRun,
+                previousCollectionKey: previousCollectionKey,
+                previousLedgerOperationIDs: previousLedgerOperationIDs, activityID: activityID,
+                with: details.card, resolved: resolved, pokemonPrintRun: pokemonPrintRun,
+                setReleaseOrder: details.set.releaseOrder
+            )
+            if mutation == nil {
+                // Like a finish correction: a missing source must not leave an
+                // unsaved price in this context for a later write.
+                context.rollback()
+            }
+            return mutation
+        }
     }
 
     func undoCatalog(_ mutation: CollectionMutation, shouldContinue: StorageGenerationContinuation) throws {
@@ -1579,6 +1629,10 @@ enum CollectionStoreError: Error, Equatable {
     case reportRowProtected
     /// An imported report would duplicate or contradict the collection.
     case reportImportConflict(String)
+    /// A replacement would leave the copy on the card it already is.
+    case identityUnchanged
+    /// Graded and sealed items, and a change of game, cannot be swapped.
+    case identityReplacementUnavailable
 }
 
 extension CollectionStoreError: LocalizedError {
@@ -1624,6 +1678,10 @@ extension CollectionStoreError: LocalizedError {
             return "Cards from an unverified report change only through that report."
         case let .reportImportConflict(detail):
             return "This unverified card report wasn't imported: \(detail)."
+        case .identityUnchanged:
+            return "That's already the card in your collection."
+        case .identityReplacementUnavailable:
+            return "This card can't be changed here. Remove it and scan the right card."
         }
     }
 }
@@ -2320,17 +2378,32 @@ struct CollectionStore {
     }
 
     private func requireSupportedVariantCorrection(for card: CollectedCard, to variant: PhysicalVariant?) throws {
+        try requireSupportedVariant(game: card.cardGame, printingID: card.providerID, variant: variant)
+    }
+
+    /// The finish must belong to the printing it will be saved on: the row's
+    /// own printing for a finish correction, the new printing for a swap.
+    private func requireSupportedVariant(game: CardGame, printingID: String, variant: PhysicalVariant?) throws {
         // Pokémon edition belongs to the print run, never to a new finish
         // correction. Keep legacy values readable without creating more of them.
-        guard card.cardGame != .pokemon || variant?.id != PhysicalVariant.firstEdition.id else {
+        guard game != .pokemon || variant?.id != PhysicalVariant.firstEdition.id else {
             throw CatalogLookupError.invalidPrintingChoice
         }
         let authority = CollectionStoreSessionRegistry.shared.variantCorrectionAuthority(
-            for: card.cardGame, container: context.container
+            for: game, container: context.container
         )
         if authority.allowsLegacyCorrection { return }
         guard let adapter = authority.adapter else { throw CatalogLookupError.invalidPrintingChoice }
-        try adapter.validateVariantCorrection(printingID: card.providerID, variantID: variant?.id)
+        try adapter.validateVariantCorrection(printingID: printingID, variantID: variant?.id)
+    }
+
+    /// Whether a replacement would leave the copy where it already is: same
+    /// printing (directly or through its catalog identity), finish, and print run.
+    private func isSameIdentity(_ row: CollectedCard, as card: IdentifiedCard,
+                                variant: PhysicalVariant?, printRun: PokemonPrintRun?) -> Bool {
+        return [row.providerID, row.catalogProviderID].contains(card.providerID)
+            && row.variantID == variant?.id
+            && row.pokemonPrintRunRaw == printRun?.rawValue
     }
 
     func permitsSyncedMetadataWrite(for card: CollectedCard) -> Bool {
@@ -6287,17 +6360,79 @@ struct CollectionStore {
         source: CollectionActivitySource = .correction
     ) throws -> CollectionMutation? {
         guard current != corrected.variant else { return nil }
+        return try moveScannedCopy(
+            from: card, variant: current, printRun: pokemonPrintRun,
+            previousCollectionKey: previousCollectionKey, previousLedgerOperationIDs: previousLedgerOperationIDs,
+            activityID: activityID, quantity: quantity, source: source,
+            to: card, resolved: corrected, pokemonPrintRun: pokemonPrintRun, replacement: nil
+        )
+    }
+
+    /// How a scanned copy that becomes a different card is admitted.
+    struct IdentityReplacement: Equatable, Sendable {
+        var setReleaseOrder: Int?
+    }
+
+    /// Moves one scanned copy to a different card, for a scan that picked the
+    /// wrong card. Like a finish correction it keeps the copy's acquisition
+    /// activity, date added and ledger lineage, and records a correction rather
+    /// than a removal and an addition. Unlike one, the identity comparison
+    /// covers the whole card, so a swap that keeps the finish (Normal Pikachu
+    /// to Normal Raichu) is a real change, and the new finish is checked
+    /// against the new printing. The caller checks catalog admission of the new
+    /// card; the save re-checks every changed row.
+    ///
+    /// Returns nil when the scanned copy is no longer in the collection.
+    @discardableResult
+    func replaceIdentity(
+        of previousCard: IdentifiedCard,
+        variant previousVariant: PhysicalVariant?,
+        printRun previousPrintRun: PokemonPrintRun?,
+        previousCollectionKey: String,
+        previousLedgerOperationIDs: [UUID],
+        activityID: UUID?,
+        with card: IdentifiedCard,
+        resolved: ResolvedVariant,
+        pokemonPrintRun: PokemonPrintRun?,
+        setReleaseOrder: Int? = nil,
+        quantity: Int = 1
+    ) throws -> CollectionMutation? {
+        try moveScannedCopy(
+            from: previousCard, variant: previousVariant, printRun: previousPrintRun,
+            previousCollectionKey: previousCollectionKey, previousLedgerOperationIDs: previousLedgerOperationIDs,
+            activityID: activityID, quantity: quantity, source: .correction,
+            to: card, resolved: resolved, pokemonPrintRun: pokemonPrintRun,
+            replacement: IdentityReplacement(setReleaseOrder: setReleaseOrder)
+        )
+    }
+
+    /// The one implementation behind a scanner finish correction and an
+    /// identity replacement. `replacement` is nil for a finish correction.
+    private func moveScannedCopy(
+        from previousCard: IdentifiedCard,
+        variant current: PhysicalVariant?,
+        printRun previousPrintRun: PokemonPrintRun?,
+        previousCollectionKey: String?,
+        previousLedgerOperationIDs: [UUID],
+        activityID: UUID?,
+        quantity: Int,
+        source: CollectionActivitySource,
+        to card: IdentifiedCard,
+        resolved corrected: ResolvedVariant,
+        pokemonPrintRun: PokemonPrintRun?,
+        replacement: IdentityReplacement?
+    ) throws -> CollectionMutation? {
         guard quantity > 0, quantity <= CollectionQuantityLimits.maximum else {
             throw CollectionStoreError.insufficientQuantity(card.providerID)
         }
 
         do {
-        let previousBaseKey = card.collectionKey(variant: current)
-        try requireMaintainableGame(card.game)
+        let previousBaseKey = previousCard.collectionKey(variant: current)
+        try requireMaintainableGame(previousCard.game)
         let requestedPreviousKey = previousCollectionKey
-            ?? pokemonPrintRun.map { "\(previousBaseKey)@\($0.rawValue)" }
+            ?? previousPrintRun.map { "\(previousBaseKey)@\($0.rawValue)" }
             ?? previousBaseKey
-        let previousTreatmentIDs = card.magicTreatments(for: current)
+        let previousTreatmentIDs = previousCard.magicTreatments(for: current)
         // A stale scanner entry can outlive the collection row it was created
         // from (for example, the row may have been removed on another screen or
         // device). Do not manufacture the destination row and then record a
@@ -6309,7 +6444,19 @@ struct CollectionStore {
             magicTreatmentIDsRaw: previousTreatmentIDs.map(\.id)
         ) else { return nil }
         try requireMaintainableGame(previous.cardGame)
-        try requireSupportedVariantCorrection(for: previous, to: corrected.variant)
+        if replacement != nil {
+            // Slabs carry a cert, label and graded quote that a card swap
+            // would have to move too; reports change only through their flow.
+            guard previous.itemKind == .rawCard else { throw CollectionStoreError.identityReplacementUnavailable }
+            guard !previous.hasReport else { throw CollectionStoreError.reportRowProtected }
+            guard card.game == previous.cardGame else { throw CollectionStoreError.identityReplacementUnavailable }
+            guard !isSameIdentity(previous, as: card, variant: corrected.variant, printRun: pokemonPrintRun) else {
+                throw CollectionStoreError.identityUnchanged
+            }
+            try requireSupportedVariant(game: card.game, printingID: card.providerID, variant: corrected.variant)
+        } else {
+            try requireSupportedVariantCorrection(for: previous, to: corrected.variant)
+        }
         let previousKey = previous.collectionKey
 
         let candidates = try activities(forKey: previousKey)
@@ -6384,10 +6531,19 @@ struct CollectionStore {
             resolved: corrected,
             source: source,
             pokemonPrintRun: pokemonPrintRun,
+            // A replacement is the collector's own pick from the catalog, so
+            // it is admitted and merged the way a Browse addition is.
+            identityResolution: replacement == nil ? .printedIdentifier : .catalogSelected,
+            setReleaseOrder: replacement?.setReleaseOrder,
+            matchCatalogAliases: replacement != nil,
             quantity: quantity,
             writesInventoryEvent: false,
             savesChanges: false
         )
+        if replacement != nil, mutation.collectionKey == previousKey {
+            // Only reachable through an alias that resolves back to the source.
+            throw CollectionStoreError.identityUnchanged
+        }
         try LocalArtworkOverrideRekeyer.rekey(
             from: previousKey,
             to: mutation.collectionKey,
