@@ -1164,18 +1164,17 @@ actor PokemonChecklistStore {
             let footer = scoped ? query.dropFirst(code.count + 1) : query[...]
             let parts = (scoped && footer.hasPrefix("en ") ? footer.dropFirst(3) : footer).split(separator: " ")
             let officialCount = (signedEntry(for: set.id) ?? downloadedEntry(for: set.id) ?? bundledEntry(for: set.id))?.officialCount
-            let collectorQuery = if parts.count == 1 || (parts.count == 2 && Int(parts[1]) == officialCount && officialCount != nil) {
-                parts.first.map(String.init)
-            } else { nil as String? }
-            let canonicalQuery = collectorQuery.map {
-                PokemonHistoricalIdentityResolver.canonicalLocalID($0).lowercased()
-            }
+            let interpretations = Self.numberInterpretations(parts, officialCount: officialCount)
             for row in searchRows(for: set.catalogID) {
                 let matchesName = query.count == 1 ? row.name == query : row.name.contains(query)
-                let matchesNumber = if let collectorQuery, let canonicalQuery, let number = row.number {
-                    collectorQuery == number || canonicalQuery == row.canonicalNumber
-                        || (scoped && canonicalQuery == Self.promoNumber(number, code: code))
-                } else { false }
+                let matchesNumber = interpretations.contains { interpretation in
+                    guard let number = row.number,
+                          interpretation.collector == number
+                            || interpretation.canonical == row.canonicalNumber
+                            || (scoped && interpretation.canonical == Self.promoNumber(number, code: code))
+                    else { return false }
+                    return interpretation.name.map { row.name.contains($0) } ?? true
+                }
                 guard matchesName || matchesNumber || query == row.providerID else { continue }
                 guard skipped >= offset else { skipped += 1; continue }
                 if matches.count == limit {
@@ -1185,6 +1184,59 @@ actor PokemonChecklistStore {
             }
         }
         return .init(items: matches, nextCursor: nil)
+    }
+
+    /// One way to read a query as a collector number, optionally beside a name.
+    private struct NumberInterpretation {
+        let collector: String
+        let canonical: String
+        /// Normalized name text that must also match, or nil for a number alone.
+        let name: String?
+    }
+
+    /// Reads the printed forms people type: `25`, `25/195`, the subset form
+    /// `TG05/TG30`, and either of those before or after a name
+    /// (`Gardevoir TG05`). A two-part main-set fraction must name this set's
+    /// official count; a subset fraction only has to repeat the prefix, because
+    /// subset totals exclude their secret cards and so cannot narrow the set.
+    private static func numberInterpretations(_ parts: [Substring], officialCount: Int?) -> [NumberInterpretation] {
+        func collector(_ tokens: ArraySlice<Substring>) -> String? {
+            switch tokens.count {
+            case 1:
+                return String(tokens[tokens.startIndex])
+            case 2:
+                let number = tokens[tokens.startIndex], total = tokens[tokens.index(after: tokens.startIndex)]
+                if let officialCount, Int(total) == officialCount { return String(number) }
+                let prefix = number.prefix { $0.isLetter }
+                guard !prefix.isEmpty, number.dropFirst(prefix.count).allSatisfy(\.isNumber),
+                      number.count > prefix.count, total.hasPrefix(prefix),
+                      let size = Int(total.dropFirst(prefix.count)), size > 0 else { return nil }
+                return String(number)
+            default:
+                return nil
+            }
+        }
+        func interpretation(_ collector: String, name: ArraySlice<Substring>?) -> NumberInterpretation {
+            NumberInterpretation(collector: collector,
+                canonical: PokemonHistoricalIdentityResolver.canonicalLocalID(collector).lowercased(),
+                name: name.map { $0.joined(separator: " ") })
+        }
+
+        var result: [NumberInterpretation] = []
+        let tokens = parts[...]
+        if let whole = collector(tokens) { result.append(interpretation(whole, name: nil)) }
+        // A name beside a number: the number must contain a digit, so a
+        // two-word name such as `Mr Mime` is never read as a name plus number.
+        for length in 1...2 where tokens.count > length {
+            let tail = tokens.suffix(length), head = tokens.prefix(length)
+            if tail.first?.contains(where: \.isNumber) == true, let number = collector(tail) {
+                result.append(interpretation(number, name: tokens.dropLast(length)))
+            }
+            if head.first?.contains(where: \.isNumber) == true, let number = collector(head) {
+                result.append(interpretation(number, name: tokens.dropFirst(length)))
+            }
+        }
+        return result
     }
 
     private static func promoNumber(_ number: String, code: String) -> String? {
