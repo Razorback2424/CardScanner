@@ -81,10 +81,16 @@ private struct SettingsContentView: View {
     @AppStorage("pokemonMasterSetTier") private var pokemonMasterSetTier: PokemonMasterSetTier = .standard
     @StateObject private var catalogNormalizer: CollectionCatalogNormalizer
 
-    init(runtimes: CardGameRuntimeContainer?, pricingDetailsRow: AnyView?, pricingIcon: AnyView?) {
+    init(
+        runtimes: CardGameRuntimeContainer?,
+        pricingDetailsRow: AnyView?,
+        pricingIcon: AnyView?,
+        collectionAdditionsRow: AnyView?
+    ) {
         self.runtimes = runtimes
         self.pricingDetailsRow = pricingDetailsRow
         self.pricingIcon = pricingIcon
+        self.collectionAdditionsRow = collectionAdditionsRow
         _catalogNormalizer = StateObject(wrappedValue: runtimes?.makeCollectionNormalizer() ?? CollectionCatalogNormalizer())
     }
 
