@@ -1,6 +1,14 @@
 # Pokémon USD Price Gaps — Validation and Free-Source Plan
 
-**Status:** current proposal — 2026-09-26. Evidence and design only; no pricing
+**2026-11-20 status correction:** This September symptom/research proposal
+predates the **implemented, narrowly scoped TCGCSV pricing fallback** for
+`30th` and `30th-c` recorded in the
+[Browse pricing coverage plan](browse_pricing_coverage_plan.md).
+The original reported unpriced-set counts below are **historical**, not a
+current five-game price-health report. The two-set fallback does not
+establish general provider coverage or close device/release gates.
+
+**Status:** historical proposal — 2026-09-26. Evidence and design only; no pricing
 code is implemented by this document. It narrows Phase 6 of the
 [Browse pricing coverage plan](browse_pricing_coverage_plan.md) for the
 Mega Evolution-era gaps reported on 2026-09-26.
