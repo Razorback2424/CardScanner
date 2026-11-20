@@ -1759,7 +1759,7 @@ private struct PortfolioOwnedCardDestination: View {
 
     var body: some View {
         // Current ownership is authoritative when it exists. A historical
-        // addition can still open Browse's unified detail after a sale or undo,
+        // addition can still open Browse's unified detail after a sale or removal,
         // using the exact printing retained in its removal snapshot.
         let row = projectionStore.snapshot?.rowsByCollectionKey[collectionKey] ?? historicalRow
         if let row, let lookup = PortfolioCardCatalogRouting.lookup(for: row) {
