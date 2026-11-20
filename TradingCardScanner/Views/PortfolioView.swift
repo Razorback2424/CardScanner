@@ -911,6 +911,19 @@ struct PortfolioView: View {
         // stop at the first missing value instead of allocating a filtered
         // copy of the entire holdings array on every body evaluation.
         let ranked = portfolio.holdings.prefix(while: { $0.holdingValue != nil })
+        // Resolve each tile's period movement here, in the dashboard body, and
+        // make it part of the ForEach data. A lazy stack only re-renders a
+        // cell when its element changes; reading the history result inside
+        // the cell closure left a tile stuck on a movement-less frame when
+        // the period's result landed after the rail first appeared.
+        let tiles = ranked.prefix(5).map { holding in
+            PortfolioShowcaseTileModel(
+                holding: holding,
+                unitMovement: activeHistoryResult?
+                    .movement(for: holding.collectionKey)?
+                    .cumulativeUnitMovement
+            )
+        }
 
         if !ranked.isEmpty {
             VStack(alignment: .leading, spacing: 12) {
@@ -932,18 +945,18 @@ struct PortfolioView: View {
 
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(alignment: .top, spacing: 14) {
-                        ForEach(ranked.prefix(5)) { holding in
+                        ForEach(tiles) { tile in
                             NavigationLink {
                                 PortfolioOwnedCardDestination(
-                                    collectionKey: holding.collectionKey,
-                                    holding: holding,
+                                    collectionKey: tile.holding.collectionKey,
+                                    holding: tile.holding,
                                     history: history,
                                     onRemoved: presentUndo(for:)
                                 )
                             } label: {
                                 PortfolioBestCardTile(
-                                    holding: holding,
-                                    unitMovement: activeHistoryResult?.movement(for: holding.collectionKey)?.cumulativeUnitMovement
+                                    holding: tile.holding,
+                                    unitMovement: tile.unitMovement
                                 )
                             }
                             .buttonStyle(.plain)
@@ -1554,6 +1567,15 @@ private struct PortfolioContributionRow: View {
         .frame(minHeight: style.minHeight)
         .accessibilityElement(children: .combine)
     }
+}
+
+/// One Showcase tile's inputs. Equatable so a changed period movement is a
+/// changed element, which is what makes the lazy rail redraw that tile.
+private struct PortfolioShowcaseTileModel: Identifiable, Equatable {
+    let holding: PortfolioHoldingSnapshot
+    let unitMovement: Money?
+
+    var id: PortfolioHoldingSnapshot.ID { holding.id }
 }
 
 private struct PortfolioBestCardTile: View {
