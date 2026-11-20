@@ -16,6 +16,10 @@ protocol GameRecognitionAdapter: Sendable {
     /// Request it only for supported evidence, from the same camera frame.
     func needsFullCardText(afterFooterLines lines: [RecognizedLine]) -> Bool
     func identify(footerLines: [RecognizedLine], fullCardLines: [RecognizedLine]) -> GameRecognitionOutcome
+    /// What to type into this game's catalog search to find the card a scan
+    /// read, in a form that search accepts. Nil when only the title would
+    /// find it; the caller then searches by the scan's title readings.
+    func catalogSearchText(for identifier: ScanIdentifier) -> String?
 }
 
 extension GameRecognitionAdapter {
@@ -27,6 +31,13 @@ extension GameRecognitionAdapter {
     func needsFullCardText(afterFooterLines lines: [RecognizedLine]) -> Bool { false }
     func identify(footerLines: [RecognizedLine], fullCardLines: [RecognizedLine]) -> GameRecognitionOutcome {
         identify(footerLines + fullCardLines)
+    }
+    func catalogSearchText(for identifier: ScanIdentifier) -> String? { nil }
+}
+
+extension ScanIdentifier {
+    func fieldValue(_ key: String) -> String? {
+        fields.first { $0.key == key }?.value
     }
 }
 

@@ -6,6 +6,14 @@ struct YuGiOhRecognitionAdapter: GameRecognitionAdapter {
     let catalog: YuGiOhCatalog
     var game: CardGame { .yuGiOh }
     var customWords: [String] { [] }
+    /// Yu-Gi-Oh search accepts the printed set code across every set.
+    func catalogSearchText(for identifier: ScanIdentifier) -> String? {
+        Self.catalogSearchText(for: identifier)
+    }
+
+    static func catalogSearchText(for identifier: ScanIdentifier) -> String? {
+        identifier.game == .yuGiOh ? identifier.fieldValue("code") : nil
+    }
     var supplementalRegion: SupplementalTextRegion? { Self.underArtRegion }
     private static let codeExpression = try! NSRegularExpression(pattern: "(?<![A-Z0-9])([A-Z0-9]{2,4})\\s?[-–—]\\s?([A-Z0-9]{3,6})(?![A-Z0-9])")
     private static let passcodeExpression = try! NSRegularExpression(pattern: "(?<![0-9])[0-9]{8}(?![0-9])")

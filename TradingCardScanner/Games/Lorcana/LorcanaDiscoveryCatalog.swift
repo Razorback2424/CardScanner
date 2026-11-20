@@ -549,6 +549,9 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
 struct LorcanaDiscoveryRecognizer: GameRecognitionAdapter {
     let catalog: LorcanaDiscoveryCatalog
     let game = CardGame.lorcana
+    func catalogSearchText(for identifier: ScanIdentifier) -> String? {
+        LorcanaRecognitionAdapter.catalogSearchText(for: identifier)
+    }
     var customWords: [String] { catalog.registry.customWords + ["TFC"] + catalog.unnumberedCards.flatMap { $0.recognitionTitles ?? [] } }
     func needsFullCardText(afterFooterLines lines: [RecognizedLine]) -> Bool {
         let markers = Set(catalog.unnumberedCards.compactMap(\.unnumberedSetMarker))

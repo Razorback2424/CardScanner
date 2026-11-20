@@ -70,6 +70,17 @@ struct LorcanaRecognitionAdapter: GameRecognitionAdapter {
         return .identified(ScanSubject(identifier: identifier))
     }
 
+    /// Lorcana search accepts `5/204`, alone or with a name.
+    func catalogSearchText(for identifier: ScanIdentifier) -> String? {
+        Self.catalogSearchText(for: identifier)
+    }
+
+    static func catalogSearchText(for identifier: ScanIdentifier) -> String? {
+        guard identifier.game == .lorcana, let number = identifier.fieldValue("collectorNumber"),
+              let denominator = identifier.fieldValue("denominator") else { return nil }
+        return "\(number)/\(denominator)"
+    }
+
     static func identifier(_ footer: LorcanaPrintedIdentity, generation: String) throws -> ScanIdentifier {
         try .init(game: .lorcana, namespace: "printed-footer",
                   fields: [.init(key: "collectorNumber", value: footer.collectorNumber),

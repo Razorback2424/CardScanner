@@ -11,6 +11,25 @@ struct PokemonRecognitionAdapter: GameRecognitionAdapter {
 
     var game: CardGame { .pokemon }
     var customWords: [String] { profile.customWords }
+    /// Checked against installed search on 2026-11-20: a fraction finds the
+    /// card across sets, and a printed set code would narrow it to the set the
+    /// scanner already chose. Promos, energy and standalone numbers were not
+    /// checked, so they fall back to the title.
+    func catalogSearchText(for identifier: ScanIdentifier) -> String? {
+        Self.catalogSearchText(for: identifier)
+    }
+
+    static func catalogSearchText(for identifier: ScanIdentifier) -> String? {
+        guard identifier.game == .pokemon else { return nil }
+        switch identifier.legacyIdentity {
+        case let .pokemon(_, cardNumber, printedTotal, _):
+            return "\(ScanText.unpaddedPokemonLocalID(cardNumber))/\(printedTotal)"
+        case let .pokemonHistorical(evidence) where evidence.number.denominator != nil:
+            return evidence.number.displayIdentifier
+        default:
+            return nil
+        }
+    }
     func identify(_ lines: [RecognizedLine]) -> GameRecognitionOutcome {
         profile.parseOutcome(lines)
     }
