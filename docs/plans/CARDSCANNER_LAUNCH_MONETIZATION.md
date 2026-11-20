@@ -8,7 +8,14 @@ Status: **Owner-authorized Collector Tools implementation — October 20, 2026. 
 
 Retain the commercial intent behind the existing product so future implementation does not reopen its purpose, introduce conflicting paywalls, or expand into unrelated features.
 
-Target the first genuine production App Store purchase by **November 2, 2026, Colorado time**. Do not restart the clock after development. App approval and customer purchases are not guaranteed. Sandbox/TestFlight transactions, promo redemptions, self-purchases and reimbursed favors do not count. A first sale demonstrates a transaction, not product-market fit, profitability or Apple's eventual cash payout.
+**Historical owner target (now past):** The original goal was the first genuine
+production App Store purchase by **November 2, 2026, Colorado time**. That
+date has passed; it is retained as the owner's original target, **not** an
+active future deadline or evidence that a purchase occurred. Do not silently
+restart the clock. App approval and customer purchases are not guaranteed.
+Sandbox/TestFlight transactions, promo redemptions, self-purchases and
+reimbursed favors do not count. A first sale demonstrates a transaction,
+not product-market fit, profitability or Apple's eventual cash payout.
 
 ## 2. Why the photo tool exists
 
