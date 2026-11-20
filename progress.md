@@ -1,3 +1,16 @@
+# 2026-11-20 — Current documentation authority cleanup after PRs #54/#55
+
+Source-bound review at `main@146161c`: corrected stale current-sounding
+portfolio navigation, scan correction, signed One Piece catalog revision,
+Lorcana coverage, Pokémon publication scheduling, dated Yu-Gi-Oh counts and
+the expired commercial purchase target. Historical snapshots and live release
+gates remain distinct. Three broken Swift file/line Markdown links were
+repaired. The [documentation map](docs/README.md) and
+[reconciliation audit](docs/plans/documentation_audit.md) record the scope,
+evidence, and remaining archival/link-check work. This is documentation
+review only; no new iOS build, provider capture or device/release acceptance
+was performed.
+
 # 2026-11-20 — Fixing a wrong scan from the scanner and Needs attention (scan correction step 4)
 
 The scan review sheet now has **Not this card?** (not for slabs). It opens the
