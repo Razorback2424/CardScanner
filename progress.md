@@ -1,3 +1,94 @@
+# 2026-11-20 — Fixing a wrong scan from the scanner and Needs attention (scan correction step 4)
+
+The scan review sheet now has **Not this card?** (not for slabs). It opens the
+Fix match sheet and swaps the saved card in place; both sheets close and the
+receipt shows the new card. Needs attention's **Search catalog** opens the
+same sheet to add the card, through the existing catalog resolution, instead
+of the full Browse screen. Graded records get no finish chips, and a
+single-finish card is left for the scanner to settle, as before. The receipt
+Undo hint no longer promises a correction; it says Undo removes the card.
+Verified on the iOS 27.0 Simulator, against `90554874` plus the working tree,
+with `ScannerViewModelTests`, `CardCorrectionRequestTests`,
+`PokemonChecklistBrowseTests`, `ViewConstructionSmokeTests`,
+`BrowseCollectionTests`, `LorcanaOwnershipTests`, `YuGiOhWorkflowTests` and
+`CardGameForwardCompatibilityTests` (391 tests, 0 failures). Opening and saving
+from either screen was not exercised on screen; not yet tried on a device. See
+the [scan correction plan](docs/plans/scan-correction-plan.md).
+
+# 2026-11-20 — The Fix match sheet (scan correction step 3)
+
+`CardCorrectionPicker` is built but not yet opened from anywhere (step 4).
+It searches the Browse catalog with Likely matches first: the card being
+replaced, marked **Current**, then the same number in other sets, then the
+scanner's title readings. Each game's recognition adapter now supplies the
+search text for a scan (`catalogSearchText(for:)`): `25/198` or `TG05/TG30`
+for Pokémon, `5/204` for Lorcana, the printed number for One Piece and the set
+code for Yu-Gi-Oh; Magic uses the title. Rows with several finishes open
+chips; owned cards say "You have N". Verified on the iOS 27.0 Simulator,
+against `90554874` plus the working tree, with `CardCorrectionRequestTests`,
+`PokemonChecklistBrowseTests`, `CardGameForwardCompatibilityTests`,
+`YuGiOhRecognitionTests`, `OnePieceIntegrationTests`,
+`GameRecognitionRegistrySupplementalTests` and `ViewConstructionSmokeTests`
+(262 tests, 0 failures, 1 skipped: the live One Piece price check), then the
+sheet's own classes again after a last change (104 tests, 0 failures).
+Screenshots of the `CardCorrection` debug route in light, dark and
+accessibility text; row taps and chips were not exercised on screen. Not yet
+tried on a device. See the [scan correction plan](docs/plans/scan-correction-plan.md).
+
+# 2026-11-20 — Needs attention says when adding a card fails (scan correction step 2)
+
+Picking a card for a Needs attention record already saved it through the
+scanner's normal write and removed the record only after the save succeeded.
+What was missing: when that save failed, the only message was a scanner note
+behind the Needs attention screen. The row now says "Couldn't add card. Tap
+Retry save to try again." The message clears when a new attempt starts or the
+record is resolved, and a pick the catalog won't allow shows its reason on the
+row too. Verified on the iOS 27.0 Simulator, against `90554874` plus the
+working tree, with `ScannerViewModelTests`, `LorcanaOwnershipTests`,
+`OnePieceIntegrationTests` and `YuGiOhWorkflowTests` (325 tests, 0 failures,
+1 skipped: the live One Piece price check). Not yet tried on a device. See the
+[scan correction plan](docs/plans/scan-correction-plan.md).
+
+# 2026-11-20 — Swapping a scanned card for the right one (scan correction step 1)
+
+The save step for fixing a wrong scan is in, with no screen yet.
+`CollectionStore.replaceIdentity` moves a scanned copy to a different card and
+shares one implementation with the scanner's finish correction. It keeps the
+scan's acquisition activity, date and ledger lineage, and records a two-leg
+correction rather than a sale and a purchase. Unlike a finish correction it
+compares the whole card, so a swap that keeps the finish is a real change, and
+it checks the finish against the new printing. Picking the saved card again
+changes nothing; slabs, sealed items and report rows are refused.
+`ScannerCollectionWriter.replace` admits the new card the way a Browse addition
+does (the checks now live in one shared helper) and stages its price in the
+same save. `ScannerViewModel.replace` updates the scan, rail and receipt in
+place; Undo still removes the card. A swapped scan shows the saved card's set
+and number instead of the scanner's reading. Verified on the iOS 27.0
+Simulator, against `90554874` plus the working tree, with `BrowseCollectionTests`,
+`ScannerViewModelTests`, `YuGiOhWorkflowTests`, `OwnershipLedgerCompletenessTests`,
+`CollectionActivityHistoryTests`, `CollectionItemKindTests`,
+`LorcanaOwnershipTests`, `OnePieceIntegrationTests`,
+`CardGameForwardCompatibilityTests`, `RefreshStructuralWriteTests` and
+`PortfolioLedgerTests` (593 tests, 0 failures, 1 skipped: the live One Piece
+price check, which needs a local receipt). Not yet tried on a device. See the
+[scan correction plan](docs/plans/scan-correction-plan.md).
+
+# 2026-11-20 — Pokémon search reads printed subset numbers and name plus number
+
+Installed Pokémon search (Browse, and the planned scan-correction sheet) now
+finds a card from its printed subset number, such as `TG05/TG30`, `GG01/GG70`
+or `RC5/RC32`, which used to find nothing. The subset total isn't used to
+narrow results, because the catalog's subsets include secret cards past the
+printed total (the Trainer Gallery sets hold 32 TG cards, printed `/TG30`).
+A name beside a number, before or after it (`Gardevoir TG05`,
+`TG05 Pikachu`, `Charizard RC5`), now finds that card; the number part must
+contain a digit, so a two-word name is never read as a number. Main-set
+fractions keep their existing rule. Every set that prints a set code stores
+the same code in the catalog, so typing the code still narrows results.
+Verified on the iOS 27.0 Simulator, against `90554874` plus the working tree,
+with `PokemonChecklistBrowseTests` and `BrowseFeatureTests` (199 tests,
+0 failures). See the [scan correction plan](docs/plans/scan-correction-plan.md).
+
 # 2026-11-19 — Scan options behind the gear
 
 At the owner's direction, the Scan gear now opens a **Scan options** popover
