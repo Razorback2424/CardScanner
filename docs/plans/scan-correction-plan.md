@@ -1,9 +1,12 @@
 # Fixing a wrong scan
 
-**Status:** proposed 2026-11-19, cut down 2026-11-20, revised after code review
-2026-11-20. Nothing below is built yet. The "Today" section and the review
-findings were checked against `main` at `90554874`. No device timing has been
-measured.
+**Status — 2026-11-20 (`main@146161c` source review):** Steps 0–4 below
+are implemented, with the recorded simulator tests and source checks. Step 5
+(real-phone timing, interactions and accessibility acceptance) remains open;
+the sheet's entry-point taps and save flows were not exercised on screen in
+the recorded simulator pass. The "Today" table and original review findings
+below describe the **pre-implementation** baseline at `90554874`, not the
+current app. No physical-device timing has been measured.
 
 ## The goal
 
@@ -39,13 +42,13 @@ what gets built.
 1. **A swap compares identity, not finish.** The usual wrong scan keeps the
    same finish (Normal Pikachu → Normal Raichu). The existing correction
    returns early when the finish is unchanged
-   ([CollectionStore.swift:6289](../../TradingCardScanner/Services/CollectionStore.swift:6289),
-   [ScannerViewModel.swift:3981](../../TradingCardScanner/Views/ScannerViewModel.swift:3981)),
+   ([CollectionStore.swift (reviewed line 6289)](../../TradingCardScanner/Services/CollectionStore.swift),
+   [ScannerViewModel.swift (reviewed line 3981)](../../TradingCardScanner/Views/ScannerViewModel.swift)),
    so the swap must not reuse that guard. A swap is a no-op only when printing,
    finish, Pokémon print run, and Magic treatments all match.
 2. **The new card is checked as a new card.** The existing finish check runs
    against the old row's printing
-   ([CollectionStore.swift:2333](../../TradingCardScanner/Services/CollectionStore.swift:2333)).
+   ([CollectionStore.swift (reviewed line 2333)](../../TradingCardScanner/Services/CollectionStore.swift)).
    The swap checks the finish against the *new* printing and runs the same
    acquisition checks a scan of that card would pass.
 3. **Undo always means "remove this card."** That is what receipt Undo and

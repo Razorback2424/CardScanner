@@ -1,5 +1,18 @@
 # One Piece catalog publisher
 
+**Current source boundary — 2026-11-20:** The [One Piece reconciliation
+playbook](../docs/catalog-reconciliation-playbook.md) records signed hosted
+production **revision 7** as live, with 2,670 of 2,969 canonical cards
+certified complete and 173 true exceptions left as known gaps.
+The app's bundled seed (`one-piece-catalog-release.json`) is signed
+production **revision 4** (generated 2026-11-15, bundled in `b3eadc2e`);
+its payload is byte-identical to `publisher/one-piece/production/revision-4/candidate.json`.
+The November 15 snapshot below calls that revision-4 candidate unsigned
+discovery evidence; its exact bytes were in fact signed and bundled before
+that SHA. Neither the bundled seed nor the hosted pointer proves which
+revision a particular iPhone has activated. Physical-device, rights and
+distribution gates remain separate.
+
 The app includes a signed English catalog seed. As of `main@a8d3103a`
 (2026-11-15), the production Xcode configuration uses `remote-authority`
 with a dedicated One Piece pin and `ONE_PIECE_COLLECTION_WRITES = YES`,

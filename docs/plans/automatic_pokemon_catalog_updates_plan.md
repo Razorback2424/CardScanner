@@ -1,6 +1,18 @@
 # Automatic Pokémon catalog updates — implementation plan
 
-**Status:** current plan — proposed 2026-09-16, revised 2026-09-17,
+**Current operational boundary — 2026-11-20 (`main@146161c`):** The
+[production workflow](../../.github/workflows/pokemon-catalog.yml) now has a
+**daily** scheduled trigger (`17 6 * * *` UTC), plus manual and protected
+publication routes; the original proposed four-hour cadence is not its
+current schedule. The [November 10 production readback](../audits/launch-review-2026-11-10.md#revision-22-recovery-follow-up--2026-11-10)
+verified that signed revision 22 was restored. A retained
+[revision-25 candidate](../../publisher/pokemon/production/revision-25/review-report.json)
+does **not** by itself prove publication or device activation. This plan's
+September revision-1 sequencing, pending-infrastructure claims and test counts
+below are **historical**. Continue to verify actual live revision, reviewer
+approvals and device/release gates independently.
+
+**Historical implementation sequence:** proposed 2026-09-16, revised 2026-09-17,
 **Slice A implemented 2026-09-17**, **Slice B implemented 2026-09-17**,
 **Slice C implemented 2026-09-18**, **Slice D implemented 2026-09-18**,
 **Slice E implemented 2026-09-18**, **F04 automatic discovery implementation
@@ -14,7 +26,7 @@ physical-device/offline, and production acceptance gates remain open.
 **Goal:** a Pokémon set that did not exist when the user installed the app
 appears in Browse **and scans correctly** without an App Store update.
 
-**Current sequencing decision (2026-09-20):** keep the hosted production
+**Historical sequencing decision (2026-09-20):** keep the hosted production
 baseline at signed revision 1, keep `PokemonCatalogCoreContract.releaseSchemaVersion
 == 1`, and use the committed `remote-authority` configuration. The optional
 schema-1 `providerFingerprint` field makes `existing != descriptor` detect
@@ -40,7 +52,7 @@ publishes only after exact canonical equality. Keep the separate staging
 project, site, DNS name, and deployment job deferred until a distinct
 environment materially reduces rollout risk.
 
-**Current verified evidence package (2026-09-19):** production revision 1 is
+**Historical verified evidence package (2026-09-19):** production revision 1 is
 signed and hosted from publication run `35412690545`; all five public artifacts
 return 200 and `.complete` returns 404; the production public key is pinned and
 independently verified. The clean

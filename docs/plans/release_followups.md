@@ -1,6 +1,11 @@
 # Release follow-ups
 
-**Status:** current validation, measurement, and catalog-hardening backlog — latest review reconciliation 2026-11-10.
+**Status:** current validation, measurement, and catalog-hardening backlog.
+**2026-11-20 source-bound clarification:** one signed One Piece production
+catalog (revision 7) is reported live in the
+[reconciliation playbook](../catalog-reconciliation-playbook.md). The
+November 10/11 items below retain their original planning dates; publication
+alone does not close physical-device, app distribution, or release acceptance.
 
 ## Catalog publication automation — 2026-11-11
 
@@ -10,8 +15,8 @@ uses a reviewed signed artifact, and the Lorcana acquisition catalog ships in
 the app. Each game has its own authority and source evidence, while the hosted
 publishers share the same Firebase site.
 
-After verifying the first One Piece publication, align the hosted workflows
-around one sequence. Build a candidate from retained provider evidence,
+For subsequent One Piece releases and the other hosted catalog workflows,
+align around one sequence. Build a candidate from retained provider evidence,
 compare it to the signed live revision, validate stable IDs and finish rules,
 sign the exact validated bytes, preserve the live namespaces under the shared
 Hosting lock, then verify the published bytes from the origin and custom domain.

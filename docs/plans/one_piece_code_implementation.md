@@ -1,7 +1,16 @@
 # One Piece implementation and verification ledger
 
-**Status:** Release enables One Piece from signed production revision 2
-(rollout `remote-authority`, collection writes on). Device acceptance is open.
+**Current authority boundary — 2026-11-20 (`main@146161c` source review):**
+Release uses `remote-authority` with on-device One Piece collection writes
+enabled. The **bundled signed seed** is production revision 4 (generated 2026-11-15,
+bundled in `b3eadc2e`); the revision-2 passages below describe an earlier
+bundled seed. The signed **hosted production catalog** reached revision 7, reported
+live in the [November 18 reconciliation playbook](../catalog-reconciliation-playbook.md).
+These are distinct versions, not conflicting revisions of one installed copy.
+The revision-2/owner-revision-9 passages below are dated implementation evidence,
+**not** the current hosted catalog's coverage. Publication evidence does not
+establish a particular phone's activated revision or release/device acceptance;
+those gates remain open.
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 

@@ -1,12 +1,22 @@
 # One Piece catalog and scanner integration
 
-**Status:** current catalog design; implementation integrated on
+**2026-11-20 current-source correction (`main@146161c`):**
+The October production-disabled checkpoint below was superseded.
+[Release configuration](../../Config/OnePieceCatalogProduction.xcconfig)
+uses signed `remote-authority` with One Piece collection writes enabled
+for on-device storage, and the [reconciliation playbook](../catalog-reconciliation-playbook.md)
+reports signed hosted revision 7 live as of November 18. The underlying
+catalog design remains useful, but older branch/rollout statements are
+historical, not today's installed-device or release evidence. Device,
+provider, rights and distribution acceptance remain separate.
+
+**Historical 2026-10-05 integration checkpoint:** catalog design; implementation integrated on
 `merge/one-piece-integration`; remaining acceptance and production gates open.
 **Reconciled:** 2026-10-05 against the working tree on `55dc1e4`, matching freshly
 fetched `origin/main` before edits. Integration and eleven finding fixes are
 committed; earlier isolated-worktree/uncommitted descriptions are historical.
 The [review handoff](../audits/one-piece-integration-review-handoff.md) records
-the remaining-audit cleanup and verification. Production support remains disabled.
+the remaining-audit cleanup and verification. At that October checkpoint, production support remained disabled; this no longer describes the Release build.
 The original source/design review used `dd2a1e3` and its working tree; subsequent
 code status and delivery priorities live in the
 [implementation ledger](one_piece_code_implementation.md).
