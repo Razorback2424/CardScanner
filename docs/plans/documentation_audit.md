@@ -1,6 +1,6 @@
 # Documentation and artifact audit
 
-**Audit history:** started 2026-10-02; latest source-boundary reconciliation 2026-11-15
+**Audit history:** started 2026-10-02; latest source-boundary reconciliation 2026-11-20
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
