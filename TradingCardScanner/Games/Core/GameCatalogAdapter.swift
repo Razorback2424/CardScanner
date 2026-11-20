@@ -188,6 +188,12 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
         return result
     }
 
+    /// A one-tap printing button needs distinct visible labels; artwork-only
+    /// distinctions are chosen in the compare list, where artwork is shown.
+    func isCompactChoiceDisabled(evidence: SelectionEvidence?) -> Bool {
+        acquisitionUnavailableReason != nil || evidence != .labels
+    }
+
     /// Identical visible text cannot prove which printing a person chose.
     /// Distinct reviewed artwork can supply that distinction once it loads.
     func selectionEvidence(among candidates: [Self]) -> SelectionEvidence {

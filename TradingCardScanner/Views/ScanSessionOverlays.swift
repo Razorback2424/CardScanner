@@ -714,7 +714,6 @@ struct PrintingChoiceBar: View {
     let onDismiss: () -> Void
     var onChooseEnglish: ((PhysicalPrintingCandidate) -> Void)? = nil
     @State private var showingDetails = false
-    @State private var englishConfirmed = false
     private var requiresEnglish: Bool {
         choice.identifier.needsMagicEnglishConfirmation || choice.identifier.needsOnePieceEnglishConfirmation
     }
@@ -732,19 +731,22 @@ struct PrintingChoiceBar: View {
         let candidates = choice.displayCandidates
         let labels = PhysicalPrintingCandidate.compactChoiceLabels(among: candidates)
         let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: candidates)
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text(candidates.first?.name ?? "Card")
-                        .font(.title3.bold())
+                        .font(.title3.weight(.semibold))
                         .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                         .fixedSize(horizontal: false, vertical: true)
-                    ScannerIdentifierChip(text: choice.identifier.displayIdentifier)
-                    if let sharedRelease {
-                        Text(sharedRelease)
-                            .font(.caption)
-                            .foregroundStyle(.white.opacity(0.7))
-                            .fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: 8) {
+                        ScannerIdentifierChip(text: choice.identifier.displayIdentifier)
+                        if let sharedRelease {
+                            Text(sharedRelease)
+                                .font(.footnote)
+                                .foregroundStyle(.white.opacity(0.65))
+                                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                                .truncationMode(.tail)
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -753,63 +755,55 @@ struct PrintingChoiceBar: View {
                     .padding(.trailing, -8)
             }
 
-            HStack {
-                Text(candidates.count > 2 ? "Choose a printing · \(candidates.count) options" : "Choose a printing")
-                    .fixedSize(horizontal: false, vertical: true)
-                Spacer()
-                Button {
-                    showingDetails = true
-                } label: {
-                    Label("Details", systemImage: "rectangle.on.rectangle")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(.white.opacity(0.14), in: Capsule())
-                        .frame(minWidth: 44, minHeight: 44)
-                        .contentShape(Rectangle())
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(requiresEnglish ? "Which English printing?" : "Which printing?")
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.white.opacity(0.85))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 8)
+                    if candidates.count > 2 || evidence.values.contains(where: { $0 != .labels })
+                        || candidates.contains(where: { $0.thumbnailURL != nil }) {
+                        Button("Compare") { showingDetails = true }
+                            .font(.subheadline)
+                            .foregroundStyle(.white.opacity(0.85))
+                            .frame(minHeight: 44)
+                            .contentShape(Rectangle())
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Compare printing details")
+                    }
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Compare printing details")
-            }
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(.white.opacity(0.65))
-
-            if requiresEnglish {
-                Toggle("This card is in English", isOn: $englishConfirmed)
-                    .font(.subheadline)
-                    .accessibilityIdentifier("\(choice.identifier.game.rawValue)-english-confirmation")
-            }
-            if candidates.count <= 2 && !dynamicTypeSize.isAccessibilitySize {
-                HStack(spacing: 10) {
-                    ForEach(candidates) { compactButton($0, label: labels[$0.id] ?? $0.choiceLabel, evidence: evidence[$0.id] ?? .insufficient) }
-                }
-            } else {
-                ScrollView {
-                    LazyVGrid(columns: dynamicTypeSize.isAccessibilitySize
-                        ? [GridItem(.flexible())]
-                        : [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                if candidates.count <= 2 && !dynamicTypeSize.isAccessibilitySize {
+                    HStack(spacing: 10) {
                         ForEach(candidates) { compactButton($0, label: labels[$0.id] ?? $0.choiceLabel, evidence: evidence[$0.id] ?? .insufficient) }
                     }
-                    .padding(.vertical, 4)
+                } else {
+                    ScrollView {
+                        LazyVGrid(columns: dynamicTypeSize.isAccessibilitySize
+                            ? [GridItem(.flexible())]
+                            : [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                            ForEach(candidates) { compactButton($0, label: labels[$0.id] ?? $0.choiceLabel, evidence: evidence[$0.id] ?? .insufficient) }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    .frame(minHeight: 80, maxHeight: 220)
+                    .scrollBounceBehavior(.basedOnSize)
+                    .accessibilityIdentifier("printing-choice-list")
                 }
-                .frame(minHeight: 80, maxHeight: 220)
-                .scrollBounceBehavior(.basedOnSize)
-                .accessibilityIdentifier("printing-choice-list")
+                if evidence.values.contains(where: { $0 != .labels }) {
+                    Text("Some printings differ only in artwork or markings. Use Compare to choose them.")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.75))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
-            if evidence.values.contains(where: { $0 != .labels }) {
-                Text("Compare artwork and markings in Details.")
-                    .font(.caption).foregroundStyle(.white.opacity(0.75))
-            }
-            if candidates.count > 8 {
-                Text("Filter by set or collector number in Details.")
-                    .font(.caption).foregroundStyle(.white.opacity(0.75))
-            }
+
             if choice.identifier.game == .onePiece {
                 Button(action: onDismiss) {
                     Text("My printing isn’t listed")
-                        .font(.subheadline.weight(.semibold))
-                        .frame(minHeight: 44)
+                        .font(.subheadline)
+                        .foregroundStyle(.white.opacity(0.65))
+                        .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.plain)
             }
@@ -821,10 +815,10 @@ struct PrintingChoiceBar: View {
             PrintingChoiceDetails(candidates: candidates, onChoose: { selected in
                 showingDetails = false
                 onChoose(selected)
-            }, requiresEnglishConfirmation: requiresEnglish, onChooseEnglish: { selected in
+            }, englishOnly: requiresEnglish, onChooseEnglish: { selected in
                 showingDetails = false
                 onChooseEnglish?(selected)
-            }, englishConfirmation: $englishConfirmed)
+            })
         }
         // This panel sits on the camera and uses white labels in either app
         // appearance. Keep the material dark without changing the app theme.
@@ -841,7 +835,7 @@ struct PrintingChoiceBar: View {
                     Text(reason).font(.caption)
                 }
             }
-                .font(.subheadline.weight(.semibold))
+                .font(.subheadline.weight(.medium))
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 10)
@@ -856,7 +850,7 @@ struct PrintingChoiceBar: View {
         }
         .buttonStyle(.plain)
         .foregroundStyle(.white)
-        .disabled(candidate.acquisitionUnavailableReason != nil || evidence != .labels || (requiresEnglish && !englishConfirmed))
+        .disabled(candidate.isCompactChoiceDisabled(evidence: evidence))
         .accessibilityLabel("Select \(label) for \(candidate.name)")
         .accessibilityHint(candidate.acquisitionUnavailableReason ?? "Compare this printing with your card.")
         .accessibilityIdentifier("printing-choice-\(candidate.id)")
@@ -866,12 +860,9 @@ struct PrintingChoiceBar: View {
 struct PrintingChoiceDetails: View {
     let candidates: [PhysicalPrintingCandidate]
     let onChoose: (PhysicalPrintingCandidate) -> Void
-    var requiresEnglishConfirmation = false
+    var englishOnly = false
     var onChooseEnglish: ((PhysicalPrintingCandidate) -> Void)? = nil
-    var englishConfirmation: Binding<Bool>? = nil
-    @State private var englishConfirmed = false
     @State private var searchText = ""
-    private var englishBinding: Binding<Bool> { englishConfirmation ?? $englishConfirmed }
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -906,9 +897,9 @@ struct PrintingChoiceDetails: View {
     private var printingList: some View {
             let evidence = PhysicalPrintingCandidate.selectionEvidenceByID(among: candidates)
             return List {
-                if requiresEnglishConfirmation {
-                    Toggle("This card is in English", isOn: englishBinding)
-                        .accessibilityIdentifier("\(candidates.first?.game.rawValue ?? "magic")-english-confirmation")
+                if englishOnly {
+                    Text("English printings only")
+                        .font(.footnote).foregroundStyle(.secondary)
                 }
                 if filteredCandidates.isEmpty {
                     Text("No printings match this search.").foregroundStyle(.secondary)
@@ -916,9 +907,8 @@ struct PrintingChoiceDetails: View {
                 ForEach(filteredCandidates) { candidate in
                     PrintingCandidateButton(candidate: candidate,
                         evidence: evidence[candidate.id] ?? .insufficient, onChoose: { selected in
-                            if requiresEnglishConfirmation { onChooseEnglish?(selected) } else { onChoose(selected) }
+                            if englishOnly { onChooseEnglish?(selected) } else { onChoose(selected) }
                         })
-                        .disabled(requiresEnglishConfirmation && !englishBinding.wrappedValue)
                 }
             }
             .onAppear {

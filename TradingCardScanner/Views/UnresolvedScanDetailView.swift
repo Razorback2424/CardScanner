@@ -13,7 +13,6 @@ struct UnresolvedScanDetailView: View {
     @State private var isShowingCatalogSearch = false
     @State private var isShowingPrintingDetails = false
     @State private var pendingCatalogChoice: UnresolvedResolutionChoice?
-    @State private var englishConfirmed = false
     @State private var isPreparingResolution = false
     @State private var resolutionTask: Task<Void, Never>?
     @State private var isAddingUnverified = false
@@ -53,17 +52,12 @@ struct UnresolvedScanDetailView: View {
                 }
             } else {
                 if !scan.printingCandidates.isEmpty {
-                    Section("Choose printing") {
-                        if requiresEnglish {
-                            Toggle("This card is in English", isOn: $englishConfirmed)
-                                .accessibilityIdentifier("\(scan.game.rawValue)-english-confirmation")
-                        }
+                    Section(requiresEnglish ? "Choose English printing" : "Choose printing") {
                         ForEach(scan.printingCandidates) { candidate in
                             Button(labels[candidate.id] ?? candidate.choiceLabel) {
                                 resolve(requiresEnglish ? .englishPrinting(candidate) : .printing(candidate))
                             }
-                            .disabled(Self.compactChoiceDisabled(candidate, evidence: evidence[candidate.id],
-                                requiresEnglish: requiresEnglish, englishConfirmed: englishConfirmed))
+                            .disabled(candidate.isCompactChoiceDisabled(evidence: evidence[candidate.id]))
                             .accessibilityIdentifier("recovery-printing-\(candidate.id)")
                             .accessibilityHint(candidate.acquisitionUnavailableReason ?? "Use this printing for the saved scan")
                             if let reason = candidate.acquisitionUnavailableReason {
@@ -189,14 +183,13 @@ struct UnresolvedScanDetailView: View {
             PrintingChoiceDetails(candidates: scan.printingCandidates, onChoose: { selected in
                 isShowingPrintingDetails = false
                 resolve(.printing(selected))
-            }, requiresEnglishConfirmation: requiresEnglish,
+            }, englishOnly: requiresEnglish,
             onChooseEnglish: { selected in
                 isShowingPrintingDetails = false
                 resolve(.englishPrinting(selected))
-            }, englishConfirmation: $englishConfirmed)
+            })
         }
         .task(id: scan.id) {
-            englishConfirmed = false
             guard canChooseCard, !scan.isReadOnly else { return }
             isLoadingCandidates = true
             candidates = await model.unresolvedCandidates(for: scan.id)
@@ -240,13 +233,6 @@ struct UnresolvedScanDetailView: View {
             isPreparingResolution = false
             if prepared { onResolve(choice) }
         }
-    }
-
-    static func compactChoiceDisabled(_ candidate: PhysicalPrintingCandidate,
-                                      evidence: PhysicalPrintingCandidate.SelectionEvidence?,
-                                      requiresEnglish: Bool, englishConfirmed: Bool) -> Bool {
-        candidate.acquisitionUnavailableReason != nil || evidence != .labels
-            || (requiresEnglish && !englishConfirmed)
     }
 
     @ViewBuilder
