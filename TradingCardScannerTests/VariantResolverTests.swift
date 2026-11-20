@@ -160,11 +160,16 @@ final class PokemonFinishEvidenceTests: XCTestCase {
 
     func testLegacyPlaceholderProjectionReachesBrowseOfflineScanAndCertifiedOverride() async throws {
         let snapshot = try await snapshot()
+        // bw6 is not finish-certified, so its legacy projection stays unverified.
+        let projected = try card("bw6-117", in: snapshot)
+        XCTAssertEqual(Set(projected.catalogVariants), [.normal, .reverse])
+        let projectedEvidence = IdentifiedCard.pokemon(projected, setCode: "DRX").variantEvidence
+        XCTAssertFalse(projectedEvidence.physicalCoverageVerified)
+        XCTAssertEqual(Set(VariantResolver.options(for: projectedEvidence)), [.normal, .reverse])
+        // bw1 was certified on 2026-11-18; the same lanes are now verified.
         let snivy = try card("bw1-1", in: snapshot)
         XCTAssertEqual(Set(snivy.catalogVariants), [.normal, .reverse])
-        let snivyEvidence = IdentifiedCard.pokemon(snivy, setCode: "BW").variantEvidence
-        XCTAssertFalse(snivyEvidence.physicalCoverageVerified)
-        XCTAssertEqual(Set(VariantResolver.options(for: snivyEvidence)), [.normal, .reverse])
+        XCTAssertTrue(IdentifiedCard.pokemon(snivy, setCode: "BW").variantEvidence.physicalCoverageVerified)
 
         let venusaur = try card("xy1-1", in: snapshot)
         let evidence = IdentifiedCard.pokemon(venusaur, setCode: "XY").variantEvidence
