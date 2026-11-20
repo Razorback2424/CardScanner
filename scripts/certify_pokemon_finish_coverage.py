@@ -72,6 +72,8 @@ MARKET_ENERGY_INITIALS = {"grass": "g", "water": "w", "fire": "r"}
 
 def name_key(value):
     value = value.casefold().replace("&", " and ").replace("♀", " female").replace("♂", " male")
+    value = re.sub(r"\bnidoran\s+m\b", "nidoran male", value)
+    value = re.sub(r"\bnidoran\s+f\b", "nidoran female", value)
     folded = unicodedata.normalize("NFKD", value)
     return " ".join(re.findall(r"[a-z0-9]+", "".join(c for c in folded if not unicodedata.combining(c))))
 

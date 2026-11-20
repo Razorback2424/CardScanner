@@ -14469,6 +14469,1141 @@
         }
       },
       "reviewedAt": "2026-11-20"
+    },
+    "xy11": {
+      "tcgplayerGroupID": 1815,
+      "evidence": "docs/research/pokemon-finish-coverage/captures/xy11/2026-11-20d/report.json",
+      "cards": {
+        "xy11-1": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-2": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-3": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-4": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-5": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-6": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-7": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-8": [
+          "holo"
+        ],
+        "xy11-9": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-10": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-11": [
+          "holo",
+          "reverse"
+        ],
+        "xy11-12": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-13": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-14": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-15": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-16": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-17": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-18": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-19": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-20": [
+          "holo",
+          "reverse"
+        ],
+        "xy11-21": [
+          "holo"
+        ],
+        "xy11-22": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-23": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-24": [
+          "holo"
+        ],
+        "xy11-25": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-26": [
+          "holo"
+        ],
+        "xy11-27": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-28": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-29": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-30": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-31": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-32": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-33": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-34": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-35": [
+          "holo"
+        ],
+        "xy11-36": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-37": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-38": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-39": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-40": [
+          "holo",
+          "reverse"
+        ],
+        "xy11-41": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-42": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-43": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-44": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-45": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-46": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-47": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-48": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-49": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-50": [
+          "holo",
+          "reverse"
+        ],
+        "xy11-51": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-52": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-53": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-54": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-55": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-56": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-57": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-58": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-59": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-60": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-61": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-62": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-63": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-64": [
+          "holo",
+          "reverse"
+        ],
+        "xy11-65": [
+          "holo",
+          "reverse"
+        ],
+        "xy11-66": [
+          "holo"
+        ],
+        "xy11-67": [
+          "holo"
+        ],
+        "xy11-68": [
+          "holo"
+        ],
+        "xy11-69": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-70": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-71": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-72": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-73": [
+          "holo",
+          "reverse"
+        ],
+        "xy11-74": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-75": [
+          "holo"
+        ],
+        "xy11-76": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-77": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-78": [
+          "holo"
+        ],
+        "xy11-79": [
+          "holo"
+        ],
+        "xy11-80": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-81": [
+          "holo",
+          "reverse"
+        ],
+        "xy11-82": [
+          "holo"
+        ],
+        "xy11-83": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-84": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-85": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-86": [
+          "holo",
+          "reverse"
+        ],
+        "xy11-87": [
+          "holo"
+        ],
+        "xy11-88": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-89": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-90": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-91": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-92": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-93": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-94": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-95": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-96": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-97": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-98": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-99": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-100": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-101": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-102": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-103": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-104": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-105": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-106": [
+          "normal",
+          "reverse"
+        ],
+        "xy11-107": [
+          "holo"
+        ],
+        "xy11-108": [
+          "holo"
+        ],
+        "xy11-109": [
+          "holo"
+        ],
+        "xy11-110": [
+          "holo"
+        ],
+        "xy11-111": [
+          "holo"
+        ],
+        "xy11-112": [
+          "holo"
+        ],
+        "xy11-113": [
+          "holo"
+        ],
+        "xy11-114": [
+          "holo"
+        ],
+        "xy11-115": [
+          "holo"
+        ],
+        "xy11-116": [
+          "holo"
+        ]
+      },
+      "slotChanges": {
+        "xy11-1": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-10": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-100": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-101": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-102": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-103": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-104": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-105": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-106": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-107": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-108": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-109": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-11": {
+          "added": [
+            "holo",
+            "reverse"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-110": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-111": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-112": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-113": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-114": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-115": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-116": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-12": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-13": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-14": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-15": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-16": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-17": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-18": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-19": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-2": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-20": {
+          "added": [
+            "holo",
+            "reverse"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-21": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-22": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-23": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-24": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-25": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-26": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-27": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-28": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-29": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-3": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-30": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-31": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-32": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-33": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-34": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-35": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-36": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-37": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-38": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-39": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-4": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-40": {
+          "added": [
+            "holo",
+            "reverse"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-41": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-42": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-43": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-44": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-45": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-46": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-47": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-48": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-49": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-5": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-50": {
+          "added": [
+            "holo",
+            "reverse"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-51": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-52": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-53": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-54": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-55": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-56": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-57": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-58": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-59": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-6": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-60": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-61": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-62": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-63": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-64": {
+          "added": [
+            "holo",
+            "reverse"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-65": {
+          "added": [
+            "holo",
+            "reverse"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-66": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-67": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-68": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-69": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-7": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-70": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-71": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-72": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-73": {
+          "added": [
+            "holo",
+            "reverse"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-74": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-75": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-76": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-77": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-78": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-79": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-8": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-80": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-81": {
+          "added": [
+            "holo",
+            "reverse"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-82": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-83": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-84": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-85": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-86": {
+          "added": [
+            "holo",
+            "reverse"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-87": {
+          "added": [
+            "holo"
+          ],
+          "removed": [
+            "normal"
+          ]
+        },
+        "xy11-88": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-89": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-9": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-90": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-91": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-92": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-93": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-94": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-95": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-96": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-97": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-98": {
+          "added": [
+            "reverse"
+          ]
+        },
+        "xy11-99": {
+          "added": [
+            "reverse"
+          ]
+        }
+      },
+      "reviewedAt": "2026-11-20"
     }
   }
 }
