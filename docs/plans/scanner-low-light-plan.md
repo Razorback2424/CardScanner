@@ -1,10 +1,11 @@
 # Scan light for dim rooms
 
-**Status:** 2026-11-18. The lens shortcut and Scan light are implemented.
-At the owner's direction, Scan light ships in the Scan top bar with a
-continuous brightness slider instead of a fixed output. The separate
-Pro-tab Macro light check was removed. Physical-device trials below are
-still pending.
+**Status:** 2026-11-19. The lens shortcut and Scan light are implemented.
+At the owner's direction, Scan light has a continuous brightness slider
+instead of a fixed output, and the separate Pro-tab Macro light check was
+removed. On 2026-11-19 the owner moved the light and the lens switch into a
+Scan options panel behind the gear, so the top bar stays one row. The finish
+lock stays its own control. Physical-device trials below are still pending.
 
 Revised after code review 2026-11-11.
 
@@ -16,13 +17,18 @@ cards and slabs. [CardScanner](../../TradingCardScanner/Services/CardScanner.swi
 
 ## What the user sees
 
-Add one flashlight button immediately before Settings in `ScannerTopBar` and
-keep the gear at the trailing edge. Use 8 pt spacing. At standard Dynamic Type
-sizes, use `ViewThatFits(in: .horizontal)` to try a single row at the controls’
-full width, then use two rows when it does not fit. Use two rows at accessibility
-sizes. Keep the purpose, light and gear in row one. Let the card type and finish
-summary wrap in row two, with the slow identification spinner beside it. Showing
-the spinner in row two fixes its current omission at accessibility sizes.
+The gear at the trailing edge of `ScannerTopBar` opens a **Scan options**
+popover instead of full Settings. It holds the light toggle, the brightness
+slider while the light is on, the Standard/Macro lens switch when both exist,
+and an **All Settings** row that closes the popover and then opens the full
+Settings sheet. The popover does not pause scanning, so the user sees the card
+while adjusting the light. The purpose menu and the finish lock (which still
+holds the card type) stay their own controls, so a standard-size bar is one row:
+purpose, finish, spinner, gear. At accessibility sizes the finish summary and
+spinner wrap to row two.
+*2026-11-19: a separate flashlight button beside the gear pushed the finish
+lock to a second row and squeezed the space above the reading band, so the
+owner moved the light behind the gear.*
 At accessibility sizes, show the finish name for a single lock and the count
 for multiple locks. The menu and VoiceOver retain the full finish detail.
 Both rows stay above the reading band.
@@ -50,8 +56,9 @@ and respect Reduce Motion. Give VoiceOver the label “Scan light,” the value
 
 ### Why the top bar
 
-The top bar keeps the light one tap away and shows its state while scanning.
-Settings takes two taps and opens a sheet that turns the light off. Showing
+The light is two taps away: gear, then toggle. The popover is not a covering
+sheet, so it leaves the light on and the camera running; full Settings still
+turns it off. Showing
 the control only after low light is detected would miss total darkness and
 shift the toolbar as the hint changes. The purpose and finish menus group scan
 decisions and would hide the light state. The space below the reading band
@@ -67,8 +74,8 @@ no visible cue. [Scanner view](../../TradingCardScanner/Views/ScannerView.swift)
 | Lens changes from the Scan menu | Carry an active light request to the new input if it can light and the viewfinder stays active. If the new input cannot light, clear the request and let the button reflect its capability. |
 | Scanner loses the viewfinder or camera | Clear the request and turn the light off when leaving Scan, becoming inactive or backgrounded, presenting a covering sheet (Settings, review or Price Check), or during a camera interruption or reset. Settings clears the request before its lens picker can be used. Returning starts with the request Off, even if Control Center’s flashlight or another client changed the LED while Scan was inactive. |
 
-While the light is on, a brightness slider appears directly under the top bar
-(5–100%, default 15%). Brightness changes apply live, and the last choice is
+While the light is on, a brightness slider appears under the toggle in the
+Scan options popover (5–100%, default 15%). Brightness changes apply live, and the last choice is
 remembered for the next time the user turns the light on. The light itself
 still starts Off on every return to Scan. A continuous control lets the user
 find the least light that reads the card, which limits glare on foils, sleeves
@@ -144,9 +151,9 @@ gates Scan light, including its torch behavior during a lens switch.
 
 1. In Xcode, use **TradingCardScanner-ProfileLocal** with your iPhone selected
    and press Run. Open **Scan** and allow Camera if prompted.
-2. If the flashlight button is missing beside Settings, the active lens has no
-   usable torch. Record that and switch lenses under **Camera** in the
-   scan-options menu.
+2. Tap the gear. If **Light** is missing from Scan options, the active lens has
+   no usable torch. Record that and switch lenses under **Camera** in the same
+   panel.
 3. In dim light, hold a raw card 2–5 cm away. Turn on the light and move the
    brightness slider from low to high at the same distance and angle. Check the
    footer on a matte card and then on a foil or sleeved card. Try a slab label
@@ -175,7 +182,7 @@ gates Scan light, including its torch behavior during a lens switch.
    configuration lock while calling `setTorchModeOn(level:)` or setting
    `torchMode = .off`. Observe `isTorchAvailable` and `isTorchActive` and
    publish a deduplicated state to `CardScannerUIState` on the main actor.
-   Only a tap on the light button can request On. Activity observations report
+   Only the Scan options toggle can request On. Activity observations report
    hardware state. Failed activation and unexpected shutoff clear the request.
    Wire `scenePhaseChanged`, `cameraInterruptionStarted`,
    `pauseForPresentation` and the separate Price Check result path into

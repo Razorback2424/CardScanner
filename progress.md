@@ -1,3 +1,19 @@
+# 2026-11-19 — Scan options behind the gear
+
+At the owner's direction, the Scan gear now opens a **Scan options** popover
+instead of full Settings: the light toggle, the brightness slider while it is
+on, the Standard/Macro lens switch, and **All Settings**. The separate
+flashlight button and the slider row under the top bar are gone, so the
+standard-size bar is one row again (purpose, finish lock, gear) and the space
+above the reading band is not squeezed. The finish lock stays its own control,
+keeping the card type; its lens picker moved to the popover. The popover does
+not pause scanning or turn the light off. Opening All Settings still does. A
+simulator-only `scan-light-on` / `scan-options-open` fixture on the
+`WholeCardScanner` route was added for screenshots. Verified with
+`CardLatchTests` and `ViewConstructionSmokeTests` (94 tests, 0 failures) and
+simulator screenshots; physical-device trials are still pending. See the
+[low-light plan](docs/plans/scanner-low-light-plan.md).
+
 # 2026-11-18 — Scan light moves to Scan with a brightness slider
 
 At the owner's direction, the Pro-tab **Macro light check** (a ProfileLocal-only
