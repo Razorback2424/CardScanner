@@ -74,6 +74,21 @@
         "Prismatic Ultimate Rare": "Ultimate Rare"
       },
       "reviewedAt": "2026-11-20"
+    },
+    {
+      "id": "hac1-duel-terminal-technology-v1",
+      "categoryID": 2,
+      "groupID": 2941,
+      "language": "en",
+      "codePrefix": "HAC1-EN",
+      "expectedProductsSHA256": "d7c261171f7d890b0d6c5c706c5b4692e2ea7af594a134a04504f456a445187f",
+      "source": "https://tcgcsv.com/tcgplayer/2/2941/products (Konami pack description: '3 Duel Terminal Technology Ultra Rares, 1 Duel Terminal Technology Common, 14 standard Commons'); https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=Hidden%20Arsenal:%20Chapter%201 (same codes with 'Duel Terminal Normal Parallel Rare' / 'Duel Terminal Ultra Parallel Rare')",
+      "meaning": "TCGplayer names the Duel Terminal parallel finish 'Duel Terminal Technology Common/Ultra Rare'. YGOPRODeck names it 'Duel Terminal Normal Parallel Rare' / 'Duel Terminal Ultra Parallel Rare'. Both describe the same physical finish on the same HAC1-EN cards. Taxonomy correspondence only; no edition or artwork authority.",
+      "rarities": {
+        "Duel Terminal Technology Common": "Duel Terminal Normal Parallel Rare",
+        "Duel Terminal Technology Ultra Rare": "Duel Terminal Ultra Parallel Rare"
+      },
+      "reviewedAt": "2026-11-20"
     }
   ],
   "sourceRarityAliases": [
