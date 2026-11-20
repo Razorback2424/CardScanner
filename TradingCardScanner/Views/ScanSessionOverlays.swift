@@ -1289,7 +1289,7 @@ struct ScanReceiptCard: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Undo scan and remove \(receipt.name) from your collection")
-        .accessibilityHint("Removes the card that was just added and lets you correct its scan details.")
+        .accessibilityHint("Removes the card that was just added. To swap it for the right card, open the scan and choose Not this card.")
     }
 }
 

@@ -9,6 +9,8 @@ import SwiftUI
 struct ScanReviewSheet: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var model: ScannerViewModel
+    @Environment(\.sharedBrowseCatalog) private var browseCatalog
+    @Environment(\.cardGameRuntimes) private var runtimes
 
     let scan: RecentScan
     let onCorrect: (PhysicalVariant) async -> ScanCorrectionOutcome
@@ -21,6 +23,8 @@ struct ScanReviewSheet: View {
     @State private var isUpdatingCorrection = false
     @State private var isReportingVariant = false
     @State private var didReportVariant = false
+    @State private var isFixingMatch = false
+    @State private var didReplaceCard = false
 
     init(
         scan: RecentScan,
@@ -52,6 +56,16 @@ struct ScanReviewSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: 16))
 
                     identity
+                    if canFixMatch {
+                        Button("Not this card?", systemImage: "arrow.triangle.2.circlepath") {
+                            isFixingMatch = true
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        .frame(minHeight: 44)
+                        .disabled(isUpdatingCorrection)
+                        .accessibilityHint("Search for the right card and swap it in")
+                        .accessibilityIdentifier("scan-fix-match")
+                    }
                     if scan.subject.slab == nil {
                         variantSection
                         if canReportVariant {
@@ -96,6 +110,28 @@ struct ScanReviewSheet: View {
                     Button("Done") { dismiss() }
                 }
             }
+            .sheet(isPresented: $isFixingMatch, onDismiss: {
+                // This sheet shows the card it opened with; after a swap the
+                // receipt and thumbnail show the new card instead.
+                if didReplaceCard { dismiss() }
+            }) {
+                if let browseCatalog {
+                    CardCorrectionPicker(catalog: browseCatalog,
+                                         request: .replacing(currentScan, runtimes: runtimes)) { pick in
+                        let outcome = await model.replace(scanID: scan.id, with: pick.details,
+                            variant: pick.variant, pokemonPrintRun: pick.printRun)
+                        switch outcome {
+                        case .saved:
+                            didReplaceCard = true
+                            return nil
+                        case .sourceMissing:
+                            return ScanCorrectionOutcome.sourceMissing.failureMessage
+                        case .failed:
+                            return "Couldn't change card. Try again."
+                        }
+                    }
+                }
+            }
             .sheet(isPresented: $isReportingVariant, onDismiss: {
                 if didReportVariant { dismiss() }
             }) {
@@ -129,6 +165,13 @@ struct ScanReviewSheet: View {
         UnverifiedReportsFeature.isEnabled && scan.card.game == .pokemon && scan.mutation.activityID != nil
     }
 
+    /// Slabs are left out of version 1: their cert, label and graded quote
+    /// make a swap much harder to get right. Remove and rescan instead.
+    private var canFixMatch: Bool {
+        scan.subject.slab == nil && browseCatalog != nil
+            && model.sessionScans.contains { $0.id == scan.id }
+    }
+
     private var currentScan: RecentScan {
         model.sessionScans.first(where: { $0.id == scan.id }) ?? scan
     }
@@ -142,7 +185,7 @@ struct ScanReviewSheet: View {
             Text(scan.displaySetName)
                 .foregroundStyle(.secondary)
 
-            Text(scan.identifier.scannerDisplayIdentifier(for: scan.card))
+            Text(scan.displayIdentifier)
                 .font(.headline.monospacedDigit())
 
             if let slab = scan.subject.slab {
@@ -370,7 +413,7 @@ private struct SessionScanRow: View {
                 Text(scan.card.name)
                     .font(.subheadline.weight(.semibold))
                     .lineLimit(2)
-                Text(scan.identifier.scannerDisplayIdentifier(for: scan.card))
+                Text(scan.displayIdentifier)
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -390,6 +433,6 @@ private struct SessionScanRow: View {
         .contentShape(Rectangle())
         .padding(.vertical, 3)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(scan.card.name), \(scan.identifier.scannerDisplayIdentifier(for: scan.card))")
+        .accessibilityLabel("\(scan.card.name), \(scan.displayIdentifier)")
     }
 }

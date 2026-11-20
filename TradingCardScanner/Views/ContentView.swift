@@ -239,6 +239,8 @@ struct ContentView: View {
             } else if debugRoute == "PrintingChoice" {
                 PrintingChoiceDebugView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if debugRoute == "CardCorrection" {
+                CardCorrectionDebugView(catalog: browseCatalog)
             }
         }
 #endif

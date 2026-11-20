@@ -8,6 +8,7 @@ struct UnresolvedScanDetailView: View {
     let onResolve: (UnresolvedResolutionChoice) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.cardGameRuntimes) private var runtimes
     @State private var candidates: [PokemonCatalogCardIdentity] = []
     @State private var isLoadingCandidates = false
     @State private var isShowingCatalogSearch = false
@@ -201,18 +202,13 @@ struct UnresolvedScanDetailView: View {
                 onResolve(choice)
             }
         }) {
-            NavigationStack {
-                BrowseView(catalog: browseCatalog, recoveryGame: scan.game)
-                    .environment(\.catalogCardSelection, { details, summary in
-                        pendingCatalogChoice = .catalog(details, printRun: summary.pokemonPrintRun,
-                                                        variant: summary.masterSetVariant)
-                        isShowingCatalogSearch = false
-                    })
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("Cancel", role: .cancel) { isShowingCatalogSearch = false }
-                        }
-                    }
+            // The pick resolves once the sheet is gone, through the same
+            // `.catalog` path Browse's Use This Card used. A failed save stays
+            // on this record with its message (see resolveUnresolved).
+            CardCorrectionPicker(catalog: browseCatalog, request: .adding(scan, runtimes: runtimes)) { pick in
+                pendingCatalogChoice = .catalog(pick.details, printRun: pick.printRun,
+                                                variant: pick.variant)
+                return nil
             }
         }
     }
