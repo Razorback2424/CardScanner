@@ -338,20 +338,20 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         // Historical additions outlive their owned rows. The removal snapshot
         // retains the same exact printing and print run that Browse expects.
         var row = CollectionRow(
-            id: "sv08.5-074#holo", game: .pokemon, name: "Eevee",
-            setCode: "sv08.5", setName: "Prismatic Evolutions",
-            setReleaseOrder: 0, cardNumber: "074",
+            id: "base1-4#holo", game: .pokemon, name: "Charizard",
+            setCode: "base1", setName: "Base Set",
+            setReleaseOrder: 0, cardNumber: "4",
             variantID: PhysicalVariant.holo.id, variantLabel: PhysicalVariant.holo.label,
             quantity: 1, dateAdded: .now, price: .unknown
         )
-        row.catalogProviderID = "sv08.5-074"
+        row.catalogProviderID = "base1-4"
         row.pokemonPrintRun = .firstEdition
 
         let lookup = try XCTUnwrap(PortfolioCardCatalogRouting.lookup(for: row))
         XCTAssertEqual(lookup.game, .pokemon)
-        XCTAssertEqual(lookup.providerID, "sv08.5-074")
+        XCTAssertEqual(lookup.providerID, "base1-4")
         XCTAssertEqual(lookup.printRun, .firstEdition)
-        XCTAssertEqual(lookup.setCode, "sv08.5")
+        XCTAssertEqual(lookup.setCode, "base1")
     }
 
     func testHistoricalAdditionWithoutVerifiedCatalogIdentityDoesNotGuess() {
