@@ -1,6 +1,12 @@
 # One Piece signed catalog resources
 
-**Current source-of-truth check: 2026-11-15, `main@a8d3103a`.**
+**Source/configuration snapshot:** 2026-11-15, `main@a8d3103a`.
+**2026-11-20 clarification:** Signed hosted One Piece production revision 7
+is reported live by the
+[reconciliation playbook](../../docs/catalog-reconciliation-playbook.md).
+The bundled production seed, owner-local catalog, archived unsigned candidates
+and live remote release remain distinct. Do not infer a particular phone's
+activated revision or completed release acceptance from either repo file.
 
 There are two distinct signed catalog paths. Do not treat their files, revisions,
 keys, or storage boundaries as interchangeable.
