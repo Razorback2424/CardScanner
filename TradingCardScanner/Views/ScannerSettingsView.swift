@@ -3,28 +3,36 @@ import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
 
-/// Shared settings sheet for the app. The root stays deliberately short: each
-/// category leads to a focused form instead of asking someone to scan every
-/// low-frequency control before finding the one they need.
+/// Shared settings sheet for the app. The root stays deliberately short: one
+/// row per area (Scanning, Pricing, Collection), then help, advanced tools and
+/// version. Each area is a single page, so nothing has two homes.
 struct SettingsView: View {
     @Environment(\.cardGameRuntimes) private var runtimes
-    /// A row only the presenting screen can build, shown under Pricing.
-    /// Portfolio supplies its Pricing & Data link here: low-frequency evidence
-    /// that does not earn a permanent toolbar button.
+    /// A row only the presenting screen can build, shown at the top of the
+    /// Pricing page. Portfolio supplies its Pricing & Data link here.
     private let pricingDetailsRow: AnyView?
+    /// Replaces the Pricing row's icon, so Portfolio can carry its attention
+    /// badge down to the row that leads to the problem.
+    private let pricingIcon: AnyView?
 
-    init(pricingDetailsRow: AnyView? = nil) {
+    init(pricingDetailsRow: AnyView? = nil, pricingIcon: AnyView? = nil) {
         self.pricingDetailsRow = pricingDetailsRow
+        self.pricingIcon = pricingIcon
     }
 
     var body: some View {
-        SettingsContentView(runtimes: runtimes, pricingDetailsRow: pricingDetailsRow)
+        SettingsContentView(
+            runtimes: runtimes,
+            pricingDetailsRow: pricingDetailsRow,
+            pricingIcon: pricingIcon
+        )
     }
 }
 
 private struct SettingsContentView: View {
     private let runtimes: CardGameRuntimeContainer?
     private let pricingDetailsRow: AnyView?
+    private let pricingIcon: AnyView?
     @EnvironmentObject private var scannerModel: ScannerViewModel
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.dismiss) private var dismiss
@@ -64,9 +72,10 @@ private struct SettingsContentView: View {
     @AppStorage("pokemonMasterSetTier") private var pokemonMasterSetTier: PokemonMasterSetTier = .standard
     @StateObject private var catalogNormalizer: CollectionCatalogNormalizer
 
-    init(runtimes: CardGameRuntimeContainer?, pricingDetailsRow: AnyView?) {
+    init(runtimes: CardGameRuntimeContainer?, pricingDetailsRow: AnyView?, pricingIcon: AnyView?) {
         self.runtimes = runtimes
         self.pricingDetailsRow = pricingDetailsRow
+        self.pricingIcon = pricingIcon
         _catalogNormalizer = StateObject(wrappedValue: runtimes?.makeCollectionNormalizer() ?? CollectionCatalogNormalizer())
     }
 
@@ -85,34 +94,41 @@ private struct SettingsContentView: View {
 
                     NavigationLink {
                         SettingsCategoryView("Pricing") {
+                            if let pricingDetailsRow {
+                                Section {
+                                    pricingDetailsRow
+                                } footer: {
+                                    Text("Price coverage, data issues, and what changed your portfolio’s value.")
+                                }
+                            }
                             PriceFallbackSettingsSection(onKeySaved: retrySealedNormalization)
                         }
                     } label: {
-                        Label("Pricing", systemImage: "dollarsign.circle")
-                    }
-
-                    if let pricingDetailsRow {
-                        pricingDetailsRow
+                        Label {
+                            Text("Pricing")
+                        } icon: {
+                            if let pricingIcon {
+                                pricingIcon
+                            } else {
+                                Image(systemName: "dollarsign.circle")
+                            }
+                        }
                     }
 
                     NavigationLink {
-                        SettingsCategoryView("Collection & Portfolio") {
+                        SettingsCategoryView("Collection") {
                             collectionSection
                             pokemonMasterSetSection
                             portfolioSection
-                        }
-                    } label: {
-                        Label("Collection & Portfolio", systemImage: "rectangle.stack")
-                    }
-
-                    NavigationLink {
-                        SettingsCategoryView("Collection Storage") {
                             CollectionStorageStatusSection()
+                            deleteCollectionSection
                         }
                     } label: {
-                        Label("Collection Storage", systemImage: "externaldrive")
+                        Label("Collection", systemImage: "rectangle.stack")
                     }
+                }
 
+                Section {
                     NavigationLink {
                         PrivacyAndSupportSettingsView()
                     } label: {
@@ -120,15 +136,20 @@ private struct SettingsContentView: View {
                     }
                 }
 
-                Section("Advanced") {
+                Section {
                     NavigationLink {
-                        SettingsCategoryView("Collection Diagnostics") {
+                        SettingsCategoryView("Diagnostics") {
                             diagnosticsSection
                         }
                     } label: {
-                        Label("Collection Diagnostics", systemImage: "waveform.path.ecg")
+                        Label("Diagnostics", systemImage: "waveform.path.ecg")
                     }
+                } header: {
+                    Text("Advanced")
+                } footer: {
+                    Text("Catalog health, price audits, and support exports.")
                 }
+
                 Section("About") {
                     LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—")
                     LabeledContent("Build", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—")
@@ -267,14 +288,6 @@ private struct SettingsContentView: View {
                 .accessibilityLabel("Importing collection")
                 .accessibilityValue("\(progress.completedEntries) of \(progress.totalEntries) entries saved")
             }
-            if writeCoordinator.activeExclusiveOperation == .collectionDelete {
-                HStack {
-                    ProgressView()
-                    Text("Deleting collection…")
-                }
-                .accessibilityElement(children: .combine)
-            }
-
             Button("Import CSV", systemImage: "square.and.arrow.down") {
                 isShowingCSVImporter = true
             }
@@ -298,11 +311,26 @@ private struct SettingsContentView: View {
             } label: {
                 Label("Review Activity", systemImage: "clock.arrow.circlepath")
             }
+        }
+    }
 
-            Button("Delete Entire Collection", role: .destructive) {
+    /// Last on the page and alone in its section, away from everyday exports.
+    private var deleteCollectionSection: some View {
+        Section {
+            if writeCoordinator.activeExclusiveOperation == .collectionDelete {
+                HStack {
+                    ProgressView()
+                    Text("Deleting collection…")
+                }
+                .accessibilityElement(children: .combine)
+            }
+
+            Button("Delete Entire Collection", systemImage: "trash", role: .destructive) {
                 isConfirmingCollectionDeletion = true
             }
             .disabled(writeCoordinator.activeExclusiveOperation != nil)
+        } footer: {
+            Text("Removes every card record and current ownership. Activity, price records and Value History stay on this device.")
         }
     }
 
@@ -329,7 +357,7 @@ private struct SettingsContentView: View {
             }
             .disabled(portfolioCloseCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
         } header: {
-            Text("Portfolio")
+            Text("Value History")
         } footer: {
             Text("Daily closes are measured in the time zone tracking started in, and stay on this device. Export keeps a copy you own.")
         }
@@ -383,122 +411,128 @@ private struct SettingsContentView: View {
         )) ?? 0
     }
 
+    @ViewBuilder
     private var diagnosticsSection: some View {
         Section {
-            DisclosureGroup("Collection Exports & Price Coverage") {
-                Button("Export Catalog Health Report", systemImage: "square.and.arrow.up") {
-                    prepareCatalogHealthExport(scope: .fullCatalog(checkPrices: checkLiveCatalogPrices))
+            Button("Export Catalog Health Report", systemImage: "square.and.arrow.up") {
+                prepareCatalogHealthExport(scope: .fullCatalog(checkPrices: checkLiveCatalogPrices))
+            }
+            .disabled(runtimes == nil || isPreparingCatalogHealthExport || isPreparingCSVExport ||
+                      writeCoordinator.activeExclusiveOperation != nil)
+            if isPreparingCatalogHealthExport {
+                HStack(spacing: 8) {
+                    ProgressView().controlSize(.small)
+                    Text(catalogHealthExportProgress).font(.footnote)
+                    Spacer(minLength: 0)
+                    Button("Cancel") { catalogHealthExportTask?.cancel() }
                 }
-                .disabled(runtimes == nil || isPreparingCatalogHealthExport || isPreparingCSVExport ||
-                          writeCoordinator.activeExclusiveOperation != nil)
-                if isPreparingCatalogHealthExport {
-                    HStack(spacing: 8) {
-                        ProgressView().controlSize(.small)
-                        Text(catalogHealthExportProgress).font(.footnote)
-                        Spacer(minLength: 0)
-                        Button("Cancel") { catalogHealthExportTask?.cancel() }
-                    }
-                }
-                Toggle("Check catalog prices", isOn: $checkLiveCatalogPrices)
-                    .disabled(isPreparingCatalogHealthExport)
-                Text("Exports catalog issues across all five games, including cards you don’t own. Magic reads Scryfall’s daily card file (about 80 MB). Checking every price sends many requests; use a price audit to check mapped prices for one game or set.")
-                    .font(.footnote).foregroundStyle(.secondary)
-
-                Picker("Price audit game", selection: $priceAuditGame) {
-                    ForEach(ActiveCatalogHealthCSV.games, id: \.self) { game in
-                        Text(game.label).tag(game)
-                    }
-                }
+            }
+            Toggle("Check catalog prices", isOn: $checkLiveCatalogPrices)
                 .disabled(isPreparingCatalogHealthExport)
-                .onChange(of: priceAuditGame) { _, _ in priceAuditSet = nil }
-                Button {
-                    isChoosingPriceAuditSet = true
-                } label: {
-                    LabeledContent("Price audit set", value: priceAuditSet?.name ?? "All sets")
-                }
-                .disabled(runtimes == nil || isPreparingCatalogHealthExport)
-                .sheet(isPresented: $isChoosingPriceAuditSet) {
-                    if let browse = catalogHealthBrowse() {
-                        PriceAuditSetPicker(game: priceAuditGame, browse: browse, selection: $priceAuditSet)
-                    }
-                }
-                Button("Export Price Audit", systemImage: "dollarsign.arrow.circlepath") {
-                    prepareCatalogHealthExport(scope: .priceAudit(game: priceAuditGame, setID: priceAuditSet?.catalogID),
-                                               auditSet: priceAuditSet)
-                }
-                .disabled(runtimes == nil || isPreparingCatalogHealthExport || isPreparingCSVExport ||
-                          writeCoordinator.activeExclusiveOperation != nil)
-                Text("Prices only verified printings with approved marketplace mappings, reusing cached prices and grouped price feeds. Stops early if a provider limits requests. The file lists pricing failures only.")
-                    .font(.footnote).foregroundStyle(.secondary)
+        } header: {
+            Text("Catalog Health")
+        } footer: {
+            Text("Exports catalog issues across all five games, including cards you don’t own. Magic reads Scryfall’s daily card file (about 80 MB). Checking every price sends many requests; use a price audit to check mapped prices for one game or set.")
+        }
 
-                Button("Export Cards Excluded from USD Value", systemImage: "dollarsign.circle") {
-                    prepareCSVExport(.unpriced, filename: "ScanStash Unpriced Cards")
+        Section {
+            Picker("Game", selection: $priceAuditGame) {
+                ForEach(ActiveCatalogHealthCSV.games, id: \.self) { game in
+                    Text(game.label).tag(game)
                 }
-                .disabled(collectionCardCount == 0 || isPreparingCSVExport || isPreparingCatalogHealthExport || writeCoordinator.activeExclusiveOperation != nil)
+            }
+            .disabled(isPreparingCatalogHealthExport)
+            .onChange(of: priceAuditGame) { _, _ in priceAuditSet = nil }
+            Button {
+                isChoosingPriceAuditSet = true
+            } label: {
+                LabeledContent("Set", value: priceAuditSet?.name ?? "All sets")
+            }
+            .disabled(runtimes == nil || isPreparingCatalogHealthExport)
+            .sheet(isPresented: $isChoosingPriceAuditSet) {
+                if let browse = catalogHealthBrowse() {
+                    PriceAuditSetPicker(game: priceAuditGame, browse: browse, selection: $priceAuditSet)
+                }
+            }
+            Button("Export Price Audit", systemImage: "dollarsign.arrow.circlepath") {
+                prepareCatalogHealthExport(scope: .priceAudit(game: priceAuditGame, setID: priceAuditSet?.catalogID),
+                                           auditSet: priceAuditSet)
+            }
+            .disabled(runtimes == nil || isPreparingCatalogHealthExport || isPreparingCSVExport ||
+                      writeCoordinator.activeExclusiveOperation != nil)
+        } header: {
+            Text("Price Audit")
+        } footer: {
+            Text("Prices only verified printings with approved marketplace mappings, reusing cached prices and grouped price feeds. Stops early if a provider limits requests. The file lists pricing failures only.")
+        }
 
-                Button("Export Price Evidence for All Cards", systemImage: "clock.badge.checkmark") {
-                    prepareCSVExport(.priceEvidence, filename: "ScanStash Price Evidence")
-                }
-                .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
+        Section("Collection Reports") {
+            Button("Export Cards Excluded from USD Value", systemImage: "dollarsign.circle") {
+                prepareCSVExport(.unpriced, filename: "ScanStash Unpriced Cards")
+            }
+            .disabled(collectionCardCount == 0 || isPreparingCSVExport || isPreparingCatalogHealthExport || writeCoordinator.activeExclusiveOperation != nil)
 
-                Button("Export Missing Artwork", systemImage: "photo") {
-                    prepareCSVExport(.missingArtwork, filename: "ScanStash Missing Artwork")
-                }
-                .disabled(missingArtworkCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
+            Button("Export Price Evidence for All Cards", systemImage: "clock.badge.checkmark") {
+                prepareCSVExport(.priceEvidence, filename: "ScanStash Price Evidence")
+            }
+            .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
+
+            Button("Export Missing Artwork", systemImage: "photo") {
+                prepareCSVExport(.missingArtwork, filename: "ScanStash Missing Artwork")
+            }
+            .disabled(missingArtworkCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
 
 #if DEBUG
-                Button("Run Overnight Price Refresh", systemImage: "moon.stars") {
-                    Task {
-                        await BackgroundPriceRefresh.run(.processing, allowsForeground: true,
-                            prepareRuntimes: { [runtimes] in
-                                if let runtimes { return runtimes }
-                                return await CardGameRuntimeContainer.preparedAppDefaults()
-                            })
-                    }
+            Button("Run Overnight Price Refresh", systemImage: "moon.stars") {
+                Task {
+                    await BackgroundPriceRefresh.run(.processing, allowsForeground: true,
+                        prepareRuntimes: { [runtimes] in
+                            if let runtimes { return runtimes }
+                            return await CardGameRuntimeContainer.preparedAppDefaults()
+                        })
                 }
-                .disabled(collectionCardCount == 0)
+            }
+            .disabled(collectionCardCount == 0)
 #endif
+        }
 
-#if !NO_CLOUDKIT
-                Button("Export Sync Diagnostics", systemImage: "waveform.path.ecg") {
-                    exportSyncDiagnostics()
-                }
-                .disabled(!TradingCardScannerApp.storageIsReady || isPreparingDiagnosticsExport)
-                Text("Redacted diagnostic data for support. It does not include card names, collection contents, credentials, or images.")
+        Section {
+            if priceCoverageGaps.isEmpty {
+                Text("No unpriced Browse finishes have been recorded in this session.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-#endif
-
-                DisclosureGroup {
-                    if priceCoverageGaps.isEmpty {
-                        Text("No unpriced Browse finishes have been recorded in this session.")
-                            .font(.footnote)
+            } else {
+                ForEach(priceCoverageGaps) { gap in
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(gap.summary)
+                            .font(.subheadline)
+                        Text("Seen \(gap.observationCount) time\(gap.observationCount == 1 ? "" : "s")")
+                            .font(.caption)
                             .foregroundStyle(.secondary)
-                    } else {
-                        ForEach(priceCoverageGaps) { gap in
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text(gap.summary)
-                                    .font(.subheadline)
-                                Text("Seen \(gap.observationCount) time\(gap.observationCount == 1 ? "" : "s")")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .accessibilityElement(children: .combine)
-                        }
                     }
-
-                    Button("Refresh list", systemImage: "arrow.clockwise") {
-                        refreshPriceCoverageGaps()
-                    }
-                } label: {
-                    Label(
-                        "Browse price coverage (\(priceCoverageGaps.count))",
-                        systemImage: "exclamationmark.triangle"
-                    )
+                    .accessibilityElement(children: .combine)
                 }
-
             }
+
+            Button("Refresh List", systemImage: "arrow.clockwise") {
+                refreshPriceCoverageGaps()
+            }
+        } header: {
+            Text("Browse Price Coverage (\(priceCoverageGaps.count))")
         }
+
+#if !NO_CLOUDKIT
+        Section {
+            Button("Export Sync Diagnostics", systemImage: "waveform.path.ecg") {
+                exportSyncDiagnostics()
+            }
+            .disabled(!TradingCardScannerApp.storageIsReady || isPreparingDiagnosticsExport)
+        } header: {
+            Text("Support")
+        } footer: {
+            Text("Redacted diagnostic data for support. It does not include card names, collection contents, credentials, or images.")
+        }
+#endif
     }
 
     private func refreshPriceCoverageGaps() {
@@ -930,8 +964,8 @@ private struct SettingsCategoryView<Content: View>: View {
     }
 }
 
-/// Shared between Scan settings and Collection so the fallback can be managed
-/// where its results and remaining work are visible.
+/// The Pricing page's price-fallback controls (also shown alone by a debug
+/// review route).
 struct PriceFallbackSettingsSection: View {
     var onKeySaved: () -> Void = {}
     @Environment(\.modelContext) private var modelContext

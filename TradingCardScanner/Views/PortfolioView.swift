@@ -122,10 +122,15 @@ struct PortfolioInfoButton<Content: View>: View {
     }
 }
 
-private struct PortfolioDetailsDestination: Identifiable, Hashable {
+/// A screen Portfolio pushes with a snapshot of its input. Identity is the
+/// push, not the snapshot, so a refreshed value keeps the screen open.
+private struct PortfolioPush<Snapshot>: Identifiable, Hashable {
     let id = UUID()
-    let summary: PortfolioSummary
-    let historyResult: PortfolioHistoryResult?
+    let snapshot: Snapshot
+
+    init(_ snapshot: Snapshot) {
+        self.snapshot = snapshot
+    }
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
@@ -134,6 +139,11 @@ private struct PortfolioDetailsDestination: Identifiable, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+}
+
+private struct PortfolioDetailsSnapshot {
+    let summary: PortfolioSummary
+    let historyResult: PortfolioHistoryResult?
 }
 
 /// The collection's home screen. It presents the value and accounting already
@@ -169,7 +179,8 @@ struct PortfolioView: View {
     @State private var path = NavigationPath()
     @State private var isShowingSettings = false
     @State private var contributorContext: PortfolioContributorContext?
-    @State private var detailsDestination: PortfolioDetailsDestination?
+    @State private var detailsDestination: PortfolioPush<PortfolioDetailsSnapshot>?
+    @State private var additionsDestination: PortfolioPush<PortfolioHistoryResult>?
     @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var restoringRemovalID: UUID?
     @State private var removalErrorMessage: String?
@@ -292,10 +303,10 @@ struct PortfolioView: View {
                                     // Data details describe this launch's
                                     // replay; the launch screen has none yet.
                                     guard !summary.isProvisional else { return }
-                                    detailsDestination = PortfolioDetailsDestination(
+                                    detailsDestination = PortfolioPush(PortfolioDetailsSnapshot(
                                         summary: summary,
                                         historyResult: result
-                                    )
+                                    ))
                                 }
                                 .padding(.horizontal, 16)
                                 .id("phase3-movers")
@@ -349,7 +360,7 @@ struct PortfolioView: View {
             .task(id: activeHistoryResult) {
                 guard ProcessInfo.processInfo.arguments.contains("PortfolioAdditions"),
                       let summary = portfolio.summary, let result = activeHistoryResult else { return }
-                detailsDestination = PortfolioDetailsDestination(summary: summary, historyResult: result)
+                detailsDestination = PortfolioPush(PortfolioDetailsSnapshot(summary: summary, historyResult: result))
             }
 #endif
             .task {
@@ -371,9 +382,17 @@ struct PortfolioView: View {
                 PortfolioDetailsView(
                     portfolio: portfolio,
                     history: history,
-                    fallbackSummary: destination.summary,
+                    fallbackSummary: destination.snapshot.summary,
                     refresh: refresh,
-                    snapshotHistoryResult: destination.historyResult,
+                    snapshotHistoryResult: destination.snapshot.historyResult,
+                    onRemoved: presentUndo(for:)
+                )
+            }
+            .navigationDestination(item: $additionsDestination) { destination in
+                PortfolioAdditionsView(
+                    snapshotResult: destination.snapshot,
+                    holdings: portfolio.holdings,
+                    history: history,
                     onRemoved: presentUndo(for:)
                 )
             }
@@ -392,7 +411,23 @@ struct PortfolioView: View {
             }
         }
         .sheet(isPresented: $isShowingSettings) {
-            SettingsView(pricingDetailsRow: pricingDetailsSettingsRow)
+            // The badge marks the path to the problem, so it appears only
+            // when the Pricing page holds the Pricing & Data row that
+            // explains it.
+            let detailsRow = pricingDetailsSettingsRow
+            SettingsView(
+                pricingDetailsRow: detailsRow,
+                pricingIcon: detailsRow == nil ? nil : AnyView(
+                    Image(systemName: "dollarsign.circle")
+                        .modifier(
+                            PortfolioAttentionBadge(
+                                refresh: refresh,
+                                needsAttentionFromPortfolio: needsAttentionFromPortfolio,
+                                accessibilityLabel: nil
+                            )
+                        )
+                )
+            )
         }
         .alert(
             "Reconciliation failed",
@@ -614,6 +649,10 @@ struct PortfolioView: View {
                     }
                 }
                 .accessibilityElement(children: .combine)
+
+                if let active = activeHistoryResult {
+                    cardsAddedLink(active)
+                }
             }
 
             PriceRefreshActivityRow(
@@ -630,6 +669,42 @@ struct PortfolioView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 2)
         .padding(.bottom, 8)
+    }
+
+    /// Additions are excluded from the market change beside the value, so
+    /// they get their own line here rather than living only in Settings.
+    @ViewBuilder
+    private func cardsAddedLink(_ result: PortfolioHistoryResult) -> some View {
+        let quantity = result.addedQuantities.values.reduce(0, +)
+        let value = result.accounting.map { $0.added + $0.newlyAddedValue } ?? .zero
+        if quantity > 0 || !value.isZero {
+            // Same period wording as the market change beside the value.
+            let period = result.range == .all ? "all time" : "in the \(result.range.pastPeriodPhrase)"
+            let cards = quantity == 1 ? "1 card" : "\(quantity) cards"
+            let title = quantity > 0 ? "\(cards) added \(period)" : "Cards added \(period)"
+            Button {
+                additionsDestination = PortfolioPush(result)
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundStyle(.tint)
+                    Text(title)
+                        .foregroundStyle(.primary)
+                    if !value.isZero {
+                        Text(PortfolioHistoryDisplay.signedCurrency(value))
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                    }
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+                .font(.subheadline.weight(.medium))
+                .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint("Shows the cards added and their value")
+        }
     }
 
     private func integrityWarning(_ defects: [LedgerIntegrityDefect]) -> some View {
@@ -656,10 +731,10 @@ struct PortfolioView: View {
             }
 
             Button("View data details") {
-                detailsDestination = PortfolioDetailsDestination(
+                detailsDestination = PortfolioPush(PortfolioDetailsSnapshot(
                     summary: portfolio.summary ?? PortfolioSummary(defects: defects, isAuthoritative: false),
                     historyResult: nil
-                )
+                ))
             }
             .font(.subheadline.weight(.semibold))
 
