@@ -1,6 +1,15 @@
 # Lorcana implementation plan
 
-**Current status — 2026-10-14:** normal app registration now enables exact raw
+**Current source-bound coverage checkpoint — 2026-11-18:** The
+[English catalog coverage audit](../audits/lorcana-coverage-2026-11-11.md)
+records **3,576 physical printings, 6,432 exact finish mappings** and **26**
+remaining Browse-only rows after 36 reviewed promo distribution rules.
+Those are catalog/capture results, not physical-camera, App Store,
+rights or distribution acceptance. The eight-set ordinary pricing scope
+below is an earlier milestone; do not use it as the current five-game
+catalog census.
+
+**Historical normal-workflow checkpoint — 2026-10-14:** normal app registration now enables exact raw
 ownership, import and pricing for **1,616 ordinary printings / 3,232 Normal and
 Cold Foil mappings across expansions 1–8**, using the existing scanner, Price
 Check, Browse and collection refresh components. All 3,582 discovery card rows
