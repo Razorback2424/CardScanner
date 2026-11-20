@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-11-20",
+  "scope": "English One Piece Card Game reprints distributed through premium collections, anniversary sets, ultra decks, and jumbo promotions. Determines whether each TCGplayer product represents the same printing as the base card or a separate printing.",
+  "decision": "separate-printing",
+  "rationale": "TCGplayer assigns a separate productId for each distribution (e.g. productId 504468 for 'Uta (Premium Card Collection -ONE PIECE FILM RED Edition-)' vs 454517 for 'Uta' base Romance Dawn). PriceCharting lists and prices them independently (OP01-005 base vs OP01-005 Premium Card Collection at different price points). This follows the established One Piece convention that reprints are separate printings under the reprinting product.",
+  "sources": [
+    {
+      "name": "TCGplayer product data via TCGCSV",
+      "evidence": "Category 68 group products export: OP01-005 has productId 454517 (base, group 3188), 504468 (Premium Card Collection FILM RED, group 17675), 564142 (Premium Card Collection Uta, group 17675), 497386 (Demo Deck 2023, group 17675), 523802 (Gift Collection 2023, group 17675), 602793 (group 23907). Each distribution is a separate product with its own price history.",
+      "capturedFrom": "TCGCSV category 68 daily snapshot, 2026-11-18"
+    },
+    {
+      "name": "PriceCharting",
+      "evidence": "PriceCharting lists 'Uta [Premium Card Collection] OP01-005' ($18.66) as a separate entry from the base Romance Dawn 'Uta OP01-005'. 11 distinct PriceCharting entries for Uta Premium Card Collection products across languages.",
+      "url": "https://www.pricecharting.com/search-products?q=uta+premium+card+collection+one+piece"
+    },
+    {
+      "name": "One Piece catalog playbook",
+      "evidence": "Established convention: 'reprints are separate printings under the reprinting product' (docs/catalog-reconciliation-playbook.md, line 42)."
+    }
+  ],
+  "categories": [
+    {
+      "id": "premium-card-collection",
+      "label": "Premium Card Collection",
+      "titlePatterns": ["Premium Card Collection"],
+      "decision": "separate-printing",
+      "note": "Includes FILM RED Edition, Uta, Leader Collection, and BANDAI CARD GAMES Fest editions. Each has its own TCGplayer product and price history."
+    },
+    {
+      "id": "anniversary-set",
+      "label": "English Version 1st Anniversary Set",
+      "titlePatterns": ["1st Anniversary Set", "2nd Anniversary Set", "3rd Anniversary Set"],
+      "decision": "separate-printing",
+      "note": "Anniversary boxed sets with reprints. TCGplayer lists each reprint as a separate product."
+    },
+    {
+      "id": "ultra-deck",
+      "label": "Ultra Deck reprints",
+      "titlePatterns": ["Ultra Deck"],
+      "decision": "separate-printing",
+      "note": "Ultra Deck: The Three Captains (group 23243), Ultra Deck The Three Brothers (group 23349). TCGplayer has its own group and products."
+    },
+    {
+      "id": "jumbo",
+      "label": "Jumbo promotional cards",
+      "titlePatterns": ["(Jumbo)"],
+      "decision": "separate-printing",
+      "note": "Oversized promotional cards. Physically distinct from regular-sized cards. Not tournament-legal. Definitively a separate printing."
+    },
+    {
+      "id": "event-exclusive-reprint",
+      "label": "Event-exclusive reprints (Gen Con, etc.)",
+      "titlePatterns": ["Gen Con"],
+      "decision": "separate-printing",
+      "note": "Event-exclusive distributions outside the event stamp system. Follow the same collector principle: separate TCGplayer product means separate printing."
+    }
+  ],
+  "affectedCards": [
+    "OP01-005", "OP01-014", "OP01-016", "OP01-017", "OP01-021", "OP01-025",
+    "OP09-061", "OP13-001", "P-016", "P-022", "P-037",
+    "ST01-002", "ST01-004", "ST01-006", "ST01-010", "ST01-011", "ST01-013",
+    "ST02-001", "ST04-008", "ST10-005"
+  ],
+  "implementation": "The catalog build must create a separate printing entry for each TCGplayer product in these categories, keyed to the product's distribution. The certifier must not use 'same-printing' to merge premium collection products with base printings. These products remain open until the build creates their printings in a future revision."
+}
