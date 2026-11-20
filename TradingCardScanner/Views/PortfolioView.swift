@@ -1711,6 +1711,22 @@ private struct PortfolioArtwork: View {
     }
 }
 
+/// A historical acquisition may outlive its ownership row. Use its retained,
+/// exact catalog identity instead of requiring a current portfolio position.
+/// Never guess a printing from its display name or a synthetic import key.
+enum PortfolioCardCatalogRouting {
+    static func lookup(for row: CollectionRow?) -> CatalogDetailLookup? {
+        guard let row, row.itemKind == .rawCard,
+              !UnverifiedReportKey.isUnverified(row.id),
+              let providerID = row.catalogProviderID, !providerID.isEmpty,
+              !providerID.hasPrefix("csv:") else { return nil }
+        return CatalogDetailLookup(
+            game: row.game, providerID: providerID, printRun: row.pokemonPrintRun,
+            name: row.name, setCode: row.setCode
+        )
+    }
+}
+
 private struct PortfolioOwnedCardDestination: View {
     @EnvironmentObject private var priceSnapshot: PriceSnapshotStore
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
@@ -1719,17 +1735,20 @@ private struct PortfolioOwnedCardDestination: View {
     @Query private var cards: [CollectedCard]
     let collectionKey: String
     let holding: PortfolioHoldingSnapshot?
+    let historicalRow: CollectionRow?
     @ObservedObject var history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
 
     init(
         collectionKey: String,
         holding: PortfolioHoldingSnapshot? = nil,
+        historicalRow: CollectionRow? = nil,
         history: PortfolioHistoryStore,
         onRemoved: @escaping (RemovedCardSnapshot) -> Void
     ) {
         self.collectionKey = collectionKey
         self.holding = holding
+        self.historicalRow = historicalRow
         self.history = history
         self.onRemoved = onRemoved
         self._cards = Query(
@@ -1739,16 +1758,15 @@ private struct PortfolioOwnedCardDestination: View {
     }
 
     var body: some View {
-        // A catalog-linked raw copy opens the same card page Browse and the
-        // collection use; the owned layer sits on top of it there.
-        if let row = projectionStore.snapshot?.rowsByCollectionKey[collectionKey],
-           row.itemKind == .rawCard, !UnverifiedReportKey.isUnverified(row.id),
-           let providerID = row.catalogProviderID {
+        // Current ownership is authoritative when it exists. A historical
+        // addition can still open Browse's unified detail after a sale or undo,
+        // using the exact printing retained in its removal snapshot.
+        let row = projectionStore.snapshot?.rowsByCollectionKey[collectionKey] ?? historicalRow
+        if let row, let lookup = PortfolioCardCatalogRouting.lookup(for: row) {
             let catalog = sharedBrowseCatalog ?? runtimes?.makeBrowseCatalog() ?? BrowseCatalog()
             if catalog.gameRegistry.supports(row.game, .browse) {
                 CollectionCatalogDestination(
-                    lookup: .init(game: row.game, providerID: providerID, printRun: row.pokemonPrintRun,
-                                  name: row.name, setCode: row.setCode),
+                    lookup: lookup,
                     openingFinishID: CatalogOwnershipCardSnapshot.catalogFinishID(row.variantID, game: row.game),
                     catalog: catalog
                 ) { copyDestination }
@@ -1786,6 +1804,12 @@ private struct PortfolioOwnedCardDestination: View {
             } else {
                 ProgressView("Loading price…")
             }
+        } else if historicalRow != nil {
+            ContentUnavailableView(
+                "Card details unavailable",
+                systemImage: "rectangle.stack.badge.questionmark",
+                description: Text("This historical card is no longer owned, and its exact catalog details could not be loaded.")
+            )
         } else {
             ContentUnavailableView(
                 "Holding unavailable",
@@ -2219,6 +2243,7 @@ private struct PortfolioAdditionsView: View {
                             NavigationLink {
                                 PortfolioOwnedCardDestination(
                                     collectionKey: card.id,
+                                    historicalRow: card.row,
                                     history: history,
                                     onRemoved: onRemoved
                                 )
@@ -2380,6 +2405,8 @@ private struct PortfolioAdditionsView: View {
                     highImageURL: snapshot?.imageURL.flatMap { URL(string: $0) },
                     userArtworkFilename: snapshot?.userArtworkFilename,
                     catalogProviderID: snapshot.map { $0.catalogProviderID ?? $0.providerID },
+                    pokemonPrintRun: snapshot?.pokemonPrintRunRaw.flatMap(PokemonPrintRun.init(rawValue:))
+                        ?? activity.pokemonPrintRun,
                     variantResolution: snapshot?.variantResolution
                 )
             }
