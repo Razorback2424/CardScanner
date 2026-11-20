@@ -2,8 +2,9 @@
 
 **Current authority boundary — 2026-11-20 (`main@146161c` source review):**
 Release uses `remote-authority` with on-device One Piece collection writes
-enabled. The **bundled signed seed** described below is the earlier production
-revision 2; the signed **hosted production catalog** reached revision 7, reported
+enabled. The **bundled signed seed** is production revision 4 (generated 2026-11-15,
+bundled in `b3eadc2e`); the revision-2 passages below describe an earlier
+bundled seed. The signed **hosted production catalog** reached revision 7, reported
 live in the [November 18 reconciliation playbook](../catalog-reconciliation-playbook.md).
 These are distinct versions, not conflicting revisions of one installed copy.
 The revision-2/owner-revision-9 passages below are dated implementation evidence,

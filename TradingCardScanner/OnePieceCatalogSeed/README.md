@@ -4,8 +4,11 @@
 **2026-11-20 clarification:** Signed hosted One Piece production revision 7
 is reported live by the
 [reconciliation playbook](../../docs/catalog-reconciliation-playbook.md).
-The bundled production seed, owner-local catalog, archived unsigned candidates
-and live remote release remain distinct. Do not infer a particular phone's
+The bundled production seed in this folder is signed **revision 4**
+(generated 2026-11-15); its payload is byte-identical to the
+`publisher/one-piece/production/revision-4/candidate.json` described below as
+unsigned, so that candidate was signed and bundled. The bundled seed,
+owner-local catalog and live remote release remain distinct. Do not infer a particular phone's
 activated revision or completed release acceptance from either repo file.
 
 There are two distinct signed catalog paths. Do not treat their files, revisions,

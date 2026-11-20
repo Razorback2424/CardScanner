@@ -1,7 +1,9 @@
 # One Piece v1 release acceptance
 
-**November 20 reconciliation:** The revision-2 seed/October implementation
-record below is not the latest hosted production catalog. The
+**November 20 reconciliation:** The app bundles signed production
+revision 4 (generated 2026-11-15); its payload is byte-identical to the
+revision-4 candidate the November 15 correction below calls unsigned. The
+October implementation record below is not the latest hosted production catalog. The
 [reconciliation playbook](../catalog-reconciliation-playbook.md) records signed
 production revision 7 live as of November 18. This does not by itself close
 any physical-device, in-app activation, licensing or distribution gate. The

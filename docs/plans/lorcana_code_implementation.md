@@ -6,7 +6,7 @@ records **3,576 physical printings, 6,432 exact finish mappings** and **26**
 remaining Browse-only rows after 36 reviewed promo distribution rules.
 Those are catalog/capture results, not physical-camera, App Store,
 rights or distribution acceptance. The eight-set ordinary pricing scope
-below is an earlier milestone; do not use it as the current five-game
+below is an earlier milestone; do not use it as the current Lorcana
 catalog census.
 
 **Historical normal-workflow checkpoint — 2026-10-14:** normal app registration now enables exact raw

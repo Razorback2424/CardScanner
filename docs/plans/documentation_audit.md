@@ -25,7 +25,7 @@ permanent anchors.
 | --- | --- |
 | Portfolio shows a weekly Cards Added shortcut; historical sold additions cannot reach unified detail. | **Superseded.** PR #54 moves the shortcut to Settings → Collection; PR #55 routes a historical tile with an exact retained printing through the catalog detail, without guessing unknown identities. Both changes exist on the checked main SHA. Their PR build/static/catalog checks passed, but this documentation review did not repeat device navigation. |
 | Scan correction is not built. | **Superseded.** [Scan correction plan](scan-correction-plan.md) records completed steps 0–4 with simulator/source evidence and open real-phone/tap-through Step 5. Its original “Today” comparison is an explicitly historical baseline. |
-| Production One Piece catalog is revision 2/4, and production support remains disabled. | **Split authority / superseded.** The earlier signed seed and unsigned candidates retain their dates. The [Release configuration](../../Config/OnePieceCatalogProduction.xcconfig) enables signed remote authority and on-device writes; the [reconciliation playbook](../catalog-reconciliation-playbook.md) reports hosted revision 7 live as of November 18, with 2,670/2,969 canonical cards certified and 173 Bandai review rows. Neither source configuration nor a hosted pointer certifies a particular phone or App Store release. |
+| Production One Piece catalog is revision 2/4, and production support remains disabled. | **Split authority / superseded.** The app bundles signed production revision 4 (byte-identical to the retained revision-4 candidate earlier docs call unsigned); older seeds and candidates retain their dates. The [Release configuration](../../Config/OnePieceCatalogProduction.xcconfig) enables signed remote authority and on-device writes; the [reconciliation playbook](../catalog-reconciliation-playbook.md) reports hosted revision 7 live as of November 18, with 2,670/2,969 canonical cards certified and 173 true exceptions left as known gaps. Neither source configuration nor a hosted pointer certifies a particular phone or App Store release. |
 | Lorcana has only 1,616 ordinary printings/3,232 lanes across eight sets. | **Earlier milestone.** The [November 18 catalog audit](../audits/lorcana-coverage-2026-11-11.md) now reports 3,576 physical printings, 6,432 finish mappings and 26 Browse-only rows. Device/rights/distribution gates remain open. |
 | The September Pokémon USD-gap proposal still describes all 30th cards as unpriced. | **Historical symptom.** A scoped TCGCSV fallback for `30th` / `30th-c` was later implemented, as recorded in the [Browse pricing coverage plan](browse_pricing_coverage_plan.md). This is not general pricing completeness certification. |
 | Pokémon publication baseline is revision 1 and four-hour scheduling is still pending. | **September plan superseded as operational status.** Current [workflow](../../.github/workflows/pokemon-catalog.yml) declares a daily `17 6 * * *` UTC schedule; [November 10 readback](../audits/launch-review-2026-11-10.md#revision-22-recovery-follow-up--2026-11-10) verified signed revision 22 recovery. A retained revision-25 candidate is **not** proof of current publication or activation. |
@@ -45,8 +45,8 @@ Assess each against its active authority and inbound links before moving
 anything to `docs/legacy/`; preserve historical evidence and create an old-path
 pointer if callers rely on it. Run a full-repository Markdown path/anchor
 check in a local checkout before declaring *every* link valid. This scoped
-review checked changed documents' relative targets but did not execute a
-full local `git diff --check` or certify external URLs.
+review checked changed documents' relative targets and `git diff --check`
+passed on the change, but it did not certify external URLs.
 
 ## November 15, 2026 current-source reconciliation
 
