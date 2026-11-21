@@ -300,6 +300,46 @@ final class RefreshStructuralWriteTests: XCTestCase {
         XCTAssertEqual(records.first?.key, newKey)
     }
 
+    /// The unscoped refresh index no longer materializes the append-only
+    /// observation table. Its lazy per-instrument read must still elect the
+    /// same newest row (including same-instant ordering) and fold inserts in.
+    func testRefreshIndexReadsNewestObservationLazily() throws {
+        let container = try makeContainer()
+        let seed = ModelContext(container)
+        let base = Date.now.addingTimeInterval(-86_400)
+        func observation(_ key: String, _ amount: Int64, kind: PriceObservationKind = .marketUpdate,
+                         at date: Date) -> PriceObservation {
+            PriceObservation(instrumentKey: key, kind: kind, amount: Money(tenThousandths: amount),
+                             sourceVariantID: nil, marketVariantID: nil,
+                             effectiveAt: date, receivedAt: date, isSourceStamped: false)
+        }
+        seed.insert(observation("a", 10_000, at: base))
+        seed.insert(observation("a", 20_000, at: base.addingTimeInterval(60)))
+        // Same instant: a higher ordering priority wins regardless of id.
+        seed.insert(observation("a", 30_000, kind: .explicitInvalidation, at: base.addingTimeInterval(60)))
+        try seed.save()
+
+        let context = ModelContext(container)
+        let index = PriceRefreshDataIndex(context: context)
+        XCTAssertTrue(index.isUsable)
+        XCTAssertEqual(index.newestObservation(forInstrumentKey: "a")?.kind, .explicitInvalidation)
+        XCTAssertNil(index.newestObservation(forInstrumentKey: "b"))
+
+        let older = observation("a", 1, at: base.addingTimeInterval(-60))
+        context.insert(older)
+        index.insert(older)
+        XCTAssertEqual(index.newestObservation(forInstrumentKey: "a")?.kind, .explicitInvalidation)
+
+        let newB = observation("b", 5_000, at: base.addingTimeInterval(120))
+        context.insert(newB)
+        index.insert(newB)
+        XCTAssertEqual(index.newestObservation(forInstrumentKey: "b")?.amount, Money(tenThousandths: 5_000))
+
+        let scoped = PriceRefreshDataIndex(context: ModelContext(container), instrumentKeys: ["a"])
+        XCTAssertEqual(scoped.newestObservation(forInstrumentKey: "a")?.kind, .explicitInvalidation)
+        XCTAssertNil(scoped.newestObservation(forInstrumentKey: "b"), "outside the scoped keys")
+    }
+
     private func makeContainer() throws -> ModelContainer {
         let container = try ModelContainer(
             for: CollectionStorageModelSchema.full,

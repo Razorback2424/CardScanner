@@ -414,7 +414,13 @@ final class PriceRefreshDataIndex {
     /// Refresh decisions only need the newest observation for each instrument.
     /// Keeping the full append-only history here made a multi-minute refresh
     /// retain every observation ever recorded on the device.
-    private(set) var newestObservationsByInstrumentKey: [String: PriceObservation]
+    ///
+    /// For an unscoped index this is filled lazily, one indexed
+    /// `(instrumentKey, receivedAt)` read per instrument. Materializing the
+    /// whole append-only table on every refresh start (and again after each
+    /// failed save) grew with collection age. A stored `nil` means the
+    /// instrument was read and has no observation.
+    private var newestObservationsByInstrumentKey: [String: PriceObservation?]
     private(set) var checkDaysByKey: [CheckDayKey: PriceCheckDay]
     private(set) var indexedPortfolioDays: Set<Date>
     private(set) var loadedSuccessfully: Bool
@@ -449,8 +455,10 @@ final class PriceRefreshDataIndex {
             let records = try context.fetch(FetchDescriptor<PriceRecord>(
                 predicate: instrumentKeys == nil ? nil : #Predicate { keys.contains($0.key) }
             ))
-            let observations = try context.fetch(FetchDescriptor<PriceObservation>(
-                predicate: instrumentKeys == nil ? nil : #Predicate { keys.contains($0.instrumentKey) }
+            // A scoped index (the serialized checkpoint write) stays eager so
+            // its `isUsable` still vouches for every observation it will read.
+            let observations = try instrumentKeys == nil ? [] : context.fetch(FetchDescriptor<PriceObservation>(
+                predicate: #Predicate { keys.contains($0.instrumentKey) }
             ))
             let indexedDay = PortfolioCalendar.day(
                 containing: .now,
@@ -464,9 +472,12 @@ final class PriceRefreshDataIndex {
                 )
             )
             self.recordsByKey = Dictionary(grouping: records, by: \.key)
-            var newestByInstrumentKey: [String: PriceObservation] = [:]
+            var newestByInstrumentKey: [String: PriceObservation?] = [:]
+            if let instrumentKeys {
+                for key in instrumentKeys { newestByInstrumentKey[key] = .some(nil) }
+            }
             for observation in observations {
-                guard let incumbent = newestByInstrumentKey[observation.instrumentKey] else {
+                guard let incumbent = newestByInstrumentKey[observation.instrumentKey] ?? nil else {
                     newestByInstrumentKey[observation.instrumentKey] = observation
                     continue
                 }
@@ -510,11 +521,17 @@ final class PriceRefreshDataIndex {
     }
 
     func newestObservation(forInstrumentKey key: String) -> PriceObservation? {
-        newestObservationsByInstrumentKey[key]
+        if let known = newestObservationsByInstrumentKey[key] { return known }
+        guard instrumentKeys == nil else { return nil }
+        guard let loaded = loadNewestObservation(instrumentKey: key) else { return nil }
+        newestObservationsByInstrumentKey[key] = .some(loaded)
+        return loaded
     }
 
     func insert(_ observation: PriceObservation) {
-        guard let incumbent = newestObservationsByInstrumentKey[observation.instrumentKey] else {
+        // Resolve the stored incumbent first; a lazily unread instrument may
+        // already hold a newer row than the one being inserted.
+        guard let incumbent = newestObservation(forInstrumentKey: observation.instrumentKey) else {
             newestObservationsByInstrumentKey[observation.instrumentKey] = observation
             return
         }
@@ -540,6 +557,28 @@ final class PriceRefreshDataIndex {
             checkDaysByKey[key] = checkDay
         }
         indexedPortfolioDays.insert(checkDay.portfolioDay)
+    }
+
+    /// The newest stored row for one instrument, using the same ordering as
+    /// `PriceObservation.isNewer`. Returns `.some(nil)` when the instrument has
+    /// no observation and `nil` when the read failed, so a failure is retried
+    /// rather than remembered as "no history".
+    private func loadNewestObservation(instrumentKey: String) -> PriceObservation?? {
+        var descriptor = FetchDescriptor<PriceObservation>(
+            predicate: #Predicate { $0.instrumentKey == instrumentKey },
+            sortBy: [SortDescriptor(\.receivedAt, order: .reverse)]
+        )
+        descriptor.fetchLimit = 1
+        do {
+            guard let latest = try context.fetch(descriptor).first else { return .some(nil) }
+            let instant = latest.receivedAt
+            let ties = try context.fetch(FetchDescriptor<PriceObservation>(predicate: #Predicate {
+                $0.instrumentKey == instrumentKey && $0.receivedAt == instant
+            }))
+            return .some(ties.max { Self.isNewer($1, than: $0) } ?? latest)
+        } catch {
+            return nil
+        }
     }
 
     private static func isNewer(
