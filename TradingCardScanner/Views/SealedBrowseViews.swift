@@ -1172,7 +1172,8 @@ struct SealedProductDetailView: View {
                     Text("\(displayedQuantity) owned")
                         .font(.subheadline).foregroundStyle(.secondary)
                     if displayedQuantity > 0, let price = displayedPrice.amount {
-                        Text((price * Double(displayedQuantity)).formatted(.currency(code: "USD")) + " total value")
+                        Text((price * Double(displayedQuantity)).formatted(.currency(code: "USD"))
+                             + (displayedPrice.state() == .current ? " total value" : " last known value"))
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 }
