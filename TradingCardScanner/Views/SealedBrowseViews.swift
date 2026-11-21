@@ -906,6 +906,7 @@ struct SealedProductDetailView: View {
     @State private var artworkAccent: ArtworkAccent?
     @State private var historyPoints: [JustTCGHistoryPoint] = []
     @State private var confirmedQuantity: Int?
+    @State private var quantityReadRevision: UInt = 0
     @State private var pendingMutation: CollectionMutation?
     @State private var undoTask: Task<Void, Never>?
     @State private var addFailure: String?
@@ -1050,7 +1051,8 @@ struct SealedProductDetailView: View {
         }
         .task(id: collectionKey) { await refreshQuantity() }
         .onChange(of: ownedQuantity) { _, _ in
-            // A CloudKit update must supersede any locally confirmed count.
+            // A CloudKit update also invalidates older in-flight reads.
+            quantityReadRevision &+= 1
             confirmedQuantity = nil
         }
         .photosPicker(isPresented: $isChoosingPhoto, selection: $selectedPhoto, matching: .images)
@@ -1077,6 +1079,8 @@ struct SealedProductDetailView: View {
         }
         .sheet(item: $dispositionTarget) { target in
             CollectionDispositionSheet(target: target) { _, _ in
+                undoTask?.cancel()
+                pendingMutation = nil
                 Task { @MainActor in
                     await projectionStore.rebuild(container: modelContext.container)
                     await refreshQuantity()
@@ -1178,7 +1182,7 @@ struct SealedProductDetailView: View {
                     quantity: displayedQuantity,
                     variantLabel: "sealed product",
                     canIncrease: canSave && displayedQuantity < CollectionQuantityLimits.maximum,
-                    canDecrease: canSave && displayedQuantity > 0,
+                    canDecrease: displayedQuantity > 0,
                     isUpdating: isWriting,
                     onIncrease: { Task { await add() } },
                     onDecrease: {
@@ -1194,7 +1198,7 @@ struct SealedProductDetailView: View {
             .background(.quaternary.opacity(0.4),
                         in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             if !canSave {
-                Label("Collection saving is unavailable for this game.", systemImage: "lock")
+                Label("Adding new products is unavailable for this game.", systemImage: "lock")
                     .font(.footnote).foregroundStyle(.secondary)
             }
         }
@@ -1265,8 +1269,6 @@ struct SealedProductDetailView: View {
 
     private func presentDisposition() {
         guard displayedQuantity > 0, !isWriting else { return }
-        undoTask?.cancel()
-        pendingMutation = nil
         dispositionTarget = CollectionDispositionTarget(
             collectionKey: collectionKey, treatments: [], cardName: product.name,
             quantity: displayedQuantity, kind: .sold
@@ -1275,13 +1277,21 @@ struct SealedProductDetailView: View {
 
     @MainActor
     private func refreshQuantity() async {
+        quantityReadRevision &+= 1
+        let revision = quantityReadRevision
         let generation = CollectionStorageGeneration.shared
         guard let token = generation.currentToken() else { return }
         let reader = await CollectionDetailQuantityReader.makeBackground(modelContainer: modelContext.container)
-        guard let fresh = try? await reader.logicalQuantity(
-            forAnyKey: collectionKey, magicTreatmentIDsRaw: []
-        ), generation.isCurrent(token) else { return }
-        confirmedQuantity = fresh
+        do {
+            let fresh = try await reader.logicalQuantity(
+                forAnyKey: collectionKey, magicTreatmentIDsRaw: []
+            )
+            guard !Task.isCancelled, generation.isCurrent(token),
+                  quantityReadRevision == revision else { return }
+            confirmedQuantity = fresh ?? 0
+        } catch {
+            // A failed read never turns a stored position into an apparent zero.
+        }
     }
 
     /// Uses the existing sealed acquisition and receipt; no request to the
@@ -1321,7 +1331,9 @@ struct SealedProductDetailView: View {
     /// writing, so a concurrent CloudKit or other-device edit is not lost.
     @MainActor
     private func decrease() async {
-        guard canSave, !isWriting, displayedQuantity > 0 else { return }
+        // The store independently authorizes maintenance of existing holdings,
+        // even when the game's catalog cannot admit new products.
+        guard !isWriting, displayedQuantity > 0 else { return }
         isAdjusting = true
         defer { isAdjusting = false }
         let generation = CollectionStorageGeneration.shared
@@ -1347,6 +1359,7 @@ struct SealedProductDetailView: View {
                 )
             }
             guard generation.isCurrent(token), !Task.isCancelled else { return }
+            quantityReadRevision &+= 1
             confirmedQuantity = saved
             undoTask?.cancel()
             pendingMutation = nil
