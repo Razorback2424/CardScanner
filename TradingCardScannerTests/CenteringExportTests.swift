@@ -2575,6 +2575,14 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertTrue(value.canReportRatios)
     }
 
+    func testLoupeIsLargeEnoughForCornerContextAndFitsTheCanvas() {
+        let phone = CardCenteringLoupe.diameter(for: CGSize(width: 390, height: 640))
+        XCTAssertGreaterThanOrEqual(phone, 200)
+        XCTAssertLessThanOrEqual(phone, 390 - 16)
+        XCTAssertEqual(CardCenteringLoupe.diameter(for: CGSize(width: 1024, height: 1200)), 280)
+        XCTAssertLessThanOrEqual(CardCenteringLoupe.diameter(for: CGSize(width: 160, height: 300)), 144)
+    }
+
     func testLoupeAlwaysShowsSinglePixels() {
         XCTAssertGreaterThanOrEqual(CardCenteringCanvas.loupeScale(for: 0.2), 5)
         XCTAssertEqual(CardCenteringCanvas.loupeScale(for: 6), 12)
