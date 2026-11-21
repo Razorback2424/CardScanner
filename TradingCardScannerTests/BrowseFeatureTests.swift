@@ -3176,18 +3176,19 @@ final class BrowseFeatureTests: XCTestCase {
 
         // An unchanged live rail must not rewrite the file.
         try FileManager.default.removeItem(at: cache.url)
-        model.rememberReleaseRail([set])
-        try await Task.sleep(for: .milliseconds(200))
+        XCTAssertNil(model.rememberReleaseRail([set]))
         XCTAssertNil(cache.load())
 
         let renamed = CatalogSet(
             catalogID: set.catalogID, name: "Renamed set", code: set.code, logoURL: nil, symbolURL: nil,
             cardCount: set.cardCount, releaseDate: set.releaseDate, sortRank: set.sortRank
         )
-        model.rememberReleaseRail([renamed])
+        let write = try XCTUnwrap(model.rememberReleaseRail([renamed]))
         XCTAssertEqual(model.cachedReleaseRailSets, [renamed])
-        for _ in 0..<50 where cache.load() == nil { try await Task.sleep(for: .milliseconds(20)) }
+        await write.value
         XCTAssertEqual(cache.load(), [renamed])
+        XCTAssertEqual(BrowseViewModel(catalog: EmptyBrowseCatalog(),
+                                      releaseRailCache: cache).cachedReleaseRailSets, [renamed])
     }
 
     @MainActor
