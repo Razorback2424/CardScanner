@@ -1278,7 +1278,7 @@ struct SealedProductDetailView: View {
         guard let fresh = try? await reader.logicalQuantity(
             forAnyKey: collectionKey, magicTreatmentIDsRaw: []
         ), generation.isCurrent(token) else { return }
-        confirmedQuantity = fresh ?? 0
+        confirmedQuantity = fresh
     }
 
     /// Uses the existing sealed acquisition and receipt; no request to the
