@@ -247,6 +247,8 @@ private struct CatalogRecoveryBanner: View {
                 Button(action: dismiss) {
                     Image(systemName: "xmark")
                         .font(.subheadline.weight(.semibold))
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Dismiss catalog warning")
@@ -265,7 +267,6 @@ private struct CatalogRecoveryBanner: View {
         .background(.regularMaterial)
     }
 }
-
 
 /// Dismissal is a presentation preference only. It never changes the registry,
 /// available capabilities, catalog loading, or the safety gate on retry.
