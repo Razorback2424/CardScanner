@@ -203,12 +203,22 @@ final class PokemonFinishEvidenceTests: XCTestCase {
         for (ids, expected) in examples {
             for id in ids {
                 let card = try card(id, in: snapshot)
+                XCTAssertEqual(card.id, id, id)
                 let entry = try XCTUnwrap(snapshot.entry(forProviderID: card.set.id))
                 let rows = try XCTUnwrap(snapshot.checklist(for: entry.set.catalogID)).filter { $0.providerID == id }
                 XCTAssertEqual(Set(rows.compactMap(\.masterSetVariant)), expected, id)
                 let evidence = IdentifiedCard.pokemon(card, setCode: entry.set.code).variantEvidence
                 XCTAssertEqual(Set(VariantResolver.options(for: evidence)), expected, id)
-                XCTAssertFalse(evidence.physicalCoverageVerified, id)
+                if id == "xy8-146a" {
+                    // The 2026-11-20c certificate corroborates both finishes against
+                    // Alternate Art Promos product 177166, outside BREAKthrough's group.
+                    XCTAssertEqual(Set(PokemonFinishCoverage.certified[id] ?? []), expected, id)
+                    XCTAssertTrue(evidence.physicalCoverageVerified, id)
+                    XCTAssertEqual(VariantResolver.resolve(evidence),
+                                   .needsChoice(options: [.normal, .holo], lockDidNotApply: nil), id)
+                } else {
+                    XCTAssertFalse(evidence.physicalCoverageVerified, id)
+                }
             }
         }
     }
