@@ -1119,6 +1119,7 @@ struct CollectionShareSheet: View {
     }
 
     let options: [CollectionShareOption]
+    let itemKind: CollectionItemKind
     var priceCheck: PriceCheck?
     var artworkLoader: CardShareArtworkLoader.Load = CardShareArtworkLoader.load
 
@@ -1140,8 +1141,10 @@ struct CollectionShareSheet: View {
     @State private var showsPriceCheck = false
 
     init(options: [CollectionShareOption], initialOptionID: String? = nil, priceCheck: PriceCheck? = nil,
+         itemKind: CollectionItemKind = .rawCard,
          artworkLoader: @escaping CardShareArtworkLoader.Load = CardShareArtworkLoader.load) {
         self.options = options
+        self.itemKind = itemKind
         self.priceCheck = priceCheck
         self.artworkLoader = artworkLoader
         let initial = options.first { $0.id == initialOptionID } ?? options.first
@@ -1150,10 +1153,11 @@ struct CollectionShareSheet: View {
 
     init(identity: CardShareIdentity, price: CardSharePrice?, showsFinishSheen: Bool,
          localArtworkFilename: String?, remoteArtworkURLs: [URL],
+         itemKind: CollectionItemKind = .rawCard,
          artworkLoader: @escaping CardShareArtworkLoader.Load = CardShareArtworkLoader.load) {
         self.init(options: [CollectionShareOption(id: "share", identity: identity, finishLabel: identity.finish,
             price: price, showsFinishSheen: showsFinishSheen, localArtworkFilename: localArtworkFilename,
-            remoteArtworkURLs: remoteArtworkURLs)], artworkLoader: artworkLoader)
+            remoteArtworkURLs: remoteArtworkURLs)], itemKind: itemKind, artworkLoader: artworkLoader)
     }
 
     private struct ArtworkSource: Hashable {
@@ -1274,7 +1278,7 @@ struct CollectionShareSheet: View {
             .padding(.horizontal, 20)
             .padding(.top, 4)
             .padding(.bottom, 12)
-            .navigationTitle("Share card")
+            .navigationTitle(itemKind == .sealedProduct ? "Share sealed product" : "Share card")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -1437,7 +1441,9 @@ struct CollectionShareSheet: View {
 
     private var priceRowDetail: String {
         guard let price = availablePrice else { return "No market price available yet" }
-        guard includesPrice else { return "Card details, without the price" }
+        guard includesPrice else {
+            return itemKind == .sealedProduct ? "Product details only" : "Card details, without the price"
+        }
         let basis = showsAllFinishes ? "\(price.basis) per finish" : price.basis
         if let source = price.source { return "\(basis) from \(source)" }
         return basis

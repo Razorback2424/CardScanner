@@ -6,6 +6,66 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+
+    func testSealedBrowseMarketHistoryUsesExactVariantWithoutCardFinish() {
+        var product = SealedProductSummary(
+            id: "sealed-product-uuid",
+            name: "Booster Bundle",
+            setName: "Example Set",
+            variantID: "sealed-variant-a",
+            marketPriceUSD: 77.22,
+            updatedAt: nil,
+            imageURL: nil
+        )
+        product.tcgplayerProductID = "612345"
+        let request = CardMarketHistoryRequest(sealedProduct: product, game: .pokemon)
+
+        XCTAssertEqual(request.itemKind, .sealedProduct)
+        XCTAssertEqual(request.printingID, product.id)
+        XCTAssertNil(request.variantID, "A sealed variant is not a printed card finish")
+        XCTAssertEqual(request.marketVariantID, product.variantID)
+        XCTAssertEqual(request.lookups.first, .variantID("sealed-variant-a"))
+        XCTAssertFalse(request.requiresCatalogMapping)
+        XCTAssertTrue(request.exactQuotePrintings.isEmpty)
+
+        product = SealedProductSummary(
+            id: product.id, name: product.name, setName: product.setName,
+            variantID: "sealed-variant-b", marketPriceUSD: 79.0,
+            updatedAt: nil, imageURL: nil
+        )
+        product.tcgplayerProductID = "612345"
+        XCTAssertNotEqual(
+            request.historyIdentity,
+            CardMarketHistoryRequest(sealedProduct: product, game: .pokemon).historyIdentity,
+            "The two vendor variants must never share a history cache key"
+        )
+    }
+
+    func testSealedBrowseHistoryDoesNotGuessWhenVariantIsMissing() {
+        var product = SealedProductSummary(
+            id: "sealed-product-uuid", name: "Booster Box", setName: "Example Set",
+            variantID: nil, marketPriceUSD: nil, updatedAt: nil, imageURL: nil
+        )
+        product.tcgplayerProductID = "612345"
+        let request = CardMarketHistoryRequest(sealedProduct: product, game: .magic)
+
+        XCTAssertTrue(request.lookups.isEmpty, "A product alone does not identify one sealed variant")
+        XCTAssertNil(request.marketVariantID)
+        XCTAssertEqual(request.itemKind, .sealedProduct)
+        XCTAssertFalse(request.canIdentifySealedHistory)
+    }
+
+    func testSealedMarketplaceLinkUsesExactProductWithoutCardPrintingQuery() {
+        let url = TCGplayerLinkBuilder.productURL(
+            productID: "612345", variantID: nil, game: .pokemon
+        )
+        XCTAssertEqual(url?.path, "/product/612345")
+        XCTAssertNil(url?.query, "A sealed vendor variant is not a card finish")
+        XCTAssertNil(TCGplayerLinkBuilder.productURL(
+            productID: "0", variantID: nil, game: .pokemon
+        ))
+    }
+
     func testUngradedReferenceQueryUsesExactMagicTreatmentKey() throws {
         let container = try ProductionRowFixtures.makeContainer()
         let context = container.mainContext
@@ -1475,6 +1535,37 @@ final class CollectionItemKindTests: XCTestCase {
         )
         XCTAssertEqual(price.unitMarketPriceUSD, 18_750)
         XCTAssertEqual(price.sourceVariantID, "v-uuid")
+    }
+
+    func testSealedLastCopyRemovalRejectsStaleCountAndCanBeReversed() async throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let product = SealedProductSummary(
+            id: "p-uuid", name: "Booster Box", setName: nil, variantID: "v-uuid",
+            marketPriceUSD: nil, updatedAt: nil, imageURL: nil
+        )
+        let store = CollectionStore(context: container.mainContext)
+        let key = try store.addSealed(product, game: .pokemon).collectionKey
+        let concurrentAdd = try store.addSealed(product, game: .pokemon)
+        let detail = await CollectionDetailWriter.makeBackground(modelContainer: container)
+        do {
+            _ = try await detail.remove(collectionKey: key, treatments: [], expectedCurrent: 1,
+                                        shouldContinue: { true })
+            XCTFail("The last-copy confirmation must not remove anything after a concurrent add")
+        } catch CollectionStoreError.staleQuantity {
+            let verify = CollectionStore(context: ModelContext(container))
+            XCTAssertEqual(try verify.logicalQuantity(forAnyKey: key), 2)
+        }
+
+        try store.undo(concurrentAdd)
+        let removal = try await detail.remove(collectionKey: key, treatments: [], expectedCurrent: 1,
+                                              shouldContinue: { true })
+        let removed = CollectionStore(context: ModelContext(container))
+        XCTAssertNil(try removed.logicalQuantity(forAnyKey: key))
+
+        let history = await CollectionActivityWriter.makeBackground(modelContainer: container)
+        try await history.restore(snapshot: removal, shouldContinue: { true })
+        let restored = CollectionStore(context: ModelContext(container))
+        XCTAssertEqual(try restored.logicalQuantity(forAnyKey: key), 1)
     }
 
     func testReaddingSealedProductHealsLegacyMissingArtwork() throws {

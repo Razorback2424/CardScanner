@@ -462,15 +462,17 @@ private struct CollectionCardDetailContent: View {
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.white)
         }
-        .accessibilityLabel("Share card")
-        .accessibilityHint("Shares an image of this card, with or without its finish and price.")
+        .accessibilityLabel(card.itemKind == .sealedProduct ? "Share sealed product" : "Share card")
+        .accessibilityHint(card.itemKind == .sealedProduct
+            ? "Shares an image of this product, with or without its price."
+            : "Shares an image of this card, with or without its finish and price.")
     }
 
     private var shareSheet: some View {
         CollectionShareSheet(options: [
             CollectionShareOption(collectedCard: card, price: price, localArtworkFilename: localArtworkFilename,
                                   catalogCard: gradedCatalogCard ?? shareCatalogCard)
-        ])
+        ], itemKind: card.itemKind)
     }
 
     @ViewBuilder
@@ -3225,6 +3227,10 @@ struct CardMarketHistoryPanel: View {
         guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
         if !cached.isEmpty { points = cached }
         defer { if !Task.isCancelled { isLoading = false } }
+        if !resolved.canIdentifySealedHistory {
+            requiresAPIKey = false
+            return
+        }
         requiresAPIKey = !PriceVendorCredentials.hasKey
         guard !requiresAPIKey else { return }
         do {

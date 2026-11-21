@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftData
 import SwiftUI
 
@@ -889,100 +890,232 @@ struct SealedProductTile: View {
 
 // MARK: - Product detail
 
+/// Browse and owned sealed products use the same card-detail visual language.
+/// The product remains a sealed object: it has no finish, rarity or collector
+/// number, and its market price is not inferred from the cards inside.
 struct SealedProductDetailView: View {
     @Environment(\.cardGameRuntimes) private var runtimes
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
+
     let game: CardGame
     let product: SealedProductSummary
     var sourceSet: SealedSetSummary? = nil
 
-    @Environment(\.modelContext) private var modelContext
+    @State private var artworkAccent: ArtworkAccent?
+    @State private var historyPoints: [JustTCGHistoryPoint] = []
+    @State private var confirmedQuantity: Int?
+    @State private var quantityReadRevision: UInt = 0
     @State private var pendingMutation: CollectionMutation?
+    @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var undoTask: Task<Void, Never>?
     @State private var addFailure: String?
-    @State private var addAlertTitle = "Couldn't add to collection"
+    @State private var addAlertTitle = "Couldn't update collection"
     @State private var isAdding = false
+    @State private var isAdjusting = false
     @State private var isUndoing = false
+    @State private var isConfirmingRemoval = false
+    @State private var removalExpectedQuantity = 0
+    @State private var dispositionTarget: CollectionDispositionTarget?
+    @State private var isSharing = false
+    @State private var isChoosingPhoto = false
+    @State private var selectedPhoto: PhotosPickerItem?
 
-    private var ownedQuantity: Int {
-        (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: []))
-            .sealedQuantity(productID: product.id, variantID: product.variantID)
+    private var collectionKey: String {
+        CollectedCard.sealedCollectionKey(
+            game: game, productUUID: product.id, variantUUID: product.variantID ?? product.id
+        )
+    }
+
+    private var ownedRow: CollectionRow? {
+        projectionStore.snapshot?.rowsByCollectionKey[collectionKey]
+    }
+
+    private var ownedQuantity: Int { ownedRow?.quantity ?? 0 }
+
+    private var displayedQuantity: Int { confirmedQuantity ?? ownedQuantity }
+
+    private var artworkFilename: String? {
+        guard displayedQuantity > 0 else { return nil }
+        return ownedRow?.userArtworkFilename.flatMap { $0.isEmpty ? nil : $0 }
     }
 
     private var canSave: Bool {
         (runtimes?.registry ?? .standard).supports(game, .collectionWrite)
     }
 
+    private var isWriting: Bool { isAdding || isAdjusting || isUndoing }
+
+    private var setName: String? {
+        (sourceSet?.name ?? product.setName).flatMap { $0.isEmpty ? nil : $0 }
+    }
+
+    private var displayedPrice: PriceDisplay {
+        PriceDisplay(
+            amount: product.marketPriceUSD,
+            source: .justTCG,
+            sourceUpdatedAt: product.updatedAt,
+            fetchedAt: product.retrievedAt,
+            lastCheckedAt: product.retrievedAt
+        )
+    }
+
+    private var marketRequest: CardMarketHistoryRequest {
+        CardMarketHistoryRequest(sealedProduct: product, game: game)
+    }
+
+    private var shareIdentity: CardShareIdentity {
+        CardShareIdentity(name: product.name, setCode: nil, setName: setName,
+                          number: nil, badge: nil)
+    }
+
+    private var marketplaceURL: URL? {
+        // The provider's exact product ID is known; the sealed variant UUID
+        // is NOT a card finish and must not become a Printing query parameter.
+        TCGplayerLinkBuilder.productURL(
+            productID: product.tcgplayerProductID, variantID: nil, game: game
+        )
+    }
+
     var body: some View {
-        List {
-            Section {
-                SealedProductArtwork(imageURL: product.imageURL)
-                    .frame(maxWidth: .infinity, minHeight: 220)
-                    .listRowInsets(EdgeInsets())
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                hero
+                identity
+                CardMarketHistoryPanel(
+                    request: marketRequest,
+                    currentPrice: displayedPrice.amount == nil ? nil : displayedPrice,
+                    headlinePrice: displayedPrice,
+                    showsDetails: false,
+                    loadedPoints: $historyPoints
+                )
+                .accessibilityIdentifier("sealed-price-history")
+                ownershipSection
+                linksSection
             }
-
-            Section {
-                LabeledContent("Product", value: product.name)
-                if let setName = sourceSet?.name ?? product.setName, !setName.isEmpty {
-                    NavigationLink {
-                        SealedProductSetDestination(
-                            game: game, setName: setName, sourceSet: sourceSet,
-                            gameRegistry: runtimes?.registry ?? .standard
-                        )
-                    } label: {
-                        LabeledContent("Set") {
-                            Text(setName).foregroundStyle(Color.accentColor)
+            .padding(.bottom, 28)
+            .contentWidthLimit(.standard)
+        }
+        .background {
+            AppCardDetailBackdrop(accent: reduceTransparency ? nil : artworkAccent)
+                .ignoresSafeArea()
+        }
+        .environment(\.colorScheme, .dark)
+        .toolbarBackground(artworkAccent == nil || reduceTransparency ? .visible : .hidden, for: .navigationBar)
+        .toolbarBackground(Color.black, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                HStack {
+                    Button { isSharing = true } label: {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.title3.weight(.semibold))
+                    }
+                    .accessibilityLabel("Share sealed product")
+                    if displayedQuantity > 0 {
+                        Menu {
+                            NavigationLink {
+                                CollectionCardHistoryView(
+                                    collectionKey: collectionKey, cardName: product.name
+                                )
+                            } label: {
+                                Label("Collection History", systemImage: "clock.arrow.circlepath")
+                            }
+                            Button {
+                                isChoosingPhoto = true
+                            } label: {
+                                Label(artworkFilename == nil ? "Choose Photo" : "Replace Photo",
+                                      systemImage: "photo.badge.plus")
+                            }
+                            if artworkFilename != nil {
+                                Button("Use Catalog Artwork", role: .destructive) {
+                                    Task { await removePhoto() }
+                                }
+                            }
+                            Divider()
+                            Button("Record Sale or Trade") { presentDisposition(quantity: displayedQuantity) }
+                            Button("Remove One", role: .destructive, action: requestDecrementConfirmation)
+                        } label: {
+                            Image(systemName: "ellipsis").font(.title3.weight(.semibold))
                         }
+                        .accessibilityLabel("Sealed product actions")
+                        .disabled(isWriting)
                     }
-                    .accessibilityHint("View sealed products in this set")
-                    .accessibilityIdentifier("sealed-set-link")
                 }
-                if let price = product.marketPriceUSD {
-                    LabeledContent("Market price") {
-                        Text(price, format: .currency(code: "USD"))
-                            .monospacedDigit()
-                    }
-                } else {
-                    // A missing price is stated, not hidden behind a dash.
-                    LabeledContent("Market price", value: "No reliable market price")
-                }
-                if let updatedAt = product.updatedAt {
-                    LabeledContent(
-                        "Price as of",
-                        value: updatedAt.formatted(date: .abbreviated, time: .shortened)
-                    )
-                }
-                LabeledContent("Owned", value: "\(ownedQuantity)")
-            }
-
-            Section {
-                if !canSave {
-                    Label("Saving unavailable", systemImage: "lock")
-                    Text("Collection saving isn’t enabled for this game in this catalog.")
-                        .font(.footnote).foregroundStyle(.secondary)
-                }
-                Button {
-                    guard canSave, !isAdding, !isUndoing else { return }
-                    isAdding = true
-                } label: {
-                    HStack {
-                        if isAdding { ProgressView().accessibilityLabel("Adding sealed product") }
-                        Label(isAdding ? "Adding…" : "Add to Collection", systemImage: "plus.circle.fill")
-                    }
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(!canSave || isAdding || isUndoing)
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
+                .foregroundStyle(.white)
             }
         }
-        .navigationTitle("Sealed Product")
-        .navigationBarTitleDisplayMode(.inline)
-        .task(id: isAdding) { if isAdding { await add() } }
-        .task(id: isUndoing) { if isUndoing { await undo() } }
-        .safeAreaInset(edge: .bottom) {
-            if pendingMutation != nil {
+        .task(id: artworkFilename ?? product.imageURL?.absoluteString) {
+            let accent = await ArtworkAccentStore.accent(
+                localFilename: artworkFilename, remoteURL: product.imageURL
+            )
+            guard !Task.isCancelled else { return }
+            artworkAccent = accent
+        }
+        .task(id: collectionKey) { await refreshQuantity() }
+        .onChange(of: ownedQuantity) { _, _ in
+            // A CloudKit update also invalidates older in-flight reads.
+            quantityReadRevision &+= 1
+            confirmedQuantity = nil
+        }
+        .photosPicker(isPresented: $isChoosingPhoto, selection: $selectedPhoto, matching: .images)
+        .task(id: selectedPhoto) {
+            guard let item = selectedPhoto else { return }
+            await savePhoto(item)
+        }
+        .sheet(isPresented: $isSharing) {
+            CollectionShareSheet(
+                identity: shareIdentity,
+                price: CardSharePrice(
+                    display: displayedPrice,
+                    basis: CardSharePrice.basis(itemKind: .sealedProduct, gradeLabel: nil,
+                                                 source: displayedPrice.source)
+                ),
+                showsFinishSheen: false,
+                localArtworkFilename: artworkFilename,
+                remoteArtworkURLs: [product.imageURL].compactMap { $0 },
+                itemKind: .sealedProduct
+            )
+        }
+        .sheet(item: $dispositionTarget) { target in
+            CollectionDispositionSheet(target: target) { _, _ in
+                undoTask?.cancel()
+                pendingMutation = nil
+                Task { @MainActor in
+                    await projectionStore.rebuild(container: modelContext.container)
+                    await refreshQuantity()
+                }
+            }
+        }
+        .confirmationDialog(
+            "Remove one sealed product?",
+            isPresented: $isConfirmingRemoval,
+            titleVisibility: .visible,
+            presenting: removalExpectedQuantity
+        ) { expected in
+            Button("Remove One", role: .destructive) {
+                Task { await decrease(expected: expected) }
+            }
+            Button("Record Sale or Trade") { presentDisposition(quantity: expected) }
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("Removing a copy changes your collection quantity. Use Record Sale or Trade to keep a transaction record.")
+        }
+        .safeAreaInset(edge: .top) {
+            if let removal = pendingRemoval, let expiresAt = removal.restoreExpiresAt {
+                RemovalUndoBanner(
+                    name: removal.name, expiresAt: expiresAt, isRestoring: isUndoing,
+                    onUndo: { Task { await restore(removal) } },
+                    onDismiss: { pendingRemoval = nil }
+                )
+                .disabled(isWriting)
+                .contentWidthLimit(.standard)
+            } else if pendingMutation != nil {
                 undoBanner.contentWidthLimit(.standard)
             }
         }
@@ -1000,21 +1133,153 @@ struct SealedProductDetailView: View {
         }
     }
 
+    private var hero: some View {
+        Group {
+            if let artworkFilename, let image = CollectionArtworkStore.image(filename: artworkFilename) {
+                Image(uiImage: image).resizable().scaledToFit()
+            } else {
+                SealedProductArtwork(imageURL: product.imageURL)
+            }
+        }
+        .frame(maxWidth: 360)
+        .frame(height: 320)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .strokeBorder(.white.opacity(0.14), lineWidth: 0.5)
+        }
+        .shadow(color: .black.opacity(0.55), radius: 24, x: 0, y: 14)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 16)
+        .padding(.top, 18)
+        .accessibilityLabel("Product artwork for \(product.name)")
+    }
+
+    private var identity: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("SEALED PRODUCT")
+                .font(.caption.weight(.bold))
+                .tracking(1.2)
+                .foregroundStyle(.secondary)
+            CardDetailIdentityHeader(
+                name: product.name, setName: setName ?? "", designation: "",
+                rarity: nil, setLinkID: "sealed-set-link", accent: artworkAccent
+            ) {
+                SealedProductSetDestination(
+                    game: game, setName: setName ?? "", sourceSet: sourceSet,
+                    gameRegistry: runtimes?.registry ?? .standard
+                )
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.top, 20)
+        .padding(.bottom, 22)
+    }
+
+    private var ownershipSection: some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+            : AnyLayout(HStackLayout())
+        return VStack(alignment: .leading, spacing: 8) {
+            layout {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Your collection")
+                        .font(.title3.weight(.bold))
+                    Text("\(displayedQuantity) owned")
+                        .font(.subheadline).foregroundStyle(.secondary)
+                    if displayedQuantity > 0, let price = displayedPrice.amount {
+                        Text((price * Double(displayedQuantity)).formatted(.currency(code: "USD"))
+                             + (displayedPrice.state() == .current ? " total value" : " last known value"))
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    if isWriting { ProgressView().controlSize(.small) }
+                    CatalogQuantityStepper(
+                        quantity: displayedQuantity,
+                        variantLabel: "sealed product",
+                        canIncrease: canSave && displayedQuantity < CollectionQuantityLimits.maximum,
+                        canDecrease: displayedQuantity > 0,
+                        isUpdating: isWriting,
+                        onIncrease: { Task { await add() } },
+                        onDecrease: {
+                            let expected = displayedQuantity
+                            if expected == 1 {
+                                requestDecrementConfirmation()
+                            } else {
+                                Task { await decrease(expected: expected) }
+                            }
+                        }
+                    )
+                }
+            }
+            .padding(14)
+            .background(.quaternary.opacity(0.4),
+                        in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            if !canSave {
+                Label("Adding new products is unavailable for this game.", systemImage: "lock")
+                    .font(.footnote).foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 24)
+        .accessibilityIdentifier("sealed-ownership")
+    }
+
+    private var linksSection: some View {
+        CardDetailListGroup {
+            NavigationLink {
+                CardPriceDetailsView(
+                    attribution: displayedPrice.detailAttribution,
+                    points: historyPoints,
+                    currentPrice: displayedPrice.amount == nil ? nil : displayedPrice,
+                    mentionsPortfolioImpact: false
+                )
+            } label: {
+                CardDetailListRow(title: "Price details", systemImage: "chart.xyaxis.line")
+            }
+            .buttonStyle(.plain)
+            if let marketplaceURL {
+                CardDetailListDivider()
+                Link(destination: marketplaceURL) {
+                    CardDetailListRow(
+                        title: "View on TCGplayer", systemImage: "cart", isExternal: true
+                    )
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Opens the exact sealed product on TCGplayer.")
+                .accessibilityIdentifier("sealed-tcgplayer-link")
+            }
+            if displayedQuantity > 0 {
+                CardDetailListDivider()
+                Button { presentDisposition(quantity: displayedQuantity) } label: {
+                    CardDetailListRow(title: "Record sale or trade",
+                                      systemImage: "arrow.left.arrow.right", showsDisclosure: false)
+                }
+                .buttonStyle(.plain)
+                .disabled(isWriting)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 24)
+    }
+
     private var undoBanner: some View {
         HStack {
             Text("Added \(product.name)")
-                .font(.subheadline)
-                .lineLimit(1)
+                .font(.subheadline).lineLimit(1)
             Spacer()
             if isUndoing { ProgressView().accessibilityLabel("Undoing addition") }
             Button("Undo") {
-                guard !isAdding, !isUndoing else { return }
+                guard !isWriting else { return }
                 undoTask?.cancel()
-                isUndoing = true
+                Task { await undo() }
             }
-                .font(.subheadline.weight(.semibold))
-                .frame(minHeight: 44)
-                .disabled(isAdding || isUndoing)
+            .font(.subheadline.weight(.semibold))
+            .frame(minHeight: 44)
+            .disabled(isWriting)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -1023,63 +1288,224 @@ struct SealedProductDetailView: View {
         .padding(.bottom, 8)
     }
 
-    /// Adding never waits on the network. The price already shown came with the
-    /// listing, and routine repricing happens later through a batch.
+    private func requestDecrementConfirmation() {
+        removalExpectedQuantity = displayedQuantity
+        isConfirmingRemoval = removalExpectedQuantity > 0
+    }
+
+    private func presentDisposition(quantity: Int) {
+        guard quantity > 0, !isWriting else { return }
+        dispositionTarget = CollectionDispositionTarget(
+            collectionKey: collectionKey, treatments: [], cardName: product.name,
+            quantity: quantity, kind: .sold
+        )
+    }
+
     @MainActor
-    private func add() async {
-        defer { isAdding = false }
-        guard canSave else { return }
-        let container = modelContext.container
+    private func refreshQuantity() async {
+        quantityReadRevision &+= 1
+        let revision = quantityReadRevision
         let generation = CollectionStorageGeneration.shared
         guard let token = generation.currentToken() else { return }
-        let shouldContinue = generation.continuation(for: token)
+        let reader = await CollectionDetailQuantityReader.makeBackground(modelContainer: modelContext.container)
         do {
-            // The undo affordance is the only thing that says this worked, and
-            // it is gated on a non-nil mutation — so swallowing the error made a
-            // failed add indistinguishable from never having tapped the button.
-            // A sealed box is not something to lose silently.
-            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
-            let mutation = try await CollectionExclusiveWrites.retryingIfRequired {
-                try await writer.addSealedSelection(product, game: game, shouldContinue: shouldContinue)
-            }
-            guard !Task.isCancelled, generation.isCurrent(token) else { return }
-            pendingMutation = mutation
-        } catch is CancellationError {
-            return
+            let fresh = try await reader.logicalQuantity(
+                forAnyKey: collectionKey, magicTreatmentIDsRaw: []
+            )
+            guard !Task.isCancelled, generation.isCurrent(token),
+                  quantityReadRevision == revision else { return }
+            confirmedQuantity = fresh ?? 0
         } catch {
-            guard !Task.isCancelled, generation.isCurrent(token) else { return }
-            addAlertTitle = "Couldn't add to collection"
-            addFailure = error.localizedDescription
-            return
-        }
-        undoTask?.cancel()
-        let mutation = pendingMutation
-        undoTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(6))
-            if !Task.isCancelled, pendingMutation == mutation { pendingMutation = nil }
+            // A failed read never turns a stored position into an apparent zero.
         }
     }
 
-    private func undo() async {
-        defer { isUndoing = false }
-        undoTask?.cancel()
-        guard let mutation = pendingMutation else { return }
-        let container = modelContext.container
+    /// Uses the existing sealed acquisition and receipt; no request to the
+    /// pricing API is required to add an item.
+    @MainActor
+    private func add() async {
+        guard canSave, !isWriting, displayedQuantity < CollectionQuantityLimits.maximum else { return }
+        isAdding = true
+        defer { isAdding = false }
         let generation = CollectionStorageGeneration.shared
         guard let token = generation.currentToken() else { return }
-        let shouldContinue = generation.continuation(for: token)
         do {
-            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
-            try await CollectionExclusiveWrites.retryingIfRequired {
-                try await writer.undoCatalog(mutation, shouldContinue: shouldContinue)
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: modelContext.container)
+            let mutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                try await writer.addSealedSelection(
+                    product, game: game, shouldContinue: generation.continuation(for: token)
+                )
             }
-            guard !Task.isCancelled, generation.isCurrent(token), pendingMutation == mutation else { return }
-            self.pendingMutation = nil
+            guard !Task.isCancelled, generation.isCurrent(token) else { return }
+            pendingRemoval = nil
+            pendingMutation = mutation
+            await refreshQuantity()
+            await projectionStore.rebuild(container: modelContext.container)
+            undoTask?.cancel()
+            undoTask = Task { @MainActor in
+                try? await Task.sleep(for: .seconds(6))
+                if !Task.isCancelled, pendingMutation == mutation { pendingMutation = nil }
+            }
         } catch is CancellationError {
         } catch {
-            guard !Task.isCancelled, generation.isCurrent(token), pendingMutation == mutation else { return }
+            guard generation.isCurrent(token) else { return }
+            addAlertTitle = "Couldn't add to collection"
+            addFailure = error.localizedDescription
+        }
+    }
+
+    /// The saved quantity is compared with the fresh serialized read before
+    /// writing, so a concurrent CloudKit or other-device edit is not lost.
+    @MainActor
+    private func decrease(expected: Int) async {
+        // The store independently authorizes maintenance of existing holdings,
+        // even when the game's catalog cannot admit new products.
+        guard !isWriting, expected > 0 else { return }
+        isAdjusting = true
+        defer { isAdjusting = false }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        do {
+            let writer = await CollectionDetailWriter.makeBackground(modelContainer: modelContext.container)
+            let shouldContinue = generation.continuation(for: token)
+            let removal: RemovedCardSnapshot?
+            if expected == 1 {
+                removal = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.remove(
+                        collectionKey: collectionKey, treatments: [], expectedCurrent: expected,
+                        shouldContinue: shouldContinue
+                    )
+                }
+            } else {
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    _ = try await writer.setQuantity(
+                        expected - 1, collectionKey: collectionKey, treatments: [],
+                        expectedCurrent: expected, shouldContinue: shouldContinue
+                    )
+                }
+                removal = nil
+            }
+            guard generation.isCurrent(token), !Task.isCancelled else { return }
+            quantityReadRevision &+= 1
+            confirmedQuantity = expected - 1
+            undoTask?.cancel()
+            pendingMutation = nil
+            pendingRemoval = removal
+            await projectionStore.rebuild(container: modelContext.container)
+        } catch is CancellationError {
+        } catch {
+            guard generation.isCurrent(token) else { return }
+            await refreshQuantity()
+            addAlertTitle = "Couldn't remove sealed product"
+            addFailure = error.localizedDescription
+        }
+    }
+
+    @MainActor
+    private func undo() async {
+        guard !isWriting, let mutation = pendingMutation else { return }
+        isUndoing = true
+        defer { isUndoing = false }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        do {
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: modelContext.container)
+            try await CollectionExclusiveWrites.retryingIfRequired {
+                try await writer.undoCatalog(
+                    mutation, shouldContinue: generation.continuation(for: token)
+                )
+            }
+            guard generation.isCurrent(token), pendingMutation == mutation else { return }
+            pendingMutation = nil
+            await refreshQuantity()
+            await projectionStore.rebuild(container: modelContext.container)
+        } catch is CancellationError {
+        } catch {
+            guard generation.isCurrent(token), pendingMutation == mutation else { return }
             addAlertTitle = "Couldn't undo addition"
-            addFailure = "The local collection change could not be undone. \(error.localizedDescription)"
+            addFailure = "The collection change could not be undone. \(error.localizedDescription)"
+        }
+    }
+
+    @MainActor
+    private func restore(_ removal: RemovedCardSnapshot) async {
+        guard !isWriting, pendingRemoval?.id == removal.id else { return }
+        isUndoing = true
+        defer { isUndoing = false }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        do {
+            let writer = await CollectionActivityWriter.makeBackground(modelContainer: modelContext.container)
+            try await CollectionExclusiveWrites.retryingIfRequired {
+                try await writer.restore(snapshot: removal, shouldContinue: generation.continuation(for: token))
+            }
+            guard generation.isCurrent(token), pendingRemoval?.id == removal.id else { return }
+            pendingRemoval = nil
+            await refreshQuantity()
+            await projectionStore.rebuild(container: modelContext.container)
+        } catch is CancellationError {
+        } catch {
+            guard generation.isCurrent(token), pendingRemoval?.id == removal.id else { return }
+            addAlertTitle = "Couldn't undo removal"
+            addFailure = error.localizedDescription
+        }
+    }
+
+    @MainActor
+    private func savePhoto(_ item: PhotosPickerItem) async {
+        defer { if selectedPhoto == item { selectedPhoto = nil } }
+        guard displayedQuantity > 0, !isWriting else { return }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        isAdjusting = true
+        defer { isAdjusting = false }
+        do {
+            let data = try await item.loadTransferable(type: Data.self)
+            guard selectedPhoto == item, !Task.isCancelled, generation.isCurrent(token) else { return }
+            guard let data else {
+                addAlertTitle = "Couldn't save photo"
+                addFailure = "The photo couldn't be loaded."
+                return
+            }
+            let writer = await CollectionDetailWriter.makeBackground(modelContainer: modelContext.container)
+            let filename = try await writer.saveArtwork(
+                data: data, collectionKey: collectionKey,
+                shouldContinue: generation.continuation(for: token)
+            )
+            guard generation.isCurrent(token) else { return }
+            if filename == nil {
+                addAlertTitle = "Couldn't save photo"
+                addFailure = "The photo couldn't be prepared."
+            } else {
+                await projectionStore.rebuild(container: modelContext.container)
+            }
+        } catch is CancellationError {
+        } catch {
+            guard selectedPhoto == item, !Task.isCancelled, generation.isCurrent(token) else { return }
+            addAlertTitle = "Couldn't save photo"
+            addFailure = error.localizedDescription
+        }
+    }
+
+    @MainActor
+    private func removePhoto() async {
+        guard displayedQuantity > 0, !isWriting else { return }
+        isAdjusting = true
+        defer { isAdjusting = false }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        do {
+            let writer = await CollectionDetailWriter.makeBackground(modelContainer: modelContext.container)
+            try await writer.removeArtwork(
+                collectionKey: collectionKey, shouldContinue: generation.continuation(for: token)
+            )
+            guard generation.isCurrent(token) else { return }
+            await projectionStore.rebuild(container: modelContext.container)
+        } catch is CancellationError {
+        } catch {
+            guard generation.isCurrent(token) else { return }
+            addAlertTitle = "Couldn't remove photo"
+            addFailure = error.localizedDescription
         }
     }
 }
