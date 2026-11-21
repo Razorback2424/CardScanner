@@ -12,6 +12,19 @@ import catalog_exceptions
 import certify_pokemon_finish_coverage as coverage
 
 
+class PokemonNameKeyTests(unittest.TestCase):
+    def test_nidoran_marketplace_abbreviations_match_checklist_symbols(self):
+        self.assertEqual(coverage.name_key("Nidoran M"), coverage.name_key("Nidoran♂"))
+        self.assertEqual(coverage.name_key("Nidoran F"), coverage.name_key("Nidoran♀"))
+        self.assertEqual(coverage.name_key("Nidoran M (Delta Species)"), coverage.name_key("Nidoran♂ (Delta Species)"))
+        self.assertNotEqual(coverage.name_key("Nidoran M"), coverage.name_key("Nidoran F"))
+
+    def test_nidoran_normalization_leaves_other_names_alone(self):
+        self.assertEqual(coverage.name_key("Nidoran Max"), "nidoran max")
+        self.assertEqual(coverage.name_key("Nidorino M"), "nidorino m")
+        self.assertEqual(coverage.name_key("Mew M"), "mew m")
+
+
 class PokemonFinishCoverageTests(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
@@ -830,6 +843,50 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
         coverage.write_json(self.snapshot / "manifest.json", manifest)
         _, rows = self.batch(market)
         self.assertIn(("sample-001", "parallelFinishNotListed"), [(row["identity"], row["reason"]) for row in rows])
+
+
+    def number_remap_setup(self):
+        self.keep_only("sample-001", "tcgplayer:14")
+        self.fixture["snapshot"] = [
+            {"providerID": "sample-001", "collectorNumber": "CC1", "name": "Example One",
+             "setID": {"providerID": "sample"}, "masterSetVariant": {"id": "holo"}},
+        ]
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        self.fixture["products"]["results"] = []
+        self.fixture["prices"]["results"] = []
+        remap_group = {
+            "name": "Remap Group",
+            "products": {"success": True, "errors": [], "results": [
+                {"productId": 70, "categoryId": 3, "groupId": 88,
+                 "name": "Example One", "extendedData": [{"name": "Number", "value": "1/4"}]},
+            ]},
+            "prices": {"success": True, "errors": [], "results": [
+                {"productId": 70, "subTypeName": "Holofoil", "marketPrice": 5.0},
+            ]},
+        }
+        self.conventions(numberRemaps=[{
+            "id": "test-remap", "setID": "sample", "groupID": 88,
+            "mapping": {"CC1": {"marketNumber": "1/4", "productId": 70}},
+            "decision": "Test remap.", "sources": ["https://example.com"],
+        }])
+        return self.market({88: remap_group})
+
+    def test_number_remap_convention_resolves_mismatched_numbers_and_certifies(self):
+        market = self.number_remap_setup()
+        _, rows = self.batch(market)
+        self.assertEqual(rows, [], "Remap should resolve the CC-numbered card and the market product")
+
+    def test_number_remap_convention_refuses_when_product_missing(self):
+        market = self.number_remap_setup()
+        self.conventions(numberRemaps=[{
+            "id": "test-remap", "setID": "sample", "groupID": 88,
+            "mapping": {"CC1": {"marketNumber": "1/4", "productId": 999}},
+            "decision": "Test remap.", "sources": ["https://example.com"],
+        }])
+        _, rows = self.batch(market)
+        self.assertEqual([(row["identity"], row["reason"]) for row in rows],
+                         [("sample-001", "unmatchedMarket")],
+                         "A wrong product ID should leave the card unmatched")
 
 
 if __name__ == "__main__":

@@ -244,6 +244,59 @@
       ]
     }
   ],
+  "numberRemaps": [
+    {
+      "id": "celebrations-classic-collection",
+      "decision": "Celebrations Classic Collection uses CC numbers (CC001-CC025) in the checklist but TCGplayer lists each card under its original expansion number. This mapping connects each CC card to its TCGplayer product by original number and product ID. All 25 products have a single Holofoil lane matching the checklist's holo requirement.",
+      "setID": "cel25cc",
+      "groupID": 2931,
+      "mapping": {
+        "CC001": {"marketNumber": "2/102", "productId": 250319},
+        "CC002": {"marketNumber": "4/102", "productId": 250320},
+        "CC003": {"marketNumber": "15/102", "productId": 250321},
+        "CC004": {"marketNumber": "73/102", "productId": 250322},
+        "CC005": {"marketNumber": "8/82", "productId": 250294},
+        "CC006": {"marketNumber": "15/82", "productId": 250323},
+        "CC007": {"marketNumber": "15/132", "productId": 250324},
+        "CC008": {"marketNumber": "24/53", "productId": 250325},
+        "CC009": {"marketNumber": "20/111", "productId": 250326},
+        "CC010": {"marketNumber": "66/64", "productId": 250327},
+        "CC011": {"marketNumber": "9/95", "productId": 250328},
+        "CC012": {"marketNumber": "86/109", "productId": 250329},
+        "CC013": {"marketNumber": "88/92", "productId": 250330},
+        "CC014": {"marketNumber": "93/101", "productId": 250331},
+        "CC015": {"marketNumber": "17/17", "productId": 250332},
+        "CC016": {"marketNumber": "15/106", "productId": 250333},
+        "CC017": {"marketNumber": "109/111", "productId": 250334},
+        "CC018": {"marketNumber": "145/147", "productId": 250335},
+        "CC019": {"marketNumber": "107/123", "productId": 250336},
+        "CC020": {"marketNumber": "113/114", "productId": 250337},
+        "CC021": {"marketNumber": "114/114", "productId": 250338},
+        "CC022": {"marketNumber": "54/99", "productId": 250339},
+        "CC023": {"marketNumber": "97/146", "productId": 250340},
+        "CC024": {"marketNumber": "76/108", "productId": 250341},
+        "CC025": {"marketNumber": "60/145", "productId": 250342}
+      },
+      "sources": [
+        "https://tcgcsv.com/tcgplayer/3/2931/products (all 25 products use original expansion numbers, not CC numbers)",
+        "https://bulbapedia.bulbagarden.net/wiki/Celebrations_(TCG)#Classic_Collection (Bulbapedia lists the 25 Classic Collection reprints with CC001-CC025 numbering)",
+        "https://tcgcsv.com/tcgplayer/3/2931/prices (every product has exactly one Holofoil lane)"
+      ]
+    },
+    {
+      "id": "xy8-146a-alternate-art-promos",
+      "decision": "Professor's Letter 146a is an alternate-art print sold in the Premium Trainer's XY Collection. TCGplayer lists it as product 177166 in the Alternate Art Promos group (1938) rather than in BREAKthrough's own group (1661). The product has Normal and Holofoil lanes, matching the card's required finishes exactly.",
+      "setID": "xy8",
+      "groupID": 1938,
+      "mapping": {
+        "146a": {"marketNumber": "146a/162", "productId": 177166}
+      },
+      "sources": [
+        "https://tcgcsv.com/tcgplayer/3/1938/products (Alternate Art Promos group lists Professor's Letter as 146a/162, product 177166)",
+        "https://tcgcsv.com/tcgplayer/3/1938/prices (product 177166 has Normal at $10.12 and Holofoil at $20.15)"
+      ]
+    }
+  ],
   "energyReverseHolo": {
     "id": "ex-energy-reverse",
     "decision": "In EX Hidden Legends and EX FireRed & LeafGreen the reverse holo is the energy-symbol pattern, so each card has one reverse holo, not a plain reverse plus an Energy reverse. TCGplayer sells it as the single Reverse Holofoil lane of the card's own product, so that lane is evidence for the energy pattern, and the checklist's separate plain reverse slot is the same printing. This matches the app's isPackReversePattern, which already hides the plain reverse beside the Energy slot for these sets.",

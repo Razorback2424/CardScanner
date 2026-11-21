@@ -187,6 +187,38 @@ as their own products and variants. Three cases are decided:
 - **Result.** About 70 items closed. Neither set is certified yet: both still
   have World Championship deck stamps, Cracked Ice and extra Normal lanes.
 
+## 8. Celebrations Classic Collection number remap (`celebrations-classic-collection`)
+
+- **Convention ID.** `celebrations-classic-collection` in `numberRemaps`.
+- **Observation.** The checklist uses CC numbers (CC001-CC025) while TCGplayer
+  group 2931 lists each Classic Collection card under its original expansion
+  number (for example Blastoise as 2/102, Charizard as 4/102). All 25 products
+  have exactly one Holofoil lane, matching the checklist's holo requirement.
+- **Sources.** [TCGCSV group 2931 products](https://tcgcsv.com/tcgplayer/3/2931/products),
+  [TCGCSV group 2931 prices](https://tcgcsv.com/tcgplayer/3/2931/prices),
+  [Bulbapedia Celebrations](https://bulbapedia.bulbagarden.net/wiki/Celebrations_(TCG)#Classic_Collection).
+- **Decision.** A reviewed mapping from each CC number to the original number
+  and TCGplayer product ID resolves the mismatch. The mapping is verified
+  against the TCGCSV product data: each product ID exists at the stated number
+  with a single Holofoil lane. Market product rows from the same group are
+  excluded because the remap accounts for them.
+- **Result.** 47 items closed (25 CC cards + 22 market products), cel25cc
+  certified.
+
+## 9. xy8-146a Professor's Letter alternate art promo (`xy8-146a-alternate-art-promos`)
+
+- **Convention ID.** `xy8-146a-alternate-art-promos` in `numberRemaps`.
+- **Observation.** Professor's Letter 146a is an alternate-art print from the
+  Premium Trainer's XY Collection. TCGplayer lists it as product 177166 in the
+  Alternate Art Promos group (1938) rather than BREAKthrough's own group (1661).
+  The product has Normal ($10.12) and Holofoil ($20.15) lanes, matching the
+  card's required finishes exactly.
+- **Sources.** [TCGCSV group 1938 products](https://tcgcsv.com/tcgplayer/3/1938/products),
+  [TCGCSV group 1938 prices](https://tcgcsv.com/tcgplayer/3/1938/prices).
+- **Decision.** A narrow number remap maps xy8-146a to product 177166 in the
+  Alternate Art Promos group.
+- **Result.** 1 item closed, xy8 certified.
+
 ## Sources not reachable
 
 Bulbapedia returns HTTP 403 to automated fetches. Its statements above come
