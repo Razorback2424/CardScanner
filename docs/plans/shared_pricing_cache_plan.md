@@ -1,5 +1,20 @@
 # Shared Pricing Cache — Implementation Plan
 
+**Launch-first clarification — 2026-11-21:** The owner has frozen the
+existing production TCGdex/Scryfall/TCGCSV pricing hierarchy for launch and
+accepted the separately documented, **unresolved** TCGplayer-derived feed risk;
+this is not a representation that those feeds are licensed. The launch-critical
+scope of this plan is **paid, operator-funded JustTCG behind server-held
+credentials with a cross-user cache, deduplication, batch requests, global
+quota limits, abuse protection, and dated stale-cache fallback**. The fallback
+may serve stored JustTCG data only while its paid subscription remains active;
+ended subscriptions must not keep serving accumulated provider data. A central key
+without shared quota controls is not launch-ready. Do not turn this backend
+project into a JustTCG-as-primary raw-price migration or a TCGCSV removal.
+See the [launch decision and contingencies](../release/launch-contract.md#launch-first-existing-source-decision-and-acknowledged-risk-2026-11-21).
+The specific Firebase architecture below remains a proposal; this decision
+does not authorize provisioning, spending or deployment.
+
 **Launch reconciliation — updated 2026-11-10:** the
 [launch contract](../release/launch-contract.md#pricing-service-for-launch-mandatory-product-and-licensing-prerequisite)
 requires an app-funded commercial pricing API for launch. The owner selected paid
@@ -184,10 +199,13 @@ traffic budget. Operator-managed paid access without a customer key is required
 by the launch contract. Published paid-tier terms were checked on 2026-11-10;
 see the contract for storage/export limits and outstanding evidence.
 
-Pick a tier and subscribe under CardScanner's own account. Starter's 1,000/day is the floor worth
-considering; Professional's 5,000/day and 100/min is the realistic starting point once sealed and
-graded traffic is included, and its 100-item batch is what makes the draft's 100-request endpoint
-cap coherent.
+Pick a tier and subscribe under CardScanner's own account. Starter's published 10,000/month, 1,000/day, 50/min and 100-card
+batch limit may be sufficient for a small launch **only if** measured
+cache-hit rates, history/graded/sealed demand, traffic bursts and safety
+reserves support it. Professional's 50,000/month, 5,000/day, 100/min
+may be necessary at higher demand; **no tier is pre-approved**. Select
+and configure the purchased tier based on a representative multi-client
+quota/load test rather than estimating capacity solely from user count.
 
 Any temporary user-key compatibility is limited to migration/development. The
 launch candidate must pass the supported pricing journeys without a user key;
@@ -268,9 +286,12 @@ backend. Cache-bypass is the kill switch; client fallback is not.
 
 ### Scope note on the catalog path
 
-Do not route TCGdex or Scryfall's primary current-price requests through Firebase. They are free,
-public, already cached locally, and carry none of the quota pressure that motivates the shared
-cache. Routing them through Firebase would add latency and cost to the majority of lookups in
+Do not route TCGdex, Scryfall or TCGCSV-derived primary current-price
+requests through this new JustTCG backend simply because the backend exists.
+Those paths retain their current behavior at launch. This decision does
+not settle their commercial rights or represent them as licensed. Routing
+them through a new cache would introduce migration risk and would not
+improve the provenance of an upstream TCGCSV feed. Routing them through Firebase would add latency and cost to the majority of lookups in
 exchange for nothing, and would make the backend a hard dependency of the app's primary pricing
 path.
 
@@ -751,6 +772,17 @@ per user tap.
 ---
 
 ## 10. Not in this project
+
+**Launch-first scope guard (2026-11-21):** no replacement of existing
+TCGCSV/TCGdex/Scryfall production price paths, full JustTCG coverage audit,
+speculative Scrydex subscription, automatic blending of TCGplayer and eBay
+values, or work to remove the legacy pokemontcg.io publisher dependency in this
+backend change. The Pokémon API shutdown is a separately scheduled
+**February 15, 2027** replacement/validation target, ahead of the
+**March 1, 2027** retirement. A bounded ~50-printing JustTCG contingency
+spot-check for each of One Piece/Lorcana/Yu-Gi-Oh is optional before/soon
+after launch and is not a JustTCG-primary migration gate.
+
 
 Kept from the draft, and worth defending when the temptation arrives: Firebase-hosted user
 collection/portfolio data, cloud accounts and signup UX, cross-device sync, a central portfolio ledger, a full
