@@ -74,6 +74,21 @@
         "Prismatic Ultimate Rare": "Ultimate Rare"
       },
       "reviewedAt": "2026-11-20"
+    },
+    {
+      "id": "hac1-duel-terminal-technology-v1",
+      "categoryID": 2,
+      "groupID": 2941,
+      "language": "en",
+      "codePrefix": "HAC1-EN",
+      "expectedProductsSHA256": "d7c261171f7d890b0d6c5c706c5b4692e2ea7af594a134a04504f456a445187f",
+      "source": "https://tcgcsv.com/tcgplayer/2/2941/products (Konami pack description: '3 Duel Terminal Technology Ultra Rares, 1 Duel Terminal Technology Common, 14 standard Commons'); https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=Hidden%20Arsenal:%20Chapter%201 (same codes with 'Duel Terminal Normal Parallel Rare' / 'Duel Terminal Ultra Parallel Rare')",
+      "meaning": "TCGplayer names the Duel Terminal parallel finish 'Duel Terminal Technology Common/Ultra Rare'. YGOPRODeck names it 'Duel Terminal Normal Parallel Rare' / 'Duel Terminal Ultra Parallel Rare'. Both describe the same physical finish on the same HAC1-EN cards. Taxonomy correspondence only; no edition or artwork authority.",
+      "rarities": {
+        "Duel Terminal Technology Common": "Duel Terminal Normal Parallel Rare",
+        "Duel Terminal Technology Ultra Rare": "Duel Terminal Ultra Parallel Rare"
+      },
+      "reviewedAt": "2026-11-20"
     }
   ],
   "sourceRarityAliases": [
@@ -107,10 +122,10 @@
           "BPT-009"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -131,10 +146,10 @@
           "CT1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -155,10 +170,10 @@
           "CT2-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -179,10 +194,10 @@
           "DPCT-ENY02"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -204,10 +219,10 @@
           "DPC5-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -228,10 +243,10 @@
           "PRC1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -252,10 +267,10 @@
           "5DS1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -276,10 +291,10 @@
           "5DS2-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -298,10 +313,10 @@
           "ANPR-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -321,10 +336,10 @@
           "ANPR-ENSE2"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -345,10 +360,10 @@
           "YMP1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -369,10 +384,10 @@
           "CP01-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -393,10 +408,10 @@
           "CP02-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -417,10 +432,10 @@
           "CP03-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -441,10 +456,10 @@
           "CP04-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -465,10 +480,10 @@
           "CP05-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -489,10 +504,10 @@
           "CP06-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -513,10 +528,10 @@
           "CP07-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -537,10 +552,10 @@
           "CP08-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -560,10 +575,10 @@
           "CRMS-ENSE2"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -584,10 +599,10 @@
           "DOD-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -608,10 +623,10 @@
           "DBT-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -630,10 +645,10 @@
           "DMG-001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -654,10 +669,10 @@
           "DL13-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -678,10 +693,10 @@
           "DL14-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -702,10 +717,10 @@
           "DL15-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -726,10 +741,10 @@
           "DL16-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -750,10 +765,10 @@
           "DL17-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -774,10 +789,10 @@
           "DL18-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -798,10 +813,10 @@
           "DL11-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -822,10 +837,10 @@
           "DL09-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -845,10 +860,10 @@
           "DL1-002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -867,10 +882,10 @@
           "DL10-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -890,10 +905,10 @@
           "DL2-002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -912,10 +927,10 @@
           "DL3-001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -934,10 +949,10 @@
           "DL4-001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -956,10 +971,10 @@
           "DL5-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -978,10 +993,10 @@
           "DL6-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1000,10 +1015,10 @@
           "DL7-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1022,10 +1037,10 @@
           "DL8-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1044,10 +1059,10 @@
           "DL9-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1068,10 +1083,10 @@
           "DOR-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1092,10 +1107,10 @@
           "DP10-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1116,10 +1131,10 @@
           "DP11-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1140,10 +1155,10 @@
           "DP08-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1164,10 +1179,10 @@
           "DP09-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1188,10 +1203,10 @@
           "DP05-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1212,10 +1227,10 @@
           "DP2-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1236,10 +1251,10 @@
           "RGBT-ENPP3"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1260,10 +1275,10 @@
           "DP1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1284,10 +1299,10 @@
           "DP03-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1308,10 +1323,10 @@
           "DP04-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1332,10 +1347,10 @@
           "EEN-ENSE3"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1354,10 +1369,10 @@
           "GSE-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1378,10 +1393,10 @@
           "EDS-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1400,10 +1415,10 @@
           "EXVC-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1423,10 +1438,10 @@
           "FOTB-ENSE2"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1446,10 +1461,10 @@
           "GLAS-ENSE2"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1470,10 +1485,10 @@
           "GLD1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1494,10 +1509,10 @@
           "GX1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1518,10 +1533,10 @@
           "GX03-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1542,10 +1557,10 @@
           "GX02-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1566,10 +1581,10 @@
           "UBP1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1590,10 +1605,10 @@
           "HA04-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1613,10 +1628,10 @@
           "HASE-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1636,10 +1651,10 @@
           "H5SE-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1660,10 +1675,10 @@
           "IOC-SE3"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1684,10 +1699,10 @@
           "DP06-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1708,10 +1723,10 @@
           "DP07-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1732,10 +1747,10 @@
           "LC02-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1756,10 +1771,10 @@
           "LCGX-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1780,10 +1795,10 @@
           "TLM-ENSE3"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1804,10 +1819,10 @@
           "MP1-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1828,10 +1843,10 @@
           "MDP2-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1852,10 +1867,10 @@
           "NTR-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1874,10 +1889,10 @@
           "PHSW-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1898,10 +1913,10 @@
           "PCJ-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1922,10 +1937,10 @@
           "PP01-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1946,10 +1961,10 @@
           "PP02-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1968,10 +1983,10 @@
           "GX05-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -1990,10 +2005,10 @@
           "RYMP-ENSE1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2012,10 +2027,10 @@
           "RGBT-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2034,10 +2049,10 @@
           "DDY1-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2057,10 +2072,10 @@
           "RGBT-ENSE2"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2079,10 +2094,10 @@
           "ROD-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2103,10 +2118,10 @@
           "SOI-ENSE3"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2125,10 +2140,10 @@
           "FOTB-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2147,10 +2162,10 @@
           "GLAS-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2169,10 +2184,10 @@
           "STON-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2191,10 +2206,10 @@
           "TAEV-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2215,10 +2230,10 @@
           "SDD-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2237,10 +2252,10 @@
           "YSD-ENS01"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2259,10 +2274,10 @@
           "SDY-004"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2282,10 +2297,10 @@
           "STON-ENSE2"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2304,10 +2319,10 @@
           "SD09-ENSS1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2328,10 +2343,10 @@
           "SDRL-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2352,10 +2367,10 @@
           "SDDC-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2376,10 +2391,10 @@
           "SDDL-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2400,10 +2415,10 @@
           "SDGU-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2424,10 +2439,10 @@
           "SDLS-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2448,10 +2463,10 @@
           "SDMM-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2472,10 +2487,10 @@
           "SDMA-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2496,10 +2511,10 @@
           "SDDE-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2520,10 +2535,10 @@
           "SDWS-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2544,10 +2559,10 @@
           "SDZW-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2568,10 +2583,10 @@
           "TFK-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2592,10 +2607,10 @@
           "LOB-002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2614,10 +2629,10 @@
           "TSHD-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2638,10 +2653,10 @@
           "TP1-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2662,10 +2677,10 @@
           "TP2-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2686,10 +2701,10 @@
           "TP3-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2710,10 +2725,10 @@
           "TU01-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2734,10 +2749,10 @@
           "WC4-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2758,10 +2773,10 @@
           "WC5-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2782,10 +2797,10 @@
           "WC6-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2806,10 +2821,10 @@
           "WC07-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2830,10 +2845,10 @@
           "WC08-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2852,10 +2867,10 @@
           "WCS-EN403"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2874,10 +2889,10 @@
           "2019-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2896,10 +2911,10 @@
           "YF01-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2918,10 +2933,10 @@
           "YF02-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2940,10 +2955,10 @@
           "YF03-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2962,10 +2977,10 @@
           "YF04-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -2984,10 +2999,10 @@
           "YF05-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3006,10 +3021,10 @@
           "YF06-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3028,10 +3043,10 @@
           "YF07-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3050,10 +3065,10 @@
           "YF09-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3072,10 +3087,10 @@
           "YF08-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3096,10 +3111,10 @@
           "TF05-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3120,10 +3135,10 @@
           "GX06-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3142,10 +3157,10 @@
           "YR04-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3164,10 +3179,10 @@
           "YR05-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3188,10 +3203,10 @@
           "MOV-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3212,10 +3227,10 @@
           "ZTIN-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3234,10 +3249,10 @@
           "CBLZ-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3257,10 +3272,10 @@
           "CBLZ-ENSE2"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3279,10 +3294,10 @@
           "GAOV-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3303,10 +3318,10 @@
           "LCYW-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3325,10 +3340,10 @@
           "REDU-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3348,10 +3363,10 @@
           "REDU-ENSE2"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3372,10 +3387,10 @@
           "SDOK-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3396,10 +3411,10 @@
           "SDRE-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3420,10 +3435,10 @@
           "SDWA-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3442,10 +3457,10 @@
           "YG01-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3464,10 +3479,10 @@
           "YG02-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3486,10 +3501,10 @@
           "YG03-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3508,10 +3523,10 @@
           "YG05-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3530,10 +3545,10 @@
           "YG06-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3552,10 +3567,10 @@
           "YG07-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3574,10 +3589,10 @@
           "YG08-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3596,10 +3611,10 @@
           "YG09-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3618,10 +3633,10 @@
           "YZ01-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3640,10 +3655,10 @@
           "YZ02-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3662,10 +3677,10 @@
           "YZ03-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3684,10 +3699,10 @@
           "YZ04-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3706,10 +3721,10 @@
           "YZ05-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3728,10 +3743,10 @@
           "YZ06-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3750,10 +3765,10 @@
           "YZ07-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3772,10 +3787,10 @@
           "YZ08-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3794,10 +3809,10 @@
           "YZ09-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3816,10 +3831,10 @@
           "LTGY-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3840,10 +3855,10 @@
           "YS13-ENV03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3864,10 +3879,10 @@
           "SDBE-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3888,10 +3903,10 @@
           "LCJW-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3910,10 +3925,10 @@
           "GXNG-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3934,10 +3949,10 @@
           "AP01-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3958,10 +3973,10 @@
           "AP02-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -3982,10 +3997,10 @@
           "AP03-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4006,10 +4021,10 @@
           "LC01-EN006"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4030,10 +4045,10 @@
           "BPW2-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4054,10 +4069,10 @@
           "EHC1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4078,10 +4093,10 @@
           "EHC2-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4102,10 +4117,10 @@
           "SDCR-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4126,10 +4141,10 @@
           "AP04-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4148,10 +4163,10 @@
           "STBL-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4172,10 +4187,10 @@
           "MF02-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4194,10 +4209,10 @@
           "MF01-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4217,10 +4232,10 @@
           "GX05-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4239,10 +4254,10 @@
           "FFSE-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4263,10 +4278,10 @@
           "BPT-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4285,10 +4300,10 @@
           "CRMS-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4309,10 +4324,10 @@
           "WC11-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4333,10 +4348,10 @@
           "SDLI-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4357,10 +4372,10 @@
           "YS14-ENA03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4381,10 +4396,10 @@
           "AP05-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4403,10 +4418,10 @@
           "DUEA-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4427,10 +4442,10 @@
           "MP14-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4451,10 +4466,10 @@
           "SDGR-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4475,10 +4490,10 @@
           "LC5D-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4499,10 +4514,10 @@
           "NKRT-EN041"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4523,10 +4538,10 @@
           "SDHS-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4547,10 +4562,10 @@
           "AP06-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4569,10 +4584,10 @@
           "CROS-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4593,10 +4608,10 @@
           "YS15-ENL02"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4617,10 +4632,10 @@
           "YS15-ENF02"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4641,10 +4656,10 @@
           "AP07-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4665,10 +4680,10 @@
           "CROS-ENAE3"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4689,10 +4704,10 @@
           "SDSE-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4713,10 +4728,10 @@
           "MP15-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4737,10 +4752,10 @@
           "AP08-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4761,10 +4776,10 @@
           "YGLD-ENA02"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4785,10 +4800,10 @@
           "SDMP-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4809,10 +4824,10 @@
           "SR01-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4833,10 +4848,10 @@
           "ZDC1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4857,10 +4872,10 @@
           "SR02-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4881,10 +4896,10 @@
           "MVP1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4905,10 +4920,10 @@
           "MP16-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4929,10 +4944,10 @@
           "MVP1-ENG03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4953,10 +4968,10 @@
           "SDPD-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -4977,10 +4992,10 @@
           "SR04-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5001,10 +5016,10 @@
           "SR03-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5023,10 +5038,10 @@
           "YA01-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5045,10 +5060,10 @@
           "YA02-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5067,10 +5082,10 @@
           "YA03-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5089,10 +5104,10 @@
           "YA04-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5111,10 +5126,10 @@
           "YA05-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5133,10 +5148,10 @@
           "YA06-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5155,10 +5170,10 @@
           "YA07-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5179,10 +5194,10 @@
           "YDT1-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5203,10 +5218,10 @@
           "TF04-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5227,10 +5242,10 @@
           "WC10-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5251,10 +5266,10 @@
           "CMC-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5275,10 +5290,10 @@
           "DDS-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5299,10 +5314,10 @@
           "FMR-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5323,10 +5338,10 @@
           "GX04-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5347,10 +5362,10 @@
           "LOD2-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5371,10 +5386,10 @@
           "PCK-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5395,10 +5410,10 @@
           "TSC-003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5419,10 +5434,10 @@
           "MP17-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5441,10 +5456,10 @@
           "KACB-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5465,10 +5480,10 @@
           "LCKC-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5489,10 +5504,10 @@
           "MF03-EN004"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5512,10 +5527,10 @@
           "PT1-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5535,10 +5550,10 @@
           "PT02-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5558,10 +5573,10 @@
           "PT03-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5582,10 +5597,10 @@
           "MP18-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5606,10 +5621,10 @@
           "MVP1-ENSE3"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5630,10 +5645,10 @@
           "AC18-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5654,10 +5669,10 @@
           "SS02-ENA03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5678,10 +5693,10 @@
           "SS01-ENA03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5700,10 +5715,10 @@
           "SDCR-EN038"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5722,10 +5737,10 @@
           "SDMM-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5744,10 +5759,10 @@
           "SDBE-EN040"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5766,10 +5781,10 @@
           "SD10-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5790,10 +5805,10 @@
           "SS03-ENA03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5814,10 +5829,10 @@
           "SBTK-ENSP2"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5836,10 +5851,10 @@
           "EVSD-ENS02"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5860,10 +5875,10 @@
           "MVP1-ENS03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5882,10 +5897,10 @@
           "ETCO-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5906,10 +5921,10 @@
           "SS04-ENA03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5930,10 +5945,10 @@
           "SS05-ENA03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5952,10 +5967,10 @@
           "ROTD-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5976,10 +5991,10 @@
           "MP20-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -5998,10 +6013,10 @@
           "PHRA-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6020,10 +6035,10 @@
           "CRC1-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6042,10 +6057,10 @@
           "DOCS-EN045"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6064,10 +6079,10 @@
           "SDDL-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6086,10 +6101,10 @@
           "GENF-EN044"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6108,10 +6123,10 @@
           "NKC1-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6130,10 +6145,10 @@
           "STBL-EN033"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6152,10 +6167,10 @@
           "YG04-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6174,10 +6189,10 @@
           "21CC-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6196,10 +6211,10 @@
           "EM1-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6218,10 +6233,10 @@
           "BLVO-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6240,10 +6255,10 @@
           "LIOV-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6262,10 +6277,10 @@
           "DAMA-ENSP1"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6286,10 +6301,10 @@
           "LOB-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6310,10 +6325,10 @@
           "MRD-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6334,10 +6349,10 @@
           "PSV-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6358,10 +6373,10 @@
           "LON-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6382,10 +6397,10 @@
           "LOD-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6406,10 +6421,10 @@
           "DCR-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6430,10 +6445,10 @@
           "IOC-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6452,10 +6467,10 @@
           "LC01-EN005"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6476,10 +6491,10 @@
           "SRL-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6500,10 +6515,10 @@
           "LOB-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6524,10 +6539,10 @@
           "MRD-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6548,10 +6563,10 @@
           "SRL-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6572,10 +6587,10 @@
           "PSV-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6596,10 +6611,10 @@
           "DCR-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6620,10 +6635,10 @@
           "IOC-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6644,10 +6659,10 @@
           "LDK2-ENJ03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6668,10 +6683,10 @@
           "RP01-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6692,10 +6707,10 @@
           "SDBE-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6716,10 +6731,10 @@
           "LEDD-ENA02"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6740,10 +6755,10 @@
           "SDLI-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6764,10 +6779,10 @@
           "YGLD-ENA02"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6788,10 +6803,10 @@
           "MP25-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6812,10 +6827,10 @@
           "RP02-EN002"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6836,10 +6851,10 @@
           "L5DD-ENA03"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6858,10 +6873,10 @@
           "EFC1-EN001"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6880,10 +6895,10 @@
           "LC06-EN005"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6904,10 +6919,10 @@
           "LCKC-EN003"
         ]
       },
-      "reviewedAt": "2026-11-19",
+      "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6934,7 +6949,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6961,7 +6976,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -6988,7 +7003,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7015,7 +7030,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7040,7 +7055,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7065,7 +7080,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7092,7 +7107,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7117,7 +7132,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7142,7 +7157,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7170,7 +7185,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7209,7 +7224,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7243,7 +7258,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7276,7 +7291,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7309,7 +7324,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7332,7 +7347,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7357,7 +7372,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7380,7 +7395,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7405,7 +7420,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7443,7 +7458,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7478,7 +7493,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7501,7 +7516,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7544,7 +7559,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7567,7 +7582,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7590,7 +7605,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7613,7 +7628,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7636,7 +7651,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7661,7 +7676,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7684,7 +7699,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7709,7 +7724,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7734,7 +7749,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7759,7 +7774,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7784,7 +7799,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7807,7 +7822,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7830,7 +7845,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7853,7 +7868,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7876,7 +7891,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7899,7 +7914,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7922,7 +7937,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7945,7 +7960,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7968,7 +7983,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -7991,7 +8006,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8014,7 +8029,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8037,7 +8052,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8060,7 +8075,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8083,7 +8098,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8106,7 +8121,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8129,7 +8144,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8152,7 +8167,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8175,7 +8190,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8198,7 +8213,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8221,7 +8236,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8244,7 +8259,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8267,7 +8282,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8290,7 +8305,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8313,7 +8328,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8336,7 +8351,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8359,7 +8374,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8382,7 +8397,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8407,7 +8422,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8430,7 +8445,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8455,7 +8470,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8478,7 +8493,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8503,7 +8518,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8526,7 +8541,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8554,7 +8569,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8577,7 +8592,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8600,7 +8615,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8623,7 +8638,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8646,7 +8661,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8669,7 +8684,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8692,7 +8707,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8715,7 +8730,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8743,7 +8758,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8766,7 +8781,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8791,7 +8806,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8816,7 +8831,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8839,7 +8854,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8864,7 +8879,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8889,7 +8904,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8914,7 +8929,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8941,7 +8956,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8964,7 +8979,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -8989,7 +9004,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9012,7 +9027,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9035,7 +9050,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9058,7 +9073,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9081,7 +9096,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9104,7 +9119,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9127,7 +9142,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9150,7 +9165,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9173,7 +9188,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9196,7 +9211,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9219,7 +9234,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9242,7 +9257,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9265,7 +9280,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9288,7 +9303,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9311,7 +9326,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9334,7 +9349,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9357,7 +9372,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9380,7 +9395,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9403,7 +9418,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9426,7 +9441,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9449,7 +9464,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9472,7 +9487,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9495,7 +9510,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9518,7 +9533,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9541,7 +9556,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9564,7 +9579,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9587,7 +9602,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9610,7 +9625,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9633,7 +9648,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9656,7 +9671,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9679,7 +9694,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9702,7 +9717,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9725,7 +9740,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9748,7 +9763,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9771,7 +9786,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9794,7 +9809,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9817,7 +9832,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9840,7 +9855,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9863,7 +9878,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9886,7 +9901,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9909,7 +9924,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9932,7 +9947,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9955,7 +9970,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -9978,7 +9993,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10001,7 +10016,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10024,7 +10039,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10047,7 +10062,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10070,7 +10085,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10093,7 +10108,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10116,7 +10131,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10139,7 +10154,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10162,7 +10177,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10185,7 +10200,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10208,7 +10223,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10236,7 +10251,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10259,7 +10274,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10282,7 +10297,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10305,7 +10320,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10328,7 +10343,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10351,7 +10366,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10374,7 +10389,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10397,7 +10412,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10420,7 +10435,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10443,7 +10458,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10466,7 +10481,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10489,7 +10504,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10512,7 +10527,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10535,7 +10550,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10558,7 +10573,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10581,7 +10596,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10604,7 +10619,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10627,7 +10642,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10650,7 +10665,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10673,7 +10688,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10696,7 +10711,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10719,7 +10734,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10742,7 +10757,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10765,7 +10780,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10788,7 +10803,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10811,7 +10826,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10873,7 +10888,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10896,7 +10911,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10921,7 +10936,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10944,7 +10959,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10967,7 +10982,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -10992,7 +11007,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11015,7 +11030,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11040,7 +11055,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11063,7 +11078,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11088,7 +11103,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11111,7 +11126,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11138,7 +11153,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11170,7 +11185,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11193,7 +11208,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11216,7 +11231,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11239,7 +11254,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11272,7 +11287,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11305,7 +11320,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11334,7 +11349,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11357,7 +11372,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11382,7 +11397,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11405,7 +11420,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11428,7 +11443,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11451,7 +11466,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11474,7 +11489,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11497,7 +11512,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11520,7 +11535,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11543,7 +11558,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11566,7 +11581,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11589,7 +11604,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11612,7 +11627,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11635,7 +11650,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11658,7 +11673,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11681,7 +11696,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11709,7 +11724,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11742,7 +11757,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11775,7 +11790,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11798,7 +11813,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11823,7 +11838,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11846,7 +11861,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11874,7 +11889,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -11946,7 +11961,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12020,7 +12035,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12094,7 +12109,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12166,7 +12181,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12241,7 +12256,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12313,7 +12328,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12340,7 +12355,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12363,7 +12378,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12386,7 +12401,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12409,7 +12424,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12432,7 +12447,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12455,7 +12470,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12478,7 +12493,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12501,7 +12516,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12524,7 +12539,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12547,7 +12562,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12570,7 +12585,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12593,7 +12608,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12616,7 +12631,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12639,7 +12654,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12667,7 +12682,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12690,7 +12705,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12728,7 +12743,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12751,7 +12766,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12789,7 +12804,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12812,7 +12827,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12840,7 +12855,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12863,7 +12878,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12891,7 +12906,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12914,7 +12929,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12942,7 +12957,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12965,7 +12980,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -12993,7 +13008,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13016,7 +13031,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13044,7 +13059,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13067,7 +13082,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13095,7 +13110,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13118,7 +13133,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13146,7 +13161,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13169,7 +13184,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13197,7 +13212,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13220,7 +13235,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13248,7 +13263,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13271,7 +13286,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13299,7 +13314,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13322,7 +13337,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13350,7 +13365,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13373,7 +13388,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13396,7 +13411,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13419,7 +13434,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13448,7 +13463,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13471,7 +13486,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13494,7 +13509,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13517,7 +13532,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13540,7 +13555,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13563,7 +13578,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13586,7 +13601,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13609,7 +13624,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13632,7 +13647,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13655,7 +13670,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13678,7 +13693,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13701,7 +13716,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13729,7 +13744,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13752,7 +13767,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13780,7 +13795,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13803,7 +13818,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13831,7 +13846,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13854,7 +13869,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13882,7 +13897,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13905,7 +13920,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13933,7 +13948,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13956,7 +13971,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -13984,7 +13999,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14007,7 +14022,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14053,7 +14068,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14076,7 +14091,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14104,7 +14119,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14127,7 +14142,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14155,7 +14170,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14178,7 +14193,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14201,7 +14216,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14224,7 +14239,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14247,7 +14262,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14270,7 +14285,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14293,7 +14308,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14316,7 +14331,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14440,7 +14455,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     },
     {
@@ -14465,7 +14480,7 @@
       "reviewedAt": "2026-11-20",
       "ledger": {
         "capturedAt": "2026-11-19T20:58:21+00:00",
-        "generation": "yugioh-en-e82401634774"
+        "generation": "yugioh-en-cd41e0c65547"
       }
     }
   ]

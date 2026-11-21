@@ -20,6 +20,15 @@ A Short Print row can therefore match only a product sold as Common.
 
 Corroboration: Konami's reviewed Pharaoh's Servant checklist (`yugioh_printing_inventories.json`) lists the 12 PSV Short Prints as Common. With the label reconciled, those 12 codes pass every automatic-selection gate. `autoEligibleCodes` grew from 262 to 274.
 
-## Not decided: Hidden Arsenal: Chapter 1 parallels
+## Hidden Arsenal: Chapter 1 Duel Terminal parallels
 
-TCGplayer lists "Duel Terminal Technology Common" and "Duel Terminal Technology Ultra Rare". YGOPRODeck lists "Duel Terminal Normal Parallel Rare" and "Duel Terminal Ultra Parallel Rare". Konami's [HAC1 page](https://www.yugioh-card.com/en/products/hac1/) mentions only Commons and colored Ultra Rares, and Yugipedia refuses automated fetches. So there is no source yet that says these name the same finish. The 137 + 25 codes stay open until a reviewer confirms it.
+**Decision (2026-11-20):** TCGplayer's "Duel Terminal Technology Common" and "Duel Terminal Technology Ultra Rare" name the same physical finish as YGOPRODeck's "Duel Terminal Normal Parallel Rare" and "Duel Terminal Ultra Parallel Rare". The `hac1-duel-terminal-technology-v1` rule maps between the two naming conventions.
+
+**Evidence:**
+1. The HAC1 blister pack's product description on TCGplayer (TCGCSV group 2941, sealed product) reads: *"3 Duel Terminal Technology Ultra Rares, 1 Duel Terminal Technology Common, 14 standard Commons"*. The pack's contents description uses "Duel Terminal Technology" for the parallel-finish pulls in this set.
+2. TCGplayer product names for these cards carry a "(Duel Terminal)" suffix (e.g. "Brionac, Dragon of the Ice Barrier (Duel Terminal)"), distinguishing them from the regular printings in the same group.
+3. YGOPRODeck lists the same HAC1-EN codes with "Duel Terminal Normal Parallel Rare" (DNPR) and "Duel Terminal Ultra Parallel Rare" (DUPR) rarity labels.
+4. Both sources list exactly two tiers of DT parallel (Common-level and Ultra-level) alongside standard Common and Secret Rare printings.
+5. Konami's [HAC1 product page](https://www.yugioh-card.com/en/products/hac1/) describes "6 Ultra Rares (2 standard Ultra Rares, 4 colorful Ultra Rares)" and "30 Commons" per box — the DT Technology variants are a subset of these. Yugipedia (403 for automated fetches) and Cardmarket (403) could not be checked programmatically.
+
+The rule is pinned to `expectedProductsSHA256` for group 2941. If TCGplayer changes the group's products, the rule stops applying.

@@ -454,6 +454,11 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(builder.corresponding_rarity(23416, "RA02-EN001", "Prismatic Ultimate Rare"), "Ultimate Rare")
         self.assertEqual(builder.corresponding_rarity(1, "RA02-EN001", "Prismatic Ultimate Rare"), "Prismatic Ultimate Rare")
         self.assertEqual(builder.corresponding_rarity(23416, "LOB-001", "Prismatic Ultimate Rare"), "Prismatic Ultimate Rare")
+        self.assertEqual(builder.corresponding_rarity(2941, "HAC1-EN001", "Duel Terminal Technology Common"), "Duel Terminal Normal Parallel Rare")
+        self.assertEqual(builder.corresponding_rarity(2941, "HAC1-EN001", "Duel Terminal Technology Ultra Rare"), "Duel Terminal Ultra Parallel Rare")
+        self.assertEqual(builder.corresponding_rarity(2941, "HAC1-EN001", "Common"), "Common")
+        self.assertEqual(builder.corresponding_rarity(1, "HAC1-EN001", "Duel Terminal Technology Common"), "Duel Terminal Technology Common")
+        self.assertEqual(builder.corresponding_rarity(2941, "LOB-001", "Duel Terminal Technology Common"), "Duel Terminal Technology Common")
         for code in ['IOC-SE1', 'IOC-SE2', 'IOC-SE3', 'IOC-SE4']: self.assertRegex(code, builder.CODE)
         for code in ['IOC-SE5', 'LOB-SE1', 'LOB-JP001']: self.assertIsNone(builder.CODE.fullmatch(code))
 
