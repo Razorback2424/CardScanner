@@ -25,6 +25,10 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
         itemKind == .rawCard && (game == .onePiece || game == .lorcana || game == .yuGiOh)
     }
 
+    var canIdentifySealedHistory: Bool {
+        itemKind != .sealedProduct || marketVariantID?.isEmpty == false
+    }
+
     var historyIdentity: [String] {
         ["history-v2", game.rawValue, printingID, variantID ?? "", itemKind.rawValue,
          itemKind == .rawCard ? "" : (marketVariantID ?? ""),
@@ -56,12 +60,11 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
         printingID = product.id
         variantID = nil
         itemKind = .sealedProduct
-        marketVariantID = product.variantID
-        var candidates: [JustTCGBatchLookup] = []
-        if let variant = product.variantID { candidates.append(.variantID(variant)) }
+        let variant = product.variantID.flatMap { $0.isEmpty ? nil : $0 }
+        marketVariantID = variant
         // Product-only fallback is deliberately omitted: it can select the
         // wrong sealed variant if the vendor supplies more than one.
-        lookups = candidates
+        lookups = variant.map { [.variantID($0)] } ?? []
         name = product.name
         setName = product.setName ?? ""
         number = ""
@@ -302,7 +305,7 @@ actor CardMarketHistoryService {
         let resolved = await request.resolvingMarketMapping(in: runtimes)
         // Historical product-level sealed lookups could select an arbitrary
         // variant. Never replay that cache unless the physical variant is known.
-        guard resolved.itemKind != .sealedProduct || resolved.marketVariantID != nil else { return [] }
+        guard resolved.canIdentifySealedHistory else { return [] }
         guard !resolved.requiresCatalogMapping || resolved.exactProductID != nil else { return [] }
         let points = readCache(resolved)?.points ?? []
         guard await resolved.resolvingMarketMapping(in: runtimes) == resolved else { return [] }
@@ -343,9 +346,7 @@ actor CardMarketHistoryService {
         try Task.checkCancellation()
         // A product-level handle can return several sealed variants. Without
         // the exact variant UUID, do not manufacture a historical series.
-        guard request.itemKind != .sealedProduct || request.marketVariantID != nil else {
-            throw HistoryError.noListing
-        }
+        guard request.canIdentifySealedHistory else { throw HistoryError.noListing }
         guard !request.requiresCatalogMapping || request.exactProductID != nil else { throw HistoryError.noListing }
         let old = readCache(request)
         if let old, let missAt = old.noListingAt, now.timeIntervalSince(missAt) < Self.noListingRetryInterval,
@@ -549,6 +550,10 @@ actor CardMarketHistoryService {
             lookup: lookup, owners: [target], response: response
         ) else { throw HistoryError.noListing }
         let sourceProductID = Self.productID(of: card)
+        if request.itemKind == .sealedProduct, let expected = request.exactProductID,
+           let sourceProductID, expected != sourceProductID {
+            throw HistoryError.noListing
+        }
         let exactVariant = JustTCGRefreshCoordinator.exactRawListing(
             on: card, printings: exactPrintings, isJapanese: request.exactQuoteIsJapanese)
         let quoteIsExact = request.exactProductID != nil && request.exactProductID == sourceProductID

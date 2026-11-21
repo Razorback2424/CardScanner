@@ -33,6 +33,7 @@ final class CollectionItemKindTests: XCTestCase {
             variantID: "sealed-variant-b", marketPriceUSD: 79.0,
             updatedAt: nil, imageURL: nil
         )
+        product.tcgplayerProductID = "612345"
         XCTAssertNotEqual(
             request.historyIdentity,
             CardMarketHistoryRequest(sealedProduct: product, game: .pokemon).historyIdentity,
@@ -51,6 +52,7 @@ final class CollectionItemKindTests: XCTestCase {
         XCTAssertTrue(request.lookups.isEmpty, "A product alone does not identify one sealed variant")
         XCTAssertNil(request.marketVariantID)
         XCTAssertEqual(request.itemKind, .sealedProduct)
+        XCTAssertFalse(request.canIdentifySealedHistory)
     }
 
     func testSealedMarketplaceLinkUsesExactProductWithoutCardPrintingQuery() {
@@ -1533,6 +1535,37 @@ final class CollectionItemKindTests: XCTestCase {
         )
         XCTAssertEqual(price.unitMarketPriceUSD, 18_750)
         XCTAssertEqual(price.sourceVariantID, "v-uuid")
+    }
+
+    func testSealedLastCopyRemovalRejectsStaleCountAndCanBeReversed() async throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let product = SealedProductSummary(
+            id: "p-uuid", name: "Booster Box", setName: nil, variantID: "v-uuid",
+            marketPriceUSD: nil, updatedAt: nil, imageURL: nil
+        )
+        let store = CollectionStore(context: container.mainContext)
+        let key = try store.addSealed(product, game: .pokemon).collectionKey
+        let concurrentAdd = try store.addSealed(product, game: .pokemon)
+        let detail = await CollectionDetailWriter.makeBackground(modelContainer: container)
+        do {
+            _ = try await detail.remove(collectionKey: key, treatments: [], expectedCurrent: 1,
+                                        shouldContinue: { true })
+            XCTFail("The last-copy confirmation must not remove anything after a concurrent add")
+        } catch CollectionStoreError.staleQuantity {
+            let verify = CollectionStore(context: ModelContext(container))
+            XCTAssertEqual(try verify.logicalQuantity(forAnyKey: key), 2)
+        }
+
+        try store.undo(concurrentAdd)
+        let removal = try await detail.remove(collectionKey: key, treatments: [], expectedCurrent: 1,
+                                              shouldContinue: { true })
+        let removed = CollectionStore(context: ModelContext(container))
+        XCTAssertNil(try removed.logicalQuantity(forAnyKey: key))
+
+        let history = await CollectionActivityWriter.makeBackground(modelContainer: container)
+        try await history.restore(snapshot: removal, shouldContinue: { true })
+        let restored = CollectionStore(context: ModelContext(container))
+        XCTAssertEqual(try restored.logicalQuantity(forAnyKey: key), 1)
     }
 
     func testReaddingSealedProductHealsLegacyMissingArtwork() throws {

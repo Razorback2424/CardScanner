@@ -897,6 +897,7 @@ struct SealedProductDetailView: View {
     @Environment(\.cardGameRuntimes) private var runtimes
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
 
     let game: CardGame
@@ -908,6 +909,7 @@ struct SealedProductDetailView: View {
     @State private var confirmedQuantity: Int?
     @State private var quantityReadRevision: UInt = 0
     @State private var pendingMutation: CollectionMutation?
+    @State private var pendingRemoval: RemovedCardSnapshot?
     @State private var undoTask: Task<Void, Never>?
     @State private var addFailure: String?
     @State private var addAlertTitle = "Couldn't update collection"
@@ -915,11 +917,11 @@ struct SealedProductDetailView: View {
     @State private var isAdjusting = false
     @State private var isUndoing = false
     @State private var isConfirmingRemoval = false
+    @State private var removalExpectedQuantity = 0
     @State private var dispositionTarget: CollectionDispositionTarget?
     @State private var isSharing = false
     @State private var isChoosingPhoto = false
     @State private var selectedPhoto: PhotosPickerItem?
-    @State private var photoGeneration = 0
 
     private var collectionKey: String {
         CollectedCard.sealedCollectionKey(
@@ -927,12 +929,18 @@ struct SealedProductDetailView: View {
         )
     }
 
-    private var ownedQuantity: Int {
-        (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: []))
-            .sealedQuantity(productID: product.id, variantID: product.variantID)
+    private var ownedRow: CollectionRow? {
+        projectionStore.snapshot?.rowsByCollectionKey[collectionKey]
     }
 
+    private var ownedQuantity: Int { ownedRow?.quantity ?? 0 }
+
     private var displayedQuantity: Int { confirmedQuantity ?? ownedQuantity }
+
+    private var artworkFilename: String? {
+        guard displayedQuantity > 0 else { return nil }
+        return ownedRow?.userArtworkFilename.flatMap { $0.isEmpty ? nil : $0 }
+    }
 
     private var canSave: Bool {
         (runtimes?.registry ?? .standard).supports(game, .collectionWrite)
@@ -1009,45 +1017,45 @@ struct SealedProductDetailView: View {
                             .font(.title3.weight(.semibold))
                     }
                     .accessibilityLabel("Share sealed product")
-                    CollectionDetailArtworkSource(collectionKey: collectionKey, legacyFilename: nil) { filename in
+                    if displayedQuantity > 0 {
                         Menu {
-                            if displayedQuantity > 0 {
-                                NavigationLink {
-                                    CollectionCardHistoryView(
-                                        collectionKey: collectionKey, cardName: product.name
-                                    )
-                                } label: {
-                                    Label("Collection History", systemImage: "clock.arrow.circlepath")
-                                }
-                                Button {
-                                    isChoosingPhoto = true
-                                } label: {
-                                    Label(filename == nil ? "Choose Photo" : "Replace Photo",
-                                          systemImage: "photo.badge.plus")
-                                }
-                                if filename != nil {
-                                    Button("Use Catalog Artwork", role: .destructive) {
-                                        Task { await removePhoto() }
-                                    }
-                                }
-                                Divider()
-                                Button("Record Sale or Trade") { presentDisposition() }
-                                Button("Remove One", role: .destructive) { isConfirmingRemoval = true }
+                            NavigationLink {
+                                CollectionCardHistoryView(
+                                    collectionKey: collectionKey, cardName: product.name
+                                )
+                            } label: {
+                                Label("Collection History", systemImage: "clock.arrow.circlepath")
                             }
+                            Button {
+                                isChoosingPhoto = true
+                            } label: {
+                                Label(artworkFilename == nil ? "Choose Photo" : "Replace Photo",
+                                      systemImage: "photo.badge.plus")
+                            }
+                            if artworkFilename != nil {
+                                Button("Use Catalog Artwork", role: .destructive) {
+                                    Task { await removePhoto() }
+                                }
+                            }
+                            Divider()
+                            Button("Record Sale or Trade") { presentDisposition(quantity: displayedQuantity) }
+                            Button("Remove One", role: .destructive, action: requestDecrementConfirmation)
                         } label: {
                             Image(systemName: "ellipsis").font(.title3.weight(.semibold))
                         }
                         .accessibilityLabel("Sealed product actions")
-                        .disabled(isWriting || displayedQuantity == 0)
+                        .disabled(isWriting)
                     }
                 }
                 .foregroundStyle(.white)
             }
         }
-        .task(id: product.imageURL) {
-            artworkAccent = await ArtworkAccentStore.accent(
-                localFilename: nil, remoteURL: product.imageURL
+        .task(id: artworkFilename ?? product.imageURL?.absoluteString) {
+            let accent = await ArtworkAccentStore.accent(
+                localFilename: artworkFilename, remoteURL: product.imageURL
             )
+            guard !Task.isCancelled else { return }
+            artworkAccent = accent
         }
         .task(id: collectionKey) { await refreshQuantity() }
         .onChange(of: ownedQuantity) { _, _ in
@@ -1056,26 +1064,22 @@ struct SealedProductDetailView: View {
             confirmedQuantity = nil
         }
         .photosPicker(isPresented: $isChoosingPhoto, selection: $selectedPhoto, matching: .images)
-        .onChange(of: selectedPhoto) { _, item in
-            guard let item else { return }
-            photoGeneration &+= 1
-            let revision = photoGeneration
-            Task { await savePhoto(item, revision: revision) }
+        .task(id: selectedPhoto) {
+            guard let item = selectedPhoto else { return }
+            await savePhoto(item)
         }
         .sheet(isPresented: $isSharing) {
-            CollectionDetailArtworkSource(collectionKey: collectionKey, legacyFilename: nil) { filename in
-                CollectionShareSheet(
-                    identity: shareIdentity,
-                    price: CardSharePrice(
-                        display: displayedPrice,
-                        basis: CardSharePrice.basis(itemKind: .sealedProduct, gradeLabel: nil,
-                                                     source: displayedPrice.source)
-                    ),
-                    showsFinishSheen: false,
-                    localArtworkFilename: displayedQuantity > 0 ? filename : nil,
-                    remoteArtworkURLs: [product.imageURL].compactMap { $0 }
-                )
-            }
+            CollectionShareSheet(
+                identity: shareIdentity,
+                price: CardSharePrice(
+                    display: displayedPrice,
+                    basis: CardSharePrice.basis(itemKind: .sealedProduct, gradeLabel: nil,
+                                                 source: displayedPrice.source)
+                ),
+                showsFinishSheen: false,
+                localArtworkFilename: artworkFilename,
+                remoteArtworkURLs: [product.imageURL].compactMap { $0 }
+            )
         }
         .sheet(item: $dispositionTarget) { target in
             CollectionDispositionSheet(target: target) { _, _ in
@@ -1090,18 +1094,29 @@ struct SealedProductDetailView: View {
         .confirmationDialog(
             "Remove one sealed product?",
             isPresented: $isConfirmingRemoval,
-            titleVisibility: .visible
-        ) {
+            titleVisibility: .visible,
+            presenting: removalExpectedQuantity
+        ) { expected in
             Button("Remove One", role: .destructive) {
-                Task { await decrease() }
+                Task { await decrease(expected: expected) }
             }
-            Button("Record Sale or Trade") { presentDisposition() }
+            Button("Record Sale or Trade") { presentDisposition(quantity: expected) }
             Button("Cancel", role: .cancel) {}
-        } message: {
+        } message: { _ in
             Text("Removing a copy changes your collection quantity. Use Record Sale or Trade to keep a transaction record.")
         }
         .safeAreaInset(edge: .top) {
-            if pendingMutation != nil { undoBanner.contentWidthLimit(.standard) }
+            if let removal = pendingRemoval, let expiresAt = removal.restoreExpiresAt {
+                RemovalUndoBanner(
+                    name: removal.name, expiresAt: expiresAt, isRestoring: isUndoing,
+                    onUndo: { Task { await restore(removal) } },
+                    onDismiss: { pendingRemoval = nil }
+                )
+                .disabled(isWriting)
+                .contentWidthLimit(.standard)
+            } else if pendingMutation != nil {
+                undoBanner.contentWidthLimit(.standard)
+            }
         }
         .alert(
             addAlertTitle,
@@ -1118,28 +1133,25 @@ struct SealedProductDetailView: View {
     }
 
     private var hero: some View {
-        CollectionDetailArtworkSource(collectionKey: collectionKey, legacyFilename: nil) { filename in
-            Group {
-                if displayedQuantity > 0, let filename,
-                   let image = CollectionArtworkStore.image(filename: filename) {
-                    Image(uiImage: image).resizable().scaledToFit()
-                } else {
-                    SealedProductArtwork(imageURL: product.imageURL)
-                }
+        Group {
+            if let artworkFilename, let image = CollectionArtworkStore.image(filename: artworkFilename) {
+                Image(uiImage: image).resizable().scaledToFit()
+            } else {
+                SealedProductArtwork(imageURL: product.imageURL)
             }
-            .frame(maxWidth: 360)
-            .frame(height: 320)
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .strokeBorder(.white.opacity(0.14), lineWidth: 0.5)
-            }
-            .shadow(color: .black.opacity(0.55), radius: 24, x: 0, y: 14)
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 16)
-            .padding(.top, 18)
-            .accessibilityLabel("Product artwork for \(product.name)")
         }
+        .frame(maxWidth: 360)
+        .frame(height: 320)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .strokeBorder(.white.opacity(0.14), lineWidth: 0.5)
+        }
+        .shadow(color: .black.opacity(0.55), radius: 24, x: 0, y: 14)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 16)
+        .padding(.top, 18)
+        .accessibilityLabel("Product artwork for \(product.name)")
     }
 
     private var identity: some View {
@@ -1165,8 +1177,11 @@ struct SealedProductDetailView: View {
     }
 
     private var ownershipSection: some View {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+            : AnyLayout(HStackLayout())
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
+            layout {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Your collection")
                         .font(.title3.weight(.bold))
@@ -1178,23 +1193,26 @@ struct SealedProductDetailView: View {
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 }
-                Spacer(minLength: 8)
-                if isWriting { ProgressView().controlSize(.small) }
-                CatalogQuantityStepper(
-                    quantity: displayedQuantity,
-                    variantLabel: "sealed product",
-                    canIncrease: canSave && displayedQuantity < CollectionQuantityLimits.maximum,
-                    canDecrease: displayedQuantity > 0,
-                    isUpdating: isWriting,
-                    onIncrease: { Task { await add() } },
-                    onDecrease: {
-                        if displayedQuantity == 1 {
-                            isConfirmingRemoval = true
-                        } else {
-                            Task { await decrease() }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    if isWriting { ProgressView().controlSize(.small) }
+                    CatalogQuantityStepper(
+                        quantity: displayedQuantity,
+                        variantLabel: "sealed product",
+                        canIncrease: canSave && displayedQuantity < CollectionQuantityLimits.maximum,
+                        canDecrease: displayedQuantity > 0,
+                        isUpdating: isWriting,
+                        onIncrease: { Task { await add() } },
+                        onDecrease: {
+                            let expected = displayedQuantity
+                            if expected == 1 {
+                                requestDecrementConfirmation()
+                            } else {
+                                Task { await decrease(expected: expected) }
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
             .padding(14)
             .background(.quaternary.opacity(0.4),
@@ -1235,7 +1253,7 @@ struct SealedProductDetailView: View {
             }
             if displayedQuantity > 0 {
                 CardDetailListDivider()
-                Button { presentDisposition() } label: {
+                Button { presentDisposition(quantity: displayedQuantity) } label: {
                     CardDetailListRow(title: "Record sale or trade",
                                       systemImage: "arrow.left.arrow.right", showsDisclosure: false)
                 }
@@ -1269,11 +1287,16 @@ struct SealedProductDetailView: View {
         .padding(.bottom, 8)
     }
 
-    private func presentDisposition() {
-        guard displayedQuantity > 0, !isWriting else { return }
+    private func requestDecrementConfirmation() {
+        removalExpectedQuantity = displayedQuantity
+        isConfirmingRemoval = removalExpectedQuantity > 0
+    }
+
+    private func presentDisposition(quantity: Int) {
+        guard quantity > 0, !isWriting else { return }
         dispositionTarget = CollectionDispositionTarget(
             collectionKey: collectionKey, treatments: [], cardName: product.name,
-            quantity: displayedQuantity, kind: .sold
+            quantity: quantity, kind: .sold
         )
     }
 
@@ -1313,6 +1336,7 @@ struct SealedProductDetailView: View {
                 )
             }
             guard !Task.isCancelled, generation.isCurrent(token) else { return }
+            pendingRemoval = nil
             pendingMutation = mutation
             await refreshQuantity()
             await projectionStore.rebuild(container: modelContext.container)
@@ -1332,39 +1356,40 @@ struct SealedProductDetailView: View {
     /// The saved quantity is compared with the fresh serialized read before
     /// writing, so a concurrent CloudKit or other-device edit is not lost.
     @MainActor
-    private func decrease() async {
+    private func decrease(expected: Int) async {
         // The store independently authorizes maintenance of existing holdings,
         // even when the game's catalog cannot admit new products.
-        guard !isWriting, displayedQuantity > 0 else { return }
+        guard !isWriting, expected > 0 else { return }
         isAdjusting = true
         defer { isAdjusting = false }
         let generation = CollectionStorageGeneration.shared
         guard let token = generation.currentToken() else { return }
-        let expected = displayedQuantity
         do {
-            let reader = await CollectionDetailQuantityReader.makeBackground(modelContainer: modelContext.container)
-            let actual = try await reader.logicalQuantity(
-                forAnyKey: collectionKey, magicTreatmentIDsRaw: []
-            ) ?? 0
-            guard generation.isCurrent(token), !Task.isCancelled else { return }
-            guard actual == expected else {
-                confirmedQuantity = actual
-                addAlertTitle = "Quantity changed"
-                addFailure = "Your collection quantity changed. Review the updated count before removing a copy."
-                return
-            }
             let writer = await CollectionDetailWriter.makeBackground(modelContainer: modelContext.container)
-            let saved = try await CollectionExclusiveWrites.retryingIfRequired {
-                try await writer.setQuantity(
-                    expected - 1, collectionKey: collectionKey, treatments: [],
-                    expectedCurrent: expected, shouldContinue: generation.continuation(for: token)
-                )
+            let shouldContinue = generation.continuation(for: token)
+            let removal: RemovedCardSnapshot?
+            if expected == 1 {
+                removal = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writer.remove(
+                        collectionKey: collectionKey, treatments: [], expectedCurrent: expected,
+                        shouldContinue: shouldContinue
+                    )
+                }
+            } else {
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    _ = try await writer.setQuantity(
+                        expected - 1, collectionKey: collectionKey, treatments: [],
+                        expectedCurrent: expected, shouldContinue: shouldContinue
+                    )
+                }
+                removal = nil
             }
             guard generation.isCurrent(token), !Task.isCancelled else { return }
             quantityReadRevision &+= 1
-            confirmedQuantity = saved
+            confirmedQuantity = expected - 1
             undoTask?.cancel()
             pendingMutation = nil
+            pendingRemoval = removal
             await projectionStore.rebuild(container: modelContext.container)
         } catch is CancellationError {
         } catch {
@@ -1402,31 +1427,60 @@ struct SealedProductDetailView: View {
     }
 
     @MainActor
-    private func savePhoto(_ item: PhotosPickerItem, revision: Int) async {
+    private func restore(_ removal: RemovedCardSnapshot) async {
+        guard !isWriting, pendingRemoval?.id == removal.id else { return }
+        isUndoing = true
+        defer { isUndoing = false }
+        let generation = CollectionStorageGeneration.shared
+        guard let token = generation.currentToken() else { return }
+        do {
+            let writer = await CollectionActivityWriter.makeBackground(modelContainer: modelContext.container)
+            try await CollectionExclusiveWrites.retryingIfRequired {
+                try await writer.restore(snapshot: removal, shouldContinue: generation.continuation(for: token))
+            }
+            guard generation.isCurrent(token), pendingRemoval?.id == removal.id else { return }
+            pendingRemoval = nil
+            await refreshQuantity()
+            await projectionStore.rebuild(container: modelContext.container)
+        } catch is CancellationError {
+        } catch {
+            guard generation.isCurrent(token), pendingRemoval?.id == removal.id else { return }
+            addAlertTitle = "Couldn't undo removal"
+            addFailure = error.localizedDescription
+        }
+    }
+
+    @MainActor
+    private func savePhoto(_ item: PhotosPickerItem) async {
+        defer { if selectedPhoto == item { selectedPhoto = nil } }
         guard displayedQuantity > 0, !isWriting else { return }
         let generation = CollectionStorageGeneration.shared
         guard let token = generation.currentToken() else { return }
         isAdjusting = true
-        defer {
-            isAdjusting = false
-            if revision == photoGeneration { selectedPhoto = nil }
-        }
+        defer { isAdjusting = false }
         do {
-            guard let data = try await item.loadTransferable(type: Data.self),
-                  revision == photoGeneration, !Task.isCancelled, generation.isCurrent(token) else { return }
+            let data = try await item.loadTransferable(type: Data.self)
+            guard selectedPhoto == item, !Task.isCancelled, generation.isCurrent(token) else { return }
+            guard let data else {
+                addAlertTitle = "Couldn't save photo"
+                addFailure = "The photo couldn't be loaded."
+                return
+            }
             let writer = await CollectionDetailWriter.makeBackground(modelContainer: modelContext.container)
             let filename = try await writer.saveArtwork(
                 data: data, collectionKey: collectionKey,
                 shouldContinue: generation.continuation(for: token)
             )
-            guard revision == photoGeneration, generation.isCurrent(token) else { return }
+            guard generation.isCurrent(token) else { return }
             if filename == nil {
                 addAlertTitle = "Couldn't save photo"
                 addFailure = "The photo couldn't be prepared."
+            } else {
+                await projectionStore.rebuild(container: modelContext.container)
             }
         } catch is CancellationError {
         } catch {
-            guard revision == photoGeneration, generation.isCurrent(token) else { return }
+            guard selectedPhoto == item, !Task.isCancelled, generation.isCurrent(token) else { return }
             addAlertTitle = "Couldn't save photo"
             addFailure = error.localizedDescription
         }
@@ -1435,8 +1489,6 @@ struct SealedProductDetailView: View {
     @MainActor
     private func removePhoto() async {
         guard displayedQuantity > 0, !isWriting else { return }
-        photoGeneration &+= 1
-        selectedPhoto = nil
         isAdjusting = true
         defer { isAdjusting = false }
         let generation = CollectionStorageGeneration.shared
@@ -1446,6 +1498,8 @@ struct SealedProductDetailView: View {
             try await writer.removeArtwork(
                 collectionKey: collectionKey, shouldContinue: generation.continuation(for: token)
             )
+            guard generation.isCurrent(token) else { return }
+            await projectionStore.rebuild(container: modelContext.container)
         } catch is CancellationError {
         } catch {
             guard generation.isCurrent(token) else { return }

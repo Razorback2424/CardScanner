@@ -3225,6 +3225,10 @@ struct CardMarketHistoryPanel: View {
         guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
         if !cached.isEmpty { points = cached }
         defer { if !Task.isCancelled { isLoading = false } }
+        if !resolved.canIdentifySealedHistory {
+            requiresAPIKey = false
+            return
+        }
         requiresAPIKey = !PriceVendorCredentials.hasKey
         guard !requiresAPIKey else { return }
         do {

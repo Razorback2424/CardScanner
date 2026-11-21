@@ -1389,6 +1389,25 @@ final class JustTCGContractTests: XCTestCase {
         card.justTCGVariantID = "vendor-other"
         let differentListing = await reopened.cached(.init(card: card))
         XCTAssertTrue(differentListing.isEmpty, "A different exact sealed listing cannot reuse the old series")
+
+        var browseProduct = SealedProductSummary(
+            id: "vendor-box", name: "Fixture Booster Box", setName: "Fixture Set",
+            variantID: "vendor-exact", marketPriceUSD: nil, updatedAt: nil, imageURL: nil
+        )
+        browseProduct.tcgplayerProductID = "67890"
+        let mismatched = CardMarketHistoryRequest(sealedProduct: browseProduct, game: game)
+        do {
+            _ = try await reopened.history(for: mismatched)
+            XCTFail("The matching variant returned under a conflicting product must not supply history")
+        } catch CardMarketHistoryService.HistoryError.noListing {
+            let cached = await reopened.cached(mismatched)
+            XCTAssertTrue(cached.isEmpty)
+        }
+
+        browseProduct.tcgplayerProductID = "12345"
+        let verified = CardMarketHistoryRequest(sealedProduct: browseProduct, game: game)
+        let verifiedPoints = try await reopened.history(for: verified)
+        XCTAssertEqual(verifiedPoints.map(\.p), [99])
     }
 
     @MainActor
