@@ -1441,7 +1441,9 @@ struct CollectionShareSheet: View {
 
     private var priceRowDetail: String {
         guard let price = availablePrice else { return "No market price available yet" }
-        guard includesPrice else { return "Card details, without the price" }
+        guard includesPrice else {
+            return itemKind == .sealedProduct ? "Product details only" : "Card details, without the price"
+        }
         let basis = showsAllFinishes ? "\(price.basis) per finish" : price.basis
         if let source = price.source { return "\(basis) from \(source)" }
         return basis
