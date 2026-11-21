@@ -61,7 +61,9 @@ or creating an arbitrary proxy/raw data product. Evaluate inventory and price-hi
 independent clients yield shared-cache hits without duplicate provider calls;
 batching, simultaneous cold misses, quota reserves and budget exhaustion stay
 bounded; dated cached values survive 429/outages without becoming fresh-price
-evidence. Then confirm raw exact history, supported grader/grade and sealed product; older versus newer quotes; provider-confirmed missing data versus mapping/transport failure; 401/403/429/5xx, cancellation, expiry, offline cache and relaunch. Check one exact holding across receipt, Browse, detail, Collection and Portfolio. No provider series backfills the local ledger. Add meaningful transport/contract regressions and rerun PricingTests, graded/history, refresh lifecycle/structural-write, scanner and purchase neighbors as affected. Include real funded-provider receipts and quota accounting.
+evidence **while the paid JustTCG subscription remains active**. Once the
+subscription ends, suppress stored JustTCG data in accordance with its
+license. Then confirm raw exact history, supported grader/grade and sealed product; older versus newer quotes; provider-confirmed missing data versus mapping/transport failure; 401/403/429/5xx, cancellation, expiry, offline cache and relaunch. Check one exact holding across receipt, Browse, detail, Collection and Portfolio. No provider series backfills the local ledger. Add meaningful transport/contract regressions and rerun PricingTests, graded/history, refresh lifecycle/structural-write, scanner and purchase neighbors as affected. Include real funded-provider receipts and quota accounting.
 
 **Regression risks:** global cache stampedes, tenant abuse, quota exhaustion
 despite an apparent working central key; broad cache-key collisions; currency leakage; using fetch time as market freshness; stale publication after correction/removal; depleting a shared quota; accidental purchase gating of free inventory features. Keep schemas compatible and keep provider credentials out of the binary.
