@@ -40,7 +40,7 @@ final class CollectionItemKindTests: XCTestCase {
         )
     }
 
-    func testSealedBrowseHistoryCanUseExactProductHandleWhenVariantIsMissing() {
+    func testSealedBrowseHistoryDoesNotGuessWhenVariantIsMissing() {
         var product = SealedProductSummary(
             id: "sealed-product-uuid", name: "Booster Box", setName: "Example Set",
             variantID: nil, marketPriceUSD: nil, updatedAt: nil, imageURL: nil
@@ -48,7 +48,7 @@ final class CollectionItemKindTests: XCTestCase {
         product.tcgplayerProductID = "612345"
         let request = CardMarketHistoryRequest(sealedProduct: product, game: .magic)
 
-        XCTAssertEqual(request.lookups.first, .tcgplayerID("612345"))
+        XCTAssertTrue(request.lookups.isEmpty, "A product alone does not identify one sealed variant")
         XCTAssertNil(request.marketVariantID)
         XCTAssertEqual(request.itemKind, .sealedProduct)
     }
