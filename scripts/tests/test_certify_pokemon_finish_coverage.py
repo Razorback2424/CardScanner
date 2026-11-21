@@ -12,6 +12,19 @@ import catalog_exceptions
 import certify_pokemon_finish_coverage as coverage
 
 
+class PokemonNameKeyTests(unittest.TestCase):
+    def test_nidoran_marketplace_abbreviations_match_checklist_symbols(self):
+        self.assertEqual(coverage.name_key("Nidoran M"), coverage.name_key("Nidoran♂"))
+        self.assertEqual(coverage.name_key("Nidoran F"), coverage.name_key("Nidoran♀"))
+        self.assertEqual(coverage.name_key("Nidoran M (Delta Species)"), coverage.name_key("Nidoran♂ (Delta Species)"))
+        self.assertNotEqual(coverage.name_key("Nidoran M"), coverage.name_key("Nidoran F"))
+
+    def test_nidoran_normalization_leaves_other_names_alone(self):
+        self.assertEqual(coverage.name_key("Nidoran Max"), "nidoran max")
+        self.assertEqual(coverage.name_key("Nidorino M"), "nidorino m")
+        self.assertEqual(coverage.name_key("Mew M"), "mew m")
+
+
 class PokemonFinishCoverageTests(unittest.TestCase):
     def setUp(self):
         temp = tempfile.TemporaryDirectory()
