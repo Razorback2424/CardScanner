@@ -300,6 +300,9 @@ actor CardMarketHistoryService {
 
     func cached(_ request: CardMarketHistoryRequest, runtimes: CardGameRuntimeContainer? = nil) async -> [JustTCGHistoryPoint] {
         let resolved = await request.resolvingMarketMapping(in: runtimes)
+        // Historical product-level sealed lookups could select an arbitrary
+        // variant. Never replay that cache unless the physical variant is known.
+        guard resolved.itemKind != .sealedProduct || resolved.marketVariantID != nil else { return [] }
         guard !resolved.requiresCatalogMapping || resolved.exactProductID != nil else { return [] }
         let points = readCache(resolved)?.points ?? []
         guard await resolved.resolvingMarketMapping(in: runtimes) == resolved else { return [] }
