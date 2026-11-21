@@ -1049,8 +1049,9 @@ struct SealedProductDetailView: View {
             )
         }
         .task(id: collectionKey) { await refreshQuantity() }
-        .onChange(of: ownedQuantity) { _, current in
-            if current == confirmedQuantity { confirmedQuantity = nil }
+        .onChange(of: ownedQuantity) { _, _ in
+            // A CloudKit update must supersede any locally confirmed count.
+            confirmedQuantity = nil
         }
         .photosPicker(isPresented: $isChoosingPhoto, selection: $selectedPhoto, matching: .images)
         .onChange(of: selectedPhoto) { _, item in
@@ -1264,6 +1265,8 @@ struct SealedProductDetailView: View {
 
     private func presentDisposition() {
         guard displayedQuantity > 0, !isWriting else { return }
+        undoTask?.cancel()
+        pendingMutation = nil
         dispositionTarget = CollectionDispositionTarget(
             collectionKey: collectionKey, treatments: [], cardName: product.name,
             quantity: displayedQuantity, kind: .sold
@@ -1345,6 +1348,8 @@ struct SealedProductDetailView: View {
             }
             guard generation.isCurrent(token), !Task.isCancelled else { return }
             confirmedQuantity = saved
+            undoTask?.cancel()
+            pendingMutation = nil
             await projectionStore.rebuild(container: modelContext.container)
         } catch is CancellationError {
         } catch {
@@ -1387,7 +1392,10 @@ struct SealedProductDetailView: View {
         let generation = CollectionStorageGeneration.shared
         guard let token = generation.currentToken() else { return }
         isAdjusting = true
-        defer { isAdjusting = false }
+        defer {
+            isAdjusting = false
+            if revision == photoGeneration { selectedPhoto = nil }
+        }
         do {
             guard let data = try await item.loadTransferable(type: Data.self),
                   revision == photoGeneration, !Task.isCancelled, generation.isCurrent(token) else { return }
@@ -1407,7 +1415,6 @@ struct SealedProductDetailView: View {
             addAlertTitle = "Couldn't save photo"
             addFailure = error.localizedDescription
         }
-        if revision == photoGeneration { selectedPhoto = nil }
     }
 
     @MainActor
