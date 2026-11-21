@@ -177,6 +177,60 @@ replace current feeds. Expand to a migration audit only if a source is challenge
 fails or coverage becomes a material customer problem. Do not commit to a
 second paid provider without measured need.
 
+### Affiliate marketplace links: approvals and safe launch behavior (2026-11-21)
+
+**Separate approvals from product functionality.** The owner reports an
+accepted eBay Partner Network (EPN) account, while **TCGplayer's specific
+affiliate program acceptance through Impact is pending**. An Impact network
+account is not TCGplayer merchant acceptance. A further distinct gate applies
+to eBay: EPN [requires prior written approval for promotion in mobile apps](https://partnernetwork.ebay.com/page/mobile-apps),
+even for an already-approved EPN publisher. The form asks for an app-store
+listing, integrated/testable app and disclosure approach; confirm whether
+TestFlight is acceptable instead of assuming it is. Neither affiliate
+acceptance nor mobile-app approval confers permission to ingest or redistribute
+marketplace pricing data.
+
+**Tracked links are conditional; ordinary links may still work.** Keep existing
+exact-product TCGplayer links functioning **without affiliate tracking** until
+the TCGplayer program actually accepts the app/channel and supplies an
+approved Impact tracking/deep-link format. Never invent a tracking URL or
+append unverified tracking parameters. Preserve the exact product/printing
+and physical-variant guard in `TCGplayerLinkBuilder` when applying tracking.
+Do not confuse affiliate approval with API usage rights.
+
+**Build eBay discovery separately and conservatively.** EPN allows tracked
+destination URLs to eBay search pages as well as verified listings. Add a
+shared, thoroughly tested eBay search-link builder from reviewed public card
+identity (game, name, set, number, finish/edition where useful). Label it
+**"Search eBay"**, not "View this exact printing" or a claimed live
+eBay price; search results can contain other printings/conditions, and no
+new eBay pricing feed or API is implied. Keep it separate from existing
+exact TCGplayer product links. Allow ordinary, untracked eBay searches
+before mobile-app approval; enable EPN affiliate tracking only after separate
+**written mobile-app promotional approval**, with official campaign/link
+parameters and device-level click attribution verification. Avoid silent
+redirects, auto-opening promotions, or republishing affiliate links inside
+eBay listings/messages.
+
+**Disclosure and activation.** Clearly disclose a potential commission
+adjacent to marketplace links, visibly in the first viewport of applicable
+mobile screens, not only on a legal page. See
+[EPN's disclosure FAQ](https://partnernetwork.ebay.com/resources/affiliate-disclosure-faq)
+and [TCGplayer Partner Guidelines](https://help.tcgplayer.com/hc/en-us/articles/31411199594391-TCGplayer-Partner-Guidelines).
+Use config/feature-gated activation to choose untracked vs approved
+affiliate destinations without releasing an incorrect tracking link. Never
+include sensitive collection/user identifiers in EPN `customid` or Impact
+tracking fields. Verify destinations and accessibility on devices and keep
+affiliate ranking/commercial incentives separate from card valuation.
+
+**Launch gate interpretation:** Affiliate acceptance is mandatory **before
+claiming or enabling monetized tracked links**, not an automatic blocker
+for shipping ScanStash with properly labeled **untracked** marketplace
+destinations. If the owner specifically requires affiliate commissions on
+day one, the respective acceptance and (for EPN) mobile-app written
+permission become explicit launch dependencies; record that as a separate
+business decision rather than silently broadening G07.
+
 **Fixed Pokémon TCG API sunset work.** The legacy
 [pokemontcg.io API ends March 1, 2027](https://docs.pokemontcg.io/).
 Review and replace its remaining **secondary Pokémon catalog discovery and
