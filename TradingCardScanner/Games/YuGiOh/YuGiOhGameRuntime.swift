@@ -36,21 +36,51 @@ struct YuGiOhGameRuntime: Sendable {
 
 extension YuGiOhCatalog {
     /// Every bundled runtime shares this deferred load.
-    static let bundledHandle = YuGiOhCatalog(knownGeneration: YuGiOhBundledLaunch.cachedManifest()?.generation) {
-        let interval = PerformanceSignpost.beginInterval(
-            "YuGiOh.catalogLoad", id: PerformanceSignpost.makeID(), "main=\(Thread.isMainThread ? 1 : 0)"
-        )
-        defer { PerformanceSignpost.endInterval("YuGiOh.catalogLoad", interval, "") }
-        do {
-            return try YuGiOhBundledLaunch.loadSeed()
-        } catch {
-            YuGiOhBundledLaunch.clear()
-            Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
-                .error("Yu-Gi-Oh! bundled seed rejected on deferred load; lookups are disabled for this session")
-            throw error
+    static var bundledHandle: YuGiOhCatalog { bundledStore.current }
+    static let bundledStore = YuGiOhBundledHandleStore {
+        YuGiOhCatalog(knownGeneration: YuGiOhBundledLaunch.cachedManifest()?.generation) {
+            let interval = PerformanceSignpost.beginInterval(
+                "YuGiOh.catalogLoad", id: PerformanceSignpost.makeID(), "main=\(Thread.isMainThread ? 1 : 0)"
+            )
+            defer { PerformanceSignpost.endInterval("YuGiOh.catalogLoad", interval, "") }
+            do {
+                return try YuGiOhBundledLaunch.loadSeed()
+            } catch {
+                YuGiOhBundledLaunch.clear()
+                Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
+                    .error("Yu-Gi-Oh! bundled seed rejected on deferred load: \(String(describing: error), privacy: .public)")
+                throw error
+            }
         }
     }
     static var bundled: Result<Self, Error> { Result { try bundledHandle.loaded() } }
+}
+
+/// Holds the shared bundled handle. A successful load is kept for the process;
+/// a failed one is replaced on request, so an explicit retry decodes the seed
+/// again instead of replaying the first failure.
+final class YuGiOhBundledHandleStore: @unchecked Sendable {
+    private let lock = NSLock()
+    private let make: @Sendable () -> YuGiOhCatalog
+    private var handle: YuGiOhCatalog
+
+    init(_ make: @escaping @Sendable () -> YuGiOhCatalog) {
+        self.make = make
+        handle = make()
+    }
+
+    var current: YuGiOhCatalog { lock.withLock { handle } }
+
+    /// Replaces the handle only when its load finished and failed. Returns
+    /// whether it did. A load in progress or a success is left alone.
+    @discardableResult
+    func discardFailedLoad() -> Bool {
+        lock.withLock {
+            guard handle.loadFailed else { return false }
+            handle = make()
+            return true
+        }
+    }
 }
 
 /// Per-build registration facts let warm launches defer decoding the bundle.

@@ -384,6 +384,9 @@ struct CardGameRuntimeContainer: Sendable {
         var modules = measured(.pokemon) { [PokemonGameRuntime().runtime] }
         modules.append(measured(.magic) { MagicGameRuntime().runtime })
         var unavailable: [CardGameDescriptor] = []
+        // A failed bundled Yu-Gi-Oh! load is cached with its handle; drop it so
+        // this preparation (launch or an explicit retry) reads the seed again.
+        YuGiOhCatalog.bundledStore.discardFailedLoad()
         do {
             modules.append(try measured(.lorcana) { try LorcanaDiscoveryCatalog.bundledMarket.get().runtime })
         } catch {
@@ -401,18 +404,20 @@ struct CardGameRuntimeContainer: Sendable {
                 do { return try YuGiOhCatalogBootstrap.configuredRuntime(bundled: catalog) ?? catalog.runtime }
                 catch {
                     Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
-                        .error("Yu-Gi-Oh approved delivery configuration rejected; retaining bundled catalog")
+                        .error("Yu-Gi-Oh approved delivery configuration rejected; retaining bundled catalog: \(String(describing: error), privacy: .public)")
                     return catalog.runtime
                 }
             }
             if runtime.descriptor.capabilities.isEmpty {
+                Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
+                    .error("Yu-Gi-Oh! catalog loaded with no usable capabilities; existing games remain available")
                 unavailable.append(YuGiOhGameRuntime.descriptor)
             } else {
                 modules.append(runtime)
             }
         } catch {
             Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
-                .error("Yu-Gi-Oh! seed rejected; existing games remain available")
+                .error("Yu-Gi-Oh! seed rejected; existing games remain available: \(String(describing: error), privacy: .public)")
             unavailable.append(YuGiOhGameRuntime.descriptor)
         }
         return (modules, unavailable)

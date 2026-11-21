@@ -2,6 +2,7 @@ import Foundation
 import CryptoKit
 import SwiftData
 import XCTest
+import os
 @testable import TradingCardScanner
 
 private final class YuGiOhDeliveryGateProtocol: URLProtocol {
@@ -2328,7 +2329,8 @@ final class YuGiOhCatalogTests: XCTestCase {
         XCTAssertEqual(rows.filter { !$0.explicitSelectionSupported }.count, 39)
         XCTAssertEqual(rows.filter(\.isReference).count, 1_097)
         XCTAssertEqual(rows.filter { $0.isReference && $0.explicitSelectionSupported }.count, 1_088)
-        XCTAssertEqual(catalog.autoEligibleCodes.count, 274)
+        XCTAssertEqual(catalog.autoEligibleCodes.count, 720)
+        XCTAssertEqual(catalog.autoEligibleCodes.filter { $0.hasPrefix("MP25-EN") }.count, 446)
         XCTAssertTrue(["PSV-007", "PSV-095"].allSatisfy(catalog.autoEligibleCodes.contains)) // Short Prints Konami lists as Common
         XCTAssertTrue(catalog.autoEligibleCodes.contains("MP24-EN372"))
         XCTAssertTrue(["DUNE-EN080", "PSV-013"].allSatisfy(catalog.autoEligibleCodes.contains))
@@ -2448,6 +2450,29 @@ final class YuGiOhCatalogTests: XCTestCase {
             XCTAssertEqual(YuGiOhCatalog.validCode(code), expected(code), code)
         }
     }
+    func testBundledHandleStoreReplacesOnlyAFailedLoad() throws {
+        struct Failure: Error {}
+        let attempts = OSAllocatedUnfairLock(initialState: 0)
+        let store = YuGiOhBundledHandleStore {
+            YuGiOhCatalog(knownGeneration: nil) {
+                let attempt = attempts.withLock { $0 += 1; return $0 }
+                if attempt == 1 { throw Failure() }
+                return try YuGiOhBundledLaunch.loadSeed()
+            }
+        }
+        XCTAssertFalse(store.discardFailedLoad(), "An unstarted load is not a failure")
+        XCTAssertThrowsError(try store.current.loaded())
+        XCTAssertTrue(store.current.loadFailed)
+        XCTAssertThrowsError(try store.current.loaded(), "Without a discard the failure is replayed")
+        XCTAssertEqual(attempts.withLock { $0 }, 1)
+
+        XCTAssertTrue(store.discardFailedLoad())
+        XCTAssertNoThrow(try store.current.loaded(), "A retry decodes the seed again")
+        XCTAssertEqual(attempts.withLock { $0 }, 2)
+        XCTAssertFalse(store.discardFailedLoad(), "A successful load is kept")
+        XCTAssertTrue(store.current.isLoaded)
+    }
+
     func testBundledLaunchCacheRegistersWithoutDecodingAndMatchesEagerRuntime() async throws {
         let suite = "YuGiOhBundledLaunchTests-\(UUID())"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))

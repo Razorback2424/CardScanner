@@ -189,7 +189,7 @@ struct YuGiOhCatalog: Sendable {
             }
             for printing in byID.values where printing.familyEvidence != nil {
                 guard let authority = printing.familyEvidence, authority.isReviewed,
-                      let captured = plainISO.date(from: authority.capturedAt), captured <= date,
+                      let captured = plainISO.date(from: authority.capturedAt) ?? iso.date(from: authority.capturedAt), captured <= date,
                       printing.set.groupID == authority.groupID, printing.code.hasPrefix(authority.codePrefix), authority.rarities.contains(printing.rarity),
                       printing.artLabel == nil, printing.identityReason == nil, printing.canonicalLinkStatus == "linked",
                       byCode[printing.code]?.count == 1, !seed.incompleteCodes.contains(printing.code) else {
@@ -224,6 +224,11 @@ struct YuGiOhCatalog: Sendable {
     /// Whether the data has been decoded. Only the bundled launch handle can
     /// start unloaded; every other catalog decodes during construction.
     var isLoaded: Bool { data.isLoaded }
+    /// Whether a finished load failed. Never starts a load.
+    var loadFailed: Bool {
+        guard data.isLoaded, case .failure = data.get() else { return false }
+        return true
+    }
 
     var historicalPricingNotice: String {
         let source = publicationRevision == nil ? "a bundled snapshot" : "a verified periodic snapshot"
