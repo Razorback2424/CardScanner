@@ -4,6 +4,13 @@
 **Pricing amendment:** 2026-11-09 — owner requires an appropriate commercial
 pricing API for launch. **Provider selected 2026-11-10:** paid JustTCG; exact
 tier, active subscription and operator-managed integration remain unverified.
+**Launch-first pricing decision — 2026-11-21:** retain the current production
+pricing-provider hierarchy while launch is prepared. Do not make a TCGCSV
+replacement, broad JustTCG coverage migration, or new vendor subscription a
+prelaunch prerequisite. App-funded paid JustTCG with a protected shared backend
+cache and global quota controls remains mandatory. The unresolved third-party
+pricing-rights risk is documented below; this decision is not proof of licensing
+compliance or App Store approval.
 **Source:** owner-supplied *Card Scanner Launch Contract — Scanstash 1.0 system
 definitions and release acceptance* (prepared 2026-11-09, repository baseline
 `df6d4c0`). This Markdown is the repository authority; the .docx is not
@@ -61,7 +68,7 @@ capability and card family.
 | --- | --- |
 | Free | Scanning, collection access and corrections, basic inventory import/export, single-card listing-photo output — all usable without Collector Tools. |
 | Paid | Approved $9.99 US base-price non-consumable Collector Tools: batch listing photos and guided centering. Show the localized StoreKit price. No subscription or scan credits. |
-| Pricing service | Launch uses app-funded paid JustTCG, selected by the owner on 2026-11-10. Supported price-history charts, graded prices and sealed prices work without customers obtaining or entering a provider API key. Active tier, coverage and production acceptance remain open. |
+| Pricing service | App-funded paid JustTCG supplies supported history, graded/sealed data and existing exact-price fallbacks with no customer key, through a globally quota-controlled shared cache. Keep current TCGdex/Scryfall/TCGCSV raw-price paths rather than making JustTCG the new primary price source before launch. Active tier, cache, coverage and distribution acceptance remain open. |
 | Storage | On-device continuity required. Live iCloud sync deferred. Do not promise collection restoration after app deletion because a purchase can be restored. |
 | Platforms | iOS/iPadOS 18.0+, iPhone and iPad. Phone portrait and all four iPad orientations tested as applicable; the archive must confirm the declarations. |
 | Card support | Freeze game, language, era/set/product families, raw/graded/sealed capabilities, physical variants and acquisition routes. Record price and artwork coverage separately from identity/ownership coverage. |
@@ -88,6 +95,18 @@ limitation.
 
 Before G07 can pass:
 
+- Implement a server-held JustTCG key **and** an authenticated shared price/history
+  cache so identical permitted lookups are reused across users. Deduplicate
+  concurrent requests, use plan-supported batches (up to 100 items on Starter
+  or Professional), enforce **global** daily/monthly/per-minute budgets, reserve
+  capacity for foreground actions, and limit per-client abuse. A shared key
+  without these controls does not satisfy the launch requirement.
+- Confirm last-known cached quotes/history remain usable with their actual
+  source observation dates when JustTCG reaches a quota, returns 429, goes
+  offline, or has expired credentials. Never mark stale data as newly checked,
+  turn unknown into zero, block ownership operations, or silently retry
+  uncontrollably. Test simultaneous users, cache hits, cold misses, near-limit
+  usage and quota exhaustion before distribution.
 - Record the selected provider and active app-owned paid plan, recurring cost
   owner and expected launch traffic/quota budget. Confirm actual endpoint and
   exact game, printing/finish, raw/graded/sealed and history coverage in the
@@ -108,8 +127,71 @@ Before G07 can pass:
   honest, recoverable outcomes. Settings, support and privacy copy match.
 
 The [shared-pricing-cache plan](../plans/shared_pricing_cache_plan.md) is a gated
-implementation proposal. Its Firebase architecture remains undecided; the
-commercial API and no-customer-key requirements above are mandatory for launch.
+implementation proposal. Its Firebase architecture remains undecided; a shared
+cache, global quota enforcement, commercially paid JustTCG, and no-customer-key
+access are mandatory for launch regardless of the selected hosting stack.
+
+### Launch-first existing-source decision and acknowledged risk (2026-11-21)
+
+**No speculative migration before release.** Preserve working TCGdex Pokémon
+catalog/price paths, Scryfall Magic price paths, and TCGCSV-derived marketplace
+price feeds and mappings for the supported games. Do not change authoritative
+printing IDs, rebuild provider precedence, remove the hosted feed, or purchase
+Scrydex merely to reduce hypothetical risk. Paid JustTCG grants rights only to
+its own licensed data; it does **not** license upstream TCGCSV or TCGdex
+marketplace-pricing fields.
+
+**Unresolved rights are not cleared rights.** TCGCSV describes its feed as
+TCGplayer-API-derived. [TCGplayer API Terms](https://help.tcgplayer.com/hc/en-us/articles/360061115874-TCGplayer-API-Terms-Conditions)
+restrict obtaining API-derived content through third parties and combining
+TCGplayer prices with other price data. Whether/how those provisions could be
+enforced against ScanStash as a downstream user is unresolved. The owner has
+chosen a **launch-first posture with that expressly acknowledged risk**, rather
+than a blanket claim that the feed is licensed. [Apple Guideline 5.2.2](https://developer.apple.com/app-store/review/guidelines/)
+also requires permission under third-party service terms; App Review rejection,
+a complaint or a request to remove a source remains possible. Do not attach
+unsupported probabilities, state that affiliate approval grants data rights, or
+represent this risk decision as a legal clearance. Source attribution/links
+lower confusion, not upstream-license uncertainty.
+
+**Small prelaunch safeguards, no pricing redesign.** Label prices by actual
+provider and observation date. Where comparing TCGplayer-derived market prices
+and eBay results, show separately rather than blend them into one unsupported
+figure. Preserve access to Scryfall-derived card/price/history data without a
+Collector Tools purchase. An independent paid photo/centering workflow is
+different from charging to reveal Scryfall data. Check third-party artwork
+rights separately from factual prices, and review exports for licensed-vendor
+raw-data restrictions. Any fixes should be narrow and tested.
+
+**A source stop does not erase holdings.** Prepare an operational ability to
+disable TCGCSV-derived pricing without changing card identities, ownership,
+history or catalogs. For One Piece, Lorcana and Yu-Gi-Oh, a disable may
+temporarily leave many prices and marketplace-linked actions unavailable;
+explicitly display stale/unpriced states and preserve user data. A kill switch
+alone is not a full replacement-price contingency. Run a bounded read-only
+JustTCG spot check of about **50 representative difficult exact printings per
+game** for those three games (special finishes/promos, high-value cards and
+recent releases) before or shortly after launch. Record exact variant match,
+live quote and omissions; this is **not a release gate** or authority to
+replace current feeds. Expand to a migration audit only if a source is challenged,
+fails or coverage becomes a material customer problem. Do not commit to a
+second paid provider without measured need.
+
+**Fixed Pokémon TCG API sunset work.** The legacy
+[pokemontcg.io API ends March 1, 2027](https://docs.pokemontcg.io/).
+Review and replace its remaining **secondary Pokémon catalog discovery and
+artwork enrichment** use in the publisher, with completion and validation
+targeted for **February 15, 2027**. Current Pokémon
+`PokemonPriceAdapter` refresh already uses TCGdex and marketplace fallback,
+so do not claim every Browse price automatically disappears on that date.
+Preserve mappings and verified artwork coverage; this is scheduled work, not
+a new launch blocker when launching before the shutdown.
+
+The owner may revisit legal counsel or marketplace outreach if a credible
+complaint arrives, material business traction changes the exposure or a
+distribution reviewer requests documentation. Neither outreach nor a paid
+legal consultation is an unconditional prelaunch gate. Respond promptly to
+actual rights concerns; do not misrepresent permission to Apple.
 
 ### Support manifest (mandatory release artifact)
 
@@ -452,7 +534,7 @@ release documentation.
 | S17.02 | Install the actual TestFlight/distribution candidate, confirm features and endpoints, and verify no owner bypass or debug route certifies a production promise. | Not verified |
 | S17.03 | Privacy/support URLs published, configured in the built app and opened from the installed UI; metadata and privacy declarations match behavior. | **Fail** — `CARD_SCANNER_PRIVACY_URL` and `CARD_SCANNER_SUPPORT_URL` empty (deliberately deferred launch prerequisite, not a code defect) |
 | S17.04 | Non-consumable, agreements and submission details ready; production availability validated at release without treating sandbox as production. | Not verified |
-| S17.05 | Every provider/content dependency has appropriate usage rights, observed working behavior and an outage path; diagnostics identify version and failure stage without unnecessary private material. | Not verified |
+| S17.05 | Document each provider/content dependency's rights status, source attribution, actual runtime behavior and outage plan. Any retained unresolved third-party pricing rights must remain disclosed as an owner-accepted release risk, **not** marked licensed or cleared; Apple 5.2.2 remains independently applicable. Diagnostics avoid unnecessary private material. | Not verified — documented TCGCSV-derived pricing uncertainty; source-rights compliance not certified |
 
 *Verification:* archive/TestFlight install evidence; built-config inspection; live link/provider checks; purchase configuration; App Review completeness.
 
@@ -589,7 +671,7 @@ no averaging a broken paid tool against unrelated passes.
 | G04 Every critical journey passes | J01–J12 complete and reconcile on the actual candidate, including recovery and delivered output. | Not verified |
 | G05 Recognition is useful and safe | Frozen corpora meet error, completion and friction criteria; no deterministic failure hidden in aggregates. | Not verified — corpus not assembled |
 | G06 The experience is polished | Screen states, accessibility, layouts, responsiveness and sustained use pass; external users finish uncoached. | Not verified |
-| G07 Paid and external services work | Configured product, restoration, licensed app-funded pricing API, catalog/feed activation and public links have environment-appropriate evidence. Pricing passes §2 and S09.07 without a customer provider account or API key. | Not verified — commercial pricing selection, entitlement and no-key integration acceptance open |
+| G07 Paid and external services work | Configured product, restoration, paid JustTCG with protected shared cache/global quotas, catalog/feed activation and public links have candidate evidence. Pricing passes §2 and S09.07 without a customer provider account/key. Record the separate owner-accepted TCGCSV licensing uncertainty under S17.05 without labeling it licensed. | Not verified — shared-cache, quota, no-key integration and owner risk record/acceptance evidence open |
 | G08 The candidate is traceable | Automated checks, exclusions and device receipts reconcile to the tested source and distributed build; skips never pass as passes. | Not verified |
 | G09 The submission is complete | Archive/signing, privacy metadata, screenshots, descriptions, links, review notes and in-app purchase submission complete and truthful. | Not verified |
 
