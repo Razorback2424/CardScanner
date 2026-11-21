@@ -6,7 +6,9 @@ accepted the separately documented, **unresolved** TCGplayer-derived feed risk;
 this is not a representation that those feeds are licensed. The launch-critical
 scope of this plan is **paid, operator-funded JustTCG behind server-held
 credentials with a cross-user cache, deduplication, batch requests, global
-quota limits, abuse protection, and dated stale-cache fallback**. A central key
+quota limits, abuse protection, and dated stale-cache fallback**. The fallback
+may serve stored JustTCG data only while its paid subscription remains active;
+ended subscriptions must not keep serving accumulated provider data. A central key
 without shared quota controls is not launch-ready. Do not turn this backend
 project into a JustTCG-as-primary raw-price migration or a TCGCSV removal.
 See the [launch decision and contingencies](../release/launch-contract.md#launch-first-existing-source-decision-and-acknowledged-risk-2026-11-21).
