@@ -97,7 +97,8 @@ struct CardCenteringCanvas: View {
                         base: base,
                         focus: loupe.focus,
                         scale: loupe.scale,
-                        selection: selection
+                        selection: selection,
+                        diameter: CardCenteringLoupe.diameter(for: size)
                     )
                     .position(loupe.position)
                     .allowsHitTesting(false)
@@ -624,7 +625,7 @@ struct CardCenteringCanvas: View {
 
     /// Above the finger, or below it near the top, and never off the side.
     private func loupePosition(for finger: CGPoint, in size: CGSize) -> CGPoint {
-        let radius = CardCenteringLoupe.diameter / 2
+        let radius = CardCenteringLoupe.diameter(for: size) / 2
         let lift = radius + 52
         let y = finger.y - lift >= radius + 8 ? finger.y - lift : finger.y + lift
         return CGPoint(
@@ -1056,8 +1057,15 @@ private struct CardCenteringPhoto: View {
 /// A magnified view of the photo around the line being dragged, centred on
 /// it, so the edge stays visible under the finger. It shows photo pixels as
 /// squares, so the line can be set against a single pixel.
-private struct CardCenteringLoupe: View {
-    static let diameter: CGFloat = 128
+struct CardCenteringLoupe: View {
+    /// Wide enough to show the corner and the edges leading into it, so a
+    /// corner can be lined up against its surroundings: about half the
+    /// canvas's short side, kept clear of the screen edges.
+    static func diameter(for size: CGSize) -> CGFloat {
+        let short = min(size.width, size.height)
+        let preferred = min(max(short * 0.55, 180), 280)
+        return max(min(preferred, short - 16), 0)
+    }
 
     let image: UIImage
     let measurement: CardCenteringMeasurement
@@ -1066,9 +1074,9 @@ private struct CardCenteringLoupe: View {
     let focus: CardCenteringPoint
     let scale: CGFloat
     let selection: CardCenteringGuideSelection?
+    let diameter: CGFloat
 
     var body: some View {
-        let diameter = Self.diameter
         let projection = CardCenteringProjection(
             origin: CGPoint(x: diameter / 2 - CGFloat(focus.x) * scale, y: diameter / 2 - CGFloat(focus.y) * scale),
             scale: scale
