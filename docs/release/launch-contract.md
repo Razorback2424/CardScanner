@@ -6,8 +6,8 @@ pricing API for launch. **Provider selected 2026-11-10:** paid JustTCG; exact
 tier, active subscription and operator-managed integration remain unverified.
 **Launch-first pricing decision — 2026-11-21:** retain the current production
 pricing-provider hierarchy while launch is prepared. Do not make a TCGCSV
-replacement, broad JustTCG coverage migration, or new vendor subscription a
-prelaunch prerequisite. App-funded paid JustTCG with a protected shared backend
+replacement, broad JustTCG coverage migration, or a second pricing-vendor
+subscription beyond the selected paid JustTCG plan a prelaunch prerequisite. App-funded paid JustTCG with a protected shared backend
 cache and global quota controls remains mandatory. The unresolved third-party
 pricing-rights risk is documented below; this decision is not proof of licensing
 compliance or App Store approval.
@@ -101,11 +101,12 @@ Before G07 can pass:
   or Professional), enforce **global** daily/monthly/per-minute budgets, reserve
   capacity for foreground actions, and limit per-client abuse. A shared key
   without these controls does not satisfy the launch requirement.
-- Confirm last-known cached quotes/history remain usable with their actual
-  source observation dates when JustTCG reaches a quota, returns 429, goes
-  offline, or has expired credentials. Never mark stale data as newly checked,
-  turn unknown into zero, block ownership operations, or silently retry
-  uncontrollably. Test simultaneous users, cache hits, cold misses, near-limit
+- During quotas, 429 responses, outages or temporary authentication errors,
+  preserve last-known cached quotes/history with their real source dates **only
+  while the paid JustTCG license remains active**. If the subscription has ended,
+  do not continue serving stored JustTCG data; show an honest unavailable state
+  instead. Never mark stale data as newly checked, turn unknown into zero,
+  block ownership operations, or retry uncontrollably. Test simultaneous users, cache hits, cold misses, near-limit
   usage and quota exhaustion before distribution.
 - Record the selected provider and active app-owned paid plan, recurring cost
   owner and expected launch traffic/quota budget. Confirm actual endpoint and
@@ -115,7 +116,7 @@ Before G07 can pass:
   end-user display, caching, history retention and permitted exports. JustTCG's
   [terms](https://justtcg.com/terms) and
   [commercial-use guidance](https://justtcg.com/docs/commercial-use), checked
-  2026-11-10 (terms updated 2026-11-04), permit end-user display and server-side
+  2026-11-21 (terms updated 2026-11-17), permit end-user display and server-side
   caching on an active paid subscription; standalone data redistribution is
   prohibited, and stored-data use rights end with the subscription. Review
   exports against those limits. A free-tier or customer-key workaround cannot
@@ -157,7 +158,7 @@ lower confusion, not upstream-license uncertainty.
 **Small prelaunch safeguards, no pricing redesign.** Label prices by actual
 provider and observation date. Where comparing TCGplayer-derived market prices
 and eBay results, show separately rather than blend them into one unsupported
-figure. Preserve access to Scryfall-derived card/price/history data without a
+figure. Preserve access to Scryfall-sourced card and price data without a
 Collector Tools purchase. An independent paid photo/centering workflow is
 different from charging to reveal Scryfall data. Check third-party artwork
 rights separately from factual prices, and review exports for licensed-vendor
@@ -165,9 +166,10 @@ raw-data restrictions. Any fixes should be narrow and tested.
 
 **A source stop does not erase holdings.** Prepare an operational ability to
 disable TCGCSV-derived pricing without changing card identities, ownership,
-history or catalogs. For One Piece, Lorcana and Yu-Gi-Oh, a disable may
-temporarily leave many prices and marketplace-linked actions unavailable;
-explicitly display stale/unpriced states and preserve user data. A kill switch
+history or catalogs. For One Piece, Lorcana and Yu-Gi-Oh, disabling the feed may
+leave many prices unavailable. Existing verified product links need not
+vanish solely because the price feed is disabled. Display honest stale/unpriced
+states and preserve user data. A kill switch
 alone is not a full replacement-price contingency. Run a bounded read-only
 JustTCG spot check of about **50 representative difficult exact printings per
 game** for those three games (special finishes/promos, high-value cards and
