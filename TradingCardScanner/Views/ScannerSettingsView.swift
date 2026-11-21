@@ -150,7 +150,7 @@ private struct SettingsContentView: View {
                             HStack {
                                 Label(game.displayName, systemImage: "exclamationmark.triangle")
                                 Spacer()
-                                Text(recovery.recoveryReady ? "Update available" : "Unavailable")
+                                Text("Unavailable")
                                     .foregroundStyle(.secondary)
                             }
                         }
