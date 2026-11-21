@@ -1072,7 +1072,7 @@ struct SealedProductDetailView: View {
                                                      source: displayedPrice.source)
                     ),
                     showsFinishSheen: false,
-                    localArtworkFilename: filename,
+                    localArtworkFilename: displayedQuantity > 0 ? filename : nil,
                     remoteArtworkURLs: [product.imageURL].compactMap { $0 }
                 )
             }
@@ -1120,7 +1120,8 @@ struct SealedProductDetailView: View {
     private var hero: some View {
         CollectionDetailArtworkSource(collectionKey: collectionKey, legacyFilename: nil) { filename in
             Group {
-                if let filename, let image = CollectionArtworkStore.image(filename: filename) {
+                if displayedQuantity > 0, let filename,
+                   let image = CollectionArtworkStore.image(filename: filename) {
                     Image(uiImage: image).resizable().scaledToFit()
                 } else {
                     SealedProductArtwork(imageURL: product.imageURL)
