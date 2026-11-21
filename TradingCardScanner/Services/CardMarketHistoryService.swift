@@ -27,7 +27,7 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
 
     var historyIdentity: [String] {
         ["history-v2", game.rawValue, printingID, variantID ?? "", itemKind.rawValue,
-         itemKind == .gradedCard ? (marketVariantID ?? "") : "",
+         itemKind == .rawCard ? "" : (marketVariantID ?? ""),
          printRun?.rawValue ?? "", treatments.sorted().joined(separator: "|"),
          exactProductID ?? "", providerPrinting ?? ""]
     }
@@ -46,6 +46,30 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
     }
 
     var exactQuoteIsJapanese: Bool { providerPrinting == nil && isJapanese }
+
+    /// A Browse sealed product can chart the same exact vendor variant as
+    /// an owned sealed product, without a collection write or a name search.
+    /// Unlike a raw card, the sealed variant UUID is a market listing handle,
+    /// not a printed card finish.
+    init(sealedProduct product: SealedProductSummary, game: CardGame) {
+        self.game = game
+        printingID = product.id
+        variantID = nil
+        itemKind = .sealedProduct
+        marketVariantID = product.variantID
+        var candidates: [JustTCGBatchLookup] = []
+        if let variant = product.variantID { candidates.append(.variantID(variant)) }
+        if let productID = product.tcgplayerProductID { candidates.append(.tcgplayerID(productID)) }
+        candidates.append(.cardID(product.id))
+        lookups = candidates
+        name = product.name
+        setName = product.setName ?? ""
+        number = ""
+        catalogID = product.id
+        printRun = nil
+        treatments = []
+        exactProductID = product.tcgplayerProductID
+    }
 
     init(card: CollectedCard) {
         let input = PriceFallbackCardInput(card: card, variant: card.variant, pokemonPrintRun: card.pokemonPrintRun)
