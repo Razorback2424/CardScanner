@@ -219,11 +219,13 @@ final class BrowseViewModel: ObservableObject {
     }
 
     /// Records the live rail only when it differs from what was cached, so an
-    /// unchanged catalog costs no write.
-    func rememberReleaseRail(_ rail: [CatalogSet]) {
-        guard let releaseRailCache, rail != cachedReleaseRailSets else { return }
+    /// unchanged catalog costs no write. The returned task completes after
+    /// the background cache write.
+    @discardableResult
+    func rememberReleaseRail(_ rail: [CatalogSet]) -> Task<Void, Never>? {
+        guard let releaseRailCache, rail != cachedReleaseRailSets else { return nil }
         cachedReleaseRailSets = rail
-        Task.detached(priority: .utility) { releaseRailCache.store(rail) }
+        return Task.detached(priority: .utility) { releaseRailCache.store(rail) }
     }
 
     var availableCompletionSets: [CatalogSet] {
