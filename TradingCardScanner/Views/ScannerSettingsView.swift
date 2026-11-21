@@ -164,6 +164,11 @@ private struct SettingsContentView: View {
                             )
                         }
                         .disabled(recovery.preparing || !scannerModel.canReloadCatalogs)
+                        if recovery.retryStillUnavailable && !recovery.preparing {
+                            Text("Catalogs are still unavailable. You can try again.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
                         if !scannerModel.canReloadCatalogs && !recovery.preparing {
                             Text("Finish scanning before reloading catalogs.")
                                 .font(.footnote)
@@ -172,7 +177,11 @@ private struct SettingsContentView: View {
                     } header: {
                         Text("Catalog Status")
                     } footer: {
-                        Text("Unavailable games remain disabled until their catalogs recover. Your collection is safe, and other games are available.")
+                        if recovery.recoveryReady {
+                            Text("Reloading catalogs returns you to the main screen.")
+                        } else {
+                            Text("Unavailable games remain disabled until their catalogs recover. Your collection is safe, and other games are available.")
+                        }
                     }
                 }
 

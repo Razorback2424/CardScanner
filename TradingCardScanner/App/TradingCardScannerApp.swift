@@ -101,6 +101,7 @@ private struct CollectionSessionContent: View {
     @State private var attempt = 0
     @State private var preparing = false
     @State private var recoveryReady = false
+    @State private var retryStillUnavailable = false
     @AppStorage("catalogRecoveryAcknowledgedGames") private var acknowledgedCatalogGames = ""
 
     var body: some View {
@@ -123,8 +124,9 @@ private struct CollectionSessionContent: View {
                             scanner: services.scanner,
                             preparing: preparing,
                             recoveryReady: recoveryReady,
+                            retryStillUnavailable: retryStillUnavailable,
                             dismiss: dismissCatalogWarning,
-                            reload: { attempt += 1 }
+                            reload: retryCatalogs
                         )
                     }
                     PerformanceSignpost.measureLaunch("Launch.contentViewInit") {
@@ -135,7 +137,8 @@ private struct CollectionSessionContent: View {
                             unavailableGames: services.runtimes.unavailableGames,
                             preparing: preparing,
                             recoveryReady: recoveryReady,
-                            retry: { attempt += 1 }
+                            retryStillUnavailable: retryStillUnavailable,
+                            retry: retryCatalogs
                         ))
                         .id(services.id)
                         .disabled(preparing)
@@ -184,12 +187,14 @@ private struct CollectionSessionContent: View {
                 bound = try await bindDefault()
 #endif
                 try Task.checkCancellation()
-                guard services?.scanner.canReloadCatalogs != false else { return }
+                guard CollectionStorageGeneration.shared.activeSession()?.container === container,
+                      services?.scanner.canReloadCatalogs != false else { return }
                 // A recovered game is no longer acknowledged; a later failure
                 // must be visible again, even if the warning was once dismissed.
                 acknowledgedCatalogGames = CatalogRecoveryAcknowledgements.retaining(
                     acknowledgedCatalogGames, unavailable: bound.unavailableGames
                 )
+                retryStillUnavailable = services != nil && !bound.unavailableGames.isEmpty
                 if services == nil || services?.runtimes.registry.games(supporting: []) != bound.registry.games(supporting: [])
                     || services?.runtimes.unavailableGames.map(\.game) != bound.unavailableGames.map(\.game) {
                     services?.scanner.viewDisappeared()
@@ -199,9 +204,13 @@ private struct CollectionSessionContent: View {
             } catch is CancellationError {
                 return
             } catch {
+                guard !Task.isCancelled,
+                      CollectionStorageGeneration.shared.activeSession()?.container === container else { return }
                 if services == nil {
                     failed = true
                     opening.blocked = true
+                } else {
+                    retryStillUnavailable = true
                 }
             }
         }
@@ -211,6 +220,7 @@ private struct CollectionSessionContent: View {
             for await _ in runtimes.optionalCatalogRecoveryEvents(for: games) {
                 guard !Task.isCancelled else { break }
                 recoveryReady = true
+                retryStillUnavailable = false
             }
         }
         .onDisappear { services?.scanner.viewDisappeared() }
@@ -227,6 +237,13 @@ private struct CollectionSessionContent: View {
             acknowledgedCatalogGames, unavailable: visibleUnavailableGames
         )
     }
+
+    private func retryCatalogs() {
+        guard !preparing, services?.scanner.canReloadCatalogs == true else { return }
+        retryStillUnavailable = false
+        recoveryReady = false
+        attempt += 1
+    }
 }
 
 @MainActor
@@ -235,6 +252,7 @@ private struct CatalogRecoveryBanner: View {
     @ObservedObject var scanner: ScannerViewModel
     let preparing: Bool
     let recoveryReady: Bool
+    let retryStillUnavailable: Bool
     let dismiss: () -> Void
     let reload: () -> Void
 
@@ -254,9 +272,7 @@ private struct CatalogRecoveryBanner: View {
                 .accessibilityLabel("Dismiss catalog warning")
                 .accessibilityHint("Catalog status and retry remain available in Settings")
             }
-            Text(recoveryReady
-                 ? "A catalog update is available. Reload when you're ready; this returns you to the main screen. Finish scanning first."
-                 : "Your collection is safe. Other games are available. You can also retry in Settings.")
+            message
                 .font(.subheadline)
             Button(preparing ? "Retrying…" : recoveryReady ? "Reload catalog" : "Retry catalog", action: reload)
                 .disabled(preparing || !scanner.canReloadCatalogs)
@@ -265,6 +281,16 @@ private struct CatalogRecoveryBanner: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(.regularMaterial)
+    }
+
+    private var message: Text {
+        if retryStillUnavailable {
+            Text("The catalog is still unavailable. You can try again here or in Settings.")
+        } else if recoveryReady {
+            Text("A catalog update is available. Reloading returns you to the main screen. Finish scanning first.")
+        } else {
+            Text("Your collection is safe. Other games are available. You can also retry in Settings.")
+        }
     }
 }
 
@@ -299,6 +325,7 @@ struct CatalogRecoveryContext {
     let unavailableGames: [CardGameDescriptor]
     let preparing: Bool
     let recoveryReady: Bool
+    let retryStillUnavailable: Bool
     let retry: () -> Void
 }
 
