@@ -1078,7 +1078,8 @@ struct SealedProductDetailView: View {
                 ),
                 showsFinishSheen: false,
                 localArtworkFilename: artworkFilename,
-                remoteArtworkURLs: [product.imageURL].compactMap { $0 }
+                remoteArtworkURLs: [product.imageURL].compactMap { $0 },
+                itemKind: .sealedProduct
             )
         }
         .sheet(item: $dispositionTarget) { target in
