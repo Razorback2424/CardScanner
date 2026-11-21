@@ -6,6 +6,64 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+
+    func testSealedBrowseMarketHistoryUsesExactVariantWithoutCardFinish() {
+        var product = SealedProductSummary(
+            id: "sealed-product-uuid",
+            name: "Booster Bundle",
+            setName: "Example Set",
+            variantID: "sealed-variant-a",
+            marketPriceUSD: 77.22,
+            updatedAt: nil,
+            imageURL: nil
+        )
+        product.tcgplayerProductID = "612345"
+        let request = CardMarketHistoryRequest(sealedProduct: product, game: .pokemon)
+
+        XCTAssertEqual(request.itemKind, .sealedProduct)
+        XCTAssertEqual(request.printingID, product.id)
+        XCTAssertNil(request.variantID, "A sealed variant is not a printed card finish")
+        XCTAssertEqual(request.marketVariantID, product.variantID)
+        XCTAssertEqual(request.lookups.first, .variantID("sealed-variant-a"))
+        XCTAssertFalse(request.requiresCatalogMapping)
+        XCTAssertTrue(request.exactQuotePrintings.isEmpty)
+
+        product = SealedProductSummary(
+            id: product.id, name: product.name, setName: product.setName,
+            variantID: "sealed-variant-b", marketPriceUSD: 79.0,
+            updatedAt: nil, imageURL: nil
+        )
+        XCTAssertNotEqual(
+            request.historyIdentity,
+            CardMarketHistoryRequest(sealedProduct: product, game: .pokemon).historyIdentity,
+            "The two vendor variants must never share a history cache key"
+        )
+    }
+
+    func testSealedBrowseHistoryDoesNotGuessWhenVariantIsMissing() {
+        var product = SealedProductSummary(
+            id: "sealed-product-uuid", name: "Booster Box", setName: "Example Set",
+            variantID: nil, marketPriceUSD: nil, updatedAt: nil, imageURL: nil
+        )
+        product.tcgplayerProductID = "612345"
+        let request = CardMarketHistoryRequest(sealedProduct: product, game: .magic)
+
+        XCTAssertTrue(request.lookups.isEmpty, "A product alone does not identify one sealed variant")
+        XCTAssertNil(request.marketVariantID)
+        XCTAssertEqual(request.itemKind, .sealedProduct)
+    }
+
+    func testSealedMarketplaceLinkUsesExactProductWithoutCardPrintingQuery() {
+        let url = TCGplayerLinkBuilder.productURL(
+            productID: "612345", variantID: nil, game: .pokemon
+        )
+        XCTAssertEqual(url?.path, "/product/612345")
+        XCTAssertNil(url?.query, "A sealed vendor variant is not a card finish")
+        XCTAssertNil(TCGplayerLinkBuilder.productURL(
+            productID: "0", variantID: nil, game: .pokemon
+        ))
+    }
+
     func testUngradedReferenceQueryUsesExactMagicTreatmentKey() throws {
         let container = try ProductionRowFixtures.makeContainer()
         let context = container.mainContext

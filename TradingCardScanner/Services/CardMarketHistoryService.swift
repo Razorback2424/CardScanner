@@ -27,7 +27,7 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
 
     var historyIdentity: [String] {
         ["history-v2", game.rawValue, printingID, variantID ?? "", itemKind.rawValue,
-         itemKind == .gradedCard ? (marketVariantID ?? "") : "",
+         itemKind == .rawCard ? "" : (marketVariantID ?? ""),
          printRun?.rawValue ?? "", treatments.sorted().joined(separator: "|"),
          exactProductID ?? "", providerPrinting ?? ""]
     }
@@ -46,6 +46,30 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
     }
 
     var exactQuoteIsJapanese: Bool { providerPrinting == nil && isJapanese }
+
+    /// A Browse sealed product can chart the same exact vendor variant as
+    /// an owned sealed product, without a collection write or a name search.
+    /// Unlike a raw card, the sealed variant UUID is a market listing handle,
+    /// not a printed card finish.
+    init(sealedProduct product: SealedProductSummary, game: CardGame) {
+        self.game = game
+        printingID = product.id
+        variantID = nil
+        itemKind = .sealedProduct
+        marketVariantID = product.variantID
+        var candidates: [JustTCGBatchLookup] = []
+        if let variant = product.variantID { candidates.append(.variantID(variant)) }
+        // Product-only fallback is deliberately omitted: it can select the
+        // wrong sealed variant if the vendor supplies more than one.
+        lookups = candidates
+        name = product.name
+        setName = product.setName ?? ""
+        number = ""
+        catalogID = product.id
+        printRun = nil
+        treatments = []
+        exactProductID = product.tcgplayerProductID
+    }
 
     init(card: CollectedCard) {
         let input = PriceFallbackCardInput(card: card, variant: card.variant, pokemonPrintRun: card.pokemonPrintRun)
@@ -276,6 +300,9 @@ actor CardMarketHistoryService {
 
     func cached(_ request: CardMarketHistoryRequest, runtimes: CardGameRuntimeContainer? = nil) async -> [JustTCGHistoryPoint] {
         let resolved = await request.resolvingMarketMapping(in: runtimes)
+        // Historical product-level sealed lookups could select an arbitrary
+        // variant. Never replay that cache unless the physical variant is known.
+        guard resolved.itemKind != .sealedProduct || resolved.marketVariantID != nil else { return [] }
         guard !resolved.requiresCatalogMapping || resolved.exactProductID != nil else { return [] }
         let points = readCache(resolved)?.points ?? []
         guard await resolved.resolvingMarketMapping(in: runtimes) == resolved else { return [] }
@@ -314,6 +341,11 @@ actor CardMarketHistoryService {
                 runtimes: CardGameRuntimeContainer? = nil) async throws -> CardMarketHistoryResult {
         let request = await input.resolvingMarketMapping(in: runtimes)
         try Task.checkCancellation()
+        // A product-level handle can return several sealed variants. Without
+        // the exact variant UUID, do not manufacture a historical series.
+        guard request.itemKind != .sealedProduct || request.marketVariantID != nil else {
+            throw HistoryError.noListing
+        }
         guard !request.requiresCatalogMapping || request.exactProductID != nil else { throw HistoryError.noListing }
         let old = readCache(request)
         if let old, let missAt = old.noListingAt, now.timeIntervalSince(missAt) < Self.noListingRetryInterval,
