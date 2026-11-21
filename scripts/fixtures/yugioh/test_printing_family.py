@@ -39,6 +39,22 @@ class PrintingFamilyTests(unittest.TestCase):
         rows[0]["extendedData"][0]["value"] = "MP24-EN999"
         self.assertEqual(builder.reviewed_inventories([self.inventory], scope, {23481: "changed-product"}, []), [])
 
+    def test_fractional_capture_is_normalized_in_seed_only(self):
+        stamp = '2026-10-23T03:52:27.727390+00:00'
+        self.inventory['capturedAt'] = stamp
+
+        seed = self.build()
+        evidence = seed['printings'][0]['pf']
+        self.assertEqual(evidence['capturedAt'], '2026-10-23T03:52:27+00:00')
+        self.assertEqual(self.inventory['capturedAt'], stamp)
+
+        evidence['capturedAt'] = stamp
+        with self.assertRaisesRegex(AssertionError, 'whole seconds'):
+            builder.validate_output(seed)
+        evidence['capturedAt'] = '2026-10-23T03:52:29Z'
+        with self.assertRaisesRegex(AssertionError, 'future printing family evidence'):
+            builder.validate_output(seed)
+
     def test_competing_rarity_artwork_unmatched_and_conflicting_crosswalk_excluded(self):
         original = copy.deepcopy(self.inventory)
         for change in ['rarity', 'artwork', 'name', 'duplicate']:

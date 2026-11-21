@@ -32,6 +32,7 @@ CODE = re.compile(r"^(?:[A-Z0-9]{2,4}-(?:(?:EN|E)[A-Z0-9]{3}|[0-9]{3})|IOC-SE[1-
                   + "|".join(REDEMPTION_CODES) + ")$")
 POLICY = "yugioh-provider-membership-v1-2026-10-21"
 INVALID_RARITIES = {"new", "2", "3", "new artwork"}
+FAMILY_TIMESTAMP = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:Z|[+-][0-9]{2}:[0-9]{2})")
 PRICE_FIELDS = ("marketPrice", "lowPrice", "midPrice", "highPrice", "directLowPrice")
 PACKAGING_NAME = re.compile(
     r"\b(?:booster (?:box|pack|case)|blister|starter deck|structure deck|playmat|sleeves|binder|sealed|"
@@ -129,6 +130,14 @@ def stable(namespace, material):
 
 def packed(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+
+
+def family_capture_timestamp(value):
+    """Project an inventory capture into the seed's whole-second wire format."""
+    captured = datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if captured.utcoffset() is None:
+        raise ValueError("printing family capture timestamp requires a timezone")
+    return value if FAMILY_TIMESTAMP.fullmatch(value) else captured.isoformat(timespec="seconds")
 
 
 def product_identity_digest(products):
@@ -514,7 +523,9 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         official_names = collections.defaultdict(list)
         for entry in inventory['rows']:
             official_names[norm(entry['name'])].append(entry)
-        release_inventories[inventory['groupID']] = (inventory, official_names)
+        authority = {k: inventory[k] for k in ('rule', 'url', 'sha256', 'count', 'productsSHA256', 'groupID', 'codePrefix', 'language', 'rarities')}
+        authority['capturedAt'] = family_capture_timestamp(inventory['capturedAt'])
+        release_inventories[inventory['groupID']] = (authority, official_names)
     for code, family in families.items():
         source_rows = set(entries[code])
         matched = set().union(*(correspondence.get(x.get("p"), set()) for x in family))
@@ -542,7 +553,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
                 and release_name_counts[(row['g'], norm(row['pn']))] == 1)
             if len(by_id[cid].get("card_images", [])) == 1 and (row['ec'] or verified_family):
                 if verified_family:
-                    row['pf'] = {k: inventory[k] for k in ('rule', 'url', 'sha256', 'count', 'capturedAt', 'productsSHA256', 'groupID', 'codePrefix', 'language', 'rarities')}
+                    row['pf'] = inventory
                 auto.append(code)
     for card in canonical.values():
         if correction := (passcode_corrections or {}).get(str(card["sourceID"])):
@@ -858,7 +869,7 @@ def main():
     taxonomy_scopes = {r['groupID'] for r in CORRESPONDENCE_RULES['rules'] if product_hashes.get(r['groupID']) == r['expectedProductsSHA256']}
     profiles = [json.loads((ROOT / name).read_text()) for name in json.loads((ROOT / 'yugioh_printing_inventories.json').read_text())['inventories']]
     inventories = reviewed_inventories(profiles, products, product_hashes, args.official_inventory_html or [])
-    timestamp = max([timestamp] + [i["capturedAt"] for i in inventories])
+    timestamp = max([timestamp] + [family_capture_timestamp(i["capturedAt"]) for i in inventories])
     calendar = (extract_release_calendar(args.release_calendar_html.read_bytes()) if args.release_calendar_html
                 else json.loads((ROOT / "yugioh_release_calendar.json").read_text()))
     printing_corrections = json.loads((ROOT / "yugioh_printing_corrections.json").read_text())
@@ -982,6 +993,10 @@ def validate_output(seed, strict=False):
         assert len(row['m']) == len({m['e'] for m in row['m']})
         assert set(m['e'] for m in row['m']) <= set(row['e']), 'membership outside admitted editions'
         assert row['ec'] or set(row['e']) == set(m['e'] for m in row['m']), 'unsupported edition'
+        if authority := row.get('pf'):
+            stamp = authority['capturedAt']
+            assert FAMILY_TIMESTAMP.fullmatch(stamp), 'printing family timestamp must use whole seconds with a timezone'
+            assert datetime.datetime.fromisoformat(stamp.replace('Z', '+00:00')) <= captured, 'future printing family evidence'
         for m in row['m']:
             assert m['t'] in ('providerMarket', 'providerListing', 'independentlyReviewed')
             assert m['q'] is None or (type(m['q']) in (int, float) and math.isfinite(m['q']) and m['q'] >= 0)
