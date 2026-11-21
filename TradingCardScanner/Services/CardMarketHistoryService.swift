@@ -59,8 +59,8 @@ struct CardMarketHistoryRequest: Hashable, Sendable {
         marketVariantID = product.variantID
         var candidates: [JustTCGBatchLookup] = []
         if let variant = product.variantID { candidates.append(.variantID(variant)) }
-        if let productID = product.tcgplayerProductID { candidates.append(.tcgplayerID(productID)) }
-        candidates.append(.cardID(product.id))
+        // Product-only fallback is deliberately omitted: it can select the
+        // wrong sealed variant if the vendor supplies more than one.
         lookups = candidates
         name = product.name
         setName = product.setName ?? ""
@@ -338,6 +338,11 @@ actor CardMarketHistoryService {
                 runtimes: CardGameRuntimeContainer? = nil) async throws -> CardMarketHistoryResult {
         let request = await input.resolvingMarketMapping(in: runtimes)
         try Task.checkCancellation()
+        // A product-level handle can return several sealed variants. Without
+        // the exact variant UUID, do not manufacture a historical series.
+        guard request.itemKind != .sealedProduct || request.marketVariantID != nil else {
+            throw HistoryError.noListing
+        }
         guard !request.requiresCatalogMapping || request.exactProductID != nil else { throw HistoryError.noListing }
         let old = readCache(request)
         if let old, let missAt = old.noListingAt, now.timeIntervalSince(missAt) < Self.noListingRetryInterval,
