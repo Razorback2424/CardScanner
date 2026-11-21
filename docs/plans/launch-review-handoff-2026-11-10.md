@@ -4,6 +4,14 @@
 **Baseline:** main at 2527c9b plus the preserved dirty working tree reviewed on 2026-11-10.
 **Evidence:** [independent audit](../audits/launch-review-2026-11-10.md). **Product authority:** [launch contract](../release/launch-contract.md).
 
+**2026-11-21 decision overlay:** This is a dated November 10 handoff, not a
+license to migrate existing production prices. The current launch decision
+retains TCGCSV-derived, TCGdex and Scryfall price paths with explicitly
+acknowledged unresolved upstream rights, while requiring the paid JustTCG
+shared-cache integration before submission. The definitive scope, Apple
+5.2.2 exposure and contingency dates are in
+[the launch contract](../release/launch-contract.md#launch-first-existing-source-decision-and-acknowledged-risk-2026-11-21).
+
 The ordinary scan flow, app-owned physical identities, serialized ownership/ledger/activity writes, current-price policy and separation between market charts and portfolio history are constraints to preserve. Re-read current source/diffs before each package: this is a handoff from a dirty candidate, not permission to overwrite the existing fixes.
 
 ## Order and dependencies
@@ -39,11 +47,24 @@ Small W5 fixes need not wait for backend work. Do not start speculative refactor
 
 Relevant code: PriceVendorCredentials, JustTCGTransport, JustTCGV1Client, JustTCGV2GradedClient, ProductPriceService, CardMarketHistoryService, PriceFallbackQuoteResolver, PriceRefreshController, game price adapters and ScannerSettingsView. The [shared-cache plan](shared_pricing_cache_plan.md) is a proposal, not evidence that Firebase or any backend has already been selected/deployed.
 
-Confirm active tier, operator cost/quota budget and published commercial-use terms. Avoid exposing the shared key or creating an arbitrary proxy/raw data product. Evaluate inventory and price-history exports against the actual licensing boundary; do not assume ordinary paid-tier consumer display needs additional written permission. Update privacy/support wording for the implemented backend without adding an unnecessary user account flow.
+Confirm active tier, operator cost/quota budget and published commercial-use terms.
+A server-held key **alone is insufficient**: implement shared card/variant +
+history caching across customers, concurrent request deduplication, paid-tier
+batches of up to 100 cards, global daily/monthly/per-minute enforcement,
+interactive headroom, abuse limits and truthful stale-price fallback. Simulate
+multiple clients and launch bursts against the purchased tier (Starter
+10,000/month, 1,000/day; Professional 50,000/month, 5,000/day), without
+assuming either plan will meet actual demand. Avoid exposing the shared key
+or creating an arbitrary proxy/raw data product. Evaluate inventory and price-history exports against the actual licensing boundary; do not assume ordinary paid-tier consumer display needs additional written permission. Update privacy/support wording for the implemented backend without adding an unnecessary user account flow.
 
-**Acceptance/validation:** fresh no-key install; raw exact history, supported grader/grade and sealed product; older versus newer quotes; provider-confirmed missing data versus mapping/transport failure; 401/403/429/5xx, cancellation, expiry, offline cache and relaunch. Check one exact holding across receipt, Browse, detail, Collection and Portfolio. No provider series backfills the local ledger. Add meaningful transport/contract regressions and rerun PricingTests, graded/history, refresh lifecycle/structural-write, scanner and purchase neighbors as affected. Include real funded-provider receipts and quota accounting.
+**Acceptance/validation:** fresh no-key install; repeat queries across
+independent clients yield shared-cache hits without duplicate provider calls;
+batching, simultaneous cold misses, quota reserves and budget exhaustion stay
+bounded; dated cached values survive 429/outages without becoming fresh-price
+evidence. Then confirm raw exact history, supported grader/grade and sealed product; older versus newer quotes; provider-confirmed missing data versus mapping/transport failure; 401/403/429/5xx, cancellation, expiry, offline cache and relaunch. Check one exact holding across receipt, Browse, detail, Collection and Portfolio. No provider series backfills the local ledger. Add meaningful transport/contract regressions and rerun PricingTests, graded/history, refresh lifecycle/structural-write, scanner and purchase neighbors as affected. Include real funded-provider receipts and quota accounting.
 
-**Regression risks:** broad cache-key collisions; currency leakage; using fetch time as market freshness; stale publication after correction/removal; depleting a shared quota; accidental purchase gating of free inventory features. Keep schemas compatible and keep provider credentials out of the binary.
+**Regression risks:** global cache stampedes, tenant abuse, quota exhaustion
+despite an apparent working central key; broad cache-key collisions; currency leakage; using fetch time as market freshness; stale publication after correction/removal; depleting a shared quota; accidental purchase gating of free inventory features. Keep schemas compatible and keep provider credentials out of the binary.
 
 ## W2 — Activate the approved production content routes
 
@@ -113,7 +134,17 @@ Follow the [existing hang plan](hang-inspection-plan.md) for current Release-dev
 
 **Addresses:** LR05 and remaining G07–G09 evidence. **Intended behavior:** the shipped binary, purchases, services, legal pages and App Store claims match what passed.
 
-Publish/configure the owner-approved privacy/support pages; inspect the built plist and open both from the installed app. Align privacy manifest, permission descriptions, actual backend data flows/retention, provider/artwork rights and App Store privacy answers. Recheck file-protection/continuity after first unlock and OS/app upgrades. Do not imply that restoring a purchase restores a deleted on-device collection or that CSV restores artwork/history.
+Publish/configure the owner-approved privacy/support pages; inspect the built plist and open both from the installed app.
+Record the owner's explicit decision to retain TCGCSV-derived marketplace
+pricing with unresolved upstream rights; do not call it licensed, assume
+affiliate membership grants data rights, or imply Apple App Review acceptance.
+For launch, check honest provider attribution, separate TCGplayer-derived
+and eBay comparison values, free access to Scryfall data, and an emergency
+source-disable path that preserves holdings while exposing missing quotes.
+A sample of ~50 difficult exact printings in each of One Piece, Lorcana and
+Yu-Gi-Oh may establish JustTCG contingency suitability before/soon after
+launch, but neither an exhaustive coverage migration nor a second vendor
+subscription is a release prerequisite. Align privacy manifest, permission descriptions, actual backend data flows/retention, provider/artwork rights and App Store privacy answers. Recheck file-protection/continuity after first unlock and OS/app upgrades. Do not imply that restoring a purchase restores a deleted on-device collection or that CSV restores artwork/history.
 
 Verify the approved non-consumable in real sandbox/TestFlight: localized price, purchase/cancel, pending approval, relaunch/offline ownership, restore with no purchase, revocation/refund and interrupted purchase/issue resolution. The local fourteen passing tests and one skipped interruption test do not close this gate. Free scans, collection, corrections, import/export and single-card listing photos must work without purchase.
 
