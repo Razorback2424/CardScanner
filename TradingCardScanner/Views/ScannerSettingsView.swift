@@ -46,6 +46,7 @@ private struct SettingsContentView: View {
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.catalogRecoveryContext) private var catalogRecovery
     @Environment(\.sharedBrowseCatalog) private var sharedBrowseCatalog
     @ObservedObject private var storageGeneration = CollectionStorageGeneration.shared
     @State private var isConfirmingCollectionDeletion = false
@@ -140,6 +141,38 @@ private struct SettingsContentView: View {
                         }
                     } label: {
                         Label("Collection", systemImage: "rectangle.stack")
+                    }
+                }
+
+                if let recovery = catalogRecovery, !recovery.unavailableGames.isEmpty {
+                    Section {
+                        ForEach(recovery.unavailableGames) { game in
+                            HStack {
+                                Label(game.displayName, systemImage: "exclamationmark.triangle")
+                                Spacer()
+                                Text(recovery.recoveryReady ? "Update available" : "Unavailable")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Button {
+                            recovery.retry()
+                        } label: {
+                            Label(
+                                recovery.preparing ? "Retrying…" :
+                                    recovery.recoveryReady ? "Reload catalogs" : "Retry unavailable catalogs",
+                                systemImage: "arrow.clockwise"
+                            )
+                        }
+                        .disabled(recovery.preparing || !scannerModel.canReloadCatalogs)
+                        if !scannerModel.canReloadCatalogs && !recovery.preparing {
+                            Text("Finish scanning before reloading catalogs.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    } header: {
+                        Text("Catalog Status")
+                    } footer: {
+                        Text("Unavailable games remain disabled until their catalogs recover. Your collection is safe, and other games are available.")
                     }
                 }
 
