@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "reviewedAt": "2026-11-18",
+ "reviewedAt": "2026-11-20",
  "policy": [
   "Each Lorcana promo prints its own footer (number/P1-P4, DIS, PD1 or RPH), so one footer is one printing. TCGplayer files each as its own product; this file follows that convention.",
   "stamp is null when the printed footer alone distinguishes the printing. Lorcana promos print their own promo number rather than an event stamp.",
@@ -836,10 +836,38 @@
    ]
   },
   {
-   "topic": "New Challenge products without a publisher card",
-   "finding": "Eight products new in the 2026-11-18 snapshot (Ursula - Deceiver, Be Prepared, Gaston - Superior Archer, Madam Mim - Resourceful Trickster, each Normal and Foil, numbered 2-5 and 14-17) have no publisher card and no public listing that shows their printed footer. They stay marketOnly until the footer can be read.",
+   "topic": "New Challenge and promo products without a publisher card",
+   "finding": "Ten products in group 23234 in the 2026-11-18 snapshot have no publisher card and no public listing showing their printed footer: Ursula - Deceiver, Be Prepared, Gaston - Superior Archer, Madam Mim - Resourceful Trickster (each Normal and Foil, numbered 2-5 and 14-17), Minnie Mouse - Amethyst Champion (numbered 20, Disney Lorcana Challenge), and Baymax - Lab Assistant (numbered 5, Magical Places Promo). They stay marketOnly until the printed footer can be confirmed.",
    "sources": [
     "https://tcgcsv.com/tcgplayer/71/23234/products"
+   ]
+  },
+  {
+   "topic": "Challenge Season 3 (C3) promos",
+   "finding": "Two products in the 2026-11-18 snapshot carry C3 footers confirmed from TCGplayer product images: Mother Knows Best 1/C3 EN 9 (product 711519, Challenge Participation) and Mother Knows Best (Foil) 13/C3 EN 9 (product 711520, Challenge Top 32). LorcanaJSON does not yet list C3 cards, so these have no lorcanajson: source card and cannot be reconciled by the promo rule engine. Evidence records with confirmed footers exist in lorcana_product_evidence.json. They will resolve once LorcanaJSON adds C3 entries.",
+   "sources": [
+    "https://tcgcsv.com/tcgplayer/71/23234/products",
+    "https://tcgplayer-cdn.tcgplayer.com/product/711519_400w.jpg",
+    "https://tcgplayer-cdn.tcgplayer.com/product/711520_400w.jpg"
+   ]
+  },
+  {
+   "topic": "P2 extras not in LorcanaJSON (numbers 15-17)",
+   "finding": "Three TCGplayer products carry P2 footers confirmed from product images but have no LorcanaJSON entry: Mickey Mouse - True Friend 15/P2 EN 1 (product 616373), Elsa - Queen Regent 16/P2 EN 1 (product 647091), Anna - Braving the Storm 17/P2 EN 4 (product 636354). The publisher-sourced Mickey Mouse - True Friend in P2 is 36/P2 EN 1 (lorcanajson:en:3595), a distinct printing from 15/P2. These stay marketOnly until LorcanaJSON adds the 15-17 range.",
+   "sources": [
+    "https://tcgcsv.com/tcgplayer/71/23234/products",
+    "https://product-images.tcgplayer.com/fit-in/1000x1000/616373.jpg",
+    "https://product-images.tcgplayer.com/fit-in/1000x1000/636354.jpg",
+    "https://product-images.tcgplayer.com/fit-in/1000x1000/647091.jpg"
+   ]
+  },
+  {
+   "topic": "Quest components and oversized battleground cards",
+   "finding": "Eight items are Illumineer's Quest game components or oversized battleground cards without standard collector numbers: Vine Tendril (lorcanajson:en:3551, Q3 quest card, footer EN Q3 with no number), and seven TCGplayer-sourced oversized/battleground cards from the Q1 and Q2 groups (Ursula - Ruler of Lorcana, Jafar - Supreme Sorcerer, battleground tiles, The Reforged Crown). These are not collectible singles with standard printed numbers and stay noFooter. The numbered Q1-Q3 quest cards (1/31 through 37/37) are already handled by the regular pipeline.",
+   "sources": [
+    "https://cards.disneylorcana.com/en-US/",
+    "https://tcgcsv.com/tcgplayer/71/23528/products",
+    "https://tcgcsv.com/tcgplayer/71/24257/products"
    ]
   }
  ]
