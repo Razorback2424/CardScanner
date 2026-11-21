@@ -1180,7 +1180,7 @@ struct SealedProductDetailView: View {
         let layout = dynamicTypeSize.isAccessibilitySize
             ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
             : AnyLayout(HStackLayout())
-        VStack(alignment: .leading, spacing: 8) {
+        return VStack(alignment: .leading, spacing: 8) {
             layout {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Your collection")
