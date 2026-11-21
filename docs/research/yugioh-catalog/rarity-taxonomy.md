@@ -25,7 +25,7 @@ Corroboration: Konami's reviewed Pharaoh's Servant checklist (`yugioh_printing_i
 **Decision (2026-11-20):** TCGplayer's "Duel Terminal Technology Common" and "Duel Terminal Technology Ultra Rare" name the same physical finish as YGOPRODeck's "Duel Terminal Normal Parallel Rare" and "Duel Terminal Ultra Parallel Rare". The `hac1-duel-terminal-technology-v1` rule maps between the two naming conventions.
 
 **Evidence:**
-1. Konami's official HAC1 blister pack description (embedded in TCGplayer product data via TCGCSV group 2941) reads: *"3 Duel Terminal Technology Ultra Rares, 1 Duel Terminal Technology Common, 14 standard Commons"* — confirming the "Duel Terminal Technology" label is Konami's name for the parallel finish in this set.
+1. The HAC1 blister pack's product description on TCGplayer (TCGCSV group 2941, sealed product) reads: *"3 Duel Terminal Technology Ultra Rares, 1 Duel Terminal Technology Common, 14 standard Commons"*. The pack's contents description uses "Duel Terminal Technology" for the parallel-finish pulls in this set.
 2. TCGplayer product names for these cards carry a "(Duel Terminal)" suffix (e.g. "Brionac, Dragon of the Ice Barrier (Duel Terminal)"), distinguishing them from the regular printings in the same group.
 3. YGOPRODeck lists the same HAC1-EN codes with "Duel Terminal Normal Parallel Rare" (DNPR) and "Duel Terminal Ultra Parallel Rare" (DUPR) rarity labels.
 4. Both sources list exactly two tiers of DT parallel (Common-level and Ultra-level) alongside standard Common and Secret Rare printings.
