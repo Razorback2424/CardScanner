@@ -6,6 +6,59 @@ import XCTest
 
 @MainActor
 final class AppOpeningTests: XCTestCase {
+    func testUnavailableCatalogDismissalDoesNotChangeUnderlyingStatus() throws {
+        let yuGiOh = try XCTUnwrap(CardGameRegistry.standard.descriptor(for: .yuGiOh))
+        let unavailable = [yuGiOh]
+
+        let acknowledged = CatalogRecoveryAcknowledgements.acknowledging("", unavailable: unavailable)
+        XCTAssertEqual(acknowledged, "yu-gi-oh")
+        XCTAssertTrue(CatalogRecoveryAcknowledgements.visible(unavailable, acknowledged: acknowledged).isEmpty)
+
+        // The underlying unavailable descriptors are untouched by dismissal.
+        XCTAssertEqual(unavailable.map(\.game), [.yuGiOh])
+        XCTAssertEqual(CatalogRecoveryAcknowledgements.retaining(acknowledged, unavailable: unavailable), acknowledged)
+    }
+
+    func testNewCatalogFailureStillShowsAfterAnotherWasDismissed() throws {
+        let yuGiOh = try XCTUnwrap(CardGameRegistry.standard.descriptor(for: .yuGiOh))
+        let lorcana = try XCTUnwrap(CardGameRegistry.standard.descriptor(for: .lorcana))
+        let acknowledged = CatalogRecoveryAcknowledgements.acknowledging("", unavailable: [yuGiOh])
+
+        let visible = CatalogRecoveryAcknowledgements.visible([yuGiOh, lorcana], acknowledged: acknowledged)
+        XCTAssertEqual(visible.map(\.game), [.lorcana])
+        XCTAssertEqual(
+            CatalogRecoveryAcknowledgements.acknowledging(acknowledged, unavailable: visible),
+            "lorcana,yu-gi-oh"
+        )
+    }
+
+    func testCatalogRecoveryClearsDismissalSoLaterFailureWarnsAgain() throws {
+        let yuGiOh = try XCTUnwrap(CardGameRegistry.standard.descriptor(for: .yuGiOh))
+        let acknowledged = CatalogRecoveryAcknowledgements.acknowledging("", unavailable: [yuGiOh])
+
+        let afterRecovery = CatalogRecoveryAcknowledgements.retaining(acknowledged, unavailable: [])
+        XCTAssertEqual(afterRecovery, "")
+        XCTAssertEqual(
+            CatalogRecoveryAcknowledgements.visible([yuGiOh], acknowledged: afterRecovery).map(\.game),
+            [.yuGiOh]
+        )
+    }
+
+    func testPartialCatalogRecoveryPreservesOnlyStillUnavailableAcknowledgements() throws {
+        let yuGiOh = try XCTUnwrap(CardGameRegistry.standard.descriptor(for: .yuGiOh))
+        let lorcana = try XCTUnwrap(CardGameRegistry.standard.descriptor(for: .lorcana))
+        let acknowledged = CatalogRecoveryAcknowledgements.acknowledging(
+            "", unavailable: [yuGiOh, lorcana]
+        )
+
+        let retained = CatalogRecoveryAcknowledgements.retaining(acknowledged, unavailable: [yuGiOh])
+        XCTAssertEqual(retained, "yu-gi-oh")
+        XCTAssertEqual(
+            CatalogRecoveryAcknowledgements.visible([lorcana], acknowledged: retained).map(\.game),
+            [.lorcana]
+        )
+    }
+
     func testHostedReadyHandoffDoesNotImposeAHoldForFastOrSlowLaunches() async throws {
         for (name, slow) in [("fast", false), ("slow", true)] {
             try await withOpeningHost { opening in
