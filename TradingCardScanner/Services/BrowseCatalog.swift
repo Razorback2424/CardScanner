@@ -182,7 +182,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private let checklistStore: PokemonChecklistStore
     private var setCache: [CardGame: [CatalogSet]] = [:]
     private var liveMagicDirectoryStoredAt: Date?
-    private var detailCache: [String: CatalogCardDetails] = [:]
+    /// Bounded so a long Browse session (or a live set load that seeds every
+    /// card in the set) cannot accumulate decoded card details indefinitely.
+    /// A miss re-reads through the normal detail path.
+    private var detailCache = BoundedCache<String, CatalogCardDetails>(capacity: 1_024)
     private var detailTasks: [String: DetailTaskState] = [:]
     private var magicPageTasks: [String: Task<CatalogPage<CatalogCardSummary>, Error>] = [:]
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
@@ -194,7 +197,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
         var waiters: Set<UUID>
     }
     private var pokemonDetailPayloadTasks: [String: PokemonPayloadTaskState] = [:]
-    private var pokemonSetCardDetails: [String: (cards: [String: TCGdexCard], retrievedAt: [String: Date])] = [:]
+    /// Full per-card provider payloads for a set. The catalog refresh crawl
+    /// visits every set, so an unbounded map retained every set's decoded
+    /// cards for the life of the actor. Keep only the few most recent sets:
+    /// enough for back-navigation and a crawl's current set.
+    private var pokemonSetCardDetails = BoundedCache<String, (cards: [String: TCGdexCard], retrievedAt: [String: Date])>(
+        capacity: 3
+    )
     private var pokemonSnapshotEntries: [PokemonChecklistSnapshotEntry] = []
     private var pokemonBundledRanks: [String: Int] = [:]
     private var pokemonSnapshotLoaded = false
@@ -658,8 +667,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         do {
             // Do not let a prior Browse read vouch for a newly signed target.
             pokemonSetDetails.removeValue(forKey: target.providerSetID.lowercased())
-            pokemonSetCardDetails = pokemonSetCardDetails.filter {
-                !$0.key.hasPrefix(target.providerSetID.lowercased() + "|")
+            pokemonSetCardDetails.removeAll { key, _ in
+                key.hasPrefix(target.providerSetID.lowercased() + "|")
             }
             let provider = try await pokemonSet(id: target.providerSetID)
             let baseSet = try reconciliationBaseSet(
@@ -1455,7 +1464,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         gameBrowseRevisions[game] = snapshot.revision
         gameBrowseAdapters = gameBrowseAdapters.replacing(adapter)
         setCache[game] = nil
-        detailCache = detailCache.filter { !$0.key.hasPrefix(game.rawValue + ":") }
+        detailCache.removeAll { key, _ in key.hasPrefix(game.rawValue + ":") }
         if priceQuoteService.supportsStoredPrintingRefresh(for: game) {
             sortPriceResolutionGeneration = UUID()
             sortPriceCache = sortPriceCache.filter { !$0.key.hasPrefix(game.rawValue + ":") }
@@ -1509,12 +1518,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
             sortPriceCache.removeValue(forKey: id)
             sortPriceCheckedAt.removeValue(forKey: id)
             // Use the actual cache keys, including catalog generation and set scope.
-            let matchingKeys = detailCache.filter { _, details in
+            let matchingKeys = detailCache.keys { _, details in
                 let matches = id.hasPrefix("\(details.card.game.rawValue):\(details.set.catalogID.providerID.lowercased()):")
                     && id.split(separator: ":").contains(Substring(details.card.providerID))
                 return matches && (details.card.game == .pokemon
                     || details.card.marketPrices.isEmpty || details.card.marketPrices.contains(where: \.isGap))
-            }.map(\.key)
+            }
             for key in matchingKeys {
                 detailCache.removeValue(forKey: key)
                 priceRetryDetailKeys.insert(key)

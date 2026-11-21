@@ -43,4 +43,22 @@ final class BoundedCacheTests: XCTestCase {
         XCTAssertNil(cache[2], "least recently used")
         XCTAssertEqual(cache[3], "c")
     }
+
+    func testRemovalHelpersDropEntriesAndRecency() {
+        var cache = BoundedCache<String, Int>(capacity: 3)
+        cache["pokemon:a"] = 1
+        cache["pokemon:b"] = 2
+        cache["magic:c"] = 3
+
+        XCTAssertEqual(cache.keys { _, value in value > 1 }.sorted(), ["magic:c", "pokemon:b"])
+        cache.removeAll { key, _ in key.hasPrefix("pokemon:") }
+        XCTAssertEqual(cache.count, 1)
+        XCTAssertEqual(cache.removeValue(forKey: "magic:c"), 3)
+        XCTAssertEqual(cache.count, 0)
+
+        // Removed keys must not linger in the recency list and evict live ones.
+        for value in 1...3 { cache["k\(value)"] = value }
+        XCTAssertEqual(cache.count, 3)
+        XCTAssertEqual(cache["k1"], 1)
+    }
 }

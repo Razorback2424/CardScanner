@@ -17,6 +17,25 @@ struct BoundedCache<Key: Hashable, Value> {
         usage.removeAll(keepingCapacity: true)
     }
 
+    @discardableResult
+    mutating func removeValue(forKey key: Key) -> Value? {
+        guard let value = storage.removeValue(forKey: key) else { return nil }
+        usage.removeAll { $0 == key }
+        return value
+    }
+
+    /// Keys whose entries match, without changing recency.
+    func keys(where predicate: (Key, Value) throws -> Bool) rethrows -> [Key] {
+        try storage.compactMap { try predicate($0.key, $0.value) ? $0.key : nil }
+    }
+
+    mutating func removeAll(where predicate: (Key, Value) throws -> Bool) rethrows {
+        let removed = Set(try keys(where: predicate))
+        guard !removed.isEmpty else { return }
+        for key in removed { storage[key] = nil }
+        usage.removeAll { removed.contains($0) }
+    }
+
     subscript(key: Key) -> Value? {
         mutating get {
             guard let value = storage[key] else { return nil }
