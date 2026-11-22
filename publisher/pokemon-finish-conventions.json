@@ -1,6 +1,26 @@
 {
   "schemaVersion": 1,
-  "purpose": "Reviewed collector conventions for the batch finish certifier. Each one turns retained TCGCSV evidence into a cited resolution; certify() re-checks it with its unchanged gates, and the certificate's slotChanges records every difference from the bundled checklist. The research and decisions are in docs/research/pokemon-finish-coverage/collector-conventions.md.",
+  "purpose": "Reviewed collector conventions for the finish certifier. Title rules help identify exact products; finish rules turn retained TCGCSV evidence into cited resolutions. certify() re-checks the comparison, and slotChanges records every certificate difference from the bundled checklist. See docs/research/pokemon-finish-coverage/collector-conventions.md.",
+  "deltaSpeciesTitles": {
+    "id": "ex-delta-species-title-v1",
+    "decision": "In these five English EX sets, a checklist title ending in δ and a marketplace title ending in (Delta Species) describe the same numbered card when the base titles agree and the expected set group contains one numbered product. Keep all finish and stamp checks.",
+    "sets": {
+      "ex11": {"setName": "Delta Species", "groupID": 1429, "groupName": "EX Delta Species", "denominator": 113},
+      "ex12": {"setName": "Legend Maker", "groupID": 1378, "groupName": "EX Legend Maker", "denominator": 92},
+      "ex13": {"setName": "Holon Phantoms", "groupID": 1379, "groupName": "EX Holon Phantoms", "denominator": 110},
+      "ex14": {"setName": "Crystal Guardians", "groupID": 1395, "groupName": "EX Crystal Guardians", "denominator": 100},
+      "ex15": {"setName": "Dragon Frontiers", "groupID": 1411, "groupName": "EX Dragon Frontiers", "denominator": 101}
+    },
+    "sources": [
+      "https://assets.pokemon.com/assets/cms/pdf/tcg/checklists/dragonfrontiers_checklist.pdf",
+      "https://bulbapedia.bulbagarden.net/wiki/Delta_Species_(TCG)",
+      "https://www.tcgplayer.com/product/83549",
+      "https://www.cardmarket.com/en/Pokemon/Products/Singles/EX-Dragon-Frontiers/Ampharos-Delta-Species-DF1",
+      "https://www.pricecharting.com/console/pokemon-dragon-frontiers?sort=model-number&view=table",
+      "https://www.pricecharting.com/pop/set/pokemon-dragon-frontiers",
+      "https://www.psacard.com/priceguide/non-sports-tcg-card-values/2006-poke-mon-ex-dragon-frontiers/4069"
+    ]
+  },
   "reverseLane": {
     "id": "reverse-holo-lane",
     "decision": "A card whose own set-group product has a Reverse Holofoil lane with a positive TCGplayer market price is certified with a reverse holo printing, even when the bundled TCGdex slots omit it. Collectors expect a reverse holo of every non-ultra card from Legendary Collection on, and TCGplayer sells it as a lane of the same product.",

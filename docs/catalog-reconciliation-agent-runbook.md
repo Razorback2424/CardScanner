@@ -105,11 +105,29 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 - **`multiplePrintRuns`** (Base Set and other early sets). Schema 1 certificates are keyed by card ID, so 1st Edition and Unlimited cannot be told apart. This needs a certificate schema change on both the app and script sides.
 - **Event and deck stamps** (Player Rewards, League, Snowflake, World Championship decks, GameStop/EB Games). No verified TCGplayer title rule exists yet. Each needs its own research, and a rule may only be added once a title pattern is confirmed against real listings.
 
-## Good next targets (verified as of 2026-11-18)
+## Pokémon state and next targets (2026-11-21)
 
-1. **Celebrations Classic Collection (`cel25cc`).** Add a reviewed mapping from each CC number to the original printed number that TCGplayer uses, then match name, original number and lane exactly. This would likely clear most of its 34 items and certify the set.
-2. **`xy8-146a` Professor's Letter.** It is TCGplayer product 177166 in group 1938, outside xy8's own group. A narrow appearance rule could certify xy8.
-3. **Cosmos holos in SV and Mega Evolution sets, and Cracked Ice.** Each comes down to one question: which TCGplayer group and title wording counts as evidence for the finish.
+Main at `467581b4` includes the Celebrations Classic Collection number
+remap, Professor's Letter mapping and Nidoran name normalization. The
+isolated Delta Species title pass matched 169 cards across five EX sets.
+On the fresh capture, the ledger went from 4,485 to 4,158 open rows.
+The reason-level diff closed 338 old reasons and added 11 finish reasons
+for already-open identities. Zero new identities opened and the affected
+sets remain pending. The retained capture reproduced the same changes.
+[Decision and exact set scope](research/pokemon-finish-coverage/collector-conventions.md#ex-delta-species-title-suffixes-2026-11-21)
+
+1. **Unified Minds (`sm11`).** Review the 83 finish conflicts against the
+   official checklist and exact market lanes, including independently
+   documented non-holo printings.
+2. **EX sets after the Delta Species title pass.** Research the remaining
+   standard finish discrepancies and exact championship or prerelease
+   products and title conventions. Preserve open rows where that evidence
+   is missing.
+3. **Cosmos holos in SV and Mega Evolution sets, and Cracked Ice.** Confirm
+   the TCGplayer group and exact title patterns that identify these finishes.
+
+The numbered ledgers and publisher source are on the SSD in
+`PokemonDeltaReconciliation-20261121/`.
 
 ## State this runbook was written against
 
