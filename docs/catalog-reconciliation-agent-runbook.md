@@ -65,7 +65,9 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 
 **Pass loop:**
 1. Capture onto the SSD by running the builder without `--offline` into a fresh `--cache-dir`. It takes about 40 minutes for 660 groups.
-2. Replay with `--offline` and pass `--previous-seed TradingCardScanner/YuGiOhCatalogSeed/catalog.json`.
+2. Replay with `--offline` and `--price-receipt`. Pass a seed from a different
+   provider capture as `--previous-seed`. For a rule-only replay of the bundled
+   capture, use the earlier seed that generated that bundle as its parent.
 3. Compare ledgers with `catalog_exceptions.py diff`.
 4. Confirm the candidate changed only what the rule intended: compare printing IDs and fields against the previous build, check that `parentRegressions` is empty, and check that `autoEligibleCodes` is unchanged unless you meant to change it.
 5. Copy the candidate over the bundled seed.
@@ -92,6 +94,46 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 2. **Codes with no YGOPRODeck row** (the largest remaining pattern: about 390 Commons and 130 Super Rares, mostly Speed Duel sets). Check whether YGOPRODeck lists these under another code before treating them as gaps.
 3. **Reviewed Konami release inventories for more releases.** This is still the main way to make more codes auto-resolve on scan.
 4. **Remaining rarity and identity gaps.** `MZTM-EN046` needs an identity review because YGOPRODeck attaches its row to Buzzsaw Shark, while Konami and TCGplayer list Cutter Shark. `KC01-EN033` and the three `L5DD` tokens need exact numbered identity evidence. The larger deck clusters need exact title, artwork and bonus or misprint evidence before linking multiple products at the same printed code.
+
+**Yu-Gi-Oh state (2026-11-21, candidate based on `origin/main@467581b4`).**
+- The HAC1 Duel Terminal Technology rule and 2025 Mega-Pack Tin inventory are
+  already on main. HAC1 still has nine open codes involving other identity,
+  correspondence or printing shortfalls.
+- The exact Common/Short Print rule cleared the last ledger exceptions for
+  `CRV`, `EXVC`, `MACR`, `OP07`, `RDS`, `RGBT`, `SOD` and `STOR`.
+  On the capture that reproduces the bundled catalog, open rows went from
+  4,883 to 4,849 and incomplete codes from 2,527 to 2,493. All 34 closed
+  rows were `printingShortfall`. The diff opened zero rows, reported empty
+  `parentRegressions`, and preserved all 720 automatic codes.
+  [Decision and exact scope](research/yugioh-catalog/rarity-taxonomy.md#common-and-short-print-rows-for-the-same-code-2026-11-21)
+- The fresh capture's price receipt bound all 660 groups to the
+  `2026-11-20T20:06:21+0000` provider snapshot. Replay closed exactly the
+  same 34 rows (4,880 to 4,846, zero opened). The fresh baseline and final
+  replay both report four changed canonical identities for `MAMO-EN013`.
+  The bundled candidate uses the retained capture to isolate the reviewed
+  rule from that provider change.
+- The source captures, numbered ledgers and machine-readable diffs are in
+  `/Volumes/Keller Family Photos/CodexBuilds/YuGiOhReconciliation-20261121/`.
+
+**Next Yu-Gi-Oh targets**
+
+1. **Code coverage in Speed Duel sets.** Prioritize Battle City Finals
+   (`SBC2`), Midterm Destruction (`SGX4`) and Tournament Pack 7 (`STP7`).
+   Check for alternate numbering on the same card and validate any proposed
+   crosswalk against an English publisher checklist. The retained YGOPRODeck
+   capture has no exact rows for those prefixes. Its Tournament Pack 7
+   (`TP7`) and OTS Tournament Pack 7 (`OP07`) are separate releases.
+2. **Generation Force (`GENF`).** Its ledger has two Common/Short Print
+   pairs and one separately listed oversized Tiras, Keeper of Genesis
+   (`GENF-EN044`). Review the oversized printing's distribution and card
+   image before treating that code as complete.
+3. **Reviewed Konami release inventories.** Prioritize releases with clear
+   correspondence and many single-print, single-art families to improve
+   automatic scan selection.
+4. **`MAMO-EN013` parent identity.** Validate YGOPRODeck's new canonical
+   link for Odd-Eyes Pendulum Dragon, Four Heavenly Dragons against the
+   four existing TCGplayer products. Preserve the parent identity through
+   a reviewed linkage before bundling that provider capture.
 
 ## Mistakes already made (do not repeat)
 

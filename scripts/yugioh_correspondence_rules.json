@@ -103,6 +103,288 @@
       "reviewedAt": "2026-11-20"
     }
   ],
+  "commonShortPrintPairs": {
+    "id": "common-short-print-distribution-pair-v1",
+    "decision": "Count the reviewed Common and Short Print labels as one Common finish when the exact English TCGplayer product, supported edition lanes, and both YGOPRODeck rows agree with the Konami checklist.",
+    "reviewedAt": "2026-11-21",
+    "editionLanes": [
+      "yugioh1stEdition",
+      "yugiohUnlimited"
+    ],
+    "sources": [
+      "https://ftp.yugipedia.com/wiki/Short_print",
+      "https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=6148&ope=2&request_locale=en",
+      "https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=6264&ope=2&request_locale=en",
+      "https://www.pricecharting.com/console/yugioh-extreme-victory?sort=model-number&view=table",
+      "https://www.pricecharting.com/pop/set/yugioh-cybernetic-revolution",
+      "https://www.psacard.com/psasetregistry/tcg/yu-gi-oh-sets/371",
+      "https://www.cardmarket.com/en/YuGiOh/Products/Singles/Cybernetic-Revolution"
+    ],
+    "groups": {
+      "1922": {
+        "groupName": "Maximum Crisis",
+        "sources": [
+          "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11116003&rp=99999&request_locale=en",
+          "https://tcgcsv.com/tcgplayer/2/1922/products"
+        ],
+        "konamiChecklistSHA256": "116d90cc59e3c9e735f375d480bd39e7fa152bfa312c8f904d1acd264eb18b91",
+        "konamiChecklistCount": 100,
+        "codes": {
+          "MACR-EN035": {
+            "productID": 131152,
+            "productName": "Fire Cracker",
+            "sourceCardID": 81109178
+          }
+        }
+      },
+      "2228": {
+        "groupName": "OTS Tournament Pack 7",
+        "sources": [
+          "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=1121217001&rp=99999&request_locale=en",
+          "https://tcgcsv.com/tcgplayer/2/2228/products"
+        ],
+        "konamiChecklistSHA256": "2a2d0120ac36b94f587e222342b4cbca358180a57dfd0aa793f11e3509b102ae",
+        "konamiChecklistCount": 26,
+        "codes": {
+          "OP07-EN026": {
+            "productID": 164891,
+            "productName": "Gatling Dragon",
+            "sourceCardID": 87751584
+          }
+        },
+        "editionLanes": [
+          "yugiohUnlimited"
+        ]
+      },
+      "270": {
+        "groupName": "Raging Battle",
+        "sources": [
+          "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11108001&rp=99999&request_locale=en",
+          "https://tcgcsv.com/tcgplayer/2/270/products"
+        ],
+        "konamiChecklistSHA256": "330ccbb6c794603b3c62cc4f6a7210fbac45b814937f813cf5d7a39efbbdc78b",
+        "konamiChecklistCount": 100,
+        "codes": {
+          "RGBT-EN080": {
+            "productID": 31923,
+            "productName": "Mirror of Oaths",
+            "sourceCardID": 46656406
+          }
+        }
+      },
+      "160": {
+        "groupName": "Cybernetic Revolution",
+        "sources": [
+          "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11104004&rp=99999&request_locale=en",
+          "https://tcgcsv.com/tcgplayer/2/160/products"
+        ],
+        "konamiChecklistSHA256": "bf14568a376f0a04f181bc27d2d2f1f0c7a97afc3771c150e40f28ac858e3854",
+        "konamiChecklistCount": 60,
+        "codes": {
+          "CRV-EN040": {
+            "productID": 24466,
+            "productName": "Dragon's Mirror",
+          "sourceCardID": 71490127
+          },
+          "CRV-EN042": {
+            "productID": 24468,
+            "productName": "Des Croaking",
+          "sourceCardID": 44883830
+          },
+          "CRV-EN044": {
+            "productID": 24470,
+            "productName": "Shien's Spy",
+          "sourceCardID": 7672244
+          },
+          "CRV-EN060": {
+            "productID": 24462,
+            "productName": "Prepare to Strike Back",
+          "sourceCardID": 4483989
+          }
+        }
+      },
+      "203": {
+        "groupName": "Extreme Victory",
+        "sources": [
+          "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11110003&rp=99999&request_locale=en",
+          "https://tcgcsv.com/tcgplayer/2/203/products"
+        ],
+        "konamiChecklistSHA256": "c7de4f6fbdcf2c0585c46cd17febeaa1a4800e2161b815af8d43ce2f297ad887",
+        "konamiChecklistCount": 100,
+        "codes": {
+          "EXVC-EN035": {
+            "productID": 40061,
+            "productName": "Jar Turtle",
+          "sourceCardID": 96287685
+          },
+          "EXVC-EN036": {
+            "productID": 40062,
+            "productName": "Aurora Paragon",
+          "sourceCardID": 22386234
+          },
+          "EXVC-EN062": {
+            "productID": 40088,
+            "productName": "Self-Mummification",
+          "sourceCardID": 15103313
+          },
+          "EXVC-EN079": {
+            "productID": 40105,
+            "productName": "Localized Tornado",
+          "sourceCardID": 64681263
+          }
+        }
+      },
+      "302": {
+        "groupName": "Storm of Ragnarok",
+        "sources": [
+          "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11110000&rp=99999&request_locale=en",
+          "https://tcgcsv.com/tcgplayer/2/302/products"
+        ],
+        "konamiChecklistSHA256": "ee49f5babccae27474cbe4b9433665b60ac69c53ced891e0c9a5984d9acb30e9",
+        "konamiChecklistCount": 100,
+        "codes": {
+          "STOR-EN036": {
+            "productID": 39267,
+            "productName": "Majioshaleon",
+          "sourceCardID": 67211766
+          },
+          "STOR-EN037": {
+            "productID": 39326,
+            "productName": "Yaksha",
+          "sourceCardID": 94215860
+          },
+          "STOR-EN062": {
+            "productID": 39302,
+            "productName": "Terminal World",
+          "sourceCardID": 54631834
+          },
+          "STOR-EN077": {
+            "productID": 39325,
+            "productName": "Xing Zhen Hu Replica",
+          "sourceCardID": 40736921
+          }
+        }
+      },
+      "274": {
+        "groupName": "Rise of Destiny",
+        "sources": [
+          "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11103005&rp=99999&request_locale=en",
+          "https://tcgcsv.com/tcgplayer/2/274/products"
+        ],
+        "konamiChecklistSHA256": "c216e594b20fd3ca2fd8af3789d0509a6ecbbe22d6ca12fe6bda611cc8cebda6",
+        "konamiChecklistCount": 60,
+        "codes": {
+          "RDS-EN043": {
+            "productID": 23457,
+            "productName": "Mokey Mokey Smackdown",
+          "sourceCardID": 1965724
+          },
+          "RDS-EN044": {
+            "productID": 23458,
+            "productName": "Back to Square One",
+          "sourceCardID": 47453433
+          },
+          "RDS-EN047": {
+            "productID": 23460,
+            "productName": "Lighten the Load",
+          "sourceCardID": 37231841
+          },
+          "RDS-EN051": {
+            "productID": 23464,
+            "productName": "Xing Zhen Hu",
+          "sourceCardID": 76515293
+          },
+          "RDS-EN053": {
+            "productID": 23466,
+            "productName": "Fruits of Kozaky's Studies",
+          "sourceCardID": 49998907
+          },
+          "RDS-EN054": {
+            "productID": 23467,
+            "productName": "Mind Haxorz",
+          "sourceCardID": 75392615
+          },
+          "RDS-EN055": {
+            "productID": 23468,
+            "productName": "Fuh-Rin-Ka-Zan",
+          "sourceCardID": 1781310
+          }
+        }
+      },
+      "285": {
+        "groupName": "Soul of the Duelist",
+        "sources": [
+          "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11103003&rp=99999&request_locale=en",
+          "https://tcgcsv.com/tcgplayer/2/285/products"
+        ],
+        "konamiChecklistSHA256": "497d534187562a111dd1619dffb7c5dde6b6f992f045cf4d416f584443f20593",
+        "konamiChecklistCount": 60,
+        "codes": {
+          "SOD-EN039": {
+            "productID": 23384,
+            "productName": "Mind Wipe",
+          "sourceCardID": 52817046
+          },
+          "SOD-EN040": {
+            "productID": 23385,
+            "productName": "Abyssal Designator",
+          "sourceCardID": 89801755
+          },
+          "SOD-EN044": {
+            "productID": 23389,
+            "productName": "The Graveyard in the Fourth Dimension",
+          "sourceCardID": 88089103
+          },
+          "SOD-EN045": {
+            "productID": 23390,
+            "productName": "Two-Man Cell Battle",
+          "sourceCardID": 25578802
+          },
+          "SOD-EN048": {
+            "productID": 23393,
+            "productName": "Ritual Weapon",
+          "sourceCardID": 54351224
+          },
+          "SOD-EN049": {
+            "productID": 23394,
+            "productName": "Taunt",
+          "sourceCardID": 90740329
+          },
+          "SOD-EN050": {
+            "productID": 23395,
+            "productName": "Absolute End",
+          "sourceCardID": 27744077
+          },
+          "SOD-EN052": {
+            "productID": 23397,
+            "productName": "Ninjitsu Art of Decoy",
+          "sourceCardID": 89628781
+          },
+          "SOD-EN054": {
+            "productID": 23399,
+            "productName": "Heavy Slump",
+          "sourceCardID": 52417194
+          },
+          "SOD-EN056": {
+            "productID": 23401,
+            "productName": "Mind Crush",
+          "sourceCardID": 15800838
+          },
+          "SOD-EN058": {
+            "productID": 23403,
+            "productName": "Gorgon's Eye",
+          "sourceCardID": 52648457
+          },
+          "SOD-EN059": {
+            "productID": 23404,
+            "productName": "Cemetery Bomb",
+            "sourceCardID": 51394546,
+            "sourceCardName": "Cemetary Bomb"
+          }
+        }
+      }
+    }
+  },
   "setNameAliases": [
     {
       "id": "release-name-126",

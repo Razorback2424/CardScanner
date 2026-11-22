@@ -149,6 +149,26 @@ def source_physical_rarity(rarity, rules=None):
             return alias['physicalRarity']
     return rarity
 
+
+def reviewed_common_label_pair(printing, group_name, card, source_entries):
+    """Accept a reviewed pair of distribution labels for one Common finish."""
+    if (len(source_entries) != 2 or printing["r"] != "Common" or printing.get("vr")
+            or printing["art"] or printing["ir"] or printing["limitations"]):
+        return False
+    rule = CORRESPONDENCE_RULES["commonShortPrintPairs"]
+    scope = rule["groups"].get(str(printing["g"]))
+    if not scope or scope["groupName"] != group_name:
+        return False
+    review = scope["codes"].get(printing["c"])
+    if not review or (printing.get("p"), printing["pn"], card["sourceID"], card["n"]) != (
+            review["productID"], review["productName"], review["sourceCardID"],
+            review.get("sourceCardName", review["productName"])):
+        return False
+    return (printing["pe"] == printing["e"] == scope.get("editionLanes", rule["editionLanes"])
+            and set(source_entries) == {(review["sourceCardID"], group_name, rarity)
+                                       for rarity in ("Common", "Short Print")})
+
+
 def release_names(gid, group_name, code, rules=None):
     """Normalized secondary set names that name this marketplace release.
 
@@ -558,6 +578,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         if row["c"]: families[row["c"]].append(row)
     release_name_counts = collections.Counter((row['g'], norm(row['pn'])) for row in rows)
     auto = []
+    group_names = {group["g"]: group["n"] for group in sets}
     inventories = printing_inventory if isinstance(printing_inventory, list) else [printing_inventory] if printing_inventory else []
     release_inventories = {}
     for inventory in inventories:
@@ -575,7 +596,11 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         matched = set().union(*(correspondence.get(x.get("p"), set()) for x in family))
         if matched != source_rows: incomplete[code].add("printingCorrespondenceGap")
         if not entries[code] or len({x["r"] for x in family}) < len({norm(source_physical_rarity(r)) for _, _, r in entries[code]}): incomplete[code].add("rarityShortfall")
-        if len({(x["g"], x["r"], x["art"]) for x in family}) < len(entries[code]): incomplete[code].add("printingShortfall")
+        if len({(x["g"], x["r"], x["art"]) for x in family}) < len(entries[code]):
+            first = family[0]
+            if (len(family) != 1 or matched != source_rows or not reviewed_common_label_pair(
+                    first, group_names[first["g"]], canonical[first["k"]], entries[code])):
+                incomplete[code].add("printingShortfall")
         labels = [(x["g"], x["r"], x["art"], x["pn"]) for x in family]
         if len(set(labels)) != len(labels): incomplete[code].add("indistinguishable")
         counts = collections.Counter(labels)
