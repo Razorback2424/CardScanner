@@ -5,11 +5,36 @@
     "id": "ex-delta-species-title-v1",
     "decision": "In these five English EX sets, a checklist title ending in δ and a marketplace title ending in (Delta Species) describe the same numbered card when the base titles agree and the expected set group contains one numbered product. Keep all finish and stamp checks.",
     "sets": {
-      "ex11": {"setName": "Delta Species", "groupID": 1429, "groupName": "EX Delta Species", "denominator": 113},
-      "ex12": {"setName": "Legend Maker", "groupID": 1378, "groupName": "EX Legend Maker", "denominator": 92},
-      "ex13": {"setName": "Holon Phantoms", "groupID": 1379, "groupName": "EX Holon Phantoms", "denominator": 110},
-      "ex14": {"setName": "Crystal Guardians", "groupID": 1395, "groupName": "EX Crystal Guardians", "denominator": 100},
-      "ex15": {"setName": "Dragon Frontiers", "groupID": 1411, "groupName": "EX Dragon Frontiers", "denominator": 101}
+      "ex11": {
+        "setName": "Delta Species",
+        "groupID": 1429,
+        "groupName": "EX Delta Species",
+        "denominator": 113
+      },
+      "ex12": {
+        "setName": "Legend Maker",
+        "groupID": 1378,
+        "groupName": "EX Legend Maker",
+        "denominator": 92
+      },
+      "ex13": {
+        "setName": "Holon Phantoms",
+        "groupID": 1379,
+        "groupName": "EX Holon Phantoms",
+        "denominator": 110
+      },
+      "ex14": {
+        "setName": "Crystal Guardians",
+        "groupID": 1395,
+        "groupName": "EX Crystal Guardians",
+        "denominator": 100
+      },
+      "ex15": {
+        "setName": "Dragon Frontiers",
+        "groupID": 1411,
+        "groupName": "EX Dragon Frontiers",
+        "denominator": 101
+      }
     },
     "sources": [
       "https://assets.pokemon.com/assets/cms/pdf/tcg/checklists/dragonfrontiers_checklist.pdf",
@@ -271,31 +296,106 @@
       "setID": "cel25cc",
       "groupID": 2931,
       "mapping": {
-        "CC001": {"marketNumber": "2/102", "productId": 250319},
-        "CC002": {"marketNumber": "4/102", "productId": 250320},
-        "CC003": {"marketNumber": "15/102", "productId": 250321},
-        "CC004": {"marketNumber": "73/102", "productId": 250322},
-        "CC005": {"marketNumber": "8/82", "productId": 250294},
-        "CC006": {"marketNumber": "15/82", "productId": 250323},
-        "CC007": {"marketNumber": "15/132", "productId": 250324},
-        "CC008": {"marketNumber": "24/53", "productId": 250325},
-        "CC009": {"marketNumber": "20/111", "productId": 250326},
-        "CC010": {"marketNumber": "66/64", "productId": 250327},
-        "CC011": {"marketNumber": "9/95", "productId": 250328},
-        "CC012": {"marketNumber": "86/109", "productId": 250329},
-        "CC013": {"marketNumber": "88/92", "productId": 250330},
-        "CC014": {"marketNumber": "93/101", "productId": 250331},
-        "CC015": {"marketNumber": "17/17", "productId": 250332},
-        "CC016": {"marketNumber": "15/106", "productId": 250333},
-        "CC017": {"marketNumber": "109/111", "productId": 250334},
-        "CC018": {"marketNumber": "145/147", "productId": 250335},
-        "CC019": {"marketNumber": "107/123", "productId": 250336},
-        "CC020": {"marketNumber": "113/114", "productId": 250337},
-        "CC021": {"marketNumber": "114/114", "productId": 250338},
-        "CC022": {"marketNumber": "54/99", "productId": 250339},
-        "CC023": {"marketNumber": "97/146", "productId": 250340},
-        "CC024": {"marketNumber": "76/108", "productId": 250341},
-        "CC025": {"marketNumber": "60/145", "productId": 250342}
+        "CC001": {
+          "marketNumber": "2/102",
+          "productId": 250319
+        },
+        "CC002": {
+          "marketNumber": "4/102",
+          "productId": 250320
+        },
+        "CC003": {
+          "marketNumber": "15/102",
+          "productId": 250321
+        },
+        "CC004": {
+          "marketNumber": "73/102",
+          "productId": 250322
+        },
+        "CC005": {
+          "marketNumber": "8/82",
+          "productId": 250294
+        },
+        "CC006": {
+          "marketNumber": "15/82",
+          "productId": 250323
+        },
+        "CC007": {
+          "marketNumber": "15/132",
+          "productId": 250324
+        },
+        "CC008": {
+          "marketNumber": "24/53",
+          "productId": 250325
+        },
+        "CC009": {
+          "marketNumber": "20/111",
+          "productId": 250326
+        },
+        "CC010": {
+          "marketNumber": "66/64",
+          "productId": 250327
+        },
+        "CC011": {
+          "marketNumber": "9/95",
+          "productId": 250328
+        },
+        "CC012": {
+          "marketNumber": "86/109",
+          "productId": 250329
+        },
+        "CC013": {
+          "marketNumber": "88/92",
+          "productId": 250330
+        },
+        "CC014": {
+          "marketNumber": "93/101",
+          "productId": 250331
+        },
+        "CC015": {
+          "marketNumber": "17/17",
+          "productId": 250332
+        },
+        "CC016": {
+          "marketNumber": "15/106",
+          "productId": 250333
+        },
+        "CC017": {
+          "marketNumber": "109/111",
+          "productId": 250334
+        },
+        "CC018": {
+          "marketNumber": "145/147",
+          "productId": 250335
+        },
+        "CC019": {
+          "marketNumber": "107/123",
+          "productId": 250336
+        },
+        "CC020": {
+          "marketNumber": "113/114",
+          "productId": 250337
+        },
+        "CC021": {
+          "marketNumber": "114/114",
+          "productId": 250338
+        },
+        "CC022": {
+          "marketNumber": "54/99",
+          "productId": 250339
+        },
+        "CC023": {
+          "marketNumber": "97/146",
+          "productId": 250340
+        },
+        "CC024": {
+          "marketNumber": "76/108",
+          "productId": 250341
+        },
+        "CC025": {
+          "marketNumber": "60/145",
+          "productId": 250342
+        }
       },
       "sources": [
         "https://tcgcsv.com/tcgplayer/3/2931/products (all 25 products use original expansion numbers, not CC numbers)",
@@ -309,7 +409,10 @@
       "setID": "xy8",
       "groupID": 1938,
       "mapping": {
-        "146a": {"marketNumber": "146a/162", "productId": 177166}
+        "146a": {
+          "marketNumber": "146a/162",
+          "productId": 177166
+        }
       },
       "sources": [
         "https://tcgcsv.com/tcgplayer/3/1938/products (Alternate Art Promos group lists Professor's Letter as 146a/162, product 177166)",
@@ -328,6 +431,31 @@
       "https://m.bulbapedia.bulbagarden.net/wiki/Holofoil (EX-era reverse holos use an energy-symbol pattern in the picture window)",
       "https://facetofacegames.com/products/energy-switch-90112-uncommon-ex6-90-reverse-holo (retailers list one 'Reverse Holo' per EX FireRed & LeafGreen card)",
       "https://poke-collect.com/en-gb/products/exp-all-91-112-firered-leafgreen-reverse-holofoil (one 'Reverse Holofoil' per card)"
+    ]
+  },
+  "ecardHoloTitles": {
+    "id": "aquapolis-skyridge-holo-title-v1",
+    "decision": "Treat the parenthesized H number in Aquapolis and Skyridge marketplace titles as a repetition of the collector number when the same H-numbered checklist holo has exactly one matching Holofoil product. The ordinary-numbered printings keep their own identities.",
+    "sets": {
+      "ecard2": {
+        "groupID": 1397,
+        "groupName": "Aquapolis"
+      },
+      "ecard3": {
+        "groupID": 1372,
+        "groupName": "Skyridge"
+      }
+    },
+    "sources": [
+      "https://www.tcgplayer.com/categories/trading-collectible-card-games/pokemon/price-guides/aquapolis",
+      "https://www.tcgplayer.com/product/83498",
+      "https://bulbapedia.bulbagarden.net/wiki/Aquapolis_(TCG)",
+      "https://bulbapedia.bulbagarden.net/wiki/Skyridge_(TCG)",
+      "https://api.tcgdex.net/v2/en/sets/ecard2",
+      "https://api.tcgdex.net/v2/en/sets/ecard3",
+      "https://www.cardmarket.com/en/Pokemon/Products/Singles/Aquapolis/Ampharos-V1-AQH1",
+      "https://www.psacard.com/priceguide/non-sports-tcg-card-values/2003-poke-mon-aquapolis/3267",
+      "https://www.pricecharting.com/pop/item/pokemon-skyridge/alakazam-h1"
     ]
   }
 }

@@ -12,6 +12,16 @@ All 75 focused Pokémon Python tests and six ledger tests passed. The
 versioned-report fixture exercised capture, replay and certification with
 the scoped title rule. No bundled certificate data changed.
 
+# 2026-11-21 — Aquapolis and Skyridge holo title reconciliation
+
+The Pokémon candidate on `467581b4` matched 56 H-numbered products in
+the fresh capture. Open ledger entries fell from 4,485 to 4,374, with zero
+new identities. Aquapolis Scizor `H21` retains its reverse-finish exception.
+The older capture matched 55 products because its Skyridge Articuno lacked
+a Holofoil lane. Both set certificates remain pending. All 75 focused
+Pokémon tests and six ledger tests passed.
+[Decision and source scope](docs/research/pokemon-finish-coverage/collector-conventions.md#aquapolis-and-skyridge-h-numbered-titles-2026-11-21)
+
 # 2026-11-20 — Current documentation authority cleanup after PRs #54/#55
 
 Source-bound review at `main@146161c`: corrected stale current-sounding

@@ -129,6 +129,25 @@ sets remain pending. The retained capture reproduced the same changes.
 The numbered ledgers and publisher source are on the SSD in
 `PokemonDeltaReconciliation-20261121/`.
 
+## Pokémon e-Card holo title pass (2026-11-21)
+
+Main at `467581b4` includes the Celebrations Classic Collection number
+remap, Professor's Letter mapping and Nidoran name normalization. The
+isolated Aquapolis and Skyridge title pass matched 56 H-numbered products
+in the fresh replay and 55 in the older replay. Fresh open rows went from
+4,485 to 4,374. The older ledger went from 4,486 to 4,377. Both reclassified
+the already-open Scizor `H21` as a finish exception, and neither introduced
+a new identity. Both sets remain pending.
+[Rule and exact scope](research/pokemon-finish-coverage/collector-conventions.md#aquapolis-and-skyridge-h-numbered-titles-2026-11-21)
+
+Next, verify the Scizor reverse evidence against the separately numbered
+Aquapolis printings, and retain missing Holofoil lanes as exceptions until
+an exact lane is captured. For other sets, Unified Minds still needs review
+of its Normal placeholders against the publisher's finish inventory.
+
+The numbered ledgers and source captures are on the SSD in
+`PokemonECardHoloReconciliation-20261121/`.
+
 ## State this runbook was written against
 
 | | Pokémon ([PR #47](https://github.com/Razorback2424/CardScanner/pull/47)) | Lorcana ([PR #48](https://github.com/Razorback2424/CardScanner/pull/48)) |

@@ -936,6 +936,59 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
         self.assertEqual(comparison["ex15-1"]["status"], "conflict")
         self.assertEqual(comparison["ex15-1"]["market"], ["holo"])
 
+def test_ecard_holo_title_accepts_only_the_same_number_and_holo_lane(self):
+        card = {"name": "Ampharos", "number": "H01", "checklist": ["holo"]}
+        market = {"productId": 83537, "name": "Ampharos (H1)", "number": "H01/H32",
+                  "subtypes": ["Holofoil"]}
+        for product in (
+            dict(market, name="Ampharos (H2)"),
+            dict(market, name="Ampharos (H001)"),
+            dict(market, number="H01/H31"),
+            dict(market, number="H02/H32"),
+            dict(market, subtypes=[]),
+            dict(market, subtypes=["Normal", "Holofoil"]),
+        ):
+            with self.subTest(product=product):
+                self.assertIsNone(coverage.product_finishes(card, product, ecard_holo=True))
+        self.assertIsNone(coverage.product_finishes(card, market))
+        self.assertIsNone(coverage.product_finishes(dict(card, number="1"), market, ecard_holo=True))
+        self.assertEqual(coverage.product_finishes(card, market, ecard_holo=True), {"holo"})
+        duplicate = coverage.compare({"a": card}, {}, {"h01": [market, dict(market, productId=90000)]},
+                                     ecard_holo=True)
+        self.assertFalse(duplicate["a"]["products"])
+        conflict = coverage.compare({"a": dict(card, checklist=["holo", "reverse"])}, {}, {"h01": [market]},
+                                    ecard_holo=True)
+        self.assertEqual(conflict["a"]["market"], ["holo"])
+        self.assertEqual(conflict["a"]["status"], "conflict")
+
+    def test_ecard_holo_title_is_bound_to_the_reviewed_group_and_report(self):
+        self.keep_only("sample-001", products=(11,))
+        slot = self.fixture["snapshot"][0]
+        slot["collectorNumber"] = "H01"
+        slot["masterSetVariant"]["id"] = "holo"
+        coverage.write_json(self.slots, [slot])
+        product = self.fixture["products"]["results"][0]
+        product["name"] = "Example One (H1)"
+        product["extendedData"][0]["value"] = "H01/H32"
+        self.fixture["prices"]["results"] = [{"productId": 11, "subTypeName": "Holofoil", "marketPrice": 1}]
+        self.fixture["groups"] = {"success": True, "errors": [],
+                                  "results": [{"groupId": 55, "name": "Sample Set"}]}
+        self.conventions(ecardHoloTitles=self.convention(sets={
+            "sample": {"groupID": 55, "groupName": "Sample Set"},
+        }))
+        self.assertIsNone(coverage.ecard_holo_title_scope(self.root, "sample", "Sample Set", 56))
+        self.assertEqual(self.batch()[1], [])
+        captured = coverage.report(self.root, "sample", 55, self.fetch, revision="ecard-holo")
+        self.assertEqual(captured["cards"]["sample-001"]["status"], "agree")
+        archived = coverage.capture_directory(self.root, "sample", "ecard-holo")
+        replayed = coverage.replay(self.root, archived)["sets"]["sample@ecard-holo"]
+        self.assertEqual(replayed["cardRows"]["sample-001"]["replay"], captured["cards"]["sample-001"])
+        self.assertEqual(coverage.certify(self.root, "sample", revision="ecard-holo"), 1)
+
+        self.fixture["groups"]["results"][0]["name"] = "Renamed"
+        with self.assertRaisesRegex(ValueError, "no longer uniquely named"):
+            coverage.report(self.root, "sample", 55, self.fetch, revision="renamed-holos")
+
 
 if __name__ == "__main__":
     unittest.main()
