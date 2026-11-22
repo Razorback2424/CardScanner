@@ -41,6 +41,85 @@ final class BrowseFilterTests: XCTestCase {
         XCTAssertTrue(filters.needsPrices)
     }
 
+    func testQuoteRetryKeepsLastKnownPriceUntilProviderConfirmsGap() {
+        let previous = CatalogBrowseQuote(amount: 17, status: .priced, asOf: .distantPast, source: .scryfall)
+        let pending = CatalogPriceUpdate(prices: [:], resolvedIDs: [], unresolvedIDs: [])
+        XCTAssertEqual(CatalogBrowseQuote.merging(pending, id: "foil", previous: previous), previous)
+        let failed = CatalogPriceUpdate(prices: [:], resolvedIDs: [], unresolvedIDs: ["foil"])
+        let retained = CatalogBrowseQuote.merging(failed, id: "foil", previous: previous)
+        XCTAssertEqual(retained, .init(amount: 17, status: .stale, asOf: .distantPast, source: .scryfall))
+        let gap = CatalogPriceUpdate(prices: [:], resolvedIDs: ["foil"], unresolvedIDs: [])
+        XCTAssertEqual(CatalogBrowseQuote.merging(gap, id: "foil", previous: retained),
+                       .init(amount: nil, status: .noQuote))
+    }
+
+    func testChocoboTrackFoilUsesMatchingQuoteForFilterTileAndSort() throws {
+        let fic = set("fic", game: .magic)
+        let forest = card("482", set: fic, variant: nil, treatments: ["chocobotrackfoil"], finishes: ["foil", "nonfoil"])
+        let mountain = card("481", set: fic, variant: nil, treatments: ["chocobotrackfoil"], finishes: ["foil", "nonfoil"])
+        let owned = CatalogOwnershipIndex(rows: [])
+        let filters = CatalogBrowseFilters(magicTreatmentIDs: ["chocobotrackfoil"], price: .custom(min: 5, max: 20))
+        let allSlots = CatalogBrowsePresentation.candidates([forest, mountain], filters: .none, ownership: owned)
+        let quotes = Dictionary(uniqueKeysWithValues: allSlots.map { slot in
+            let price: Double = slot.masterSetVariant == .foil ? (slot.providerID == forest.providerID ? 17 : 8) : 90
+            return (slot.id, CatalogBrowseQuote(amount: price, status: .priced))
+        })
+        let matching = CatalogBrowsePresentation.candidates([mountain, forest], filters: filters, ownership: owned)
+        XCTAssertEqual(matching.map(\.masterSetVariant), [.foil, .foil])
+        let rows = CatalogBrowsePresentation.rows(matching, filters: filters, sort: .priceDescending,
+                                                   sets: [fic], quotes: quotes, ownership: owned)
+        XCTAssertEqual(rows.map { $0.group.preferredSummary.providerID }, [forest.providerID, mountain.providerID])
+        XCTAssertEqual(rows.map(\.price), [17, 8])
+        XCTAssertEqual(rows.map { $0.representative?.masterSetVariant }, [.foil, .foil])
+    }
+
+    func testPriceAndReleaseOrderingAcrossEachGameWithUnknownValues() {
+        let owned = CatalogOwnershipIndex(rows: [])
+        let games: [CardGame] = [.magic, .pokemon, .onePiece, .lorcana, .yuGiOh]
+        for game in games {
+            let firstSet = set("first", game: game), secondSet = set("second", game: game)
+            var latePage = card("2", set: secondSet)
+            latePage.printingReleaseDate = Date(timeIntervalSince1970: 20)
+            var firstPage = card("1", set: firstSet)
+            firstPage.printingReleaseDate = Date(timeIntervalSince1970: 10)
+            let unknown = card("3", set: firstSet)
+            let quotes: [String: CatalogBrowseQuote] = [
+                firstPage.id: .init(amount: 5, status: .priced),
+                latePage.id: .init(amount: 50, status: .priced),
+                unknown.id: .init(amount: nil, status: .failed)
+            ]
+            let filters = CatalogBrowseFilters(setIDs: [firstSet.catalogID, secondSet.catalogID],
+                                               variantIDs: [PhysicalVariant.normal.id])
+            let forward = [firstPage, unknown, latePage]
+            let reverse = Array(forward.reversed())
+            for sort: CatalogBrowseSort in [.priceDescending, .priceAscending, .releaseDescending, .releaseAscending] {
+                let lhs = CatalogBrowsePresentation.rows(
+                    CatalogBrowsePresentation.candidates(forward, filters: filters, ownership: owned),
+                    filters: filters, sort: sort, sets: [], quotes: quotes, ownership: owned
+                )
+                let rhs = CatalogBrowsePresentation.rows(
+                    CatalogBrowsePresentation.candidates(reverse, filters: filters, ownership: owned),
+                    filters: filters, sort: sort, sets: [], quotes: quotes, ownership: owned
+                )
+                XCTAssertEqual(lhs.map(\.id), rhs.map(\.id), game.label)
+                XCTAssertEqual(lhs.last?.group.preferredSummary.id, unknown.id, game.label)
+                let highestFirst = sort == .priceDescending || sort == .releaseDescending
+                XCTAssertEqual(lhs.first?.group.preferredSummary.id, highestFirst ? latePage.id : firstPage.id, game.label)
+            }
+        }
+    }
+
+    func testAdapterFinishSelectionRetainsVerifiedPrintingIdentity() throws {
+        var printing = card("OP01-001", set: set("op01", game: .onePiece), variant: nil)
+        printing.verifiedBrowseFinishes = [.foil]
+        let selected = try XCTUnwrap(CatalogBrowseFilters.explicitFinishes(of: printing).first)
+        XCTAssertNotEqual(selected.id, printing.id)
+        XCTAssertEqual(selected.baseBrowseSelection, printing)
+        var unsupported = selected
+        unsupported.masterSetVariant = .etched
+        XCTAssertEqual(unsupported.baseBrowseSelection, unsupported)
+    }
+
     func testFinishFilterUsesPokemonVariantAndMagicFinishIDs() {
         var filters = CatalogBrowseFilters()
         filters.variantIDs = ["holo", "foil"]

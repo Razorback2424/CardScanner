@@ -656,6 +656,55 @@ final class SealedBrowseSurfaceTests: XCTestCase {
         XCTAssertEqual(count, 3, "Explicit Retry bypasses a fresh cache")
     }
 
+    func testSealedProductPagesDeduplicateAndKeepLoadedScopeOnReentry() async {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let first = SealedProductSummary(id: "first", name: "Box", setName: nil, variantID: "sealed",
+                                          marketPriceUSD: 20, updatedAt: nil, imageURL: nil)
+        let last = SealedProductSummary(id: "last", name: "Case", setName: nil, variantID: "sealed",
+                                         marketPriceUSD: 100, updatedAt: nil, imageURL: nil)
+        let provider = UncoveredSealedBrowseProvider(pages: [
+            0: .init(items: [first], total: 3, offset: 0, limit: 1, hasMore: true),
+            1: .init(items: [first], total: 3, offset: 1, limit: 1, hasMore: true),
+            2: .init(items: [last], total: 3, offset: 2, limit: 1, hasMore: false)
+        ])
+        let model = SealedBrowseModel(client: provider, cache: CatalogCacheStore(root: root), isConfigured: { true })
+        await model.loadProducts(game: .pokemon, setID: "set")
+        await model.loadMore(game: .pokemon, setID: "another-set")
+        await model.loadMore(game: .pokemon, setID: "set")
+        XCTAssertEqual(model.products, [first])
+        XCTAssertEqual(model.nextProductOffset, 2)
+        await model.loadMore(game: .pokemon, setID: "set")
+        await model.loadProducts(game: .pokemon, setID: "set")
+        XCTAssertEqual(model.products, [first, last])
+        XCTAssertFalse(model.hasMore)
+        let requests = await provider.productOffsets()
+        XCTAssertEqual(requests, [0, 1, 2])
+    }
+
+    func testSealedPagingRejectsAnOffsetThatDoesNotAdvance() async {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let first = SealedProductSummary(id: "first", name: "Box", setName: nil, variantID: nil,
+                                          marketPriceUSD: 20, updatedAt: nil, imageURL: nil)
+        let provider = UncoveredSealedBrowseProvider(pages: [
+            0: .init(items: [first], total: 3, offset: 0, limit: 1, hasMore: true),
+            1: .init(items: [first], total: 3, offset: 1, limit: 0, hasMore: true)
+        ])
+        let model = SealedBrowseModel(client: provider, cache: CatalogCacheStore(root: root), isConfigured: { true })
+        await model.loadProducts(game: .pokemon, setID: "set")
+        await model.loadMore(game: .pokemon, setID: "set")
+        XCTAssertEqual(model.products, [first])
+        XCTAssertEqual(model.nextProductOffset, 1)
+        XCTAssertNotNil(model.errorMessage)
+
+        await model.search(query: "box", games: [.pokemon])
+        await model.loadMoreSearch(game: .pokemon, query: "box")
+        XCTAssertEqual(model.searchLanes[.pokemon]?.products, [first])
+        XCTAssertEqual(model.searchLanes[.pokemon]?.nextOffset, 1)
+        XCTAssertNotNil(model.searchLanes[.pokemon]?.error)
+    }
+
     func testOnePieceCapabilityRejectsCachedContentBeforeProviderAccess() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }

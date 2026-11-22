@@ -235,8 +235,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var unresolvedSortPrices: Set<String> = []
     private var missingMappingSortPrices: Set<String> = []
     private var printingReviewSortPrices: Set<String> = []
-    private var sortPriceResolutionGeneration = UUID()
+    private var activeSortPriceSlots: [UUID: Set<String>] = [:]
+    private var sortPriceRetries: Set<String> = []
     private var sortPriceCheckedAt: [String: Date] = [:]
+    private var sortPriceSources: [String: PriceSource] = [:]
     private var pokemonBulkPriceCache: [String: PokemonBulkSnapshot] = [:]
     private var refreshingSetDirectories: Set<CardGame> = []
     private var memoryWarningObserver: NSObjectProtocol?
@@ -902,10 +904,24 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]? {
         await synchronizeGameBrowseAuthority(for: set.game)
+        if set.game == .pokemon {
+            await synchronizeCatalogAuthority()
+            await loadPokemonSnapshotIfNeeded()
+            return try await localPokemonCards(in: set)
+        }
         guard let adapter = gameBrowseAdapters.adapter(for: set.game) else { return nil }
         let cards = try await adapter.completeLocalCards(in: set)
         try validateBrowseGeneration(adapter)
         return cards
+    }
+
+    private func localPokemonCards(in set: CatalogSet) async throws -> [CatalogCardSummary]? {
+        guard await pokemonSetIsAuthorized(set.providerID) else { throw BrowseCatalogError.unknownSet }
+        guard let local = await checklistStore.mergedChecklist(for: set.catalogID) else { return nil }
+        try Task.checkCancellation()
+        return Self.applyingSignedCardArtwork(
+            PokemonChecklistReviewedProjection.addingAdditionalVariants(to: local, registry: catalogRegistry), set: set
+        )
     }
 
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
@@ -922,16 +938,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
         switch set.game {
         case .pokemon:
             await loadPokemonSnapshotIfNeeded()
-            guard await pokemonSetIsAuthorized(set.providerID) else { throw BrowseCatalogError.unknownSet }
             // Snapshot lookup deliberately precedes the ordinary page cache.
             // A bundled or protected checklist is the authoritative offline
             // source and must not be displaced by an older partial page.
-            if let local = await checklistStore.mergedChecklist(for: set.catalogID) {
-                return CatalogPage(
-                    items: Self.applyingSignedCardArtwork(
-                        PokemonChecklistReviewedProjection.addingAdditionalVariants(to: local, registry: catalogRegistry), set: set),
-                    nextCursor: nil
-                )
+            if let local = try await localPokemonCards(in: set) {
+                return CatalogPage(items: local, nextCursor: nil)
             }
             return CatalogPage(items: try await livePokemonSummaries(for: set), nextCursor: nil)
         case .magic:
@@ -1055,10 +1066,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
             let setClause = selected.isEmpty
                 ? ""
                 : " (\(selected.map { "e:\($0)" }.joined(separator: " or ")))"
-            return try await magicCards(
+            let loaded = try await magicCards(
                 query: "name:\"\(escapedScryfall(providerQuery))\" lang:en game:paper\(setClause)",
                 cursor: cursor
-            ).page
+            )
+            installMagicPrices(loaded.prices, for: loaded.page.items)
+            return loaded.page
         default: throw CardGameSupportError.unsupportedGame(game)
         }
     }
@@ -1468,12 +1481,19 @@ actor BrowseCatalog: BrowseCatalogProviding {
         gameBrowseAdapters = gameBrowseAdapters.replacing(adapter)
         setCache[game] = nil
         detailCache.removeAll { key, _ in key.hasPrefix(game.rawValue + ":") }
+        let prefix = game.rawValue + ":"
+        for request in Array(activeSortPriceSlots.keys) {
+            activeSortPriceSlots[request] = activeSortPriceSlots[request]?.filter { !$0.hasPrefix(prefix) }
+        }
         if priceQuoteService.supportsStoredPrintingRefresh(for: game) {
-            sortPriceResolutionGeneration = UUID()
-            sortPriceCache = sortPriceCache.filter { !$0.key.hasPrefix(game.rawValue + ":") }
-            sortPriceCheckedAt = sortPriceCheckedAt.filter { !$0.key.hasPrefix(game.rawValue + ":") }
-            resolvedSortPrices = resolvedSortPrices.filter { !$0.hasPrefix(game.rawValue + ":") }
-            unresolvedSortPrices = unresolvedSortPrices.filter { !$0.hasPrefix(game.rawValue + ":") }
+            sortPriceCache = sortPriceCache.filter { !$0.key.hasPrefix(prefix) }
+            sortPriceCheckedAt = sortPriceCheckedAt.filter { !$0.key.hasPrefix(prefix) }
+            sortPriceSources = sortPriceSources.filter { !$0.key.hasPrefix(prefix) }
+            resolvedSortPrices = resolvedSortPrices.filter { !$0.hasPrefix(prefix) }
+            unresolvedSortPrices = unresolvedSortPrices.filter { !$0.hasPrefix(prefix) }
+            missingMappingSortPrices = missingMappingSortPrices.filter { !$0.hasPrefix(prefix) }
+            printingReviewSortPrices = printingReviewSortPrices.filter { !$0.hasPrefix(prefix) }
+            sortPriceRetries = sortPriceRetries.filter { !$0.hasPrefix(prefix) }
         }
         yieldUpdate(game: game, revision: snapshot.revision, providerSetID: nil)
     }
@@ -1483,9 +1503,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
         for cards: [CatalogCardSummary], asOf: Date = .now
     ) {
         guard let cached else { return }
-        for card in cards {
-            guard let entry = cached[card.id] else { continue }
-            if case let .priced(value, date)? = CatalogSortPriceResolution.cachedPrice(entry.value, asOf: asOf) {
+        for card in cards.flatMap({ [$0] + CatalogBrowseFilters.explicitFinishes(of: $0) }) {
+            guard !sortPriceRetries.contains(card.id), let entry = cached[card.id] else { continue }
+            if let checkedAt = sortPriceCheckedAt[card.id], checkedAt > asOf { continue }
+            if case let .priced(value, date, _)? = CatalogSortPriceResolution.cachedPrice(entry.value, asOf: asOf) {
                 if SortPriceHint(price: value, checkedAt: date).isFresh() {
                     resolvedSortPrices.insert(card.id)
                     unresolvedSortPrices.remove(card.id)
@@ -1495,6 +1516,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 }
                 sortPriceCache[card.id] = value
                 sortPriceCheckedAt[card.id] = date
+                sortPriceSources[card.id] = .scryfall
             } else if entry.confirmsNoUSDQuote, asOf <= .now,
                       Date.now.timeIntervalSince(asOf) < 6 * 60 * 60 {
                 resolvedSortPrices.insert(card.id)
@@ -1511,15 +1533,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func resetPriceResolution(for ids: [String]) async {
-        sortPriceResolutionGeneration = UUID()
+        guard !ids.isEmpty else { return }
+        let retryIDs = Set(ids)
+        sortPriceRetries.formUnion(retryIDs)
+        for request in Array(activeSortPriceSlots.keys) {
+            activeSortPriceSlots[request]?.subtract(retryIDs)
+        }
         var pokemonSetIDs: Set<String> = []
-        for id in ids {
+        for id in retryIDs {
             missingMappingSortPrices.remove(id)
             printingReviewSortPrices.remove(id)
             resolvedSortPrices.remove(id)
             unresolvedSortPrices.remove(id)
             sortPriceCache.removeValue(forKey: id)
             sortPriceCheckedAt.removeValue(forKey: id)
+            sortPriceSources.removeValue(forKey: id)
             // Use the actual cache keys, including catalog generation and set scope.
             let matchingKeys = detailCache.keys { _, details in
                 let matches = id.hasPrefix("\(details.card.game.rawValue):\(details.set.catalogID.providerID.lowercased()):")
@@ -1587,7 +1615,20 @@ actor BrowseCatalog: BrowseCatalogProviding {
         // its loading state. Finishing twice is a no-op, so own it here once.
         defer { continuation.finish() }
 
-        let resolutionGeneration = sortPriceResolutionGeneration
+        for game in Set(cards.map(\.game)) {
+            await synchronizeGameBrowseAuthority(for: game)
+        }
+        guard !Task.isCancelled else { return }
+        let cards = cards.filter { summary in
+            gameBrowseAdapters.adapter(for: summary.game).map { $0.generation == summary.catalogGeneration } ?? true
+        }
+        guard !cards.isEmpty else { return }
+        let request = UUID()
+        activeSortPriceSlots[request] = Set(cards.map(\.id))
+        defer { activeSortPriceSlots[request] = nil }
+
+        func isCurrent(_ id: String) -> Bool { activeSortPriceSlots[request]?.contains(id) == true }
+        func emit() { continuation.yield(currentPriceUpdate(for: cards.filter { isCurrent($0.id) })) }
 
         // A long-lived Browse actor must recheck prices that arrived after a
         // set opened. In particular, a negative result is never permanent.
@@ -1604,16 +1645,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
 
         let cardsBySet = Dictionary(grouping: cards, by: \.setID.id)
-        var persistedPrices: [String: [String: SortPriceHint]] = [:]
         for (setID, setCards) in cardsBySet {
             // Mapping-owned prices must be revalidated against the current catalog.
             // The provider already caches its daily snapshots; bare sort hints lack mapping evidence.
             if let game = setCards.first?.game,
                priceQuoteService.supportsStoredPrintingRefresh(for: game) { continue }
             guard let cached = await cache.sortPrices(for: setID) else { continue }
-            persistedPrices[setID] = cached.value
             let currentIDs = Set(setCards.map(\.id))
-            for (id, hint) in cached.value where currentIDs.contains(id) {
+            for (id, hint) in cached.value where currentIDs.contains(id) && isCurrent(id) {
                 // A newer provider check may have disproved a persisted price.
                 // Do not resurrect that old ordering hint on this screen.
                 if resolvedSortPrices.contains(id),
@@ -1622,7 +1661,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 if let date = sortPriceCheckedAt[id], date > hint.checkedAt { continue }
                 sortPriceCache[id] = hint.price
                 sortPriceCheckedAt[id] = hint.checkedAt
-                if hint.isFresh() {
+                sortPriceSources[id] = hint.source
+                if sortPriceRetries.contains(id) {
+                    // Retain last-known evidence while an explicit retry
+                    // checks the provider, even when this hint is still fresh.
+                    resolvedSortPrices.remove(id)
+                    unresolvedSortPrices.insert(id)
+                } else if hint.isFresh() {
                     resolvedSortPrices.insert(id)
                 } else {
                     resolvedSortPrices.remove(id)
@@ -1630,13 +1675,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
         }
 
-        continuation.yield(currentPriceUpdate(for: cards))
+        emit()
 
-        let pending = providerGroups(from: cards).filter { providerGroup in
-            providerGroup.contains { !resolvedSortPrices.contains($0.id) }
-        }
+        let pending = providerGroups(from: cards.filter { isCurrent($0.id) && !resolvedSortPrices.contains($0.id) })
         await preparePokemonBulkPrices(for: pending.flatMap { $0 })
-        var iterator = pending.makeIterator()
+        guard !Task.isCancelled else { return }
+        var iterator = pending.map { group in group.filter { isCurrent($0.id) } }
+            .filter { !$0.isEmpty }.makeIterator()
         var refreshedIDs: Set<String> = []
         var completedSinceEmit = 0
         var lastEmit = Date.now
@@ -1653,15 +1698,16 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         group.cancelAll()
                         return
                     }
-                    guard resolutionGeneration == sortPriceResolutionGeneration else {
+                    guard activeSortPriceSlots[request]?.isEmpty == false else {
                         group.cancelAll()
                         return
                     }
-                    for slot in result.slots {
+                    for slot in result.slots where isCurrent(slot.id) {
                         refreshedIDs.insert(slot.id)
+                        if slot.resolution != .unresolved { sortPriceRetries.remove(slot.id) }
                         printingReviewSortPrices.remove(slot.id)
                         switch slot.resolution {
-                        case let .priced(price, asOf):
+                        case let .priced(price, asOf, source):
                             missingMappingSortPrices.remove(slot.id)
                             if SortPriceHint(price: price, checkedAt: asOf).isFresh() {
                                 resolvedSortPrices.insert(slot.id)
@@ -1672,6 +1718,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                             }
                             sortPriceCache[slot.id] = price
                             sortPriceCheckedAt[slot.id] = asOf
+                            sortPriceSources[slot.id] = source
                         case .noUSDQuote:
                             missingMappingSortPrices.remove(slot.id)
                             resolvedSortPrices.insert(slot.id)
@@ -1702,15 +1749,20 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
                     let elapsed = Date.now.timeIntervalSince(lastEmit)
                     if completedSinceEmit >= 25 || elapsed >= 0.25 {
-                        continuation.yield(currentPriceUpdate(for: cards))
+                        emit()
                         completedSinceEmit = 0
                         lastEmit = Date.now
                     }
 
                     if Task.isCancelled {
                         group.cancelAll()
-                    } else if let providerGroup = iterator.next() {
-                        group.addTask { try await self.sortPriceGroup(for: providerGroup) }
+                    } else {
+                        while let waiting = iterator.next() {
+                            let active = waiting.filter { isCurrent($0.id) }
+                            guard !active.isEmpty else { continue }
+                            group.addTask { try await self.sortPriceGroup(for: active) }
+                            break
+                        }
                     }
                 }
                 if Task.isCancelled { group.cancelAll() }
@@ -1721,32 +1773,26 @@ actor BrowseCatalog: BrowseCatalogProviding {
             return
         }
 
-        guard !Task.isCancelled,
-              resolutionGeneration == sortPriceResolutionGeneration else { return }
+        guard !Task.isCancelled else { return }
 
         for (setID, setCards) in cardsBySet {
             if let game = setCards.first?.game,
                priceQuoteService.supportsStoredPrintingRefresh(for: game) { continue }
             guard setCards.contains(where: { refreshedIDs.contains($0.id) }) else { continue }
-            // A request covers only the slots that were loaded, and the price
-            // prefetch runs on the first page. Replacing the stored map would
-            // shrink a fully priced set to one page on every cold open, which
-            // is the relaunch cost this cache exists to remove. Merge instead:
-            // this run's prices win, previously priced slots survive.
-            var prices = persistedPrices[setID] ?? [:]
-            for card in setCards {
-                if let price = sortPriceCache[card.id], let date = sortPriceCheckedAt[card.id] {
-                    prices[card.id] = SortPriceHint(price: price, checkedAt: date)
+            var prices: [String: SortPriceHint] = [:]
+            var withdrawals: [String: Date] = [:]
+            for card in setCards where refreshedIDs.contains(card.id) && isCurrent(card.id) {
+                guard let date = sortPriceCheckedAt[card.id] else { continue }
+                if let price = sortPriceCache[card.id] {
+                    prices[card.id] = SortPriceHint(price: price, checkedAt: date, source: sortPriceSources[card.id])
                 } else if resolvedSortPrices.contains(card.id) {
-                    prices.removeValue(forKey: card.id)
+                    withdrawals[card.id] = date
                 }
             }
-            // An empty map is meaningful when a prior price was disproved.
-            // Envelope writes never renew individual slot evidence dates.
-            await cache.storeSortPrices(prices, for: setID)
+            await cache.mergeSortPrices(prices, withdrawing: withdrawals, for: setID)
         }
 
-        continuation.yield(currentPriceUpdate(for: cards))
+        emit()
     }
 
     private func providerGroups(from cards: [CatalogCardSummary]) -> [[CatalogCardSummary]] {
@@ -1784,7 +1830,15 @@ actor BrowseCatalog: BrowseCatalogProviding {
             resolvedIDs: resolvedSortPrices.intersection(cardIDs),
             unresolvedIDs: unresolvedSortPrices.intersection(cardIDs),
             missingMappingIDs: missingMappingSortPrices.intersection(cardIDs),
-            printingNeedsReviewIDs: printingReviewSortPrices.intersection(cardIDs)
+            printingNeedsReviewIDs: printingReviewSortPrices.intersection(cardIDs),
+            quoteDates: Dictionary(uniqueKeysWithValues: cardIDs.compactMap { id in
+                guard sortPriceCache[id] != nil, let date = sortPriceCheckedAt[id] else { return nil }
+                return (id, date)
+            }),
+            quoteSources: Dictionary(uniqueKeysWithValues: cardIDs.compactMap { id in
+                guard sortPriceCache[id] != nil, let source = sortPriceSources[id] else { return nil }
+                return (id, source)
+            })
         )
     }
 
@@ -1882,7 +1936,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         )
                         if case let .price(price) = existing, price.source != .tcgCSV,
                            price.currencyCode == "USD", !price.isStale(now: checkedAt) {
-                            return SortPriceSlot(id: summary.id, resolution: .priced(price.unitMarketPriceUSD, asOf: price.fetchedAt))
+                            return SortPriceSlot(id: summary.id, resolution: CatalogSortPriceResolution.exactLookup(.price(price)))
                         }
                     }
                     guard let lookup = snapshot.quote(
@@ -1928,7 +1982,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 for: summary.providerID,
                 variant: summary.masterSetVariant
             ) {
-                slots.append(SortPriceSlot(id: summary.id, resolution: .priced(price, asOf: cachedBulk.storedAt)))
+                slots.append(SortPriceSlot(id: summary.id, resolution: .priced(price, asOf: cachedBulk.storedAt, source: .tcgplayer)))
             } else {
                 // A missing bulk value does not confirm that the exact finish
                 // lacks a quote. Check the detailed card before resolving it.
@@ -2224,7 +2278,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
                 return SortPriceSlot(
                     id: summary.id,
-                    resolution: .priced(price.unitMarketPriceUSD, asOf: price.fetchedAt)
+                    resolution: .priced(price.unitMarketPriceUSD, asOf: price.fetchedAt, source: price.source)
                 )
             }
             return SortPriceSlot(
@@ -2306,6 +2360,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         missingMappingSortPrices.removeAll()
         printingReviewSortPrices.removeAll()
         sortPriceCheckedAt.removeAll()
+        sortPriceSources.removeAll()
         pokemonBulkPriceCache.removeAll()
     }
 
@@ -2497,6 +2552,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 confirmsNoUSDQuote: amount == nil,
                 providerUpdatedAt: nil
             )
+            for slot in CatalogBrowseFilters.explicitFinishes(of: summary) {
+                guard let variant = slot.masterSetVariant else { continue }
+                let lookup = CardPricing.price(
+                    for: .magic(card), variant: variant,
+                    magicTreatments: card.magicTreatmentEvidence.applicableTreatments(for: variant), at: retrievedAt
+                )
+                // A missing page quote can still be resolved by the exact detail path.
+                guard case let .price(quote) = lookup, quote.isUsableUSD else { continue }
+                prices[slot.id] = CatalogCachedPrice(
+                    value: quote.unitMarketPriceUSD, confirmsNoUSDQuote: false, providerUpdatedAt: nil
+                )
+            }
             return summary
         }
         return MagicCardsPageResult(
@@ -2524,7 +2591,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     from: evidence.treatments
                 ),
                 magicTreatmentQualifiers: evidence.qualifiers,
-                magicFinishIDs: card.finishes
+                magicFinishIDs: card.finishes,
+                printingReleaseDate: card.releaseDate
         )
     }
 
@@ -3193,6 +3261,20 @@ actor CatalogCacheStore {
             )
         )
         trim(sortPricesDirectory, maximumBytes: 5 * 1_024 * 1_024)
+    }
+
+    /// Read and merge on the cache actor. Concurrent page and viewport
+    /// requests for the same set must retain each other's slot updates.
+    func mergeSortPrices(_ updates: [String: SortPriceHint], withdrawing: [String: Date], for setID: String) {
+        guard !updates.isEmpty || !withdrawing.isEmpty else { return }
+        var prices = sortPrices(for: setID)?.value ?? [:]
+        for (id, hint) in updates where prices[id].map({ $0.checkedAt <= hint.checkedAt }) ?? true {
+            prices[id] = hint
+        }
+        for (id, date) in withdrawing where prices[id].map({ $0.checkedAt <= date }) == true {
+            prices.removeValue(forKey: id)
+        }
+        storeSortPrices(prices, for: setID)
     }
 
     func sealedSets(for game: CardGame) -> Cached<[SealedSetSummary]>? {

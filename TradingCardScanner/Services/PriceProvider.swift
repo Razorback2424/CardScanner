@@ -50,7 +50,7 @@ enum PriceLookup: Equatable, Sendable {
 /// Missing source evidence stays unresolved so the UI can offer a retry instead
 /// of claiming that no USD quote exists.
 enum CatalogSortPriceResolution: Equatable, Sendable {
-    case priced(Double, asOf: Date)
+    case priced(Double, asOf: Date, source: PriceSource? = nil)
     case noUSDQuote
     case unresolved
     case mappingMissing
@@ -67,7 +67,7 @@ enum CatalogSortPriceResolution: Equatable, Sendable {
             guard price.isUsableUSD else {
                 return .noUSDQuote
             }
-            return .priced(price.unitMarketPriceUSD, asOf: price.fetchedAt)
+            return .priced(price.unitMarketPriceUSD, asOf: price.fetchedAt, source: price.source)
         case let .unavailable(source):
             return source == nil ? .unresolved : .noUSDQuote
         }
@@ -79,11 +79,13 @@ enum CatalogSortPriceResolution: Equatable, Sendable {
     static func aggregate(_ lookups: [PriceLookup]) -> Self {
         guard !lookups.isEmpty else { return .unresolved }
         let results = lookups.map(exactLookup)
-        let prices = results.compactMap { result -> (Double, Date)? in
-            guard case let .priced(value, date) = result else { return nil }
-            return (value, date)
+        let prices = results.compactMap { result -> (Double, Date, PriceSource?)? in
+            guard case let .priced(value, date, source) = result else { return nil }
+            return (value, date, source)
         }
-        if let highest = prices.max(by: { $0.0 < $1.0 }) { return .priced(highest.0, asOf: highest.1) }
+        if let highest = prices.max(by: { $0.0 < $1.0 }) {
+            return .priced(highest.0, asOf: highest.1, source: highest.2)
+        }
         if results.contains(.unresolved) { return .unresolved }
         if results.contains(.mappingMissing) { return .mappingMissing }
         return .noUSDQuote

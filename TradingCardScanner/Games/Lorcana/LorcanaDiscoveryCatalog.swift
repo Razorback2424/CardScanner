@@ -46,7 +46,7 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         var summary: SealedProductSummary {
             .init(id: id, name: name, setName: setName, variantID: nil,
                   marketPriceUSD: nil, updatedAt: nil, imageURL: imageURL,
-                  tcgplayerProductID: tcgplayerProductID)
+                  tcgplayerProductID: tcgplayerProductID, releaseDate: releaseDate.flatMap(FlexibleDate.parse))
         }
     }
     private struct Payload: Decodable {
@@ -290,7 +290,8 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
                         collectionAvailabilityNotice: printing.map {
                             unpricedPrintingIDs.contains($0.physicalPrintingID) ? Self.unpricedNotice : nil
                         } ?? Self.browseOnlyNotice, searchFields: fields,
-                        verifiedBrowseFinishes: printing?.variantEvidence.catalogVariants)
+                        verifiedBrowseFinishes: printing?.variantEvidence.catalogVariants,
+                        printingReleaseDate: card.releaseDate.flatMap { releaseDates[$0] })
                 }
             }
             var set = CatalogSet(catalogID: id, name: name, code: first.setCode,
@@ -365,7 +366,7 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
     }
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
         guard summary.game == game, summary.catalogGeneration == generation,
-              summariesBySetID[summary.setID]?.contains(summary) == true,
+              summariesBySetID[summary.setID]?.contains(summary.baseBrowseSelection) == true,
               let card = sourceByPhysicalID[summary.providerID] ?? cardsByID[summary.providerID], let set = setsByID[summary.setID] else { throw CatalogLookupError.staleCatalog }
         if let id = UUID(uuidString: summary.providerID), sourceByPhysicalID[summary.providerID] != nil {
             return .init(card: try physical.resolution(forPrintingID: id).card, set: set, retrievedAt: capturedAt)

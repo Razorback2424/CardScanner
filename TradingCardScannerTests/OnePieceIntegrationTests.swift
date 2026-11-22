@@ -1698,6 +1698,12 @@ final class OnePieceIntegrationTests: XCTestCase {
         let quote = try await catalog.price(for: summary, variant: .foil)
         guard case let .price(price) = quote else { return XCTFail("Details must use the same mapped foil") }
         XCTAssertEqual(price.unitMarketPriceUSD, prices[summary.id])
+        let foil = try XCTUnwrap(CatalogBrowseFilters.explicitFinishes(of: summary).first { $0.masterSetVariant == .foil })
+        let details = try await catalog.details(for: foil)
+        XCTAssertEqual(details.card.providerID, summary.providerID)
+        var exactPrice: Double?
+        for await update in catalog.sortPriceUpdates(for: [foil]) { exactPrice = update.prices[foil.id] }
+        XCTAssertEqual(exactPrice, price.unitMarketPriceUSD)
     }
 
     func testBrowseSortSeparatesPrintingReviewMappingGapAndNetworkFailure() async throws {

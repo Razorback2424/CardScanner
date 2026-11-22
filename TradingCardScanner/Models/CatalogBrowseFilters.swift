@@ -62,19 +62,11 @@ struct CatalogBrowseFilters: Equatable, Sendable {
     /// physical copy. Unfiltered cards retain their printing-level identity.
     func matchingPrintings(
         for card: CatalogCardSummary,
-        isOwned: (CatalogCardSummary) -> Bool
+        isOwned: (CatalogCardSummary) -> Bool,
+        expandFinishes: Bool = false
     ) -> [CatalogCardSummary] {
-        let candidates: [CatalogCardSummary]
-        let available = Self.finishes(of: card)
-        if scopesFinish(of: card), !available.isEmpty {
-            candidates = available.map { finish in
-                var copy = card
-                copy.masterSetVariant = finish
-                return copy
-            }
-        } else {
-            candidates = [card]
-        }
+        let explicit = scopesFinish(of: card) || expandFinishes ? Self.explicitFinishes(of: card) : []
+        let candidates = explicit.isEmpty ? [card] : explicit
         let requested = Set(magicTreatmentIDs.compactMap { MagicTreatment(id: $0)?.id })
         return candidates.filter { copy in
             guard variantIDs.isEmpty || !Self.finishIDs(of: copy).isDisjoint(with: variantIDs) else { return false }
@@ -89,6 +81,15 @@ struct CatalogBrowseFilters: Equatable, Sendable {
             case .owned: return isOwned(copy)
             case .notOwned: return !isOwned(copy)
             }
+        }
+    }
+
+    static func explicitFinishes(of card: CatalogCardSummary) -> [CatalogCardSummary] {
+        guard card.masterSetVariant == nil else { return [] }
+        return finishes(of: card).map { finish in
+            var slot = card
+            slot.masterSetVariant = finish
+            return slot
         }
     }
 
@@ -119,6 +120,188 @@ struct CatalogBrowseFilters: Equatable, Sendable {
     static func finishes(of card: CatalogCardSummary) -> [PhysicalVariant] {
         if let variant = card.masterSetVariant { return [variant] }
         return card.verifiedBrowseFinishes ?? (card.magicFinishIDs ?? []).map(PhysicalVariant.resolving)
+    }
+}
+
+enum CatalogBrowseSort: String, CaseIterable, Identifiable, Sendable {
+    case recommended, priceDescending, priceAscending
+    case releaseDescending, releaseAscending, nameAscending, nameDescending
+
+    var id: Self { self }
+
+    var label: String {
+        switch self {
+        case .recommended: return "Recommended"
+        case .priceDescending: return "Price High to Low"
+        case .priceAscending: return "Price Low to High"
+        case .releaseDescending: return "Release Newest First"
+        case .releaseAscending: return "Release Oldest First"
+        case .nameAscending: return "Name A–Z"
+        case .nameDescending: return "Name Z–A"
+        }
+    }
+
+    var needsPrices: Bool { self == .priceDescending || self == .priceAscending }
+    var usesReleaseDate: Bool { self == .releaseDescending || self == .releaseAscending }
+
+    static func releaseDateLabel(_ day: Date) -> String {
+        day.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, timeZone: .gmt))
+    }
+
+    func ordered<Value>(_ values: [Value], price: (Value) -> Double?, date: (Value) -> Date?,
+                        name: (Value) -> String, tie: (Value, Value) -> Bool) -> [Value] {
+        guard self != .recommended else { return values }
+        return values.sorted { precedes($0, $1, price: price, date: date, name: name, tie: tie) }
+    }
+
+    func precedes<Value>(_ left: Value, _ right: Value, price: (Value) -> Double?, date: (Value) -> Date?,
+                         name: (Value) -> String, tie: (Value, Value) -> Bool) -> Bool {
+        switch self {
+        case .priceDescending, .priceAscending:
+            let lhs = price(left), rhs = price(right)
+            if lhs != rhs { return Self.precedes(lhs, rhs, ascending: self == .priceAscending) }
+        case .releaseDescending, .releaseAscending:
+            let lhs = date(left), rhs = date(right)
+            if lhs != rhs { return Self.precedes(lhs, rhs, ascending: self == .releaseAscending) }
+        case .nameAscending, .nameDescending:
+            let comparison = name(left).localizedStandardCompare(name(right))
+            if comparison != .orderedSame {
+                return comparison == (self == .nameAscending ? .orderedAscending : .orderedDescending)
+            }
+        case .recommended: break
+        }
+        return tie(left, right)
+    }
+
+    private static func precedes<T: Comparable>(_ lhs: T?, _ rhs: T?, ascending: Bool) -> Bool {
+        guard let lhs else { return false }
+        guard let rhs else { return true }
+        return ascending ? lhs < rhs : lhs > rhs
+    }
+}
+
+struct CatalogBrowseQuote: Equatable, Sendable {
+    enum Status: Equatable, Sendable {
+        case pending, priced, stale, noQuote, mappingPending, printingReview, failed
+
+        var label: String? {
+            switch self {
+            case .pending, .priced: return nil
+            case .stale: return "Stale price"
+            case .noQuote: return "No USD quote"
+            case .mappingPending: return "Price mapping pending"
+            case .printingReview: return "Printing needs review"
+            case .failed: return "Price unavailable"
+            }
+        }
+    }
+
+    var amount: Double?
+    var status: Status
+    var asOf: Date? = nil
+    var source: PriceSource? = nil
+
+    static let pending = Self(amount: nil, status: .pending)
+    static let failed = Self(amount: nil, status: .failed)
+
+    var canRetry: Bool { status == .failed || status == .stale }
+
+    static func from(_ update: CatalogPriceUpdate, id: String) -> Self {
+        if update.printingNeedsReviewIDs.contains(id) { return .init(amount: nil, status: .printingReview) }
+        if update.missingMappingIDs.contains(id) { return .init(amount: nil, status: .mappingPending) }
+        if let amount = update.prices[id], amount.isFinite, amount > 0 {
+            let date = update.quoteDates[id]
+            let stale = date.map { !SortPriceHint(price: amount, checkedAt: $0).isFresh() } ?? false
+            return .init(amount: amount, status: stale || update.unresolvedIDs.contains(id) ? .stale : .priced,
+                         asOf: date, source: update.quoteSources[id])
+        }
+        if update.resolvedIDs.contains(id) { return .init(amount: nil, status: .noQuote) }
+        return update.unresolvedIDs.contains(id) ? .init(amount: nil, status: .failed) : .pending
+    }
+
+    static func merging(_ update: CatalogPriceUpdate, id: String, previous: Self?) -> Self? {
+        let incoming = from(update, id: id)
+        if incoming.status == .pending { return previous }
+        if incoming.status == .failed, var lastQuote = previous, lastQuote.amount != nil {
+            lastQuote.status = .stale
+            return lastQuote
+        }
+        return incoming
+    }
+
+    func matches(_ filter: PriceFilter?) -> Bool {
+        guard let filter else { return true }
+        if let amount { return filter.matches(amount) }
+        return (status == .noQuote || status == .mappingPending || status == .printingReview) && filter.matches(nil)
+    }
+}
+
+struct CatalogBrowsePresentation: Sendable {
+    struct Row: Identifiable, Sendable {
+        let group: CatalogCardDisplayGroup
+        let quotes: [String: CatalogBrowseQuote]
+        let releaseDate: Date?
+        let usesSetDate: Bool
+        let representative: CatalogCardSummary?
+        var id: String { group.id }
+        var price: Double? { representative.flatMap { quotes[$0.id]?.amount } }
+    }
+
+    static func candidates(_ cards: [CatalogCardSummary], filters: CatalogBrowseFilters,
+                           ownership: CatalogOwnershipIndex) -> [CatalogCardSummary] {
+        var ids: Set<String> = []
+        return cards.flatMap { card in
+            filters.includesSet(card.setID)
+                ? filters.matchingPrintings(for: card, isOwned: ownership.owns, expandFinishes: true) : []
+        }.filter { ids.insert($0.id).inserted }
+    }
+
+    static func rows(_ candidates: [CatalogCardSummary], filters: CatalogBrowseFilters,
+                     sort: CatalogBrowseSort, sets: [CatalogSet], quotes: [String: CatalogBrowseQuote],
+                     ownership: CatalogOwnershipIndex) -> [Row] {
+        var resolved = quotes
+        let matching = candidates.filter { card in
+            resolved[card.id] = effectiveQuote(card, quoted: resolved[card.id], ownership: ownership)
+            return (resolved[card.id] ?? .pending).matches(filters.price)
+        }
+        let dates = Dictionary(sets.compactMap { set in set.releaseDate.map { (set.catalogID, $0) } },
+                               uniquingKeysWith: { first, _ in first })
+        let rows = CatalogCardDisplayGrouping.groups(for: matching).map { group in
+            let card = group.preferredSummary
+            let setDate = dates[card.setID] ?? dates[CatalogSetID(game: card.game, providerID: card.setID.providerID)]
+            return row(group, setDate: setDate, quotes: resolved)
+        }
+        return sort.ordered(rows, price: \.price, date: \.releaseDate, name: { $0.group.preferredSummary.name }) {
+            let lhs = $0.group.preferredSummary, rhs = $1.group.preferredSummary
+            if lhs.setID.id != rhs.setID.id { return lhs.setID.id < rhs.setID.id }
+            let number = CollectorNumber.compare(lhs.collectorNumber, rhs.collectorNumber)
+            return number == .orderedSame ? $0.id < $1.id : number == .orderedAscending
+        }
+    }
+
+    static func row(_ group: CatalogCardDisplayGroup, setDate: Date?, quotes: [String: CatalogBrowseQuote],
+                    ownership: CatalogOwnershipIndex? = nil) -> Row {
+        let tileQuotes = Dictionary(uniqueKeysWithValues: group.summaries.map { card in
+            (card.id, effectiveQuote(card, quoted: quotes[card.id], ownership: ownership))
+        })
+        let representative = group.summaries.filter { tileQuotes[$0.id]?.amount != nil }.max {
+            (tileQuotes[$0.id]?.amount ?? 0) < (tileQuotes[$1.id]?.amount ?? 0)
+        }
+        let date = group.preferredSummary.printingReleaseDate
+        return Row(group: group, quotes: tileQuotes, releaseDate: date ?? setDate,
+                   usesSetDate: date == nil && setDate != nil, representative: representative)
+    }
+
+    static func effectiveQuote(_ card: CatalogCardSummary, quoted: CatalogBrowseQuote?,
+                               ownership: CatalogOwnershipIndex?) -> CatalogBrowseQuote {
+        guard let ownership else { return quoted ?? .pending }
+        let owned = OwnedCatalogPrice(rows: ownership.matchingRows(for: card))
+        guard !owned.entries.isEmpty else { return quoted ?? .pending }
+        let amount = owned.display.amount
+        let date = owned.display.effectiveAsOf
+        let stale = date.map { !SortPriceHint(price: amount ?? 0, checkedAt: $0).isFresh() } ?? false
+        return .init(amount: amount, status: amount == nil ? .noQuote : (stale ? .stale : .priced),
+                     asOf: date, source: owned.display.source)
     }
 }
 
@@ -232,6 +415,7 @@ enum CatalogFilteredPager {
         from start: Position?,
         filters: CatalogBrowseFilters,
         limits: Limits = Limits(),
+        expandFinishes: Bool = false,
         visitedPositions: Set<Position> = [],
         existingIDs: Set<String> = [],
         loadPage: (Position) async throws -> Page<Position>,
@@ -265,7 +449,8 @@ enum CatalogFilteredPager {
             fill.position = page.next
 
             let candidates = page.items.filter {
-                seenIDs.insert($0.id).inserted && filters.matchesWithoutPrice($0, isOwned: isOwned)
+                seenIDs.insert($0.id).inserted && filters.includesSet($0.setID)
+                    && !filters.matchingPrintings(for: $0, isOwned: isOwned, expandFinishes: expandFinishes).isEmpty
             }
             guard filters.needsPrices, !candidates.isEmpty else {
                 fill.matches += candidates

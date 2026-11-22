@@ -73,13 +73,13 @@ final class SealedBrowseModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published var errorMessage: String?
     @Published private(set) var failurePresentation: CatalogFailurePresentation?
-    @Published private(set) var hasMore = false
+    @Published private(set) var nextProductOffset: Int?
+    var hasMore: Bool { nextProductOffset != nil }
 
     private let client: any SealedBrowseProviding
     private let cache: CatalogCacheStore
     private let credentialsAvailable: @Sendable () -> Bool
     private let gameRegistry: CardGameRegistry
-    private var offset = 0
     private var loadedGame: CardGame?
     private var loadedProductKey: String?
     private var searchQuery: String?
@@ -177,7 +177,7 @@ final class SealedBrowseModel: ObservableObject {
                 offset: 0
             )
             var lane = Lane(isLoading: isConfigured)
-            if let saved = await cache.sealedProductPage(for: key) {
+            if let saved = await cache.sealedProductPage(for: key), Self.hasValidCursor(saved.value, after: 0) {
                 lane.products = deduplicated(Self.dated(saved.value.items, at: saved.storedAt))
                 lane.nextOffset = Int(saved.value.nextCursor ?? "")
                 if saved.isFresh || !isConfigured {
@@ -211,10 +211,7 @@ final class SealedBrowseModel: ObservableObject {
                         query: normalizedQuery,
                         offset: 0
                     )
-                    let page = CatalogPage(
-                        items: response.items,
-                        nextCursor: response.nextOffset.map(String.init)
-                    )
+                    let page = try Self.cachePage(from: response, after: 0)
                     await cache.storeSealedProductPage(
                         page,
                         for: CatalogCacheStore.sealedPageKey(
@@ -278,7 +275,8 @@ final class SealedBrowseModel: ObservableObject {
             offset: requestedOffset
         )
         if let saved = await cache.sealedProductPage(for: cacheKey),
-           saved.isFresh || !isConfigured {
+           saved.isFresh || !isConfigured,
+           Self.hasValidCursor(saved.value, after: requestedOffset) {
             guard token == searchGeneration, !Task.isCancelled,
                   var lane = searchLanes[game] else { return }
             lane.products = deduplicated(lane.products + Self.dated(saved.value.items, at: saved.storedAt))
@@ -291,7 +289,7 @@ final class SealedBrowseModel: ObservableObject {
         guard token == searchGeneration, !Task.isCancelled else { return }
         guard isConfigured else {
             lane.isLoading = false
-            lane.nextOffset = nil
+            lane.error = Self.message(for: JustTCGTransport.TransportError.missingCredentials)
             searchLanes[game] = lane
             return
         }
@@ -303,10 +301,7 @@ final class SealedBrowseModel: ObservableObject {
                 query: normalizedQuery,
                 offset: requestedOffset
             )
-            let cachePage = CatalogPage(
-                items: page.items,
-                nextCursor: page.nextOffset.map(String.init)
-            )
+            let cachePage = try Self.cachePage(from: page, after: requestedOffset)
             await cache.storeSealedProductPage(cachePage, for: cacheKey)
             guard token == searchGeneration, !Task.isCancelled,
                   var lane = searchLanes[game] else { return }
@@ -389,7 +384,7 @@ final class SealedBrowseModel: ObservableObject {
         }
     }
 
-    func loadProducts(game: CardGame, setID: String?, query: String? = nil) async {
+    func loadProducts(game: CardGame, setID: String?, query: String? = nil, forceRefresh: Bool = false) async {
         let isConfigured = isConfigured(for: game)
         guard gameRegistry.supports(game, .sealed) else {
             productsRequestID = UUID()
@@ -397,13 +392,16 @@ final class SealedBrowseModel: ObservableObject {
             isLoadingProducts = false
             updateLoadingState()
             products = []
-            hasMore = false
+            nextProductOffset = nil
+            loadedProductKey = nil
             errorMessage = CatalogFailurePresentation.unavailable.message
             failurePresentation = .unavailable
             return
         }
         let route = ProductRoute(game: game, setID: setID, query: query)
-        guard activeProductRoute != route else { return }
+        let cacheKey = CatalogCacheStore.sealedPageKey(game: game, setID: setID, query: query, offset: 0)
+        guard activeProductRoute != route,
+              forceRefresh || loadedProductKey != cacheKey || products.isEmpty else { return }
         let requestID = UUID()
         productsRequestID = requestID
         activeProductRoute = route
@@ -416,18 +414,17 @@ final class SealedBrowseModel: ObservableObject {
                 updateLoadingState()
             }
         }
-        offset = 0
-        let cacheKey = CatalogCacheStore.sealedPageKey(game: game, setID: setID, query: query, offset: offset)
         if loadedProductKey != cacheKey {
             products = []
-            hasMore = false
+            nextProductOffset = nil
             errorMessage = nil
             loadedProductKey = cacheKey
         }
-        if let saved = await cache.sealedProductPage(for: cacheKey) {
+        if products.isEmpty, let saved = await cache.sealedProductPage(for: cacheKey),
+           Self.hasValidCursor(saved.value, after: 0) {
             guard requestID == productsRequestID, !Task.isCancelled else { return }
             apply(CatalogPage(items: Self.dated(saved.value.items, at: saved.storedAt), nextCursor: saved.value.nextCursor), replacing: true)
-            if saved.isFresh || !isConfigured {
+            if (saved.isFresh && !forceRefresh) || !isConfigured {
                 errorMessage = nil
                 return
             }
@@ -441,7 +438,7 @@ final class SealedBrowseModel: ObservableObject {
             let page = try await client.searchSealedProducts(
                 game: game, setID: setID, query: query, offset: 0
             )
-            let cachePage = cachePage(from: page)
+            let cachePage = try Self.cachePage(from: page, after: 0)
             guard requestID == productsRequestID, !Task.isCancelled else { return }
             apply(cachePage, replacing: true)
             await cache.storeSealedProductPage(cachePage, for: cacheKey)
@@ -459,7 +456,9 @@ final class SealedBrowseModel: ObservableObject {
         let isConfigured = isConfigured(for: game)
         guard gameRegistry.supports(game, .sealed) else { return }
         let route = ProductRoute(game: game, setID: setID, query: query)
-        guard hasMore, activeProductRoute != route else { return }
+        let firstPageKey = CatalogCacheStore.sealedPageKey(game: game, setID: setID, query: query, offset: 0)
+        guard loadedProductKey == firstPageKey, let requestedOffset = nextProductOffset,
+              activeProductRoute == nil else { return }
         let requestID = UUID()
         productsRequestID = requestID
         activeProductRoute = route
@@ -472,12 +471,12 @@ final class SealedBrowseModel: ObservableObject {
                 updateLoadingState()
             }
         }
-        let requestedOffset = offset
         let cacheKey = CatalogCacheStore.sealedPageKey(
             game: game, setID: setID, query: query, offset: requestedOffset
         )
         if let saved = await cache.sealedProductPage(for: cacheKey) {
-            if saved.isFresh || !isConfigured {
+            if (saved.isFresh || !isConfigured),
+               Self.hasValidCursor(saved.value, after: requestedOffset) {
                 guard requestID == productsRequestID, !Task.isCancelled else { return }
                 apply(CatalogPage(items: Self.dated(saved.value.items, at: saved.storedAt), nextCursor: saved.value.nextCursor), replacing: false)
                 errorMessage = nil
@@ -486,7 +485,6 @@ final class SealedBrowseModel: ObservableObject {
         }
         guard requestID == productsRequestID, !Task.isCancelled else { return }
         guard isConfigured else {
-            hasMore = false
             errorMessage = Self.message(for: JustTCGTransport.TransportError.missingCredentials)
             return
         }
@@ -494,7 +492,7 @@ final class SealedBrowseModel: ObservableObject {
             let page = try await client.searchSealedProducts(
                 game: game, setID: setID, query: query, offset: requestedOffset
             )
-            let cachePage = cachePage(from: page)
+            let cachePage = try Self.cachePage(from: page, after: requestedOffset)
             guard requestID == productsRequestID, !Task.isCancelled else { return }
             apply(cachePage, replacing: false)
             await cache.storeSealedProductPage(cachePage, for: cacheKey)
@@ -528,17 +526,25 @@ final class SealedBrowseModel: ObservableObject {
         }
     }
 
-    private func cachePage(from page: MarketCatalogPage<SealedProductSummary>) -> CatalogPage<SealedProductSummary> {
-        CatalogPage(
-            items: page.items,
-            nextCursor: page.nextOffset.map(String.init)
-        )
+    private static func cachePage(from page: MarketCatalogPage<SealedProductSummary>,
+                                  after offset: Int) throws -> CatalogPage<SealedProductSummary> {
+        // Compute the cursor here so malformed vendor metadata cannot
+        // overflow or send a completion walk back to an earlier page.
+        let (next, overflow) = page.offset.addingReportingOverflow(page.limit)
+        guard page.offset == offset, !page.hasMore || (!overflow && page.limit > 0 && next > offset) else {
+            throw BrowseCatalogError.badResponse
+        }
+        return .init(items: page.items, nextCursor: page.hasMore ? String(next) : nil)
+    }
+
+    private static func hasValidCursor(_ page: CatalogPage<SealedProductSummary>, after offset: Int) -> Bool {
+        guard let cursor = page.nextCursor else { return true }
+        return Int(cursor).map { $0 > offset } ?? false
     }
 
     private func apply(_ page: CatalogPage<SealedProductSummary>, replacing: Bool) {
-        products = replacing ? page.items : products + page.items
-        hasMore = page.nextCursor != nil
-        offset = Int(page.nextCursor ?? "") ?? products.count
+        products = deduplicated(replacing ? page.items : products + page.items)
+        nextProductOffset = page.nextCursor.flatMap(Int.init)
     }
 
     /// Quota and rate-limit stops get their own wording, including when they
@@ -727,10 +733,26 @@ struct SealedProductGridView: View {
     let game: CardGame
     let set: SealedSetSummary
     @ObservedObject var model: SealedBrowseModel
+    @State private var search = ""
+    @State private var sort = CatalogBrowseSort.recommended
+    @State private var priceFilter: PriceFilter?
+    @State private var showsPriceFilter = false
+    @State private var completeSortRequest: UUID?
 
     private let columns = [GridItem(.adaptive(minimum: 150), spacing: 12)]
 
+    private var visibleProducts: [SealedProductSummary] {
+        let query = CardNameSearch.normalize(search)
+        let products = model.products.filter { product in
+            (query.isEmpty || CardNameSearch.normalize(product.name).contains(query))
+                && (priceFilter?.matches(product.marketPriceUSD) ?? true)
+        }
+        return sort.ordered(products, price: \.marketPriceUSD, date: { $0.releaseDate ?? set.releaseDate },
+                            name: \.name) { ($0.id, $0.variantID ?? "") < ($1.id, $1.variantID ?? "") }
+    }
+
     var body: some View {
+        let products = visibleProducts
         ScrollView {
             if let errorMessage = model.errorMessage, !model.products.isEmpty {
                 Label(errorMessage, systemImage: "clock.arrow.circlepath")
@@ -741,22 +763,48 @@ struct SealedProductGridView: View {
                     .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 10))
                     .padding(.horizontal, 12)
                     .padding(.top, 8)
+                if !model.hasMore, model.isConfigured(for: game) {
+                    Button("Retry") {
+                        Task { await model.loadProducts(game: game, setID: set.id, forceRefresh: true) }
+                    }
+                    .disabled(model.isLoading)
+                }
+            }
+            if sort != .recommended, model.hasMore || model.errorMessage != nil {
+                HStack {
+                    Text("Sorting \(products.count) loaded products")
+                    if completeSortRequest != nil {
+                        ProgressView().controlSize(.small)
+                        Button("Cancel") { completeSortRequest = nil }
+                    } else if model.hasMore {
+                        Button("Sort All Products") { completeSortRequest = UUID() }
+                            .disabled(model.isLoading)
+                    }
+                }
+                .font(.footnote)
             }
             LazyVGrid(columns: columns, spacing: 12) {
-                ForEach(model.products) { product in
-                    NavigationLink {
-                        SealedProductDetailView(game: game, product: product, sourceSet: set)
-                    } label: {
-                        SealedProductTile(product: product)
+                ForEach(products.map { CatalogSearchResult.sealed(game: game, product: $0) }) { result in
+                    if case let .sealed(_, product) = result {
+                        NavigationLink {
+                            SealedProductDetailView(game: game, product: product, sourceSet: set)
+                        } label: {
+                            VStack(alignment: .leading) {
+                                SealedProductTile(product: product)
+                                if sort.usesReleaseDate {
+                                    releaseLabel(for: product)
+                                }
+                            }
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
             }
             .padding(12)
             .contentWidthLimit(.wide)
 
-            if model.hasMore {
-                Button("Load More") {
+            if model.hasMore, completeSortRequest == nil {
+                Button(model.errorMessage == nil ? "Load More" : "Retry") {
                     Task { await model.loadMore(game: game, setID: set.id) }
                 }
                 .padding(.bottom, 20)
@@ -791,11 +839,47 @@ struct SealedProductGridView: View {
                     systemImage: "shippingbox",
                     description: Text("This set has no sealed products in the price catalogue.")
                 )
+            } else if products.isEmpty, !model.hasMore {
+                ContentUnavailableView("No matching products", systemImage: "magnifyingglass")
             }
         }
         .navigationTitle(set.name)
         .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $search, prompt: "Search sealed products")
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                CatalogBrowseSortMenu(sort: $sort)
+                Button("Filter", systemImage: priceFilter == nil
+                       ? "line.3.horizontal.decrease" : "line.3.horizontal.decrease.circle.fill") {
+                    showsPriceFilter = true
+                }
+                .accessibilityValue(priceFilter?.label ?? "Any price")
+            }
+        }
+        .sheet(isPresented: $showsPriceFilter) {
+            NavigationStack { PriceFilterView(selection: $priceFilter) }
+        }
+        .task(id: completeSortRequest) {
+            if let completeSortRequest { await completeSort(completeSortRequest) }
+        }
+        .onChange(of: sort) { _, _ in completeSortRequest = nil }
         .task(id: set.id) { await model.loadProducts(game: game, setID: set.id) }
+    }
+
+    private func releaseLabel(for product: SealedProductSummary) -> Text {
+        guard let date = product.releaseDate ?? set.releaseDate else { return Text("Release date unknown") }
+        let label = product.releaseDate == nil ? "Set release" : "Released"
+        return Text("\(label) \(CatalogBrowseSort.releaseDateLabel(date))")
+    }
+
+    private func completeSort(_ request: UUID) async {
+        defer { if completeSortRequest == request { completeSortRequest = nil } }
+        while !Task.isCancelled, completeSortRequest == request, model.hasMore {
+            let offset = model.nextProductOffset
+            await model.loadMore(game: game, setID: set.id)
+            if model.errorMessage != nil || model.nextProductOffset == offset { return }
+            await Task.yield()
+        }
     }
 }
 

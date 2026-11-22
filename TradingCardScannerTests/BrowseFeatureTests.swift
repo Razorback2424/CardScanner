@@ -50,7 +50,7 @@ final class BrowseLoadingRefinementTests: XCTestCase {
             XCTAssertEqual(items?.first { $0.name == "include_variations" }?.value, "true")
             loader.respond(Data(#"""
                 {"has_more":false,"data":[
-                    {"id":"f58e882a-c59f-4f72-91b5-0291f8360a2c","name":"Traveling Chocobo","set":"fin","set_name":"Final Fantasy","collector_number":"568","lang":"en","digital":false,"finishes":["foil"],"promo_types":["chocobotrackfoil","universesbeyond","ffvii"]},
+                    {"id":"f58e882a-c59f-4f72-91b5-0291f8360a2c","name":"Traveling Chocobo","set":"fin","set_name":"Final Fantasy","collector_number":"568","lang":"en","digital":false,"finishes":["foil"],"promo_types":["chocobotrackfoil","universesbeyond","ffvii"],"released_at":"2025-06-13","prices":{"usd":null,"usd_foil":"19.75","usd_etched":null}},
                     {"id":"00000000-0000-4000-8000-000000000210","name":"Traveling Chocobo","set":"fin","set_name":"Final Fantasy","collector_number":"210","lang":"en","digital":false,"finishes":["nonfoil","foil"]}
                 ]}
                 """#.utf8))
@@ -74,6 +74,13 @@ final class BrowseLoadingRefinementTests: XCTestCase {
         XCTAssertEqual(fill.scannedCount, 2)
         XCTAssertEqual(fill.matches.map(\.collectorNumber), ["568"])
         XCTAssertEqual(fill.matches.first?.magicTreatmentDisplayLabel, "Chocobo Track Foil")
+        let printing = try XCTUnwrap(fill.matches.first)
+        let foil = try XCTUnwrap(filters.matchingPrintings(for: printing, isOwned: { _ in false }).first)
+        var prices = catalog.sortPriceUpdates(for: [foil]).makeAsyncIterator()
+        let initialPrices = await prices.next()
+        XCTAssertEqual(initialPrices?.prices[foil.id], 19.75)
+        XCTAssertEqual(initialPrices?.quoteSources[foil.id], .scryfall)
+        XCTAssertEqual(foil.printingReleaseDate, FlexibleDate.parse("2025-06-13"))
     }
 
     func testMagicBrowseCanFindCollectibleEditionBySetAndByName() async throws {
@@ -253,6 +260,71 @@ final class BrowseLoadingRefinementTests: XCTestCase {
         guard case let .price(price) = quote else { return XCTFail("Retry must recover a newly published price") }
         XCTAssertEqual(price.unitMarketPriceUSD, 1.25)
         XCTAssertEqual(count.value, 2)
+    }
+
+    func testMagicSortRetryBypassesFreshPersistedHint() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let page = try XCTUnwrap(JSONSerialization.jsonObject(with: pageJSON) as? [String: Any])
+        let card = try XCTUnwrap((page["data"] as? [[String: Any]])?.first)
+        let response = try JSONSerialization.data(withJSONObject: card)
+        let count = BrowseRefinementRequestCount()
+        BrowseRefinementURLProtocol.setHandler { loader in
+            count.increment()
+            loader.respond(response)
+        }
+        let cache = CatalogCacheStore(root: root)
+        let set = set()
+        await cache.storeSets([set], for: .magic)
+        let summary = CatalogCardSummary(game: .magic, providerID: try XCTUnwrap(card["id"] as? String),
+            setID: set.catalogID, setName: set.name, setCode: set.code, name: "Llanowar Elves", collectorNumber: "218",
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: .nonfoil)
+        await cache.storeSortPrices([summary.id: .init(price: 99, checkedAt: .now)], for: set.id)
+        let catalog = BrowseCatalog(cache: cache, magicSession: session)
+        var lastQuote: Double?
+        for await prices in catalog.sortPrices(for: [summary]) { lastQuote = prices[summary.id] }
+        XCTAssertEqual(lastQuote, 99)
+        XCTAssertEqual(count.value, 0)
+        await catalog.resetPriceResolution(for: [summary.id])
+        for await prices in catalog.sortPrices(for: [summary]) { lastQuote = prices[summary.id] }
+        XCTAssertEqual(lastQuote, 1.25)
+        XCTAssertEqual(count.value, 1)
+    }
+
+    func testSortRetryOnlyInvalidatesTheRequestedSlotInAnActiveStream() async throws {
+        for retriesActiveSlot in [false, true] {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: root) }
+            let session = session()
+            defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+            let page = try XCTUnwrap(JSONSerialization.jsonObject(with: pageJSON) as? [String: Any])
+            let card = try XCTUnwrap((page["data"] as? [[String: Any]])?.first)
+            let response = try JSONSerialization.data(withJSONObject: card)
+            let started = expectation(description: "Price request reached the provider")
+            let gate = BrowseDirectoryResponseGate(started: started)
+            BrowseRefinementURLProtocol.setHandler { loader in Task { await gate.capture(loader) } }
+            let cache = CatalogCacheStore(root: root)
+            let set = set()
+            await cache.storeSets([set], for: .magic)
+            let summary = CatalogCardSummary(game: .magic, providerID: try XCTUnwrap(card["id"] as? String),
+                setID: set.catalogID, setName: set.name, setCode: set.code, name: "Llanowar Elves", collectorNumber: "218",
+                thumbnailURL: nil, imageURL: nil, masterSetVariant: .nonfoil)
+            let catalog = BrowseCatalog(cache: cache, magicSession: session)
+            let original = Task {
+                var quote: Double?
+                for await prices in catalog.sortPrices(for: [summary]) { quote = prices[summary.id] }
+                return quote
+            }
+            await fulfillment(of: [started], timeout: 2)
+            var foil = summary
+            foil.masterSetVariant = .foil
+            await catalog.resetPriceResolution(for: [retriesActiveSlot ? summary.id : foil.id])
+            await gate.release(response)
+            let result = await original.value
+            XCTAssertEqual(result, retriesActiveSlot ? nil : 1.25)
+        }
     }
     func testLiveMagicDirectoryRefreshesExpiredMemoryAndDiskOnceAndPublishesChanges() async throws {
         for warmsMemory in [false, true] {
@@ -1995,6 +2067,25 @@ final class BrowseFeatureTests: XCTestCase {
         let stale = await CatalogCacheStore(root: root).sortPrices(for: "sv08.5")
         XCTAssertEqual(stale?.value, prices)
         XCTAssertFalse(stale?.isFresh == true)
+    }
+
+    func testSortPriceCacheMergesDisjointBatchesAndRejectsOlderChanges() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cache = CatalogCacheStore(root: root)
+        let latest = Date.now
+        let older = latest.addingTimeInterval(-60)
+        let foil = SortPriceHint(price: 20, checkedAt: latest, source: .scryfall)
+        let standard = SortPriceHint(price: 5, checkedAt: latest, source: .scryfall)
+        await cache.mergeSortPrices(["foil": foil], withdrawing: [:], for: "set")
+        await cache.mergeSortPrices(["standard": standard], withdrawing: ["foil": older], for: "set")
+        await cache.mergeSortPrices(["standard": .init(price: 1, checkedAt: older)],
+                                    withdrawing: [:], for: "set")
+        let combined = await cache.sortPrices(for: "set")
+        XCTAssertEqual(combined?.value, ["foil": foil, "standard": standard])
+        await cache.mergeSortPrices([:], withdrawing: ["foil": latest], for: "set")
+        let remaining = await cache.sortPrices(for: "set")
+        XCTAssertEqual(remaining?.value, ["standard": standard])
     }
 
     func testMagicAndPokemonPriceCachesRetainExplicitCoverageGaps() async throws {
@@ -3801,6 +3892,25 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertNil(model.lanes[.pokemon]?.error)
         let requestedCursors = await catalog.requestedCursors()
         XCTAssertEqual(requestedCursors, [nil, "next"])
+    }
+
+    @MainActor
+    func testRootSearchStopsAfterProviderRepeatsCursor() async throws {
+        let first = browseDisplaySummary(providerID: "first", name: "Box One", number: "001")
+        let second = browseDisplaySummary(providerID: "second", name: "Box Two", number: "002")
+        let catalog = PagingBrowseCatalog(first: first, second: second, secondNextCursor: "next")
+        let model = BrowseViewModel(catalog: catalog, initialGame: .pokemon, includesSealedProducts: false)
+        model.searchText = "box"
+        let loaded = await waitUntil { model.lanes[.pokemon]?.cursor == "next" && model.lanes[.pokemon]?.isLoading == false }
+        XCTAssertTrue(loaded)
+
+        await model.continueSearch()
+        await model.continueSearch()
+        XCTAssertEqual(model.lanes[.pokemon]?.cards.map(\.id), [first.id])
+        XCTAssertNotNil(model.lanes[.pokemon]?.error)
+        XCTAssertFalse(model.hasSearchPagination)
+        let cursors = await catalog.requestedCursors()
+        XCTAssertEqual(cursors, [nil, "next"])
     }
 
     @MainActor
@@ -9713,6 +9823,18 @@ private actor EmptyBrowseCatalog: BrowseCatalogProviding {
 
 @MainActor
 final class BrowsePaginationRenderTests: XCTestCase {
+    func testPriceFilterWithNoMatchingQuotesPausesAutomaticPagination() async throws {
+        let set = fixtureSet("no-price-matches")
+        let catalog = RenderPagingCatalog(sets: [set], cardsPerPage: 24, mockPrice: 10)
+        let window = try host(CatalogGameCardsView(game: .magic, sets: [set], catalog: catalog,
+            isActive: true, search: .constant(""), filters: .init(price: .custom(min: 50, max: nil))))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(1, catalog: catalog)
+        try await Task.sleep(for: .milliseconds(450))
+        let requests = await catalog.requests
+        XCTAssertEqual(requests, ["no-price-matches:start"])
+    }
+
     func testMissingBrowseGridRefreshesAfterOwnershipChanges() async throws {
         let set = fixtureSet("ownership-change")
         let catalog = RenderPagingCatalog(sets: [set], pageCount: 1)
@@ -10280,6 +10402,25 @@ final class BrowsePaginationRenderTests: XCTestCase {
         XCTAssertEqual(refreshed, preserved + preserved)
     }
 
+    func testFilteredWalkIgnoresPublicationsOutsideItsSelectedSets() async throws {
+        let selected = fixtureSet("selected"), unrelated = fixtureSet("other")
+        let directory = [selected, unrelated]
+        let catalog = RenderPagingCatalog(sets: directory, pageCount: 1)
+        let window = try host(CatalogGameCardsView(game: .magic, sets: directory, catalog: catalog,
+            isActive: true, search: .constant(""), filters: .init(setIDs: [selected.catalogID])))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(1, catalog: catalog)
+        try await Task.sleep(for: .milliseconds(100))
+        await catalog.publish(sets: directory, providerSetID: unrelated.providerID)
+        try await Task.sleep(for: .milliseconds(250))
+        let preserved = await catalog.requests
+        XCTAssertEqual(preserved, ["selected:start"])
+        await catalog.publish(sets: directory, providerSetID: selected.providerID)
+        try await waitForRequests(2, catalog: catalog)
+        let reloaded = await catalog.requests
+        XCTAssertEqual(reloaded, ["selected:start", "selected:start"])
+    }
+
     private func fixtureSet(_ id: String, rank: Int = 0) -> CatalogSet {
         CatalogSet(catalogID: .init(game: .magic, providerID: id), name: id, code: id,
                    logoURL: nil, symbolURL: nil, cardCount: 3, releaseDate: nil, sortRank: rank)
@@ -10378,6 +10519,7 @@ private actor RenderPagingCatalog: BrowseCatalogProviding {
     private let cardsPerPage: Int
     private let pageCount: Int
     private let holdsPrices: Bool
+    private let mockPrice: Double?
     private var priceStarts = 0
     private var priceCancellations = 0
     private var firstPageGate: CheckedContinuation<Void, Never>?
@@ -10385,12 +10527,13 @@ private actor RenderPagingCatalog: BrowseCatalogProviding {
     private var searchIsEmpty: Bool
 
     init(sets: [CatalogSet], holdsFirstPage: Bool = false, cardsPerPage: Int = 1,
-         pageCount: Int = 3, holdsPrices: Bool = false, startsWithEmptySearch: Bool = false) {
+         pageCount: Int = 3, holdsPrices: Bool = false, startsWithEmptySearch: Bool = false, mockPrice: Double? = nil) {
         directory = sets
         self.holdsFirstPage = holdsFirstPage
         self.cardsPerPage = cardsPerPage
         self.pageCount = pageCount
         self.holdsPrices = holdsPrices
+        self.mockPrice = mockPrice
         searchIsEmpty = startsWithEmptySearch
     }
     func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate> {
@@ -10440,6 +10583,12 @@ private actor RenderPagingCatalog: BrowseCatalogProviding {
     }
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails { throw TestError.failed }
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        if let mockPrice {
+            return AsyncStream { continuation in
+                continuation.yield(Dictionary(uniqueKeysWithValues: cards.map { ($0.id, mockPrice) }))
+                continuation.finish()
+            }
+        }
         guard holdsPrices else { return AsyncStream { $0.finish() } }
         return AsyncStream { continuation in
             Task { await self.recordPriceStart() }
@@ -10454,12 +10603,14 @@ private actor RenderPagingCatalog: BrowseCatalogProviding {
 private actor PagingBrowseCatalog: BrowseCatalogProviding {
     private let first: CatalogCardSummary?
     private let second: CatalogCardSummary
+    private let secondNextCursor: String?
     private var cursors: [String?] = []
     private var queries: [String] = []
 
-    init(first: CatalogCardSummary?, second: CatalogCardSummary) {
+    init(first: CatalogCardSummary?, second: CatalogCardSummary, secondNextCursor: String? = nil) {
         self.first = first
         self.second = second
+        self.secondNextCursor = secondNextCursor
     }
 
     func sets(for game: CardGame) async throws -> [CatalogSet] { [] }
@@ -10479,7 +10630,7 @@ private actor PagingBrowseCatalog: BrowseCatalogProviding {
         if cursor == nil {
             return CatalogPage(items: first.map { [$0] } ?? [], nextCursor: "next")
         }
-        return CatalogPage(items: [second], nextCursor: nil)
+        return CatalogPage(items: [second], nextCursor: secondNextCursor)
     }
 
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {

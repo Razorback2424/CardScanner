@@ -178,9 +178,7 @@ struct YuGiOhCatalogAdapter: GameCatalogAdapter {
         let candidates = family.map(candidate)
         let name = p.cardName + (family.count > 1 ? " · " + candidate(p).compactChoiceLabel(among: candidates) : "")
         let order = p.set.releaseDate.map { Int($0.timeIntervalSince1970 / 86_400) }
-        let variants: [PhysicalVariant] = p.explicitSelectionSupported ? p.editions.map {
-            $0 == .limited && p.hasDuelTerminalStamp ? YuGiOhEdition.duelTerminalVariant : $0.variant
-        } : []
+        let variants = p.browseVariants
         let card = try ResolvedCatalogCard(game: game, physicalPrintingID: p.idString, canonicalCardID: p.card.id.uuidString.lowercased(),
             language: "en", name: name, setName: p.set.name, setCode: p.set.abbreviation, cardNumber: p.code,
             printedIdentifier: p.code, rarity: p.displayRarity, displayImageURL: p.imageURL, thumbnailImageURL: p.thumbnailURL,

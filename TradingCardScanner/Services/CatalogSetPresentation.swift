@@ -15,10 +15,15 @@ struct CatalogSetPresentationInputs: Equatable, Sendable {
     let tier: PokemonMasterSetTier
     let prices: [String: Double]
     let officialCollectorCount: Int?
+    let browseFilters: CatalogBrowseFilters?
+    let browseQuotes: [String: CatalogBrowseQuote]
+    let browseSet: CatalogSet?
 
     init(setID: CatalogSetID, contentGeneration: UUID, cards: [CatalogCardSummary],
          search: String, sort: CatalogSetSort, ownership: CatalogOwnershipFilter,
-         ownershipRevision: UInt, tier: PokemonMasterSetTier, prices: [String: Double], officialCollectorCount: Int? = nil) {
+         ownershipRevision: UInt, tier: PokemonMasterSetTier, prices: [String: Double], officialCollectorCount: Int? = nil,
+         browseFilters: CatalogBrowseFilters? = nil, browseQuotes: [String: CatalogBrowseQuote] = [:],
+         browseSet: CatalogSet? = nil) {
         self.setID = setID
         self.contentGeneration = contentGeneration
         self.cards = cards
@@ -29,6 +34,9 @@ struct CatalogSetPresentationInputs: Equatable, Sendable {
         self.tier = tier
         self.prices = sort.needsPrices ? prices : [:]
         self.officialCollectorCount = officialCollectorCount
+        self.browseFilters = browseFilters
+        self.browseQuotes = browseQuotes
+        self.browseSet = browseSet
     }
 }
 
@@ -145,6 +153,14 @@ actor CatalogSetPresentationBuilder: CatalogSetPresentationBuilding {
                 diagnostics.priceSorts += 1
             }
             order = priceOrder?.indices ?? prepared.numberOrder
+        case .releaseNewest, .releaseOldest, .nameAscending, .nameDescending:
+            order = inputs.sort.browseSort.ordered(prepared.numberOrder, price: { _ in nil },
+                date: { prepared.rows[$0].summary.printingReleaseDate ?? inputs.browseSet?.releaseDate },
+                name: { prepared.rows[$0].summary.name }) {
+                    let left = prepared.rows[$0], right = prepared.rows[$1]
+                    let comparison = CollectorNumber.compare(left.numberKey, right.numberKey)
+                    return comparison == .orderedSame ? left.id < right.id : comparison == .orderedAscending
+                }
         }
         if inputs.ownership != .all, ownedFlags?.revision != inputs.ownershipRevision {
             ownedFlags = (inputs.ownershipRevision, prepared.rows.map { owned.owns($0.summary) })
@@ -168,7 +184,14 @@ actor CatalogSetPresentationBuilder: CatalogSetPresentationBuilding {
             summaries.append(row.summary)
             identities.append(row.identity)
         }
-        let groups = CatalogCardDisplayGrouping.groups(for: summaries, preparedIdentities: identities)
+        let groups: [CatalogCardDisplayGroup]
+        if let filters = inputs.browseFilters {
+            let candidates = CatalogBrowsePresentation.candidates(summaries, filters: filters, ownership: owned)
+            groups = CatalogBrowsePresentation.rows(candidates, filters: filters, sort: inputs.sort.browseSort,
+                sets: inputs.browseSet.map { [$0] } ?? [], quotes: inputs.browseQuotes, ownership: owned).map(\.group)
+        } else {
+            groups = CatalogCardDisplayGrouping.groups(for: summaries, preparedIdentities: identities)
+        }
         try Task.checkCancellation()
         lastPresentation = (inputs, groups)
         diagnostics.projections += 1

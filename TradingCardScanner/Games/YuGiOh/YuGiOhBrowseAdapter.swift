@@ -51,7 +51,8 @@ struct YuGiOhBrowseAdapter: GameBrowseAdapter {
                 let summaries = ordered.enumerated().map { offset, p in
                     let summary = CatalogCardSummary(game: .yuGiOh, providerID: p.idString, setID: id,
                         setName: p.set.name, setCode: p.set.abbreviation, name: p.browseName, collectorNumber: p.code,
-                        thumbnailURL: p.thumbnailURL, imageURL: p.imageURL, catalogGeneration: generation)
+                        thumbnailURL: p.thumbnailURL, imageURL: p.imageURL, catalogGeneration: generation,
+                        verifiedBrowseFinishes: p.browseVariants)
                     let text = CardNameSearch.normalize([p.cardName, p.productName, p.code, p.displayRarity,
                         p.displayArtLabel ?? "", p.set.name].joined(separator: " "))
                     search.append((summary.id, SearchRow(setID: id, cardOffset: offset, text: text)))
@@ -90,6 +91,13 @@ struct YuGiOhBrowseAdapter: GameBrowseAdapter {
         let next = end < rows.count ? try nextCursor(at: end, fingerprint: fingerprint) : nil
         return .init(items: Array(rows[start..<end]), nextCursor: next)
     }
+
+    func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]? {
+        try Task.checkCancellation()
+        let index = index.get()
+        guard index.setsByID[set.catalogID] == set else { throw CatalogLookupError.staleCatalog }
+        return index.cardsBySetID[set.catalogID] ?? []
+    }
     func search(query: String, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         try Task.checkCancellation()
         let normalized = CardNameSearch.normalize(query)
@@ -121,7 +129,7 @@ struct YuGiOhBrowseAdapter: GameBrowseAdapter {
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
         let index = index.get()
         guard summary.game == game, summary.catalogGeneration == generation,
-              index.cardsBySetID[summary.setID]?.contains(summary) == true, let set = index.setsByID[summary.setID],
+              index.cardsBySetID[summary.setID]?.contains(summary.baseBrowseSelection) == true, let set = index.setsByID[summary.setID],
               let id = UUID(uuidString: summary.providerID), let p = catalog.printingByID[id] else { throw CatalogLookupError.staleCatalog }
         let resolved = try YuGiOhCatalogAdapter(catalog: catalog).discoveryResolution(id)
         let referenceNotice = p.code.isEmpty ? "Reference display card without a printed set code." : nil

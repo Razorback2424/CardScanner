@@ -2509,7 +2509,7 @@ final class PricingTests: XCTestCase {
         )
         XCTAssertEqual(
             CatalogSortPriceResolution.exactLookup(priced),
-            .priced(3.75, asOf: .distantPast)
+            .priced(3.75, asOf: .distantPast, source: .tcgplayer)
         )
     }
 
@@ -2545,7 +2545,7 @@ final class PricingTests: XCTestCase {
                     magicTreatments: [], at: .distantPast
                 )
             ]),
-            .priced(0.42, asOf: .distantPast)
+            .priced(0.42, asOf: .distantPast, source: .tcgplayer)
         )
     }
 

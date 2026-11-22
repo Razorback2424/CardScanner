@@ -10,6 +10,7 @@ struct CatalogBrowseFilterSheet: View {
     let sets: [CatalogSet]
     let finishOptions: [PhysicalVariant]
     let treatmentOptions: [MagicTreatment]
+    var allowsSetSelection = true
 
     var body: some View {
         NavigationStack {
@@ -25,13 +26,20 @@ struct CatalogBrowseFilterSheet: View {
 
                 Section("Details") {
                     NavigationLink {
-                        MultiSelectFilterView(
-                            title: "Sets", options: setOptions, selection: setSelection, showsCounts: false
-                        )
+                        PriceFilterView(selection: $filters.price)
                     } label: {
-                        detailRow("Sets", value: selectionLabel(filters.setIDs.count, singular: "set"))
+                        detailRow("Market Price", value: filters.price?.label ?? "Any")
                     }
-                    if !printRunOptions.isEmpty {
+                    if allowsSetSelection {
+                        NavigationLink {
+                            MultiSelectFilterView(
+                                title: "Sets", options: setOptions, selection: setSelection, showsCounts: false
+                            )
+                        } label: {
+                            detailRow("Sets", value: selectionLabel(filters.setIDs.count, singular: "set"))
+                        }
+                    }
+                    if allowsSetSelection, !printRunOptions.isEmpty {
                         NavigationLink {
                             MultiSelectFilterView(title: "Print Run", options: printRunOptions,
                                                   selection: printRunSelection, showsCounts: false)
@@ -40,9 +48,10 @@ struct CatalogBrowseFilterSheet: View {
                         }
                     }
                     if !finishOptions.isEmpty {
+                        let title = game == .yuGiOh ? "Edition" : "Finish"
                         NavigationLink {
                             MultiSelectFilterView(
-                                title: "Finish",
+                                title: title,
                                 options: finishOptions.map {
                                     FilterOption(id: $0.id, label: $0.label, group: nil, count: 0)
                                 },
@@ -51,7 +60,7 @@ struct CatalogBrowseFilterSheet: View {
                                 allowsSearch: game == .pokemon
                             )
                         } label: {
-                            detailRow("Finish", value: selectionLabel(filters.variantIDs.count, singular: "finish"))
+                            detailRow(title, value: selectionLabel(filters.variantIDs.count, singular: title.lowercased()))
                         }
                     }
                     if !treatmentOptions.isEmpty {
@@ -136,6 +145,7 @@ struct CatalogBrowseFilterSheet: View {
 /// One removable chip per active filter, under the search field, so a short
 /// grid always explains itself.
 struct CatalogBrowseFilterChips: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Binding var filters: CatalogBrowseFilters
     let sets: [CatalogSet]
     var finishOptions: [PhysicalVariant] = []
@@ -177,33 +187,44 @@ struct CatalogBrowseFilterChips: View {
     }
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(chips) { chip in
-                    Button {
-                        chip.remove(&filters)
-                    } label: {
-                        HStack(spacing: 4) {
-                            Text(chip.label).lineLimit(1)
-                            Image(systemName: "xmark").font(.caption2.weight(.bold))
-                        }
-                        .font(.subheadline.weight(.medium))
-                        .padding(.horizontal, 12)
-                        .frame(minHeight: 32)
-                        .background(Color("RefreshAccent").opacity(0.18), in: Capsule())
-                    }
-                    .buttonStyle(.plain)
-                    .frame(minHeight: 44)
-                    .accessibilityLabel("Remove filter \(chip.label)")
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                CatalogVariantChipWrap(horizontalSpacing: 8, verticalSpacing: 0) { chipButtons }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) { chipButtons }
+                        .padding(.horizontal, 16)
                 }
-                Button("Clear") { filters = .none }
-                    .font(.subheadline.weight(.medium))
-                    .frame(minHeight: 44)
             }
-            .padding(.horizontal, 16)
         }
         .padding(.bottom, 4)
         .background(Color(uiColor: .systemBackground))
+    }
+
+    @ViewBuilder private var chipButtons: some View {
+        ForEach(chips) { chip in
+            Button {
+                chip.remove(&filters)
+            } label: {
+                HStack(spacing: 4) {
+                    Text(chip.label).lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                    Image(systemName: "xmark").font(.caption2.weight(.bold))
+                }
+                .font(.subheadline.weight(.medium))
+                .padding(.horizontal, 12)
+                .frame(minHeight: 32)
+                .background(Color("RefreshAccent").opacity(0.18), in: Capsule())
+            }
+            .buttonStyle(.plain)
+            .frame(minHeight: 44)
+            .accessibilityLabel("Remove filter \(chip.label)")
+        }
+        Button("Clear") { filters = .none }
+            .font(.subheadline.weight(.medium))
+            .frame(minHeight: 44)
+            .accessibilityLabel("Clear filters")
     }
 }
 

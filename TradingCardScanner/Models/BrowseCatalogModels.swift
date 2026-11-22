@@ -160,6 +160,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
 }
 
 struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
+    var printingReleaseDate: Date? = nil
     var catalogGeneration: String? = nil
     var collectionAvailabilityNotice: String? = nil
     var searchFields: CatalogCardSearchFields? = nil
@@ -237,7 +238,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         catalogGeneration: String? = nil,
         collectionAvailabilityNotice: String? = nil,
         searchFields: CatalogCardSearchFields? = nil,
-        verifiedBrowseFinishes: [PhysicalVariant]? = nil
+        verifiedBrowseFinishes: [PhysicalVariant]? = nil,
+        printingReleaseDate: Date? = nil
     ) {
         self.game = game
         self.providerID = providerID
@@ -252,6 +254,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         self.catalogGeneration = catalogGeneration
         self.collectionAvailabilityNotice = collectionAvailabilityNotice
         self.searchFields = searchFields
+        self.printingReleaseDate = printingReleaseDate
         let storedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDsRaw)
         self.magicTreatmentIDsRaw = storedTreatmentIDs
         let treatmentIDSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: storedTreatmentIDs))
@@ -286,7 +289,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             catalogGeneration: catalogGeneration,
             collectionAvailabilityNotice: collectionAvailabilityNotice,
             searchFields: searchFields,
-            verifiedBrowseFinishes: verifiedBrowseFinishes
+            verifiedBrowseFinishes: verifiedBrowseFinishes,
+            printingReleaseDate: printingReleaseDate
         ).withRarity(rarity)
     }
 
@@ -307,6 +311,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         case verifiedBrowseFinishes
         case masterSetVariant, isExpandedMasterSetVariant, isSoleSlotForCard
         case rarity
+        case printingReleaseDate
     }
 
     init(from decoder: Decoder) throws {
@@ -314,6 +319,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         catalogGeneration = try container.decodeIfPresent(String.self, forKey: .catalogGeneration)
         collectionAvailabilityNotice = try container.decodeIfPresent(String.self, forKey: .collectionAvailabilityNotice)
         searchFields = try container.decodeIfPresent(CatalogCardSearchFields.self, forKey: .searchFields)
+        printingReleaseDate = try container.decodeIfPresent(Date.self, forKey: .printingReleaseDate)
         game = try container.decode(CardGame.self, forKey: .game)
         providerID = try container.decode(String.self, forKey: .providerID)
         setID = try container.decode(CatalogSetID.self, forKey: .setID)
@@ -361,6 +367,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         try container.encodeIfPresent(catalogGeneration, forKey: .catalogGeneration)
         try container.encodeIfPresent(collectionAvailabilityNotice, forKey: .collectionAvailabilityNotice)
         try container.encodeIfPresent(searchFields, forKey: .searchFields)
+        try container.encodeIfPresent(printingReleaseDate, forKey: .printingReleaseDate)
         try container.encode(game, forKey: .game)
         try container.encode(providerID, forKey: .providerID)
         try container.encode(setID, forKey: .setID)
@@ -397,6 +404,16 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     }
 
     var masterSetVariantLabel: String? { masterSetVariant?.label }
+
+    /// Adapters validate against the immutable printing they published. A UI
+    /// finish selection may reuse that printing only for an advertised finish.
+    var baseBrowseSelection: Self {
+        guard let finish = masterSetVariant,
+              verifiedBrowseFinishes?.contains(where: { $0.id == finish.id }) == true else { return self }
+        var printing = self
+        printing.masterSetVariant = nil
+        return printing
+    }
 
     var magicTreatments: [MagicTreatment] {
         magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:))
@@ -533,10 +550,9 @@ enum CatalogCardDisplayGrouping {
             )
             let number = identity.collectorNumber
 
-            // Magic treatments are exact printings. Keep every Magic summary a
-            // singleton, while still disambiguating an unexpectedly duplicated
-            // provider identity so the resulting ForEach ids stay unique.
-            if summary.game == .magic {
+            // An unexpected duplicate unqualified Magic row is still a
+            // separate tile. Explicit finish slots share their printing tile.
+            if summary.game == .magic, summary.masterSetVariant == nil {
                 if indexByIdentity[identity] != nil {
                     var collisionIndex = groups.count
                     repeat {
@@ -1069,6 +1085,7 @@ struct CatalogCachedPrice: Codable, Equatable, Sendable {
 struct SortPriceHint: Codable, Equatable, Sendable {
     let price: Double
     let checkedAt: Date
+    var source: PriceSource? = nil
 
     func isFresh(now: Date = .now) -> Bool {
         let age = now.timeIntervalSince(checkedAt)
@@ -1085,6 +1102,8 @@ struct CatalogPriceUpdate: Sendable, Equatable {
     let unresolvedIDs: Set<String>
     var missingMappingIDs: Set<String> = []
     var printingNeedsReviewIDs: Set<String> = []
+    var quoteDates: [String: Date] = [:]
+    var quoteSources: [String: PriceSource] = [:]
 }
 
 extension CatalogPage: Codable where Element: Codable {}
@@ -1673,6 +1692,7 @@ enum CatalogSetSort: String, CaseIterable, Identifiable, Sendable {
     case priceLowToHigh
     case numberLowToHigh
     case numberHighToLow
+    case releaseNewest, releaseOldest, nameAscending, nameDescending
 
     var id: String { rawValue }
     var label: String {
@@ -1681,9 +1701,22 @@ enum CatalogSetSort: String, CaseIterable, Identifiable, Sendable {
         case .priceLowToHigh: return "Price: Low to High"
         case .numberLowToHigh: return "Card Number: Low to High"
         case .numberHighToLow: return "Card Number: High to Low"
+        case .releaseNewest, .releaseOldest, .nameAscending, .nameDescending: return browseSort.label
         }
     }
     var needsPrices: Bool { self == .priceHighToLow || self == .priceLowToHigh }
+
+    var browseSort: CatalogBrowseSort {
+        switch self {
+        case .priceHighToLow: return .priceDescending
+        case .priceLowToHigh: return .priceAscending
+        case .releaseNewest: return .releaseDescending
+        case .releaseOldest: return .releaseAscending
+        case .nameAscending: return .nameAscending
+        case .nameDescending: return .nameDescending
+        case .numberLowToHigh, .numberHighToLow: return .recommended
+        }
+    }
 }
 
 enum CatalogOwnershipFilter: String, CaseIterable, Identifiable, Sendable {
@@ -1789,6 +1822,11 @@ enum CatalogSetQuery {
                 case (nil, _?): return false
                 default: return compareNumber(left, right) == .orderedAscending
                 }
+            case .releaseNewest, .releaseOldest, .nameAscending, .nameDescending:
+                return sort.browseSort.precedes(left, right, price: { _ in nil },
+                    date: \.printingReleaseDate, name: \.name, tie: {
+                        compareNumber($0, $1) == .orderedAscending
+                    })
             }
         }
     }

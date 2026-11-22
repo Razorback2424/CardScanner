@@ -660,6 +660,7 @@ struct SealedProductSummary: Identifiable, Hashable, Sendable, Codable {
     var tcgplayerProductID: String? = nil
     /// Original provider retrieval, preserved when a saved Browse page is replayed.
     var retrievedAt: Date? = .now
+    var releaseDate: Date? = nil
 }
 
 /// A set as the vendor groups it, with its sealed inventory count.

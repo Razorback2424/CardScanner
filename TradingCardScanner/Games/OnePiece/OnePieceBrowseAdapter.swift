@@ -212,7 +212,7 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
 
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
         guard summary.game == game, summary.catalogGeneration == generation,
-              cardsBySetID[summary.setID]?.contains(summary) == true,
+              cardsBySetID[summary.setID]?.contains(summary.baseBrowseSelection) == true,
               let set = setsByID[summary.setID] else {
             throw CatalogLookupError.staleCatalog
         }
