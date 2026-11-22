@@ -85,10 +85,13 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 - **Rarity taxonomy.** Prismatic rules for RA01, RA03, RA04 and RA05, plus Short Print and Super Short Print read as Common. See [`research/yugioh-catalog/rarity-taxonomy.md`](research/yugioh-catalog/rarity-taxonomy.md).
 - **Result:** open rows went from 8,671 to 5,211 and incomplete codes from 4,384 to 2,689, with 0 opened. `autoEligibleCodes` went from 262 to 274, from the PSV Short Prints that Konami's checklist lists as Common.
 
+**Publisher rarity for placeholder rows (2026-11-21).** On its own branch from `467581b4`, the [reviewed rule](research/yugioh-catalog/rarity-taxonomy.md#publisher-confirmed-rarity-for-source-placeholders) closed 252 ledger rows across 126 codes. The retained bundle replay went from 4,883 to 4,631 open rows. The fresh capture went from 4,880 to 4,628. Both opened zero rows and kept 720 automatic codes. The retained replay had an empty `parentRegressions` map. The fresh baseline and replay both record the same four pre-existing `MAMO-EN013` printing identity changes.
+
 **Next Yu-Gi-Oh targets:**
 1. **Hidden Arsenal: Chapter 1 Duel Terminal parallels** (137 Common + 25 Ultra codes). These need a source confirming that TCGplayer's "Technology" names and YGOPRODeck's "Parallel Rare" names are the same finish.
 2. **Codes with no YGOPRODeck row** (the largest remaining pattern: about 390 Commons and 130 Super Rares, mostly Speed Duel sets). Check whether YGOPRODeck lists these under another code before treating them as gaps.
 3. **Reviewed Konami release inventories for more releases.** This is still the main way to make more codes auto-resolve on scan.
+4. **Remaining rarity and identity gaps.** `MZTM-EN046` needs an identity review because YGOPRODeck attaches its row to Buzzsaw Shark, while Konami and TCGplayer list Cutter Shark. `KC01-EN033` and the three `L5DD` tokens need exact numbered identity evidence. The larger deck clusters need exact title, artwork and bonus or misprint evidence before linking multiple products at the same printed code.
 
 ## Mistakes already made (do not repeat)
 
@@ -118,6 +121,10 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 | Result | 18 sets and 1,834 cards finish-certified (from 1 set and 5 cards) | Browse-only rows 169 → 26 |
 | Ledger | Open rows 10,640 → about 5,100 | — |
 
+On the November 21 Pokémon capture, the combined offline overlay of the Shiny Vault, Delta Species, and e-Card passes has 3,852 open rows. Starting from 4,485, the overlay closed 645 unmatched-market rows and exposed 12 finish exceptions that remain open.
+
 Ledgers, captures and logs are on the SSD under:
 - `PokemonReconciliation-20261118/`
 - `LorcanaReconciliation-20261118/`
+- `PokemonNextBatchReview-20261121/ledger-pokemon-combined.json`
+- `YuGiOhRarityReconciliation-20261121/` (numbered ledgers and Konami evidence), with provider inputs under `YuGiOhReconciliation-20261121/`

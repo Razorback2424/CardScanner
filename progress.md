@@ -1,3 +1,18 @@
+# 2026-11-21 — Yu-Gi-Oh! rarity placeholders
+
+The `reconcile/yugioh-official-rarities-20261121` worktree, based on
+`467581b4`, uses exact English Konami rarity evidence for 126 printed codes
+with placeholder source labels. The retained ledger fell from 4,883 to 4,631
+and the fresh ledger from 4,880 to 4,628. Both runs closed the same 252 rows
+and opened zero. Monster Mayhem cleared its final 22 correspondence gaps.
+Both runs retained 720 automatic codes. The retained seed had no parent
+regressions. The fresh capture still has four previously recorded
+`MAMO-EN013` identity changes. See the [rarity evidence](docs/research/yugioh-catalog/rarity-taxonomy.md#publisher-confirmed-rarity-for-source-placeholders)
+and the [reconciliation runbook](docs/catalog-reconciliation-agent-runbook.md#yu-gi-oh).
+Focused Python checks and the payload size preflight passed. The Yu-Gi-Oh!
+and Browse simulator suite passed 248 tests, with the live-price check
+skipped because it requires an unexpired local receipt.
+
 # 2026-11-20 — Current documentation authority cleanup after PRs #54/#55
 
 Source-bound review at `main@146161c`: corrected stale current-sounding

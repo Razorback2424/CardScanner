@@ -1,0 +1,1385 @@
+{
+  "decision": "For these exact English codes, use the rarity on the English Konami card detail when the same exact title, code and rarity identify a single captured marketplace product and the only YGOPRODeck row carries the reviewed placeholder. This supplies correspondence only.",
+  "sources": {
+    "cardDetailURL": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid={konamiCardID}&ope=2&request_locale=en",
+    "tcgplayerProductURL": "https://www.tcgplayer.com/product/{productID}",
+    "ygoprodeck": "https://db.ygoprodeck.com/api/v7/cardinfo.php?misc=yes",
+    "collectorChecklist": "https://ftp.yugipedia.com/wiki/Set_Card_Lists%3ALegendary_5D%27s_Decks_%28TCG-EN%29",
+    "collectorMarketplace": "https://www.cardmarket.com/en/YuGiOh/Products/Singles/Battles-of-Legend-Monster-Mayhem/The-Fabled-Behilmoth",
+    "salesReference": "https://www.pricecharting.com/game/yugioh-battles-of-legend-monster-mayhem/the-fabled-behilmoth-blmm-en012"
+  },
+  "groups": [
+    {
+      "groupID": 24621,
+      "groupName": "Battles of Legend: Glorious Gallery",
+      "sourceSetName": "Battles of Legend: Glorious Gallery",
+      "expectedProductsSHA256": "505d4719629bfa9f6f16d6fa2b1226270e28fe982dbe76086150153bcad3ecba",
+      "sources": {
+        "2000001637000": {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001637000&request_locale=en&rp=99999",
+          "sha256": "ed6275418c5a659c737c7c9381fb0430beb3d4cb1ddc79c73a90b2c8afd02976"
+        }
+      },
+      "codes": {
+        "BLGG-EN012": {
+          "name": "Dragunity Falchion",
+          "productID": 695568,
+          "sourceCardID": 8039562,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22197,
+          "konamiCardSHA256": "b65a505289d2c7890d5f01f9f1dc77c9593a5b90a55203cef261f91fed0f5861"
+        },
+        "BLGG-EN015": {
+          "name": "Dragunity Divine Wind",
+          "productID": 695571,
+          "sourceCardID": 7917970,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22200,
+          "konamiCardSHA256": "b86fb6da0bd9d573069853e57fe89cf51acc20e4b457eac7c6a02af14da225d5"
+        },
+        "BLGG-EN027": {
+          "name": "Armament Reincarnation",
+          "productID": 695583,
+          "sourceCardID": 53770666,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 6649,
+          "konamiCardSHA256": "22a2c4635ede6c4f1e5aa0ee6d6f60f57a0dc1d0b303af56cb27487894e22980"
+        },
+        "BLGG-EN030": {
+          "name": "Poisonous Viper",
+          "productID": 695586,
+          "sourceCardID": 561300,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 7513,
+          "konamiCardSHA256": "3bdf54bb93105e757c7529ab6dd22664d27f0b2c5ef38b2d677358deb18d42a5"
+        },
+        "BLGG-EN036": {
+          "name": "Gagaga Illusion",
+          "productID": 695592,
+          "sourceCardID": 73496100,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22313,
+          "konamiCardSHA256": "227f8188f1c42f3570d1f34b2c8dcd3d1ebd6498981aadf4edd7452fe8b53fd7"
+        },
+        "BLGG-EN037": {
+          "name": "Gagaga Escape",
+          "productID": 695593,
+          "sourceCardID": 9591819,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22314,
+          "konamiCardSHA256": "211dcccc593567ac10d4647525abcae12e688034ffe401347648754c5c108f07"
+        },
+        "BLGG-EN038": {
+          "name": "Endless Bond",
+          "productID": 695594,
+          "sourceCardID": 35989913,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22315,
+          "konamiCardSHA256": "4191f19e3ebff4b5eb881fe2cf3fc3e0b926e81eb7b419349cf0a9cbceb85cf2"
+        },
+        "BLGG-EN040": {
+          "name": "Penetration Fusion",
+          "productID": 695596,
+          "sourceCardID": 8778267,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22317,
+          "konamiCardSHA256": "a38e7e8e1f39025eacac21dab2887ed96a70222fbf0066a1e599099b434d3e1f"
+        },
+        "BLGG-EN042": {
+          "name": "Genni, the Maid of Endymion",
+          "productID": 695598,
+          "sourceCardID": 7656689,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22320,
+          "konamiCardSHA256": "3a2943feac09b00efc69b773426e1fbbac74a6fdb729a83feaefdbaed715f510"
+        },
+        "BLGG-EN045": {
+          "name": "Fallin' Cheatah",
+          "productID": 695601,
+          "sourceCardID": 59011257,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22500,
+          "konamiCardSHA256": "8c1d6be9e50afc2208cedac78f105a73656a3f811cb905dc6f1f59c58b1ecd5c"
+        },
+        "BLGG-EN047": {
+          "name": "Pair Bear Scare!!",
+          "productID": 695603,
+          "sourceCardID": 21501961,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22502,
+          "konamiCardSHA256": "083abf00dd7253abb821dd88e558d75ba9e6bb4f3616393f695f09e12fe1c6da"
+        },
+        "BLGG-EN049": {
+          "name": "Ebisu Shinsen Matsuri",
+          "productID": 695605,
+          "sourceCardID": 94384774,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001637000",
+          "konamiCardID": 22504,
+          "konamiCardSHA256": "e8f798ccec16974e7d178221ef5bb6ab9d0b8cd3803a2c4f0e84264961557dae"
+        }
+      }
+    },
+    {
+      "groupID": 24263,
+      "groupName": "Battles of Legend: Monster Mayhem",
+      "sourceSetName": "Battles of Legend: Monster Mayhem",
+      "expectedProductsSHA256": "1d15e2ff98f416d893c954a27601df4469a94ad4d29226d001fb3976c69f3033",
+      "sources": {
+        "2000001487000": {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001487000&request_locale=en&rp=99999",
+          "sha256": "38a28c9d5dfb5c6da5e4234b9561e251244311d41e447ee9b44d3aedf898ba09"
+        }
+      },
+      "codes": {
+        "BLMM-EN012": {
+          "name": "The Fabled Behilmoth",
+          "productID": 635896,
+          "sourceCardID": 68897338,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 20923,
+          "konamiCardSHA256": "78ef7aa0f38c6d25b18b673023c93d08ded6c8e360d3ac460b35fd927ad04fe2"
+        },
+        "BLMM-EN013": {
+          "name": "Fabled Gammajin",
+          "productID": 635897,
+          "sourceCardID": 94292987,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 20924,
+          "konamiCardSHA256": "4989b5b27ef78df88a22540c28d496909bb8575dfefed377fca345f8f389c30c"
+        },
+        "BLMM-EN015": {
+          "name": "Fabled Realm's Revival",
+          "productID": 635899,
+          "sourceCardID": 57775790,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 20926,
+          "konamiCardSHA256": "984aa3992ed1548816f7436a87d7f936266915fac87abf03437163d879d01f0a"
+        },
+        "BLMM-EN016": {
+          "name": "Jurrac Megalo",
+          "productID": 635900,
+          "sourceCardID": 93170499,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 20927,
+          "konamiCardSHA256": "468b3c5e7b5cb2e9e3f6fdd6c8bdfebbc40b1eec8525714b9b7c74c8fd0f90a1"
+        },
+        "BLMM-EN017": {
+          "name": "Jurrac Stego",
+          "productID": 635901,
+          "sourceCardID": 20568404,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 20928,
+          "konamiCardSHA256": "b5548ece2d63fe3563c41505867d8091323b6633b5dacafc593fb6f2870cfec3"
+        },
+        "BLMM-EN027": {
+          "name": "Nekroz Divinemirror",
+          "productID": 635913,
+          "sourceCardID": 50596425,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 20938,
+          "konamiCardSHA256": "eb858be2c8b9166102922f3aac4dc0104aa7bebfa4df4ec7f43ec945e213b648"
+        },
+        "BLMM-EN028": {
+          "name": "Motor Kaiser",
+          "productID": 635914,
+          "sourceCardID": 65515667,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 7249,
+          "konamiCardSHA256": "420434596814b7d258afee2b4582c38a2ff0afcf8646733692af67e61a5e5a45"
+        },
+        "BLMM-EN029": {
+          "name": "Two-for-One Repair Job",
+          "productID": 635915,
+          "sourceCardID": 44459942,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21061,
+          "konamiCardSHA256": "ef4a5201d661de9275c6d5ccdbf61f2c55941775beda4609603a5c20a67de867"
+        },
+        "BLMM-EN030": {
+          "name": "Scrap Garage",
+          "productID": 635916,
+          "sourceCardID": 91019775,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 7250,
+          "konamiCardSHA256": "513a0abecb4d27846319098979d3faf6ebec590324a6e1c41892a2950b6f287e"
+        },
+        "BLMM-EN031": {
+          "name": "Ice Doll",
+          "productID": 635917,
+          "sourceCardID": 97476032,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 8873,
+          "konamiCardSHA256": "408d843bcc19f05b056a16ae2a85b6128a746d6e4e0f0e79cb44a5b3a047df0b"
+        },
+        "BLMM-EN032": {
+          "name": "Twin Pillars of Ice",
+          "productID": 635918,
+          "sourceCardID": 88477149,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 7497,
+          "konamiCardSHA256": "99342d5bf8b12e7c433d80a8ea05d2d8826f6966564738943769d73c560c94ce"
+        },
+        "BLMM-EN033": {
+          "name": "Ice Doll Mirror",
+          "productID": 635919,
+          "sourceCardID": 65569724,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 8889,
+          "konamiCardSHA256": "b3992d582588e8ea4bef1a7a89c860bb668f8af8529d655c551ad12634ea4d76"
+        },
+        "BLMM-EN034": {
+          "name": "Bat, the Forest Ninja",
+          "productID": 635920,
+          "sourceCardID": 80447641,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21062,
+          "konamiCardSHA256": "715bbc13ed001521e40ec7f0a9fde1dfda19c4c644e8371a51c1a66f8a8b65ad"
+        },
+        "BLMM-EN035": {
+          "name": "Wonko, Noble Knight of the Forest",
+          "productID": 635921,
+          "sourceCardID": 17832359,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21063,
+          "konamiCardSHA256": "55873634729b3a4a9a34726ec276207f71a48ec214a15c0a5a57316f8d54e37f"
+        },
+        "BLMM-EN036": {
+          "name": "Fairy Tale Prologue: Journey's Dawn",
+          "productID": 635922,
+          "sourceCardID": 43236494,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21064,
+          "konamiCardSHA256": "1f44e1d0c10ab91f3e398389fc30e400b283518951e572dd0f7a28ab436ca983"
+        },
+        "BLMM-EN037": {
+          "name": "Number S37: Spider Shark",
+          "productID": 635923,
+          "sourceCardID": 79625003,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21065,
+          "konamiCardSHA256": "b60e82769c701238ca86fa76a17a064d417972442790080a68326a5b08a9697f"
+        },
+        "BLMM-EN038": {
+          "name": "Number S38: Titanic Galaxy",
+          "productID": 635924,
+          "sourceCardID": 16110708,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21066,
+          "konamiCardSHA256": "9152f7f1d4b3381297c83ee7ea2fb95ad1813d3c9ee17695081f465231fc0698"
+        },
+        "BLMM-EN039": {
+          "name": "Revelation of Hope",
+          "productID": 635925,
+          "sourceCardID": 42104806,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21067,
+          "konamiCardSHA256": "e9dc9e59a1b2f79128f6f69cfcd68c829946f04ac7e012ef8d096b4ff3983159"
+        },
+        "BLMM-EN042": {
+          "name": "D/D Scale Surveyor",
+          "productID": 635928,
+          "sourceCardID": 42382265,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21070,
+          "konamiCardSHA256": "1c993001711e0b0689cb342862352c2c9a14f727d383464d2a8462dca2d00ca5"
+        },
+        "BLMM-EN043": {
+          "name": "D/D Extra Surveyor",
+          "productID": 635929,
+          "sourceCardID": 74387963,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21071,
+          "konamiCardSHA256": "7c06397e93fa57e08af3f08d6bf646e2bebdcd4e98e704ea7398465288bc3dac"
+        },
+        "BLMM-EN047": {
+          "name": "Magia Magic - Thunder of Judgment",
+          "productID": 635933,
+          "sourceCardID": 59080,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 21075,
+          "konamiCardSHA256": "da76a22f2e0cd83d2570152ea5c8e2ded8ab6e13922e4c0f68827e3087b5eb86"
+        },
+        "BLMM-EN048": {
+          "name": "Dragonmaid Cehrmba",
+          "productID": 635934,
+          "sourceCardID": 12163590,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001487000",
+          "konamiCardID": 20943,
+          "konamiCardSHA256": "a9e67aee9e2057b34aef295900fc35bbc60fd1f7bd4e22ef47b2fe805fab4db1"
+        }
+      }
+    },
+    {
+      "groupID": 24320,
+      "groupName": "Justice Hunters",
+      "sourceSetName": "Justice Hunters",
+      "expectedProductsSHA256": "7375455cbf16365624e876f0217738484fd2e9c534040829f5a1266e9d55be01",
+      "sources": {
+        "2000001512000": {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001512000&request_locale=en&rp=99999",
+          "sha256": "9c394da745f92384d69916391bef9606fd5144d092d697e200ae254e59aa6d51"
+        }
+      },
+      "codes": {
+        "JUSH-EN041": {
+          "name": "K9-EW Special Release Experiment",
+          "productID": 645259,
+          "sourceCardID": 26585784,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001512000",
+          "konamiCardID": 21386,
+          "konamiCardSHA256": "a5ac95af394437369d349c6317dce91f60d896d78b9b331c7cdb7f8bb3370fd4"
+        }
+      }
+    },
+    {
+      "groupID": 23366,
+      "groupName": "25th Anniversary Ultimate Kaiba Set",
+      "sourceSetName": "25th Anniversary Ultimate Kaiba Set",
+      "expectedProductsSHA256": "f67b12aba3d94f6ae240223035d3adcb123f9ddc74394c73bcbcbda703f27129",
+      "sources": {
+        "2000001309000": {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001309000&request_locale=en&rp=99999",
+          "sha256": "4a157faabca8cd7f339d6ffcda18e25f7344dee4c896583e075d38cc14a67ba2"
+        }
+      },
+      "codes": {
+        "KC01-EN001": {
+          "name": "Attack Guidance Armor",
+          "productID": 542249,
+          "sourceCardID": 3103067,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001309000",
+          "konamiCardID": 5487,
+          "konamiCardSHA256": "12bf66fdfc2bb923128487460ab48b347cddc5b70cf0d80b83c82140fbdcb4ed"
+        },
+        "KC01-EN002": {
+          "name": "Life Shaver",
+          "productID": 542250,
+          "sourceCardID": 38105306,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001309000",
+          "konamiCardID": 5554,
+          "konamiCardSHA256": "34eb8f690498bbfc2ed0142280859a5712d52d76d29d87b814c59825892883ec"
+        },
+        "KC01-EN003": {
+          "name": "Magical Trick Mirror",
+          "productID": 542251,
+          "sourceCardID": 85758066,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001309000",
+          "konamiCardID": 5577,
+          "konamiCardSHA256": "09d11488247d263c655a8c1115b8b5492b189ec15a6a40c27501f4d1577a44f9"
+        },
+        "KC01-EN018": {
+          "name": "Grappler",
+          "productID": 542271,
+          "sourceCardID": 2906250,
+          "sourceRarity": "New",
+          "rarity": "Ultra Rare",
+          "konamiReleaseID": "2000001309000",
+          "konamiCardID": 4083,
+          "konamiCardSHA256": "eeb5611b87e78a7e9318284e3340b297cb57ab68f3cdab92be072e9ec4319d4a"
+        }
+      }
+    },
+    {
+      "groupID": 24549,
+      "groupName": "Legendary Modern Decks 2026",
+      "sourceSetName": "Legendary Modern Decks 2026",
+      "expectedProductsSHA256": "ec81571fa3f26d25fcb7ae7d00ec603ee30a18036f0d05efe7ae6fbb12a069dc",
+      "sources": {
+        "2000001598000": {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001598000&request_locale=en&rp=99999",
+          "sha256": "720c2f76a90e521430835f7a0de04d4ec2823f21d75cec572671d1033f12863f"
+        }
+      },
+      "codes": {
+        "L26D-ENM02": {
+          "name": "Ash Blossom & Joyous Spring",
+          "productID": 683120,
+          "sourceCardID": 14558127,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 12950,
+          "konamiCardSHA256": "64967270f15ece8c7554902029d8100597e85598a350ce92d8e9d68ffecde217"
+        },
+        "L26D-ENM11": {
+          "name": "Pre-Preparation of Rites",
+          "productID": 683129,
+          "sourceCardID": 13048472,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 12337,
+          "konamiCardSHA256": "0f3676375d4838c6e016bba6ec4250b3d1e86c860ae20e7a6d5094df7744974a"
+        },
+        "L26D-ENM12": {
+          "name": "Pot of Extravagance",
+          "productID": 683130,
+          "sourceCardID": 49238328,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 14144,
+          "konamiCardSHA256": "1ad8aaa6dbea1d70088f61c15b13b5bea7406c3aca4c3adba6360cb864df7dac"
+        },
+        "L26D-ENM13": {
+          "name": "Forbidden Droplet",
+          "productID": 683131,
+          "sourceCardID": 24299458,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 15299,
+          "konamiCardSHA256": "1d83f429dd2625e50c1508e66f174bf7ce8541463e24286370a6c301608738b9"
+        },
+        "L26D-ENM19": {
+          "name": "Infinite Impermanence",
+          "productID": 683138,
+          "sourceCardID": 10045474,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 13631,
+          "konamiCardSHA256": "eaeabdf857f81e0abe474995ae4a3dd5bb72091bd20ed699731b72fb31475ddb"
+        },
+        "L26D-ENM29": {
+          "name": "I:P Masquerena",
+          "productID": 683148,
+          "sourceCardID": 65741786,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 14676,
+          "konamiCardSHA256": "28bda63f2b3c6b9796fe22890dcfcc89fff1a84dbf93af067cddd45fb5b50886"
+        },
+        "L26D-ENM30": {
+          "name": "Dharc the Dark Charmer, Gloomy",
+          "productID": 683149,
+          "sourceCardID": 8264361,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 16854,
+          "konamiCardSHA256": "eecb2aae03603b87e2a581f54a24723a72bb9d0f4b219899bc63529a0527ecd5"
+        },
+        "L26D-ENM31": {
+          "name": "Dyna Mondo",
+          "productID": 683150,
+          "sourceCardID": 73898890,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 18195,
+          "konamiCardSHA256": "f343d0e0a3e9a5c8221de8bffc8c4587b9f6273c12a9f90ccb1e01490e5692c2"
+        },
+        "L26D-ENM32": {
+          "name": "S:P Little Knight",
+          "productID": 683151,
+          "sourceCardID": 29301450,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 19188,
+          "konamiCardSHA256": "d4b22d0c0a87390f4508f81b4552f1956c7fa04c1c61d9863c1d256285967e45"
+        },
+        "L26D-ENS02": {
+          "name": "Nibiru, the Primal Being",
+          "productID": 683037,
+          "sourceCardID": 27204311,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 14741,
+          "konamiCardSHA256": "ef2ddaad0dc2eab5ab4fe39a9e1f55b7952c67eec0abd0be3ebc61b27d4ae288"
+        },
+        "L26D-ENS03": {
+          "name": "Sky Striker Ace - Roze",
+          "productID": 683038,
+          "sourceCardID": 37351133,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 14829,
+          "konamiCardSHA256": "4e763a9c7bb1da2298c35269e550981bead28d71005f6d3ede87b16ab283a490"
+        },
+        "L26D-ENS05": {
+          "name": "Raigeki",
+          "productID": 683040,
+          "sourceCardID": 12580477,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 4343,
+          "konamiCardSHA256": "65e547a09c9b9594f4df90fb48df7fed87c4d673993a2222b25db137de639093"
+        },
+        "L26D-ENS07": {
+          "name": "Upstart Goblin",
+          "productID": 683042,
+          "sourceCardID": 70368879,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 4895,
+          "konamiCardSHA256": "14d8d95e71b14bbce74bcd6fa89f807ef5ab702686b4584057e93aa60c454448"
+        },
+        "L26D-ENS11": {
+          "name": "Sky Striker Maneuver - Afterburners!",
+          "productID": 683046,
+          "sourceCardID": 99550630,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 13672,
+          "konamiCardSHA256": "7e5367a5a0ebeb1f1192941f4dd0ed50ad577612c85bcd7c881bc9903b80d2d1"
+        },
+        "L26D-ENS14": {
+          "name": "Sky Striker Mecha - Widow Anchor",
+          "productID": 683049,
+          "sourceCardID": 98338152,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 13675,
+          "konamiCardSHA256": "565a65f6a0d6291cc346bd426035b911aeb7aa107dced85fae8f850e38bb36af"
+        },
+        "L26D-ENS20": {
+          "name": "Lightning Storm",
+          "productID": 683055,
+          "sourceCardID": 14532163,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 14876,
+          "konamiCardSHA256": "1176e47fc2c2ca94befacb00650f91423eaf0a434e00c56b9d3709c61ef17da3"
+        },
+        "L26D-ENS27": {
+          "name": "Sky Striker Ace - Hayate",
+          "productID": 683062,
+          "sourceCardID": 8491308,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 13763,
+          "konamiCardSHA256": "ac49629490d382769c02cb553049b1a1112c95e08372e9afab1e6440a52f1672"
+        },
+        "L26D-ENX07": {
+          "name": "XX-Saber Garsem",
+          "productID": 683078,
+          "sourceCardID": 77330185,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 8637,
+          "konamiCardSHA256": "4268980ed2b09ca4a706d0d2fc404800b77fb72c4a26d23a691e172ed389eca2"
+        },
+        "L26D-ENX09": {
+          "name": "XX-Saber Boggart Knight",
+          "productID": 683080,
+          "sourceCardID": 5998840,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 9030,
+          "konamiCardSHA256": "64cc5da98ec0597df8825d6d7385f6756573bc5fc2ae23b994bf300c642883ca"
+        },
+        "L26D-ENX18": {
+          "name": "Fire Formation - Tenki",
+          "productID": 683091,
+          "sourceCardID": 57103969,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001598000",
+          "konamiCardID": 10418,
+          "konamiCardSHA256": "9dd4312a6d9bbd1c2306f42ca49c3923ae000e556dd69abd03973b1dbdf12cb1"
+        }
+      }
+    },
+    {
+      "groupID": 24396,
+      "groupName": "Legendary 5D's Decks",
+      "sourceSetName": "Legendary 5D&apos;s Decks",
+      "expectedProductsSHA256": "1f3017bb9f230f92d868f4120575728ca9a3795b916b4318aacc1da37a46be54",
+      "sources": {
+        "2000001549000": {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001549000&request_locale=en&rp=99999",
+          "sha256": "ebeb1488433bf6ffc6b86912d0510af76514db3d53b3a8176b6f8837f0a06c26"
+        }
+      },
+      "codes": {
+        "L5DD-ENA01": {
+          "name": "Lonefire Blossom",
+          "productID": 661299,
+          "sourceCardID": 48686504,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 7568,
+          "konamiCardSHA256": "0ef714f6eba30e29664459bcde72de1df392ad935c2789ede2a38fc7df866b4f"
+        },
+        "L5DD-ENA06": {
+          "name": "Ghost Ogre & Snow Rabbit",
+          "productID": 661304,
+          "sourceCardID": 59438930,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 11708,
+          "konamiCardSHA256": "6956e7b9074ed7263a22ac15116d0b149ffbeaadfd2653a6dadf0ecf02985ab8"
+        },
+        "L5DD-ENA07": {
+          "name": "Red Rose Dragon",
+          "productID": 661305,
+          "sourceCardID": 26118970,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 14177,
+          "konamiCardSHA256": "1ebb323d893ba4979ba4111df18ee90b077dab23f59977caeb51fdac3e765f45"
+        },
+        "L5DD-ENA08": {
+          "name": "White Rose Dragon",
+          "productID": 661306,
+          "sourceCardID": 12213463,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 14192,
+          "konamiCardSHA256": "590e9b25cacbd0002a71861f085a9737de776c568f0751aa9a977bb7be36fb63"
+        },
+        "L5DD-ENA12": {
+          "name": "Roxrose Dragon",
+          "productID": 661310,
+          "sourceCardID": 93708824,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 15970,
+          "konamiCardSHA256": "9aa9ab57697f8ac061f94d48c78784c6aa18854340405dc538c664a52802c0c5"
+        },
+        "L5DD-ENA13": {
+          "name": "Ruddy Rose Witch",
+          "productID": 661311,
+          "sourceCardID": 29107423,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 15971,
+          "konamiCardSHA256": "d3481284c60b674a0b21233c90464b391dc8eb046a80f39e0b373962c67f4f44"
+        },
+        "L5DD-ENA24": {
+          "name": "Infinite Impermanence",
+          "productID": 661325,
+          "sourceCardID": 10045474,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 13631,
+          "konamiCardSHA256": "eaeabdf857f81e0abe474995ae4a3dd5bb72091bd20ed699731b72fb31475ddb"
+        },
+        "L5DD-ENA30": {
+          "name": "Crossrose Dragon",
+          "productID": 661331,
+          "sourceCardID": 72218246,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 14938,
+          "konamiCardSHA256": "e33d1eefc3894f74933fefb04d6fcdafb02e88378c4d2314a02cd21385096037"
+        },
+        "L5DD-ENA32": {
+          "name": "Ruddy Rose Dragon",
+          "productID": 661333,
+          "sourceCardID": 40139997,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 15996,
+          "konamiCardSHA256": "3bf0676b8b1ccb2a092b6272f7bb58fd1d5357f65b662cad5f257d190a005db0"
+        },
+        "L5DD-ENC04": {
+          "name": "Droll & Lock Bird",
+          "productID": 661340,
+          "sourceCardID": 94145021,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 9279,
+          "konamiCardSHA256": "843e766fcdb1d13b0f6a9bdefa004691e7638a95b4ed5b3d83a5daa457e219c2"
+        },
+        "L5DD-ENC10": {
+          "name": "Blackwing - Simoon the Poison Wind",
+          "productID": 661346,
+          "sourceCardID": 81470373,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 13853,
+          "konamiCardSHA256": "5fb06c01a483c5817503e696482d52267b28b03fa1e1e8839647c527be8c111c"
+        },
+        "L5DD-ENC12": {
+          "name": "Blackwing - Vata the Emblem of Wandering",
+          "productID": 661348,
+          "sourceCardID": 71187462,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 17757,
+          "konamiCardSHA256": "95b2f77069a8670e7eecc5ae3fb295427cf552f3f6a04d37666fafe95cebcf2c"
+        },
+        "L5DD-ENC13": {
+          "name": "Blackwing - Shamal the Sandstorm",
+          "productID": 661349,
+          "sourceCardID": 8571567,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 17758,
+          "konamiCardSHA256": "8cc227c74a29d72fc73a5424c4d3c18977ca6092280c810ad5425b5f44df420d"
+        },
+        "L5DD-ENC14": {
+          "name": "Blackwing - Chinook the Snow Blast",
+          "productID": 661350,
+          "sourceCardID": 34976176,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 17759,
+          "konamiCardSHA256": "dc6386b67ba8cb6761d34be0ad61a81ede87a87613ae6cff420cc6a2a0773629"
+        },
+        "L5DD-ENC15": {
+          "name": "Blackwing - Sudri the Phantom Glimmer",
+          "productID": 661351,
+          "sourceCardID": 70465810,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 17760,
+          "konamiCardSHA256": "86215b5cca18217692ca213e284d47de4ebca5af253082e72229d0e32ed1afd1"
+        },
+        "L5DD-ENC19": {
+          "name": "Black Whirlwind",
+          "productID": 661355,
+          "sourceCardID": 91351370,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 8203,
+          "konamiCardSHA256": "bc16cf7ecb0bec4fcd3ab3775795f3f89347d08b19ea174e5f6802a127be898e"
+        },
+        "L5DD-ENC22": {
+          "name": "Black Feather Whirlwind",
+          "productID": 661358,
+          "sourceCardID": 7602800,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 17807,
+          "konamiCardSHA256": "4815d5f9e3caa279c97367f209a9fb0df6a17905fc983bf9a1417ab4786d0c04"
+        },
+        "L5DD-ENC33": {
+          "name": "Black-Winged Assault Dragon",
+          "productID": 661369,
+          "sourceCardID": 73218989,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 17797,
+          "konamiCardSHA256": "5db5c0be1984133a39d1f758fda3eafc220c233c5d196b1343daa0c636ab6a57"
+        },
+        "L5DD-ENC34": {
+          "name": "Blackwing - Boreastorm the Wicked Wind",
+          "productID": 661370,
+          "sourceCardID": 10602628,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 17798,
+          "konamiCardSHA256": "2be0b05aa865328a0df36cf7f42fe97734077bfba9f8d4438234e9f50feaaa89"
+        },
+        "L5DD-ENY02": {
+          "name": "Anchorbolt Hedgehog",
+          "productID": 661256,
+          "sourceCardID": 54656950,
+          "sourceRarity": "New",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 21902,
+          "konamiCardSHA256": "81baa4df74523b18fc3b82e96f508ca0c02050f9a2ddd2b52bb636edd5285b44"
+        },
+        "L5DD-ENY03": {
+          "name": "Crossroad Sonic Chick",
+          "productID": 661257,
+          "sourceCardID": 80054655,
+          "sourceRarity": "New",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 21903,
+          "konamiCardSHA256": "c6ae05425124861f8c9b6f84e5c13de6001f7e99afa7fa4fd3dd1fefd7d2ef06"
+        },
+        "L5DD-ENY06": {
+          "name": "One-Way Synchro",
+          "productID": 661260,
+          "sourceCardID": 89932017,
+          "sourceRarity": "New",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 21906,
+          "konamiCardSHA256": "90cd358d6e725f818cba4ed5dee390ea7838e49364eaef7afe3e89ae68b9856c"
+        },
+        "L5DD-ENY07": {
+          "name": "Junk Synchron",
+          "productID": 661261,
+          "sourceCardID": 63977008,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 7687,
+          "konamiCardSHA256": "7ce78447083add9519729c66ec97548b43d2cd7f991e4b603b6cec4515343616"
+        },
+        "L5DD-ENY09": {
+          "name": "Stardust Synchron",
+          "productID": 661263,
+          "sourceCardID": 37799519,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 16191,
+          "konamiCardSHA256": "0f726777118cdd0726fc9fa3c18f2b1d45a203b80a88a8e77afcd150134e8f85"
+        },
+        "L5DD-ENY14": {
+          "name": "Junk Converter",
+          "productID": 661268,
+          "sourceCardID": 11069680,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 14916,
+          "konamiCardSHA256": "4ecd9aa90430decc208ad38d807a48a22b7a4b76d9cb1a3b21c44c7ed30ae313"
+        },
+        "L5DD-ENY16": {
+          "name": "Effect Veiler",
+          "productID": 661270,
+          "sourceCardID": 97268402,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 8933,
+          "konamiCardSHA256": "a6439e4f68798add48682e62a098804ab6596f41e22040dbd0ba9c22fe0efc29"
+        },
+        "L5DD-ENY19": {
+          "name": "On Your Mark, Get Set, DUEL!",
+          "productID": 661273,
+          "sourceCardID": 31006879,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001549000",
+          "konamiCardID": 17250,
+          "konamiCardSHA256": "12f76efa8e574f3bad44ef5a619253b2003883a863b78c043f5587427c1ade6b"
+        }
+      }
+    },
+    {
+      "groupID": 24679,
+      "groupName": "Legendary Arc-V Decks",
+      "sourceSetName": "Legendary Arc-V Decks",
+      "expectedProductsSHA256": "f9cf3a2d37b1f7bea15be44b1fee0c237bbe9198cab59df9a6f780c51ffa71d1",
+      "sources": {
+        "2000001679000": {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001679000&request_locale=en&rp=99999",
+          "sha256": "147a0f5f25578e359c671ae5bd3842496fab240a7427aecfaff80e310815a84c"
+        }
+      },
+      "codes": {
+        "LAVD-ENL05": {
+          "name": "Lunalight Kaleido Chick",
+          "productID": 710452,
+          "sourceCardID": 35618217,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 12860,
+          "konamiCardSHA256": "ebcc84d07e3af41b524b440ff83adc4ddcb8e18514d9abe20c1d755a565402af"
+        },
+        "LAVD-ENL11": {
+          "name": "Lunalight Gold Leo",
+          "productID": 708316,
+          "sourceCardID": 8379983,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 21416,
+          "konamiCardSHA256": "44ee230524a1a9411119678e25b290d0a92f508f90017c237ba05350513c75f6"
+        },
+        "LAVD-ENL12": {
+          "name": "Lunalight Silver Hound",
+          "productID": 708317,
+          "sourceCardID": 35763582,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 21417,
+          "konamiCardSHA256": "ebd191f77042aa9a5327856c50c4a99a197e6a92b9c56468d1ccf64994cc7b79"
+        },
+        "LAVD-ENL16": {
+          "name": "Fire Formation - Tenki",
+          "productID": 708321,
+          "sourceCardID": 57103969,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 10418,
+          "konamiCardSHA256": "9dd4312a6d9bbd1c2306f42ca49c3923ae000e556dd69abd03973b1dbdf12cb1"
+        },
+        "LAVD-ENL17": {
+          "name": "Luna Light Perfume",
+          "productID": 708322,
+          "sourceCardID": 48444114,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 12453,
+          "konamiCardSHA256": "3e1e91cbdd80819fdd738d7d6ed170adb10752442e52ee3714c55203787b253c"
+        },
+        "LAVD-ENL32": {
+          "name": "Lunalight Leo Dancer",
+          "productID": 708336,
+          "sourceCardID": 24550676,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 12320,
+          "konamiCardSHA256": "a8966c826700e3d25f770cc85708f2f424ddc79ad4538139ad28357c2384de1d"
+        },
+        "LAVD-ENO11": {
+          "name": "Odd-Eyes Arc Pendulum Dragon",
+          "productID": 708278,
+          "sourceCardID": 14105623,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 13359,
+          "konamiCardSHA256": "278b3b50bf8140b33497a4104220c36f743e4be456606358e4a9b460fc2703f1"
+        },
+        "LAVD-ENO12": {
+          "name": "Odd-Eyes Revolution Dragon",
+          "productID": 708279,
+          "sourceCardID": 16306932,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 13462,
+          "konamiCardSHA256": "c21796edfc1a58d88c56f5e4483477d89fee665d35a39133bea49a8320cfb4ed"
+        },
+        "LAVD-ENO21": {
+          "name": "Primite Lordly Lode",
+          "productID": 708288,
+          "sourceCardID": 56506740,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 20534,
+          "konamiCardSHA256": "d58baabbdacb7820fbdb817e8c391d822f582dbbd82113867b79951f323af6f9"
+        },
+        "LAVD-ENO22": {
+          "name": "Primite Roar",
+          "productID": 708289,
+          "sourceCardID": 92501449,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 20535,
+          "konamiCardSHA256": "c6365b0d6629710bfd132965945e3d2abf946b9502f66c96e9f533c1e76e2888"
+        },
+        "LAVD-ENO23": {
+          "name": "Primite Drillbeam",
+          "productID": 708290,
+          "sourceCardID": 29095457,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 20536,
+          "konamiCardSHA256": "1447e31405c34ed8bfa3f29b835cbd693ab11bd99aba502b39e2b566196b6465"
+        },
+        "LAVD-ENS09": {
+          "name": "Speedroid Marble Machine",
+          "productID": 708356,
+          "sourceCardID": 96708940,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 14339,
+          "konamiCardSHA256": "56291314a03677bc0374747f1ca3d4311dbfeabfe752969a573b8aab5102c9cf"
+        },
+        "LAVD-ENS10": {
+          "name": "Nibiru, the Primal Being",
+          "productID": 708357,
+          "sourceCardID": 27204311,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 14741,
+          "konamiCardSHA256": "ef2ddaad0dc2eab5ab4fe39a9e1f55b7952c67eec0abd0be3ebc61b27d4ae288"
+        },
+        "LAVD-ENS11": {
+          "name": "Speedroid CarTurbo",
+          "productID": 708358,
+          "sourceCardID": 96945958,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 15180,
+          "konamiCardSHA256": "bbda2f0dcc4ffa4bc2845dd002d708a4fbfbe962cc3188e557d6b4099f1b0cf1"
+        },
+        "LAVD-ENS14": {
+          "name": "Speedroid Wing Synchron",
+          "productID": 708361,
+          "sourceCardID": 2254222,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 20746,
+          "konamiCardSHA256": "94d93afa28d3f98a3cb951ddb6fc57a77c9d8dd77506ed82521e19e186cec2f1"
+        },
+        "LAVD-ENS16": {
+          "name": "Speed Recovery",
+          "productID": 708364,
+          "sourceCardID": 88204302,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 12056,
+          "konamiCardSHA256": "644adf6020578c67907d5e0dabdf04b2271399f9bdfb4a6b759b1f9f42d65707"
+        },
+        "LAVD-ENS19": {
+          "name": "Speedroid Wheel",
+          "productID": 708367,
+          "sourceCardID": 12148078,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 16381,
+          "konamiCardSHA256": "5a849154c1121e86baa27738b6d1a694fede915eed4cb3b682d6ac59bf0c197d"
+        },
+        "LAVD-ENS20": {
+          "name": "Speedroid Scratch",
+          "productID": 708368,
+          "sourceCardID": 29114773,
+          "sourceRarity": "3",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 16429,
+          "konamiCardSHA256": "d15c81216bc85e659da16df1eb203ec3778ed65c0117d6678b2c2a6822adc90c"
+        },
+        "LAVD-ENS21": {
+          "name": "Infinite Impermanence",
+          "productID": 708369,
+          "sourceCardID": 10045474,
+          "sourceRarity": "2",
+          "rarity": "Common",
+          "konamiReleaseID": "2000001679000",
+          "konamiCardID": 13631,
+          "konamiCardSHA256": "eaeabdf857f81e0abe474995ae4a3dd5bb72091bd20ed699731b72fb31475ddb"
+        }
+      }
+    },
+    {
+      "groupID": 23849,
+      "groupName": "Maze of the Master",
+      "sourceSetName": "Maze of the Master",
+      "expectedProductsSHA256": "e91f667f9ff9f3f1b32ffe9d20e2935bc175d6e327cdb597ef0ecc0bc40fe720",
+      "sources": {
+        "2000001451000": {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=2000001451000&request_locale=en&rp=99999",
+          "sha256": "de2e47db0de4c04c846a5e6d5b4cf3571a0dab66b4b4eef242458413c4ff6a0b"
+        }
+      },
+      "codes": {
+        "MZTM-EN007": {
+          "name": "Defense of the Temple",
+          "productID": 622005,
+          "sourceCardID": 96687733,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 21041,
+          "konamiCardSHA256": "1252eb0acadf08e9b3caae443ee5c517152a9531949b83ea63e9071a184f94a4"
+        },
+        "MZTM-EN008": {
+          "name": "Dangers of the Divine",
+          "productID": 622006,
+          "sourceCardID": 22082432,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 21042,
+          "konamiCardSHA256": "ac4ac5bc1ca995f7650cc3882dcf3c94eb452a6bbcdf1e9f8523f6e343051761"
+        },
+        "MZTM-EN012": {
+          "name": "Tachyon Cloudragon",
+          "productID": 622011,
+          "sourceCardID": 72705654,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20278,
+          "konamiCardSHA256": "606326395b1dae4df2810cfc24620fb67c970c70cbea363228eb07c7e06f6a3a"
+        },
+        "MZTM-EN015": {
+          "name": "Tachyon Spiral of Destruction",
+          "productID": 622014,
+          "sourceCardID": 71083002,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20281,
+          "konamiCardSHA256": "d69597bc5f7fed39c2b5b1d776756a58d11ecc5d6315bcd90b7e04cd543deaf7"
+        },
+        "MZTM-EN017": {
+          "name": "Lord of the Tachyon Galaxy",
+          "productID": 622017,
+          "sourceCardID": 44466810,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20283,
+          "konamiCardSHA256": "6de5aa4ab67e66b8c531555f82b0f49c27c5935fc0e0fc67f876bc6ddef70964"
+        },
+        "MZTM-EN019": {
+          "name": "Y-Yare Head",
+          "productID": 622020,
+          "sourceCardID": 6355563,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20285,
+          "konamiCardSHA256": "c5c935f30756025311fb2b2f8b2d99c9d35e503d12ecd5fedc2a50ea1e914a7a"
+        },
+        "MZTM-EN020": {
+          "name": "Z-Zillion Tank",
+          "productID": 622021,
+          "sourceCardID": 33744268,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20286,
+          "konamiCardSHA256": "f24dcffa510814add6d4bcc8935054b1566f913333f7d40c6927660705dc8e04"
+        },
+        "MZTM-EN027": {
+          "name": "Trickstar Band Drumatis",
+          "productID": 622030,
+          "sourceCardID": 64804137,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20293,
+          "konamiCardSHA256": "8bcc200550ed0f678f33eb916a21a3de6f1ca8f6ead512f7b759a8240a8fde4f"
+        },
+        "MZTM-EN030": {
+          "name": "Trickstar Diffusion",
+          "productID": 622033,
+          "sourceCardID": 63181559,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20296,
+          "konamiCardSHA256": "55090f45cba8b65ab127b1056f9d29df586dd737fba7541b4c79ae550ba3c6c0"
+        },
+        "MZTM-EN031": {
+          "name": "Maiden of Blue Tears",
+          "productID": 622034,
+          "sourceCardID": 99176254,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20297,
+          "konamiCardSHA256": "2023856f032bbaa63e05e8e855a640e81ca7efeba4607702c10ede6b89ee2fb7"
+        },
+        "MZTM-EN034": {
+          "name": "Spirit Illusion",
+          "productID": 622037,
+          "sourceCardID": 71939275,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20390,
+          "konamiCardSHA256": "f24f5328713186dc3f028f6d3cbb93215440cd33c846fd0c5445183298e42d1a"
+        },
+        "MZTM-EN035": {
+          "name": "Spirit Shield",
+          "productID": 622038,
+          "sourceCardID": 8324284,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20391,
+          "konamiCardSHA256": "8b207fa48140b300421466d5d16d74e1576589351a01d9f07fef9ce28e4590f1"
+        },
+        "MZTM-EN038": {
+          "name": "Clear Rage Golem",
+          "productID": 622041,
+          "sourceCardID": 7102732,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20394,
+          "konamiCardSHA256": "5cdd5c9b947823a929342d95488f7d9d3776eabff143f9105ea1db067305f26b"
+        },
+        "MZTM-EN039": {
+          "name": "Clear Cube",
+          "productID": 622042,
+          "sourceCardID": 33506331,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20395,
+          "konamiCardSHA256": "b6d118bee021c7e58ab3f06b6a58ed99b3ea74948cb77146bde5c893470c8845"
+        },
+        "MZTM-EN043": {
+          "name": "Break the Seal",
+          "productID": 622046,
+          "sourceCardID": 69873498,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20399,
+          "konamiCardSHA256": "a5c521e8ef23a4265f4cf1d48494d18df1d8c66b9a802224475f10786c2a811f"
+        },
+        "MZTM-EN048": {
+          "name": "Antidote Nurse",
+          "productID": 622051,
+          "sourceCardID": 31539614,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20404,
+          "konamiCardSHA256": "485c8a129332652a0e7fd7ae204c3b750231c5a1b9a870dffdaf741a0e294531"
+        },
+        "MZTM-EN050": {
+          "name": "Performage Water Dancer",
+          "productID": 622053,
+          "sourceCardID": 34323367,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20406,
+          "konamiCardSHA256": "1a7f63388b2d8e19d1d9f39da2cd34d62940585d429cd527e81c755b7c11f6ba"
+        },
+        "MZTM-EN051": {
+          "name": "Performage Wind Drainer",
+          "productID": 622054,
+          "sourceCardID": 70417076,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20407,
+          "konamiCardSHA256": "215308d2b2216bfd3292cd3a60d67a92ca3b8afd132a63b3d83aa31d959d5710"
+        },
+        "MZTM-EN052": {
+          "name": "Performage Cup Tricker",
+          "productID": 622055,
+          "sourceCardID": 6812770,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20408,
+          "konamiCardSHA256": "93def6587fdb9543e0d5a357866e975fc3ecce496cd697b77791d64ccad0bf3e"
+        },
+        "MZTM-EN056": {
+          "name": "Rank-Up-Magic Magical Force",
+          "productID": 622059,
+          "sourceCardID": 32044231,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20412,
+          "konamiCardSHA256": "dd1582829653063ac127eb6f000487a4419843a12b874e221ee00672ee2ef7cf"
+        },
+        "MZTM-EN060": {
+          "name": "Allure Dance",
+          "productID": 622063,
+          "sourceCardID": 68316358,
+          "sourceRarity": "New",
+          "rarity": "Rare",
+          "konamiReleaseID": "2000001451000",
+          "konamiCardID": 20416,
+          "konamiCardSHA256": "86455491b403c3db9a534e120e0756fcb46a2d60f59f432a509e4754d40e20a8"
+        }
+      }
+    }
+  ]
+}
