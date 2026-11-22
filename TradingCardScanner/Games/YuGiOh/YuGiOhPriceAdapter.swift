@@ -109,7 +109,7 @@ struct YuGiOhPriceAdapter: GamePriceAdapter {
         guard request.identity.matches(.legacy(card)), let variant = request.variant,
               let edition = YuGiOhEdition(rawValue: variant.id), let id = UUID(uuidString: card.physicalPrintingID),
               let p = catalog.printingByID[id], p.editions.contains(edition) else { throw PriceQuoteError.identityMismatch }
-        guard let mapping = Self.mappingIdentity(p, edition) else { throw PriceQuoteError.providerUnavailable }
+        guard let mapping = Self.mappingIdentity(p, edition) else { throw PriceQuoteError.mappingUnavailable }
         // pe is build evidence only. Valid physical mappings always reach the
         // existing transport, so a newly available quote is discoverable.
         let quote = try await source.quote(printing: p, edition: edition, generation: catalog.generation,

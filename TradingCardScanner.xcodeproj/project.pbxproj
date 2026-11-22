@@ -156,6 +156,7 @@
 		A00300E1 /* CardFinishOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300E1 /* CardFinishOverlay.swift */; };
 		A00300E2 /* CollectionFinishDot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300E2 /* CollectionFinishDot.swift */; };
 		A0010027 /* ScanReviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010027 /* ScanReviewSheet.swift */; };
+		A8EF3B7A97C94B1AADFAA401 /* TradeAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8EF3B7A97C94B1AADFAA401 /* TradeAnalyzer.swift */; };
 		A0020010 /* CardLatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020010 /* CardLatchTests.swift */; };
 		A0020190 /* UnresolvedScanStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020190 /* UnresolvedScanStoreTests.swift */; };
 		A0090902 /* ScanSessionMetricsLogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090902 /* ScanSessionMetricsLogTests.swift */; };
@@ -556,6 +557,7 @@
 		B00300E1 /* CardFinishOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFinishOverlay.swift; sourceTree = "<group>"; };
 		B00300E2 /* CollectionFinishDot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionFinishDot.swift; sourceTree = "<group>"; };
 		B0010027 /* ScanReviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanReviewSheet.swift; sourceTree = "<group>"; };
+		B8EF3B7A97C94B1AADFAA401 /* TradeAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradeAnalyzer.swift; sourceTree = "<group>"; };
 		B0020010 /* CardLatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardLatchTests.swift; sourceTree = "<group>"; };
 		B0020190 /* UnresolvedScanStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnresolvedScanStoreTests.swift; sourceTree = "<group>"; };
 		B0090902 /* ScanSessionMetricsLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSessionMetricsLogTests.swift; sourceTree = "<group>"; };
@@ -1133,6 +1135,7 @@
 				B00300E2 /* CollectionFinishDot.swift */,
 				B0010026 /* ScanSessionOverlays.swift */,
 				B0010027 /* ScanReviewSheet.swift */,
+				B8EF3B7A97C94B1AADFAA401 /* TradeAnalyzer.swift */,
 				B00100B3 /* PriceCheckResultView.swift */,
 				B0010035 /* CollectionFilters.swift */,
 				B0F17E03 /* CatalogBrowseFilterSheet.swift */,
@@ -1626,6 +1629,7 @@
 				A0019002 /* CardShareViews.swift in Sources */,
 				A0010026 /* ScanSessionOverlays.swift in Sources */,
 				A0010027 /* ScanReviewSheet.swift in Sources */,
+				A8EF3B7A97C94B1AADFAA401 /* TradeAnalyzer.swift in Sources */,
 				A0010030 /* PriceRecord.swift in Sources */,
 				A0010031 /* PriceProvider.swift in Sources */,
 				A0010140 /* PriceCoverageGapLog.swift in Sources */,

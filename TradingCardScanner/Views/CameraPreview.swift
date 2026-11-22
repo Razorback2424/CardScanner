@@ -2,6 +2,11 @@ import AVFoundation
 import SwiftUI
 import UIKit
 
+struct ScannerGuideFrames: Equatable {
+    let card: CGRect
+    let footer: CGRect
+}
+
 struct CameraPreview: UIViewRepresentable {
     let scanner: CardScanner
     @ObservedObject private var scannerState: CardScannerUIState
@@ -18,14 +23,14 @@ struct CameraPreview: UIViewRepresentable {
     /// Increments at OCR confirmation, before catalog resolution and persistence.
     /// This is the immediate "recognized" pulse, distinct from the green add pulse.
     var recognitionCount: Int
-    var onFooterGuideFrameChange: ((CGRect) -> Void)? = nil
+    var onGuideFramesChange: ((ScannerGuideFrames) -> Void)?
 
     init(scanner: CardScanner, successCount: Int, recognitionCount: Int = 0,
-         onFooterGuideFrameChange: ((CGRect) -> Void)? = nil) {
+         onGuideFramesChange: ((ScannerGuideFrames) -> Void)? = nil) {
         self.scanner = scanner
         self.successCount = successCount
         self.recognitionCount = recognitionCount
-        self.onFooterGuideFrameChange = onFooterGuideFrameChange
+        self.onGuideFramesChange = onGuideFramesChange
         _scannerState = ObservedObject(wrappedValue: scanner.uiState)
 #if DEBUG
         _debugVisionOverlay = ObservedObject(wrappedValue: scanner.debugVisionOverlay)
@@ -41,7 +46,7 @@ struct CameraPreview: UIViewRepresentable {
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
         view.rotation = scanner.rotation
-        view.onFooterGuideFrameChange = onFooterGuideFrameChange
+        view.onGuideFramesChange = onGuideFramesChange
         view.subjectMode = scannerState.subjectMode
         view.slabFraming = scannerState.slabFraming
         view.footerVisionRect = scannerState.footerRegionOfInterest
@@ -54,7 +59,7 @@ struct CameraPreview: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: PreviewView, context: Context) {
-        uiView.onFooterGuideFrameChange = onFooterGuideFrameChange
+        uiView.onGuideFramesChange = onGuideFramesChange
         let rotationChanged = uiView.rotation !== scanner.rotation
             || uiView.rotation?.previewAngle != scanner.rotation.previewAngle
         let subjectModeChanged = uiView.subjectMode != scannerState.subjectMode
@@ -105,8 +110,8 @@ final class PreviewView: UIView {
     private let scanRegionLayer = CALayer()
     private var lastSuccessCount = 0
     private var lastRecognitionCount = 0
-    var onFooterGuideFrameChange: ((CGRect) -> Void)?
-    private var lastFooterGuideFrame: CGRect?
+    var onGuideFramesChange: ((ScannerGuideFrames) -> Void)?
+    private var lastGuideFrames: ScannerGuideFrames?
 #if DEBUG
     private var debugBoxLayers: [CAShapeLayer] = []
     var debugVisionBoxes: [CGRect] = [] {
@@ -210,13 +215,16 @@ final class PreviewView: UIView {
         scrimLayer.frame = bounds
         scrimLayer.path = scrimPath.cgPath
 
-        // Share the rendered band, including aspect-fill cropping, with the
-        // SwiftUI chrome. Receipts must fit below it; controls stay above it.
-        let footerFrame = convert(scanRegionLayer.frame, to: nil)
-        if window != nil, !footerFrame.isEmpty, footerFrame != lastFooterGuideFrame {
-            lastFooterGuideFrame = footerFrame
+        // Keep floating controls outside the rendered guide without changing
+        // the preview, aspect-fill cropping, or the scanner's Vision region.
+        let frames = ScannerGuideFrames(
+            card: convert(cardRect, to: nil), footer: convert(scanRegionLayer.frame, to: nil)
+        )
+        if window != nil, !frames.footer.isEmpty, frames != lastGuideFrames {
+            lastGuideFrames = frames
             DispatchQueue.main.async { [weak self] in
-                self?.onFooterGuideFrameChange?(footerFrame)
+                guard let self, lastGuideFrames == frames else { return }
+                onGuideFramesChange?(frames)
             }
         }
 
@@ -247,7 +255,7 @@ final class PreviewView: UIView {
         // geometry for these isolated layout fixtures only, without OCR input.
         if previewLayer.connection == nil,
            ProcessInfo.processInfo.arguments.contains(where: {
-               ["WholeCardScanner", "TrustScanReceipt", "YuGiOhAcceptance"].contains($0)
+               ["WholeCardScanner", "TrustScanReceipt", "YuGiOhAcceptance", "TradeAnalyzer"].contains($0)
            }) {
             let source = CGSize(width: 9, height: 16)
             let scale = max(bounds.width / source.width, bounds.height / source.height)

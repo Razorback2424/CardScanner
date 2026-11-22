@@ -256,6 +256,16 @@ struct CatalogBrowsePresentation: Sendable {
         }.filter { ids.insert($0.id).inserted }
     }
 
+    static func setPriceCandidates(_ cards: [CatalogCardSummary], in set: CatalogSet,
+                                   search: String, tier: PokemonMasterSetTier, filters: CatalogBrowseFilters,
+                                   ownership: CatalogOwnershipIndex) -> [CatalogCardSummary] {
+        let query = CatalogSetCardSearch(query: CatalogCardSearchQuery(search), setID: set.catalogID,
+            setCode: cards.first?.setCode ?? "", officialCollectorCount: set.officialCollectorCount)
+        return candidates(cards.filter { card in
+            (card.game != .pokemon || tier != .standard || !card.isExpandedMasterSetVariant) && query.matches(card)
+        }, filters: filters, ownership: ownership)
+    }
+
     static func rows(_ candidates: [CatalogCardSummary], filters: CatalogBrowseFilters,
                      sort: CatalogBrowseSort, sets: [CatalogSet], quotes: [String: CatalogBrowseQuote],
                      ownership: CatalogOwnershipIndex) -> [Row] {

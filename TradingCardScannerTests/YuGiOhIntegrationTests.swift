@@ -666,6 +666,65 @@ private final class YuGiOhPricingProtocol: URLProtocol {
 
 @MainActor
 final class YuGiOhPricingTests: XCTestCase {
+    func testBrowseGrandMasterRareDistinguishesFeedFailureFromMissingQuote() async throws {
+        let catalog = try YuGiOhCatalog.bundled.get()
+        let runtime = catalog.runtime
+        let runtimes = try CardGameRuntimeContainer(runtimes: [runtime])
+        let registry = runtimes.registry
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [YuGiOhPricingProtocol.self]
+        let session = URLSession(configuration: config)
+        defer {
+            session.invalidateAndCancel()
+            YuGiOhPricingProtocol.handler = nil
+            try? FileManager.default.removeItem(at: root)
+        }
+        let source = YuGiOhDailyPriceSource(transport: .init(baseURL: MarketMirrorFixture.baseURL,
+            session: session, cacheDirectory: root))
+        let browse = BrowseCatalog(gameRegistry: registry, gameBrowseAdapters: try .init(adapters: [
+            YuGiOhBrowseAdapter(catalog: catalog)
+        ]), priceQuoteService: .init(registry: registry, adapters: try .init(adapters: [
+            YuGiOhPriceAdapter(catalog: catalog, source: source)
+        ])))
+        let matches = try await browse.searchCards(named: "MAMS-EN002", game: .yuGiOh,
+            setIDs: [], cursor: nil)
+        let summary = try XCTUnwrap(matches.items.first { $0.providerID == "008dec16-e7f3-3ffd-af70-08c9fb698dbe" })
+        let details = try await browse.details(for: summary)
+        let variant = try XCTUnwrap(details.card.variantEvidence.catalogVariants.first)
+        XCTAssertEqual(variant, .yugiohFirstEdition)
+        let history = await CardMarketHistoryRequest(card: details.card, variant: variant, printRun: nil)
+            .resolvingMarketMapping(in: runtimes)
+        XCTAssertEqual(history.exactProductID, "731476")
+        XCTAssertEqual(history.providerPrinting, "1st Edition")
+
+        YuGiOhPricingProtocol.handler = { _ in throw URLError(.notConnectedToInternet) }
+        do {
+            _ = try await browse.price(for: summary, variant: variant)
+            XCTFail("An inaccessible feed cannot establish that a quote is missing")
+        } catch {
+            XCTAssertEqual(CatalogDetailPriceCheck(error: error), .failed)
+        }
+
+        YuGiOhPricingProtocol.handler = { request in
+            XCTAssertTrue(request.url?.path.contains("/tcgplayer/2/24808/") == true)
+            if request.url?.lastPathComponent == "products" {
+                return Data(#"{"success":true,"errors":[],"results":[{"productId":731476,"categoryId":2,"groupId":24808,"name":"Deep-Eyes White Dragon, the Blue Abyss (GMR)","extendedData":[{"name":"Number","value":"MAMS-EN002"}]}]}"#.utf8)
+            }
+            return Data(#"{"success":true,"errors":[],"results":[{"productId":731476,"subTypeName":"1st Edition","marketPrice":null}]}"#.utf8)
+        }
+        let lookup = try await browse.price(for: summary, variant: variant)
+        XCTAssertEqual(CatalogDetailPriceCheck(lookup: lookup), .noQuote(.tcgCSV))
+        XCTAssertEqual(CatalogDetailPriceCheck(lookup: .unavailable(nil)), .unverified)
+        XCTAssertEqual(CatalogDetailPriceCheck(error: PriceQuoteError.mappingUnavailable), .mappingUnavailable)
+        do {
+            _ = try await browse.price(for: summary, variant: .yugiohUnlimited)
+            XCTFail("An edition mismatch cannot establish that a quote is missing")
+        } catch {
+            XCTAssertEqual(CatalogDetailPriceCheck(error: error), .identityMismatch)
+        }
+    }
+
     func testLivePublishedYuGiOhPriceCheckAcrossEditionsAndRarities() async throws {
         // A short-lived receipt opts into real provider acceptance. Normal
         // regression runs remain independent of the network and daily prices.
@@ -2159,7 +2218,7 @@ final class YuGiOhWorkflowTests: XCTestCase {
             do {
                 _ = try await priceAdapter.refreshStoredPrinting(choice.id, variant: edition)
                 XCTFail("An unbound printing cannot gain a marketplace price")
-            } catch PriceQuoteError.providerUnavailable {}
+            } catch PriceQuoteError.mappingUnavailable {}
             expectedPrice = nil
         } else {
             let fresh = try await priceAdapter.refreshStoredPrinting(choice.id, variant: edition)
@@ -2732,7 +2791,7 @@ final class YuGiOhResolutionTests: XCTestCase {
             do {
                 _ = try await YuGiOhPriceAdapter(catalog: catalog).refresh(request)
                 XCTFail("Unbound printing gained a marketplace quote")
-            } catch PriceQuoteError.providerUnavailable {}
+            } catch PriceQuoteError.mappingUnavailable {}
         }
         let finishFamily = try XCTUnwrap(catalog.printingsByCode["BLGG-EN116"])
         XCTAssertEqual(Set(finishFamily.map(\.displayRarity)), ["Ultra Rare", "Starlight Rare"])

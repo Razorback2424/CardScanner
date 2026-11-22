@@ -150,8 +150,10 @@ struct CatalogCardDetailView: View {
     @State private var shareRequest: CatalogCopyShareRequest?
     @State private var catalogShare: CatalogUnownedShare?
     @State private var mappedPrices: [String: PriceLookup] = [:]
-    @State private var failedPriceVariantIDs: Set<String> = []
+    @State private var selectedPriceCheck: (request: QuoteRequest, status: CatalogDetailPriceCheck)?
+    @State private var ownedPriceUpdateFailure: QuoteRequest?
     @State private var priceRetryID = 0
+    @State private var catalogUpdateSequence: UInt64?
     @State private var ownedPriceChecks: [String: OwnedPriceRetentionReason] = [:]
     /// The exact raw entry a − tap targets; the dialog chooses plain removal or
     /// a recorded sale/trade. Quantity is the value the user saw, so a write
@@ -262,13 +264,18 @@ struct CatalogCardDetailView: View {
             Text(detail)
         }
         .task {
-            let updates = await catalog.catalogUpdates()
+            let (updates, baseline) = await catalog.catalogUpdates(after: catalogUpdateSequence)
+            guard !Task.isCancelled else { return }
+            if catalogUpdateSequence == nil { catalogUpdateSequence = baseline }
             if needsCatalogResolution { await reloadCatalogIdentity() }
             else if !loadedFullDetails { await load() }
             for await update in updates {
                 guard !Task.isCancelled else { return }
-                guard update.affects(game: summary.game, providerSetID: summary.setID.providerID) else { continue }
-                await reloadCatalogIdentity()
+                if update.affects(game: summary.game, providerSetID: summary.setID.providerID) {
+                    await reloadCatalogIdentity()
+                    guard !Task.isCancelled else { return }
+                }
+                catalogUpdateSequence = update.sequence ?? catalogUpdateSequence
             }
         }
         .task(id: selectedQuoteRequest) {
@@ -710,14 +717,24 @@ struct CatalogCardDetailView: View {
         let canAddGraded = catalogCardSelection == nil
             && catalog.gameRegistry.supports(summary.game, [.collectionWrite, .gradedPricing])
         if !variants.isEmpty || !others.isEmpty {
+            let title = Text(variants.isEmpty ? "Copies" : "Finishes")
+                .font(.title3.weight(.bold))
+                .accessibilityAddTraits(.isHeader)
+            let chartHint = Group {
+                if variants.count > 1 {
+                    Text("Tap to chart").font(.subheadline).foregroundStyle(.secondary)
+                }
+            }
             VStack(alignment: .leading, spacing: 10) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text(variants.isEmpty ? "Copies" : "Finishes")
-                        .font(.title3.weight(.bold))
-                        .accessibilityAddTraits(.isHeader)
-                    Spacer()
-                    if variants.count > 1 {
-                        Text("Tap to chart").font(.subheadline).foregroundStyle(.secondary)
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline) {
+                        title
+                        Spacer()
+                        chartHint
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        title
+                        chartHint
                     }
                 }
                 LazyVGrid(columns: finishColumns, spacing: 8) {
@@ -784,6 +801,34 @@ struct CatalogCardDetailView: View {
         let showsPrice = !isOnlyFinish && catalog.gameRegistry.supports(summary.game, .pricing) && !needsCatalogResolution
         let ownershipReady = catalogCardSelection == nil && projectionStore.isLoaded && !projectionStore.loadFailed
         let showControls = ownershipReady && (details.map(showsInlineQuantityControls) ?? false)
+        let price = Group {
+            if showsPrice {
+                tilePrice(priceDisplay(for: variant, card: card, slot: slot))
+            }
+            if slot.hasConflict || slot.hasUnverifiedQualifiers {
+                Text("Copies need review").font(.caption2).foregroundStyle(.secondary)
+            } else if slot.price.entriesDisagree {
+                Text("Saved prices differ").font(.caption2).foregroundStyle(.secondary)
+            }
+        }
+        let quantity = Group {
+            if showControls {
+                CatalogQuantityStepper(
+                    quantity: slot.quantity, variantLabel: variant.label,
+                    canIncrease: canAdd(variant, card: card) && !slot.hasConflict
+                        && slot.quantity < CollectionQuantityLimits.maximum,
+                    canDecrease: slot.copyKeys.count == 1 && slot.targets.count == 1 && !slot.hasConflict,
+                    isUpdating: isQuantityLocked,
+                    // Several saved entries: − asks which one, by date added.
+                    decreaseChoices: slot.copyKeys.count > 1 && !slot.hasConflict ? slot.targets : [],
+                    onIncrease: { add(variant, card: card) },
+                    onDecrease: { decrementTarget = slot.targets.first },
+                    onChooseDecrease: { decrementTarget = $0 }
+                )
+            } else if ownershipReady {
+                Text("\(slot.quantity) owned").font(.caption).foregroundStyle(.secondary)
+            }
+        }
         return VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(variant.label)
@@ -800,35 +845,22 @@ struct CatalogCardDetailView: View {
             }
                 .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
                 .accessibilityAction { historyVariantID = variant.id }
-            HStack(alignment: .center, spacing: 6) {
-                VStack(alignment: .leading, spacing: 2) {
-                    if showsPrice {
-                        tilePrice(priceDisplay(for: variant, card: card, slot: slot))
-                    }
-                    if slot.hasConflict || slot.hasUnverifiedQualifiers {
-                        Text("Copies need review").font(.caption2).foregroundStyle(.secondary)
-                    } else if slot.price.entriesDisagree {
-                        Text("Saved prices differ").font(.caption2).foregroundStyle(.secondary)
+            ViewThatFits(in: .horizontal) {
+                if !dynamicTypeSize.isAccessibilitySize || !showsPrice || !ownershipReady {
+                    HStack(spacing: 6) {
+                        VStack(alignment: .leading, spacing: 2) { price }
+                            .fixedSize(horizontal: true, vertical: false)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        quantity.fixedSize(horizontal: true, vertical: false)
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .layoutPriority(1)
-                if showControls {
-                    CatalogQuantityStepper(
-                        quantity: slot.quantity, variantLabel: variant.label,
-                        canIncrease: canAdd(variant, card: card) && !slot.hasConflict
-                            && slot.quantity < CollectionQuantityLimits.maximum,
-                        canDecrease: slot.copyKeys.count == 1 && slot.targets.count == 1 && !slot.hasConflict,
-                        isUpdating: isQuantityLocked,
-                        // Several saved entries: − asks which one, by date added.
-                        decreaseChoices: slot.copyKeys.count > 1 && !slot.hasConflict ? slot.targets : [],
-                        onIncrease: { add(variant, card: card) },
-                        onDecrease: { decrementTarget = slot.targets.first },
-                        onChooseDecrease: { decrementTarget = $0 }
-                    )
-                } else if ownershipReady {
-                    Text("\(slot.quantity) owned").font(.caption).foregroundStyle(.secondary)
+                VStack(spacing: 8) {
+                    VStack(spacing: 2) { price }
+                    quantity
                 }
+                .multilineTextAlignment(.center)
+                .padding(.top, 4)
+                .frame(maxWidth: .infinity)
             }
             .frame(minHeight: 44)
         }
@@ -848,9 +880,10 @@ struct CatalogCardDetailView: View {
         if let amount = display.amount {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(amount.formatted(.currency(code: display.currencyCode)))
-                    .font(.system(.body, design: .rounded).weight(.semibold))
+                    .font(.title.weight(.bold))
+                    .fontWidth(.expanded)
                     .monospacedDigit()
-                    .foregroundStyle(PortfolioPalette.value)
+                    .foregroundStyle(Color(red: 0.52, green: 0.90, blue: 0.65))
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
             }
@@ -1194,17 +1227,28 @@ struct CatalogCardDetailView: View {
         let generation = CollectionStorageGeneration.shared
         let token = generation.currentToken()
         let variant = request.variant
-        failedPriceVariantIDs.remove(variant.id)
+        selectedPriceCheck = (request, .checking)
+        ownedPriceUpdateFailure = nil
+        let quote: PriceLookup
         do {
-            let quote = try await catalog.price(for: request.summary, variant: variant)
+            quote = try await catalog.price(for: request.summary, variant: variant)
+        } catch is CancellationError {
+            return
+        } catch {
             guard !Task.isCancelled, selectedQuoteRequest == request else { return }
-            mappedPrices[variant.id] = quote
+            selectedPriceCheck = (request, CatalogDetailPriceCheck(error: error))
+            return
+        }
+        guard !Task.isCancelled, selectedQuoteRequest == request else { return }
+        mappedPrices[variant.id] = quote
+        do {
             if PriceFallbackQuoteResolver.needsFallback(quote, identifiedCatalogCard: true),
                ownedSlot(for: variant, card: card).price.display.amount == nil,
                let fallback = await exactMarketFallback(for: card, variant: variant, printRun: request.summary.pokemonPrintRun),
                let current = fallback.quote.current() {
                 guard !Task.isCancelled, selectedQuoteRequest == request else { return }
                 mappedPrices[variant.id] = .price(current)
+                selectedPriceCheck = (request, .priced)
                 if let token, generation.isCurrent(token), !isWritePending,
                    generation.activeSession()?.container === modelContext.container {
                     let slot = ownedSlot(for: variant, card: card)
@@ -1227,6 +1271,7 @@ struct CatalogCardDetailView: View {
                 return
             }
             guard !Task.isCancelled, selectedQuoteRequest == request else { return }
+            selectedPriceCheck = (request, CatalogDetailPriceCheck(lookup: quote))
             guard let token, generation.isCurrent(token), !isWritePending else { return }
             let slot = ownedSlot(for: variant, card: card)
             guard !slot.hasConflict, !slot.targets.isEmpty else { return }
@@ -1238,13 +1283,15 @@ struct CatalogCardDetailView: View {
                         shouldContinue: generation.continuation(for: token))
                 }
                 guard !Task.isCancelled, generation.isCurrent(token), selectedQuoteRequest == request else { return }
-                ownedPriceChecks[target.collectionKey] = result.retainedReason
+                ownedPriceChecks[target.collectionKey] = result.display.amount == nil && result.retainedReason == .unavailable
+                    ? nil : result.retainedReason
             }
             await projectionStore.rebuild(container: modelContext.container)
         } catch is CancellationError {
         } catch {
-            guard !Task.isCancelled, selectedQuoteRequest == request else { return }
-            failedPriceVariantIDs.insert(variant.id)
+            guard !Task.isCancelled, selectedQuoteRequest == request,
+                  let token, generation.isCurrent(token) else { return }
+            ownedPriceUpdateFailure = request
         }
     }
 
@@ -1271,8 +1318,17 @@ struct CatalogCardDetailView: View {
             } ?? .unknown
             let request = CardMarketHistoryRequest(card: details.card, variant: variant, printRun: summary.pokemonPrintRun)
             let firstCopy = variant.flatMap { copyTargets(for: $0, card: details.card).first }
+            let quoteRequest = selectedQuoteRequest
+            let status = quoteRequest.map { request in
+                selectedPriceCheck?.request == request ? selectedPriceCheck?.status ?? .checking : .checking
+            }
+            let replacesEmptyHeadline = currentPrice.amount == nil && status?.message != nil
+            if replacesEmptyHeadline, let status {
+                catalogPriceStatus(status, releaseDate: details.set.releaseDate)
+            }
             CardMarketHistoryPanel(request: request, currentPrice: currentPrice.amount == nil ? nil : currentPrice,
-                                   headlinePrice: currentPrice, showsDetails: false,
+                                   headlinePrice: replacesEmptyHeadline ? nil : currentPrice,
+                                   showsDetails: false,
                                    loadedPoints: $historyPoints,
                                    ownership: firstCopy.map { copy in
                                        PriceHistoryOwnership(since: copy.dateAdded,
@@ -1281,21 +1337,52 @@ struct CatalogCardDetailView: View {
                 .id(request)
                 // The panel insets its own rows; align them with the header.
                 .padding(.horizontal, -16)
-            if let variant {
+            if currentPrice.amount != nil, let status, status.canRetry {
+                catalogPriceStatus(status, releaseDate: nil)
+            }
+            if variant != nil {
                 // The headline, chart and source details live in the panel
                 // above; only check notes and recovery sit under it.
                 let notes = Set((slot?.targets ?? []).compactMap { ownedPriceChecks[$0.collectionKey]?.caption })
-                if !notes.isEmpty || failedPriceVariantIDs.contains(variant.id) {
+                let updateFailed = quoteRequest != nil && ownedPriceUpdateFailure == quoteRequest
+                if !notes.isEmpty || updateFailed {
                     VStack(alignment: .leading, spacing: 6) {
                         ForEach(notes.sorted(), id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
-                        if failedPriceVariantIDs.contains(variant.id) {
-                            Button("Retry price check") { priceRetryID += 1 }.font(.subheadline)
+                        if updateFailed {
+                            Text("Couldn’t update the price in your collection.").font(.caption).foregroundStyle(.secondary)
+                            retryPriceCheck
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
+    }
+
+    private func catalogPriceStatus(_ status: CatalogDetailPriceCheck, releaseDate: Date?) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if let message = status.message {
+                HStack(spacing: 8) {
+                    if status == .checking { ProgressView().controlSize(.small).accessibilityHidden(true) }
+                    Text(message).font(.headline)
+                }
+                if case .noQuote = status, let releaseDate,
+                   (0..<(30 * 86_400)).contains(Date.now.timeIntervalSince(releaseDate)) {
+                    let format = Date.FormatStyle(timeZone: .gmt).month(.abbreviated).day()
+                    Text("Released \(releaseDate.formatted(format))")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            if status.canRetry { retryPriceCheck }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var retryPriceCheck: some View {
+        Button("Retry price check") { priceRetryID += 1 }
+            .font(.subheadline)
+            .frame(minHeight: 44)
     }
 
     private func prepareAdd(_ card: IdentifiedCard) {
@@ -1573,7 +1660,8 @@ struct CatalogCardDetailView: View {
         decrementTarget = nil
         showsFinishChoice = false
         mappedPrices = [:]
-        failedPriceVariantIDs = []
+        selectedPriceCheck = nil
+        ownedPriceUpdateFailure = nil
         ownedPriceChecks = [:]
         defer { isLoading = false }
         let lookup = CatalogDetailLookup(game: summary.game, providerID: summary.providerID,
@@ -1596,6 +1684,42 @@ struct CatalogCardDetailView: View {
 }
 
 // MARK: - Catalog detail components
+
+enum CatalogDetailPriceCheck: Equatable {
+    case checking, priced, noQuote(PriceSource), unverified, mappingUnavailable, identityMismatch, offline, failed
+
+    init(lookup: PriceLookup) {
+        switch lookup {
+        case .price: self = .priced
+        case .unavailable(let source?): self = .noQuote(source)
+        case .unavailable(nil): self = .unverified
+        }
+    }
+
+    init(error: Error) {
+        switch error {
+        case PriceQuoteError.mappingUnavailable: self = .mappingUnavailable
+        case PriceQuoteError.identityMismatch: self = .identityMismatch
+        case let error as URLError where error.code == .notConnectedToInternet: self = .offline
+        default: self = .failed
+        }
+    }
+
+    var message: LocalizedStringResource? {
+        switch self {
+        case .checking: "Checking price…"
+        case .priced: nil
+        case .noQuote: "No market price available"
+        case .unverified: "We don’t have a confirmed price for this card."
+        case .mappingUnavailable: "We don’t have a price listing for this version of the card."
+        case .identityMismatch: "We couldn’t tell if the listing was for this version of the card."
+        case .offline: "You’re offline. Connect to the internet to check prices."
+        case .failed: "We couldn’t load prices from the website we use."
+        }
+    }
+
+    var canRetry: Bool { self == .failed || self == .offline || self == .identityMismatch }
+}
 
 struct CatalogFinishOwnership {
     let price: OwnedCatalogPrice
@@ -1664,6 +1788,7 @@ struct CatalogOwnershipChange: Identifiable {
 /// Compact counter for a finish tile: a lone + until a copy is owned, then
 /// − n +. With several saved entries, − asks which one to act on.
 struct CatalogQuantityStepper: View {
+    @ScaledMetric(relativeTo: .subheadline) private var capsuleHeight: CGFloat = 32
     let quantity: Int
     let variantLabel: String
     let canIncrease: Bool
@@ -1675,43 +1800,66 @@ struct CatalogQuantityStepper: View {
     var onChooseDecrease: (CatalogOwnedEntryTarget) -> Void = { _ in }
 
     var body: some View {
-        HStack(spacing: 0) {
-            if quantity > 0 {
-                decreaseControl
-                Text("\(quantity)")
-                    .font(.system(.subheadline, design: .rounded).weight(.semibold))
-                    .monospacedDigit()
-                    .foregroundStyle(.primary)
-                    .frame(minWidth: 14)
-                    .contentTransition(.numericText())
-                    .accessibilityLabel("\(quantity) \(variantLabel) owned")
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 0) {
+                if quantity > 0 {
+                    decreaseControl
+                    countLabel.padding(.horizontal, 4)
+                }
+                increaseControl
             }
-            Button(action: onIncrease) {
-                Image(systemName: "plus")
-                    .frame(width: 30, height: 44)
-                    .contentShape(Rectangle())
+            .background { capsule }
+
+            VStack(spacing: 0) {
+                countLabel
+                HStack(spacing: 0) {
+                    decreaseControl
+                    increaseControl
+                }
+                .background { capsule }
             }
-            .disabled(!canIncrease || isUpdating)
-            .accessibilityLabel(quantity == 0 ? "Add a \(variantLabel) copy" : "Add another \(variantLabel) copy")
         }
         .font(.subheadline.weight(.bold))
         .buttonStyle(.borderless)
         .foregroundStyle(Color.accentColor)
-        .background {
-            Capsule()
-                .fill(Color.accentColor.opacity(quantity > 0 ? 0.22 : 0.14))
-                .frame(height: 32)
-        }
         .opacity(isUpdating ? 0.6 : 1)
         .animation(.snappy(duration: 0.2), value: quantity)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("catalog-quantity-\(variantLabel)")
     }
 
-    @ViewBuilder private var decreaseControl: some View {
-        let image = Image(systemName: "minus")
-            .frame(width: 30, height: 44)
+    private var countLabel: some View {
+        Text("\(quantity)")
+            .font(.system(.subheadline, design: .rounded).weight(.semibold))
+            .monospacedDigit()
+            .foregroundStyle(Color.primary)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .contentTransition(.numericText())
+            .accessibilityLabel("\(quantity) \(variantLabel) owned")
+    }
+
+    private var capsule: some View {
+        Capsule()
+            .fill(Color.accentColor.opacity(quantity > 0 ? 0.22 : 0.14))
+            .frame(height: capsuleHeight)
+    }
+
+    private func controlImage(_ symbol: String) -> some View {
+        Image(systemName: symbol)
+            .padding(6)
+            .frame(minWidth: 30, minHeight: max(44, capsuleHeight))
             .contentShape(Rectangle())
+    }
+
+    private var increaseControl: some View {
+        Button(action: onIncrease) { controlImage("plus") }
+            .disabled(!canIncrease || isUpdating)
+            .accessibilityLabel(quantity == 0 ? "Add a \(variantLabel) copy" : "Add another \(variantLabel) copy")
+    }
+
+    @ViewBuilder private var decreaseControl: some View {
+        let image = controlImage("minus")
         if decreaseChoices.count > 1 {
             Menu {
                 ForEach(decreaseChoices) { target in
@@ -1831,13 +1979,15 @@ private struct OwnedPriceReviewFixture {
 
     init(state: String) throws {
         self.state = state
+        let isQuantityReview = state.hasPrefix("catalog-multi-18-copies")
         container = try ModelContainer(for: CollectionStorageModelSchema.full,
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
         let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
         {"id":"fixture-001","localId":"001","name":"Price consistency fixture",
          "set":{"id":"fixture","name":"Pricing review","cardCount":{"total":1,"official":1}},
-         "variants":{"firstEdition":false,"normal":MULTI,"holo":true,"reverse":MULTI}}
-        """#.replacingOccurrences(of: "MULTI", with: state.contains("multi") ? "true" : "false").utf8))
+         "variants":{"firstEdition":false,"normal":NORMAL,"holo":true,"reverse":MULTI}}
+        """#.replacingOccurrences(of: "NORMAL", with: state.contains("multi") && !isQuantityReview ? "true" : "false")
+            .replacingOccurrences(of: "MULTI", with: state.contains("multi") ? "true" : "false").utf8))
         let identified = IdentifiedCard.pokemon(card, setCode: "FIX")
         let printRun: PokemonPrintRun? = state.contains("first-edition") ? .firstEdition : nil
         let set = CatalogSet(catalogID: CatalogSetID(game: .pokemon, providerID: "fixture", pokemonPrintRun: printRun),
@@ -1854,6 +2004,7 @@ private struct OwnedPriceReviewFixture {
             variant: .holo, variantResolution: .userConfirmed)
         row.catalogProviderID = card.id
         row.pokemonPrintRunRaw = printRun?.rawValue
+        if isQuantityReview { row.quantity = 18 }
         container.mainContext.insert(row)
         let date = Date(timeIntervalSince1970: 1_793_469_600) // 2026-10-31 18:00 UTC
         let prices = PriceStore(context: container.mainContext)
@@ -1861,7 +2012,8 @@ private struct OwnedPriceReviewFixture {
             sourceVariantID: "saved", sourceUpdatedAt: date, fetchedAt: date)), game: .pokemon,
             printingID: printRun.map { "\(card.id)@\($0.rawValue)" } ?? card.id, variantID: "holo", at: date)
         guard prices.save() else { throw PriceStore.CheckpointWriteError() }
-        quote = state.contains("unavailable") ? .unavailable(.tcgplayer) : .price(.init(unitMarketPriceUSD: 816.38,
+        let quoteAmount = state == "catalog-multi-18-copies" ? 0.06 : 816.38
+        quote = state.contains("unavailable") ? .unavailable(.tcgplayer) : .price(.init(unitMarketPriceUSD: quoteAmount,
             currencyCode: "USD", source: .tcgplayer, sourceVariantID: "holofoil",
             sourceUpdatedAt: state.contains("undated") ? nil : date.addingTimeInterval(state.contains("newer") ? -86400 : 169200),
             fetchedAt: .now))

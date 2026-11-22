@@ -97,7 +97,7 @@ struct ContentView: View {
         // Collection routes (`collectionDebugRoutes`) also land on Portfolio,
         // which pushes Collection on launch.
         case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
-        case "WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "TrustScanReceipt", "GradedLabelCapture": initialTab = .scan
+        case "WholeCardScanner", "PriceCheck", "TradeAnalyzer", "ScanChoiceCancellation", "TrustScanReceipt", "GradedLabelCapture": initialTab = .scan
         case "Pro", "ListingPhotos", "Centering", "CenteringStart", "CenteringExpanded", "CenteringOuterControls", "CenteringInnerControls", "CenteringRotation", "CenteringPrecision": initialTab = .pro
         default: initialTab = .portfolio
         }

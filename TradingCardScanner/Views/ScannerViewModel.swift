@@ -17,17 +17,32 @@ extension ScanIdentifier {
 enum ScanPurpose: String, CaseIterable, Identifiable, Hashable, Sendable {
     case collection
     case priceCheck
+    case tradeAnalyzer
 
     var id: String { rawValue }
-    var title: String { self == .collection ? "Collection" : "Price Check" }
+    var title: String {
+        switch self {
+        case .collection: "Collection"
+        case .priceCheck: "Price Check"
+        case .tradeAnalyzer: "Trade Analyzer"
+        }
+    }
     /// What choosing this mode actually does. Shown where the choice is made
     /// rather than permanently on the camera: it is the thing you need at the
     /// moment of deciding, and noise once you are scanning.
     var statusText: String {
-        self == .collection ? "Scans are added automatically" : "Value only · Nothing is added"
+        switch self {
+        case .collection: "Scans are added automatically"
+        case .priceCheck: "Value only · Nothing is added"
+        case .tradeAnalyzer: "Compare both sides of a trade"
+        }
     }
     var symbolName: String {
-        self == .collection ? "rectangle.stack.badge.plus" : "tag"
+        switch self {
+        case .collection: "rectangle.stack.badge.plus"
+        case .priceCheck: "tag"
+        case .tradeAnalyzer: "arrow.left.arrow.right"
+        }
     }
 }
 
@@ -50,14 +65,22 @@ struct ScannerRecognitionEligibility: Equatable {
 }
 
 /// Lifecycle identity captured by `CardScanner` on the same serial queue as
-/// the confirmation frame. A late callback must match every field before it
-/// can enter the current scanner session.
+/// the confirmation frame. Callbacks must match the active lifecycle and
+/// draft, and carry the side selected at capture through later side changes.
 struct ScannerConfirmationToken: Equatable, Sendable {
     let sessionID: UUID
     let generation: Int
     let purpose: ScanPurpose
     let subjectMode: ScanSubjectMode
     let visibilityEpoch: UUID
+    var tradeDestination: TradeScanDestination? = nil
+
+    func accepts(_ captured: Self) -> Bool {
+        sessionID == captured.sessionID && generation == captured.generation
+            && purpose == captured.purpose && subjectMode == captured.subjectMode
+            && visibilityEpoch == captured.visibilityEpoch
+            && tradeDestination?.draftID == captured.tradeDestination?.draftID
+    }
 }
 
 /// A scanner-domain encounter. Its id is created by `CardScanner` at the exact
@@ -84,6 +107,7 @@ struct ScanRequest: Identifiable, Equatable {
     let heldRepeatAuthorizationID: UUID?
     let unresolvedScanID: UUID?
     let catalogSelectionIdentifier: ScanIdentifier?
+    let tradeDestination: TradeScanDestination?
 
     var identifier: ScanIdentifier { subject.identifier }
     var acquisitionIdentifier: ScanIdentifier { catalogSelectionIdentifier ?? identifier }
@@ -91,7 +115,7 @@ struct ScanRequest: Identifiable, Equatable {
     func acquiring(_ identifier: ScanIdentifier) -> Self {
         .init(id: id, subject: subject, purpose: purpose, generation: generation, encounterID: encounterID,
             heldRepeatAuthorizationID: heldRepeatAuthorizationID, unresolvedScanID: unresolvedScanID,
-            catalogSelectionIdentifier: identifier == self.identifier ? nil : identifier)
+            catalogSelectionIdentifier: identifier == self.identifier ? nil : identifier, tradeDestination: tradeDestination)
     }
 
     func confirmingPrintingEnglish() throws -> Self {
@@ -100,7 +124,7 @@ struct ScanRequest: Identifiable, Equatable {
         return .init(id: id, subject: .init(identifier: confirmed, slab: subject.slab,
               inferredNameReadings: subject.inferredNameReadings, printedEdition: subject.printedEdition), purpose: purpose, generation: generation,
               encounterID: encounterID, heldRepeatAuthorizationID: heldRepeatAuthorizationID, unresolvedScanID: unresolvedScanID,
-              catalogSelectionIdentifier: catalogSelectionIdentifier)
+              catalogSelectionIdentifier: catalogSelectionIdentifier, tradeDestination: tradeDestination)
     }
 
     init(
@@ -111,7 +135,8 @@ struct ScanRequest: Identifiable, Equatable {
         encounterID: UUID = UUID(),
         heldRepeatAuthorizationID: UUID? = nil,
         unresolvedScanID: UUID? = nil,
-        catalogSelectionIdentifier: ScanIdentifier? = nil
+        catalogSelectionIdentifier: ScanIdentifier? = nil,
+        tradeDestination: TradeScanDestination? = nil
     ) {
         self.id = id
         self.subject = subject
@@ -121,6 +146,7 @@ struct ScanRequest: Identifiable, Equatable {
         self.heldRepeatAuthorizationID = heldRepeatAuthorizationID
         self.unresolvedScanID = unresolvedScanID
         self.catalogSelectionIdentifier = catalogSelectionIdentifier
+        self.tradeDestination = tradeDestination
     }
 
 }
@@ -1561,6 +1587,7 @@ enum ScanCorrectionOutcome: Equatable {
 @MainActor
 final class ScannerViewModel: ObservableObject {
     @Published private(set) var purpose: ScanPurpose = .collection
+    @Published private(set) var tradeDraft = TradeDraft()
     @Published private(set) var subjectMode: ScanSubjectMode = .raw
     @Published private(set) var pendingChoice: PendingVariantChoice?
     @Published private(set) var pendingPrintRunChoice: PendingPrintRunChoice?
@@ -1653,6 +1680,7 @@ final class ScannerViewModel: ObservableObject {
     private let certificationRefinementOverride: (@MainActor (RecentScan, GradedSlabEvidence) async throws -> CollectionMutation?)?
     private var modelContainer: ModelContainer?
     private var priceCheckCoordinator: PriceCheckCoordinator?
+    private var tradeQuoteTask: Task<Void, Never>?
     private let priceCheckRefreshProvider: (any PriceCheckRefreshProvider)?
     private let priceQuoteService: PriceQuoteService
     private let fallbackQuoteOverride: ((IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async -> PriceFallbackQuoteResolution)?
@@ -1689,6 +1717,9 @@ final class ScannerViewModel: ObservableObject {
     /// by a later card whose request happened to finish first.
     private var identificationQueue: [ScanRequest] = []
     private var isProcessingIdentification = false {
+        willSet {
+            if purpose == .tradeAnalyzer, newValue != isProcessingIdentification { objectWillChange.send() }
+        }
         didSet { refreshCatalogReloadBlock() }
     }
     private var identificationTask: Task<Void, Never>?
@@ -1891,7 +1922,7 @@ final class ScannerViewModel: ObservableObject {
                     return
                 }
                 if let token,
-                   token != self.currentConfirmationToken {
+                   self.currentConfirmationToken?.accepts(token) != true {
                     self.diagnostic("staleConfirmationDropped")
                     return
                 }
@@ -1964,7 +1995,8 @@ final class ScannerViewModel: ObservableObject {
                     encounterID: encounterID,
                     heldRepeatAuthorizationID: authorizationID,
                     purpose: token?.purpose,
-                    generation: token?.generation
+                    generation: token?.generation,
+                    tradeDestination: token?.tradeDestination
                 )
             }
         }
@@ -2138,6 +2170,7 @@ final class ScannerViewModel: ObservableObject {
     deinit {
         pokemonCatalogTask?.cancel()
         magicCatalogTask?.cancel()
+        tradeQuoteTask?.cancel()
         for task in gameCatalogTasks.values { task.cancel() }
     }
 
@@ -2180,7 +2213,8 @@ final class ScannerViewModel: ObservableObject {
             generation: scanGeneration,
             purpose: purpose,
             subjectMode: subjectMode,
-            visibilityEpoch: visibilityEpoch
+            visibilityEpoch: visibilityEpoch,
+            tradeDestination: purpose == .tradeAnalyzer ? tradeDraft.destination : nil
         )
     }
 
@@ -2265,6 +2299,7 @@ final class ScannerViewModel: ObservableObject {
             quoteService: priceQuoteService,
             gradedResolver: gradedResolver
         )
+        drainTradeQuotes()
         feedback.prepare()
         if pokemonCatalogTask == nil {
             scheduleUnresolvedReload(registry: currentPokemonRegistry)
@@ -2729,6 +2764,61 @@ final class ScannerViewModel: ObservableObject {
         resumeRecognitionIfPossible()
         feedback.choiceMade()
         UIAccessibility.post(notification: .announcement, argument: "\(newPurpose.title). \(newPurpose.statusText)")
+    }
+
+    func setTradeScanSide(_ side: TradeSide) {
+        guard purpose == .tradeAnalyzer, tradeDraft.scanSide != side else { return }
+        tradeDraft.scanSide = side
+        updateScannerConfirmationContext()
+        feedback.choiceMade()
+        UIAccessibility.post(notification: .announcement, argument: "Scanning cards you \(side == .give ? "give" : "receive")")
+    }
+
+    var canOpenTradeReview: Bool {
+        purpose == .tradeAnalyzer && !isProcessingIdentification && identificationQueue.isEmpty
+            && pendingChoice == nil && pendingIdentityChoice == nil && pendingPrintRunChoice == nil
+    }
+
+    func undoLatestTradeScan() {
+        guard let entry = tradeDraft.latest else { return }
+        tradeDraft.undoLatestScan()
+        feedback.undone()
+        UIAccessibility.post(notification: .announcement, argument: "Undid scan of \(entry.result.card.name)")
+    }
+
+    func setTradeQuantity(_ quantity: Int, for id: TradeEntry.ID) {
+        guard (1...CollectionQuantityLimits.maximum).contains(quantity),
+              let index = tradeDraft.entries.firstIndex(where: { $0.id == id }) else { return }
+        tradeDraft.entries[index].quantity = quantity
+    }
+
+    func moveTradeEntry(_ id: TradeEntry.ID) {
+        guard let index = tradeDraft.entries.firstIndex(where: { $0.id == id }) else { return }
+        tradeDraft.entries[index].side = tradeDraft.entries[index].side.opposite
+    }
+
+    func removeTradeEntry(_ id: TradeEntry.ID) { tradeDraft.remove(id) }
+
+    func restoreTradeEntry() {
+        tradeDraft.restore()
+        drainTradeQuotes()
+    }
+
+    func setTradeCash(_ amount: Money, on side: TradeSide) {
+        guard amount.isValid, amount >= .zero, amount.tenThousandths % 100 == 0 else { return }
+        tradeDraft.cash[side] = amount
+    }
+
+    func balanceTrade() { tradeDraft.balance() }
+
+    func clearTrade() {
+        tradeQuoteTask?.cancel()
+        tradeQuoteTask = nil
+        tradeDraft = TradeDraft()
+        if purpose == .tradeAnalyzer {
+            invalidatePendingScan()
+            resumeRecognitionIfPossible()
+        }
     }
 
     func setSubjectMode(_ newMode: ScanSubjectMode) {
@@ -4244,6 +4334,7 @@ final class ScannerViewModel: ObservableObject {
         heldRepeatAuthorizationID: UUID? = nil,
         purpose capturedPurpose: ScanPurpose? = nil,
         generation capturedGeneration: Int? = nil,
+        tradeDestination: TradeScanDestination? = nil,
         unresolvedScanID: UUID? = nil
     ) {
         let requestPurpose = capturedPurpose ?? purpose
@@ -4260,7 +4351,8 @@ final class ScannerViewModel: ObservableObject {
             generation: encounter.generation,
             encounterID: encounter.encounterID,
             heldRepeatAuthorizationID: encounter.heldRepeatAuthorizationID,
-            unresolvedScanID: unresolvedScanID
+            unresolvedScanID: unresolvedScanID,
+            tradeDestination: tradeDestination ?? (requestPurpose == .tradeAnalyzer ? tradeDraft.destination : nil)
         )
         // Price Check is intentionally a one-card transaction. The confidence
         // threshold is unchanged; only after that threshold do we stop feeding
@@ -4405,6 +4497,7 @@ final class ScannerViewModel: ObservableObject {
 
     var isScannerSessionActiveForTesting: Bool { isScannerSessionActive }
     var activeScanIntervalCountForTesting: Int { oneCardScanIntervals.count }
+    var confirmationTokenForTesting: ScannerConfirmationToken? { currentConfirmationToken }
 
     /// Test hook for the suspected interleaving in F03. Production callers
     /// never set identification state directly; the normal queue owns it.
@@ -4729,7 +4822,7 @@ final class ScannerViewModel: ObservableObject {
 
         case let .needsChoice(options, lockDidNotApply):
             guard !options.isEmpty else {
-                if request.purpose == .priceCheck {
+                if request.purpose != .collection {
                     handleLookupFailure(request, CatalogLookupError.catalogIncomplete(nil))
                 } else {
                     fileUnresolved(request: request, reason: .noConfirmedMatch)
@@ -4838,6 +4931,8 @@ final class ScannerViewModel: ObservableObject {
             }
         case .priceCheck:
             presentPriceCheck(resolvedScan)
+        case .tradeAnalyzer:
+            appendTradeScan(resolvedScan)
         }
     }
 
@@ -6292,6 +6387,84 @@ final class ScannerViewModel: ObservableObject {
         identificationQueue.removeAll()
     }
 
+    private func appendTradeScan(_ scan: ResolvedScan) {
+        guard isStorageGenerationCurrent, let coordinator = priceCheckCoordinator,
+              let destination = scan.request.tradeDestination, destination.draftID == tradeDraft.id,
+              !tradeDraft.entries.contains(where: { $0.id == scan.request.encounterID }) else {
+            endOneCardScan(encounterID: scan.request.encounterID, outcome: "cancelled")
+            return
+        }
+        let entry = TradeEntry(
+            side: destination.side, result: coordinator.present(scan), refreshKey: coordinator.tradeRefreshKey(for: scan)
+        )
+        var draft = tradeDraft
+        draft.entries.insert(entry, at: 0)
+        draft.latestScanID = entry.id
+        tradeDraft = draft
+        successCount += 1
+        feedback.added()
+        UIAccessibility.post(
+            notification: .announcement, argument: "Added \(entry.result.card.name), \(entry.identityText), \(entry.side.title)"
+        )
+        endOneCardScan(encounterID: entry.id, outcome: "trade-added")
+        drainTradeQuotes()
+    }
+
+    func retryTradeQuote(_ id: TradeEntry.ID) {
+        guard let index = tradeDraft.entries.firstIndex(where: { $0.id == id }),
+              !tradeDraft.entries[index].result.shouldAutoRefresh else { return }
+        tradeDraft.entries[index].result.shouldAutoRefresh = true
+        drainTradeQuotes()
+    }
+
+    /// One request at a time. Repeated copies awaiting the same exact quote
+    /// share its result, including copies scanned while the provider responds.
+    private func drainTradeQuotes() {
+        guard tradeQuoteTask == nil, let coordinator = priceCheckCoordinator,
+              tradeDraft.entries.contains(where: { $0.result.shouldAutoRefresh }),
+              isStorageGenerationCurrent else { return }
+        let draftID = tradeDraft.id
+        let storageIsCurrent = storageGenerationContinuation
+        tradeQuoteTask = Task { @MainActor [weak self] in
+            defer {
+                if self?.tradeDraft.id == draftID { self?.tradeQuoteTask = nil }
+            }
+            while !Task.isCancelled, storageIsCurrent?() ?? true,
+                  let entry = self?.tradeDraft.entries.last(where: { $0.result.shouldAutoRefresh }),
+                  self?.tradeDraft.id == draftID {
+                let key = entry.refreshKey
+                let canContinue: PriceCheckContinuationCheck = { [weak self] in
+                    guard !Task.isCancelled, storageIsCurrent?() ?? true, let self,
+                          self.tradeDraft.id == draftID else { return false }
+                    return self.tradeDraft.entries.contains {
+                        $0.refreshKey == key && $0.result.shouldAutoRefresh
+                    }
+                }
+                let outcome = await coordinator.refresh(entry.result, shouldContinue: canContinue)
+                guard let self, canContinue() else { continue }
+                var draft = self.tradeDraft
+                for index in draft.entries.indices where draft.entries[index].refreshKey == key
+                    && draft.entries[index].result.shouldAutoRefresh {
+                    var result = draft.entries[index].result
+                    result.shouldAutoRefresh = false
+                    switch outcome {
+                    case let .quote(quote):
+                        result.completeRefresh(quote)
+                    case let .lastKnown(quote, issue):
+                        result.completeRefresh(quote, issue: issue)
+                    case let .failed(issue):
+                        result.recordFailedCheck()
+                        result.quoteState = result.hasUsableAmount ? .lastKnown(issue) : Self.quoteState(for: issue)
+                    case .cancelled:
+                        result.quoteState = result.hasUsableAmount ? result.successfulQuoteState : .providerUnavailable
+                    }
+                    draft.entries[index].result = result
+                }
+                self.tradeDraft = draft
+            }
+        }
+    }
+
     /// The Price Check coordinator intentionally has no `CollectionStore`.
     private func presentPriceCheck(_ resolvedScan: ResolvedScan) {
         guard isStorageGenerationCurrent,
@@ -6417,7 +6590,7 @@ final class ScannerViewModel: ObservableObject {
         priceCheckResult = result
     }
 
-    private static func quoteState(for issue: PriceCheckRefreshIssue) -> PriceCheckQuoteState {
+    nonisolated static func quoteState(for issue: PriceCheckRefreshIssue) -> PriceCheckQuoteState {
         switch issue {
         case .mappingUnavailable: return .mappingUnavailable
         case .noExactPrice: return .noExactPrice
@@ -6507,6 +6680,7 @@ final class ScannerViewModel: ObservableObject {
 
     private func isCurrent(_ request: ScanRequest) -> Bool {
         request.generation == scanGeneration
+            && (request.purpose != .tradeAnalyzer || request.tradeDestination?.draftID == tradeDraft.id)
     }
 
     nonisolated static func failureAcknowledgementMessage(
@@ -6527,7 +6701,7 @@ final class ScannerViewModel: ObservableObject {
         case .providerUnavailable:
             return purpose == .collection
                 ? "Not added — card lookup is unavailable right now. Try again later."
-                : "Card lookup is temporarily unavailable. Price Check couldn't continue."
+                : "Card lookup is temporarily unavailable. \(purpose.title) couldn't continue."
         case .notInCatalog:
             switch unresolvedReason {
             case .noCatalogEntry:
@@ -6535,7 +6709,7 @@ final class ScannerViewModel: ObservableObject {
             case .interrupted, .noConfirmedMatch, .lookupFailed, .providerUnavailable:
                 return purpose == .collection
                     ? "Couldn't confirm which card this is. Saved to Needs attention."
-                    : "Couldn't confirm which card this is. Price Check couldn't continue."
+                    : "Couldn't confirm which card this is. \(purpose.title) couldn't continue."
             case .saveFailed:
                 return "Recognized, but saving failed. Saved to Needs attention to retry."
             }
@@ -6598,7 +6772,8 @@ final class ScannerViewModel: ObservableObject {
                 canRetryScan: printingCandidates.isEmpty && Self.canRetryIdentityScan(failure: failure, error: error)
             )
         } else {
-            endOneCardScan(encounterID: request.encounterID, outcome: "price-check-failure")
+            endOneCardScan(encounterID: request.encounterID,
+                           outcome: request.purpose == .priceCheck ? "price-check-failure" : "trade-failure")
         }
         if shouldPresentFailure { feedback.problem() }
 
@@ -6829,6 +7004,58 @@ final class ScannerViewModel: ObservableObject {
 
 #if DEBUG
     private var usesInMemoryScreenshotFixtures = false
+
+    func seedTradeScreenshot(populated: Bool) {
+        usesInMemoryScreenshotFixtures = true
+        setPurpose(.tradeAnalyzer)
+        guard populated else { return }
+        let definition = PokemonSetDefinition(
+            printedCode: "MEW", tcgdexSetID: "sv03.5", officialCount: 165, releaseIndex: 0
+        )
+        let set = TCGdexSetBrief(
+            id: "sv03.5", name: "151", cardCount: TCGdexCardCount(total: 207, official: 165)
+        )
+        func entry(
+            _ name: String, number: String, finish: PhysicalVariant, amount: Double, side: TradeSide, quantity: Int
+        ) -> TradeEntry {
+            let card = IdentifiedCard.pokemon(TCGdexCard(
+                id: "sv03.5-\(number)", localId: number, name: name, image: nil,
+                rarity: nil, set: set, variants: nil, pricing: nil, variantsDetailed: nil
+            ), setCode: "MEW")
+            let scan = ResolvedScan(
+                request: ScanRequest(
+                    subject: ScanSubject(identifier: .pokemon(
+                        setCode: "MEW", cardNumber: number, printedTotal: 165, setDefinition: definition
+                    )),
+                    purpose: .tradeAnalyzer, generation: scanGeneration,
+                    tradeDestination: .init(draftID: tradeDraft.id, side: side)
+                ),
+                card: card, resolved: ResolvedVariant(variant: finish, resolution: .userConfirmed),
+                pokemonPrintRun: nil, options: [finish]
+            )
+            let price = NormalizedPrice(
+                unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: finish.id, sourceUpdatedAt: .now, fetchedAt: .now
+            )
+            return TradeEntry(
+                side: side, quantity: quantity,
+                result: PriceCheckResult(
+                    resolvedScan: scan, quote: .price(price), checkedAt: .now, quoteState: .current, shouldAutoRefresh: false
+                ),
+                refreshKey: .init(
+                    quote: .init(game: .pokemon, printingID: card.providerID, variantID: finish.id, treatmentIDs: []),
+                    slab: nil
+                )
+            )
+        }
+        let give = entry("Pikachu", number: "025", finish: .reverse, amount: 9.08, side: .give, quantity: 20)
+        tradeDraft.entries = [
+            give,
+            entry("Charizard ex", number: "199", finish: .holo, amount: 176, side: .receive, quantity: 1)
+        ]
+        tradeDraft.latestScanID = give.id
+        tradeDraft.scanSide = .give
+    }
 
     func seedLongScannerToolbarForScreenshot() {
         for entry in gameRegistry.variantLockMenu {

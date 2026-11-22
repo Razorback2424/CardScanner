@@ -25,6 +25,26 @@ final class BrowseFilterTests: XCTestCase {
 
     // MARK: Matching
 
+    func testSetPriceScopeUsesSearchTierAndFinishBeforeResolvingPrices() {
+        let set = set("a")
+        let normal = card("1", set: set)
+        let reverse = card("1", set: set, variant: .reverse)
+        var expanded = card("1", set: set, variant: .pokeBall)
+        expanded.isExpandedMasterSetVariant = true
+        let unrelated = card("2", set: set, variant: .reverse)
+        let cards = [normal, reverse, expanded, unrelated]
+        let filters = CatalogBrowseFilters(variantIDs: [reverse.masterSetVariant!.id, PhysicalVariant.pokeBall.id],
+            price: .band(.fiveToTen))
+        let owned = CatalogOwnershipIndex(rows: [])
+
+        XCTAssertEqual(CatalogBrowsePresentation.setPriceCandidates(cards, in: set, search: "1",
+            tier: .standard, filters: filters, ownership: owned), [reverse])
+        XCTAssertEqual(CatalogBrowsePresentation.setPriceCandidates(cards, in: set, search: "1",
+            tier: .expanded, filters: filters, ownership: owned), [reverse, expanded])
+        XCTAssertEqual(CatalogBrowsePresentation.setPriceCandidates(cards, in: set, search: "",
+            tier: .standard, filters: filters, ownership: owned), [reverse, unrelated])
+    }
+
     func testEmptyFiltersMatchEverythingAndReportInactive() {
         let filters = CatalogBrowseFilters.none
         XCTAssertFalse(filters.isActive)

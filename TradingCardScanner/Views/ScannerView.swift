@@ -17,9 +17,10 @@ struct ScannerView: View {
     @State private var isShowingSettings = false
     @State private var reviewing: RecentScan?
     @State private var isShowingSessionReview = false
+    @State private var isShowingTradeReview = false
     @State private var isShowingUnresolved = false
     @State private var pendingUnresolvedResolution: PendingUnresolvedResolution?
-    @State private var footerGuideFrame: CGRect?
+    @State private var guideFrames: ScannerGuideFrames?
 #if DEBUG && targetEnvironment(simulator)
     @State private var didSeedCameraOptionsFixture = false
 #endif
@@ -104,6 +105,7 @@ struct ScannerView: View {
         return [
             "WholeCardScanner",
             "PriceCheck",
+            "TradeAnalyzer",
             "ScanChoiceCancellation",
             "TrustScanReceipt"
         ].contains(route) ? route : nil
@@ -116,14 +118,14 @@ struct ScannerView: View {
                 scanner: model.scanner,
                 successCount: model.successCount,
                 recognitionCount: model.recognitionCount,
-                onFooterGuideFrameChange: { footerGuideFrame = $0 }
+                onGuideFramesChange: { guideFrames = $0 }
             )
                 .ignoresSafeArea()
 
             ScannerChrome(
                 model: model,
                 scanner: model.scanner,
-                footerGuideFrame: footerGuideFrame,
+                guideFrames: guideFrames,
                 openSettings: {
                     model.pauseForSettingsPresentation()
                     isShowingSettings = true
@@ -139,6 +141,11 @@ struct ScannerView: View {
                 openSessionReview: {
                     model.pauseForPresentation()
                     isShowingSessionReview = true
+                },
+                openTradeReview: {
+                    guard model.canOpenTradeReview else { return }
+                    model.pauseForPresentation()
+                    isShowingTradeReview = true
                 }
             )
             // Camera chrome uses white labels in either app appearance. Match
@@ -233,6 +240,11 @@ struct ScannerView: View {
 #if DEBUG
             if scannerScreenshotRoute == "PriceCheck" {
                 model.setPurpose(.priceCheck)
+            }
+            if scannerScreenshotRoute == "TradeAnalyzer" {
+                let arguments = ProcessInfo.processInfo.arguments
+                model.seedTradeScreenshot(populated: !arguments.contains("empty"))
+                isShowingTradeReview = arguments.contains("review")
             }
             if scannerScreenshotRoute == "WholeCardScanner" || scannerScreenshotRoute == "TrustScanReceipt" {
                 if ProcessInfo.processInfo.arguments.contains("permission-denied") {
@@ -362,12 +374,15 @@ struct ScannerView: View {
         .sheet(isPresented: $isShowingSessionReview, onDismiss: model.resumeAfterPresentation) {
             ScanSessionReviewSheet()
         }
+        .sheet(isPresented: $isShowingTradeReview, onDismiss: model.resumeAfterPresentation) {
+            TradeReviewSheet(model: model)
+        }
         .toolbar(isScanChoicePending ? .hidden : .visible, for: .tabBar)
     }
 
     /// Price Check's result sheet is owned by the view model and excluded here.
     private var isSheetRequested: Bool {
-        isShowingSettings || reviewing != nil || isShowingUnresolved || isShowingSessionReview
+        isShowingSettings || reviewing != nil || isShowingUnresolved || isShowingSessionReview || isShowingTradeReview
     }
 
     /// Keep the existing focused choice flow until the current scan is resolved.
@@ -385,11 +400,12 @@ struct ScannerView: View {
 private struct ScannerChrome: View {
     @ObservedObject var model: ScannerViewModel
     let scanner: CardScanner
-    let footerGuideFrame: CGRect?
+    let guideFrames: ScannerGuideFrames?
     let openSettings: () -> Void
     let openReview: (RecentScan) -> Void
     let openUnresolved: () -> Void
     let openSessionReview: () -> Void
+    let openTradeReview: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Namespace private var glassNamespace
@@ -400,15 +416,28 @@ private struct ScannerChrome: View {
     var body: some View {
         GeometryReader { geometry in
             let frame = geometry.frame(in: .global)
-            let topHeight = max(0, (footerGuideFrame?.minY ?? frame.midY) - frame.minY - 12)
-            let feedbackHeight = max(0, frame.maxY - (footerGuideFrame?.maxY ?? frame.midY) - 12)
+            let reservesWholeGuide = model.purpose == .tradeAnalyzer && !isScanChoicePending
+            let protectedGuide = guideFrames.map { reservesWholeGuide ? $0.card.union($0.footer) : $0.footer }
+            let guideSpacing: CGFloat = reservesWholeGuide ? 8 : 12
+            let topHeight = max(0, (protectedGuide?.minY ?? frame.midY) - frame.minY - guideSpacing)
+            let feedbackHeight = max(0, frame.maxY - (protectedGuide?.maxY ?? frame.midY) - guideSpacing)
             ZStack(alignment: .top) {
-                VStack(spacing: 10) {
-                    topBar
-                    ScrollView {
-                        topStack
+                Group {
+                    if reservesWholeGuide {
+                        ScrollView {
+                            VStack(spacing: 5) {
+                                topBar
+                                topStack
+                            }
+                        }
+                        .scrollBounceBehavior(.basedOnSize)
+                    } else {
+                        VStack(spacing: 10) {
+                            topBar
+                            ScrollView { topStack }
+                                .scrollBounceBehavior(.basedOnSize)
+                        }
                     }
-                    .scrollBounceBehavior(.basedOnSize)
                 }
                 .frame(height: topHeight, alignment: .top)
                 .accessibilityIdentifier("scanner-top-controls")
@@ -489,13 +518,17 @@ private struct ScannerChrome: View {
             // A question owns the screen until it is answered: history steps
             // aside so the only thing above the band is the one decision.
             if !isScanChoicePending {
-                sessionHistory
-                    .transition(.opacity)
+                if model.purpose == .tradeAnalyzer {
+                    TradeScannerControls(model: model, openReview: openTradeReview)
+                } else {
+                    sessionHistory
+                        .transition(.opacity)
+                }
             }
 
             scanActions
 
-            if let note = model.note {
+            if model.purpose != .tradeAnalyzer, let note = model.note {
                 ScanNoteView(note: note)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
@@ -623,6 +656,13 @@ private struct ScannerChrome: View {
                 )
                 .transition(.opacity)
                 .appGlassEffectID("scanner-feedback", in: glassNamespace)
+            } else if model.purpose == .tradeAnalyzer {
+                if let note = model.note {
+                    ScanNoteView(note: note)
+                } else if let entry = model.tradeDraft.latest {
+                    TradeScannerReceipt(entry: entry, undo: model.undoLatestTradeScan)
+                        .transition(.opacity)
+                }
             }
         }
     }
@@ -956,7 +996,7 @@ private struct ScannerTopBar: View, Equatable {
     /// readable at a glance without dominating the viewfinder. The alternatives,
     /// and what each one does, live one tap away in the menu, which is where they
     /// are needed: at the moment of deciding.
-    private var purposeControl: some View {
+    private func purposeControl(compact: Bool = false) -> some View {
         Menu {
             ForEach(ScanPurpose.allCases) { purpose in
                 Button {
@@ -971,13 +1011,10 @@ private struct ScannerTopBar: View, Equatable {
             }
         } label: {
             HStack(spacing: 6) {
-                // The one bit of color in the bar: green while cards are being
-                // added, amber while only pricing, so the live consequence is
-                // legible without reading.
                 Image(systemName: purpose.symbolName)
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(purpose == .collection ? Color.green : Color.yellow)
-                Text(purpose.title)
+                    .foregroundStyle(purposeTint)
+                Text(compact ? "Trade" : purpose.title)
                     .font(.subheadline.weight(.semibold))
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
                     .fixedSize(horizontal: false, vertical: true)
@@ -995,18 +1032,27 @@ private struct ScannerTopBar: View, Equatable {
         .menuStyle(.button)
         .buttonStyle(.plain)
         .accessibilityLabel("Scan mode: \(purpose.title)")
-        .accessibilityHint("Changes whether resolved cards are added to your collection or only priced.")
+        .accessibilityHint("Choose Collection, Price Check, or Trade Analyzer.")
+    }
+
+    private var purposeTint: Color {
+        switch purpose {
+        case .collection: .green
+        case .priceCheck: .yellow
+        case .tradeAnalyzer: .mint
+        }
     }
 
     /// Almost nothing. There is no game picker because the printed identifier
     /// already says which game the card is, and asking the user to pre-declare it
     /// was asking for information the card carries.
-    private func finishLockControl(wrapsSummary: Bool) -> some View {
+    private func finishLockControl(wrapsSummary: Bool, compact: Bool = false) -> some View {
         FinishLockControl(
             subjectMode: subjectMode,
             locks: finishLocks,
             variantLockMenu: variantLockMenu,
             wrapsSummary: wrapsSummary,
+            compact: compact,
             setSubjectMode: setSubjectMode,
             setLock: setFinishLock,
             clearLocks: clearFinishLocks,
@@ -1017,11 +1063,14 @@ private struct ScannerTopBar: View, Equatable {
 
     private var topBar: some View {
         Group {
-            if dynamicTypeSize.isAccessibilitySize {
+            if dynamicTypeSize.isAccessibilitySize && purpose != .tradeAnalyzer {
                 stackedTopBar
             } else {
                 ViewThatFits(in: .horizontal) {
-                    inlineTopBar
+                    inlineTopBar()
+                    if purpose == .tradeAnalyzer {
+                        inlineTopBar(compactFinish: true)
+                    }
                     stackedTopBar
                 }
             }
@@ -1029,10 +1078,12 @@ private struct ScannerTopBar: View, Equatable {
         .animation(.easeOut(duration: 0.2), value: isSlowIdentifying)
     }
 
-    private var inlineTopBar: some View {
-        HStack(spacing: 8) {
-            purposeControl.fixedSize(horizontal: true, vertical: false)
-            finishLockControl(wrapsSummary: false).fixedSize(horizontal: true, vertical: false)
+    private func inlineTopBar(compactFinish: Bool = false) -> some View {
+        HStack(spacing: compactFinish ? 6 : 8) {
+            purposeControl(compact: compactFinish && dynamicTypeSize.isAccessibilitySize)
+                .fixedSize(horizontal: true, vertical: false)
+            finishLockControl(wrapsSummary: false, compact: compactFinish)
+                .fixedSize(horizontal: true, vertical: false)
             identificationSpinner
             Spacer(minLength: 0)
             optionsButton
@@ -1042,7 +1093,7 @@ private struct ScannerTopBar: View, Equatable {
     private var stackedTopBar: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
-                purposeControl
+                purposeControl()
                 Spacer(minLength: 0)
                 optionsButton
             }
@@ -1068,7 +1119,17 @@ private struct ScannerTopBar: View, Equatable {
     /// light and lens and links to full Settings.
     private var optionsButton: some View {
         Group {
-            if #available(iOS 26.0, *) {
+            if purpose == .tradeAnalyzer {
+                Button { isShowingOptions = true } label: {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                        .appPillGlass(interactive: true)
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+            } else if #available(iOS 26.0, *) {
                 Button { isShowingOptions = true } label: {
                     Image(systemName: "gearshape")
                         .font(.system(size: 16, weight: .semibold))
@@ -1224,6 +1285,7 @@ private struct FinishLockControl: View, Equatable {
     let locks: [CardGame: VariantLock]
     let variantLockMenu: [GameVariantLockOptions]
     let wrapsSummary: Bool
+    let compact: Bool
     let setSubjectMode: (ScanSubjectMode) -> Void
     let setLock: (VariantLock?, CardGame) -> Void
     let clearLocks: () -> Void
@@ -1233,7 +1295,7 @@ private struct FinishLockControl: View, Equatable {
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.subjectMode == rhs.subjectMode && lhs.locks == rhs.locks
             && lhs.variantLockMenu == rhs.variantLockMenu
-            && lhs.wrapsSummary == rhs.wrapsSummary
+            && lhs.wrapsSummary == rhs.wrapsSummary && lhs.compact == rhs.compact
     }
 
     private var activeLocks: [(game: CardGame, displayName: String, lock: VariantLock)] {
@@ -1312,9 +1374,11 @@ private struct FinishLockControl: View, Equatable {
                     HStack(spacing: 6) {
                         Image(systemName: "rectangle.stack")
                             .font(.system(size: 13, weight: .semibold))
-                        Text("Slabs")
-                            .font(.subheadline.weight(.semibold))
-                            .lineLimit(1)
+                        if !compact {
+                            Text("Slabs")
+                                .font(.subheadline.weight(.semibold))
+                                .lineLimit(1)
+                        }
                         Image(systemName: "chevron.down")
                             .font(.system(size: 10, weight: .bold))
                             .foregroundStyle(.white.opacity(0.7))
@@ -1327,10 +1391,12 @@ private struct FinishLockControl: View, Equatable {
                     HStack(spacing: 6) {
                         Image(systemName: locks.isEmpty ? "lock.open" : "lock.fill")
                             .font(.system(size: 13, weight: .semibold))
-                        Text(visibleSummary)
-                            .font(.subheadline.weight(.semibold))
-                            .lineLimit(wrapsSummary ? nil : 1)
-                            .fixedSize(horizontal: false, vertical: true)
+                        if !compact {
+                            Text(visibleSummary)
+                                .font(.subheadline.weight(.semibold))
+                                .lineLimit(wrapsSummary ? nil : 1)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                         Image(systemName: "chevron.down")
                             .font(.system(size: 10, weight: .bold))
                             .foregroundStyle(.white.opacity(0.7))

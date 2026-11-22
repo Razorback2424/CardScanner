@@ -552,11 +552,20 @@ final class PriceCheckCoordinator {
         return attemptedAt
     }
 
-    private struct QuoteKey {
+    struct QuoteKey: Hashable, Sendable {
         let game: CardGame
         let printingID: String
         let variantID: String?
         let treatmentIDs: [String]
+    }
+
+    struct TradeRefreshKey: Hashable, Sendable {
+        let quote: QuoteKey
+        let slab: GradedSlabEvidence?
+    }
+
+    func tradeRefreshKey(for scan: ResolvedScan) -> TradeRefreshKey {
+        TradeRefreshKey(quote: quoteKey(for: scan), slab: scan.request.subject.slab)
     }
 
     /// A cached quote's retrieval is not proof of when a later check succeeded.

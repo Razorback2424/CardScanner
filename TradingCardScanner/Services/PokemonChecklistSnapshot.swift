@@ -1151,8 +1151,10 @@ actor PokemonChecklistStore {
         let canonicalNumber: String?
         let providerID: String
     }
-    private var searchRowsBySet: [CatalogSetID: [SearchRow]] = [:]
+    private var searchRowsBySet: [String: [SearchRow]] = [:]
     private var searchGeneration = 0
+    private var searchResetGeneration = 0
+    private var searchPublicationBySet: [String: Int] = [:]
     private var unreadableChecklistIDs: Set<String> = []
     private var downloadedSnapshotCache: PokemonChecklistSnapshot?
     private var bundledSnapshotCache: PokemonChecklistSnapshot?
@@ -1309,14 +1311,22 @@ actor PokemonChecklistStore {
         loadedChecklist(for: setID)?.cards
     }
 
-    func search(_ query: String, sets: [CatalogSet], offset: Int, limit: Int) async throws -> CatalogPage<CatalogCardSummary> {
-        let generation = searchGeneration
+    func search(_ query: String, sets: [CatalogSet], offset: Int, limit: Int,
+                yieldBetweenSets: @Sendable () async -> Void = { await Task.yield() }) async throws -> CatalogPage<CatalogCardSummary> {
+        var generation = searchGeneration
         var matches: [CatalogCardSummary] = []
         var skipped = 0
         for set in sets {
-            await Task.yield()
+            await yieldBetweenSets()
             try Task.checkCancellation()
-            guard generation == searchGeneration else { throw CatalogLookupError.staleCatalog }
+            if generation != searchGeneration {
+                // An earlier set in this scope may already have contributed
+                // matches or counted toward the page offset.
+                guard searchResetGeneration <= generation,
+                      !sets.contains(where: { searchPublicationBySet[$0.id, default: 0] > generation })
+                else { throw CatalogLookupError.staleCatalog }
+                generation = searchGeneration
+            }
             let officialCount = (signedEntry(for: set.id) ?? downloadedEntry(for: set.id) ?? bundledEntry(for: set.id))?.officialCount
             let parsed = PokemonChecklistSearchQuery(normalized: query, setCode: set.code, officialCount: officialCount)
             for row in searchRows(for: set.catalogID) {
@@ -1333,7 +1343,7 @@ actor PokemonChecklistStore {
     }
 
     private func searchRows(for setID: CatalogSetID) -> [SearchRow] {
-        if let existing = searchRowsBySet[setID] { return existing }
+        if let existing = searchRowsBySet[setID.id] { return existing }
         guard let cards = mergedChecklist(for: setID) else { return [] }
         var seen = Set<String>()
         let rows = cards.compactMap { source -> SearchRow? in
@@ -1348,7 +1358,7 @@ actor PokemonChecklistStore {
                 canonicalNumber: printedNumber.map(PokemonChecklistSearchQuery.canonicalNumber),
                 providerID: CardNameSearch.normalize(source.providerID))
         }
-        searchRowsBySet[setID] = rows
+        searchRowsBySet[setID.id] = rows
         return rows
     }
 
@@ -1887,6 +1897,8 @@ actor PokemonChecklistStore {
         signedRevision = release.revision
         projectedEntryCache.removeAll()
         searchGeneration &+= 1
+        searchResetGeneration = searchGeneration
+        searchPublicationBySet.removeAll()
         discardDecodedChecklists()
         return true
     }
@@ -1985,11 +1997,16 @@ actor PokemonChecklistStore {
         didLoadDownloadedManifest = true
         downloadedValidEntriesCache = nil
         searchGeneration &+= 1
-        if removingStaleResources { searchRowsBySet.removeAll() }
+        if removingStaleResources {
+            searchResetGeneration = searchGeneration
+            searchPublicationBySet.removeAll()
+            searchRowsBySet.removeAll()
+        }
         for entry in snapshot.manifest.entries {
+            searchPublicationBySet[entry.set.id] = searchGeneration
             downloadedChecklistCache[entry.set.id] = nil
             unreadableChecklistIDs.remove(entry.set.id)
-            searchRowsBySet[entry.set.catalogID] = nil
+            searchRowsBySet[entry.set.id] = nil
         }
     }
 

@@ -1767,6 +1767,15 @@ struct CatalogSetCardSearch {
             setCode: setCode, officialCount: officialCollectorCount ?? PokemonChecklistSnapshotManifest.bundledOfficialCounts[setID]) : nil
     }
 
+    func matches(_ card: CatalogCardSummary) -> Bool {
+        guard !query.normalized.isEmpty else { return true }
+        let printed = card.printedCollectorNumber
+        return matches(card, name: CardNameSearch.normalize(card.displayName),
+            number: printed.map(CardNameSearch.normalize),
+            canonicalPokemonNumber: pokemon == nil ? nil : printed.map(PokemonChecklistSearchQuery.canonicalNumber),
+            normalizedProviderID: pokemon == nil ? "" : CardNameSearch.normalize(card.providerID))
+    }
+
     func matches(
         _ card: CatalogCardSummary, name: String, number: String?, canonicalPokemonNumber: String?, normalizedProviderID: String
     ) -> Bool {
@@ -1793,10 +1802,7 @@ enum CatalogSetQuery {
         let query = CatalogSetCardSearch(query: CatalogCardSearchQuery(search), setID: first.setID,
                                          setCode: first.setCode, officialCollectorCount: nil)
         let filtered = cards.filter { card in
-            let printed = card.printedCollectorNumber
-            guard query.matches(card, name: CardNameSearch.normalize(card.displayName),
-                number: printed.map(CardNameSearch.normalize), canonicalPokemonNumber: printed.map(PokemonChecklistSearchQuery.canonicalNumber),
-                normalizedProviderID: CardNameSearch.normalize(card.providerID)) else { return false }
+            guard query.matches(card) else { return false }
             guard ownership != .all else { return true }
             let isOwned = owned.owns(card)
             switch ownership {
@@ -1867,6 +1873,8 @@ protocol BrowseCatalogProviding: Sendable {
     /// Emits when a signed catalog revision or a per-set checklist becomes
     /// visible. Existing test doubles may use the empty default stream.
     func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate>
+    func catalogUpdates(after sequence: UInt64?) async
+        -> (updates: AsyncStream<BrowseCatalogUpdate>, baseline: UInt64?)
 }
 
 extension BrowseCatalogProviding {
@@ -1929,5 +1937,10 @@ extension BrowseCatalogProviding {
 
     func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate> {
         AsyncStream { continuation in continuation.finish() }
+    }
+
+    func catalogUpdates(after sequence: UInt64?) async
+        -> (updates: AsyncStream<BrowseCatalogUpdate>, baseline: UInt64?) {
+        (await catalogUpdates(), nil)
     }
 }

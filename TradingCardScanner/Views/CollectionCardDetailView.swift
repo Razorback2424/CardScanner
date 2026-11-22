@@ -1243,7 +1243,7 @@ private struct CollectionCardDetailContent: View {
                 default: marketHistory = []
                 }
                 marketHistoryError = state == "price-chart-error" || state == "price-chart-saved-error"
-                    ? "JustTCG history could not be loaded. Try again." : nil
+                    ? MarketHistoryChartContent.historyLoadFailure(for: CardMarketHistoryService.HistoryError.requestFailed) : nil
                 try? await Task.sleep(for: .milliseconds(500))
                 guard !Task.isCancelled else { return }
                 if state == "price-chart-portfolio" {
@@ -1291,7 +1291,7 @@ private struct CollectionCardDetailContent: View {
         }
         catch {
             guard !Task.isCancelled, request == marketHistoryRequest else { return }
-            marketHistoryError = error.localizedDescription
+            marketHistoryError = MarketHistoryChartContent.historyLoadFailure(for: error)
         }
     }
 
@@ -3144,6 +3144,7 @@ struct CardMarketHistoryPanel: View {
     @State private var range: PortfolioHistoryRange = .threeMonths
     @State private var selection = PriceHistorySelection()
     @State private var error: String?
+    @State private var emptyMessage: LocalizedStringResource?
     @State private var requiresAPIKey = false
     @State private var isLoading = true
     @State private var loadedIdentity: [String]?
@@ -3168,6 +3169,7 @@ struct CardMarketHistoryPanel: View {
             MarketHistoryChartContent(model: model, hasHistory: !points.isEmpty, isLoading: isLoading,
                                       error: error, direction: direction, range: $range,
                                       selection: selection, requiresAPIKey: requiresAPIKey,
+                                      emptyMessage: emptyMessage,
                                       ownership: ownership,
                                       retry: { retryID += 1 })
             if showsDetails {
@@ -3205,11 +3207,13 @@ struct CardMarketHistoryPanel: View {
     private func load() async {
         isLoading = true
         error = nil
+        emptyMessage = nil
+        requiresAPIKey = false
 #if DEBUG && LOCAL_ONLY_SIGNING
         if let state = YuGiOhHistoryDebugView.state, request.game == .yuGiOh {
             points = state == "chart" ? CardMarketHistoryFixture.points : []
             requiresAPIKey = state == "missing-key"
-            error = nil
+            if state == "empty" { emptyMessage = Self.noMatchingHistory }
             isLoading = false
             CardMarketHistoryFixture.markReady()
             return
@@ -3227,10 +3231,11 @@ struct CardMarketHistoryPanel: View {
         guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
         if !cached.isEmpty { points = cached }
         defer { if !Task.isCancelled { isLoading = false } }
-        if !resolved.canIdentifySealedHistory {
-            requiresAPIKey = false
+        if resolved.requiresCatalogMapping, resolved.exactProductID == nil {
+            emptyMessage = Self.noMatchingHistory
             return
         }
+        guard resolved.canIdentifySealedHistory else { return }
         requiresAPIKey = !PriceVendorCredentials.hasKey
         guard !requiresAPIKey else { return }
         do {
@@ -3238,17 +3243,23 @@ struct CardMarketHistoryPanel: View {
             try Task.checkCancellation()
             guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
             points = result
+            if result.isEmpty { emptyMessage = "No past prices available." }
         } catch is CancellationError { return }
-        catch CardMarketHistoryService.HistoryError.noListing { return }
+        catch CardMarketHistoryService.HistoryError.noListing {
+            guard await request.resolvingMarketMapping(in: runtimes) == resolved, !Task.isCancelled else { return }
+            emptyMessage = Self.noMatchingHistory
+        }
         catch JustTCGTransport.TransportError.missingCredentials {
             guard !Task.isCancelled else { return }
             requiresAPIKey = true
         }
         catch {
             guard !Task.isCancelled else { return }
-            self.error = error.localizedDescription
+            self.error = MarketHistoryChartContent.historyLoadFailure(for: error)
         }
     }
+
+    private static let noMatchingHistory: LocalizedStringResource = "We couldn’t find this version of the card in our price history."
 }
 
 private struct CardMarketLatestObservation: View {
@@ -3353,6 +3364,7 @@ struct MarketHistoryChartContent: View {
     @Binding var range: PortfolioHistoryRange
     let selection: PriceHistorySelection
     var requiresAPIKey: Bool = false
+    var emptyMessage: LocalizedStringResource? = nil
     var ownership: PriceHistoryOwnership? = nil
     let retry: () -> Void
 
@@ -3393,9 +3405,12 @@ struct MarketHistoryChartContent: View {
                 }
                 .frame(maxWidth: .infinity)
             case .unavailable:
-                Text("Price history isn’t available yet.")
+                Text(emptyMessage ?? "No price history available.")
                     .font(.subheadline)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, minHeight: 64)
+                    .padding(.horizontal, 16)
             case .configurationRequired:
                 historyKeyExplanation
                     .foregroundStyle(.secondary)
@@ -3403,13 +3418,13 @@ struct MarketHistoryChartContent: View {
                     .padding(.horizontal, 16)
             case .failed:
                 VStack(spacing: 4) {
-                    Text("Couldn’t load price history").font(.subheadline)
-                    if let error {
-                        Text(error).font(.caption).multilineTextAlignment(.center)
-                    }
-                    Button("Retry", action: retry).foregroundStyle(.tint).frame(minHeight: 44)
+                    Text(error ?? "We couldn’t download price history from JustTCG.")
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                    Button("Retry history", action: retry).foregroundStyle(.tint).frame(minHeight: 44)
                 }
                 .frame(maxWidth: .infinity)
+                .padding(.horizontal, 16)
             }
 
             if hasHistory || model.samples.count > 1 {
@@ -3423,10 +3438,11 @@ struct MarketHistoryChartContent: View {
                 if requiresAPIKey {
                     historyKeyExplanation
                         .padding(.horizontal, 16)
-                } else if !isLoading, error != nil {
-                    HStack {
-                        Text("Showing saved prices. Couldn’t update history.").font(.caption)
-                        Button("Retry", action: retry).font(.subheadline).foregroundStyle(.tint).frame(minHeight: 44)
+                } else if !isLoading, let error {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Showing saved price history.").font(.caption)
+                        Text(error).font(.caption)
+                        Button("Retry history", action: retry).font(.subheadline).foregroundStyle(.tint).frame(minHeight: 44)
                     }
                     .padding(.horizontal, 16)
                 }
@@ -3442,8 +3458,23 @@ struct MarketHistoryChartContent: View {
         range = .all
     }
 
+    static func historyLoadFailure(for error: Error) -> String {
+        switch error {
+        case let error as URLError where error.code == .notConnectedToInternet:
+            String(localized: "You’re offline. Connect to the internet to update price history.")
+        case JustTCGTransport.TransportError.budgetReached:
+            String(localized: "You’ve used all your price history checks for today.")
+        case JustTCGTransport.TransportError.monthlyBudgetReached:
+            String(localized: "You’ve used all your price history checks for this month.")
+        case JustTCGTransport.TransportError.rateLimited:
+            String(localized: "Too many price history checks. Try again later.")
+        default:
+            String(localized: "We couldn’t download price history from JustTCG.")
+        }
+    }
+
     private var historyKeyExplanation: some View {
-        Text("Add a JustTCG key in Settings → Pricing to see price history.")
+        Text("To see price history, set up JustTCG in Settings → Pricing.")
             .font(.footnote)
             .fixedSize(horizontal: false, vertical: true)
     }

@@ -2230,6 +2230,123 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertFalse(cached.contains { $0.effectiveAmount == 999 }, "Dismissed requests must not write late cache results")
     }
 
+    func testTradeCapturesScanSideAndKeepsScanningWhileIdenticalQuotesShareARefresh() async throws {
+        let provider = ScannerGatedPriceCheckProvider()
+        let model = try makeModel(variants: [.normal], priceCheckProvider: provider)
+        model.setPurpose(.tradeAnalyzer)
+        let receiveToken = try XCTUnwrap(model.confirmationTokenForTesting)
+        let first = UUID()
+        model.setTradeScanSide(.give)
+        model.scanner.onConfirmedSubjectCandidate?(
+            receiveToken, first, ScanSubject(identifier: scannerIdentifier()), nil
+        )
+        await assertEventually { model.tradeDraft.latest?.id == first }
+        await provider.gate.waitUntilStarted()
+        XCTAssertEqual(model.tradeDraft.latest?.side, .receive)
+        XCTAssertEqual(model.tradeDraft.total(on: .receive).checking, 1)
+
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let third = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: third)
+        await assertEventually { model.tradeDraft.latest?.id == third }
+        XCTAssertEqual(model.tradeDraft.count(on: .give), 2)
+        XCTAssertEqual(model.tradeDraft.total(on: .give).checking, 2)
+        XCTAssertEqual(provider.calls, 1)
+        XCTAssertNil(model.priceCheckResult)
+        XCTAssertTrue(model.sessionScans.isEmpty)
+
+        await provider.gate.release()
+        await assertEventually { model.tradeDraft.entries.allSatisfy { !$0.result.shouldAutoRefresh } }
+        XCTAssertEqual(provider.calls, 2)
+        XCTAssertEqual(model.tradeDraft.total(on: .receive).total, Money(rounding: 999))
+        XCTAssertEqual(model.tradeDraft.total(on: .give).total, Money(rounding: 1003.43))
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<CollectedCard>()), 0)
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<InventoryEvent>()), 0)
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<CollectionActivity>()), 0)
+        XCTAssertEqual(try context().fetchCount(FetchDescriptor<PriceRecord>()), 0)
+    }
+
+    func testTradeCashBalancesBothDirectionsAndRetainsDraftAfterPurposeSwitch() async throws {
+        let provider = ScannerGatedPriceCheckProvider()
+        let model = try makeModel(variants: [.normal], priceCheckProvider: provider)
+        model.setPurpose(.tradeAnalyzer)
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.tradeDraft.entries.count == 1 }
+        await provider.gate.waitUntilStarted()
+        model.setTradeScanSide(.give)
+        let giveID = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: giveID)
+        await assertEventually { model.tradeDraft.latest?.id == giveID }
+        let two = try XCTUnwrap(Money(rounding: 2))
+        model.setTradeCash(two, on: .give)
+        model.setTradeCash(two, on: .receive)
+        model.balanceTrade()
+        XCTAssertEqual(model.tradeDraft.cash[.give], two, "Wait for prices before balancing")
+        await provider.gate.release()
+        await assertEventually { model.tradeDraft.entries.allSatisfy { !$0.result.shouldAutoRefresh } }
+
+        model.balanceTrade()
+        XCTAssertEqual(model.tradeDraft.cash[.give], Money(rounding: 996.57))
+        XCTAssertEqual(model.tradeDraft.cash[.receive], two)
+        model.setTradeQuantity(2, for: giveID)
+        model.balanceTrade()
+        XCTAssertEqual(model.tradeDraft.cash[.receive], Money(rounding: 6.43))
+        XCTAssertEqual(model.tradeDraft.total(on: .give).total, model.tradeDraft.total(on: .receive).total)
+
+        model.setPurpose(.priceCheck)
+        model.setPurpose(.tradeAnalyzer)
+        XCTAssertEqual(model.tradeDraft.scanSide, .give)
+        XCTAssertEqual(model.tradeDraft.latest?.id, giveID)
+        model.undoLatestTradeScan()
+        XCTAssertEqual(model.tradeDraft.count(on: .give), 1)
+        XCTAssertNil(model.tradeDraft.latest)
+        model.removeTradeEntry(giveID)
+        XCTAssertEqual(model.tradeDraft.count(on: .give), 0)
+        model.restoreTradeEntry()
+        XCTAssertEqual(model.tradeDraft.count(on: .give), 1)
+    }
+
+    func testTradeReviewWaitsForIdentificationAndKeepsFractionalCentPrices() async throws {
+        let gate = ScannerFetchGate()
+        let quote = NormalizedPrice(unitMarketPriceUSD: 0.0049, currencyCode: "USD", source: .tcgplayer,
+            sourceVariantID: "normal", sourceUpdatedAt: .now, fetchedAt: .now)
+        let model = try makeModel(variants: [.normal], fetchHoldGates: ["1": gate], priceCheckOutcome: .quote(.price(quote)))
+        model.setPurpose(.tradeAnalyzer)
+        XCTAssertTrue(model.canOpenTradeReview)
+        let encounter = UUID()
+        confirm(model, scannerIdentifier(), encounterID: encounter)
+        await gate.waitUntilStarted()
+        XCTAssertFalse(model.canOpenTradeReview)
+        await gate.release()
+        await assertEventually { model.canOpenTradeReview && model.tradeDraft.latest?.unitPrice == Money(rounding: 0.0049) }
+
+        model.setTradeQuantity(100, for: encounter)
+        model.setTradeCash(try XCTUnwrap(Money(rounding: 0.01)), on: .give)
+        XCTAssertEqual(model.tradeDraft.total(on: .receive).cards, Money(rounding: 0.49))
+        model.balanceTrade()
+        XCTAssertEqual(model.tradeDraft.cash[.give], Money(rounding: 0.49))
+    }
+
+    func testTradeClearRejectsOldConfirmationAndLateQuote() async throws {
+        let provider = ScannerGatedPriceCheckProvider()
+        let model = try makeModel(variants: [.normal], priceCheckProvider: provider)
+        model.setPurpose(.tradeAnalyzer)
+        let oldToken = try XCTUnwrap(model.confirmationTokenForTesting)
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.tradeDraft.entries.count == 1 }
+        await provider.gate.waitUntilStarted()
+        model.clearTrade()
+        model.scanner.onConfirmedSubjectCandidate?(
+            oldToken, UUID(), ScanSubject(identifier: scannerIdentifier(cardNumber: "003")), nil
+        )
+        await provider.gate.release()
+        await settle()
+        XCTAssertTrue(model.tradeDraft.isEmpty)
+        XCTAssertEqual(model.tradeDraft.scanSide, .receive)
+        XCTAssertEqual(provider.calls, 1)
+        XCTAssertFalse(try context().fetch(FetchDescriptor<ReferenceQuote>()).contains { $0.effectiveAmount == 999 })
+    }
+
     func testSameIdentityWithoutSpatialProofIsSuppressed() async throws {
         let model = try makeModel(variants: [.normal])
         let identifier = scannerIdentifier()

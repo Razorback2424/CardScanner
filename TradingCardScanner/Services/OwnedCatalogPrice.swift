@@ -10,15 +10,15 @@ enum OwnedPriceRetentionReason: Equatable, Sendable {
     var caption: String {
         switch self {
         case let .olderSourceDate(source, date):
-            return "Checked \(source.label); its price data (as of \(date.formatted(date: .abbreviated, time: .shortened))) is older than the saved price"
+            return String(localized: "Keeping your saved price. The price from \(source.label) is older (\(date.formatted(date: .abbreviated, time: .shortened))).")
         case let .missingSourceDate(source):
-            return "Checked \(source.label); its quote has no source date. Keeping the saved price"
+            return String(localized: "Keeping your saved price. \(source.label) didn’t say when its price was last updated.")
         case .laterReceipt:
-            return "Keeping the more recently received price"
+            return String(localized: "Keeping your saved price because we received it more recently.")
         case .invalidated:
-            return "This quote predates the price correction"
+            return String(localized: "The price we found is from before the correction.")
         case .unavailable:
-            return "No newer quote available"
+            return String(localized: "Keeping your saved price. We didn’t find a newer price.")
         }
     }
 }

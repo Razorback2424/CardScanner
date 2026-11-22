@@ -52,9 +52,11 @@ struct BrowseCatalogUpdate: Sendable, Equatable {
     let game: CardGame?
     let revision: Int?
     let providerSetID: String?
+    let sequence: UInt64?
 
-    init(game: CardGame? = nil, revision: Int?, providerSetID: String?) {
+    init(game: CardGame? = nil, revision: Int?, providerSetID: String?, sequence: UInt64? = nil) {
         self.game = game; self.revision = revision; self.providerSetID = providerSetID
+        self.sequence = sequence
     }
 
     func affects(game: CardGame, providerSetID: String? = nil) -> Bool {
@@ -224,6 +226,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var magicCatalogRegistry = MagicCatalogRegistry.bundledSeed
     private var magicCatalogRevision: Int?
     private var updateContinuations: [UUID: AsyncStream<BrowseCatalogUpdate>.Continuation] = [:]
+    private struct UpdateScope: Hashable {
+        let game: CardGame
+        let providerSetID: String?
+    }
+    private var updateSequence: UInt64 = 0
+    private var latestUpdates: [UpdateScope: BrowseCatalogUpdate] = [:]
     /// `prepareCatalog` suspends before it can install `refreshTask`. This flag
     /// closes that actor-reentrancy window; the desired-state bit lets an
     /// active → inactive → active transition keep one pending preparation alive
@@ -382,13 +390,27 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate> {
+        await catalogUpdates(after: nil).updates
+    }
+
+    func catalogUpdates(after sequence: UInt64?) async
+        -> (updates: AsyncStream<BrowseCatalogUpdate>, baseline: UInt64?) {
         let id = UUID()
         let (stream, continuation) = AsyncStream.makeStream(of: BrowseCatalogUpdate.self)
         continuation.onTermination = { [weak self] _ in
             Task { await self?.removeUpdateContinuation(id: id) }
         }
         updateContinuations[id] = continuation
-        return stream
+        if let sequence {
+            // A later publication of the same scope subsumes earlier ones.
+            // Replay in order so a cancelled observer can resume after its last applied update.
+            let missed = latestUpdates.values.compactMap { update -> (UInt64, BrowseCatalogUpdate)? in
+                guard let number = update.sequence, number > sequence else { return nil }
+                return (number, update)
+            }.sorted { $0.0 < $1.0 }
+            for (_, update) in missed { continuation.yield(update) }
+        }
+        return (stream, updateSequence)
     }
 
     /// Starts the active-session refresh without making Browse wait for it.
@@ -769,11 +791,17 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func yieldUpdate(game: CardGame, revision: Int?, providerSetID: String?) {
+        updateSequence += 1
         let update = BrowseCatalogUpdate(
             game: game,
             revision: revision,
-            providerSetID: providerSetID
+            providerSetID: providerSetID,
+            sequence: updateSequence
         )
+        if providerSetID == nil {
+            latestUpdates = latestUpdates.filter { $0.key.game != game }
+        }
+        latestUpdates[.init(game: game, providerSetID: providerSetID?.lowercased())] = update
         for continuation in updateContinuations.values {
             continuation.yield(update)
         }
