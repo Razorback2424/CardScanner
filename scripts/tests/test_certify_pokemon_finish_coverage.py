@@ -888,6 +888,54 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
                          [("sample-001", "unmatchedMarket")],
                          "A wrong product ID should leave the card unmatched")
 
+    def test_delta_species_title_replays_and_certifies_with_existing_finish_gates(self):
+        self.keep_only("sample-001", products=(11,))
+        for slot in self.fixture["snapshot"]:
+            slot["name"] = "Example One δ"
+        coverage.write_json(self.slots, self.fixture["snapshot"])
+        self.fixture["products"]["results"][0]["name"] = "Example One - 01/004 (Delta Species)"
+        self.fixture["groups"] = {"success": True, "errors": [],
+                                  "results": [{"groupId": 55, "name": "Sample Set"}]}
+        self.conventions(deltaSpeciesTitles=self.convention(sets={"sample": {
+            "setName": "Sample Set", "groupID": 55, "groupName": "Sample Set", "denominator": 4,
+        }}))
+        result, rows = self.batch()
+        self.assertEqual(result["statuses"], {"sample": "certifiable"})
+        self.assertEqual(rows, [])
+        first = coverage.report(self.root, "sample", 55, self.fetch, revision="delta")
+        self.assertEqual(first["cards"]["sample-001"]["market"], ["normal", "reverse"])
+        self.assertEqual(first["cards"]["sample-001"]["status"], "agree")
+        archived = coverage.capture_directory(self.root, "sample", "delta")
+        replayed = coverage.replay(self.root, archived)["sets"]["sample@delta"]
+        self.assertEqual(replayed["cardRows"]["sample-001"]["replay"], first["cards"]["sample-001"])
+        self.assertEqual(coverage.certify(self.root, "sample", revision="delta"), 1)
+
+        self.fixture["groups"]["results"][0]["name"] = "Renamed"
+        with self.assertRaisesRegex(ValueError, "no longer uniquely named"):
+            coverage.report(self.root, "sample", 55, self.fetch, revision="delta-renamed")
+
+    def test_delta_species_title_refuses_wrong_number_title_scope_and_competing_product(self):
+        card = {"name": "Ampharos δ", "number": "1", "checklist": ["holo", "reverse"]}
+        product = {"productId": 83549, "name": "Ampharos (Delta Species)", "number": "1/101",
+                   "subtypes": ["Holofoil", "Reverse Holofoil"]}
+        scope = {"denominator": 101}
+        cases = [
+            ({"delta_species_scope": None}, card, [product]),
+            ({"delta_species_scope": scope}, dict(card, name="Ampharos"), [product]),
+            ({"delta_species_scope": scope}, card, [dict(product, number="1/113")]),
+            ({"delta_species_scope": scope}, card, [dict(product, name="Ampharos - 1/113 (Delta Species)")]),
+            ({"delta_species_scope": scope}, card, [dict(product, name="Ampharos (Delta Species) (Promo)")]),
+            ({"delta_species_scope": scope}, card, [product, dict(product, productId=90000)]),
+        ]
+        for index, (kwargs, source, listings) in enumerate(cases):
+            with self.subTest(case=index):
+                comparison = coverage.compare({"ex15-1": source}, {}, {"1": listings}, **kwargs)
+                self.assertFalse(comparison["ex15-1"]["products"])
+        limited = dict(product, subtypes=["Holofoil"])
+        comparison = coverage.compare({"ex15-1": card}, {}, {"1": [limited]}, delta_species_scope=scope)
+        self.assertEqual(comparison["ex15-1"]["status"], "conflict")
+        self.assertEqual(comparison["ex15-1"]["market"], ["holo"])
+
 
 if __name__ == "__main__":
     unittest.main()

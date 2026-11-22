@@ -30,6 +30,43 @@ evidence.
 
 ## Decisions
 
+### EX Delta Species title suffixes (2026-11-21)
+
+The checklist's trailing `δ` and TCGplayer's trailing `(Delta Species)`
+refer to the same designation on the card. For example, the publisher lists
+Ampharos at 1 in Dragon Frontiers, TCGplayer titles its 1/101 product
+“Ampharos (Delta Species),” and Cardmarket includes both the symbol and the
+words. PriceCharting and PSA distinguish the card's holo and reverse foil
+under the same set and number.
+[Pokémon publisher checklist](https://assets.pokemon.com/assets/cms/pdf/tcg/checklists/dragonfrontiers_checklist.pdf)
+[Bulbapedia's printed designation](https://bulbapedia.bulbagarden.net/wiki/Delta_Species_%28TCG%29)
+[TCGplayer Ampharos 1/101](https://www.tcgplayer.com/product/83549)
+[Cardmarket Ampharos](https://www.cardmarket.com/en/Pokemon/Products/Singles/EX-Dragon-Frontiers/Ampharos-Delta-Species-DF1)
+[PriceCharting PSA/CGC index](https://www.pricecharting.com/pop/set/pokemon-dragon-frontiers)
+[PSA Dragon Frontiers guide](https://www.psacard.com/priceguide/non-sports-tcg-card-values/2006-poke-mon-ex-dragon-frontiers/4069)
+
+The reviewed title rule pins the exact set and marketplace group ID/name in
+five English releases. It requires the two explicit suffixes, the same
+base title and collector number, the exact market denominator and one product
+at that number. A qualifier such as a promo label or a different number in
+the title remains subject to the ordinary title checks. Reports bind the
+reviewed title rule to their comparison evidence, and certification replays
+the same title check before applying the existing finish requirements.
+[Reviewed rule](../../../publisher/pokemon-finish-conventions.json)
+
+| Set | Title matches | Entries fully closed |
+| --- | ---: | ---: |
+| EX Delta Species | 34 | 67 |
+| EX Legend Maker | 1 | 2 |
+| EX Holon Phantoms | 45 | 86 |
+| EX Crystal Guardians | 12 | 23 |
+| EX Dragon Frontiers | 77 | 149 |
+
+Eleven cards retain a finish or stamp exception after their product matches.
+For example, Ampharos `ex15-1` still needs exact Tom Roos championship-stamp
+evidence. The title rule establishes the main-group match and leaves the
+separate championship printing under its own evidence requirements.
+
 ### Q1 Finishes beyond the bundled slots (`checklistMissingFinish`)
 
 - **What collectors expect.** Every card except Ultra Rares, Secret Rares and

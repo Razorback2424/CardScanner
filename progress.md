@@ -1,3 +1,17 @@
+# 2026-11-21 — EX Delta Species marketplace title reconciliation
+
+The Pokémon candidate on `467581b4` matches a checklist title ending in
+`δ` to the exact TCGplayer product in five reviewed English EX set groups.
+It matched 169 products and reduced the fresh ledger from 4,485 to 4,158
+entries. Eleven pre-existing identities now show their separate finish or
+stamp exceptions. Zero new identities opened, and both retained snapshots
+reproduced the same changes. This pass leaves the five finish certificates
+pending. [Decision and source scope](docs/research/pokemon-finish-coverage/collector-conventions.md#ex-delta-species-title-suffixes-2026-11-21)
+
+All 75 focused Pokémon Python tests and six ledger tests passed. The
+versioned-report fixture exercised capture, replay and certification with
+the scoped title rule. No bundled certificate data changed.
+
 # 2026-11-20 — Current documentation authority cleanup after PRs #54/#55
 
 Source-bound review at `main@146161c`: corrected stale current-sounding
