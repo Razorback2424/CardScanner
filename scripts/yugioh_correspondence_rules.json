@@ -103,6 +103,129 @@
       "reviewedAt": "2026-11-20"
     }
   ],
+  "referenceGalleryCorrespondence": {
+    "id": "reviewed-english-reference-gallery-v1",
+    "decision": "A gallery-backed English reference printing can satisfy a singleton secondary printing correspondence check when group, release title, printed code, card ID, name and physical rarity all agree. Keep marketplace bindings, edition support and automatic selection under their existing gates.",
+    "reviewedAt": "2026-11-21",
+    "gallerySHA256": "40cc17e7d9e74d6c6fe86c71347359803b16e4f2b93c3fbe07a662eb82608f66",
+    "sources": [
+      "scripts/yugioh_legacy_edition_evidence.json",
+      "scripts/yugioh_legacy_inventory.json",
+      "https://yugipedia.com/index.php?oldid=5700083",
+      "https://yugipedia.com/index.php?oldid=5726043",
+      "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11113001&request_locale=en&rp=99999",
+      "https://www.cardmarket.com/en/YuGiOh/Products/Singles/War-of-the-Giants-Reinforcements",
+      "https://www.tcgplayer.com/categories/trading-and-collectible-card-games/yugioh/price-guides/metal-raiders",
+      "https://www.pricecharting.com/game/yugioh-metal-raiders/gate-guardian-mrd-e000",
+      "https://www.pricecharting.com/pop/item/yugioh-metal-raiders/gate-guardian-mrd-000"
+    ],
+    "groups": {
+      "-28": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship 2018 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship 2018 prize cards"
+      },
+      "-27": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship 2017 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship 2017 prize cards"
+      },
+      "-26": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship 2005 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship 2005 prize cards"
+      },
+      "-25": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship 2004 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship 2004 prize cards"
+      },
+      "-24": {
+        "catalogGroupName": "Swedish Shonen Jump 2005, Issue 12 promotional card (European English)",
+        "sourceSetName": "Swedish Shonen Jump 2005, Issue 12 promotional card"
+      },
+      "-23": {
+        "catalogGroupName": "Swedish Shonen Jump 2004, Issue 2 promotional card (European English)",
+        "sourceSetName": "Swedish Shonen Jump 2004, Issue 2 promotional card"
+      },
+      "-22": {
+        "catalogGroupName": "Make-A-Wish Foundation promotional card",
+        "sourceSetName": "Make-A-Wish Foundation promotional card"
+      },
+      "-21": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship Qualifier National Championships 2011 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship Qualifier National Championships 2011 prize cards"
+      },
+      "-20": {
+        "catalogGroupName": "Duelist League Series 2 participation cards",
+        "sourceSetName": "Duelist League Series 2 participation cards"
+      },
+      "-19": {
+        "catalogGroupName": "Yu-Gi-Oh! GX Card Almanac promotional cards (European English)",
+        "sourceSetName": "Yu-Gi-Oh! GX Card Almanac promotional cards"
+      },
+      "-18": {
+        "catalogGroupName": "2-Player Starter Deck: Yuya & Declan (European English)",
+        "sourceSetName": "2-Player Starter Deck: Yuya & Declan"
+      },
+      "-17": {
+        "catalogGroupName": "War of the Giants Reinforcements (European English)",
+        "sourceSetName": "War of the Giants Reinforcements"
+      },
+      "-13": {
+        "catalogGroupName": "Duelist League Series 1 participation cards (European English)",
+        "sourceSetName": "Duelist League Series 1 participation cards"
+      },
+      "-12": {
+        "catalogGroupName": "Yu-Gi-Oh! The Duelists of the Roses promotional cards (European English)",
+        "sourceSetName": "Yu-Gi-Oh! The Duelists of the Roses promotional cards"
+      },
+      "-11": {
+        "catalogGroupName": "Yu-Gi-Oh! Power of Chaos: Kaiba the Revenge promotional cards (European English)",
+        "sourceSetName": "Yu-Gi-Oh! Power of Chaos: Kaiba the Revenge promotional cards"
+      },
+      "-10": {
+        "catalogGroupName": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny Limited Collector's Edition (European English)",
+        "sourceSetName": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny Limited Collector's Edition"
+      },
+      "-9": {
+        "catalogGroupName": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny promotional cards (European English)",
+        "sourceSetName": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny promotional cards"
+      },
+      "-8": {
+        "catalogGroupName": "Tournament Pack: 1st Season (European English)",
+        "sourceSetName": "Tournament Pack: 1st Season"
+      },
+      "-7": {
+        "catalogGroupName": "Starter Deck: Kaiba (European English)",
+        "sourceSetName": "Starter Deck: Kaiba"
+      },
+      "-6": {
+        "catalogGroupName": "Starter Deck: Yugi (European English)",
+        "sourceSetName": "Starter Deck: Yugi"
+      },
+      "-4": {
+        "catalogGroupName": "Labyrinth of Nightmare (European English)",
+        "sourceSetName": "Labyrinth of Nightmare"
+      },
+      "-3": {
+        "catalogGroupName": "Pharaoh's Servant (European English)",
+        "sourceSetName": "Pharaoh's Servant"
+      },
+      "-2": {
+        "catalogGroupName": "Metal Raiders (European English)",
+        "sourceSetName": "Metal Raiders"
+      },
+      "-1": {
+        "catalogGroupName": "Legend of Blue Eyes White Dragon (European English)",
+        "sourceSetName": "Legend of Blue Eyes White Dragon"
+      },
+      "249": {
+        "catalogGroupName": "Magic Ruler",
+        "sourceSetName": "Magic Ruler"
+      },
+      "2197": {
+        "catalogGroupName": "Mattel Action Figure Promos: Series 3",
+        "sourceSetName": "Mattel Action Figure promotional cards: Series 3"
+      }
+    }
+  },
   "setNameAliases": [
     {
       "id": "release-name-126",

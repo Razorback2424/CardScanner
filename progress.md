@@ -1,3 +1,20 @@
+# 2026-11-21 — Yu-Gi-Oh! photographed reference correspondence
+
+The cross-game review selected 860 Yu-Gi-Oh! correspondence exceptions
+backed by the existing English reference inventory and photographed gallery
+receipts. In the isolated candidate on `467581b4`, the bundled-capture replay
+went from 4,883 to 4,023 open rows, with zero opened. Incomplete codes fell
+from 2,527 to 1,667. The bundle preserved all printing data and 720 automatic
+scan codes, and the parent regression report was empty. The fresh capture
+reproduced the same closures and separately flagged four `MAMO-EN013`
+canonical identity changes. [Decision and review scope](docs/research/yugioh-catalog/release-name-aliases.md#gallery-backed-english-reference-correspondence-2026-11-21)
+
+All 77 focused Python, builder and ledger tests passed. The selected
+`TradingCardScanner-ProfileLocal` iOS simulator suites had 248 passes and
+zero failures. The live-feed test skipped because it requires an unexpired
+receipt. The SSD pass directory contains the Xcode result and both ledger
+diffs.
+
 # 2026-11-20 — Current documentation authority cleanup after PRs #54/#55
 
 Source-bound review at `main@146161c`: corrected stale current-sounding

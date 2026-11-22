@@ -246,6 +246,20 @@ def reviewed_reference_membership(inventory, evidence):
     return memberships
 
 
+def reviewed_reference_scopes(edition_evidence):
+    """Limit correspondence to the exact reference inventory and gallery review."""
+    rule = CORRESPONDENCE_RULES.get("referenceGalleryCorrespondence")
+    gallery = (edition_evidence or {}).get("galleryEvidence")
+    if not rule or not gallery or hashlib.sha256(packed(gallery)).hexdigest() != rule["gallerySHA256"]:
+        return {}
+    # The inventory hash in the pinned gallery is already validated when
+    # reference_printings constructs these rows.
+    groups = rule["groups"]
+    return {(source["groupID"], code): groups[str(source["groupID"])]
+            for source in gallery["sources"] if str(source["groupID"]) in groups
+            for code in source["codes"]}
+
+
 def reference_printings(inventory, edition_evidence, rows, canonical, sets, previous_references, previous):
     """Retain a stable physical identity for documented printings without a market product."""
     if not inventory:
@@ -512,6 +526,8 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     families = collections.defaultdict(list)
     for row in rows:
         if row["c"]: families[row["c"]].append(row)
+    reference_scopes = reviewed_reference_scopes(reference_editions) if reference_inventory else {}
+    group_names = {group["g"]: group["n"] for group in sets}
     release_name_counts = collections.Counter((row['g'], norm(row['pn'])) for row in rows)
     auto = []
     inventories = printing_inventory if isinstance(printing_inventory, list) else [printing_inventory] if printing_inventory else []
@@ -529,6 +545,15 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     for code, family in families.items():
         source_rows = set(entries[code])
         matched = set().union(*(correspondence.get(x.get("p"), set()) for x in family))
+        if not matched and len(family) == 1 and len(source_rows) == 1:
+            row = family[0]
+            if "p" not in row and not row["ir"] and row["e"] and (scope := reference_scopes.get((row["g"], code))):
+                (cid, set_name, rarity), = source_rows
+                if ((group_names[row["g"]], set_name) == (scope["catalogGroupName"], scope["sourceSetName"])
+                        and cid == canonical[row["k"]]["sourceID"]
+                        and row["pn"] == by_id[cid]["name"]
+                        and row["r"] == source_physical_rarity(rarity)):
+                    matched = source_rows
         if matched != source_rows: incomplete[code].add("printingCorrespondenceGap")
         if not entries[code] or len({x["r"] for x in family}) < len({norm(source_physical_rarity(r)) for _, _, r in entries[code]}): incomplete[code].add("rarityShortfall")
         if len({(x["g"], x["r"], x["art"]) for x in family}) < len(entries[code]): incomplete[code].add("printingShortfall")
