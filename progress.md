@@ -1,3 +1,17 @@
+# 2026-11-22 — Trade Analyzer
+
+Trade Analyzer is available in the Scan mode menu. The camera shows card
+counts and an undoable receipt. Review trade shows exact-price coverage,
+quantities, cash on both sides, and the amount needed to balance the offer.
+The draft lives in memory and uses reference quotes without writing ownership.
+[Trade Analyzer implementation and acceptance plan](docs/plans/trade-analyzer-plan.md)
+
+On the working tree based on `251df8ec`, 156 ProfileLocal scanner and camera
+tests passed on an iOS 27.0 iPhone SE (3rd generation) simulator. The final
+build passed the five focused Trade Analyzer and camera tests. The small-screen
+layout keeps the card and footer guides clear of the progress controls and
+receipt. Physical-camera and live-price acceptance remain open.
+
 # 2026-11-21 — Five-game Browse filters and sorting
 
 Game-wide Browse and set detail now keep filter and sort choices independent.
@@ -9168,3 +9182,67 @@ fits in the preview and the asking-price field pushes Share below the
 visible sheet. Evidence is on the T7 SSD under
 `CodexBuild/card-share-identity-20261118/nami-final/` and
 `TradingCardScannerDerivedData/card-share-identity-final-20261118.xcresult`.
+
+## 2026-11-22 — Card Detail copy count
+
+The `OwnedPriceReview` route with `catalog-multi-18-copies` shows the
+$0.06 quote and `− 18 +` side by side at small and default text sizes. The
+controls move below the price where the tile is too narrow. Inspected six
+Dynamic Type sizes on an iPhone 17 Pro simulator. Both digits stayed on
+one line and the Finishes heading and chart hint fit at Accessibility 5.
+
+At `251df8ec` plus working changes, ProfileLocal `DebugRemoteLocal` ran
+`DetailDeletionRenderTests` and `ViewConstructionSmokeTests` on the iOS 27.0
+iPhone 17 Pro simulator. All 17 tests passed with zero skips. Evidence is on
+the T7 SSD under `CodexBuild/card-detail-quantity-20261122/verified-screenshots/`
+and `TradingCardScannerDerivedData/card-detail-quantity-verified-20261122.xcresult`.
+
+The stacked layout now centers the price and quantity below the finish
+name. Accessibility sizes use the stack when both are displayed, and the
+price remains slightly larger than the count. The `centered-screenshots/`
+captures show the inline row at default size and the centered stack at the
+largest standard size and Accessibility 1. At `251df8ec` plus working
+changes, the same 17 ProfileLocal tests passed with zero skips on retry
+after a simulator launch interruption. The result bundle is
+`TradingCardScannerDerivedData/card-detail-centered-quantity-retry-20261122.xcresult`.
+
+The finish price now uses Title 3 for a 20 pt base size. The existing
+18-copy fixture showed the larger amount beside the controls at default
+size and above them at the largest standard size and Accessibility 1.
+Captures are in `price-font-screenshots/` on the T7 SSD. At `251df8ec`
+plus working changes, all 15 ProfileLocal `DetailDeletionRenderTests`
+passed with zero skips on retry after a simulator launch interruption.
+The result bundle is
+`TradingCardScannerDerivedData/card-detail-price-font-retry-20261122.xcresult`.
+
+The finish price uses the set name’s expanded bold system typeface at a
+28 pt base size, with a green tint and more space above the quantity.
+The $0.06 and 18-copy fixture was inspected at default and Accessibility
+1–5 on an iPhone 17 Pro simulator. The workspace build hit a ScannerView
+type-check error, so verification used `251df8ec` with the Card Detail
+changes applied in isolation. ProfileLocal DebugRemoteLocal passed all
+15 `DetailDeletionRenderTests` on iOS 27.0. Captures and `matched-tests.xcresult`
+are on the T7 SSD under `CodexBuild/card-detail-serif-review-20261122/`.
+
+# 2026-11-22 — Working tree review
+
+Trade Analyzer keeps fractional-cent quotes through quantity calculations and
+rounds each side’s subtotal to cents for cash balancing. Review waits for
+confirmed scans to resolve and explains why a quote is unavailable. Browse
+resumes cancelled price checks after displaying cached quotes, and Card Detail
+replays missed catalog changes and keeps its checking state through price fallback.
+
+At `251df8ec` with working changes, ProfileLocal `DebugRemoteLocal` on the
+iOS 27.0 iPhone SE (3rd generation) simulator ran 719 selected tests. Of those,
+717 passed, one live Yu-Gi-Oh! feed test was skipped, and one Browse pagination
+render test reported a duplicate request. The pagination test passed all three
+isolated reruns against the same build. Result bundles are
+`worktree-review-verified-20261122.xcresult` and
+`worktree-review-pagination-retry-20261122.xcresult` under
+`/Volumes/T7/TradingCardScannerDerivedData/`.
+
+Inspected Trade Analyzer’s 20-for-1 fixture on the same simulator. The scan
+controls and receipt fit outside the card guide. Review showed both cash fields,
+the $5.60 difference and the matching balance action at default text size. The
+summary stacked at Accessibility 5. Captures are under
+`/Volumes/T7/CodexBuild/worktree-review-20261122/`.
