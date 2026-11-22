@@ -108,6 +108,33 @@ def source_physical_rarity(rarity, rules=None):
             return alias['physicalRarity']
     return rarity
 
+
+def reviewed_starfoil_duplicate(family, source_entries, matched, canonical, group_names, product_hashes):
+    """Recognize a redundant Starfoil label after both physical products match."""
+    rule = CORRESPONDENCE_RULES.get("starfoilDuplicateLabel")
+    if not rule or len(family) != 2 or len(source_entries) != 3:
+        return None
+    group = rule["groupID"]
+    if ((product_hashes or {}).get(group) != rule["expectedProductsSHA256"]
+            or group_names.get(group) != rule["groupName"]):
+        return None
+    common, foil = sorted(family, key=lambda row: row["r"])
+    if (common["r"], foil["r"]) != ("Common", "Starfoil Rare") or common["k"] != foil["k"]:
+        return None
+    card = canonical[common["k"]]
+    if (common["c"] not in rule["codes"] or common["pn"] != card["n"]
+            or foil["pn"] != f'{card["n"]} (Starfoil)' or (common["art"], foil["art"]) != (None, "Starfoil")):
+        return None
+    if any("p" not in row or "pg" in row or row["g"] != group or row["ir"] or row.get("vr")
+           or row["limitations"] or row["e"] != rule["editionLanes"] or row["pe"] != rule["editionLanes"]
+           for row in family):
+        return None
+    source_card, release = card["sourceID"], rule["sourceSetName"]
+    physical = {(source_card, release, rarity) for rarity in ("Common", "Starfoil Rare")}
+    duplicate = (source_card, release, "Starfoil")
+    return duplicate if set(source_entries) == physical | {duplicate} and matched == physical else None
+
+
 def release_names(gid, group_name, code, rules=None):
     """Normalized secondary set names that name this marketplace release.
 
@@ -317,7 +344,7 @@ def reference_printings(inventory, edition_evidence, rows, canonical, sets, prev
 def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=10000, price_provenance=None,
           previous=None, taxonomy_scopes=None, printing_inventory=None, release_calendar=(), rarity_corrections=None,
           reference_inventory=None, reference_editions=None, previous_references=None, reviewed_dates=None,
-          passcode_corrections=None):
+          passcode_corrections=None, product_hashes=None):
     entries = collections.defaultdict(list)
     identity_entries = collections.defaultdict(set)
     names, by_id = {}, {}
@@ -512,6 +539,7 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     families = collections.defaultdict(list)
     for row in rows:
         if row["c"]: families[row["c"]].append(row)
+    group_names = {group["g"]: group["n"] for group in sets}
     release_name_counts = collections.Counter((row['g'], norm(row['pn'])) for row in rows)
     auto = []
     inventories = printing_inventory if isinstance(printing_inventory, list) else [printing_inventory] if printing_inventory else []
@@ -529,9 +557,13 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
     for code, family in families.items():
         source_rows = set(entries[code])
         matched = set().union(*(correspondence.get(x.get("p"), set()) for x in family))
+        expected_count = len(entries[code])
+        if duplicate := reviewed_starfoil_duplicate(family, entries[code], matched, canonical, group_names, product_hashes):
+            source_rows.remove(duplicate)
+            expected_count -= 1
         if matched != source_rows: incomplete[code].add("printingCorrespondenceGap")
-        if not entries[code] or len({x["r"] for x in family}) < len({norm(source_physical_rarity(r)) for _, _, r in entries[code]}): incomplete[code].add("rarityShortfall")
-        if len({(x["g"], x["r"], x["art"]) for x in family}) < len(entries[code]): incomplete[code].add("printingShortfall")
+        if not source_rows or len({x["r"] for x in family}) < len({norm(source_physical_rarity(r)) for _, _, r in source_rows}): incomplete[code].add("rarityShortfall")
+        if len({(x["g"], x["r"], x["art"]) for x in family}) < expected_count: incomplete[code].add("printingShortfall")
         labels = [(x["g"], x["r"], x["art"], x["pn"]) for x in family]
         if len(set(labels)) != len(labels): incomplete[code].add("indistinguishable")
         counts = collections.Counter(labels)
@@ -889,7 +921,7 @@ def main():
         taxonomy_scopes=taxonomy_scopes, printing_inventory=inventories, release_calendar=calendar["releases"],
         rarity_corrections=printing_corrections["products"], reference_inventory=reference_inventory, reference_editions=reference_editions,
         previous_references={x["id"]: x for x in previous.get("referencePrintings", [])} if previous else None,
-        reviewed_dates=release_dates, passcode_corrections=printing_corrections.get("canonicalPasscodes"))
+        reviewed_dates=release_dates, passcode_corrections=printing_corrections.get("canonicalPasscodes"), product_hashes=product_hashes)
     stats["releaseCalendar"] = {"url": calendar["url"], "sha256": calendar["sha256"],
                                 "datedGroups": sum(bool(group["d"]) for group in seed["sets"])}
     stats["printingInventoryDriftGroups"] = sorted({p["groupID"] for p in profiles} - {i["groupID"] for i in inventories})

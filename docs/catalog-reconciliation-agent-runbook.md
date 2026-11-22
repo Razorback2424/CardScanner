@@ -65,7 +65,9 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 
 **Pass loop:**
 1. Capture onto the SSD by running the builder without `--offline` into a fresh `--cache-dir`. It takes about 40 minutes for 660 groups.
-2. Replay with `--offline` and pass `--previous-seed TradingCardScanner/YuGiOhCatalogSeed/catalog.json`.
+2. Replay with `--offline` and `--price-receipt`. Pass a seed from a
+   different provider capture as `--previous-seed`. To replay the capture
+   behind the current bundle, use the earlier seed used to generate it.
 3. Compare ledgers with `catalog_exceptions.py diff`.
 4. Confirm the candidate changed only what the rule intended: compare printing IDs and fields against the previous build, check that `parentRegressions` is empty, and check that `autoEligibleCodes` is unchanged unless you meant to change it.
 5. Copy the candidate over the bundled seed.
@@ -85,10 +87,24 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 - **Rarity taxonomy.** Prismatic rules for RA01, RA03, RA04 and RA05, plus Short Print and Super Short Print read as Common. See [`research/yugioh-catalog/rarity-taxonomy.md`](research/yugioh-catalog/rarity-taxonomy.md).
 - **Result:** open rows went from 8,671 to 5,211 and incomplete codes from 4,384 to 2,689, with 0 opened. `autoEligibleCodes` went from 262 to 274, from the PSV Short Prints that Konami's checklist lists as Common.
 
-**Next Yu-Gi-Oh targets:**
-1. **Hidden Arsenal: Chapter 1 Duel Terminal parallels** (137 Common + 25 Ultra codes). These need a source confirming that TCGplayer's "Technology" names and YGOPRODeck's "Parallel Rare" names are the same finish.
-2. **Codes with no YGOPRODeck row** (the largest remaining pattern: about 390 Commons and 130 Super Rares, mostly Speed Duel sets). Check whether YGOPRODeck lists these under another code before treating them as gaps.
-3. **Reviewed Konami release inventories for more releases.** This is still the main way to make more codes auto-resolve on scan.
+**Star Pack VRAINS pass (2026-11-21 on `467581b4`).**
+Main already includes the HAC1 Duel Terminal taxonomy and the 2025 Mega-Pack
+Tin inventory. The separate Star Pack VRAINS candidate clears 147 rows for
+49 codes. Its bundled-capture replay went from 4,883 to 4,736 open rows,
+with zero opened. The fresh replay closed the same rows, from 4,880 to
+4,733. The bundled candidate has empty `parentRegressions` and 720 identical
+automatic codes. The fresh replay separately flags four `MAMO-EN013` identity
+changes. Evidence is on the SSD in `YuGiOhStarfoilReconciliation-20261121/`.
+[Decision and scope](research/yugioh-catalog/rarity-taxonomy.md#star-pack-vrains-duplicate-starfoil-label-2026-11-21)
+
+**Next Yu-Gi-Oh targets**
+
+1. **Speed Duel source coverage.** The retained snapshot lacks exact
+   YGOPRODeck rows for 367 codes across `SBC2`, `SGX4` and `STP7`. Validate
+   exact English Konami printed codes and preserve existing parent canonical
+   identities before admitting a secondary crosswalk.
+2. **Reviewed Konami release inventories.** Prioritize clean correspondence
+   and single-print, single-art families to improve automatic scan selection.
 
 ## Mistakes already made (do not repeat)
 
