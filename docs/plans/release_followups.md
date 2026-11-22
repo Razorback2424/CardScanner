@@ -7,6 +7,47 @@ catalog (revision 7) is reported live in the
 November 10/11 items below retain their original planning dates; publication
 alone does not close physical-device, app distribution, or release acceptance.
 
+## Pricing launch-first work order — 2026-11-21
+
+**Current authority:** [launch contract](../release/launch-contract.md#launch-first-existing-source-decision-and-acknowledged-risk-2026-11-21).
+Older provider replacement proposals and dated audit observations do not
+supersede this owner decision.
+
+| When | Work | Acceptance / limit |
+| --- | --- | --- |
+| **Before App Store submission** | Activate an app-funded paid JustTCG tier and implement a server-held shared key, cross-user price/history cache, request deduplication, up-to-100-card paid batching, a global quota governor, reserved interactive capacity and abuse protection. | Fresh distribution install requires no user key; concurrent requests reuse cache; quota/429/outage behavior returns honest dated cached results only while the paid license is active, or explicit unpriced states without changing ownership. Select Starter vs Professional from measured use, not guesses. Backend provider/region remains an implementation decision subject to privacy review. |
+| **Before submission (bounded check)** | Verify price-source attribution, separate TCGplayer-derived and eBay comparisons, free access to Scryfall-derived information, license-sensitive diagnostic exports and an emergency source-disable path. | Do not claim TCGCSV upstream rights are cleared; owner accepts unresolved risk and possible App Review complaint under 5.2.2. An affiliate relationship does not grant pricing rights. A kill switch preserves catalog/holdings but may leave One Piece, Lorcana and Yu-Gi-Oh quotes unavailable. |
+| **Before or shortly after launch (nonblocking)** | Read-only JustTCG contingency spot checks for ~50 difficult exact printings each in One Piece, Lorcana and Yu-Gi-Oh. | Capture matching, variant/finish, live quote and gaps; do not replace working feeds, commission a full coverage migration or buy another provider by default. |
+| **By February 15, 2027** | Remove/replace remaining legacy pokemontcg.io secondary catalog discovery/artwork-enrichment dependencies and validate publisher parity. | Complete ahead of its March 1, 2027 shutdown. Current Pokémon price refresh is primarily TCGdex/marketplace fallback, not proof that all Browse prices die with pokemontcg.io. |
+| **Only if triggered** | Research and migrate affected TCGCSV-derived prices or obtain legal advice if a real complaint, provider outage, rejection or material commercial scale warrants it. | Preserve exact-printing mappings, dated prices, collection identities and user data; do not call a contingent migration a launch blocker. |
+
+The retained-feed licensing risk remains unresolved even after the paid
+JustTCG work is done. No percentage estimate of complaint, takedown or damages
+risk is documented as an established fact. See
+[TCGplayer's published API restrictions](https://help.tcgplayer.com/hc/en-us/articles/360061115874-TCGplayer-API-Terms-Conditions)
+and [Apple App Review 5.2.2](https://developer.apple.com/app-store/review/guidelines/).
+
+
+## Marketplace affiliate links — 2026-11-21
+
+**Launch decision authority:** [affiliate approval and link behavior](../release/launch-contract.md#affiliate-marketplace-links-approvals-and-safe-launch-behavior-2026-11-21).
+Avoid treating approved EPN *network membership* as permission to place
+tracked EPN promotions inside the iOS app.
+
+| Work | State / priority | Done when |
+| --- | --- | --- |
+| TCGplayer affiliate partnership (Impact) | Owner reports TCGplayer merchant acceptance pending; pre-tracked-link gate | TCGplayer approves the intended mobile-app promotional channel and approved Impact link format is validated. Until then keep existing exact `TCGplayerLinkBuilder` product links untracked. Affiliate approval is not price-API licensing. |
+| EPN mobile-app approval | EPN network acceptance previously reported; **written mobile-app promotional approval is separate and unverified** | Request [mobile-app approval](https://partnernetwork.ebay.com/page/mobile-apps) with app details and test access when ready. The form requests an App Store link; ask EPN if prelaunch TestFlight will suffice. Do not activate EPN-tracked in-app links until approval is actually issued. |
+| Systematic eBay card links | Small, independent feature; can be implemented before affiliate approval | Search-eBay action on relevant catalog and owned-card detail screens, using properly encoded game/name/set/number/finish (and appropriate graded/sealed distinctions), never a guessed exact listing or an asserted eBay market price. Include empty/ambiguous identity and Unicode/escaping cases in tests. |
+| Tracking and disclosures | Gate only for monetized affiliate activation | Central routing switches from plain URLs to vetted EPN or Impact tracking *after* applicable authorization; attribution survives genuine mobile taps; a nearby, first-viewport, clearly understandable compensation disclosure appears; no automatic redirects, personalized tracking IDs or changes to valuation. Check eBay/TCGplayer rules and review metadata. |
+| Launch decision | Non-affiliate marketplace links can be shipped without awaiting program enrollment | If day-one commission earning is mandatory, explicitly upgrade merchant/program and EPN mobile approval to release dependencies. Otherwise do not hold an otherwise acceptable app solely for affiliate acceptance. |
+
+**Important:** TCGplayer has exact mapped product IDs and a tested link builder;
+eBay does not have those same exact marketplace identities. An eBay
+**search results** link is feasible without an eBay item API or scraped
+sold prices and should be labeled accordingly. This is affiliate
+referral/discovery work, **not** an eBay pricing-data integration.
+
 ## Catalog publication automation — 2026-11-11
 
 Pokémon and Magic already have scheduled discovery and publication workflows.

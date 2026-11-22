@@ -4,6 +4,16 @@ Date: October 20, 2026
 Canonical repository location: `docs/plans/CARDSCANNER_LAUNCH_MONETIZATION.md`  
 Status: **Owner-authorized Collector Tools implementation — October 20, 2026. Local implementation and verification status below; live product and release gates remain open.**
 
+**Pricing-policy update — 2026-11-21:** Preserve existing raw-price paths
+for launch, with the unresolved TCGCSV/TCGplayer-derived rights risk
+explicitly recorded rather than described as authorized. Use a paid,
+operator-managed JustTCG subscription with a globally quota-controlled
+shared cache and no customer API key. The existing $9.99 Collector Tools
+unlock is unchanged; do not paywall access to Scryfall's data.
+See the [current launch authority](../release/launch-contract.md#launch-first-existing-source-decision-and-acknowledged-risk-2026-11-21).
+This update does not certify the license status, backend implementation
+or App Review outcome.
+
 ## 1. Purpose and launch goal
 
 Retain the commercial intent behind the existing product so future implementation does not reopen its purpose, introduce conflicting paywalls, or expand into unrelated features.
@@ -53,7 +63,7 @@ The longer-term collection-integrity direction remains relevant. Physical placem
 
 - Scanning, ordinary collection access and management, and identity/finish corrections.
 - Basic import/export of user-owned collection information.
-- Existing basic pricing within lawful provider licensing and sustainable service limits; not a promise of unlimited refreshes or perpetual third-party data service.
+- Existing basic pricing, with provider rights and unresolved TCGplayer-derived feed risk recorded separately; not a promise of unlimited refreshes, unconditional license clearance or perpetual third-party data service.
 - Single-card photo preparation and output, so the user can inspect and use a real result before paying.
 
 ### Paid convenience
@@ -119,9 +129,29 @@ Compare both outcomes fairly: less work for equivalent documentation, and better
 - Owner verifies paid-app agreements, banking/tax information and applicable commission enrollment.
 - Configure the approved product and submit the first non-consumable with the app version. Validate production availability separately from sandbox success.
 - Verify privacy/support pages, actual supported games, and claims in screenshots and metadata.
-- Resolve provider commercial-use and export permissions. User-owned collection records and licensed provider datasets are not interchangeable.
+- Verify the paid JustTCG commercial-use and export boundaries. Retain a
+  documented **unresolved** rights assessment for the current TCGCSV-derived
+  feed and an explicit owner launch-first decision; neither affiliate
+  approval nor attribution establishes upstream data permission. User-owned
+  collection records and licensed provider datasets are not interchangeable.
+- Before shipping the operator-funded JustTCG key, verify a shared backend
+  cache, 100-item paid-tier batching, global quota limits, abuse protection,
+  and dated/stale fallback during quota exhaustion. Check the actual paid
+  tier against launch traffic rather than assuming Starter is sufficient.
+- Keep Scryfall information and its derived price/history displays free,
+  label actual price providers, and avoid blending TCGplayer-derived
+  marketplace quotes and eBay values into an unsupported single estimate.
 
-JustTCG's published commercial entry plan is $19/month. Its terms restrict export of stored provider data as a dataset; do not promise raw price redistribution without permission or clarification. Keep Scryfall data access free and paid processing confined to users' own photographs rather than altered catalog images. This is a compliance boundary to verify, not blanket legal clearance.
+JustTCG's published Starter entry plan is $19/month (10,000 requests/month,
+1,000/day, up to 100 cards/batch); Professional is $49/month
+(50,000 requests/month, 5,000/day). The actual launch tier is not yet
+approved or activated, and request demand must be checked with a shared-cache
+load test. Its terms restrict exporting raw stored provider data as a dataset;
+do not promise raw price redistribution without permission or clarification.
+Keep Scryfall data access free; paid photo/centering convenience works on
+users' own photographs and must not require payment merely to reveal Scryfall
+card/price data. This is a compliance boundary to verify, not blanket legal
+clearance for every other catalog, artwork or price source.
 
 At $9.99, 15% or 30% commission leaves approximately $8.49 or $6.99 before taxes, refunds, support, hosting and acquisition. Three new purchases cover a $19 monthly API bill alone. Returning lifetime buyers create no repeat unlock revenue. Track actual costs and proceeds; do not confuse a first sale with sustainable monthly income.
 
