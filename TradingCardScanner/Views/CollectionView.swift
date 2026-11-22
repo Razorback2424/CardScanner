@@ -376,15 +376,17 @@ struct CollectionView: View {
     private func collectionFilters(_ optionRows: [CollectionRow], collectionRows: [CollectionRow]) -> some View {
         // Keep tallying and sorting behind the presentation flag.
         if isShowingFilters {
+            let gameRows = filters.game.map { game in collectionRows.filter { $0.game == game } } ?? collectionRows
             CollectionFilterSheet(
                 isPresented: $isShowingFilters,
                 filters: $filters,
                 ownedGames: Set(collectionRows.map(\.game)),
-                setOptions: setOptions(optionRows),
-                finishOptions: finishOptions(optionRows),
-                treatmentOptions: treatmentOptions(optionRows),
-                gradingCompanyOptions: gradingCompanyOptions(optionRows),
-                gradeOptions: gradeOptions(optionRows)
+                setOptions: FilterOption.retainingSelected(filters.setCodes, in: setOptions(optionRows)) { setOptions(gameRows) },
+                finishOptions: FilterOption.retainingSelected(filters.variantIDs, in: finishOptions(optionRows)) { finishOptions(gameRows) },
+                treatmentOptions: FilterOption.retainingSelected(filters.treatmentIDs, in: treatmentOptions(optionRows)) { treatmentOptions(gameRows) },
+                gradingCompanyOptions: FilterOption.retainingSelected(Set(filters.gradingCompanies.map(\.rawValue)),
+                    in: gradingCompanyOptions(optionRows)) { gradingCompanyOptions(gameRows) },
+                gradeOptions: FilterOption.retainingSelected(filters.gradeValues, in: gradeOptions(optionRows)) { gradeOptions(gameRows) }
             )
         }
     }
@@ -1264,7 +1266,7 @@ struct CollectionView: View {
                 tallies[row.setFilterID] = existing
             } else {
                 tallies[row.setFilterID] = OptionTally(
-                    label: row.setName,
+                    label: row.setFilterLabel,
                     group: row.game.label,
                     groupOrder: row.game.rawValue,
                     count: row.quantity,
@@ -1281,7 +1283,7 @@ struct CollectionView: View {
         var tallies: [String: OptionTally] = [:]
 
         for row in rows {
-            guard let variant = row.variant else { continue }
+            guard let variant = row.finishFilterVariant else { continue }
             if var existing = tallies[variant.id] {
                 existing.count += row.quantity
                 tallies[variant.id] = existing

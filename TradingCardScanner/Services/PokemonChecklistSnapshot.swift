@@ -3,6 +3,105 @@ import Foundation
 import UIKit
 import PokemonCatalogCore
 
+/// Shared Pokémon name and printed-number matching for catalog and set search.
+struct PokemonChecklistSearchQuery {
+    private let normalized: String
+    private let code: String
+    private let scoped: Bool
+    private let interpretations: [NumberInterpretation]
+
+    init(normalized: String, setCode: String, officialCount: Int?) {
+        self.normalized = normalized
+        let code = CardNameSearch.normalize(setCode)
+        let scoped = !code.isEmpty && normalized.hasPrefix(code + " ")
+        self.code = code
+        self.scoped = scoped
+        let footer = scoped ? normalized.dropFirst(code.count + 1) : normalized[...]
+        let parts = (scoped && footer.hasPrefix("en ") ? footer.dropFirst(3) : footer).split(separator: " ")
+        interpretations = Self.numberInterpretations(parts, officialCount: officialCount)
+    }
+
+    static func canonicalNumber(_ number: String) -> String {
+        PokemonHistoricalIdentityResolver.canonicalLocalID(number).lowercased()
+    }
+
+    func matches(
+        name: String, number: String?, canonicalNumber: String?, providerID: String,
+        allowsSingleCharacterNameSearch: Bool = false
+    ) -> Bool {
+        if normalized.isEmpty || normalized == providerID { return true }
+        if normalized.count != 1 || allowsSingleCharacterNameSearch {
+            if name.contains(normalized) { return true }
+        } else if name == normalized {
+            return true
+        }
+        guard let number else { return false }
+        return interpretations.contains { interpretation in
+            guard interpretation.collector == number || interpretation.canonical == canonicalNumber
+                    || (scoped && interpretation.canonical == Self.promoNumber(number, code: code)) else { return false }
+            return interpretation.name.map { name.contains($0) } ?? true
+        }
+    }
+
+    /// One way to read a query as a collector number, optionally beside a name.
+    private struct NumberInterpretation {
+        let collector: String
+        let canonical: String
+        /// Normalized name text that must also match, or nil for a number alone.
+        let name: String?
+    }
+
+    /// Reads the printed forms people type: `25`, `25/195`, the subset form
+    /// `TG05/TG30`, and either of those before or after a name
+    /// (`Gardevoir TG05`). A two-part main-set fraction must name this set's
+    /// official count; a subset fraction only has to repeat the prefix, because
+    /// subset totals exclude their secret cards and so cannot narrow the set.
+    private static func numberInterpretations(_ parts: [Substring], officialCount: Int?) -> [NumberInterpretation] {
+        func collector(_ tokens: ArraySlice<Substring>) -> String? {
+            switch tokens.count {
+            case 1:
+                return String(tokens[tokens.startIndex])
+            case 2:
+                let number = tokens[tokens.startIndex], total = tokens[tokens.index(after: tokens.startIndex)]
+                if let officialCount, Int(total) == officialCount { return String(number) }
+                let prefix = number.prefix { $0.isLetter }
+                guard !prefix.isEmpty, number.dropFirst(prefix.count).allSatisfy(\.isNumber),
+                      number.count > prefix.count, total.hasPrefix(prefix),
+                      let size = Int(total.dropFirst(prefix.count)), size > 0 else { return nil }
+                return String(number)
+            default:
+                return nil
+            }
+        }
+        func interpretation(_ collector: String, name: ArraySlice<Substring>?) -> NumberInterpretation {
+            NumberInterpretation(collector: collector,
+                canonical: canonicalNumber(collector),
+                name: name.map { $0.joined(separator: " ") })
+        }
+
+        var result: [NumberInterpretation] = []
+        let tokens = parts[...]
+        if let whole = collector(tokens) { result.append(interpretation(whole, name: nil)) }
+        // A name beside a number: the number must contain a digit, so a
+        // two-word name such as `Mr Mime` is never read as a name plus number.
+        for length in 1...2 where tokens.count > length {
+            let tail = tokens.suffix(length), head = tokens.prefix(length)
+            if tail.first?.contains(where: \.isNumber) == true, let number = collector(tail) {
+                result.append(interpretation(number, name: tokens.dropLast(length)))
+            }
+            if head.first?.contains(where: \.isNumber) == true, let number = collector(head) {
+                result.append(interpretation(number, name: tokens.dropFirst(length)))
+            }
+        }
+        return result
+    }
+
+    private static func promoNumber(_ number: String, code: String) -> String? {
+        guard number.hasPrefix(code), let value = Int(number.dropFirst(code.count)) else { return nil }
+        return String(value)
+    }
+}
+
 /// The on-device format for the Pokémon Browse snapshot. The manifest is kept
 /// separate from the checklist files so a refresh can write every new file and
 /// publish the manifest last. A reader therefore sees either the old complete
@@ -10,6 +109,45 @@ import PokemonCatalogCore
 enum PokemonChecklistSnapshotVersion {
     static let schema = 1
     static let masterSetRules = 1
+}
+
+/// Reads the bundled finish vocabulary once, independently of Browse pagination.
+enum PokemonBrowseFinishCatalog {
+    private struct Slot: Decodable {
+        let masterSetVariant: PhysicalVariant?
+    }
+
+    static let bundled = Task.detached(priority: .utility) {
+        guard let root = Bundle.main.url(forResource: "PokemonChecklistSnapshot", withExtension: nil) else {
+            return [PhysicalVariant]()
+        }
+        return finishes(in: root)
+    }
+
+    static func finishes(in root: URL) -> [PhysicalVariant] {
+        guard let manifest = PokemonChecklistSnapshotManifest.load(from: root) else { return [] }
+
+        let decoder = JSONDecoder()
+        var finishes: [String: PhysicalVariant] = [:]
+        for entry in manifest.entries {
+            guard let data = try? Data(contentsOf: root.appendingPathComponent(entry.resource)) else { continue }
+            let variants: [PhysicalVariant]
+            if PokemonChecklistReviewedProjection.setIDs.contains(entry.providerID),
+               let cards = try? decoder.decode([CatalogCardSummary].self, from: data) {
+                variants = PokemonChecklistReviewedProjection.bundledCards(cards, entry: entry, bytes: data)
+                    .compactMap(\.masterSetVariant)
+            } else {
+                variants = (try? decoder.decode([Slot].self, from: data))?.compactMap(\.masterSetVariant) ?? []
+            }
+            for finish in variants where finishes[finish.id] == nil {
+                finishes[finish.id] = finish
+            }
+        }
+        return finishes.values.sorted {
+            let order = $0.label.localizedStandardCompare($1.label)
+            return order == .orderedSame ? $0.id < $1.id : order == .orderedAscending
+        }
+    }
 }
 
 /// Read-time repair of reviewed identities only. Source resources and provider
@@ -56,6 +194,11 @@ enum PokemonChecklistReviewedProjection {
         .union(PokemonFinishCoverage.sets.keys)
         .union(PokemonBattleDeckFinishCatalog.setIDs)
         .union(PokemonDeltaReignCatalog.setIDs)
+
+    static func bundledCards(_ cards: [CatalogCardSummary], entry: PokemonChecklistSnapshotEntry, bytes: Data) -> [CatalogCardSummary] {
+        let reviewed = removingBundledAggregates(from: cards, resource: entry.resource, bytes: bytes)
+        return self.cards(reviewed, set: entry.set)
+    }
 
     /// Only the bundle reader calls this with the original resource bytes.
     fileprivate static func removingBundledAggregates(
@@ -152,6 +295,21 @@ enum PokemonChecklistReviewedProjection {
 }
 
 struct PokemonChecklistSnapshotManifest: Codable, Sendable, Equatable {
+    static let bundled = Bundle.main.url(forResource: "PokemonChecklistSnapshot", withExtension: nil)
+        .flatMap(Self.load(from:))
+
+    static let bundledOfficialCounts = Dictionary((bundled?.entries ?? []).compactMap { entry in
+        entry.officialCount.map { (entry.set.catalogID, $0) }
+    }, uniquingKeysWith: { first, _ in first })
+
+    static func load(from directory: URL) -> Self? {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        guard let data = try? Data(contentsOf: directory.appendingPathComponent("manifest.json")),
+              let manifest = try? decoder.decode(Self.self, from: data), manifest.isSupported else { return nil }
+        return manifest
+    }
+
     let schemaVersion: Int
     let rulesVersion: Int
     let generatedAt: Date
@@ -1159,23 +1317,11 @@ actor PokemonChecklistStore {
             await Task.yield()
             try Task.checkCancellation()
             guard generation == searchGeneration else { throw CatalogLookupError.staleCatalog }
-            let code = CardNameSearch.normalize(set.code)
-            let scoped = !code.isEmpty && query.hasPrefix(code + " ")
-            let footer = scoped ? query.dropFirst(code.count + 1) : query[...]
-            let parts = (scoped && footer.hasPrefix("en ") ? footer.dropFirst(3) : footer).split(separator: " ")
             let officialCount = (signedEntry(for: set.id) ?? downloadedEntry(for: set.id) ?? bundledEntry(for: set.id))?.officialCount
-            let interpretations = Self.numberInterpretations(parts, officialCount: officialCount)
+            let parsed = PokemonChecklistSearchQuery(normalized: query, setCode: set.code, officialCount: officialCount)
             for row in searchRows(for: set.catalogID) {
-                let matchesName = query.count == 1 ? row.name == query : row.name.contains(query)
-                let matchesNumber = interpretations.contains { interpretation in
-                    guard let number = row.number,
-                          interpretation.collector == number
-                            || interpretation.canonical == row.canonicalNumber
-                            || (scoped && interpretation.canonical == Self.promoNumber(number, code: code))
-                    else { return false }
-                    return interpretation.name.map { row.name.contains($0) } ?? true
-                }
-                guard matchesName || matchesNumber || query == row.providerID else { continue }
+                guard parsed.matches(name: row.name, number: row.number, canonicalNumber: row.canonicalNumber,
+                                     providerID: row.providerID) else { continue }
                 guard skipped >= offset else { skipped += 1; continue }
                 if matches.count == limit {
                     return .init(items: matches, nextCursor: String(offset + limit))
@@ -1184,64 +1330,6 @@ actor PokemonChecklistStore {
             }
         }
         return .init(items: matches, nextCursor: nil)
-    }
-
-    /// One way to read a query as a collector number, optionally beside a name.
-    private struct NumberInterpretation {
-        let collector: String
-        let canonical: String
-        /// Normalized name text that must also match, or nil for a number alone.
-        let name: String?
-    }
-
-    /// Reads the printed forms people type: `25`, `25/195`, the subset form
-    /// `TG05/TG30`, and either of those before or after a name
-    /// (`Gardevoir TG05`). A two-part main-set fraction must name this set's
-    /// official count; a subset fraction only has to repeat the prefix, because
-    /// subset totals exclude their secret cards and so cannot narrow the set.
-    private static func numberInterpretations(_ parts: [Substring], officialCount: Int?) -> [NumberInterpretation] {
-        func collector(_ tokens: ArraySlice<Substring>) -> String? {
-            switch tokens.count {
-            case 1:
-                return String(tokens[tokens.startIndex])
-            case 2:
-                let number = tokens[tokens.startIndex], total = tokens[tokens.index(after: tokens.startIndex)]
-                if let officialCount, Int(total) == officialCount { return String(number) }
-                let prefix = number.prefix { $0.isLetter }
-                guard !prefix.isEmpty, number.dropFirst(prefix.count).allSatisfy(\.isNumber),
-                      number.count > prefix.count, total.hasPrefix(prefix),
-                      let size = Int(total.dropFirst(prefix.count)), size > 0 else { return nil }
-                return String(number)
-            default:
-                return nil
-            }
-        }
-        func interpretation(_ collector: String, name: ArraySlice<Substring>?) -> NumberInterpretation {
-            NumberInterpretation(collector: collector,
-                canonical: PokemonHistoricalIdentityResolver.canonicalLocalID(collector).lowercased(),
-                name: name.map { $0.joined(separator: " ") })
-        }
-
-        var result: [NumberInterpretation] = []
-        let tokens = parts[...]
-        if let whole = collector(tokens) { result.append(interpretation(whole, name: nil)) }
-        // A name beside a number: the number must contain a digit, so a
-        // two-word name such as `Mr Mime` is never read as a name plus number.
-        for length in 1...2 where tokens.count > length {
-            let tail = tokens.suffix(length), head = tokens.prefix(length)
-            if tail.first?.contains(where: \.isNumber) == true, let number = collector(tail) {
-                result.append(interpretation(number, name: tokens.dropLast(length)))
-            }
-            if head.first?.contains(where: \.isNumber) == true, let number = collector(head) {
-                result.append(interpretation(number, name: tokens.dropFirst(length)))
-            }
-        }
-        return result
-    }
-
-    private static func promoNumber(_ number: String, code: String) -> String? {
-        guard number.hasPrefix(code), let value = Int(number.dropFirst(code.count)) else { return nil }
-        return String(value)
     }
 
     private func searchRows(for setID: CatalogSetID) -> [SearchRow] {
@@ -1257,7 +1345,7 @@ actor PokemonChecklistStore {
             let printedNumber = source.printedCollectorNumber
             return SearchRow(card: identity, name: CardNameSearch.normalize(source.displayName),
                 number: printedNumber.map(CardNameSearch.normalize),
-                canonicalNumber: printedNumber.map { PokemonHistoricalIdentityResolver.canonicalLocalID($0).lowercased() },
+                canonicalNumber: printedNumber.map(PokemonChecklistSearchQuery.canonicalNumber),
                 providerID: CardNameSearch.normalize(source.providerID))
         }
         searchRowsBySet[setID] = rows
@@ -2032,18 +2120,7 @@ actor PokemonChecklistStore {
     }
 
     private nonisolated func loadManifest(from directory: URL) -> PokemonChecklistSnapshotManifest? {
-        let manifestURL = directory.appendingPathComponent("manifest.json")
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        guard let manifestData = try? Data(contentsOf: manifestURL),
-              let manifest = try? decoder.decode(
-                PokemonChecklistSnapshotManifest.self,
-                from: manifestData
-              ),
-              manifest.isSupported else {
-            return nil
-        }
-        return manifest
+        PokemonChecklistSnapshotManifest.load(from: directory)
     }
 
     private func loadChecklist(
@@ -2069,10 +2146,9 @@ actor PokemonChecklistStore {
             return .unreadable
         }
         do {
-            var cards = try decoder.decode([CatalogCardSummary].self, from: data)
+            let cards = try decoder.decode([CatalogCardSummary].self, from: data)
             if source == .bundled {
-                cards = PokemonChecklistReviewedProjection.removingBundledAggregates(
-                    from: cards, resource: entry.resource, bytes: data)
+                return .loaded(PokemonChecklistReviewedProjection.bundledCards(cards, entry: entry, bytes: data))
             }
             return .loaded(PokemonChecklistReviewedProjection.cards(cards, set: entry.set))
         } catch {

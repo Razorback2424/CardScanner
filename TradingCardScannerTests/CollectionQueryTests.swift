@@ -3,6 +3,20 @@ import XCTest
 @testable import TradingCardScanner
 
 final class CollectionQueryTests: XCTestCase {
+    func testRawItemSelectionClearsHiddenGradingFilters() {
+        var filters = CollectionFilters(gradingCompanies: [.psa], gradeValues: ["10"])
+        filters.toggleItemKind(.rawCard)
+        XCTAssertTrue(filters.gradingCompanies.isEmpty)
+        XCTAssertTrue(filters.gradeValues.isEmpty)
+        XCTAssertEqual(CollectionQuery.filter([row(id: "raw", price: nil)], with: filters).map(\.id), ["raw"])
+    }
+
+    func testCollectionSearchKeepsAnExcludedSelectedFinishRemovable() {
+        let normal = FilterOption(id: "normal", label: "Normal", group: "Magic", count: 1)
+        let foil = FilterOption(id: "foil", label: "Foil", group: "Magic", count: 3)
+        let options = FilterOption.retainingSelected(["foil"], in: [normal]) { [normal, foil] }
+        XCTAssertEqual(options, [normal, .init(id: "foil", label: "Foil", group: "Magic", count: 0)])
+    }
     @MainActor
     func testGamePickerIncludesEveryOwnedIdentityWithoutRequiringBrowseCapability() {
         let retained = CardGame(rawValue: "retained-game")
@@ -463,6 +477,29 @@ final class CollectionQueryTests: XCTestCase {
         filters.setCodes = [pokemon.setFilterID]
 
         XCTAssertEqual(CollectionQuery.filter([pokemon, magic], with: filters).map(\.id), ["pokemon"])
+    }
+
+    func testCollectionSeparatesPokemonSetsWithSharedCodesAndJoinsKnownLegacyRows() {
+        var expansion = row(id: "expansion", setCode: "CEL", setName: "Celebrations", number: "001", price: nil)
+        expansion.catalogProviderID = "cel25-001"
+        var classic = row(id: "classic", setCode: "CEL", setName: "Celebrations Classic Collection", number: "002", price: nil)
+        classic.catalogProviderID = "cel25cc-002"
+        let legacy = row(id: "legacy", setCode: "CEL", setName: "Celebrations", number: "003", price: nil)
+        let rows = [expansion, classic, legacy]
+        XCTAssertNotEqual(expansion.setFilterID, classic.setFilterID)
+        XCTAssertEqual(expansion.setFilterID, legacy.setFilterID)
+        let filters = CollectionFilters(setCodes: [expansion.setFilterID])
+        XCTAssertEqual(CollectionQuery.filter(rows, with: filters).map(\.id), ["expansion", "legacy"])
+        XCTAssertEqual(CollectionQuery.sort(rows, by: .setAndCardNumber).map(\.id), ["expansion", "legacy", "classic"])
+    }
+
+    func testCollectionNonfoilIncludesLegacyMagicWithoutMatchingPokemonNormal() {
+        let legacy = row(id: "legacy", game: .magic, variant: .normal, price: nil)
+        let modern = row(id: "modern", game: .magic, variant: .nonfoil, price: nil)
+        let pokemon = row(id: "pokemon", variant: .normal, price: nil)
+        XCTAssertEqual(legacy.finishFilterVariant, .nonfoil)
+        let filters = CollectionFilters(variantIDs: ["nonfoil"])
+        XCTAssertEqual(CollectionQuery.filter([legacy, modern, pokemon], with: filters).map(\.id), ["legacy", "modern"])
     }
 
     func testMultipleFinishesCanBeSelectedAtOnce() {

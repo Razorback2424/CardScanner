@@ -65,6 +65,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
                     XCTAssertEqual(detail.card.name, source.name)
                     XCTAssertEqual(detail.card.identifier, source.printedIdentifier)
                     XCTAssertEqual(detail.card.variantEvidence.catalogVariants, source.variants)
+                    XCTAssertNil(summary.verifiedBrowseFinishes, "Provider-reported finishes are not verified filter evidence")
                     XCTAssertNotNil(summary.imageURL)
                     count += 1
                 }
@@ -299,6 +300,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
             let set = try XCTUnwrap(sets.first { $0.code == setCode })
             let hits = try await bundled.search(query: printed, setIDs: [set.catalogID], cursor: nil)
             XCTAssertEqual(hits.items.map(\.providerID), [card.physicalPrintingID])
+            XCTAssertEqual(hits.items.first?.verifiedBrowseFinishes, [finish])
             for (number, valid) in [(printed, true), (normalized, true), (wrong, false)] {
                 let csv = "game,provider_id,card_name,card_number,finish,quantity\nlorcana,\(card.providerID),Mickey,\(number),\(finish.id),1\n"
                 let entry = try XCTUnwrap(CollectionCSV.parse(Data(csv.utf8)).entries.first)

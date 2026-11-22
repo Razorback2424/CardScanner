@@ -100,6 +100,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
     /// Catalog-owned availability copy, shown before entering an unavailable
     /// acquisition flow. Absent in older cached directories.
     var collectionAvailabilityNotice: String? = nil
+    var officialCollectorCount: Int? = nil
 
     init(
         catalogID: CatalogSetID,
@@ -115,7 +116,8 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         limitlessArtworkAuthorized: Bool? = nil,
         cardArtwork: [String: CatalogCardArtwork]? = nil,
         physicalPrintingIDs: Set<String>? = nil,
-        collectionAvailabilityNotice: String? = nil
+        collectionAvailabilityNotice: String? = nil,
+        officialCollectorCount: Int? = nil
     ) {
         self.catalogID = catalogID
         self.name = name
@@ -131,6 +133,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         self.cardArtwork = cardArtwork
         self.physicalPrintingIDs = physicalPrintingIDs
         self.collectionAvailabilityNotice = collectionAvailabilityNotice
+        self.officialCollectorCount = officialCollectorCount
     }
 
     /// Only virtual WotC set rows carry this. The provider set ID remains the
@@ -151,7 +154,8 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
             cardCount: cardCount, releaseDate: releaseDate, sortRank: rank,
             bundledArtworkSourceID: bundledArtworkSourceID, artworkFallbackURLs: artworkFallbackURLs,
             limitlessArtworkAuthorized: limitlessArtworkAuthorized, cardArtwork: cardArtwork,
-            physicalPrintingIDs: physicalPrintingIDs, collectionAvailabilityNotice: collectionAvailabilityNotice)
+            physicalPrintingIDs: physicalPrintingIDs, collectionAvailabilityNotice: collectionAvailabilityNotice,
+            officialCollectorCount: officialCollectorCount)
     }
 }
 
@@ -181,6 +185,9 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     var magicTreatmentQualifiers: [String: String] = [:]
     /// Finish membership belongs to the printing. Older cached summaries may lack it.
     var magicFinishIDs: [String]? = nil
+    /// Adapter-verified finishes for a single printing. The details route
+    /// still resolves authority independently of Browse metadata.
+    var verifiedBrowseFinishes: [PhysicalVariant]? = nil
     /// Pokémon set pages expand one numbered card into the pack-pulled
     /// variations required by a master set. Search and Magic summaries leave
     /// this nil because they still represent a printing rather than a slot.
@@ -229,7 +236,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         limitlessArtworkAuthorized: Bool? = nil,
         catalogGeneration: String? = nil,
         collectionAvailabilityNotice: String? = nil,
-        searchFields: CatalogCardSearchFields? = nil
+        searchFields: CatalogCardSearchFields? = nil,
+        verifiedBrowseFinishes: [PhysicalVariant]? = nil
     ) {
         self.game = game
         self.providerID = providerID
@@ -251,6 +259,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             from: magicTreatmentQualifiers
         ).filter { treatmentIDSet.contains($0.key) }
         self.magicFinishIDs = magicFinishIDs
+        self.verifiedBrowseFinishes = verifiedBrowseFinishes
         self.masterSetVariant = masterSetVariant
         self.isExpandedMasterSetVariant = isExpandedMasterSetVariant
         self.isSoleSlotForCard = isSoleSlotForCard
@@ -276,7 +285,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             limitlessArtworkAuthorized: limitlessArtworkAuthorized,
             catalogGeneration: catalogGeneration,
             collectionAvailabilityNotice: collectionAvailabilityNotice,
-            searchFields: searchFields
+            searchFields: searchFields,
+            verifiedBrowseFinishes: verifiedBrowseFinishes
         ).withRarity(rarity)
     }
 
@@ -294,6 +304,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         case searchFields
         case limitlessArtworkAuthorized
         case magicTreatmentIDsRaw, magicTreatmentQualifiers, magicFinishIDs
+        case verifiedBrowseFinishes
         case masterSetVariant, isExpandedMasterSetVariant, isSoleSlotForCard
         case rarity
     }
@@ -329,6 +340,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             from: rawQualifiers
         ).filter { treatmentIDSet.contains($0.key) }
         magicFinishIDs = try container.decodeIfPresent([String].self, forKey: .magicFinishIDs)
+        verifiedBrowseFinishes = try container.decodeIfPresent([PhysicalVariant].self, forKey: .verifiedBrowseFinishes)
         masterSetVariant = try container.decodeIfPresent(
             PhysicalVariant.self,
             forKey: .masterSetVariant
@@ -371,6 +383,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             try container.encode(magicTreatmentQualifiers, forKey: .magicTreatmentQualifiers)
         }
         try container.encodeIfPresent(magicFinishIDs, forKey: .magicFinishIDs)
+        try container.encodeIfPresent(verifiedBrowseFinishes, forKey: .verifiedBrowseFinishes)
         try container.encodeIfPresent(masterSetVariant, forKey: .masterSetVariant)
         try container.encode(isExpandedMasterSetVariant, forKey: .isExpandedMasterSetVariant)
         try container.encode(isSoleSlotForCard, forKey: .isSoleSlotForCard)
@@ -1379,6 +1392,17 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
         return candidates(for: summary).contains { Self.matches($0, summary: summary) }
     }
 
+    func hasSameCardOwnership(as other: CatalogOwnershipIndex) -> Bool {
+        guard completionRows.count == other.completionRows.count else { return false }
+        return zip(completionRows, other.completionRows).allSatisfy { left, right in
+            left.collectionKey == right.collectionKey && left.game == right.game
+                && left.providerID == right.providerID && left.catalogProviderID == right.catalogProviderID
+                && left.setCode == right.setCode && left.setName == right.setName && left.cardNumber == right.cardNumber
+                && left.itemKind == right.itemKind && left.variantID == right.variantID
+                && left.pokemonPrintRunRaw == right.pokemonPrintRunRaw && left.magicTreatmentIDsRaw == right.magicTreatmentIDsRaw
+        }
+    }
+
     func quantity(of summary: CatalogCardSummary) -> Int {
         candidates(for: summary)
             .filter { Self.matches($0, summary: summary) }
@@ -1543,6 +1567,9 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
                     : normalized(card.setCode) == normalized(summary.setCode)
                         || normalized(card.setName) == normalized(summary.setName)))
         guard identityMatches else { return false }
+        if let finishes = summary.verifiedBrowseFinishes, let requested = summary.masterSetVariant {
+            return finishes.contains(where: { $0.id == requested.id }) && card.variantID == requested.id
+        }
         if let finishes = summary.magicFinishIDs, let finishID = card.catalogFinishID {
             guard finishes.contains(where: { $0.caseInsensitiveCompare(finishID) == .orderedSame }),
                   summary.masterSetVariant.map({ $0.id.caseInsensitiveCompare(finishID) == .orderedSame }) ?? true else {
@@ -1697,6 +1724,29 @@ enum PokemonMasterSetTier: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
+struct CatalogSetCardSearch {
+    private let query: CatalogCardSearchQuery
+    private let pokemon: PokemonChecklistSearchQuery?
+
+    init(query: CatalogCardSearchQuery, setID: CatalogSetID, setCode: String, officialCollectorCount: Int?) {
+        self.query = query
+        pokemon = setID.game == .pokemon ? PokemonChecklistSearchQuery(normalized: query.normalized,
+            setCode: setCode, officialCount: officialCollectorCount ?? PokemonChecklistSnapshotManifest.bundledOfficialCounts[setID]) : nil
+    }
+
+    func matches(
+        _ card: CatalogCardSummary, name: String, number: String?, canonicalPokemonNumber: String?, normalizedProviderID: String
+    ) -> Bool {
+        if query.normalized.isEmpty { return true }
+        if let pokemon {
+            return pokemon.matches(name: name, number: number, canonicalNumber: canonicalPokemonNumber,
+                                   providerID: normalizedProviderID, allowsSingleCharacterNameSearch: true)
+        }
+        if let fields = card.searchFields { return query.matches(fields) }
+        return name.contains(query.normalized) || number?.contains(query.normalized) == true
+    }
+}
+
 enum CatalogSetQuery {
     static func apply(
         _ cards: [CatalogCardSummary],
@@ -1706,12 +1756,14 @@ enum CatalogSetQuery {
         owned: CatalogOwnershipIndex,
         prices: [String: Double]
     ) -> [CatalogCardSummary] {
-        let query = CardNameSearch.normalize(search)
+        guard let first = cards.first else { return [] }
+        let query = CatalogSetCardSearch(query: CatalogCardSearchQuery(search), setID: first.setID,
+                                         setCode: first.setCode, officialCollectorCount: nil)
         let filtered = cards.filter { card in
-            let matchesSearch = query.isEmpty
-                || CardNameSearch.normalize(card.name).contains(query)
-                || CardNameSearch.normalize(card.collectorNumber).contains(query)
-            guard matchesSearch else { return false }
+            let printed = card.printedCollectorNumber
+            guard query.matches(card, name: CardNameSearch.normalize(card.displayName),
+                number: printed.map(CardNameSearch.normalize), canonicalPokemonNumber: printed.map(PokemonChecklistSearchQuery.canonicalNumber),
+                normalizedProviderID: CardNameSearch.normalize(card.providerID)) else { return false }
             guard ownership != .all else { return true }
             let isOwned = owned.owns(card)
             switch ownership {

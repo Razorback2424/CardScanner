@@ -594,6 +594,7 @@ final class OnePieceIntegrationTests: XCTestCase {
             let query = "\(sample.search) \(sample.number)"
             let page = try await browse.search(query: query, setIDs: [], cursor: nil)
             let row = try XCTUnwrap(page.items.first { $0.providerID == sample.id }, query)
+            XCTAssertEqual(row.verifiedBrowseFinishes?.map(\.id), [sample.finish], query)
             let details = try await browse.details(for: row)
             XCTAssertEqual(details.card.physicalPrintingID, scanned.card.physicalPrintingID)
             XCTAssertEqual(details.card.variantEvidence.catalogVariants.map(\.id), [sample.finish])

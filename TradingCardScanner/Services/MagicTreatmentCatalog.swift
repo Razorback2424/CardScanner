@@ -126,6 +126,7 @@ struct MagicTreatmentCatalog: Equatable, Sendable {
 
     let artifact: MagicTreatmentCatalogArtifact
     private let entriesByCardID: [String: MagicTreatmentCatalogEntry]
+    private let setCodesByTreatmentID: [String: Set<String>]
 
     static let empty = MagicTreatmentCatalog(
         artifact: MagicTreatmentCatalogArtifact(
@@ -263,6 +264,13 @@ struct MagicTreatmentCatalog: Equatable, Sendable {
         entriesByCardID[cardID.lowercased()]
     }
 
+    func setCodes(forTreatmentIDs ids: Set<String>) -> Set<String> {
+        ids.reduce(into: Set<String>()) { codes, id in
+            guard let treatment = MagicTreatment(id: id) else { return }
+            codes.formUnion(setCodesByTreatmentID[treatment.id] ?? [])
+        }
+    }
+
     private func exactEntry(for card: ScryfallCard) -> MagicTreatmentCatalogEntry? {
         guard let entry = entry(forCardID: card.id),
               entry.setCode.caseInsensitiveCompare(card.setCode) == .orderedSame,
@@ -279,6 +287,11 @@ struct MagicTreatmentCatalog: Equatable, Sendable {
     ) {
         self.artifact = artifact
         self.entriesByCardID = entriesByCardID
+        self.setCodesByTreatmentID = entriesByCardID.values.reduce(into: [:]) { index, entry in
+            for treatment in entry.decodedTreatments {
+                index[treatment.id, default: []].insert(entry.setCode.lowercased())
+            }
+        }
     }
 
     private func appendUnique(_ treatment: MagicTreatment, to result: inout [MagicTreatment]) {

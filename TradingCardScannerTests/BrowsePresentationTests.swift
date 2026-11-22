@@ -3,6 +3,22 @@ import XCTest
 
 @MainActor
 final class BrowsePresentationTests: XCTestCase {
+    func testPokemonSetAndCatalogSearchAgreeOnNameAndNumberAndPrintedFraction() async throws {
+        let manifest = try XCTUnwrap(PokemonChecklistSnapshotManifest.bundled)
+        let set = try XCTUnwrap(manifest.entries.first {
+            $0.providerID == "base1" && $0.set.pokemonPrintRun == .unlimited
+        }?.set)
+        let store = PokemonChecklistStore(root: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        let loaded = await store.mergedChecklist(for: set.catalogID)
+        let cards = try XCTUnwrap(loaded)
+        let builder = CatalogSetPresentationBuilder()
+        for query in ["charizard 4", "4/102"] {
+            let results = try await store.search(CardNameSearch.normalize(query), sets: [set], offset: 0, limit: 60)
+            let groups = try await builder.groups(for: inputs(cards, search: query), owned: CatalogOwnershipIndex(rows: []))
+            XCTAssertEqual(results.items.map(\.providerID), ["base1-4"], query)
+            XCTAssertEqual(groups.map(\.preferredSummary.providerID), ["base1-4"], query)
+        }
+    }
     func testClassicCollectionFallbackAgreesWithChecklistAndSeparatesParent() {
         let parent = ownershipSet("30th", name: "30th Celebration", code: "30C", total: 128)
         let classic = ownershipSet("30th-c", name: "30th Celebration Classic Collection", code: "30C", total: 30)

@@ -14,10 +14,11 @@ struct CatalogSetPresentationInputs: Equatable, Sendable {
     let ownershipRevision: UInt
     let tier: PokemonMasterSetTier
     let prices: [String: Double]
+    let officialCollectorCount: Int?
 
     init(setID: CatalogSetID, contentGeneration: UUID, cards: [CatalogCardSummary],
          search: String, sort: CatalogSetSort, ownership: CatalogOwnershipFilter,
-         ownershipRevision: UInt, tier: PokemonMasterSetTier, prices: [String: Double]) {
+         ownershipRevision: UInt, tier: PokemonMasterSetTier, prices: [String: Double], officialCollectorCount: Int? = nil) {
         self.setID = setID
         self.contentGeneration = contentGeneration
         self.cards = cards
@@ -27,6 +28,7 @@ struct CatalogSetPresentationInputs: Equatable, Sendable {
         self.ownershipRevision = ownershipRevision
         self.tier = tier
         self.prices = sort.needsPrices ? prices : [:]
+        self.officialCollectorCount = officialCollectorCount
     }
 }
 
@@ -35,7 +37,9 @@ private struct CatalogSetPreparedPresentation: Sendable {
         let summary: CatalogCardSummary
         let id: String
         let name: String
-        let number: String
+        let number: String?
+        let canonicalPokemonNumber: String?
+        let normalizedProviderID: String
         let numberKey: CollectorNumber.SortKey
         let identity: CatalogCardDisplayIdentity
     }
@@ -51,9 +55,12 @@ private struct CatalogSetPreparedPresentation: Sendable {
         let interval = PerformanceSignpost.signposter.beginInterval("Browse.prepare")
         defer { PerformanceSignpost.signposter.endInterval("Browse.prepare", interval) }
         let rows = cards.map { card in
-            Row(summary: card, id: card.id,
+            let printed = card.printedCollectorNumber
+            return Row(summary: card, id: card.id,
                 name: CardNameSearch.normalize(card.displayName),
-                number: card.printedCollectorNumber.map(CardNameSearch.normalize) ?? "",
+                number: printed.map(CardNameSearch.normalize),
+                canonicalPokemonNumber: card.game == .pokemon ? printed.map(PokemonChecklistSearchQuery.canonicalNumber) : nil,
+                normalizedProviderID: card.game == .pokemon ? CardNameSearch.normalize(card.providerID) : "",
                 numberKey: CollectorNumber.key(for: card.collectorNumber),
                 identity: CatalogCardDisplayIdentity(
                     game: card.game, setID: card.setID, providerID: card.providerID,
@@ -144,18 +151,16 @@ actor CatalogSetPresentationBuilder: CatalogSetPresentationBuilding {
         }
         var summaries: [CatalogCardSummary] = []
         var identities: [CatalogCardDisplayIdentity] = []
+        let search = CatalogSetCardSearch(query: inputs.search, setID: inputs.setID,
+            setCode: prepared.rows.first?.summary.setCode ?? "", officialCollectorCount: inputs.officialCollectorCount)
         for (offset, index) in order.enumerated() {
             if offset.isMultiple(of: 64) { try Task.checkCancellation() }
             let row = prepared.rows[index]
             if row.summary.game == .pokemon, inputs.tier == .standard,
                row.summary.isExpandedMasterSetVariant { continue }
-            if !inputs.search.normalized.isEmpty {
-                if let fields = row.summary.searchFields {
-                    guard inputs.search.matches(fields) else { continue }
-                } else if !row.name.contains(inputs.search.normalized), !row.number.contains(inputs.search.normalized) {
-                    continue
-                }
-            }
+            guard search.matches(row.summary, name: row.name, number: row.number,
+                                 canonicalPokemonNumber: row.canonicalPokemonNumber,
+                                 normalizedProviderID: row.normalizedProviderID) else { continue }
             if inputs.ownership != .all {
                 let isOwned = ownedFlags?.flags[index] ?? false
                 if (inputs.ownership == .owned) != isOwned { continue }

@@ -7,6 +7,16 @@ struct FilterOption: Identifiable, Equatable {
     let label: String
     let group: String?
     let count: Int
+
+    static func retainingSelected(
+        _ selection: Set<String>, in available: [Self], from allOptions: () -> [Self]
+    ) -> [Self] {
+        let missing = selection.subtracting(available.map(\.id))
+        guard !missing.isEmpty else { return available }
+        return available + allOptions().filter { missing.contains($0.id) }.map {
+            Self(id: $0.id, label: $0.label, group: $0.group, count: 0)
+        }
+    }
 }
 
 /// One entry point for every collection filter and sort choice. Detailed
@@ -63,15 +73,7 @@ struct CollectionFilterSheet: View {
                             symbolName: kind.symbolName,
                             isSelected: filters.itemKinds.contains(kind)
                         ) {
-                            if filters.itemKinds.contains(kind) {
-                                filters.itemKinds.remove(kind)
-                                if kind == .gradedCard {
-                                    filters.gradingCompanies.removeAll()
-                                    filters.gradeValues.removeAll()
-                                }
-                            } else {
-                                filters.itemKinds.insert(kind)
-                            }
+                            filters.toggleItemKind(kind)
                         }
                     }
                 }
@@ -332,10 +334,17 @@ struct MultiSelectFilterView: View {
     @Binding var selection: Set<String>
     /// Catalog filters have no meaningful count before a whole game is loaded.
     var showsCounts = true
+    var allowsSearch = false
+    @State private var search = ""
+
+    private var visibleOptions: [FilterOption] {
+        let query = search.trimmingCharacters(in: .whitespacesAndNewlines)
+        return query.isEmpty ? options : options.filter { $0.label.localizedStandardContains(query) }
+    }
 
     private var groups: [String] {
         var seen: [String] = []
-        for option in options {
+        for option in visibleOptions {
             let group = option.group ?? ""
             if !seen.contains(group) { seen.append(group) }
         }
@@ -344,24 +353,10 @@ struct MultiSelectFilterView: View {
 
     var body: some View {
         Group {
-            if options.isEmpty {
-                ContentUnavailableView(
-                    "Nothing to filter yet",
-                    systemImage: "line.3.horizontal.decrease.circle",
-                    description: Text("Add some items to your collection first.")
-                )
+            if allowsSearch {
+                optionList.searchable(text: $search, prompt: "Find a finish")
             } else {
-                List {
-                    ForEach(groups, id: \.self) { group in
-                        Section {
-                            ForEach(options.filter { ($0.group ?? "") == group }) { option in
-                                row(option)
-                            }
-                        } header: {
-                            if !group.isEmpty { Text(group) }
-                        }
-                    }
-                }
+                optionList
             }
         }
         .navigationTitle(title)
@@ -370,6 +365,32 @@ struct MultiSelectFilterView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Clear") { selection.removeAll() }
                     .disabled(selection.isEmpty)
+            }
+        }
+    }
+
+    private var optionList: some View {
+        Group {
+            if options.isEmpty {
+                ContentUnavailableView(
+                    "Nothing to filter yet",
+                    systemImage: "line.3.horizontal.decrease.circle",
+                    description: Text("Add some items to your collection first.")
+                )
+            } else if visibleOptions.isEmpty {
+                ContentUnavailableView.search(text: search)
+            } else {
+                List {
+                    ForEach(groups, id: \.self) { group in
+                        Section {
+                            ForEach(visibleOptions.filter { ($0.group ?? "") == group }) { option in
+                                row(option)
+                            }
+                        } header: {
+                            if !group.isEmpty { Text(group) }
+                        }
+                    }
+                }
             }
         }
     }

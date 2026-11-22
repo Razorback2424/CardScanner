@@ -6,6 +6,7 @@ import Foundation
 struct CatalogBrowseFilters: Equatable, Sendable {
     /// Empty means every set.
     var setIDs: Set<CatalogSetID> = []
+    var pokemonPrintRuns: Set<PokemonPrintRun> = []
     /// Finish ids: a Pokémon master-set `PhysicalVariant.id`, or a Magic finish id.
     var variantIDs: Set<String> = []
     var magicTreatmentIDs: Set<String> = []
@@ -18,37 +19,77 @@ struct CatalogBrowseFilters: Equatable, Sendable {
 
     /// One per filter group in use, for the button badge and accessibility label.
     var activeCount: Int {
-        [!setIDs.isEmpty, !variantIDs.isEmpty, !magicTreatmentIDs.isEmpty,
+        [!setIDs.isEmpty, !pokemonPrintRuns.isEmpty, !variantIDs.isEmpty, !magicTreatmentIDs.isEmpty,
          ownership != .all, price != nil].filter { $0 }.count
     }
 
     /// Only a price question needs quotes, which are the expensive part of a fill.
     var needsPrices: Bool { price != nil }
 
-    /// The newest-first set walk, narrowed to the chosen sets. Order is kept.
+    func includesSet(_ id: CatalogSetID) -> Bool {
+        (setIDs.isEmpty || setIDs.contains(id))
+            && (pokemonPrintRuns.isEmpty || id.pokemonPrintRun.map(pokemonPrintRuns.contains) == true)
+    }
+
+    /// Narrows the walk to the chosen sets. For treatment filters, visit sets
+    /// with known matches first and keep the remaining sets eligible.
     func restrictedSets(_ orderedSets: [CatalogSet]) -> [CatalogSet] {
-        guard !setIDs.isEmpty else { return orderedSets }
-        return orderedSets.filter { setIDs.contains($0.catalogID) }
+        let selected = orderedSets.filter { includesSet($0.catalogID) }
+        guard !magicTreatmentIDs.isEmpty else { return selected }
+        let knownCodes = MagicTreatmentCatalogStore.bundledDefault.setCodes(forTreatmentIDs: magicTreatmentIDs)
+        let hasKnownTreatment: (CatalogSet) -> Bool = {
+            $0.game == .magic && knownCodes.contains($0.providerID.lowercased())
+        }
+        return selected.filter(hasKnownTreatment) + selected.filter { !hasKnownTreatment($0) }
     }
 
     /// Every filter except price. Cheap, so it runs before any quote is requested.
     func matchesWithoutPrice(_ card: CatalogCardSummary, isOwned: Bool) -> Bool {
-        if !setIDs.isEmpty, !setIDs.contains(card.setID) { return false }
-        if !variantIDs.isEmpty {
-            guard !Self.finishIDs(of: card).isDisjoint(with: variantIDs) else { return false }
+        matchesWithoutPrice(card, isOwned: { _ in isOwned })
+    }
+
+    func matchesWithoutPrice(_ card: CatalogCardSummary, isOwned: (CatalogCardSummary) -> Bool) -> Bool {
+        guard includesSet(card.setID) else { return false }
+        return !matchingPrintings(for: card, isOwned: isOwned).isEmpty
+    }
+
+    func scopesFinish(of card: CatalogCardSummary) -> Bool {
+        (card.game == .magic && (!variantIDs.isEmpty || !magicTreatmentIDs.isEmpty))
+            || (card.verifiedBrowseFinishes != nil && !variantIDs.isEmpty)
+    }
+
+    /// Keeps Magic finish, treatment and ownership constraints on the same
+    /// physical copy. Unfiltered cards retain their printing-level identity.
+    func matchingPrintings(
+        for card: CatalogCardSummary,
+        isOwned: (CatalogCardSummary) -> Bool
+    ) -> [CatalogCardSummary] {
+        let candidates: [CatalogCardSummary]
+        let available = Self.finishes(of: card)
+        if scopesFinish(of: card), !available.isEmpty {
+            candidates = available.map { finish in
+                var copy = card
+                copy.masterSetVariant = finish
+                return copy
+            }
+        } else {
+            candidates = [card]
         }
-        if !magicTreatmentIDs.isEmpty {
-            let requested = Set(magicTreatmentIDs.compactMap { MagicTreatment(id: $0)?.id })
-            guard !requested.isEmpty else { return false }
-            let cardTreatments = Set(MagicTreatmentKeyCodec.canonicalIDs(from: card.magicTreatments))
-            guard !cardTreatments.isDisjoint(with: requested) else { return false }
+        let requested = Set(magicTreatmentIDs.compactMap { MagicTreatment(id: $0)?.id })
+        return candidates.filter { copy in
+            guard variantIDs.isEmpty || !Self.finishIDs(of: copy).isDisjoint(with: variantIDs) else { return false }
+            if !magicTreatmentIDs.isEmpty {
+                let treatments = copy.masterSetVariant.map {
+                    copy.magicTreatmentEvidence.applicableTreatments(for: $0)
+                } ?? copy.magicTreatments
+                guard treatments.contains(where: { requested.contains($0.id) }) else { return false }
+            }
+            switch ownership {
+            case .all: return true
+            case .owned: return isOwned(copy)
+            case .notOwned: return !isOwned(copy)
+            }
         }
-        switch ownership {
-        case .all: break
-        case .owned: if !isOwned { return false }
-        case .notOwned: if isOwned { return false }
-        }
-        return true
     }
 
     /// `nil` means the answer depends on a price that is not known yet. Such a
@@ -59,6 +100,10 @@ struct CatalogBrowseFilters: Equatable, Sendable {
         price resolution: CatalogPriceResolution
     ) -> Bool? {
         guard matchesWithoutPrice(card, isOwned: isOwned) else { return false }
+        return matchesPrice(resolution)
+    }
+
+    func matchesPrice(_ resolution: CatalogPriceResolution) -> Bool? {
         guard let price else { return true }
         switch resolution {
         case let .priced(value): return price.matches(value)
@@ -68,8 +113,12 @@ struct CatalogBrowseFilters: Equatable, Sendable {
     }
 
     static func finishIDs(of card: CatalogCardSummary) -> Set<String> {
-        if let variant = card.masterSetVariant { return [variant.id] }
-        return Set(card.magicFinishIDs ?? [])
+        Set(finishes(of: card).map(\.id))
+    }
+
+    static func finishes(of card: CatalogCardSummary) -> [PhysicalVariant] {
+        if let variant = card.masterSetVariant { return [variant] }
+        return card.verifiedBrowseFinishes ?? (card.magicFinishIDs ?? []).map(PhysicalVariant.resolving)
     }
 }
 
@@ -113,7 +162,7 @@ enum CatalogPriceResolution: Hashable, Sendable {
 }
 
 /// Position in the newest-first, set-by-set walk the game grid uses.
-struct CatalogSetWalkPosition: Equatable, Sendable {
+struct CatalogSetWalkPosition: Hashable, Sendable {
     var setIndex: Int
     var cursor: String?
 
@@ -133,7 +182,7 @@ struct CatalogSetWalkPosition: Equatable, Sendable {
 }
 
 /// Position in a single cursor-paged search stream.
-struct CatalogSearchPosition: Equatable, Sendable {
+struct CatalogSearchPosition: Hashable, Sendable {
     var cursor: String?
     static let start = CatalogSearchPosition(cursor: nil)
 }
@@ -157,7 +206,7 @@ enum CatalogFilteredPager {
         let next: Position?
     }
 
-    struct Fill<Position> {
+    struct Fill<Position: Hashable> {
         var matches: [CatalogCardSummary] = []
         /// Cards that pass every other filter but whose price is not known yet.
         var pendingPrice: [CatalogCardSummary] = []
@@ -168,6 +217,7 @@ enum CatalogFilteredPager {
         /// Where the next fill starts. `nil` means the walk is exhausted. After
         /// an error it is the failed position, so a retry repeats it.
         var position: Position?
+        var visitedPositions: Set<Position> = []
         /// The page cap stopped the fill before the target was reached.
         var stoppedAtPageLimit = false
         var error: Error?
@@ -178,16 +228,19 @@ enum CatalogFilteredPager {
     /// Returns `nil` when `isCurrent` turned false during the fill: a newer
     /// filter, search, or catalog revision owns the grid and this result must
     /// not publish.
-    static func fill<Position>(
+    static func fill<Position: Hashable>(
         from start: Position?,
         filters: CatalogBrowseFilters,
         limits: Limits = Limits(),
+        visitedPositions: Set<Position> = [],
+        existingIDs: Set<String> = [],
         loadPage: (Position) async throws -> Page<Position>,
         isOwned: (CatalogCardSummary) -> Bool,
         resolvePrices: ([CatalogCardSummary]) async -> [String: CatalogPriceResolution],
         isCurrent: () -> Bool
     ) async -> Fill<Position>? {
-        var fill = Fill<Position>(position: start)
+        var fill = Fill<Position>(position: start, visitedPositions: visitedPositions)
+        var seenIDs = existingIDs
         while let position = fill.position, fill.matches.count < limits.targetMatchCount {
             if fill.pagesLoaded >= limits.maxPagesPerFill {
                 fill.stoppedAtPageLimit = true
@@ -202,12 +255,17 @@ enum CatalogFilteredPager {
                 break
             }
             guard isCurrent(), !Task.isCancelled else { return nil }
+            if let next = page.next, next == position || fill.visitedPositions.contains(next) {
+                fill.error = BrowseCatalogError.badResponse
+                break
+            }
+            fill.visitedPositions.insert(position)
             fill.pagesLoaded += 1
             fill.scannedCount += page.items.count
             fill.position = page.next
 
             let candidates = page.items.filter {
-                filters.matchesWithoutPrice($0, isOwned: isOwned($0))
+                seenIDs.insert($0.id).inserted && filters.matchesWithoutPrice($0, isOwned: isOwned)
             }
             guard filters.needsPrices, !candidates.isEmpty else {
                 fill.matches += candidates
@@ -217,7 +275,7 @@ enum CatalogFilteredPager {
             guard isCurrent(), !Task.isCancelled else { return nil }
             fill.priceResolutions.merge(resolutions) { _, newest in newest }
             for card in candidates {
-                switch filters.matches(card, isOwned: isOwned(card), price: resolutions[card.id] ?? .pending) {
+                switch filters.matchesPrice(resolutions[card.id] ?? .pending) {
                 case true?: fill.matches.append(card)
                 case nil: fill.pendingPrice.append(card)
                 case false?: break
@@ -254,40 +312,49 @@ enum CatalogFilteredPager {
     }
 }
 
-/// The finish and treatment choices a game's rows have actually shown so far.
-/// A game whose browse rows carry no finish (for example an adapter that lists
-/// one printing per card) never offers an empty Finish filter.
+/// Facets observed in Browse rows, supplemented by the reviewed Magic treatment vocabulary.
 struct CatalogBrowseFacets: Equatable {
-    private(set) var finishIDs: [String] = []
-    private(set) var treatmentIDs: [String] = []
+    private var observedFinishes: [PhysicalVariant] = []
+    private var treatmentIDs: [String] = []
 
     mutating func record(_ cards: [CatalogCardSummary]) {
-        var knownFinishes = Set(finishIDs)
+        var knownFinishes = Set(observedFinishes.map(\.id))
         var knownTreatments = Set(treatmentIDs)
         for card in cards {
-            let finishes = card.masterSetVariant.map { [$0.id] } ?? card.magicFinishIDs ?? []
-            for id in finishes where knownFinishes.insert(id).inserted { finishIDs.append(id) }
+            for finish in CatalogBrowseFilters.finishes(of: card) where knownFinishes.insert(finish.id).inserted {
+                observedFinishes.append(finish)
+            }
             for treatment in card.magicTreatments where knownTreatments.insert(treatment.id).inserted {
                 treatmentIDs.append(treatment.id)
             }
         }
     }
 
-    /// The game's usual finishes first, in menu order, then any other finish
-    /// the rows carried. Empty until a row has shown a finish at all.
-    func finishOptions(base: [PhysicalVariant]) -> [PhysicalVariant] {
-        guard !finishIDs.isEmpty else { return [] }
+    func finishOptions(base: [PhysicalVariant], catalog: [PhysicalVariant] = [], for game: CardGame? = nil) -> [PhysicalVariant] {
+        let supportsVerifiedFinishes = (game == .lorcana || game == .onePiece) && !base.isEmpty
+        guard game == .pokemon || game == .magic || supportsVerifiedFinishes || !observedFinishes.isEmpty else { return [] }
         var seen = Set<String>()
-        return (base + finishIDs.map(PhysicalVariant.resolving)).filter { seen.insert($0.id).inserted }
+        return (base + catalog + observedFinishes).filter { finish in
+            (game != .pokemon || (finish.id != PhysicalVariant.firstEdition.id && finish.id != PhysicalVariant.jumbo.id))
+                && seen.insert(finish.id).inserted
+        }
+    }
+
+    func treatmentOptions(for game: CardGame) -> [MagicTreatment] {
+        guard game == .magic else { return [] }
+        return Set(MagicTreatment.modelled + treatmentIDs.compactMap(MagicTreatment.init(id:)))
+            .sorted { $0.label.localizedStandardCompare($1.label) == .orderedAscending }
     }
 }
 
 /// Pokémon search answers with one row per numbered card and no finish. A
 /// finish question needs the card's master-set slots, which the set's local
 /// checklist already holds.
-enum CatalogSearchFinishExpansion {
+struct CatalogSearchFinishExpansion {
+    private var slotsBySet: [CatalogSetID: [String: [CatalogCardSummary]]] = [:]
+
     static func needsExpansion(game: CardGame, filters: CatalogBrowseFilters) -> Bool {
-        game == .pokemon && !filters.variantIDs.isEmpty
+        game == .pokemon && (!filters.variantIDs.isEmpty || filters.ownership != .all)
     }
 
     /// Replaces each finish-less row with its slots, in the original order. A
@@ -297,9 +364,18 @@ enum CatalogSearchFinishExpansion {
         setsByID: [CatalogSetID: CatalogSet],
         slots: (CatalogSet) async throws -> [CatalogCardSummary]
     ) async throws -> [CatalogCardSummary] {
-        var slotsBySet: [CatalogSetID: [String: [CatalogCardSummary]]] = [:]
+        var expansion = Self()
+        return try await expansion.expand(cards, setsByID: setsByID, slots: slots)
+    }
+
+    mutating func expand(
+        _ cards: [CatalogCardSummary],
+        setsByID: [CatalogSetID: CatalogSet],
+        slots: (CatalogSet) async throws -> [CatalogCardSummary]
+    ) async throws -> [CatalogCardSummary] {
         var expanded: [CatalogCardSummary] = []
         for card in cards {
+            try Task.checkCancellation()
             guard card.masterSetVariant == nil, let set = setsByID[card.setID] else {
                 expanded.append(card)
                 continue
@@ -312,5 +388,45 @@ enum CatalogSearchFinishExpansion {
             expanded += cardSlots.isEmpty ? [card] : cardSlots
         }
         return expanded
+    }
+}
+
+/// Reads a bounded set refresh or every remaining page for an explicit full-set sort.
+@MainActor
+enum CatalogSetPageLoader {
+    struct Result {
+        var items: [CatalogCardSummary] = []
+        var nextCursor: String?
+        var count = 0
+        var visitedCursors: Set<String> = []
+        var error: Error?
+    }
+
+    static func collect(
+        from cursor: String?,
+        limit: Int?,
+        visitedCursors: Set<String> = [],
+        load: (String?) async throws -> CatalogPage<CatalogCardSummary>
+    ) async -> Result {
+        var result = Result(nextCursor: cursor, visitedCursors: visitedCursors)
+        repeat {
+            let current = result.nextCursor
+            do {
+                try Task.checkCancellation()
+                let page = try await load(current)
+                try Task.checkCancellation()
+                if let next = page.nextCursor, next == current || result.visitedCursors.contains(next) {
+                    throw BrowseCatalogError.badResponse
+                }
+                if let current { result.visitedCursors.insert(current) }
+                result.items += page.items
+                result.count += 1
+                result.nextCursor = page.nextCursor
+            } catch {
+                result.error = error
+                break
+            }
+        } while result.nextCursor != nil && (limit.map { result.count < $0 } ?? true)
+        return result
     }
 }

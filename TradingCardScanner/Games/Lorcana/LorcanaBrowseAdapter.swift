@@ -40,7 +40,7 @@ struct LorcanaBrowseAdapter: GameBrowseAdapter {
                 return CatalogCardSummary(game: .lorcana, providerID: card.physicalPrintingID, setID: id,
                     setName: label, setCode: card.setCode, name: card.name, collectorNumber: card.cardNumber,
                     thumbnailURL: card.thumbnailImageURL, imageURL: card.displayImageURL, catalogGeneration: registry.generation,
-                    searchFields: fields)
+                    searchFields: fields, verifiedBrowseFinishes: card.variantEvidence.catalogVariants)
             }
             var seen: Set<URL> = []
             set.artworkFallbackURLs = Array(summaries.compactMap(\.thumbnailURL).filter { seen.insert($0).inserted }.prefix(3))

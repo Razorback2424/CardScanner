@@ -118,10 +118,45 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
         )?.doubleValue
     }
 
-    /// Set codes are only unique within a game. Magic and Pokémon can both use
-    /// the same short printed code, so filter identity must include the game's
-    /// namespace even though the UI continues to show the familiar code alone.
-    var setFilterID: String { "\(game.rawValue):\(setCode.uppercased())" }
+    var setFilterID: String {
+        guard game == .pokemon else { return "\(game.rawValue):\(setCode.uppercased())" }
+        if itemKind != .sealedProduct, let id = catalogProviderID?.lowercased(),
+           let separator = id.lastIndex(of: "-") {
+            let setID = String(id[..<separator])
+            if Self.bundledPokemonProviderSetIDs.contains(setID)
+                || PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: setID) != nil {
+                return CatalogSetID(game: game, providerID: setID, pokemonPrintRun: pokemonPrintRun).id
+            }
+        }
+        let key = Self.pokemonSetNameKey(code: setCode, label: setFilterLabel)
+        return Self.bundledPokemonSetIDsByName[key] ?? "\(game.rawValue):name:\(key)"
+    }
+
+    private static let bundledPokemonProviderSetIDs = Set(PokemonChecklistSnapshotManifest.bundled?.entries.map(\.providerID) ?? [])
+
+    private static let bundledPokemonSetIDsByName: [String: String] = {
+        let entries = PokemonChecklistSnapshotManifest.bundled?.entries ?? []
+        let groups = Dictionary(grouping: entries) { pokemonSetNameKey(code: $0.set.code, label: $0.set.name) }
+        return groups.compactMapValues { matches in
+            Set(matches.map(\.set.catalogID)).count == 1 ? matches.first?.set.id : nil
+        }
+    }()
+
+    private static func pokemonSetNameKey(code: String, label: String) -> String {
+        "\(code.uppercased()):\(CardNameSearch.normalize(label))"
+    }
+
+    var setFilterLabel: String {
+        guard game == .pokemon, let pokemonPrintRun else { return setName }
+        let suffix = " — \(pokemonPrintRun.label)"
+        return setName.hasSuffix(suffix) ? setName : setName + suffix
+    }
+
+    var finishFilterVariant: PhysicalVariant? {
+        guard let variant else { return nil }
+        let id = CatalogOwnershipCardSnapshot.catalogFinishID(variant.id, game: game)
+        return id == PhysicalVariant.nonfoil.id ? .nonfoil : variant
+    }
 
     /// The badge shown on the tile. Falls back to the raw finish label so a row
     /// written before item kinds existed still reads correctly.
@@ -303,6 +338,15 @@ struct CollectionFilters: Equatable {
     }
 
     static let none = CollectionFilters()
+
+    mutating func toggleItemKind(_ kind: CollectionItemKind) {
+        let wasSelected = itemKinds.remove(kind) != nil
+        if !wasSelected { itemKinds.insert(kind) }
+        if (wasSelected && kind == .gradedCard) || (!itemKinds.isEmpty && !itemKinds.contains(.gradedCard)) {
+            gradingCompanies.removeAll()
+            gradeValues.removeAll()
+        }
+    }
 }
 
 enum CollectionSort: String, CaseIterable, Identifiable, Equatable {
@@ -479,7 +523,7 @@ enum CollectionQuery {
         if let game = filters.game, row.game != game { return false }
         if !filters.setCodes.isEmpty, !filters.setCodes.contains(row.setFilterID) { return false }
         if !filters.variantIDs.isEmpty {
-            guard let variantID = row.variantID, filters.variantIDs.contains(variantID) else { return false }
+            guard let variantID = row.finishFilterVariant?.id, filters.variantIDs.contains(variantID) else { return false }
         }
         if !filters.treatmentIDs.isEmpty {
             guard !requestedTreatmentIDs.isEmpty else { return false }
@@ -517,17 +561,21 @@ enum CollectionQuery {
         case .setAndCardNumber:
             // Game first so a Pokémon release index is never weighed against a
             // Magic release date, then newest set first, then binder order.
-            return rows.sorted { left, right in
+            let keyedRows = rows.map { (row: $0, id: $0.setFilterID) }
+            let releaseOrder = Dictionary(grouping: keyedRows, by: \.id).mapValues { $0.map(\.row.setReleaseOrder).max() ?? 0 }
+            return keyedRows.sorted { lhs, rhs in
+                let left = lhs.row, right = rhs.row
                 if left.game != right.game { return left.game.rawValue < right.game.rawValue }
-                if left.setReleaseOrder != right.setReleaseOrder { return left.setReleaseOrder > right.setReleaseOrder }
-                if left.setCode != right.setCode { return left.setCode < right.setCode }
+                let leftOrder = releaseOrder[lhs.id, default: 0], rightOrder = releaseOrder[rhs.id, default: 0]
+                if leftOrder != rightOrder { return leftOrder > rightOrder }
+                if lhs.id != rhs.id { return lhs.id < rhs.id }
                 let byNumber = CollectorNumber.compare(
                     collectorNumberKey(for: left),
                     collectorNumberKey(for: right)
                 )
                 if byNumber != .orderedSame { return byNumber == .orderedAscending }
                 return tieBreak(left, right)
-            }
+            }.map(\.row)
 
         case .priceHighToLow:
             return rows.sorted { left, right in

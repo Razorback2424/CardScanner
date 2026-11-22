@@ -289,7 +289,8 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
                         imageURL: printing?.displayImageURL ?? card.imageURL, catalogGeneration: catalogGeneration,
                         collectionAvailabilityNotice: printing.map {
                             unpricedPrintingIDs.contains($0.physicalPrintingID) ? Self.unpricedNotice : nil
-                        } ?? Self.browseOnlyNotice, searchFields: fields)
+                        } ?? Self.browseOnlyNotice, searchFields: fields,
+                        verifiedBrowseFinishes: printing?.variantEvidence.catalogVariants)
                 }
             }
             var set = CatalogSet(catalogID: id, name: name, code: first.setCode,

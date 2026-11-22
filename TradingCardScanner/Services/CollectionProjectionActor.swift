@@ -34,6 +34,7 @@ struct CollectionProjectionSnapshot: Equatable, Sendable {
 final class CollectionProjectionStore: ObservableObject {
     @Published private(set) var snapshot: CollectionProjectionSnapshot?
     @Published private(set) var revision: UInt = 0
+    @Published private(set) var cardOwnershipRevision: UInt = 0
     @Published private(set) var isLoaded = false
     @Published private(set) var loadFailed = false
 
@@ -94,8 +95,10 @@ final class CollectionProjectionStore: ObservableObject {
                     continue
                 }
                 if self.snapshot != snapshot {
+                    let ownershipChanged = self.snapshot?.ownership.hasSameCardOwnership(as: snapshot.ownership) != true
                     self.snapshot = snapshot
                     self.revision &+= 1
+                    if ownershipChanged { self.cardOwnershipRevision &+= 1 }
                 }
                 self.isLoaded = true
                 self.loadFailed = false

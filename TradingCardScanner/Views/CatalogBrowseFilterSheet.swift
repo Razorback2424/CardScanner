@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// Filter choices for one game's Browse grid. Options come from the catalog
-/// (sets) and from what the game's rows have shown (finishes, treatments).
+/// Filter choices for one game's Browse grid.
 struct CatalogBrowseFilterSheet: View {
     /// A binding rather than `\.dismiss`: in a wide window this is an inspector
     /// column, not a sheet.
@@ -10,7 +9,7 @@ struct CatalogBrowseFilterSheet: View {
     let game: CardGame
     let sets: [CatalogSet]
     let finishOptions: [PhysicalVariant]
-    let treatmentIDs: [String]
+    let treatmentOptions: [MagicTreatment]
 
     var body: some View {
         NavigationStack {
@@ -32,6 +31,14 @@ struct CatalogBrowseFilterSheet: View {
                     } label: {
                         detailRow("Sets", value: selectionLabel(filters.setIDs.count, singular: "set"))
                     }
+                    if !printRunOptions.isEmpty {
+                        NavigationLink {
+                            MultiSelectFilterView(title: "Print Run", options: printRunOptions,
+                                                  selection: printRunSelection, showsCounts: false)
+                        } label: {
+                            detailRow("Print Run", value: selectionLabel(filters.pokemonPrintRuns.count, singular: "print run"))
+                        }
+                    }
                     if !finishOptions.isEmpty {
                         NavigationLink {
                             MultiSelectFilterView(
@@ -40,18 +47,19 @@ struct CatalogBrowseFilterSheet: View {
                                     FilterOption(id: $0.id, label: $0.label, group: nil, count: 0)
                                 },
                                 selection: $filters.variantIDs,
-                                showsCounts: false
+                                showsCounts: false,
+                                allowsSearch: game == .pokemon
                             )
                         } label: {
                             detailRow("Finish", value: selectionLabel(filters.variantIDs.count, singular: "finish"))
                         }
                     }
-                    if !treatmentIDs.isEmpty {
+                    if !treatmentOptions.isEmpty {
                         NavigationLink {
                             MultiSelectFilterView(
                                 title: "Treatment",
-                                options: treatmentIDs.map {
-                                    FilterOption(id: $0, label: MagicTreatment(id: $0)?.label ?? $0, group: nil, count: 0)
+                                options: treatmentOptions.map {
+                                    FilterOption(id: $0.id, label: $0.label, group: nil, count: 0)
                                 },
                                 selection: $filters.magicTreatmentIDs,
                                 showsCounts: false
@@ -98,6 +106,20 @@ struct CatalogBrowseFilterSheet: View {
         )
     }
 
+    private var printRunOptions: [FilterOption] {
+        let available = Set(sets.compactMap(\.pokemonPrintRun)).union(filters.pokemonPrintRuns)
+        return [PokemonPrintRun.firstEdition, .shadowless, .unlimited].filter { available.contains($0) }.map {
+            FilterOption(id: $0.rawValue, label: $0.label, group: nil, count: 0)
+        }
+    }
+
+    private var printRunSelection: Binding<Set<String>> {
+        Binding(
+            get: { Set(filters.pokemonPrintRuns.map(\.rawValue)) },
+            set: { filters.pokemonPrintRuns = Set($0.compactMap(PokemonPrintRun.init(rawValue:))) }
+        )
+    }
+
     private func detailRow(_ title: String, value: String) -> some View {
         LabeledContent(title, value: value)
     }
@@ -116,6 +138,7 @@ struct CatalogBrowseFilterSheet: View {
 struct CatalogBrowseFilterChips: View {
     @Binding var filters: CatalogBrowseFilters
     let sets: [CatalogSet]
+    var finishOptions: [PhysicalVariant] = []
 
     private struct Chip: Identifiable {
         let id: String
@@ -135,8 +158,12 @@ struct CatalogBrowseFilterChips: View {
                 chips.append(Chip(id: "set-\(set.catalogID.id)", label: set.name) { $0.setIDs.remove(set.catalogID) })
             }
         }
+        for run in filters.pokemonPrintRuns.sorted(by: { $0.rawValue < $1.rawValue }) {
+            chips.append(Chip(id: "run-\(run.rawValue)", label: run.label) { $0.pokemonPrintRuns.remove(run) })
+        }
         for id in filters.variantIDs.sorted() {
-            chips.append(Chip(id: "finish-\(id)", label: PhysicalVariant.resolving(id).label) { $0.variantIDs.remove(id) })
+            let finish = finishOptions.first { $0.id == id } ?? PhysicalVariant.resolving(id)
+            chips.append(Chip(id: "finish-\(id)", label: finish.label) { $0.variantIDs.remove(id) })
         }
         for id in filters.magicTreatmentIDs.sorted() {
             chips.append(Chip(id: "treatment-\(id)", label: MagicTreatment(id: id)?.label ?? id) {

@@ -800,7 +800,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
         return entries.map { entry in
             guard let descriptor = catalogRegistry.descriptor(forProviderSetID: entry.providerID) else {
-                return entry.set.withSortRank(pokemonBundledRanks[entry.set.id] ?? entry.set.sortRank)
+                var set = entry.set.withSortRank(pokemonBundledRanks[entry.set.id] ?? entry.set.sortRank)
+                set.officialCollectorCount = entry.officialCount
+                return set
             }
 
             let baseName = descriptor.displayName ?? entry.set.name
@@ -831,7 +833,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     snapshotURLs: entry.set.artworkFallbackURLs
                 ),
                 limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion && entry.providerID != PokemonM26Catalog.setID,
-                cardArtwork: BrowseCatalogArtworkSelection.cardArtworkMap(descriptor: descriptor)
+                cardArtwork: BrowseCatalogArtworkSelection.cardArtworkMap(descriptor: descriptor),
+                officialCollectorCount: entry.officialCount ?? descriptor.officialCount
             )
         }
     }
@@ -2266,10 +2269,15 @@ actor BrowseCatalog: BrowseCatalogProviding {
             uniquingKeysWith: { first, _ in first }
         )
         let sets = baseSets.flatMap { set in
-            PokemonMasterSetDefinition.virtualSets(
+            let count = countsByID[set.providerID.lowercased()]
+            return PokemonMasterSetDefinition.virtualSets(
                 set,
-                cardCount: countsByID[set.providerID.lowercased()]
-            )
+                cardCount: count
+            ).map { source in
+                var result = source
+                result.officialCollectorCount = count?.official
+                return result
+            }
         }
         // In the app path the signed registry and a verified checklist are the
         // only production set-activation authorities. A raw directory remains

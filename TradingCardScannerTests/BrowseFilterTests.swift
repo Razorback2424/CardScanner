@@ -66,6 +66,82 @@ final class BrowseFilterTests: XCTestCase {
         XCTAssertFalse(filters.matchesWithoutPrice(card("3", set: magic, variant: nil, treatments: ["galaxyfoil"]), isOwned: false))
     }
 
+    func testMagicFilteredBrowseMatchesFinishTreatmentAndOwnershipOnTheSameCopy() async throws {
+        let printing = card("98", set: set("fic", game: .magic), variant: nil,
+                            treatments: ["surgefoil"], finishes: ["nonfoil", "foil"])
+        let plain = CollectedCard(collectionKey: "fic-98#nonfoil", game: .magic, providerID: printing.providerID,
+            name: printing.name, setName: printing.setName, setCode: printing.setCode, cardNumber: "98",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .nonfoil, variantResolution: .userConfirmed)
+        let owned = CatalogOwnershipIndex([plain])
+        var filters = CatalogBrowseFilters(variantIDs: ["nonfoil"], magicTreatmentIDs: ["surgefoil"])
+        XCTAssertFalse(filters.matchesWithoutPrice(printing, isOwned: owned.owns))
+
+        filters.variantIDs = ["foil"]
+        filters.ownership = .owned
+        XCTAssertFalse(filters.matchesWithoutPrice(printing, isOwned: owned.owns))
+        filters.ownership = .notOwned
+        let fill = await CatalogFilteredPager.fill(from: CatalogSearchPosition.start, filters: filters,
+            loadPage: { _ in .init(items: [printing], next: nil) }, isOwned: owned.owns,
+            resolvePrices: { _ in [:] }, isCurrent: { true })
+        XCTAssertEqual(fill?.matches, [printing])
+        XCTAssertEqual(filters.matchingPrintings(for: printing, isOwned: owned.owns).compactMap(\.masterSetVariant), [.foil])
+
+        filters.variantIDs = []
+        filters.ownership = .owned
+        XCTAssertFalse(filters.matchesWithoutPrice(printing, isOwned: owned.owns))
+        filters.ownership = .notOwned
+        XCTAssertTrue(filters.matchesWithoutPrice(printing, isOwned: owned.owns))
+    }
+
+    func testPokemonPrintRunCombinesWithSetAndFinishFilters() {
+        let firstID = CatalogSetID(game: .pokemon, providerID: "base1", pokemonPrintRun: .firstEdition)
+        let unlimitedID = CatalogSetID(game: .pokemon, providerID: "base1", pokemonPrintRun: .unlimited)
+        let first = CatalogCardSummary(game: .pokemon, providerID: "base1-4", setID: firstID,
+            setName: "Base Set — 1st Edition", setCode: "BS", name: "Charizard", collectorNumber: "4",
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
+        let unlimited = CatalogCardSummary(game: .pokemon, providerID: "base1-4", setID: unlimitedID,
+            setName: "Base Set — Unlimited", setCode: "BS", name: "Charizard", collectorNumber: "4",
+            thumbnailURL: nil, imageURL: nil, masterSetVariant: .holo)
+        var filters = CatalogBrowseFilters(pokemonPrintRuns: [.firstEdition], variantIDs: ["holo"])
+        XCTAssertTrue(filters.matchesWithoutPrice(first, isOwned: false))
+        XCTAssertFalse(filters.matchesWithoutPrice(unlimited, isOwned: false))
+        filters.setIDs = [unlimitedID]
+        XCTAssertFalse(filters.matchesWithoutPrice(first, isOwned: false))
+    }
+
+    func testPokemonMissingSearchExpandsFinishesWithoutAnExplicitFinishFilter() async throws {
+        let set = set("base1")
+        let holo = card("4", set: set, variant: .holo)
+        let normal = card("4", set: set, variant: .normal)
+        let hit = card("4", set: set, variant: nil)
+        let stored = CollectedCard(collectionKey: "normal", game: .pokemon, providerID: normal.providerID,
+            name: normal.name, setName: set.name, setCode: set.code, cardNumber: normal.collectorNumber,
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .normal, variantResolution: .userConfirmed)
+        let ownership = CatalogOwnershipIndex([stored])
+        let filters = CatalogBrowseFilters(ownership: .notOwned)
+        XCTAssertTrue(CatalogSearchFinishExpansion.needsExpansion(game: .pokemon, filters: filters))
+        let expanded = try await CatalogSearchFinishExpansion.expand([hit], setsByID: [set.catalogID: set]) { _ in [normal, holo] }
+        XCTAssertEqual(expanded.filter { filters.matchesWithoutPrice($0, isOwned: ownership.owns) }, [holo])
+    }
+
+    func testVerifiedAdapterFinishFilterScopesOwnershipWithoutChangingPrintingID() throws {
+        let set = set("d23", game: .lorcana)
+        let foil = LorcanaPhysicalFinish.rainbowPillarsFoil.variant
+        let browseOnly = card("1", set: set, variant: nil)
+        var verified = browseOnly
+        verified.verifiedBrowseFinishes = [.normal, foil]
+        var facets = CatalogBrowseFacets()
+        facets.record([verified])
+        XCTAssertEqual(facets.finishOptions(base: [], for: .lorcana), [.normal, foil])
+        let filters = CatalogBrowseFilters(variantIDs: [foil.id], ownership: .notOwned)
+        let owned = CollectedCard(collectionKey: "normal", game: .lorcana, providerID: verified.providerID,
+            name: verified.name, setName: set.name, setCode: set.code, cardNumber: verified.collectorNumber,
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .normal, variantResolution: .userConfirmed)
+        XCTAssertTrue(filters.matchesWithoutPrice(verified, isOwned: CatalogOwnershipIndex([owned]).owns))
+        XCTAssertFalse(filters.matchesWithoutPrice(browseOnly, isOwned: false))
+        XCTAssertEqual(try JSONDecoder().decode(CatalogCardSummary.self, from: JSONEncoder().encode(verified)).id, browseOnly.id)
+    }
+
     func testSetAndOwnershipFilters() {
         let a = set("a"), b = set("b")
         var filters = CatalogBrowseFilters()
@@ -325,7 +401,98 @@ final class BrowseFilterTests: XCTestCase {
         var magicFacets = CatalogBrowseFacets()
         magicFacets.record([card("1", set: magic, variant: nil, treatments: ["galaxyfoil"], finishes: ["nonfoil", "foil"])])
         XCTAssertEqual(magicFacets.finishOptions(base: []).map(\.id), ["nonfoil", "foil"])
-        XCTAssertEqual(magicFacets.treatmentIDs, ["galaxyfoil"])
+        XCTAssertTrue(magicFacets.treatmentOptions(for: .magic).contains(.galaxyFoil))
+    }
+
+    func testPokemonBrowseExposesBundledSpecialtyFinishesBeforeCardsLoad() async {
+        let bundled = await PokemonBrowseFinishCatalog.bundled.value
+        let options = CatalogBrowseFacets().finishOptions(base: PokemonVariantPolicy().selectableVariants,
+                                                          catalog: bundled, for: .pokemon)
+        XCTAssertTrue(options.contains(.pokemonFoilPattern("cosmos")))
+        XCTAssertTrue(options.contains(PokemonReviewedPhysicalObjects.cosmosHolo))
+        XCTAssertTrue(options.contains(PokemonReviewedPhysicalObjects.cosmosReverse))
+        XCTAssertTrue(options.contains(.pokemonFoilPattern("cracked-ice")))
+        XCTAssertFalse(options.contains(.firstEdition))
+        XCTAssertFalse(options.contains(.jumbo))
+    }
+
+    func testFullSetSortIncludesCardsOnTheLastPage() async throws {
+        let magic = set("fin", game: .magic)
+        let first = card("5", set: magic, variant: nil)
+        let middle = card("11", set: magic, variant: nil)
+        let last = card("1", set: magic, variant: nil)
+        let pages: [String: CatalogPage<CatalogCardSummary>] = [
+            "second": .init(items: [middle], nextCursor: "third"),
+            "third": .init(items: [last], nextCursor: nil)
+        ]
+        let result = await CatalogSetPageLoader.collect(from: "second", limit: nil) { cursor in
+            try XCTUnwrap(pages[cursor ?? ""])
+        }
+        XCTAssertEqual(result.count, 2)
+        XCTAssertNil(result.nextCursor)
+        XCTAssertNil(result.error)
+        let cards = [first] + result.items
+        let ownership = CatalogOwnershipIndex(rows: [])
+        let prices = [first.id: 10.0, middle.id: 1.0, last.id: 100.0]
+        XCTAssertEqual(CatalogSetQuery.apply(cards, search: "", sort: .numberLowToHigh,
+            ownership: .all, owned: ownership, prices: prices).map(\.id), [last.id, first.id, middle.id])
+        XCTAssertEqual(CatalogSetQuery.apply(cards, search: "", sort: .priceHighToLow,
+            ownership: .all, owned: ownership, prices: prices).map(\.id), [last.id, first.id, middle.id])
+    }
+
+    func testFilteredPagerRejectsCyclesAcrossFillsAndCountsOnlyNewCards() async throws {
+        let card = card("1", set: set("a"))
+        let a = CatalogSearchPosition(cursor: "a"), b = CatalogSearchPosition(cursor: "b")
+        let first = await CatalogFilteredPager.fill(from: a, filters: .none,
+            limits: .init(targetMatchCount: 1, maxPagesPerFill: 1), loadPage: { _ in .init(items: [card], next: b) },
+            isOwned: { _ in false }, resolvePrices: { _ in [:] }, isCurrent: { true })
+        let initial = try XCTUnwrap(first)
+        let c = CatalogSearchPosition(cursor: "c")
+        let next = await CatalogFilteredPager.fill(from: initial.position, filters: .none,
+            limits: .init(targetMatchCount: 1, maxPagesPerFill: 8), visitedPositions: initial.visitedPositions,
+            existingIDs: Set(initial.matches.map(\.id)), loadPage: { position in
+                .init(items: [card], next: position == b ? c : a)
+            }, isOwned: { _ in false }, resolvePrices: { _ in [:] }, isCurrent: { true })
+        XCTAssertEqual(next?.matches, [])
+        XCTAssertEqual(next?.position, c)
+        XCTAssertEqual(next?.visitedPositions, [a, b])
+        XCTAssertNotNil(next?.error)
+    }
+
+    func testFullSetSortKeepsCompletedPagesAndRetriesFailedCursor() async {
+        let s = set("fin", game: .magic)
+        let middle = card("2", set: s, variant: nil), last = card("3", set: s, variant: nil)
+        let first = await CatalogSetPageLoader.collect(from: "2", limit: nil) { cursor in
+            guard cursor == "2" else { throw PageFailure() }
+            return .init(items: [middle], nextCursor: "3")
+        }
+        XCTAssertEqual(first.items, [middle])
+        XCTAssertEqual(first.nextCursor, "3")
+        XCTAssertNotNil(first.error)
+        let resumed = await CatalogSetPageLoader.collect(from: first.nextCursor, limit: nil,
+            visitedCursors: first.visitedCursors) { cursor in
+            XCTAssertEqual(cursor, "3")
+            return .init(items: [last], nextCursor: nil)
+        }
+        XCTAssertEqual(resumed.items, [last])
+        XCTAssertNil(resumed.nextCursor)
+        XCTAssertNil(resumed.error)
+    }
+
+    func testChocoboTrackFoilIsAvailableBeforeLoadingCardsAndPrioritizesKnownSets() {
+        let options = CatalogBrowseFacets().treatmentOptions(for: .magic)
+        XCTAssertEqual(options.first { $0.id == "chocobotrackfoil" }?.label, "Chocobo Track Foil")
+        XCTAssertTrue(CatalogBrowseFacets().treatmentOptions(for: .pokemon).isEmpty)
+
+        let newer = set("ecl", game: .magic)
+        let finalFantasy = set("fin", game: .magic)
+        let commander = set("fic", game: .magic)
+        let directory = [newer, finalFantasy, commander]
+        var filters = CatalogBrowseFilters(magicTreatmentIDs: ["chocobotrackfoil"])
+        XCTAssertEqual(filters.restrictedSets(directory), [finalFantasy, commander, newer])
+
+        filters.setIDs = [newer.catalogID, commander.catalogID]
+        XCTAssertEqual(filters.restrictedSets(directory), [commander, newer])
     }
 
     func testSearchExpansionReplacesFinishlessRowsWithTheirSlotsInOrder() async throws {

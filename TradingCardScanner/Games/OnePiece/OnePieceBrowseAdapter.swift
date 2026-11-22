@@ -96,9 +96,10 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                 let qualifiers = [printing.treatment, printing.distributionLabel, printing.stamp]
                     .compactMap { $0 }.filter { !$0.isEmpty }
                 let name = qualifiers.isEmpty ? canonical.name : canonical.name + " · " + qualifiers.joined(separator: " · ")
-                let finishSearchTerms = printing.status == .verified ? printing.supportedVariantIDs.compactMap { id in
-                    registry.variantsByID[id].map { "\(canonical.name) \($0.label)" }
-                } : []
+                let finishes: [PhysicalVariant]? = printing.status == .verified ? printing.supportedVariantIDs.compactMap { id in
+                    registry.variantsByID[id].map { PhysicalVariant(id: $0.id, label: $0.label) }
+                } : nil
+                let finishSearchTerms = (finishes ?? []).map { "\(canonical.name) \($0.label)" }
                 return CatalogCardSummary(game: .onePiece, providerID: printing.id.uuidString.lowercased(),
                     setID: setID, setName: set.name,
                     setCode: OnePieceTextNormalization.prefix(of: canonical.printedNumber) ?? "",
@@ -108,7 +109,8 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                     collectionAvailabilityNotice: printing.status == .verified ? nil
                         : registry.knownUnpricedPrintingIDs.contains(printing.id) ? Self.unpricedNotice
                         : registry.knownNoPhotoPrintingIDs.contains(printing.id) ? Self.noPhotoNotice : "Browse only",
-                    searchFields: Self.searchFields(name: name, number: canonical.printedNumber, additionalText: finishSearchTerms))
+                    searchFields: Self.searchFields(name: name, number: canonical.printedNumber, additionalText: finishSearchTerms),
+                    verifiedBrowseFinishes: finishes)
             }
             let discoveryRows = unresolvedNumbers.compactMap { _, observations -> CatalogCardSummary? in
                 guard let observation = observations.first,

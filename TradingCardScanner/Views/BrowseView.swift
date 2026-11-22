@@ -1235,10 +1235,11 @@ enum CatalogSetOrdering {
 
     static func oldestFirst(_ sets: [CatalogSet]) -> [CatalogSet] {
         sets.sorted {
-            let leftDate = $0.releaseDate ?? .distantPast
-            let rightDate = $1.releaseDate ?? .distantPast
-            if leftDate != rightDate {
-                return leftDate < rightDate
+            switch ($0.releaseDate, $1.releaseDate) {
+            case let (left?, right?) where left != right: return left < right
+            case (_?, nil): return true
+            case (nil, _?): return false
+            default: break
             }
             if $0.releaseOrder != $1.releaseOrder {
                 return $0.releaseOrder < $1.releaseOrder
@@ -1463,8 +1464,13 @@ private struct CatalogGameBrowseView: View {
     @State private var filters = CatalogBrowseFilters.none
     @State private var isShowingFilters = false
     @State private var facets = CatalogBrowseFacets()
+    @State private var checklistFinishes: [PhysicalVariant] = []
 
     private var orderedSets: [CatalogSet] { CatalogSetOrdering.newestFirst(sets) }
+    private var finishOptions: [PhysicalVariant] {
+        facets.finishOptions(base: PhysicalVariant.selectable(for: game, registry: catalog.gameRegistry),
+                             catalog: checklistFinishes, for: game)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -1517,7 +1523,7 @@ private struct CatalogGameBrowseView: View {
                     prompt: "Search \(game.label) \(contentKind == .cards ? "cards" : "sets")"
                 )
                 if contentKind == .cards, filters.isActive {
-                    CatalogBrowseFilterChips(filters: $filters, sets: orderedSets)
+                    CatalogBrowseFilterChips(filters: $filters, sets: orderedSets, finishOptions: finishOptions)
                 }
             }
         }
@@ -1528,10 +1534,8 @@ private struct CatalogGameBrowseView: View {
                 filters: $filters,
                 game: game,
                 sets: orderedSets,
-                finishOptions: facets.finishOptions(
-                    base: PhysicalVariant.selectable(for: game, registry: catalog.gameRegistry)
-                ),
-                treatmentIDs: game == .magic ? facets.treatmentIDs : []
+                finishOptions: finishOptions,
+                treatmentOptions: facets.treatmentOptions(for: game)
             )
         ))
         .toolbar {
@@ -1553,6 +1557,12 @@ private struct CatalogGameBrowseView: View {
             // Card queries are not vendor set filters. A segment change starts
             // with a clean, shared search field in either direction.
             search = ""
+        }
+        .task {
+            guard game == .pokemon else { return }
+            let options = await PokemonBrowseFinishCatalog.bundled.value
+            guard !Task.isCancelled else { return }
+            checklistFinishes = options
         }
     }
 }
@@ -1629,6 +1639,7 @@ struct CatalogGameCardsView: View {
     @State private var filteredPosition: CatalogSetWalkPosition? = .start
     @State private var filteredStoppedAtLimit = false
     @State private var filteredScannedCount = 0
+    @State private var visitedSetPositions: Set<CatalogSetWalkPosition> = []
     @State private var searchStoppedAtLimit = false
     @State private var nextSetIndex = 0
     @State private var activeSet: CatalogSet?
@@ -1637,6 +1648,7 @@ struct CatalogGameCardsView: View {
     @State private var contentRevision = 0
     @State private var viewport = CGRect.zero
     @State private var cursor: String?
+    @State private var visitedDefaultCursors: Set<String> = []
     @State private var isLoading = false
     @State private var error: String?
     @State private var searchCards: [CatalogCardSummary] = []
@@ -1644,7 +1656,10 @@ struct CatalogGameCardsView: View {
     @State private var searchIsLoading = false
     @State private var searchError: String?
     @State private var searchRevision = 0
-    @State private var searchRequestKey: String?
+    @State private var searchRequestKey: UUID?
+    @State private var visitedSearchPositions: Set<CatalogSearchPosition> = []
+    @State private var isVisible = false
+    @State private var ownershipRevision: UInt?
     @State private var cardGroups: [CatalogCardDisplayGroup] = []
     @State private var searchCardGroups: [CatalogCardDisplayGroup] = []
 
@@ -1699,12 +1714,21 @@ struct CatalogGameCardsView: View {
             if isActive, cards.isEmpty { await retryDefault() }
         }
         .onChange(of: hasSearchText) { _, _ in invalidateDefaultRequest() }
-        .onChange(of: isActive) { _, _ in invalidateDefaultRequest() }
+        .onChange(of: isActive) { _, active in
+            invalidateDefaultRequest()
+            if active { refreshOwnershipFilter() }
+        }
+        .onAppear {
+            isVisible = true
+            refreshOwnershipFilter()
+        }
         .onDisappear {
+            isVisible = false
             invalidateDefaultRequest()
             searchRequestKey = nil
             searchIsLoading = false
         }
+        .onChange(of: projectionStore.cardOwnershipRevision) { _, _ in refreshOwnershipFilter() }
         .onChange(of: sets) { oldSets, newSets in
             guard newSets != refreshedSets else { return }
             let previous = refreshedSets ?? oldSets
@@ -1723,37 +1747,33 @@ struct CatalogGameCardsView: View {
                 normalizedQuery: normalizedSearch,
                 game: game
             ) else {
-                searchCards = []
-                searchCursor = nil
-                searchError = nil
-                searchIsLoading = false
-                searchRequestKey = nil
+                clearSearchResults()
                 return
             }
             let query = providerSearch
-            let requestKey = "\(query)-\(searchRevision)"
+            clearSearchResults()
+            let requestKey = UUID()
             searchRequestKey = requestKey
-            searchCards = []
-            searchCursor = nil
-            searchError = nil
             searchIsLoading = true
             try? await Task.sleep(for: .milliseconds(400))
             guard !Task.isCancelled else { return }
-            await loadSearch(query: query, requestKey: requestKey)
-        }
-        .onChange(of: cards) { _, newCards in
-            cardGroups = CatalogCardDisplayGrouping.groups(for: newCards)
-            onCardsLoaded(newCards)
-        }
-        .onChange(of: searchCards) { _, newSearchCards in
-            searchCardGroups = CatalogCardDisplayGrouping.groups(for: newSearchCards)
-            onCardsLoaded(newSearchCards)
+            await loadSearchPage(query: query, requestKey: requestKey, cursor: nil)
         }
         .onChange(of: filters) { _, _ in
             // A filter change is a new question: start both walks over.
+            ownershipRevision = projectionStore.cardOwnershipRevision
             resetContent()
         }
         .safeAreaPadding(.bottom, 24)
+    }
+
+    private func refreshOwnershipFilter() {
+        guard isVisible, isActive else { return }
+        let previous = ownershipRevision
+        ownershipRevision = projectionStore.cardOwnershipRevision
+        if filters.ownership != .all, let previous, previous != ownershipRevision {
+            resetContent()
+        }
     }
 
     @ViewBuilder
@@ -1788,7 +1808,7 @@ struct CatalogGameCardsView: View {
                     systemImage: "line.3.horizontal.decrease.circle",
                     description: Text(filteredPosition == nil
                         ? "Try removing a filter."
-                        : "Checked \(filteredScannedCount) cards in the newest sets.")
+                        : "Checked \(filteredScannedCount) cards so far.")
                 )
                 Button("Clear Filters", action: onClearFilters)
                     .buttonStyle(.bordered)
@@ -1802,7 +1822,8 @@ struct CatalogGameCardsView: View {
                 CatalogCardGrid(
                     groups: cardGroups,
                     catalog: catalog,
-                    owned: owned
+                    owned: owned,
+                    filters: filters
                 )
                     .padding(12)
                     .contentWidthLimit(.wide)
@@ -1825,7 +1846,7 @@ struct CatalogGameCardsView: View {
     private var filteredFooter: some View {
         if filteredPosition != nil {
             if filteredStoppedAtLimit {
-                Button("Keep Searching Older Sets") { Task { await loadDefaultMore() } }
+                Button("Keep Searching More Sets") { Task { await loadDefaultMore() } }
                     .buttonStyle(.bordered)
                     .padding(.bottom, 8)
             } else if !cards.isEmpty {
@@ -1856,6 +1877,7 @@ struct CatalogGameCardsView: View {
                     nextSetIndex = index
                     activeSet = nil
                     cursor = nil
+                    visitedDefaultCursors = []
                     await loadDefaultMore()
                 }
             }
@@ -1913,7 +1935,8 @@ struct CatalogGameCardsView: View {
             CatalogCardGrid(
                 groups: searchCardGroups,
                 catalog: catalog,
-                owned: owned
+                owned: owned,
+                filters: filters
             )
                 .padding(12)
                 .contentWidthLimit(.wide)
@@ -1926,7 +1949,7 @@ struct CatalogGameCardsView: View {
                     .buttonStyle(.bordered)
             } else if searchCursor != nil {
                 CatalogPaginationFooter(
-                    requestID: "\(searchRequestKey ?? "")-\(searchCursor ?? "")", viewport: viewport
+                    requestID: "\(searchRequestKey?.uuidString ?? "")-\(searchCursor ?? "")", viewport: viewport
                 ) { await loadMoreSearch(query: providerSearch) }
             }
         }
@@ -1947,11 +1970,17 @@ struct CatalogGameCardsView: View {
         do {
             let page = try await catalog.cards(in: set, cursor: cursor)
             guard !Task.isCancelled, revision == contentRevision else { return }
+            if let next = page.nextCursor, next == cursor || visitedDefaultCursors.contains(next) {
+                throw BrowseCatalogError.badResponse
+            }
+            if let cursor { visitedDefaultCursors.insert(cursor) }
             if startedNewSet { nextSetIndex += 1 }
             cards = deduplicated(cards + page.items)
             cardGroups = CatalogCardDisplayGrouping.groups(for: cards)
+            onCardsLoaded(page.items)
             cursor = page.nextCursor
             activeSet = page.nextCursor == nil ? nil : set
+            if activeSet == nil { visitedDefaultCursors = [] }
         } catch {
             guard !Task.isCancelled, revision == contentRevision else { return }
             self.error = error.localizedDescription
@@ -1968,83 +1997,81 @@ struct CatalogGameCardsView: View {
         let revision = contentRevision
         let catalog = catalog
         let owned = ownershipIndex
+        let capturedOwnershipRevision = projectionStore.cardOwnershipRevision
         isLoading = true
         error = nil
         defer { if revision == contentRevision { isLoading = false } }
         let fill = await CatalogFilteredPager.fill(
             from: start,
             filters: filters,
+            visitedPositions: visitedSetPositions,
+            existingIDs: Set(cards.map(\.id)),
             loadPage: CatalogFilteredPager.setWalkLoader(sets: sets) { set, cursor in
                 try await catalog.cards(in: set, cursor: cursor)
             },
             isOwned: { owned.owns($0) },
             resolvePrices: { await CatalogPriceResolution.resolve($0, from: catalog.sortPriceUpdates(for: $0)) },
-            isCurrent: { revision == contentRevision }
+            isCurrent: {
+                revision == contentRevision && (filters.ownership == .all || projectionStore.cardOwnershipRevision == capturedOwnershipRevision)
+            }
         )
         guard let fill, !Task.isCancelled, revision == contentRevision else { return }
-        cards = deduplicated(cards + fill.matches)
+        cards += fill.matches
         cardGroups = CatalogCardDisplayGrouping.groups(for: cards)
+        onCardsLoaded(fill.matches)
         filteredPosition = fill.position
+        visitedSetPositions = fill.visitedPositions
         filteredStoppedAtLimit = fill.stoppedAtPageLimit
         filteredScannedCount += fill.scannedCount
         if let failure = fill.error { error = failure.localizedDescription }
     }
 
-    /// One step of search: a provider page, or a filtered fill over pages.
-    private struct SearchStep {
-        var items: [CatalogCardSummary]
-        var nextCursor: String?
-        var error: Error?
-        var stoppedAtLimit = false
-    }
-
-    private func searchStep(query: String, cursor: String?, isCurrent: () -> Bool) async throws -> SearchStep? {
-        guard filters.isActive else {
-            let page = try await catalog.searchCards(named: query, game: game, setIDs: [], cursor: cursor)
-            return SearchStep(items: page.items, nextCursor: page.nextCursor)
-        }
+    private func searchStep(query: String, cursor: String?, isCurrent: () -> Bool) async
+        -> CatalogFilteredPager.Fill<CatalogSearchPosition>? {
         let catalog = catalog
         let game = game
         let filters = filters
         let expands = CatalogSearchFinishExpansion.needsExpansion(game: game, filters: filters)
-        let setsByID = Dictionary(orderedSets.map { ($0.catalogID, $0) }, uniquingKeysWith: { first, _ in first })
+        let eligibleSets = expands || !filters.pokemonPrintRuns.isEmpty ? filteredSets : []
+        let setsByID = Dictionary(eligibleSets.map { ($0.catalogID, $0) }, uniquingKeysWith: { first, _ in first })
+        let searchSetIDs = filters.pokemonPrintRuns.isEmpty ? filters.setIDs : Set(setsByID.keys)
+        if !filters.pokemonPrintRuns.isEmpty, searchSetIDs.isEmpty {
+            return .init()
+        }
         let owned = ownershipIndex
-        let fill = await CatalogFilteredPager.fill(
+        let capturedOwnershipRevision = projectionStore.cardOwnershipRevision
+        var expansion = CatalogSearchFinishExpansion()
+        return await CatalogFilteredPager.fill(
             from: CatalogSearchPosition(cursor: cursor),
             filters: filters,
+            limits: filters.isActive ? .init() : .init(targetMatchCount: 1, maxPagesPerFill: 1),
+            visitedPositions: visitedSearchPositions,
+            existingIDs: Set(searchCards.map(\.id)),
             loadPage: CatalogFilteredPager.searchLoader { cursor in
                 let page = try await catalog.searchCards(
-                    named: query, game: game, setIDs: filters.setIDs, cursor: cursor
+                    named: query, game: game, setIDs: searchSetIDs, cursor: cursor
                 )
                 guard expands else { return page }
-                let items = try await CatalogSearchFinishExpansion.expand(page.items, setsByID: setsByID) { set in
+                let items = try await expansion.expand(page.items, setsByID: setsByID) { set in
                     try await Self.allCards(in: set, catalog: catalog)
                 }
                 return CatalogPage(items: items, nextCursor: page.nextCursor)
             },
             isOwned: { owned.owns($0) },
             resolvePrices: { await CatalogPriceResolution.resolve($0, from: catalog.sortPriceUpdates(for: $0)) },
-            isCurrent: isCurrent
-        )
-        guard let fill else { return nil }
-        return SearchStep(
-            items: fill.matches,
-            nextCursor: fill.position?.cursor,
-            error: fill.error,
-            stoppedAtLimit: fill.stoppedAtPageLimit
+            isCurrent: {
+                isCurrent() && (filters.ownership == .all || projectionStore.cardOwnershipRevision == capturedOwnershipRevision)
+            }
         )
     }
 
     /// A Pokémon set page is local and normally one page; follow any cursor anyway.
     private static func allCards(in set: CatalogSet, catalog: any BrowseCatalogProviding) async throws -> [CatalogCardSummary] {
-        var items: [CatalogCardSummary] = []
-        var cursor: String?
-        repeat {
-            let page = try await catalog.cards(in: set, cursor: cursor)
-            items += page.items
-            cursor = page.nextCursor
-        } while cursor != nil
-        return items
+        let result = await CatalogSetPageLoader.collect(from: nil, limit: nil) { cursor in
+            try await catalog.cards(in: set, cursor: cursor)
+        }
+        if let error = result.error { throw error }
+        return result.items
     }
 
     private func resetContent() {
@@ -2059,22 +2086,29 @@ struct CatalogGameCardsView: View {
         nextSetIndex = 0
         activeSet = nil
         cursor = nil
+        visitedDefaultCursors = []
         isLoading = false
         error = nil
         filteredPosition = .start
+        visitedSetPositions = []
         filteredStoppedAtLimit = false
         filteredScannedCount = 0
     }
 
     private func resetSearchContent() {
+        clearSearchResults()
+        searchRevision += 1
+    }
+
+    private func clearSearchResults() {
         searchRequestKey = nil
         searchCards = []
         searchCardGroups = []
         searchCursor = nil
+        visitedSearchPositions = []
         searchError = nil
         searchIsLoading = false
         searchStoppedAtLimit = false
-        searchRevision += 1
     }
 
     private func updateVisibleContent(
@@ -2098,7 +2132,12 @@ struct CatalogGameCardsView: View {
 
         let oldIDs = Set(oldDirectory.map(\.catalogID))
         let newIDs = Set(newDirectory.map(\.catalogID))
+        let canGainMatches = isSearchQuery && (filters.isActive || searchCards.isEmpty)
+            && newIDs.contains { id in
+                filters.includesSet(id) && publication?.affects(game: game, providerSetID: id.providerID) == true
+            }
         if oldIDs != newIDs || (publication != nil && searchIsLoading)
+            || canGainMatches
             || searchCards.contains(where: { publication?.affects(game: game, providerSetID: $0.setID.providerID) == true }) {
             resetSearchContent()
         }
@@ -2149,41 +2188,14 @@ struct CatalogGameCardsView: View {
         }
     }
 
-    private func loadSearch(query: String, requestKey: String) async {
-        guard isActive else { return }
-        defer {
-            if searchRequestKey == requestKey {
-                searchIsLoading = false
-            }
-        }
-        do {
-            guard let step = try await searchStep(query: query, cursor: nil, isCurrent: {
-                providerSearch == query && searchRequestKey == requestKey
-            }) else { return }
-            guard !Task.isCancelled,
-                  providerSearch == query,
-                  searchRequestKey == requestKey else { return }
-            searchCards = deduplicated(step.items)
-            searchCardGroups = CatalogCardDisplayGrouping.groups(for: searchCards)
-            searchCursor = step.nextCursor
-            searchStoppedAtLimit = step.stoppedAtLimit
-            if let failure = step.error { searchError = failure.localizedDescription }
-        } catch {
-            guard !Task.isCancelled,
-                  providerSearch == query,
-                  searchRequestKey == requestKey else { return }
-            searchError = error.localizedDescription
-        }
+    private func loadMoreSearch(query: String) async {
+        guard !searchIsLoading, let cursor = searchCursor, let requestKey = searchRequestKey else { return }
+        await loadSearchPage(query: query, requestKey: requestKey, cursor: cursor)
     }
 
-    private func loadMoreSearch(query: String) async {
-        guard isActive,
-              !searchIsLoading,
-              isSearchQuery,
-              providerSearch == query,
-              let cursor = searchCursor else { return }
-        let requestKey = "\(query)-\(searchRevision)"
-        guard searchRequestKey == requestKey else { return }
+    private func loadSearchPage(query: String, requestKey: UUID, cursor: String?) async {
+        let isCurrent = { isActive && providerSearch == query && searchRequestKey == requestKey }
+        guard isCurrent() else { return }
         searchIsLoading = true
         searchError = nil
         defer {
@@ -2191,24 +2203,15 @@ struct CatalogGameCardsView: View {
                 searchIsLoading = false
             }
         }
-        do {
-            guard let step = try await searchStep(query: query, cursor: cursor, isCurrent: {
-                providerSearch == query && searchRequestKey == requestKey
-            }) else { return }
-            guard !Task.isCancelled,
-                  providerSearch == query,
-                  searchRequestKey == requestKey else { return }
-            searchCards = deduplicated(searchCards + step.items)
-            searchCardGroups = CatalogCardDisplayGrouping.groups(for: searchCards)
-            searchCursor = step.nextCursor
-            searchStoppedAtLimit = step.stoppedAtLimit
-            if let failure = step.error { searchError = failure.localizedDescription }
-        } catch {
-            guard !Task.isCancelled,
-                  providerSearch == query,
-                  searchRequestKey == requestKey else { return }
-            searchError = error.localizedDescription
-        }
+        guard let fill = await searchStep(query: query, cursor: cursor, isCurrent: isCurrent),
+              !Task.isCancelled, isCurrent() else { return }
+        searchCards += fill.matches
+        searchCardGroups = CatalogCardDisplayGrouping.groups(for: searchCards)
+        onCardsLoaded(fill.matches)
+        searchCursor = fill.position?.cursor
+        visitedSearchPositions = fill.visitedPositions
+        searchStoppedAtLimit = fill.stoppedAtPageLimit && filters.isActive
+        searchError = fill.error?.localizedDescription
     }
 
     private func deduplicated(_ values: [CatalogCardSummary]) -> [CatalogCardSummary] {
@@ -2405,12 +2408,12 @@ enum CatalogSetListGrouping {
         }
 
         var setsByYear: [Int: [CatalogSet]] = [:]
-        var earlier: [CatalogSet] = []
+        var undated: [CatalogSet] = []
         let calendar = Calendar.current
 
         for set in orderedSets {
             guard let releaseDate = set.releaseDate else {
-                earlier.append(set)
+                undated.append(set)
                 continue
             }
             let year = calendar.component(.year, from: releaseDate)
@@ -2425,13 +2428,8 @@ enum CatalogSetListGrouping {
             guard let sets = setsByYear[year], !sets.isEmpty else { return nil }
             return CatalogSetYearGroup(title: String(year), sets: sets)
         }
-        if !earlier.isEmpty {
-            let earlierGroup = CatalogSetYearGroup(title: "Earlier", sets: earlier)
-            if sort == .oldestFirst {
-                groups.insert(earlierGroup, at: 0)
-            } else {
-                groups.append(earlierGroup)
-            }
+        if !undated.isEmpty {
+            groups.append(CatalogSetYearGroup(title: "Release Date Unknown", sets: undated))
         }
         return groups
     }
@@ -2528,7 +2526,11 @@ struct CatalogSetCardsView: View {
     @State private var viewport = CGRect.zero
     @State private var reloadAfterCurrentLoad = false
     @State private var loadedPageCount = 0
+    @State private var visitedPageCursors: Set<String> = []
+    @State private var retryEntireSort = false
     @State private var paginationRevision = 0
+    @State private var completeSortRequested = false
+    @State private var isLoadingAllCards = false
     @State private var priceReloadAfterCurrentLoad = false
     @State private var queuedPricePriority: TaskPriority = .utility
 
@@ -2542,7 +2544,8 @@ struct CatalogSetCardsView: View {
         let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
         presentation.update(.init(setID: set.catalogID, contentGeneration: contentGeneration,
             cards: cards, search: search, sort: sort, ownership: ownership,
-            ownershipRevision: projectionStore.revision, tier: masterSetTier, prices: displayPrices), owned: owned)
+            ownershipRevision: projectionStore.revision, tier: masterSetTier, prices: displayPrices,
+            officialCollectorCount: set.officialCollectorCount), owned: owned)
     }
 
     private var displayPrices: [String: Double] {
@@ -2592,6 +2595,7 @@ struct CatalogSetCardsView: View {
                             .padding(.top, 12)
                             .contentWidthLimit(.standard)
                     }
+                    sortScopeBanner
                     priceStatusBanner
                     if visibleGroups.isEmpty {
                         ContentUnavailableView(
@@ -2610,14 +2614,14 @@ struct CatalogSetCardsView: View {
                             .padding(12)
                             .contentWidthLimit(.wide)
                     }
-                    if let error {
+                    if let error, !retryEntireSort {
                         Text(error).font(.footnote).foregroundStyle(.secondary)
                         Button("Retry") { Task { await load(reset: false) } }
                             .buttonStyle(.bordered)
-                    } else if cursor != nil {
-                    CatalogPaginationFooter(
-                        requestID: "\(paginationRevision)-\(cursor ?? "")", viewport: viewport
-                    ) { await load(reset: false) }
+                    } else if error == nil, cursor != nil, !isLoadingAllCards {
+                        CatalogPaginationFooter(
+                            requestID: "\(paginationRevision)-\(cursor ?? "")", viewport: viewport
+                        ) { await load(reset: false) }
                     }
                 }
             }
@@ -2691,6 +2695,8 @@ struct CatalogSetCardsView: View {
                 contentGeneration = UUID()
                 isLoading = false
             }
+            isLoadingAllCards = false
+            completeSortRequested = false
             reloadAfterCurrentLoad = false
             priceLoadTask?.cancel()
             priceLoadTask = nil
@@ -2717,13 +2723,18 @@ struct CatalogSetCardsView: View {
         .onChange(of: projectionStore.revision) { _, _ in refreshVisibleGroups() }
         .onChange(of: sort) { _, newSort in
             refreshVisibleGroups()
-            if newSort.needsPrices {
+            if !isLoadingAllCards, cursor != nil || isLoading {
+                requestCompleteSort()
+            } else if newSort.needsPrices {
                 startPriceLoading(
                     for: contentGeneration,
                     whileLoadingCards: false,
                     priority: .userInitiated
                 )
             }
+        }
+        .onChange(of: isLoading) { _, loading in
+            if !loading, completeSortRequested { requestCompleteSort() }
         }
         .task(id: set.id) {
             let updates = await catalog.catalogUpdates()
@@ -2765,12 +2776,42 @@ struct CatalogSetCardsView: View {
     }
 
     @ViewBuilder
+    private var sortScopeBanner: some View {
+        if cursor != nil {
+            VStack(alignment: .leading, spacing: 6) {
+                if isLoadingAllCards {
+                    Label("Loading remaining cards for sorting…", systemImage: "arrow.down.circle")
+                } else {
+                    Text("Sorting \(cards.count) loaded cards. More cards are available in this set.")
+                    if retryEntireSort, let error { Text(error) }
+                    Button(retryEntireSort ? "Retry Full Sort" : "Sort Entire Set", action: requestCompleteSort)
+                        .disabled(isLoading)
+                }
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 16)
+            .contentWidthLimit(.standard)
+        }
+    }
+
+    private func requestCompleteSort() {
+        completeSortRequested = true
+        Task {
+            guard isVisible, completeSortRequested, !isLoading else { return }
+            completeSortRequested = false
+            if cursor != nil { await load(reset: false, allRemainingPages: true) }
+        }
+    }
+
+    @ViewBuilder
     private var priceStatusBanner: some View {
         if sort.needsPrices {
             if priceLoadState.isLoading, !priceLoadState.hasLoadedPrices {
                 HStack(spacing: 8) {
                     ProgressView().controlSize(.small)
-                    Text("Sorting by price — \(pricedSlotCount) of \(masterSetSlots.count) priced")
+                    Text("\(pricedSlotCount) of \(masterSetSlots.count) loaded cards priced")
                     Spacer(minLength: 0)
                 }
                 .font(.subheadline)
@@ -2871,8 +2912,9 @@ struct CatalogSetCardsView: View {
         .accessibilityElement(children: .contain)
     }
 
-    private func load(reset: Bool, preservingLoadedPages: Bool = false) async {
+    private func load(reset: Bool, preservingLoadedPages: Bool = false, allRemainingPages: Bool = false) async {
         guard !isLoading else { return }
+        guard !allRemainingPages || cursor != nil else { return }
         let pagesToLoad = reset && preservingLoadedPages ? max(1, loadedPageCount) : 1
         let requestID = UUID()
         contentGeneration = requestID
@@ -2892,9 +2934,11 @@ struct CatalogSetCardsView: View {
             printingNeedsReviewPriceSlotIDs.removeAll()
         }
         isLoading = true
+        isLoadingAllCards = allRemainingPages
         defer {
             if contentGeneration == requestID {
                 isLoading = false
+                isLoadingAllCards = false
                 if reloadAfterCurrentLoad {
                     reloadAfterCurrentLoad = false
                     Task { await requestReload() }
@@ -2913,33 +2957,41 @@ struct CatalogSetCardsView: View {
             }
         }
         error = nil
+        retryEntireSort = false
         do {
             if reset {
                 let current = try await catalog.currentSet(for: set)
                 guard contentGeneration == requestID, !Task.isCancelled else { return }
                 refreshedSet = current
             }
-            var page: CatalogPage<CatalogCardSummary>
+            let result: CatalogSetPageLoader.Result
             if reset, let localCards = try await catalog.completeLocalCards(in: set) {
-                page = .init(items: localCards, nextCursor: nil)
+                result = .init(items: localCards, count: 1)
             } else {
-                page = try await catalog.cards(in: set, cursor: reset ? nil : cursor)
-            }
-            var refreshedCards = page.items
-            var pagesLoaded = 1
-            while reset, pagesLoaded < pagesToLoad, let nextCursor = page.nextCursor {
-                guard contentGeneration == requestID, !Task.isCancelled else { return }
-                page = try await catalog.cards(in: set, cursor: nextCursor)
-                refreshedCards.append(contentsOf: page.items)
-                pagesLoaded += 1
+                let requestedSet = set
+                result = await CatalogSetPageLoader.collect(
+                    from: reset ? nil : cursor, limit: allRemainingPages ? nil : pagesToLoad,
+                    visitedCursors: reset ? [] : visitedPageCursors
+                ) { cursor in
+                    guard contentGeneration == requestID else { throw CancellationError() }
+                    return try await catalog.cards(in: requestedSet, cursor: cursor)
+                }
             }
             guard contentGeneration == requestID, !Task.isCancelled else { return }
-            cards = deduplicated(reset ? refreshedCards : cards + refreshedCards)
-            loadedPageCount = reset ? pagesLoaded : loadedPageCount + pagesLoaded
+            if let failure = result.error {
+                if reset || result.count == 0 { throw failure }
+                if let catalogError = failure as? BrowseCatalogError, case .unknownSet = catalogError { throw failure }
+                error = failure.localizedDescription
+                retryEntireSort = allRemainingPages
+            }
+            cards = deduplicated(reset ? result.items : cards + result.items)
+            loadedPageCount = reset ? result.count : loadedPageCount + result.count
             if reset { paginationRevision += 1 }
-            cursor = page.nextCursor
+            cursor = result.nextCursor
+            visitedPageCursors = result.visitedCursors
             PerformanceSignpost.emitEvent("Browse.cardsPublished", "cards=\(cards.count) complete=\(cursor == nil)")
             refreshVisibleGroups()
+            if completeSortRequested, cursor != nil { return }
             if sort.needsPrices {
                 startPriceLoading(
                     for: requestID,
@@ -2960,9 +3012,14 @@ struct CatalogSetCardsView: View {
                 cards = []
                 cursor = nil
                 loadedPageCount = 0
+                visitedPageCursors = []
                 refreshVisibleGroups()
             }
             self.error = error.localizedDescription
+            retryEntireSort = allRemainingPages && cursor != nil
+            if sort.needsPrices, !cards.isEmpty {
+                startPriceLoading(for: requestID, whileLoadingCards: true, priority: .userInitiated)
+            }
         }
     }
 
@@ -3120,6 +3177,7 @@ private struct CatalogCardGrid: View {
     let catalog: any BrowseCatalogProviding
     let owned: CatalogOwnershipIndex
     let prices: [String: Double]
+    let filters: CatalogBrowseFilters
     /// Adaptive so the catalog gains columns with the window instead of stretching
     /// two of them across a thirteen-inch iPad. The minimum matches the tile width
     /// the two-column phone layout already produces.
@@ -3129,22 +3187,28 @@ private struct CatalogCardGrid: View {
         groups: [CatalogCardDisplayGroup],
         catalog: any BrowseCatalogProviding,
         owned: CatalogOwnershipIndex,
-        prices: [String: Double] = [:]
+        prices: [String: Double] = [:],
+        filters: CatalogBrowseFilters = .none
     ) {
         self.groups = groups
         self.catalog = catalog
         self.owned = owned
         self.prices = prices
+        self.filters = filters
     }
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 20) {
             ForEach(groups) { group in
+                let summary = group.preferredSummary
+                let matches = filters.scopesFinish(of: summary)
+                    ? filters.matchingPrintings(for: summary, isOwned: owned.owns) : nil
                 CatalogCardDisplayGroupTile(
                     group: group,
                     catalog: catalog,
                     owned: owned,
-                    prices: prices
+                    prices: prices,
+                    matches: matches
                 )
             }
         }
@@ -3156,8 +3220,22 @@ private struct CatalogCardDisplayGroupTile: View {
     let catalog: any BrowseCatalogProviding
     let owned: CatalogOwnershipIndex
     let prices: [String: Double]
+    let matches: [CatalogCardSummary]?
 
     private var preferred: CatalogCardSummary { group.preferredSummary }
+
+    private var openingFinish: PhysicalVariant? {
+        guard let matches, matches.count == 1 else { return nil }
+        return matches.first?.masterSetVariant
+    }
+
+    private var treatmentLabel: String? {
+        guard let openingFinish else { return preferred.magicTreatmentDisplayLabel }
+        return MagicTreatmentEvidence(
+            treatments: preferred.magicTreatmentEvidence.applicableTreatments(for: openingFinish),
+            qualifiers: preferred.magicTreatmentQualifiers
+        ).displayLabel
+    }
     private var showsVariantChips: Bool {
         group.summaries.count > 1 || preferred.masterSetVariantLabel != nil
     }
@@ -3173,7 +3251,7 @@ private struct CatalogCardDisplayGroupTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             NavigationLink {
-                CatalogCardDetailView(summary: preferred, catalog: catalog)
+                CatalogCardDetailView(summary: preferred, catalog: catalog, openingFinishID: openingFinish?.id)
             } label: {
                 cardMainContent
             }
@@ -3215,7 +3293,7 @@ private struct CatalogCardDisplayGroupTile: View {
                 providerSetID: preferred.setID.providerID
             )
                 .overlay(alignment: .topTrailing) {
-                    if owned.owns(preferred) {
+                    if matches == nil ? owned.owns(preferred) : ownedQuantity(preferred) > 0 {
                         Image(systemName: "checkmark.circle.fill")
                             .font(.title2)
                             .symbolRenderingMode(.palette)
@@ -3235,7 +3313,7 @@ private struct CatalogCardDisplayGroupTile: View {
                     .foregroundStyle(.secondary)
             }
 
-            if let treatment = preferred.magicTreatmentDisplayLabel {
+            if let treatment = treatmentLabel {
                 CatalogTreatmentBadge(label: treatment)
             }
 
@@ -3301,14 +3379,15 @@ private struct CatalogCardDisplayGroupTile: View {
     }
 
     private func ownedQuantity(_ summary: CatalogCardSummary) -> Int {
-        owned.quantity(of: summary)
+        if let matches { return matches.reduce(0) { $0 + owned.quantity(of: $1) } }
+        return owned.quantity(of: summary)
     }
 
     private func accessibilityLabel(_ summary: CatalogCardSummary) -> String {
         let ownedQuantity = ownedQuantity(summary)
         let price = prices[summary.id].map { ", price \($0.formatted(.currency(code: "USD")))" } ?? ""
         let variant = summary.masterSetVariantLabel.map { ", \($0) variation" } ?? ""
-        let treatment = summary.magicTreatmentDisplayLabel.map { ", \($0) treatment" } ?? ""
+        let treatment = treatmentLabel.map { ", \($0) treatment" } ?? ""
         let availability = summary.collectionAvailabilityNotice.map { ", \($0)" } ?? ""
         let number = summary.printedCollectorNumber.map { "card \($0)" } ?? "unnumbered card"
         return "\(summary.displayName), \(summary.setName), \(number)\(variant)\(treatment)\(price)\(ownedQuantity > 0 ? ", owned quantity \(ownedQuantity)" : ", missing")\(availability)"
