@@ -1,3 +1,26 @@
+# 2026-11-21 — Yu-Gi-Oh! Common and Short Print reconciliation
+
+The candidate on `reconcile/yugioh-20261121` started from `467581b4`.
+An offline replay reproduced that bundle byte for byte before applying the
+reviewed distribution-label rule. The final rule closed 34
+`printingShortfall` rows and cleared the last exceptions for eight English
+set prefixes. Open ledger rows fell from 4,883 to 4,849, incomplete codes
+fell from 2,527 to 2,493, and automatic scan eligibility stayed at 720
+identical codes. The replay opened zero rows and the parent regression
+report was empty. [Decision and reviewed rows](docs/research/yugioh-catalog/rarity-taxonomy.md#common-and-short-print-rows-for-the-same-code-2026-11-21)
+
+The fresh, hash-bound capture reproduced the same 34 closures and zero
+opened rows. Its baseline and final replay both flagged four canonical
+identity changes for `MAMO-EN013`. The bundle uses the retained capture
+for this rule-only candidate.
+
+All 77 focused Python, builder and ledger tests passed. The dirty worktree on
+`467581b4` passed 248 of 249 selected iOS simulator tests in
+`TradingCardScanner-ProfileLocal` across Yu-Gi-Oh!, Browse and neighboring
+game registry suites. The live-feed acceptance test skipped because it
+requires an unexpired local receipt. Results are in
+`YuGiOhReconciliation-20261121/YuGiOhReconciliationFinal.xcresult` on the SSD.
+
 # 2026-11-20 — Current documentation authority cleanup after PRs #54/#55
 
 Source-bound review at `main@146161c`: corrected stale current-sounding

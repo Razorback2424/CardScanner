@@ -5,8 +5,81 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import build_yugioh_catalog as builder
 import yugioh_edition_galleries as galleries
+
+
+class CommonShortPrintTests(unittest.TestCase):
+    def setUp(self):
+        self.code = "CRV-EN040"
+        self.group = {"groupId": 160, "name": "Cybernetic Revolution"}
+        self.product = {
+            "productId": 24466, "categoryId": 2, "groupId": 160, "name": "Dragon's Mirror",
+            "extendedData": [{"name": "Number", "value": self.code}, {"name": "Rarity", "value": "Common"}],
+        }
+        self.prices = [{"productId": 24466, "subTypeName": lane, "marketPrice": 1}
+                       for lane in ("1st Edition", "Unlimited")]
+        self.card = {
+            "id": 71490127, "name": "Dragon's Mirror", "card_images": [{"id": 71490127}],
+            "card_sets": [{"set_code": self.code, "set_name": self.group["name"], "set_rarity": rarity}
+                          for rarity in ("Common", "Short Print")],
+        }
+
+    def build(self):
+        gid = self.group["groupId"]
+        return builder.build([self.group], {gid: [self.product]}, {gid: self.prices}, [self.card],
+                             {}, {}, "2026-11-21T00:00:00Z", floor=1)
+
+    def test_reviewed_labels_close_shortfall_without_changing_printing_or_scan_authority(self):
+        without_rule = {**builder.CORRESPONDENCE_RULES, "commonShortPrintPairs": {"groups": {}}}
+        with patch.object(builder, "CORRESPONDENCE_RULES", without_rule):
+            before, _, _, incomplete = self.build()
+        after, _, _, _ = self.build()
+        self.assertEqual(incomplete[self.code], {"printingShortfall"})
+        self.assertEqual(before["incompleteCodes"], [self.code])
+        self.assertEqual(after["incompleteCodes"], [])
+        self.assertEqual(before["printings"], after["printings"])
+        self.assertEqual(after["autoEligibleCodes"], [])
+
+    def test_pair_requires_exact_review_scope_product_source_rows_and_lanes(self):
+        for case in ("group ID", "group name", "code", "product ID", "market title", "card ID", "card title",
+                     "secondary set", "secondary rarity", "extra secondary row", "edition lane", "art label"):
+            with self.subTest(case=case):
+                self.setUp()
+                if case == "group ID":
+                    self.group["groupId"] = self.product["groupId"] = 161
+                elif case == "group name":
+                    self.group["name"] += " Reissue"
+                    for row in self.card["card_sets"]:
+                        row["set_name"] = self.group["name"]
+                elif case == "code":
+                    self.code = self.product["extendedData"][0]["value"] = "CRV-EN041"
+                    for row in self.card["card_sets"]:
+                        row["set_code"] = self.code
+                elif case == "product ID":
+                    self.product["productId"] = 24000
+                    for price in self.prices:
+                        price["productId"] = 24000
+                elif case == "market title":
+                    self.product["name"] = "Dragons Mirror"
+                elif case == "card ID":
+                    self.card["id"] = 71490128
+                elif case == "card title":
+                    self.card["name"] = "Dragons Mirror"
+                elif case == "secondary set":
+                    self.card["card_sets"][1]["set_name"] += " Reissue"
+                elif case == "secondary rarity":
+                    self.card["card_sets"][1]["set_rarity"] = "Super Short Print"
+                elif case == "extra secondary row":
+                    self.card["card_sets"].append({**self.card["card_sets"][1], "set_rarity": "Ultra Rare"})
+                elif case == "edition lane":
+                    self.prices.pop()
+                elif case == "art label":
+                    self.product["name"] += " (Alternate Art)"
+                _, _, _, incomplete = self.build()
+                self.assertIn("printingShortfall", incomplete[self.code])
+
 
 class BuilderTests(unittest.TestCase):
     def setUp(self):
