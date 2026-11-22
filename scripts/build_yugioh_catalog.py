@@ -45,6 +45,47 @@ PACKAGING_NAME = re.compile(
     re.I,
 )
 CORRESPONDENCE_RULES = json.loads((ROOT / 'yugioh_correspondence_rules.json').read_text())
+PLACEHOLDER_RULES = json.loads((ROOT / 'yugioh_official_rarity_placeholders.json').read_text())
+
+
+def reviewed_placeholder_rarities(groups, products, cards, product_hashes, rules):
+    """Recover a single rarity for exact English codes with a placeholder source row."""
+    reviewed = {
+        code: (scope, review)
+        for scope in rules["groups"]
+        if product_hashes.get(scope["groupID"]) == scope["expectedProductsSHA256"]
+        for code, review in scope["codes"].items()
+        if re.fullmatch(r"[A-Z0-9]{2,4}-EN[A-Z0-9]{3}", code)
+    }
+    if not reviewed:
+        return {}
+    source_rows = collections.defaultdict(list)
+    for card in cards:
+        for entry in card.get("card_sets", []):
+            if (code := entry["set_code"]) in reviewed:
+                source_rows[code].append((card["id"], card["name"], entry["set_name"], entry["set_rarity"]))
+    market_rows = collections.defaultdict(list)
+    for group in groups:
+        gid = group["groupId"]
+        for product in products[gid]:
+            fields = product.get("extendedData", [])
+            codes = [x["value"].strip().upper() for x in fields if x["name"] == "Number"]
+            rarities = [x["value"].strip() for x in fields if x["name"] == "Rarity"]
+            for code in set(codes).intersection(reviewed):
+                market_rows[code].append((gid, group["name"], product.get("categoryId"),
+                                          product.get("groupId"), product["productId"],
+                                          product["name"], codes, rarities))
+    exact = {}
+    for code, (scope, review) in reviewed.items():
+        gid, group_name = scope["groupID"], scope["groupName"]
+        name, rarity = review["name"], review["rarity"]
+        label = review["sourceRarity"]
+        if (label.lower() in INVALID_RARITIES
+                and rarity and rarity.lower() not in INVALID_RARITIES
+                and source_rows[code] == [(review["sourceCardID"], name, scope["sourceSetName"], label)]
+                and market_rows[code] == [(gid, group_name, 2, gid, review["productID"], name, [code], [rarity])]):
+            exact[code] = (review["sourceCardID"], group_name, rarity)
+    return exact
 
 
 def excluded_product_reason(product, foreign):
@@ -317,7 +358,7 @@ def reference_printings(inventory, edition_evidence, rows, canonical, sets, prev
 def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=10000, price_provenance=None,
           previous=None, taxonomy_scopes=None, printing_inventory=None, release_calendar=(), rarity_corrections=None,
           reference_inventory=None, reference_editions=None, previous_references=None, reviewed_dates=None,
-          passcode_corrections=None):
+          passcode_corrections=None, product_hashes=None):
     entries = collections.defaultdict(list)
     identity_entries = collections.defaultdict(set)
     names, by_id = {}, {}
@@ -329,6 +370,9 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
             identity_entries[row['set_code']].add(cid)
             if row["set_rarity"].lower() in INVALID_RARITIES: continue
             entries[row["set_code"]].append((cid, row["set_name"], row["set_rarity"]))
+    placeholder_rarities = reviewed_placeholder_rarities(groups, products, cards, product_hashes or {}, PLACEHOLDER_RULES)
+    for code, entry in placeholder_rarities.items():
+        entries[code].append(entry)
     exceptions = collections.defaultdict(list)
     incomplete = collections.defaultdict(set)
     canonical, rows, sets = {}, [], []
@@ -537,7 +581,9 @@ def build(groups, products, prices, cards, aliases, reviews, captured_at, floor=
         counts = collections.Counter(labels)
         for row in family:
             if counts[(row["g"], row["r"], row["art"], row["pn"])] > 1: row["ir"] = "indistinguishableProduct"
-        if not incomplete[code] and len(family) == 1 and len(entries[code]) == 1 and "p" in family[0] and "pg" not in family[0] and not family[0]["art"] and not family[0]['ir'] and family[0]['e'] and family[0]['ee']:
+        # Reviewed rarity can establish correspondence. Automatic acquisition
+        # still requires the original independent source coverage.
+        if code not in placeholder_rarities and not incomplete[code] and len(family) == 1 and len(entries[code]) == 1 and "p" in family[0] and "pg" not in family[0] and not family[0]["art"] and not family[0]['ir'] and family[0]['e'] and family[0]['ee']:
             cid = entries[code][0][0]
             row = family[0]
             inventory, official_names = release_inventories.get(row['g'], (None, {}))
@@ -889,7 +935,8 @@ def main():
         taxonomy_scopes=taxonomy_scopes, printing_inventory=inventories, release_calendar=calendar["releases"],
         rarity_corrections=printing_corrections["products"], reference_inventory=reference_inventory, reference_editions=reference_editions,
         previous_references={x["id"]: x for x in previous.get("referencePrintings", [])} if previous else None,
-        reviewed_dates=release_dates, passcode_corrections=printing_corrections.get("canonicalPasscodes"))
+        reviewed_dates=release_dates, passcode_corrections=printing_corrections.get("canonicalPasscodes"),
+        product_hashes=product_hashes)
     stats["releaseCalendar"] = {"url": calendar["url"], "sha256": calendar["sha256"],
                                 "datedGroups": sum(bool(group["d"]) for group in seed["sets"])}
     stats["printingInventoryDriftGroups"] = sorted({p["groupID"] for p in profiles} - {i["groupID"] for i in inventories})
