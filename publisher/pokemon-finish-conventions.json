@@ -1,6 +1,25 @@
 {
   "schemaVersion": 1,
-  "purpose": "Reviewed collector conventions for the batch finish certifier. Each one turns retained TCGCSV evidence into a cited resolution; certify() re-checks it with its unchanged gates, and the certificate's slotChanges records every difference from the bundled checklist. The research and decisions are in docs/research/pokemon-finish-coverage/collector-conventions.md.",
+  "purpose": "Reviewed collector conventions for the finish certifier. Title rules help identify exact products; finish rules turn retained TCGCSV evidence into cited resolutions. certify() re-checks the comparison, and slotChanges records every certificate difference from the bundled checklist. See docs/research/pokemon-finish-coverage/collector-conventions.md.",
+  "ecardHoloTitles": {
+    "id": "aquapolis-skyridge-holo-title-v1",
+    "decision": "Treat the parenthesized H number in Aquapolis and Skyridge marketplace titles as a repetition of the collector number when the same H-numbered checklist holo has exactly one matching Holofoil product. The ordinary-numbered printings keep their own identities.",
+    "sets": {
+      "ecard2": {"groupID": 1397, "groupName": "Aquapolis"},
+      "ecard3": {"groupID": 1372, "groupName": "Skyridge"}
+    },
+    "sources": [
+      "https://www.tcgplayer.com/categories/trading-collectible-card-games/pokemon/price-guides/aquapolis",
+      "https://www.tcgplayer.com/product/83498",
+      "https://bulbapedia.bulbagarden.net/wiki/Aquapolis_(TCG)",
+      "https://bulbapedia.bulbagarden.net/wiki/Skyridge_(TCG)",
+      "https://api.tcgdex.net/v2/en/sets/ecard2",
+      "https://api.tcgdex.net/v2/en/sets/ecard3",
+      "https://www.cardmarket.com/en/Pokemon/Products/Singles/Aquapolis/Ampharos-V1-AQH1",
+      "https://www.psacard.com/priceguide/non-sports-tcg-card-values/2003-poke-mon-aquapolis/3267",
+      "https://www.pricecharting.com/pop/item/pokemon-skyridge/alakazam-h1"
+    ]
+  },
   "reverseLane": {
     "id": "reverse-holo-lane",
     "decision": "A card whose own set-group product has a Reverse Holofoil lane with a positive TCGplayer market price is certified with a reverse holo printing, even when the bundled TCGdex slots omit it. Collectors expect a reverse holo of every non-ultra card from Legendary Collection on, and TCGplayer sells it as a lane of the same product.",

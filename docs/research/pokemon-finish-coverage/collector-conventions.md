@@ -30,6 +30,35 @@ evidence.
 
 ## Decisions
 
+### Aquapolis and Skyridge H-numbered titles (2026-11-21)
+
+Aquapolis and Skyridge each have a separate 32-card holo series. TCGplayer
+titles Aquapolis Ampharos as “Ampharos (H1)” and carries `H01/H32` in the
+structured collector number. Cardmarket and PSA also use `H1`. For
+Skyridge Alakazam, the collectors' checklist and PSA/CGC index identify
+the holo as `H1`. Its regular-numbered printings belong to the main set.
+[TCGplayer Aquapolis](https://www.tcgplayer.com/categories/trading-collectible-card-games/pokemon/price-guides/aquapolis)
+[Cardmarket Ampharos](https://www.cardmarket.com/en/Pokemon/Products/Singles/Aquapolis/Ampharos-V1-AQH1)
+[PSA Aquapolis guide](https://www.psacard.com/priceguide/non-sports-tcg-card-values/2003-poke-mon-aquapolis/3267)
+[Skyridge holo checklist](https://bulbapedia.bulbagarden.net/wiki/Skyridge_%28TCG%29)
+[PriceCharting PSA/CGC index](https://www.pricecharting.com/pop/item/pokemon-skyridge/alakazam-h1)
+
+The reviewed rule applies to `ecard2` group 1397 and `ecard3` group 1372.
+It requires the exact set name, matching base card name, one product at
+the printed number, an exact `/H32` denominator and a sole Holofoil lane.
+Only the optional zero padding in the parenthesized repeat may differ.
+The retained English TCGdex inventories each match all 32 bundled holo
+names and numbers. The app already recognizes `H…/H32` as a separate
+numbering scheme for these two sets.
+[Reviewed rule](../../../publisher/pokemon-finish-conventions.json)
+[TCGdex Aquapolis](https://api.tcgdex.net/v2/en/sets/ecard2)
+[TCGdex Skyridge](https://api.tcgdex.net/v2/en/sets/ecard3)
+
+The fresh replay matched 31 Aquapolis and 25 Skyridge holos. Eight other
+products lacked a Holofoil lane. Aquapolis Scizor `H21` now has an exact
+holo match and retains its separate reverse-finish exception. The older
+capture also lacked a Holofoil lane for Skyridge Articuno `H03`.
+
 ### Q1 Finishes beyond the bundled slots (`checklistMissingFinish`)
 
 - **What collectors expect.** Every card except Ultra Rares, Secret Rares and

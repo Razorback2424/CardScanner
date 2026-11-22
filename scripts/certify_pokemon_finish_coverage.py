@@ -47,6 +47,7 @@ EVIDENCE = Path("docs/research/pokemon-finish-coverage")
 CAPTURES = EVIDENCE / "captures"
 MARKER = "https://tcgcsv.com/last-updated.txt"
 GROUP_LINKS = Path("publisher/pokemon-finish-coverage-groups.json")
+CONVENTIONS = Path("publisher/pokemon-finish-conventions.json")
 REPORT_VERSION = 2
 FIRST_REVISION = "initial"
 STANDARD = (
@@ -221,6 +222,7 @@ class FinishEvidence:
     signed: dict
     vocabulary: set
     sha256: str
+    ecard_holo_scope: dict | None = None
 
     def require_signed_review_closed(self):
         open_reviews = sorted(
@@ -231,7 +233,25 @@ class FinishEvidence:
             raise ValueError(f"Publisher input still marks Normal for review: {', '.join(open_reviews[:12])}")
 
 
-def current_inputs(root, set_id, audited_minimums, *, snapshot=None):
+def ecard_holo_title_scope(root, set_id, set_name, group_id):
+    path = root / CONVENTIONS
+    if group_id is None or not path.is_file():
+        return None
+    rule = read_json(path).get("ecardHoloTitles")
+    if not rule or (scope := rule["sets"].get(set_id)) is None or scope["groupID"] != group_id:
+        return None
+    if scope["groupName"] != set_name or not rule.get("decision") or not rule.get("sources"):
+        raise ValueError(f"Invalid e-Card holo title scope for {set_id}")
+    return {**scope, "id": rule["id"], "decision": rule["decision"], "sources": rule["sources"]}
+
+
+def require_ecard_holo_group(groups, scope):
+    names = [g["name"] for g in groups if g["groupId"] == scope["groupID"]]
+    if names != [scope["groupName"]]:
+        raise ValueError(f"e-Card holo group {scope['groupID']} is no longer uniquely named {scope['groupName']!r}")
+
+
+def current_inputs(root, set_id, audited_minimums, *, snapshot=None, group_id=None):
     legacy_raw = (root / SNAPSHOT / "legacy-finish-evidence.json").read_bytes()
     legacy = json.loads(legacy_raw)
     if legacy["schemaVersion"] != 1:
@@ -250,13 +270,17 @@ def current_inputs(root, set_id, audited_minimums, *, snapshot=None):
     if (not isinstance(vocabulary, list) or not all(isinstance(value, str) and value for value in vocabulary)
             or "jumbo" in vocabulary or "firstEdition" in vocabulary):
         raise ValueError("Invalid standard Pokémon finish vocabulary")
-    evidence_hash = digest(packed({
+    inputs = {
         "legacySHA256": digest(legacy_raw),
         "minimums": minimums,
         "signed": signed,
         "vocabularySHA256": digest(vocabulary_raw),
-    }))
-    return cards, sources, name, FinishEvidence(minimums, historical, signed, set(vocabulary), evidence_hash)
+    }
+    scope = ecard_holo_title_scope(root, set_id, name, group_id)
+    if scope:
+        inputs["ecardHoloTitles"] = scope
+    evidence_hash = digest(packed(inputs))
+    return cards, sources, name, FinishEvidence(minimums, historical, signed, set(vocabulary), evidence_hash, scope)
 
 
 def require_audited_minimum_projection(root, cards, evidence, *, already_certified):
@@ -269,12 +293,17 @@ def require_audited_minimum_projection(root, cards, evidence, *, already_certifi
         raise ValueError("Bundled finish minimums differ from the audited source. Regenerate finish-minimums.json.")
 
 
-def product_finishes(card, product):
+def product_finishes(card, product, *, ecard_holo=False):
     if local_number(card["number"]) != local_number(product["number"]):
         return None
     name = without_number_suffix(product["name"], product["number"])
     title, separator, qualifier = name.removesuffix(")").rpartition(" (") if name.endswith(")") else (name, "", "")
     qualifier_key = name_key(qualifier)
+    if ecard_holo and "holo" in card["checklist"] and product["subtypes"] == ["Holofoil"]:
+        title_number = re.fullmatch(r"H(0?[1-9]|[12][0-9]|3[0-2])", qualifier)
+        printed_number = re.fullmatch(r"H(0?[1-9]|[12][0-9]|3[0-2])/H32", product["number"])
+        if title_number and printed_number and int(title_number[1]) == int(printed_number[1]):
+            name = title
     pattern = PATTERNS.get(qualifier_key.removesuffix(" pattern")) if separator else None
     if pattern:
         name = without_number_suffix(title, product["number"])
@@ -312,7 +341,7 @@ def product_finishes(card, product):
     return finishes
 
 
-def compare(cards, minimums, products, *, historical=None, signed=None):
+def compare(cards, minimums, products, *, historical=None, signed=None, ecard_holo=False):
     historical = historical or {}
     signed = signed or {}
     by_number = defaultdict(list)
@@ -325,7 +354,8 @@ def compare(cards, minimums, products, *, historical=None, signed=None):
         for product in numbered:
             candidates = [
                 (card_id, finishes) for card_id in card_ids
-                if (finishes := product_finishes(cards[card_id], product)) is not None
+                if (finishes := product_finishes(cards[card_id], product,
+                                                ecard_holo=ecard_holo and len(numbered) == 1)) is not None
             ]
             if len(candidates) == 1:
                 card_id, finishes = candidates[0]
@@ -367,7 +397,8 @@ def compare(cards, minimums, products, *, historical=None, signed=None):
 
 
 def compare_current(cards, products, evidence):
-    return compare(cards, evidence.minimums, products, historical=evidence.historical, signed=evidence.signed)
+    return compare(cards, evidence.minimums, products, historical=evidence.historical, signed=evidence.signed,
+                   ecard_holo=bool(evidence.ecard_holo_scope))
 
 
 def capture_directory(root, set_id, revision):
@@ -420,7 +451,7 @@ def replay(root, report_dir, market_dir=None, *, legacy_snapshot=None):
         if versioned:
             verify_receipt(path.with_name("receipt.json"), original)
         cards, sources, _, evidence = current_inputs(root, set_id, audited_minimums,
-            snapshot=path.parent / "checklist" if versioned else legacy_snapshot)
+            snapshot=path.parent / "checklist" if versioned else legacy_snapshot, group_id=group)
         if original["checklistSources"] != sources:
             raise ValueError(f"Bundled checklist bytes differ from capture for {set_id}")
         products = retained_market(original, path.parent if versioned else market_dir, versioned=versioned)
@@ -451,12 +482,17 @@ def report(root, set_id, group_id, fetch=read_http, *, revision=None):
         raise ValueError("Preserve the existing capture and choose a new --revision")
     if type(group_id) is not int or group_id < 1:
         raise ValueError("A positive Pokémon TCGplayer group ID is required")
-    cards, sources, name, evidence = current_inputs(root, set_id, minimum_table(ledger(), set()))
+    cards, sources, name, evidence = current_inputs(root, set_id, minimum_table(ledger(), set()), group_id=group_id)
     evidence.require_signed_review_closed()
     require_audited_minimum_projection(root, cards, evidence, already_certified=set_id in coverage["sets"])
     group_url = f"https://tcgcsv.com/tcgplayer/3/{group_id}"
     urls = {resource: f"{group_url}/{resource}" for resource in ("products", "prices")}
     marker = fetch(MARKER, 1024).decode().strip()
+    if evidence.ecard_holo_scope:
+        groups = json.loads(fetch(f"{BASE}/groups"))
+        if groups.get("success") is not True or groups.get("errors"):
+            raise ValueError("Could not verify the e-Card holo marketplace group")
+        require_ecard_holo_group(groups["results"], evidence.ecard_holo_scope)
     raw = {resource: fetch(url) for resource, url in urls.items()}
     if not marker or marker != fetch(MARKER, 1024).decode().strip():
         raise ValueError("TCGCSV changed builds during capture")
@@ -561,7 +597,7 @@ def certify(root, set_id, *, revision=FIRST_REVISION):
     # longer blocks the set. It must never enter the certificate itself.
     reviewed_energy_ids = unnumbered_energy_ids(root, set_id)
     audited = ledger()
-    cards, sources, _, evidence = current_inputs(root, set_id, minimum_table(audited, set()))
+    cards, sources, _, evidence = current_inputs(root, set_id, minimum_table(audited, set()), group_id=group_id)
     if reviewed_energy_ids & set(cards):
         raise ValueError(f"{set_id} certificate would include reviewed unnumbered Energy")
     if report_value["checklistSources"] != sources:
@@ -756,7 +792,7 @@ class Conventions:
     its unchanged gates, and the certificate records every slot difference.
     """
 
-    PATH = Path("publisher/pokemon-finish-conventions.json")
+    PATH = CONVENTIONS
     PACK_PATTERNS = {"pokeBall", "masterBall", "duskBall", "friendBall", "quickBall", "loveBall",
                      "energy", "team-rocket", "tinsel"}
 
@@ -981,13 +1017,16 @@ def assess_set(root, set_id, market, links, coverage, audited_minimums, *, artwo
         blockers.append(("multiplePrintRuns", "Schema 1 certificates are keyed by provider card ID"))
     if set_id in artwork_sets:
         blockers.append(("artworkFamily", "Reviewed artwork printings sit outside the captured checklist"))
-    cards, _, _, evidence = current_inputs(root, set_id, audited_minimums)
+    group = groups[0] if len(groups) == 1 else None
+    cards, _, _, evidence = current_inputs(root, set_id, audited_minimums,
+                                           group_id=group if rules is not None else None)
+    if evidence.ecard_holo_scope:
+        require_ecard_holo_group(market.groups, evidence.ecard_holo_scope)
     try:
         require_audited_minimum_projection(root, cards, evidence, already_certified=False)
     except ValueError as error:
         blockers.append(("minimumsDrift", str(error)))
     structural = next((blocker for blocker in blockers if blocker[0] in STRUCTURAL_BLOCKERS), None)
-    group = groups[0] if len(groups) == 1 else None
     comparison = None if structural else compare_current(cards, market.products(group), evidence)
     official_count = entries[0].get("officialCount")
     rows, resolutions = [], {}

@@ -105,11 +105,24 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 - **`multiplePrintRuns`** (Base Set and other early sets). Schema 1 certificates are keyed by card ID, so 1st Edition and Unlimited cannot be told apart. This needs a certificate schema change on both the app and script sides.
 - **Event and deck stamps** (Player Rewards, League, Snowflake, World Championship decks, GameStop/EB Games). No verified TCGplayer title rule exists yet. Each needs its own research, and a rule may only be added once a title pattern is confirmed against real listings.
 
-## Good next targets (verified as of 2026-11-18)
+## Pokémon e-Card holo title pass (2026-11-21)
 
-1. **Celebrations Classic Collection (`cel25cc`).** Add a reviewed mapping from each CC number to the original printed number that TCGplayer uses, then match name, original number and lane exactly. This would likely clear most of its 34 items and certify the set.
-2. **`xy8-146a` Professor's Letter.** It is TCGplayer product 177166 in group 1938, outside xy8's own group. A narrow appearance rule could certify xy8.
-3. **Cosmos holos in SV and Mega Evolution sets, and Cracked Ice.** Each comes down to one question: which TCGplayer group and title wording counts as evidence for the finish.
+Main at `467581b4` includes the Celebrations Classic Collection number
+remap, Professor's Letter mapping and Nidoran name normalization. The
+isolated Aquapolis and Skyridge title pass matched 56 H-numbered products
+in the fresh replay and 55 in the older replay. Fresh open rows went from
+4,485 to 4,374. The older ledger went from 4,486 to 4,377. Both reclassified
+the already-open Scizor `H21` as a finish exception, and neither introduced
+a new identity. Both sets remain pending.
+[Rule and exact scope](research/pokemon-finish-coverage/collector-conventions.md#aquapolis-and-skyridge-h-numbered-titles-2026-11-21)
+
+Next, verify the Scizor reverse evidence against the separately numbered
+Aquapolis printings, and retain missing Holofoil lanes as exceptions until
+an exact lane is captured. For other sets, Unified Minds still needs review
+of its Normal placeholders against the publisher's finish inventory.
+
+The numbered ledgers and source captures are on the SSD in
+`PokemonECardHoloReconciliation-20261121/`.
 
 ## State this runbook was written against
 
