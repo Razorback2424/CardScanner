@@ -1,3 +1,36 @@
+# 2026-11-21 — Five-game Browse filters and sorting
+
+Game-wide Browse and set detail now keep filter and sort choices independent.
+The card grid uses exact-finish USD quotes for price ranges, displayed
+amounts and ranking. Root search and supported sealed product grids expose
+sorts within their respective result scopes. Broad provider scopes can
+explicitly complete a partial sort. [Implementation and follow-up](docs/plans/browse-filter-sort-plan.md)
+
+Implementation is committed on `main` as `e970ef63`. The simulator evidence
+below is from the documented `a1dde0b9` investigation baseline with the
+working changes; live provider and physical-device acceptance remain open.
+
+At `a1dde0b9` with working changes, 295 focused ProfileLocal tests passed
+on an iOS 27.0 iPhone simulator with 8 skips and zero failures. The run
+covered Chocobo Track Foil, five-game ordering, pagination, set presentation,
+shared pricing and sealed product Browse. Live provider performance and
+physical-device acceptance remain open.
+
+The follow-up review fixed repeated cursors, duplicate sealed rows, sealed
+page loss on re-entry, automatic paging after a price-filter miss, and
+overlapping quote batches that could overwrite each other’s cache entries.
+Root search now identifies quote failures and opens the finish represented by
+its displayed price. A failed retry preserves the last known amount and its
+evidence date. The final review run passed 91 focused ProfileLocal simulator
+tests with zero skips or failures.
+
+A second review scoped quote retries to the requested finish IDs and kept
+unrelated streams active. A retry can bypass a saved sort hint and still reuse
+a current card response. Filtered walks now ignore publications outside their
+selected sets, and full local sorts invalidate a snapshot when an eligible
+set changes during the read. All 71 selected ProfileLocal iPhone simulator
+tests passed with zero skips or failures.
+
 # 2026-11-21 — EX Delta Species marketplace title reconciliation
 
 The Pokémon candidate on `467581b4` matches a checklist title ending in
