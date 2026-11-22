@@ -15,16 +15,20 @@ struct RemovalUndoBanner: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     let name: String
-    let expiresAt: Date
+    var expiresAt: Date? = nil
     var isRestoring = false
     let onUndo: () -> Void
-    let onDismiss: () -> Void
+    var onDismiss: (() -> Void)? = nil
 
     var body: some View {
-        TimelineView(.explicit([Date.now, expiresAt].sorted())) { context in
-            if context.date < expiresAt {
-                content
+        if let expiresAt {
+            TimelineView(.explicit([Date.now, expiresAt].sorted())) { context in
+                if context.date < expiresAt {
+                    content
+                }
             }
+        } else {
+            content
         }
     }
 
@@ -78,10 +82,13 @@ struct RemovalUndoBanner: View {
             .accessibilityLabel(isRestoring ? "Restoring \(name)" : "Undo removal of \(name)")
     }
 
+    @ViewBuilder
     private var dismissButton: some View {
-        Button("Dismiss", action: onDismiss)
-            .font(.subheadline)
-            .frame(minHeight: 44)
-            .accessibilityLabel("Dismiss removal message")
+        if let onDismiss {
+            Button("Dismiss", action: onDismiss)
+                .font(.subheadline)
+                .frame(minHeight: 44)
+                .accessibilityLabel("Dismiss removal message")
+        }
     }
 }

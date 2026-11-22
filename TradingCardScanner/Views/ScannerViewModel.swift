@@ -7005,7 +7005,7 @@ final class ScannerViewModel: ObservableObject {
 #if DEBUG
     private var usesInMemoryScreenshotFixtures = false
 
-    func seedTradeScreenshot(populated: Bool) {
+    func seedTradeScreenshot(populated: Bool, partiallyPriced: Bool) {
         usesInMemoryScreenshotFixtures = true
         setPurpose(.tradeAnalyzer)
         guard populated else { return }
@@ -7048,11 +7048,22 @@ final class ScannerViewModel: ObservableObject {
                 )
             )
         }
-        let give = entry("Pikachu", number: "025", finish: .reverse, amount: 9.08, side: .give, quantity: 20)
+        var give = entry("Pikachu", number: "025", finish: .reverse, amount: 9.08, side: .give, quantity: 20)
+        if partiallyPriced { give.result.quoteState = .lastKnown(.providerUnavailable) }
         tradeDraft.entries = [
             give,
             entry("Charizard ex", number: "199", finish: .holo, amount: 176, side: .receive, quantity: 1)
         ]
+        if partiallyPriced {
+            var checking = entry("Mew ex", number: "151", finish: .holo, amount: 0, side: .receive, quantity: 1)
+            checking.result.quote = .unavailable(nil)
+            checking.result.quoteState = .checking
+            checking.result.shouldAutoRefresh = true
+            var unavailable = entry("Snorlax", number: "143", finish: .holo, amount: 0, side: .give, quantity: 1)
+            unavailable.result.quote = .unavailable(nil)
+            unavailable.result.quoteState = .providerUnavailable
+            tradeDraft.entries.append(contentsOf: [checking, unavailable])
+        }
         tradeDraft.latestScanID = give.id
         tradeDraft.scanSide = .give
     }

@@ -243,8 +243,11 @@ struct ScannerView: View {
             }
             if scannerScreenshotRoute == "TradeAnalyzer" {
                 let arguments = ProcessInfo.processInfo.arguments
-                model.seedTradeScreenshot(populated: !arguments.contains("empty"))
-                isShowingTradeReview = arguments.contains("review")
+                model.seedTradeScreenshot(
+                    populated: !arguments.contains("empty") && !arguments.contains("review-empty"),
+                    partiallyPriced: arguments.contains("review-partial")
+                )
+                isShowingTradeReview = ["review", "review-empty", "review-partial"].contains { arguments.contains($0) }
             }
             if scannerScreenshotRoute == "WholeCardScanner" || scannerScreenshotRoute == "TrustScanReceipt" {
                 if ProcessInfo.processInfo.arguments.contains("permission-denied") {
