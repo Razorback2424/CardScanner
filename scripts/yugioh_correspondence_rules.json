@@ -184,22 +184,22 @@
           "CRV-EN040": {
             "productID": 24466,
             "productName": "Dragon's Mirror",
-          "sourceCardID": 71490127
+            "sourceCardID": 71490127
           },
           "CRV-EN042": {
             "productID": 24468,
             "productName": "Des Croaking",
-          "sourceCardID": 44883830
+            "sourceCardID": 44883830
           },
           "CRV-EN044": {
             "productID": 24470,
             "productName": "Shien's Spy",
-          "sourceCardID": 7672244
+            "sourceCardID": 7672244
           },
           "CRV-EN060": {
             "productID": 24462,
             "productName": "Prepare to Strike Back",
-          "sourceCardID": 4483989
+            "sourceCardID": 4483989
           }
         }
       },
@@ -215,22 +215,22 @@
           "EXVC-EN035": {
             "productID": 40061,
             "productName": "Jar Turtle",
-          "sourceCardID": 96287685
+            "sourceCardID": 96287685
           },
           "EXVC-EN036": {
             "productID": 40062,
             "productName": "Aurora Paragon",
-          "sourceCardID": 22386234
+            "sourceCardID": 22386234
           },
           "EXVC-EN062": {
             "productID": 40088,
             "productName": "Self-Mummification",
-          "sourceCardID": 15103313
+            "sourceCardID": 15103313
           },
           "EXVC-EN079": {
             "productID": 40105,
             "productName": "Localized Tornado",
-          "sourceCardID": 64681263
+            "sourceCardID": 64681263
           }
         }
       },
@@ -246,22 +246,22 @@
           "STOR-EN036": {
             "productID": 39267,
             "productName": "Majioshaleon",
-          "sourceCardID": 67211766
+            "sourceCardID": 67211766
           },
           "STOR-EN037": {
             "productID": 39326,
             "productName": "Yaksha",
-          "sourceCardID": 94215860
+            "sourceCardID": 94215860
           },
           "STOR-EN062": {
             "productID": 39302,
             "productName": "Terminal World",
-          "sourceCardID": 54631834
+            "sourceCardID": 54631834
           },
           "STOR-EN077": {
             "productID": 39325,
             "productName": "Xing Zhen Hu Replica",
-          "sourceCardID": 40736921
+            "sourceCardID": 40736921
           }
         }
       },
@@ -277,37 +277,37 @@
           "RDS-EN043": {
             "productID": 23457,
             "productName": "Mokey Mokey Smackdown",
-          "sourceCardID": 1965724
+            "sourceCardID": 1965724
           },
           "RDS-EN044": {
             "productID": 23458,
             "productName": "Back to Square One",
-          "sourceCardID": 47453433
+            "sourceCardID": 47453433
           },
           "RDS-EN047": {
             "productID": 23460,
             "productName": "Lighten the Load",
-          "sourceCardID": 37231841
+            "sourceCardID": 37231841
           },
           "RDS-EN051": {
             "productID": 23464,
             "productName": "Xing Zhen Hu",
-          "sourceCardID": 76515293
+            "sourceCardID": 76515293
           },
           "RDS-EN053": {
             "productID": 23466,
             "productName": "Fruits of Kozaky's Studies",
-          "sourceCardID": 49998907
+            "sourceCardID": 49998907
           },
           "RDS-EN054": {
             "productID": 23467,
             "productName": "Mind Haxorz",
-          "sourceCardID": 75392615
+            "sourceCardID": 75392615
           },
           "RDS-EN055": {
             "productID": 23468,
             "productName": "Fuh-Rin-Ka-Zan",
-          "sourceCardID": 1781310
+            "sourceCardID": 1781310
           }
         }
       },
@@ -323,57 +323,57 @@
           "SOD-EN039": {
             "productID": 23384,
             "productName": "Mind Wipe",
-          "sourceCardID": 52817046
+            "sourceCardID": 52817046
           },
           "SOD-EN040": {
             "productID": 23385,
             "productName": "Abyssal Designator",
-          "sourceCardID": 89801755
+            "sourceCardID": 89801755
           },
           "SOD-EN044": {
             "productID": 23389,
             "productName": "The Graveyard in the Fourth Dimension",
-          "sourceCardID": 88089103
+            "sourceCardID": 88089103
           },
           "SOD-EN045": {
             "productID": 23390,
             "productName": "Two-Man Cell Battle",
-          "sourceCardID": 25578802
+            "sourceCardID": 25578802
           },
           "SOD-EN048": {
             "productID": 23393,
             "productName": "Ritual Weapon",
-          "sourceCardID": 54351224
+            "sourceCardID": 54351224
           },
           "SOD-EN049": {
             "productID": 23394,
             "productName": "Taunt",
-          "sourceCardID": 90740329
+            "sourceCardID": 90740329
           },
           "SOD-EN050": {
             "productID": 23395,
             "productName": "Absolute End",
-          "sourceCardID": 27744077
+            "sourceCardID": 27744077
           },
           "SOD-EN052": {
             "productID": 23397,
             "productName": "Ninjitsu Art of Decoy",
-          "sourceCardID": 89628781
+            "sourceCardID": 89628781
           },
           "SOD-EN054": {
             "productID": 23399,
             "productName": "Heavy Slump",
-          "sourceCardID": 52417194
+            "sourceCardID": 52417194
           },
           "SOD-EN056": {
             "productID": 23401,
             "productName": "Mind Crush",
-          "sourceCardID": 15800838
+            "sourceCardID": 15800838
           },
           "SOD-EN058": {
             "productID": 23403,
             "productName": "Gorgon's Eye",
-          "sourceCardID": 52648457
+            "sourceCardID": 52648457
           },
           "SOD-EN059": {
             "productID": 23404,
@@ -14765,5 +14765,128 @@
         "generation": "yugioh-en-cd41e0c65547"
       }
     }
-  ]
+  ],
+  "referenceGalleryCorrespondence": {
+    "id": "reviewed-english-reference-gallery-v1",
+    "decision": "A gallery-backed English reference printing can satisfy a singleton secondary printing correspondence check when group, release title, printed code, card ID, name and physical rarity all agree. Keep marketplace bindings, edition support and automatic selection under their existing gates.",
+    "reviewedAt": "2026-11-21",
+    "gallerySHA256": "40cc17e7d9e74d6c6fe86c71347359803b16e4f2b93c3fbe07a662eb82608f66",
+    "sources": [
+      "scripts/yugioh_legacy_edition_evidence.json",
+      "scripts/yugioh_legacy_inventory.json",
+      "https://yugipedia.com/index.php?oldid=5700083",
+      "https://yugipedia.com/index.php?oldid=5726043",
+      "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=1&pid=11113001&request_locale=en&rp=99999",
+      "https://www.cardmarket.com/en/YuGiOh/Products/Singles/War-of-the-Giants-Reinforcements",
+      "https://www.tcgplayer.com/categories/trading-and-collectible-card-games/yugioh/price-guides/metal-raiders",
+      "https://www.pricecharting.com/game/yugioh-metal-raiders/gate-guardian-mrd-e000",
+      "https://www.pricecharting.com/pop/item/yugioh-metal-raiders/gate-guardian-mrd-000"
+    ],
+    "groups": {
+      "-28": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship 2018 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship 2018 prize cards"
+      },
+      "-27": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship 2017 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship 2017 prize cards"
+      },
+      "-26": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship 2005 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship 2005 prize cards"
+      },
+      "-25": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship 2004 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship 2004 prize cards"
+      },
+      "-24": {
+        "catalogGroupName": "Swedish Shonen Jump 2005, Issue 12 promotional card (European English)",
+        "sourceSetName": "Swedish Shonen Jump 2005, Issue 12 promotional card"
+      },
+      "-23": {
+        "catalogGroupName": "Swedish Shonen Jump 2004, Issue 2 promotional card (European English)",
+        "sourceSetName": "Swedish Shonen Jump 2004, Issue 2 promotional card"
+      },
+      "-22": {
+        "catalogGroupName": "Make-A-Wish Foundation promotional card",
+        "sourceSetName": "Make-A-Wish Foundation promotional card"
+      },
+      "-21": {
+        "catalogGroupName": "Yu-Gi-Oh! World Championship Qualifier National Championships 2011 prize cards",
+        "sourceSetName": "Yu-Gi-Oh! World Championship Qualifier National Championships 2011 prize cards"
+      },
+      "-20": {
+        "catalogGroupName": "Duelist League Series 2 participation cards",
+        "sourceSetName": "Duelist League Series 2 participation cards"
+      },
+      "-19": {
+        "catalogGroupName": "Yu-Gi-Oh! GX Card Almanac promotional cards (European English)",
+        "sourceSetName": "Yu-Gi-Oh! GX Card Almanac promotional cards"
+      },
+      "-18": {
+        "catalogGroupName": "2-Player Starter Deck: Yuya & Declan (European English)",
+        "sourceSetName": "2-Player Starter Deck: Yuya & Declan"
+      },
+      "-17": {
+        "catalogGroupName": "War of the Giants Reinforcements (European English)",
+        "sourceSetName": "War of the Giants Reinforcements"
+      },
+      "-13": {
+        "catalogGroupName": "Duelist League Series 1 participation cards (European English)",
+        "sourceSetName": "Duelist League Series 1 participation cards"
+      },
+      "-12": {
+        "catalogGroupName": "Yu-Gi-Oh! The Duelists of the Roses promotional cards (European English)",
+        "sourceSetName": "Yu-Gi-Oh! The Duelists of the Roses promotional cards"
+      },
+      "-11": {
+        "catalogGroupName": "Yu-Gi-Oh! Power of Chaos: Kaiba the Revenge promotional cards (European English)",
+        "sourceSetName": "Yu-Gi-Oh! Power of Chaos: Kaiba the Revenge promotional cards"
+      },
+      "-10": {
+        "catalogGroupName": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny Limited Collector's Edition (European English)",
+        "sourceSetName": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny Limited Collector's Edition"
+      },
+      "-9": {
+        "catalogGroupName": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny promotional cards (European English)",
+        "sourceSetName": "Yu-Gi-Oh! Power of Chaos: Yugi the Destiny promotional cards"
+      },
+      "-8": {
+        "catalogGroupName": "Tournament Pack: 1st Season (European English)",
+        "sourceSetName": "Tournament Pack: 1st Season"
+      },
+      "-7": {
+        "catalogGroupName": "Starter Deck: Kaiba (European English)",
+        "sourceSetName": "Starter Deck: Kaiba"
+      },
+      "-6": {
+        "catalogGroupName": "Starter Deck: Yugi (European English)",
+        "sourceSetName": "Starter Deck: Yugi"
+      },
+      "-4": {
+        "catalogGroupName": "Labyrinth of Nightmare (European English)",
+        "sourceSetName": "Labyrinth of Nightmare"
+      },
+      "-3": {
+        "catalogGroupName": "Pharaoh's Servant (European English)",
+        "sourceSetName": "Pharaoh's Servant"
+      },
+      "-2": {
+        "catalogGroupName": "Metal Raiders (European English)",
+        "sourceSetName": "Metal Raiders"
+      },
+      "-1": {
+        "catalogGroupName": "Legend of Blue Eyes White Dragon (European English)",
+        "sourceSetName": "Legend of Blue Eyes White Dragon"
+      },
+      "249": {
+        "catalogGroupName": "Magic Ruler",
+        "sourceSetName": "Magic Ruler"
+      },
+      "2197": {
+        "catalogGroupName": "Mattel Action Figure Promos: Series 3",
+        "sourceSetName": "Mattel Action Figure promotional cards: Series 3"
+      }
+    }
+  }
 }

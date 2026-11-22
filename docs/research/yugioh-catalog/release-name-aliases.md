@@ -46,3 +46,47 @@ The 25th Anniversary and Worldwide English reprint groups share their printed co
 ## What this does not change
 
 `incompleteCodes` only withholds automatic scan selection. Automatic selection also needs a reviewed Konami release inventory (`yugioh_printing_inventories.json`). So aliases make the ledger honest, but they do not make scanning faster by themselves. The next lever is reviewed Konami release inventories for more releases.
+
+## Gallery-backed English reference correspondence (2026-11-21)
+
+The builder already retains English reference printings with photographed
+edition evidence. Its correspondence census looked only at TCGplayer product
+bindings, so a singleton reference could agree with YGOPRODeck in every field
+and still produce a `printingCorrespondenceGap`.
+
+The `reviewed-english-reference-gallery-v1` rule pins the gallery receipt as a
+whole, including its reference-inventory hash and the exact group/code pairs
+covered by the photographed specimens. The builder requires a sole existing
+reference printing with edition support, one YGOPRODeck row in the capture,
+and exact group, release title, code, canonical card ID, card name
+and physical rarity. Short Print uses the existing Common physical-rarity
+convention. A competing family member or multiple source assignments keeps the
+code open. The rule leaves existing edition choices and automatic-scan gates
+in place.
+[Reviewed rule](../../../scripts/yugioh_correspondence_rules.json)
+[Pinned specimen receipts](../../../scripts/yugioh_legacy_edition_evidence.json)
+[Reference inventory](../../../scripts/yugioh_legacy_inventory.json)
+
+The first-edition and Unlimited European English galleries show Gate Guardian
+as `MRD-E000` Secret Rare. PriceCharting indexes that exact code, and
+TCGplayer’s Metal Raiders guide lists Gate Guardian under `MRD-000`.
+PSA’s Metal Raiders guide and PriceCharting’s PSA/CGC population view provide
+collector context for the ordinary release. Konami and Cardmarket independently
+corroborate War of the Giants Reinforcements, including Evilswarm Heliotrope.
+The galleries provide the exact reference specimens. Each marketplace keeps
+its own identifiers and pricing.
+[First-edition gallery](https://ftp.yugipedia.com/wiki/Set_Card_Galleries%3AMetal_Raiders_%28TCG-EU-1E%29)
+[Unlimited gallery](https://ftp.yugipedia.com/wiki/Set_Card_Galleries%3AMetal_Raiders_%28TCG-EU-UE%29)
+[PriceCharting](https://www.pricecharting.com/game/yugioh-metal-raiders/gate-guardian-mrd-e000)
+[TCGplayer](https://www.tcgplayer.com/categories/trading-and-collectible-card-games/yugioh/price-guides/metal-raiders)
+[PSA](https://www.psacard.com/priceguide/non-sports-tcg-card-values/2002-yu-gi-oh-mrd-metal-raiders/2874)
+[PSA/CGC population view](https://www.pricecharting.com/pop/item/yugioh-metal-raiders/gate-guardian-mrd-000)
+[Konami](https://www.db.yugioh-card.com/yugiohdb/card_search.action?cid=9813&ope=2&request_locale=en)
+[Cardmarket](https://www.cardmarket.com/en/YuGiOh/Products/Singles/War-of-the-Giants-Reinforcements)
+
+Both retained and fresh provider captures closed the same 860 rows. These
+were the final exceptions for 11 code prefixes: `DL1`, `DL2`, `MRL`,
+`PSV`, `TP1`, `TYL`, `WCS`, `WGRT`, `WQ11`, `YDB1` and `YS15`.
+The two 2017 championship codes `2017-EN001` and `2017-EN002` still have two
+secondary rarity labels, “Extra Secret” and “Extra Secret Rare.” They require
+their own reviewed finish crosswalk.

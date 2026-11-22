@@ -80,6 +80,78 @@ class CommonShortPrintTests(unittest.TestCase):
                 _, _, _, incomplete = self.build()
                 self.assertIn("printingShortfall", incomplete[self.code])
 
+class ReferenceGalleryCorrespondenceTests(unittest.TestCase):
+    def setUp(self):
+        self.code = "MRD-E000"
+        self.title = "Metal Raiders"
+        self.release = {
+            "groupID": -2, "referenceID": "mrd-eu", "code": "MRD",
+            "name": "Metal Raiders (European English)",
+            "rows": [[self.code, 1, "Gate Guardian", "Secret Rare"]],
+        }
+        self.inventory = {"url": "https://example.com/inventory", "sha256": "a" * 64,
+                          "releases": [self.release]}
+        gallery = {
+            "inventorySHA256": galleries.inventory_hash(self.inventory),
+            "sources": [{"groupID": -2, "codes": [self.code], "edition": "Unlimited",
+                         "url": "https://yugipedia.com/index.php?oldid=123",
+                         "sha256": "b" * 64, "capturedAt": "2026-10-01T00:00:00Z"}],
+        }
+        self.evidence = {"sources": [], "galleryEvidence": gallery}
+        self.rules = {**builder.CORRESPONDENCE_RULES, "referenceGalleryCorrespondence": {
+            "gallerySHA256": builder.hashlib.sha256(builder.packed(gallery)).hexdigest(),
+            "groups": {"-2": {"catalogGroupName": self.release["name"], "sourceSetName": self.title}},
+        }}
+        self.card = {"id": 1, "name": "Gate Guardian", "card_images": [{"id": 1}],
+                     "card_sets": [{"set_code": self.code, "set_name": self.title, "set_rarity": "Secret Rare"}]}
+
+    def build(self):
+        with patch.object(builder, "CORRESPONDENCE_RULES", self.rules):
+            return builder.build([], {}, {}, [self.card], {}, {}, "2026-10-20T00:00:00Z", floor=1,
+                                 reference_inventory=self.inventory, reference_editions=self.evidence)
+
+    def test_gallery_closes_only_the_correspondence_reason(self):
+        before, _, _, _ = builder.build([], {}, {}, [self.card], {}, {}, "2026-10-20T00:00:00Z", floor=1,
+                                        reference_inventory=self.inventory, reference_editions=self.evidence)
+        after, _, _, incomplete = self.build()
+        self.assertEqual(before["incompleteCodes"], [self.code])
+        self.assertFalse(incomplete[self.code])
+        self.assertEqual(after["referencePrintings"], before["referencePrintings"])
+        self.assertEqual(after["autoEligibleCodes"], [])
+
+    def test_review_refuses_drift_and_ambiguous_secondary_evidence(self):
+        for case in ("gallery hash", "missing gallery", "code uncovered", "group unreviewed", "group name",
+                     "secondary set", "secondary rarity", "secondary title", "card ID", "extra source row"):
+            with self.subTest(case=case):
+                self.setUp()
+                scope = self.rules["referenceGalleryCorrespondence"]["groups"]["-2"]
+                entry = self.card["card_sets"][0]
+                if case == "gallery hash":
+                    self.evidence["galleryEvidence"]["sources"][0]["sha256"] = "c" * 64
+                elif case == "missing gallery":
+                    self.evidence.pop("galleryEvidence")
+                elif case == "code uncovered":
+                    gallery = self.evidence["galleryEvidence"]
+                    gallery["sources"][0]["codes"].clear()
+                    self.rules["referenceGalleryCorrespondence"]["gallerySHA256"] = builder.hashlib.sha256(
+                        builder.packed(gallery)).hexdigest()
+                elif case == "group unreviewed":
+                    self.rules["referenceGalleryCorrespondence"]["groups"].clear()
+                elif case == "group name":
+                    scope["catalogGroupName"] += " reissue"
+                elif case == "secondary set":
+                    entry["set_name"] += " reissue"
+                elif case == "secondary rarity":
+                    entry["set_rarity"] = "Ultra Rare"
+                elif case == "secondary title":
+                    self.card["name"] = "Gate Guardian (reissue)"
+                elif case == "card ID":
+                    self.card["id"] = 2
+                elif case == "extra source row":
+                    self.card["card_sets"].append({**entry, "set_rarity": "Ultra Rare"})
+                _, _, _, incomplete = self.build()
+                self.assertIn("printingCorrespondenceGap", incomplete[self.code])
+
 
 class BuilderTests(unittest.TestCase):
     def setUp(self):

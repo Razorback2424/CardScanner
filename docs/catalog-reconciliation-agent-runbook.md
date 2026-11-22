@@ -68,6 +68,10 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 2. Replay with `--offline` and `--price-receipt`. Pass a seed from a different
    provider capture as `--previous-seed`. For a rule-only replay of the bundled
    capture, use the earlier seed that generated that bundle as its parent.
+
+2. Replay with `--offline` and `--price-receipt`. Pass a seed from a
+   different provider capture as `--previous-seed`. To replay the capture
+   behind the current bundle, pass the earlier seed used to generate it.
 3. Compare ledgers with `catalog_exceptions.py diff`.
 4. Confirm the candidate changed only what the rule intended: compare printing IDs and fields against the previous build, check that `parentRegressions` is empty, and check that `autoEligibleCodes` is unchanged unless you meant to change it.
 5. Copy the candidate over the bundled seed.
@@ -134,6 +138,35 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
    link for Odd-Eyes Pendulum Dragon, Four Heavenly Dragons against the
    four existing TCGplayer products. Preserve the parent identity through
    a reviewed linkage before bundling that provider capture.
+
+**Yu-Gi-Oh state (2026-11-21, reference-gallery candidate on `467581b4`).**
+- Main already includes the HAC1 Duel Terminal taxonomy and the 2025 Mega-Pack
+  Tin inventory.
+- Gallery-backed references cleared 860 `printingCorrespondenceGap` rows
+  across 22 code prefixes. The replay that reproduces the bundle went from
+  4,883 to 4,023 open rows and 2,527 to 1,667 incomplete codes, with zero rows
+  opened. The candidate preserved all 720 automatic scan codes and had empty
+  `parentRegressions`.
+  [Decision and scope](research/yugioh-catalog/release-name-aliases.md#gallery-backed-english-reference-correspondence-2026-11-21)
+- The fresh capture reproduced the same 860 closures (4,880 to 4,020).
+  Both fresh builds flagged canonical identity changes for four
+  `MAMO-EN013` products. The bundled candidate uses the retained source
+  capture to isolate the gallery rule from that provider change. The numbered
+  ledgers and diffs are on the SSD in `YuGiOhReferenceReconciliation-20261121/`.
+
+**Next Yu-Gi-Oh targets**
+
+1. **Star Pack VRAINS (`SP18`).** Its 49 affected codes carry both
+   “Starfoil” and “Starfoil Rare” secondary labels. Verify exact single
+   Starfoil products and preserve the separate Common printings.
+   [Konami's distribution and finish counts](https://www.yugioh-card.com/en/products/star_vrains/)
+2. **Speed Duel source coverage.** The retained YGOPRODeck snapshot lacks
+   exact rows for 367 codes in `SBC2`, `SGX4` and `STP7`. The English
+   Konami release checklists are retained under the SSD pass's `konami/`
+   directory. Review exact printed codes and alternates, and resolve parent
+   canonical identity preservation before filling the secondary coverage.
+3. **Reviewed Konami release inventories.** Prioritize clean correspondence
+   and single-print, single-art families to improve scan selection.
 
 ## Mistakes already made (do not repeat)
 
