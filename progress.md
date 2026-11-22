@@ -9246,3 +9246,23 @@ controls and receipt fit outside the card guide. Review showed both cash fields,
 the $5.60 difference and the matching balance action at default text size. The
 summary stacked at Accessibility 5. Captures are under
 `/Volumes/T7/CodexBuild/worktree-review-20261122/`.
+
+# 2026-11-22 — Review Trade usability
+
+Review Trade leads with the estimated difference or quote status. The cash
+fields stay aligned as subtotals change and stack at larger text sizes. An
+invalid edit has an inline error and can be discarded while keeping the last
+valid amount. Undo remains visible after a card is removed.
+
+On `0f08c7c1` with working changes, ProfileLocal `DebugRemoteLocal` ran 157
+scanner and view smoke tests on the iOS 27.0 iPhone SE (3rd generation) simulator
+with zero failures or skips. The final typography pass ran six focused trade
+and view tests with zero failures or skips. Result bundles are
+`final-tests.xcresult` and `trade-and-view-final.xcresult` under
+`/Volumes/T7/CodexBuild/TradeReview-20261122/`.
+
+Simulator interaction checks covered balancing to the cent, discarding a third
+decimal digit while keeping valid cash, changing quantity, moving a card,
+undoing a removal, and switching sides at Accessibility 5. Screenshots in the
+same directory cover iPhone SE and iPad mini, dark appearance, and French
+number formatting with partial quotes.
