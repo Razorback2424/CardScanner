@@ -105,11 +105,25 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 - **`multiplePrintRuns`** (Base Set and other early sets). Schema 1 certificates are keyed by card ID, so 1st Edition and Unlimited cannot be told apart. This needs a certificate schema change on both the app and script sides.
 - **Event and deck stamps** (Player Rewards, League, Snowflake, World Championship decks, GameStop/EB Games). No verified TCGplayer title rule exists yet. Each needs its own research, and a rule may only be added once a title pattern is confirmed against real listings.
 
-## Good next targets (verified as of 2026-11-18)
+## Pokémon state and next targets (2026-11-21)
 
-1. **Celebrations Classic Collection (`cel25cc`).** Add a reviewed mapping from each CC number to the original printed number that TCGplayer uses, then match name, original number and lane exactly. This would likely clear most of its 34 items and certify the set.
-2. **`xy8-146a` Professor's Letter.** It is TCGplayer product 177166 in group 1938, outside xy8's own group. A narrow appearance rule could certify xy8.
-3. **Cosmos holos in SV and Mega Evolution sets, and Cracked Ice.** Each comes down to one question: which TCGplayer group and title wording counts as evidence for the finish.
+Main at `467581b4` includes the Celebrations Classic Collection number
+remap, the Professor's Letter alternate-art mapping, and Nidoran name
+normalization. In the Shining Fates Shiny Vault candidate, the dedicated
+TCGplayer group certifies 122 cards. The retained replay went from 4,486 to
+4,291 open rows, and the fresh capture from 4,485 to 4,290. Both closed the
+same 195 rows with zero opened. The bundle has 22 certified sets.
+[Shiny Vault decision](research/pokemon-finish-coverage/collector-conventions.md#shining-fates-shiny-vault-group-2026-11-21)
+
+1. **Unified Minds (`sm11`).** Review the 83 finish conflicts against the
+   publisher checklist and the same set's exact market lanes. Check which
+   cards have real non-holo copies before proposing any rule for a Normal
+   placeholder.
+2. **Cosmos holos in SV and Mega Evolution sets, and Cracked Ice.** Confirm
+   the TCGplayer group and exact title patterns that identify these finishes.
+
+The new ledgers and sources are on the SSD in
+`PokemonReconciliation-20261121/`.
 
 ## State this runbook was written against
 

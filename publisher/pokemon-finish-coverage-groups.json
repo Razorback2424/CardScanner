@@ -9,6 +9,22 @@
     {"setID": "pl2", "groupID": 1367, "groupName": "Rising Rivals", "reason": "Code RR is shared with EX Team Rocket Returns; the group name is exact."},
     {"setID": "g1", "groupID": 1728, "groupName": "Generations", "reason": "Code GEN is shared with the Radiant Collection subset group; the main set group carries the exact set name."},
     {"setID": "swsh12.5gg", "groupID": 17689, "groupName": "SWSH: Crown Zenith: Galarian Gallery", "reason": "The Galarian Gallery subset has its own group; code CRZ is shared with the main Crown Zenith group."},
+    {
+      "id": "shining-fates-shiny-vault-group",
+      "setID": "swsh4.5sv",
+      "groupID": 2781,
+      "groupName": "Shining Fates: Shiny Vault",
+      "reason": "Shining Fates and its Shiny Vault share code SHF. The dedicated TCGplayer group contains the 122 SV-numbered Holofoil products.",
+      "decision": "Compare the English Shiny Vault checklist with its dedicated group. Verify the ordinary Shining Fates expansion against its separate inventory.",
+      "sources": [
+        "https://assets.pokemon.com/assets/cms2/pdf/trading-card-game/checklist/swsh45_web_cardlist_en.pdf",
+        "https://www.tcgplayer.com/categories/trading-and-collectible-card-games/pokemon/price-guides/shining-fates-shiny-vault",
+        "https://bulbapedia.bulbagarden.net/wiki/Shining_Fates_(TCG)",
+        "https://www.psacard.com/cert/64758236/psa",
+        "https://www.pricecharting.com/pop/set/pokemon-shining-fates",
+        "https://www.cardmarket.com/en/Pokemon/Products/Singles/Shining-Fates/Rowlet-V2-SHFSV1"
+      ]
+    },
     {"setID": "swsh5", "groupID": 2765, "groupName": "SWSH05: Battle Styles", "reason": "Code BST also names EX Battle Stadium; the SWSH05 group carries the exact set name."},
     {"setID": "xy9", "groupID": 1701, "groupName": "XY - BREAKpoint", "reason": "Code BKP is shared with Burger King Promos; TCGplayer prefixes XY sets with 'XY - '."},
     {"setID": "cel25cc", "groupID": 2931, "groupName": "Celebrations: Classic Collection", "reason": "TCGplayer names the subset 'Celebrations: Classic Collection' with code CCC."},
