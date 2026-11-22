@@ -96,6 +96,34 @@ products lacked a Holofoil lane. Aquapolis Scizor `H21` now has an exact
 holo match and retains its separate reverse-finish exception. The older
 capture also lacked a Holofoil lane for Skyridge Articuno `H03`.
 
+### Shining Fates Shiny Vault group (2026-11-21)
+
+The expansion and its Shiny Vault share set code `SHF`. The Vault has its own
+English collector-number sequence, `SV001/SV122` through `SV122/SV122`, and
+TCGplayer files it in group 2781, **Shining Fates: Shiny Vault**. The reviewed
+link changes the group for `swsh4.5sv` alone. The printed number distinguishes
+the Vault's Rowlet `SV001` from the main expansion's Rowlet `006`.
+[Pokémon publisher checklist](https://assets.pokemon.com/assets/cms2/pdf/trading-card-game/checklist/swsh45_web_cardlist_en.pdf)
+[TCGplayer Shiny Vault](https://www.tcgplayer.com/categories/trading-and-collectible-card-games/pokemon/price-guides/shining-fates-shiny-vault)
+[Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Shining_Fates_(TCG))
+[Cardmarket Vault Rowlet](https://www.cardmarket.com/en/Pokemon/Products/Singles/Shining-Fates/Rowlet-V2-SHFSV1)
+
+The retained publisher PDF labels all 122 cards as Shiny Vault foil. Its
+rendered page confirms the printed numbers, including Charizard VMAX
+`SV107`. PSA and the PriceCharting grading index independently retain the
+same collector-number scheme.
+[PSA Charizard VMAX](https://www.psacard.com/cert/64758236/psa)
+[PriceCharting PSA/CGC index](https://www.pricecharting.com/pop/set/pokemon-shining-fates)
+
+The fresh TCGCSV capture has one exact product and one `Holofoil` lane for
+every Vault number and title. The existing certifier found that all 122
+projected `holo` slots agree with its independent source comparison. The
+certificate records zero slot changes. The only closed exceptions were 122
+unmatched Vault cards and 73 unmatched products from the old comparison to
+the main set.
+[Reviewed group link](../../../publisher/pokemon-finish-coverage-groups.json)
+[Evidence report](captures/swsh4.5sv/2026-11-21/report.json)
+
 ### Q1 Finishes beyond the bundled slots (`checklistMissingFinish`)
 
 - **What collectors expect.** Every card except Ultra Rares, Secret Rares and

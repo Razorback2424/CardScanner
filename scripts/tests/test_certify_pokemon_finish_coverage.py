@@ -642,6 +642,23 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Invalid"):
             coverage.group_links(groups, entries, {"links": [dict(reviewed["links"][0], reason="")]})
 
+    def test_shining_fates_shiny_vault_selects_its_own_group_only(self):
+        reviewed = coverage.read_json(Path(__file__).resolve().parents[2] / coverage.GROUP_LINKS)
+        link, = [link for link in reviewed["links"] if link["setID"] == "swsh4.5sv"]
+        entries = [
+            {"providerID": "swsh4.5", "set": {"name": "Shining Fates", "code": "SHF"}},
+            {"providerID": "swsh4.5sv", "set": {"name": "Shining Fates Shiny Vault", "code": "SHF"}},
+        ]
+        groups = [
+            {"groupId": 2754, "name": "Shining Fates", "abbreviation": "SHF"},
+            {"groupId": 2781, "name": "Shining Fates: Shiny Vault", "abbreviation": "SHFSV"},
+        ]
+        self.assertEqual(coverage.group_links(groups, entries, {"links": [link]}), {
+            "swsh4.5": {2754}, "swsh4.5sv": {2781},
+        })
+        with self.assertRaisesRegex(ValueError, "no longer named"):
+            coverage.group_links(groups[:1] + [dict(groups[1], name="Shining Fates")], entries, {"links": [link]})
+
     def conventions(self, **conventions):
         coverage.write_json(self.root / coverage.Conventions.PATH, {"schemaVersion": 1, **conventions})
 

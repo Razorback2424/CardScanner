@@ -22,6 +22,21 @@ a Holofoil lane. Both set certificates remain pending. All 75 focused
 Pokémon tests and six ledger tests passed.
 [Decision and source scope](docs/research/pokemon-finish-coverage/collector-conventions.md#aquapolis-and-skyridge-h-numbered-titles-2026-11-21)
 
+# 2026-11-21 — Shining Fates Shiny Vault finish certification
+
+The Pokémon candidate on `467581b4` links `swsh4.5sv` to its dedicated
+TCGplayer group 2781. The exact marketplace titles, numbered publisher
+checklist and Holofoil lanes agreed for 122 English cards. The existing
+validator certified the whole Vault with zero checklist slot changes.
+The fresh replay closed 195 rows, from 4,485 to 4,290, with zero opened.
+The retained comparison closed the same rows, from 4,486 to 4,291.
+[Decision and sources](docs/research/pokemon-finish-coverage/collector-conventions.md#shining-fates-shiny-vault-group-2026-11-21)
+
+All 74 focused Python tests and all 301 selected `TradingCardScanner-ProfileLocal`
+simulator tests passed, including the certificate consistency check. The
+numbered ledgers, publisher capture and Xcode result are in
+`PokemonReconciliation-20261121/` on the SSD.
+
 # 2026-11-20 — Current documentation authority cleanup after PRs #54/#55
 
 Source-bound review at `main@146161c`: corrected stale current-sounding

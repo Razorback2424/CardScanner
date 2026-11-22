@@ -148,6 +148,23 @@ of its Normal placeholders against the publisher's finish inventory.
 The numbered ledgers and source captures are on the SSD in
 `PokemonECardHoloReconciliation-20261121/`.
 
+remap, the Professor's Letter alternate-art mapping, and Nidoran name
+normalization. In the Shining Fates Shiny Vault candidate, the dedicated
+TCGplayer group certifies 122 cards. The retained replay went from 4,486 to
+4,291 open rows, and the fresh capture from 4,485 to 4,290. Both closed the
+same 195 rows with zero opened. The bundle has 22 certified sets.
+[Shiny Vault decision](research/pokemon-finish-coverage/collector-conventions.md#shining-fates-shiny-vault-group-2026-11-21)
+
+1. **Unified Minds (`sm11`).** Review the 83 finish conflicts against the
+   publisher checklist and the same set's exact market lanes. Check which
+   cards have real non-holo copies before proposing any rule for a Normal
+   placeholder.
+2. **Cosmos holos in SV and Mega Evolution sets, and Cracked Ice.** Confirm
+   the TCGplayer group and exact title patterns that identify these finishes.
+
+The new ledgers and sources are on the SSD in
+`PokemonReconciliation-20261121/`.
+
 ## State this runbook was written against
 
 | | Pokémon ([PR #47](https://github.com/Razorback2424/CardScanner/pull/47)) | Lorcana ([PR #48](https://github.com/Razorback2424/CardScanner/pull/48)) |
