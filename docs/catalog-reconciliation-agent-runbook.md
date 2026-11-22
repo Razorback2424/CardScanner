@@ -72,6 +72,10 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
 2. Replay with `--offline` and `--price-receipt`. Pass a seed from a
    different provider capture as `--previous-seed`. To replay the capture
    behind the current bundle, pass the earlier seed used to generate it.
+
+2. Replay with `--offline` and `--price-receipt`. Pass a seed from a
+   different provider capture as `--previous-seed`. To replay the capture
+   behind the current bundle, use the earlier seed used to generate it.
 3. Compare ledgers with `catalog_exceptions.py diff`.
 4. Confirm the candidate changed only what the rule intended: compare printing IDs and fields against the previous build, check that `parentRegressions` is empty, and check that `autoEligibleCodes` is unchanged unless you meant to change it.
 5. Copy the candidate over the bundled seed.
@@ -167,6 +171,25 @@ The tools it relies on are `scripts/catalog_exceptions.py` (ledger), `scripts/ca
    canonical identity preservation before filling the secondary coverage.
 3. **Reviewed Konami release inventories.** Prioritize clean correspondence
    and single-print, single-art families to improve scan selection.
+
+**Star Pack VRAINS pass (2026-11-21 on `467581b4`).**
+Main already includes the HAC1 Duel Terminal taxonomy and the 2025 Mega-Pack
+Tin inventory. The separate Star Pack VRAINS candidate clears 147 rows for
+49 codes. Its bundled-capture replay went from 4,883 to 4,736 open rows,
+with zero opened. The fresh replay closed the same rows, from 4,880 to
+4,733. The bundled candidate has empty `parentRegressions` and 720 identical
+automatic codes. The fresh replay separately flags four `MAMO-EN013` identity
+changes. Evidence is on the SSD in `YuGiOhStarfoilReconciliation-20261121/`.
+[Decision and scope](research/yugioh-catalog/rarity-taxonomy.md#star-pack-vrains-duplicate-starfoil-label-2026-11-21)
+
+**Next Yu-Gi-Oh targets**
+
+1. **Speed Duel source coverage.** The retained snapshot lacks exact
+   YGOPRODeck rows for 367 codes across `SBC2`, `SGX4` and `STP7`. Validate
+   exact English Konami printed codes and preserve existing parent canonical
+   identities before admitting a secondary crosswalk.
+2. **Reviewed Konami release inventories.** Prioritize clean correspondence
+   and single-print, single-art families to improve automatic scan selection.
 
 ## Mistakes already made (do not repeat)
 

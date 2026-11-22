@@ -92,6 +92,21 @@ zero failures. The live-feed test skipped because it requires an unexpired
 receipt. The SSD pass directory contains the Xcode result and both ledger
 diffs.
 
+# 2026-11-21 — Star Pack VRAINS finish correspondence
+
+The isolated Yu-Gi-Oh! candidate on `467581b4` removes the duplicate
+“Starfoil” source label for 49 reviewed Common-and-Starfoil codes. It closes
+147 ledger rows, from 4,883 to 4,736 in the bundled replay, and preserves
+every printing, price and automatic scan code. The bundled replay has
+zero newly opened rows and empty parent regressions. The fresh capture
+reproduced all intended closures.
+[Decision and sources](docs/research/yugioh-catalog/rarity-taxonomy.md#star-pack-vrains-duplicate-starfoil-label-2026-11-21)
+
+All 77 focused Python tests passed. The selected `TradingCardScanner-ProfileLocal`
+simulator suites passed 248 tests with zero failures. The live-feed test
+skipped because it requires an unexpired receipt. The SSD pass directory
+contains the result bundle and the exact before-and-after ledger diffs.
+
 # 2026-11-20 — Current documentation authority cleanup after PRs #54/#55
 
 Source-bound review at `main@146161c`: corrected stale current-sounding

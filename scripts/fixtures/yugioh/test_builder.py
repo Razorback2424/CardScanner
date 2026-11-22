@@ -149,6 +149,60 @@ class ReferenceGalleryCorrespondenceTests(unittest.TestCase):
                     self.card["id"] = 2
                 elif case == "extra source row":
                     self.card["card_sets"].append({**entry, "set_rarity": "Ultra Rare"})
+
+class StarfoilDuplicateTests(unittest.TestCase):
+    def setUp(self):
+        self.code = "SP18-EN001"
+        self.group = {"groupId": 2194, "name": "Star Pack VRAINS"}
+        self.card = {"id": 36211150, "name": "Bitron", "card_images": [{"id": 36211150}],
+                     "card_sets": [{"set_code": self.code, "set_name": self.group["name"], "set_rarity": rarity}
+                                   for rarity in ("Common", "Starfoil", "Starfoil Rare")]}
+        self.products = [
+            {"productId": pid, "groupId": 2194, "categoryId": 2, "name": name,
+             "extendedData": [{"name": "Number", "value": self.code}, {"name": "Rarity", "value": rarity}]}
+            for pid, name, rarity in ((163979, "Bitron", "Common"), (163980, "Bitron (Starfoil)", "Starfoil Rare"))
+        ]
+        self.prices = [{"productId": p["productId"], "subTypeName": "1st Edition", "marketPrice": 1}
+                       for p in self.products]
+        self.hashes = {2194: "e9a627eac738df6d68c378af889eedb3c92a658a89083745f218e42225f1685a"}
+
+    def build(self, *, unpinned=False):
+        gid = self.group["groupId"]
+        return builder.build([self.group], {gid: self.products}, {gid: self.prices}, [self.card],
+                             {}, {}, "2026-11-21T00:00:00Z", floor=1,
+                             product_hashes=None if unpinned else self.hashes)
+
+    def test_exact_pair_keeps_both_printings_and_closes_all_three_reasons(self):
+        before, _, _, incomplete = self.build(unpinned=True)
+        self.assertEqual(incomplete[self.code], {"printingShortfall", "rarityShortfall", "printingCorrespondenceGap"})
+        after, _, _, _ = self.build()
+        self.assertEqual(after["incompleteCodes"], [])
+        self.assertEqual(after["printings"], before["printings"])
+        self.assertEqual(after["autoEligibleCodes"], [])
+
+    def test_duplicate_label_requires_unchanged_inventory_and_unique_exact_pair(self):
+        for case in ("wrong inventory", "wrong group", "unreviewed code", "different title",
+                     "different lane", "extra market row", "extra source row"):
+            with self.subTest(case=case):
+                self.setUp()
+                if case == "wrong inventory":
+                    self.hashes[2194] = "a" * 64
+                elif case == "wrong group":
+                    self.group["name"] += " Reissue"
+                elif case == "unreviewed code":
+                    for r in self.card["card_sets"]:
+                        r["set_code"] = "SP18-EN051"
+                    for p in self.products:
+                        p["extendedData"][0]["value"] = "SP18-EN051"
+                    self.code = "SP18-EN051"
+                elif case == "different title":
+                    self.products[1]["name"] = "Bitron (Starfoil) (Alternate Art)"
+                elif case == "different lane":
+                    self.prices[1]["subTypeName"] = "Unlimited"
+                elif case == "extra market row":
+                    self.products.append({**self.products[1], "productId": 923980})
+                elif case == "extra source row":
+                    self.card["card_sets"].append({**self.card["card_sets"][1], "set_rarity": "Shatterfoil"})
                 _, _, _, incomplete = self.build()
                 self.assertIn("printingCorrespondenceGap", incomplete[self.code])
 
