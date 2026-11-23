@@ -314,6 +314,38 @@ final class CSVImportResumeTests: XCTestCase {
         XCTAssertEqual(plan.totalQuantity, 2)
     }
 
+    /// A resumed import that stops after only skipping already-imported
+    /// entries added nothing, and its message must not say it did.
+    func testInterruptedResumeDoesNotReportSkippedEntriesAsAdded() throws {
+        let container = try makeContainer()
+        let plan = try parsedPlan(rows: [
+            "a,Card A,Set,SET,1,2",
+            "b,Card B,Set,SET,2,3",
+            "c,Card C,Set,SET,3,1"
+        ])
+        var activityCount: Int?
+        for _ in 0..<2 {
+            let stopFlag = CollectionCSVImportStopFlag()
+            XCTAssertThrowsError(
+                try CollectionCSV.apply(plan, to: ModelContext(container), batchSize: 1,
+                    progress: { completed, _ in if completed == 1 { stopFlag.requestStop() } },
+                    shouldContinue: { stopFlag.shouldContinue })
+            ) { error in
+                guard case CollectionCSVError.importInterrupted(1, 3) = error else {
+                    return XCTFail("Unexpected import error: \(error)")
+                }
+                XCTAssertFalse(error.localizedDescription.contains("Added"))
+                XCTAssertTrue(error.localizedDescription.contains("Import the same file again"))
+            }
+            // The second, resumed attempt only re-checked entry one.
+            XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<InventoryEvent>()).count, 1)
+            let activities = try ModelContext(container).fetch(FetchDescriptor<CollectionActivity>()).count
+            XCTAssertEqual(activities, activityCount ?? activities)
+            activityCount = activities
+            XCTAssertEqual(try storedQuantities(in: container), [plan.entries[0].collectionKey: 2])
+        }
+    }
+
     func testInterruptedImportResumesOnlyEntriesWithoutLedgerEvents() throws {
         let container = try makeContainer()
         let plan = try parsedPlan(rows: [

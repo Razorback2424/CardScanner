@@ -874,16 +874,9 @@ private struct SettingsContentView: View {
                 )
             } catch {
                 guard storageGeneration.isCurrent(storageToken) else { return }
-                let message: String
-                if let csvError = error as? CollectionCSVError,
-                   case let .importInterrupted(completedEntries, totalEntries) = csvError {
-                    message = "Added \(completedEntries) of \(totalEntries) entries before stopping. Import the same file again to add only the remaining entries."
-                } else {
-                    message = error.localizedDescription
-                }
                 writeCoordinator.csvMessage = CSVMessage(
                     title: "Import Stopped",
-                    message: message,
+                    message: error.localizedDescription,
                     skippedCSVText: nil
                 )
             }

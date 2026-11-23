@@ -247,7 +247,9 @@ enum CollectionCSVError: LocalizedError, Sendable {
         case .storageGenerationChanged:
             return "The collection changed while this import was running."
         case let .importInterrupted(completedEntries, totalEntries):
-            return "Added \(completedEntries) of \(totalEntries) entries before stopping. Import the same file again to add only the remaining entries."
+            // The count includes entries a resumed import found already
+            // imported and skipped, so it is not a count of additions.
+            return "Stopped after processing \(completedEntries) of \(totalEntries) entries. Import the same file again to finish. Entries already added won’t be added twice."
         case .unverifiedReportImport:
             return "This unverified card report is incomplete or doesn't match its row, so it was left out rather than merged."
         }
