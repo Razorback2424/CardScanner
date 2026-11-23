@@ -1956,6 +1956,8 @@ struct CatalogGameCardsView: View {
     @State private var visibleCardID: String?
     @State private var priceCandidates: [CatalogCardSummary] = []
     @State private var visiblePriceSlots: [String: CatalogCardSummary] = [:]
+    /// First-appearance order, so the most recently shown tiles price first.
+    @State private var visiblePriceOrder: [String] = []
     @State private var quotes: [String: CatalogBrowseQuote] = [:]
     @State private var attemptedPrices: Set<String> = []
     @State private var priceScope = UUID()
@@ -1980,11 +1982,29 @@ struct CatalogGameCardsView: View {
         let isActive: Bool
     }
 
+    /// Deliberately excludes the card list: a newly visible tile or page must
+    /// join the running loader rather than cancel its in-flight provider batch.
     private struct PriceRequest: Equatable {
         let scope: UUID
-        let cards: [CatalogCardSummary]
         let retry: Int
         let isActive: Bool
+        let pricesAllCandidates: Bool
+        let hasPending: Bool
+    }
+
+    private var pricesAllCandidates: Bool { sort.needsPrices || filters.needsPrices }
+
+    /// Unattempted slots in request order: every candidate for a price sort or
+    /// filter, otherwise the visible tiles, most recently shown first.
+    private var pendingPriceSlots: [CatalogCardSummary] {
+        if pricesAllCandidates { return priceCandidates.filter { !attemptedPrices.contains($0.id) } }
+        return visiblePriceOrder.reversed().compactMap { id in
+            attemptedPrices.contains(id) ? nil : visiblePriceSlots[id]
+        }
+    }
+
+    private var hasUnattemptedPriceCandidates: Bool {
+        priceCandidates.contains { !attemptedPrices.contains($0.id) }
     }
 
     private var orderedSets: [CatalogSet] {
@@ -2027,10 +2047,9 @@ struct CatalogGameCardsView: View {
         let request = PresentationRequest(cards: hasSearchText ? searchCards : cards, sets: orderedSets,
             filters: filters, sort: sort, ownershipRevision: projectionStore.revision, priceScope: priceScope,
             priceRevision: priceRevision, isActive: isActive)
-        let requestedPrices = sort.needsPrices || filters.needsPrices
-            ? priceCandidates : visiblePriceSlots.values.sorted { $0.id < $1.id }
-        let priceRequest = PriceRequest(scope: priceScope, cards: requestedPrices, retry: priceRetry,
-                                        isActive: isActive)
+        let priceRequest = PriceRequest(scope: priceScope, retry: priceRetry, isActive: isActive,
+                                        pricesAllCandidates: pricesAllCandidates,
+                                        hasPending: !pendingPriceSlots.isEmpty)
         return ScrollView {
             LazyVStack {
                 resultStatus
@@ -2138,6 +2157,7 @@ struct CatalogGameCardsView: View {
         priceScope = UUID()
         priceCandidates = []
         visiblePriceSlots = [:]
+        visiblePriceOrder = []
         resultRows = []
         visibleCardID = nil
         quotes = [:]
@@ -2147,9 +2167,7 @@ struct CatalogGameCardsView: View {
     }
 
     private func loadResultPrices(request: PriceRequest) async {
-        guard request.isActive, request.scope == priceScope else { return }
-        let pending = request.cards.filter { !attemptedPrices.contains($0.id) }
-        guard !pending.isEmpty else { return }
+        guard request.isActive, request.scope == priceScope, !pendingPriceSlots.isEmpty else { return }
         let load = UUID()
         activePriceLoad = load
         isLoadingPrices = true
@@ -2159,8 +2177,11 @@ struct CatalogGameCardsView: View {
                 isLoadingPrices = false
             }
         }
-        for start in stride(from: 0, to: pending.count, by: 24) {
-            let batch = Array(pending[start..<min(start + 24, pending.count)])
+        // Re-read the queue per batch so tiles or pages that arrived meanwhile
+        // are picked up without restarting this task.
+        while !Task.isCancelled, request.scope == priceScope {
+            let batch = Array(pendingPriceSlots.prefix(24))
+            guard !batch.isEmpty else { return }
             for await update in catalog.sortPriceUpdates(for: batch) {
                 guard !Task.isCancelled, request.scope == priceScope else { return }
                 for card in batch {
@@ -2188,7 +2209,7 @@ struct CatalogGameCardsView: View {
     }
 
     private var isCheckingFilterPrices: Bool {
-        filters.needsPrices && (isLoadingPrices || attemptedPrices.count < priceCandidates.count)
+        filters.needsPrices && (isLoadingPrices || hasUnattemptedPriceCandidates)
     }
 
     private var hasFailedFilterPrices: Bool {
@@ -2214,7 +2235,7 @@ struct CatalogGameCardsView: View {
                 .font(.footnote)
                 .padding(.horizontal, 16)
             }
-            if (sort.needsPrices || filters.needsPrices), isLoadingPrices || attemptedPrices.count < priceCandidates.count {
+            if pricesAllCandidates, isLoadingPrices || hasUnattemptedPriceCandidates {
                 Label("Checking market prices…", systemImage: "clock")
                     .font(.footnote)
             } else if quotes.values.contains(where: \.canRetry) {
@@ -2324,7 +2345,7 @@ struct CatalogGameCardsView: View {
                     .padding(.horizontal, 16)
             }
             if resultRows.isEmpty, filters.isActive, !isLoadingPrices,
-               (cards.isEmpty || !priceCandidates.isEmpty && priceCandidates.count == attemptedPrices.count) {
+               (cards.isEmpty || !priceCandidates.isEmpty && !hasUnattemptedPriceCandidates) {
                 ContentUnavailableView(
                     hasFailedFilterPrices ? "Some prices couldn’t be checked"
                         : filteredPosition == nil ? "No cards match these filters" : "No matches yet",
@@ -2447,7 +2468,7 @@ struct CatalogGameCardsView: View {
             Button("Continue search") { Task { await loadMoreSearch(query: providerSearch) } }
                 .buttonStyle(.borderedProminent)
         } else if resultRows.isEmpty, filters.isActive, searchCursor == nil, searchError == nil,
-                  !isLoadingPrices, (searchCards.isEmpty || !priceCandidates.isEmpty && priceCandidates.count == attemptedPrices.count) {
+                  !isLoadingPrices, (searchCards.isEmpty || !priceCandidates.isEmpty && !hasUnattemptedPriceCandidates) {
             ContentUnavailableView(
                 hasFailedFilterPrices ? "Some prices couldn’t be checked" : "No matching cards",
                 systemImage: "line.3.horizontal.decrease.circle",
@@ -2505,7 +2526,10 @@ struct CatalogGameCardsView: View {
         defer { if revision == contentRevision { isLoading = false } }
         do {
             let page = try await catalog.cards(in: set, cursor: cursor)
-            guard !Task.isCancelled, revision == contentRevision else { return }
+            // The revision is the staleness guard. A footer task cancelled only
+            // because the grid re-laid out must keep its page, or the unchanged
+            // cursor refetches it.
+            guard revision == contentRevision else { return }
             if let next = page.nextCursor, next == cursor || visitedDefaultCursors.contains(next) {
                 throw BrowseCatalogError.badResponse
             }
@@ -2779,6 +2803,7 @@ struct CatalogGameCardsView: View {
 
     private func requestPricesForTile(_ group: CatalogCardDisplayGroup) {
         for card in group.summaries where visiblePriceSlots[card.id] != card {
+            if visiblePriceSlots[card.id] == nil { visiblePriceOrder.append(card.id) }
             visiblePriceSlots[card.id] = card
         }
     }
