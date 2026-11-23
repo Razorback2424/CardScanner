@@ -29,6 +29,9 @@ This directory is flat (no feature subfolders). Use the task map to find the own
 
 ## Current quote versus market history
 
+Price Check promotes primary catalog quotes through `ScannerCollectionWriter.reconcileOwnedPrice`.
+JustTCG fallback from Price Check stays in the local reference quote store.
+
 For a missing owned price, `ScannerCollectionWriter.fillMissingMarketPrice`
 may use an eligible JustTCG **current** exact-product-and-finish quote
 associated with `CardMarketHistoryRequest`. The service must re-read the

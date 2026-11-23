@@ -1,5 +1,20 @@
 # Pricing correctness before coverage expansion
 
+## Pricing smoothness follow-up — 2026-11-23
+
+The market mirror checks publication on a six-hour cadence. An unchanged
+marker can reuse its ETag and capture date. Ordinary lookups can show a saved
+capture while revalidation runs, until the capture reaches seven days old.
+Detail attribution identifies the publisher capture as the snapshot's as-of date.
+
+Browse, Price Check and Trade Analyzer share exact local reference quotes by
+printing, print run, finish and treatment. Pokémon grid, detail and refresh
+use the same preference for current quotes and dated stale evidence. Owned
+valuation uses the Collection projection and the guarded reconciliation writer.
+
+Versioned market-feed paths remain a publisher follow-up. Live mirror recovery
+depends on the owner restoring Firebase Hosting bandwidth.
+
 ## First-edition finish and stale detail follow-up — 2026-11-02
 
 **Validation base:** `main@9413e906cab65c1d8c61882d8eb6f137bf44617e`,
@@ -88,7 +103,9 @@ The validated implementation contract is:
 - Saved prices remain visible during loading, failure and unavailable results.
   Attribution and stale state use `PriceDisplay`; history names JustTCG and is
   identified as history separately from the saved Collection valuation.
-- Stale owned values force a detail fetch. Forcing callers wait out ordinary
+- Stale owned values force a detail fetch if neither the saved check nor the
+  last in-memory forced check ran within eight hours. Check again bypasses
+  this interval. Forcing callers wait out ordinary
   tasks, then start or join a cache-bypassing task; ordinary callers may share
   a forcing task. Apply this to both detail tasks and shared Pokémon payloads.
 - Every positive sort producer carries its original evidence receipt date.
@@ -98,13 +115,13 @@ The validated implementation contract is:
 - The all-card price-evidence export includes valued and stale-valued entries,
   the selected key, retained source/receipt dates and latest attempt evidence.
 
-**Freshness scope:** set-grid fetching updates catalog ordering hints. It does
-not refresh owned valuations. Owned prices change on catalog-detail reconciliation
-or Collection refresh, so a successful set fetch may coexist with a stale or
-unpriced owned slot. The grid shows the selected amount; detailed provenance is
-on the detail surfaces. Set loading/pending-state redesign and unowned Price
-Check unification remain deferred. No schema migration or new persisted quote
-fields are needed.
+**Freshness scope:** set-grid fetching updates catalog ordering hints and
+exact local reference quotes. Owned prices change on catalog-detail
+reconciliation, primary catalog quotes from eligible raw-card Price Checks,
+or Collection refresh. A successful set fetch may coexist with a stale or
+unpriced owned slot. The grid shows the selected amount, with detailed
+provenance on detail surfaces. Shared reference quotes use the existing local
+schema.
 
 Verification covers alias retention/promotion, invalidation during a queued
 write, delayed receipts, distinct date captions, projection agreement, owned

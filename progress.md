@@ -1,3 +1,50 @@
+# 2026-11-23 — Pricing smoothness
+
+The pricing review fixes keep JustTCG fallback in the reference store.
+Price Check writes wait on the serializer in the background. Browse emits
+cached hints before shared quotes and applies definitive misses against the
+quote's age and receipt. Detail refresh applies the returned card data and
+tracks catalog identity reloads independently of Check again.
+
+The six ProfileLocal suites executed 505 tests with one skip and zero
+failures. All seven focused regressions passed on the final build.
+The review simulator rendered the same owned Holo fixture at **$713.30**
+in Browse, catalog detail and Collection. The scanner promotion, JustTCG
+fallback and grid emission order were exercised by simulator tests.
+
+The `pricing-smoothness` working tree is based on `a36f2909519d`.
+Owned detail uses the eight-hour automatic recheck interval and exposes
+Check again for a stale saved amount. The market mirror reuses its persisted
+build marker and displays dated captures up to seven days old. Browse and
+scanner workflows share exact local quotes. Eligible raw-card Price Checks
+promote the owned value through the existing reconciliation writer.
+[Pricing plan](docs/plans/pricing_correctness_and_coverage.md)
+
+The ProfileLocal review simulator showed the same saved **$713.30** for the
+Holo fixture in the Browse grid, catalog detail and Collection detail.
+Catalog detail showed the age, Check again, and the retained-price reason.
+Captures are in `pricing-smoothness-ui` on the external SSD.
+
+The focused ProfileLocal run executed 841 tests with 9 skips and zero
+failures. All 10 follow-up tests passed after the grid-key placement and
+Browse clock wiring update. The marker fixture recorded a 24-byte initial
+marker and a zero-byte HTTP 304 on revalidation, with no repeat group
+downloads. The focused results and follow-up results are in
+`pricing-smoothness-final-focused.xcresult` and
+`pricing-smoothness-final-smoke.xcresult` on the external SSD.
+
+The final broad run executed 3,539 methods, with 3,511 passes, 22 skips
+and six failing methods. The five centering corpus and profile suites were
+excluded. Two bundled Pokémon tests expected revision 24 on a branch base
+that packages revision 26. The documented centering boundary research
+failure reproduced. Three StoreKit tests failed to load the local test
+configuration and reproduced on the warm review simulator. The result is
+`pricing-smoothness-final-broad.xcresult` on the external SSD.
+
+Instruments could not export its recording. Simulator performance log
+signposts supplied the byte-count evidence. The full rendered Price Check,
+Trade Analyzer and mirror-outage walkthrough remains open.
+
 # 2026-11-22 — Trade Analyzer
 
 Trade Analyzer is available in the Scan mode menu. The camera shows card
