@@ -34,6 +34,9 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     @Published private(set) var isLevel = false
     @Published private(set) var capturedData: Data?
     @Published private(set) var isCapturing = false
+    /// The session is running and not interrupted, so a tap can take a photo.
+    /// Follows the session's own notifications; the shutter waits for it.
+    @Published private(set) var isReadyToCapture = false
     /// The lens that produced the current camera capture. The image data still
     /// carries its own EXIF metadata; this field makes the capture path
     /// explicit for the centering evidence and device checks.
@@ -57,11 +60,29 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     /// prevents a delayed permission callback from starting the camera after the
     /// full-screen camera has already disappeared.
     nonisolated(unsafe) private var requestedStartID: UUID?
+    nonisolated(unsafe) private var sessionObservers: [NSObjectProtocol] = []
 
     init(configuration: CenteringCameraConfiguration = .centering) {
         rotation = CameraRotationTracker()
         self.configuration = configuration
         super.init()
+        let names: [Notification.Name] = [
+            AVCaptureSession.didStartRunningNotification, AVCaptureSession.didStopRunningNotification,
+            AVCaptureSession.wasInterruptedNotification, AVCaptureSession.interruptionEndedNotification
+        ]
+        sessionObservers = names.map { name in
+            NotificationCenter.default.addObserver(forName: name, object: session, queue: nil) { [weak self] _ in
+                DispatchQueue.main.async { [weak self] in self?.refreshCaptureReadiness() }
+            }
+        }
+    }
+
+    deinit {
+        for observer in sessionObservers { NotificationCenter.default.removeObserver(observer) }
+    }
+
+    private func refreshCaptureReadiness() {
+        isReadyToCapture = session.isRunning && !session.isInterrupted
     }
 
     func start() {
@@ -89,6 +110,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     func stop() {
         captureLifecycleID = UUID()
         isCapturing = false
+        isReadyToCapture = false
         motionManager?.stopDeviceMotionUpdates()
         sessionQueue.async { [weak self] in
             guard let self else { return }
@@ -100,7 +122,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     }
 
     func capture() {
-        guard !isCapturing else { return }
+        guard isReadyToCapture, !isCapturing else { return }
         isCapturing = true
         let lifecycleID = captureLifecycleID
         sessionQueue.async { [weak self] in
@@ -170,10 +192,16 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
                     self.applyMaximumPhotoDimensionsIfNeeded()
                     self.isConfigured = true
                 }
-                guard !self.session.isRunning else { return }
+                guard !self.session.isRunning else {
+                    DispatchQueue.main.async { [weak self] in self?.refreshCaptureReadiness() }
+                    return
+                }
                 guard self.requestedStartID == requestID else { return }
                 self.session.startRunning()
-                self.setIssue(nil)
+                // `startRunning` reports failure only through the session's
+                // state; never clear the issue for a camera that did not start.
+                self.setIssue(self.session.isRunning ? nil : .configurationFailed)
+                DispatchQueue.main.async { [weak self] in self?.refreshCaptureReadiness() }
             } catch {
                 self.setIssue(.configurationFailed)
             }
@@ -359,8 +387,11 @@ struct CenteringCameraView: View {
                             }
                         }
                 }
-                .disabled(camera.isCapturing)
-                .accessibilityLabel(camera.isCapturing ? "Capturing photo" : "Take photo")
+                .disabled(camera.isCapturing || !camera.isReadyToCapture)
+                .opacity(camera.isReadyToCapture || camera.isCapturing ? 1 : 0.4)
+                .animation(.easeOut(duration: 0.15), value: camera.isReadyToCapture)
+                .accessibilityLabel(camera.isCapturing ? "Capturing photo"
+                    : camera.isReadyToCapture ? "Take photo" : "Camera starting")
                 .padding(.top, 12)
                 .padding(.bottom, 28)
             }
