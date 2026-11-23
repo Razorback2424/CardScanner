@@ -168,10 +168,12 @@ struct TradeDraft {
     }
 }
 
+
 struct TradeScannerControls: View {
     @ObservedObject var model: ScannerViewModel
     let openReview: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.locale) private var locale
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
@@ -201,16 +203,25 @@ struct TradeScannerControls: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    /// The count confirms the stack was fully scanned; the value appears only
+    /// once every card on that side is priced, so it is never a partial sum.
+    private func detail(_ side: TradeSide) -> String {
+        let total = model.tradeDraft.total(on: side)
+        let cards = total.count == 1 ? String(localized: "1 card") : String(localized: "\(total.count) cards")
+        guard total.isPresent, total.missing == 0, total.total.isValid else { return cards }
+        return "\(cards) · \(total.total.formatted(locale: locale))"
+    }
+
     private func side(_ side: TradeSide) -> some View {
         let selected = model.tradeDraft.scanSide == side
-        let count = model.tradeDraft.count(on: side)
+        let detail = detail(side)
         return Button {
             model.setTradeScanSide(side)
         } label: {
             HStack(spacing: 5) {
                 VStack(alignment: .leading, spacing: 1) {
                     Text(side.title).font(.footnote.weight(.semibold))
-                    Text(count == 1 ? "1 card" : "\(count) cards")
+                    Text(detail)
                         .font((dynamicTypeSize.isAccessibilitySize ? Font.caption2 : .caption).monospacedDigit())
                         .foregroundStyle(.white.opacity(0.82))
                 }
@@ -227,6 +238,7 @@ struct TradeScannerControls: View {
         }
         .buttonStyle(.plain)
         .fixedSize(horizontal: true, vertical: false)
+        .accessibilityLabel("\(side.title), \(detail)")
         .accessibilityAddTraits(selected ? .isSelected : [])
         .accessibilityIdentifier("trade-side-\(side)")
     }
@@ -237,8 +249,8 @@ struct TradeScannerControls: View {
                 if compact {
                     Image(systemName: "list.bullet").frame(width: 44)
                 } else {
-                    Label("Review trade", systemImage: "list.bullet")
-                        .padding(.horizontal, 10)
+                    Label("Review", systemImage: "list.bullet")
+                        .padding(.horizontal, 12)
                 }
             }
             .font(.footnote.weight(.semibold))
@@ -257,6 +269,9 @@ struct TradeScannerReceipt: View {
     let entry: TradeEntry
     let undo: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.locale) private var locale
+
+    private var priceText: String? { entry.unitPrice?.formatted(locale: locale) }
 
     var body: some View {
         HStack(spacing: 8) {
@@ -265,6 +280,9 @@ struct TradeScannerReceipt: View {
                 ScrollView(.horizontal) {
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         Text(entry.result.card.name).font(.subheadline.weight(.semibold))
+                        if let priceText {
+                            Text(priceText).font(.subheadline.weight(.semibold).monospacedDigit())
+                        }
                         Text(entry.side.title)
                             .font(.caption2.weight(.semibold))
                             .foregroundStyle(.mint)
@@ -275,18 +293,27 @@ struct TradeScannerReceipt: View {
                     .fixedSize()
                 }
                 .frame(height: 44)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel("\(entry.result.card.name), \(entry.identityText), \(entry.side.title)")
             } else {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(entry.result.card.name).font(.subheadline.weight(.semibold))
-                    Text("\(entry.identityText) · \(entry.side.title)")
+                    Text(entry.result.card.name)
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
+                    // The side leads so a long identifier truncates instead of
+                    // hiding where the card went.
+                    Text("\(Text(entry.side.title).foregroundStyle(.mint)) · \(entry.identityText)")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.white.opacity(0.78))
+                        .lineLimit(1)
                 }
-                .accessibilityElement(children: .combine)
+                Spacer(minLength: 4)
+                if let priceText {
+                    Text(priceText)
+                        .font(.subheadline.weight(.semibold).monospacedDigit())
+                } else if entry.result.shouldAutoRefresh {
+                    ProgressView().controlSize(.small).tint(.white)
+                }
             }
-            Spacer(minLength: 0)
+            if dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 0) }
             Button(action: undo) {
                 Image(systemName: "arrow.uturn.backward")
                     .font(.subheadline.weight(.semibold))
@@ -301,26 +328,26 @@ struct TradeScannerReceipt: View {
         .padding(.trailing, 4)
         .padding(.vertical, dynamicTypeSize.isAccessibilitySize ? 0 : 2)
         .appGlass(cornerRadius: 18)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(
+            [entry.result.card.name, priceText, entry.identityText, entry.side.title].compactMap { $0 }.joined(separator: ", ")
+        )
         .accessibilityIdentifier("trade-receipt")
     }
 }
 
+/// The whole trade on one screen: the verdict first, then each side's cards
+/// with that side's cash directly beneath them.
 struct TradeReviewSheet: View {
     @ObservedObject var model: ScannerViewModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.locale) private var locale
-    @State private var side: TradeSide
     @State private var cashInputs: [TradeSide: String] = [:]
     @State private var invalidCash: Set<TradeSide> = []
     @State private var confirmsClear = false
     @State private var confirmsDiscard = false
     @FocusState private var focusedCash: TradeSide?
-
-    init(model: ScannerViewModel) {
-        self.model = model
-        _side = State(initialValue: model.tradeDraft.scanSide)
-    }
 
     var body: some View {
         let draft = model.tradeDraft
@@ -329,21 +356,8 @@ struct TradeReviewSheet: View {
         NavigationStack {
             List {
                 Section { summary(give: give, receive: receive) }
-                Section {
-                    sideSelector(give: give.count, receive: receive.count)
-                    let entries = draft.entries.filter { $0.side == side }
-                    if entries.isEmpty {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("No cards on this side")
-                                .font(.subheadline.weight(.semibold))
-                            Text("Scan cards to add them here.")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    ForEach(entries) { entry in
-                        entryRow(entry)
-                    }
+                ForEach(TradeSide.allCases, id: \.self) { side in
+                    sideSection(side, total: side == .give ? give : receive, entries: draft.entries.filter { $0.side == side })
                 }
                 if !draft.isEmpty {
                     Section {
@@ -375,11 +389,11 @@ struct TradeReviewSheet: View {
                     }
                 }
             }
-            .alert("Discard invalid cash edits?", isPresented: $confirmsDiscard) {
+            .alert("Discard cash edit?", isPresented: $confirmsDiscard) {
                 Button("Keep editing", role: .cancel) {}
-                Button("Discard and close", role: .destructive) { dismiss() }
+                Button("Discard", role: .destructive) { dismiss() }
             } message: {
-                Text("Your last valid cash amounts will be kept.")
+                Text("The last valid amount will be kept.")
             }
             .onChange(of: focusedCash) { oldSide, _ in
                 if let oldSide, !invalidCash.contains(oldSide) {
@@ -390,8 +404,8 @@ struct TradeReviewSheet: View {
                 Button("Clear trade", role: .destructive) {
                     focusedCash = nil
                     model.clearTrade()
-                    reloadCashInputs()
-                    side = model.tradeDraft.scanSide
+                    // A cleared trade means the next one starts at the camera.
+                    dismiss()
                 }
             }
         }
@@ -399,29 +413,29 @@ struct TradeReviewSheet: View {
         .onAppear(perform: reloadCashInputs)
     }
 
+    // MARK: Summary
+
     private func summary(give: TradeSideTotal, receive: TradeSideTotal) -> some View {
         let difference = TradeDraft.difference(give: give, receive: receive)
-        return VStack(alignment: .leading, spacing: 12) {
+        return VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Market estimate · USD")
+                Text("Market value")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(comparisonText(give: give, receive: receive, difference: difference))
-                    .font(.title3.weight(.semibold))
+                Text(verdict(give: give, receive: receive, difference: difference))
+                    .font(.title2.weight(.bold))
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                     .accessibilityIdentifier("trade-comparison")
-                if give.hasLastKnown || receive.hasLastKnown {
-                    Label("Includes last-known prices", systemImage: "clock")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+                statusNotes(give: give, receive: receive)
             }
-            Divider()
-                .accessibilityHidden(true)
-            sideTotals(give: give, receive: receive)
+            let totals = dynamicTypeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
+                : AnyLayout(HStackLayout(alignment: .top, spacing: 16))
+            totals {
+                sideValue(.give, give)
+                sideValue(.receive, receive)
+            }
             if invalidCash.isEmpty, let difference, !difference.isZero {
                 Button {
                     focusedCash = nil
@@ -429,166 +443,136 @@ struct TradeReviewSheet: View {
                     reloadCashInputs()
                 } label: {
                     let amount = difference.magnitude.formatted(locale: locale)
-                    Label(
-                        difference < .zero ? "Receive \(amount) more cash" : "Give \(amount) more cash",
-                        systemImage: "plus"
-                    )
-                    .font(.subheadline.weight(.semibold))
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(minHeight: 36)
+                    Text(difference < .zero ? "Get \(amount) cash to even it out" : "Pay \(amount) cash to even it out")
+                        .font(.subheadline.weight(.semibold))
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, minHeight: 36)
                 }
                 .buttonStyle(.bordered)
-                .accessibilityHint("Adds cash to balance the trade.")
                 .accessibilityIdentifier("trade-balance-cash")
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
     }
 
-    @ViewBuilder
-    private func sideTotals(give: TradeSideTotal, receive: TradeSideTotal) -> some View {
-        if dynamicTypeSize >= .xxxLarge {
-            VStack(alignment: .leading, spacing: 16) {
-                VStack(alignment: .leading, spacing: 8) {
-                    sideValue(.give, give)
-                    cashField(.give)
-                }
-                VStack(alignment: .leading, spacing: 8) {
-                    sideValue(.receive, receive)
-                    cashField(.receive)
-                }
-            }
-        } else {
-            Grid(alignment: .topLeading, horizontalSpacing: 16, verticalSpacing: 8) {
-                GridRow {
-                    sideValue(.give, give)
-                    sideValue(.receive, receive)
-                }
-                GridRow {
-                    cashField(.give)
-                    cashField(.receive)
-                }
-            }
+    private func verdict(give: TradeSideTotal, receive: TradeSideTotal, difference: Money?) -> LocalizedStringResource {
+        if !invalidCash.isEmpty { return "Check the cash amount" }
+        if give.checking + receive.checking > 0 { return "Getting prices…" }
+        if give.unavailable + receive.unavailable > 0 { return "Some prices are missing" }
+        switch (give.isPresent, receive.isPresent) {
+        case (false, false): return "Scan cards to compare"
+        case (false, true): return "Add what you give"
+        case (true, false): return "Add what you receive"
+        case (true, true): break
         }
-    }
-
-    private func sideValue(_ side: TradeSide, _ total: TradeSideTotal) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(side.title)
-                .font(.subheadline.weight(.semibold))
-            if invalidCash.contains(side) {
-                Text("Check cash amount")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            } else if total.count > 0, total.count == total.missing, total.cash.isZero {
-                Text(total.checking > 0 ? "Awaiting prices" : "Price unavailable")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            } else {
-                Text(total.total.formatted(locale: locale))
-                    .font(.title2.weight(.semibold).monospacedDigit())
-                if total.missing > 0, total.total.isValid {
-                    Text("Known subtotal")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            if !total.cash.isZero, total.count > total.missing, total.cards.isValid {
-                let amount = total.cards.formatted(locale: locale)
-                Text(total.missing > 0 ? "Priced cards \(amount)" : "Cards \(amount)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .accessibilityElement(children: .combine)
-    }
-
-    private func cashField(_ side: TradeSide) -> some View {
-        let isInvalid = invalidCash.contains(side)
-        return VStack(alignment: .leading, spacing: 4) {
-            Text(dynamicTypeSize >= .xxxLarge ? String(localized: "Cash") : side.cashTitle)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityHidden(true)
-            TextField(side.cashTitle, text: cashBinding(side), prompt: Text(cashText(.zero)))
-                .font(.body.monospacedDigit())
-                .keyboardType(.decimalPad)
-                .focused($focusedCash, equals: side)
-                .padding(.horizontal, 10)
-                .frame(minHeight: 44)
-                .background(.fill.tertiary, in: RoundedRectangle(cornerRadius: 10))
-                .overlay {
-                    if isInvalid || focusedCash == side {
-                        RoundedRectangle(cornerRadius: 10)
-                            .strokeBorder(isInvalid ? Color.red : Color.accentColor, lineWidth: 1)
-                            .allowsHitTesting(false)
-                    }
-                }
-                .accessibilityLabel(side.cashTitle)
-                .accessibilityIdentifier("trade-cash-\(side)")
-            if isInvalid {
-                Text("Use zero or a positive amount with up to two decimal places.")
-                    .font(.caption)
-                    .foregroundStyle(.red)
-            }
-        }
-        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func comparisonText(give: TradeSideTotal, receive: TradeSideTotal, difference: Money?) -> LocalizedStringResource {
-        if !invalidCash.isEmpty { return "Check the cash amounts" }
-        let checking = give.checking + receive.checking
-        let unavailable = give.unavailable + receive.unavailable
-        if checking > 0 && unavailable > 0 { return "Checking \(checking) · \(unavailable) unavailable" }
-        if checking > 0 { return checking == 1 ? "Checking 1 price" : "Checking \(checking) prices" }
-        if unavailable > 0 { return unavailable == 1 ? "1 card needs a price" : "\(unavailable) cards need prices" }
-        if !give.isPresent, !receive.isPresent { return "Add cards or cash to compare" }
-        guard give.isPresent, receive.isPresent else { return "Add both sides to compare" }
-        guard let difference else { return "Trade total unavailable" }
-        if difference.isZero { return "Even at estimated value" }
+        guard let difference else { return "Can’t compare this trade" }
+        if difference.isZero { return "Even trade" }
         let amount = difference.magnitude.formatted(locale: locale)
         return difference < .zero ? "You give \(amount) more" : "You receive \(amount) more"
     }
 
     @ViewBuilder
-    private func sideSelector(give: Int, receive: Int) -> some View {
-        let stacked = dynamicTypeSize >= .xxxLarge
-        let picker = Picker("Cards to review", selection: $side) {
-            Text(stacked ? "Give \(give)" : "You give · \(give)")
-                .accessibilityLabel(give == 1 ? "You give 1 card" : "You give \(give) cards")
-                .tag(TradeSide.give)
-            Text(stacked ? "Receive \(receive)" : "You receive · \(receive)")
-                .accessibilityLabel(receive == 1 ? "You receive 1 card" : "You receive \(receive) cards")
-                .tag(TradeSide.receive)
+    private func statusNotes(give: TradeSideTotal, receive: TradeSideTotal) -> some View {
+        let unavailable = give.unavailable + receive.unavailable
+        if unavailable > 0 {
+            note(
+                unavailable == 1 ? "1 card has no price. Retry or remove it." : "\(unavailable) cards have no price. Retry or remove them.",
+                systemImage: "exclamationmark.circle"
+            )
         }
-        .accessibilityIdentifier("trade-review-side")
-
-        if stacked {
-            picker.pickerStyle(.inline).labelsHidden()
-        } else {
-            picker.pickerStyle(.segmented)
+        if give.hasLastKnown || receive.hasLastKnown {
+            note("Includes last-known prices", systemImage: "clock")
         }
     }
 
-    private func entryRow(_ entry: TradeEntry) -> some View {
-        DisclosureGroup {
-            quantityControl(entry)
-            if case let .price(price) = entry.result.quote, let unitPrice = entry.unitPrice {
-                VStack(alignment: .leading, spacing: 4) {
-                    if entry.quantity > 1 {
-                        let amount = unitPrice.doubleValue.formatted(
-                            .currency(code: "USD").precision(.fractionLength(2...4)).locale(locale)
-                        )
-                        Text("\(amount) per card")
-                    }
-                    Text(price.source.label)
-                    Text("As of \(price.effectiveAsOf.formatted(date: .abbreviated, time: .shortened))")
-                }
-                .font(.footnote)
+    private func note(_ text: LocalizedStringResource, systemImage: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 5) {
+            Image(systemName: systemImage).accessibilityHidden(true)
+            Text(text).fixedSize(horizontal: false, vertical: true)
+        }
+        .font(.footnote)
+        .foregroundStyle(.secondary)
+    }
+
+    private func sideValue(_ side: TradeSide, _ total: TradeSideTotal) -> some View {
+        let isUnpriced = total.count > 0 && total.count == total.missing && total.cash.isZero
+        return VStack(alignment: .leading, spacing: 2) {
+            Text(side.title)
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
-                .accessibilityElement(children: .combine)
+            Text(isUnpriced || !total.isPresent || !total.total.isValid ? "—" : total.total.formatted(locale: locale))
+                .font(.title3.weight(.semibold).monospacedDigit())
+            if total.missing > 0 {
+                Text(isUnpriced ? "No prices yet" : "Priced so far")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+    }
+
+    // MARK: Sides
+
+    private func sideSection(_ side: TradeSide, total: TradeSideTotal, entries: [TradeEntry]) -> some View {
+        Section {
+            if entries.isEmpty {
+                Text("No cards")
+                    .foregroundStyle(.secondary)
+            }
+            ForEach(entries) { entry in
+                entryRow(entry)
+            }
+            cashRow(side)
+        } header: {
+            Text(total.count == 1 ? "\(side.title) · 1 card" : "\(side.title) · \(total.count) cards")
+        }
+    }
+
+    private func cashRow(_ side: TradeSide) -> some View {
+        let isInvalid = invalidCash.contains(side)
+        let field = TextField(side.cashTitle, text: cashBinding(side), prompt: Text(cashText(.zero)))
+            .font(.body.monospacedDigit())
+            .keyboardType(.decimalPad)
+            .focused($focusedCash, equals: side)
+            .foregroundStyle(isInvalid ? Color.red : Color.primary)
+            .accessibilityLabel(side.cashTitle)
+            .accessibilityIdentifier("trade-cash-\(side)")
+        return VStack(alignment: .leading, spacing: 4) {
+            if dynamicTypeSize.isAccessibilitySize {
+                Label("Cash", systemImage: "banknote")
+                    .accessibilityHidden(true)
+                field
+            } else {
+                HStack {
+                    Label("Cash", systemImage: "banknote")
+                        .accessibilityHidden(true)
+                    Spacer(minLength: 12)
+                    field
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: 160)
+                }
+            }
+            if isInvalid {
+                Text("Enter an amount like 5.00")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+        .frame(minHeight: 44)
+        .contentShape(Rectangle())
+        .onTapGesture { focusedCash = side }
+    }
+
+    private func entryRow(_ entry: TradeEntry) -> some View {
+        let moveTitle: LocalizedStringResource = "Switch side"
+        return DisclosureGroup {
+            quantityControl(entry)
+            if let details = priceDetails(entry) {
+                Text(details)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
             if let issue = entry.priceIssue {
                 Text(issue).font(.footnote).foregroundStyle(.secondary)
@@ -597,14 +581,9 @@ struct TradeReviewSheet: View {
                 Button("Retry price", systemImage: "arrow.clockwise") { model.retryTradeQuote(entry.id) }
                     .buttonStyle(.borderless)
             }
-            Button(
-                entry.side == .give ? "Move to cards you receive" : "Move to cards you give",
-                systemImage: "arrow.left.arrow.right"
-            ) {
-                model.moveTradeEntry(entry.id)
-            }
-            .buttonStyle(.borderless)
-            Button("Remove card", systemImage: "trash", role: .destructive) { model.removeTradeEntry(entry.id) }
+            Button(moveTitle, systemImage: "arrow.left.arrow.right") { model.moveTradeEntry(entry.id) }
+                .buttonStyle(.borderless)
+            Button("Remove", systemImage: "trash", role: .destructive) { model.removeTradeEntry(entry.id) }
                 .buttonStyle(.borderless)
         } label: {
             HStack(alignment: .center, spacing: 10) {
@@ -621,10 +600,9 @@ struct TradeReviewSheet: View {
                 layout {
                     VStack(alignment: .leading, spacing: 3) {
                         Text(card.name).font(.subheadline.weight(.semibold))
-                        Text(entry.identityText).font(.caption).foregroundStyle(.secondary)
-                        if entry.quantity > 1 {
-                            Text("\(entry.quantity) copies").font(.caption).foregroundStyle(.secondary)
-                        }
+                        Text(entry.quantity > 1 ? "\(entry.identityText) · ×\(entry.quantity)" : entry.identityText)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     entryPrice(entry, alignment: stacked ? .leading : .trailing)
@@ -632,9 +610,29 @@ struct TradeReviewSheet: View {
             }
             .accessibilityElement(children: .combine)
         }
-        .swipeActions(allowsFullSwipe: false) {
-            Button("Remove", role: .destructive) { model.removeTradeEntry(entry.id) }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button("Remove", systemImage: "trash", role: .destructive) { model.removeTradeEntry(entry.id) }
         }
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            Button(moveTitle, systemImage: "arrow.left.arrow.right") { model.moveTradeEntry(entry.id) }
+                .tint(.indigo)
+        }
+    }
+
+    /// Source and age of the quote, with the per-card price when the row
+    /// shows a quantity total.
+    private func priceDetails(_ entry: TradeEntry) -> String? {
+        guard case let .price(price) = entry.result.quote, let unitPrice = entry.unitPrice else { return nil }
+        var parts: [String] = []
+        if entry.quantity > 1 {
+            let amount = unitPrice.doubleValue.formatted(
+                .currency(code: "USD").precision(.fractionLength(2...4)).locale(locale)
+            )
+            parts.append(String(localized: "\(amount) each"))
+        }
+        parts.append(price.source.label)
+        parts.append(price.effectiveAsOf.formatted(date: .abbreviated, time: .shortened))
+        return parts.joined(separator: " · ")
     }
 
     @ViewBuilder
@@ -663,17 +661,21 @@ struct TradeReviewSheet: View {
                     .font(.subheadline.weight(.semibold).monospacedDigit())
             }
             if entry.result.shouldAutoRefresh {
-                Text(unitPrice == nil ? "Checking price" : "Updating price")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if unitPrice == nil {
+                    ProgressView().controlSize(.small).accessibilityLabel("Getting price")
+                } else {
+                    Text("Updating").font(.caption).foregroundStyle(.secondary)
+                }
             } else if unitPrice == nil || entry.isLastKnown {
-                Text(unitPrice == nil ? "Price unavailable" : "Last known")
+                Text(unitPrice == nil ? "No price" : "Last known")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
         }
         .fixedSize(horizontal: false, vertical: true)
     }
+
+    // MARK: Cash input
 
     private func finishReview() {
         focusedCash = nil

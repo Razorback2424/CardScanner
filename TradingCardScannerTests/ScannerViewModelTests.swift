@@ -2347,6 +2347,28 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertFalse(try context().fetch(FetchDescriptor<ReferenceQuote>()).contains { $0.effectiveAmount == 999 })
     }
 
+    func testTradeQuoteResumesAfterStorageGenerationIsReplacedMidRefresh() async throws {
+        let generation = CollectionStorageGeneration()
+        generation.installReady(storeID: UUID())
+        let provider = ScannerGatedPriceCheckProvider()
+        let model = try makeModel(variants: [.normal], priceCheckProvider: provider, storageGeneration: generation)
+        model.setPurpose(.tradeAnalyzer)
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.tradeDraft.entries.count == 1 }
+        await provider.gate.waitUntilStarted()
+
+        model.endSession()
+        generation.suspend()
+        generation.installReady(storeID: UUID())
+        model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false, storageGeneration: generation)
+        await provider.gate.release()
+
+        await assertEventually { model.tradeDraft.entries.allSatisfy { !$0.result.shouldAutoRefresh } }
+        XCTAssertEqual(provider.calls, 2, "The departed refresh is discarded and the new generation re-checks once")
+        XCTAssertEqual(model.tradeDraft.total(on: .receive).total, Money(rounding: 4.43))
+        model.endSession()
+    }
+
     func testSameIdentityWithoutSpatialProofIsSuppressed() async throws {
         let model = try makeModel(variants: [.normal])
         let identifier = scannerIdentifier()

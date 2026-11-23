@@ -6427,7 +6427,12 @@ final class ScannerViewModel: ObservableObject {
         let storageIsCurrent = storageGenerationContinuation
         tradeQuoteTask = Task { @MainActor [weak self] in
             defer {
-                if self?.tradeDraft.id == draftID { self?.tradeQuoteTask = nil }
+                if let self, self.tradeDraft.id == draftID {
+                    self.tradeQuoteTask = nil
+                    // A storage switch ends this loop with copies still awaiting
+                    // prices; `configure` could not restart it while it was live.
+                    self.drainTradeQuotes()
+                }
             }
             while !Task.isCancelled, storageIsCurrent?() ?? true,
                   let entry = self?.tradeDraft.entries.last(where: { $0.result.shouldAutoRefresh }),
