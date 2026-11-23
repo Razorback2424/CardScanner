@@ -65,6 +65,16 @@ final class ReferenceQuote {
     var lastFailureAt: Date?
     var catalogPriceIdentity: String?
     var invalidatedAt: Date?
+    /// A later exact check by this quote's own source found no USD quote.
+    /// The amount stays as dated last-known evidence, but must not be promoted
+    /// to a current Browse price. Nil for legacy rows and unconfirmed misses.
+    var lastConfirmedMissAt: Date?
+
+    /// The stored amount was disproved by its own source after retrieval.
+    var hasConfirmedMiss: Bool {
+        guard let lastConfirmedMissAt else { return false }
+        return lastConfirmedMissAt > (retrievedAt ?? .distantPast)
+    }
 
     init(
         key: String,
@@ -137,6 +147,11 @@ final class ReferenceQuote {
                   Money(rounding: price.unitMarketPriceUSD) != nil else {
                 if !isReplay { recordFailure(at: date) }
                 return
+            }
+            // A confirmed miss belongs to the source that reported it. Newer
+            // evidence, or evidence from another source, supersedes it.
+            if let miss = lastConfirmedMissAt, price.source != source || price.fetchedAt > miss {
+                lastConfirmedMissAt = nil
             }
             amount = price.unitMarketPriceUSD
             currencyCode = price.currencyCode

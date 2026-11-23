@@ -150,6 +150,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let id: String
         let resolution: CatalogSortPriceResolution
         var quotes: [CatalogQuoteKey: NormalizedPrice] = [:]
+        /// Exact finishes whose named source answered with no USD quote.
+        var misses: [CatalogQuoteKey: ConfirmedQuoteMiss] = [:]
     }
 
     private struct SortPriceGroupResult: Sendable {
@@ -1794,7 +1796,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
         guard !Task.isCancelled else { return }
         if let store {
             let keysByCard = cards.map { ($0, CatalogQuoteKey.gridKeys(for: $0)) }
-            let quotes = await store.quotes(forKeys: Array(Set(keysByCard.flatMap { $0.1.map(\.rawValue) })), now: now)
+            // A quote its own source later disproved stays last-known evidence
+            // elsewhere, but is not promoted to a current sort price here.
+            let quotes = await store.quotes(forKeys: Array(Set(keysByCard.flatMap { $0.1.map(\.rawValue) })), now: now,
+                                            excludingConfirmedMisses: true)
             guard !Task.isCancelled else { return }
             var overlaidQuote = false
             for (card, keys) in keysByCard where isCurrent(card.id) {
@@ -1833,6 +1838,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             .filter { !$0.isEmpty }.makeIterator()
         var refreshedIDs: Set<String> = []
         var collectedQuotes: [String: [CatalogQuoteKey: NormalizedPrice]] = [:]
+        var collectedMisses: [String: [CatalogQuoteKey: ConfirmedQuoteMiss]] = [:]
         let cardsByID = Dictionary(cards.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         var completedSinceEmit = 0
         var lastEmit = Date.now
@@ -1857,6 +1863,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         guard let summary = cardsByID[slot.id] else { continue }
                         if store != nil, !slot.quotes.isEmpty {
                             collectedQuotes[slot.id] = slot.quotes
+                        }
+                        if store != nil, !slot.misses.isEmpty {
+                            collectedMisses[slot.id] = slot.misses
                         }
                         refreshedIDs.insert(slot.id)
                         if slot.resolution != .unresolved { sortPriceRetries.remove(slot.id) }
@@ -1957,6 +1966,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     }
                 }
                 await store.store(batch, successfulCheckAt: now)
+                let misses = setCards.filter { isCurrent($0.id) }.reduce(into: [CatalogQuoteKey: ConfirmedQuoteMiss]()) {
+                    for (key, miss) in collectedMisses[$1.id] ?? [:] where batch[key] == nil {
+                        if let previous = $0[key], previous.checkedAt >= miss.checkedAt { continue }
+                        $0[key] = miss
+                    }
+                }
+                await store.recordConfirmedMisses(misses)
             }
             if let game = setCards.first?.game,
                priceQuoteService.supportsStoredPrintingRefresh(for: game) { continue }
@@ -1977,10 +1993,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
         emit()
     }
 
+    /// `checkedAt` is when the answering evidence was obtained; it dates a
+    /// confirmed miss, never a price.
     private static func exactSortPrice(_ lookup: PriceLookup, for summary: CatalogCardSummary,
-                                       variant: PhysicalVariant) -> SortPriceSlot {
-        let quotes = lookup.usablePrice.map { [CatalogQuoteKey.make(for: summary, variant: variant): $0] } ?? [:]
-        return SortPriceSlot(id: summary.id, resolution: .exactLookup(lookup), quotes: quotes)
+                                       variant: PhysicalVariant, checkedAt: Date) -> SortPriceSlot {
+        let key = CatalogQuoteKey.make(for: summary, variant: variant)
+        let quotes = lookup.usablePrice.map { [key: $0] } ?? [:]
+        return SortPriceSlot(id: summary.id, resolution: .exactLookup(lookup), quotes: quotes,
+                             misses: confirmedMiss(lookup, checkedAt: checkedAt).map { [key: $0] } ?? [:])
+    }
+
+    /// Only an exact answer naming its source confirms absence. A network
+    /// failure or an unattributed gap leaves saved evidence untouched.
+    private static func confirmedMiss(_ lookup: PriceLookup, checkedAt: Date) -> ConfirmedQuoteMiss? {
+        guard case let .unavailable(source?) = lookup else { return nil }
+        return ConfirmedQuoteMiss(source: source, checkedAt: checkedAt)
     }
 
     private func setSortPrice(_ price: NormalizedPrice, for id: String) {
@@ -2101,7 +2128,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 continue
             }
             let lookup = try? await price(for: summary, variant: variant, catalogHealthCheck: false)
-            slots.append(Self.exactSortPrice(lookup ?? .unavailable(nil), for: summary, variant: variant))
+            slots.append(Self.exactSortPrice(lookup ?? .unavailable(nil), for: summary, variant: variant,
+                                             checkedAt: now()))
         }
         if !regular.isEmpty {
             slots.append(contentsOf: await sortPokemonCatalogPriceGroup(for: regular).slots)
@@ -2127,15 +2155,17 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         cardID: summary.providerID, variant: variant, printRun: summary.pokemonPrintRun)
                         : nil
                     let lookup: PriceLookup
+                    var evidenceAt = snapshot.fetchedAt
                     if let details = detailCache[detailCacheKey(for: summary)] {
                         lookup = CardPricing.price(for: details.card, variant: variant,
                             magicTreatments: details.card.magicTreatments(for: variant),
                             pokemonPrintRun: summary.pokemonPrintRun, at: details.retrievedAt, now: checkedAt,
                             supplementalPokemonQuote: mirror ?? .unavailable(nil))
+                        evidenceAt = min(evidenceAt, details.retrievedAt)
                     } else {
                         lookup = mirror ?? .unavailable(nil)
                     }
-                    return Self.exactSortPrice(lookup, for: summary, variant: variant)
+                    return Self.exactSortPrice(lookup, for: summary, variant: variant, checkedAt: evidenceAt)
                 })
             } catch {
                 return SortPriceGroupResult(slots: summaries.map {
@@ -2447,20 +2477,24 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
             var lookups: [PriceLookup] = []
             var quotes: [CatalogQuoteKey: NormalizedPrice] = [:]
+            var misses: [CatalogQuoteKey: ConfirmedQuoteMiss] = [:]
             var hasMissingMapping = false
             do {
                 for variant in summary.masterSetVariant.map({ [$0] }) ?? details.card.variantEvidence.catalogVariants {
                     do {
                         let lookup = try await price(for: summary, variant: variant, catalogHealthCheck: false)
                         lookups.append(lookup)
-                        quotes[CatalogQuoteKey.make(for: summary, variant: variant)] = lookup.usablePrice
+                        let key = CatalogQuoteKey.make(for: summary, variant: variant)
+                        quotes[key] = lookup.usablePrice
+                        misses[key] = Self.confirmedMiss(lookup, checkedAt: now())
                     }
                     catch PriceQuoteError.mappingUnavailable { hasMissingMapping = true }
                 }
                 if hasMissingMapping, !lookups.contains(where: {
                     if case let .price(price) = $0 { return price.isUsableUSD }; return false
                 }) { return SortPriceSlot(id: summary.id, resolution: .mappingMissing) }
-                return SortPriceSlot(id: summary.id, resolution: CatalogSortPriceResolution.aggregate(lookups), quotes: quotes)
+                return SortPriceSlot(id: summary.id, resolution: CatalogSortPriceResolution.aggregate(lookups),
+                                     quotes: quotes, misses: misses)
             } catch {
                 return SortPriceSlot(id: summary.id, resolution: .unresolved)
             }
@@ -2473,7 +2507,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 pokemonPrintRun: summary.pokemonPrintRun,
                 at: details.retrievedAt
             )
-            return Self.exactSortPrice(lookup, for: summary, variant: variant)
+            return Self.exactSortPrice(lookup, for: summary, variant: variant, checkedAt: details.retrievedAt)
         }
 
         // An unqualified printing may expose several exact finishes. Sort by

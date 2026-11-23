@@ -840,6 +840,44 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(Set(slot.price.entries.map(\.storedPriceKey)).count, 1)
     }
 
+    /// Price Check promotes a quote only when every candidate holds the scanned
+    /// instrument. Owning another print run of the same printing must not
+    /// disable that, nor may it borrow the other run's price.
+    @MainActor
+    func testPriceCheckOwnedRowsNarrowToScannedPokemonPrintRun() {
+        let providerID = "base1-4"
+        func row(_ run: PokemonPrintRun?) -> CatalogOwnershipCardSnapshot {
+            let stored = CollectedCard(collectionKey: "pokemon:\(providerID)@\(run?.rawValue ?? "legacy")#holo",
+                game: .pokemon, providerID: providerID, name: "Charizard", setName: "Base", setCode: "BS",
+                cardNumber: "4", rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .holo,
+                variantResolution: .userConfirmed, quantity: 1)
+            stored.pokemonPrintRunRaw = run?.rawValue
+            return .init(stored, selectedPriceKey: stored.priceKey, selectedPrice: .init(amount: run == .firstEdition ? 900 : 300))
+        }
+        func slot(_ index: CatalogOwnershipIndex, run: PokemonPrintRun) -> (CatalogFinishOwnership, CatalogQuoteKey) {
+            let key = CatalogQuoteKey.make(game: .pokemon, providerID: providerID, printRun: run,
+                variantID: PhysicalVariant.holo.id, treatmentIDs: [])
+            return (CatalogFinishOwnership(rows: index.priceRows(game: .pokemon, providerID: providerID, pokemonPrintRun: run),
+                variant: .holo, treatments: [], qualifiers: [:], name: "Charizard", projection: nil), key)
+        }
+        let both = CatalogOwnershipIndex(rows: [row(.firstEdition), row(.unlimited)])
+        for run in [PokemonPrintRun.firstEdition, .unlimited] {
+            let (owned, key) = slot(both, run: run)
+            XCTAssertEqual(owned.quantity, 1, run.rawValue)
+            XCTAssertFalse(owned.hasConflict, run.rawValue)
+            XCTAssertFalse(owned.price.entriesDisagree, run.rawValue)
+            XCTAssertTrue(owned.price.entries.allSatisfy { $0.selectedPriceKey == key.rawValue }, run.rawValue)
+            XCTAssertEqual(owned.price.display.amount, run == .firstEdition ? 900 : 300, run.rawValue)
+        }
+        // A legacy row without run evidence is never promoted as Unlimited.
+        let legacy = CatalogOwnershipIndex(rows: [row(.firstEdition), row(nil)])
+        let (unlimited, key) = slot(legacy, run: .unlimited)
+        XCTAssertFalse(unlimited.price.entries.isEmpty)
+        XCTAssertFalse(unlimited.price.entries.allSatisfy { $0.selectedPriceKey == key.rawValue })
+        let (first, firstKey) = slot(legacy, run: .firstEdition)
+        XCTAssertTrue(first.price.entries.allSatisfy { $0.selectedPriceKey == firstKey.rawValue })
+    }
+
     @MainActor
     func testCatalogFinishCountsLegacyMagicNonfoilWithoutGuessingTreatmentQualifiers() {
         func row(_ key: String, finish: PhysicalVariant, quantity: Int, qualifiers: [String: String] = [:]) -> CatalogOwnershipCardSnapshot {
@@ -1217,6 +1255,64 @@ final class BrowseFeatureTests: XCTestCase {
             XCTAssertTrue(updates.contains { $0.prices[summary.id] == 42 })
             XCTAssertEqual(updates.last?.prices[summary.id], expected)
             XCTAssertTrue(updates.last?.resolvedIDs.contains(summary.id) == true)
+        }
+    }
+
+    /// A confirmed same-source miss must survive a new Browse actor: the
+    /// shared reference amount stays last-known evidence, not a current sort
+    /// price. A failed check must not disprove it, and a newer positive wins.
+    func testConfirmedSameSourceMissKeepsSharedQuoteOutOfColdBrowse() async throws {
+        for checkFails in [false, true] {
+            let root = try makeTemporaryCacheDirectory()
+            defer { try? FileManager.default.removeItem(at: root) }
+            let fixture = try priceConsistencyFixture(setID: "30th")
+            var summary = fixture.summary
+            summary.masterSetVariant = .holo
+            let date = Date.now
+            let gap = PokemonTCGCSVSnapshot(schemaVersion: 1, setID: "30th", feedBuild: "gap",
+                fetchedAt: date.addingTimeInterval(-600), validatedAt: date, valuesByCardID: [:])
+            let mirror: any PokemonTCGCSVPriceSource = checkFails
+                ? FailingSortTCGCSVSource() : SavedSortTCGCSVSource(snapshot: gap)
+            let cache = CatalogCacheStore(root: root.appendingPathComponent("pages"))
+            let checklists = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil)
+            func browse() -> BrowseCatalog {
+                BrowseCatalog(cache: cache, pokemonTransport: PriceConsistencyTransport(set: fixture.set, card: fixture.card),
+                    tcgCSVSource: mirror, checklistStore: checklists, now: { date })
+            }
+            let container = try ModelContainer(for: ReferenceQuote.self,
+                configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+            let store = await ReferenceQuoteStore.makeBackground(modelContainer: container)
+            let key = CatalogQuoteKey.make(for: summary, variant: .holo)
+            await store.store([key: NormalizedPrice(unitMarketPriceUSD: 42, currencyCode: "USD", source: .tcgCSV,
+                sourceVariantID: "holofoil", sourceUpdatedAt: nil, fetchedAt: date.addingTimeInterval(-3600))],
+                successfulCheckAt: date.addingTimeInterval(-3600))
+            let first = browse()
+            await first.setQuoteStoreProvider { _ in store }
+            await first.resetPriceResolution(for: [summary.id])
+            for await _ in first.sortPriceUpdates(for: [summary]) {}
+
+            let relaunched = browse()
+            await relaunched.setQuoteStoreProvider { _ in store }
+            var updates: [CatalogPriceUpdate] = []
+            for await update in relaunched.sortPriceUpdates(for: [summary]) { updates.append(update) }
+            if checkFails {
+                XCTAssertEqual(updates.last?.prices[summary.id], 42, "A failed check cannot disprove saved evidence")
+            } else {
+                XCTAssertFalse(updates.contains { $0.prices[summary.id] != nil },
+                    "A disproved amount must not return to sorting or price filters")
+                XCTAssertTrue(updates.last?.resolvedIDs.contains(summary.id) == true)
+                let lastKnown = await store.quotes(forKeys: [key.rawValue], now: date)
+                XCTAssertEqual(lastKnown[key.rawValue]?.unitMarketPriceUSD, 42, "Last-known evidence remains available")
+            }
+
+            await store.store([key: NormalizedPrice(unitMarketPriceUSD: 50, currencyCode: "USD", source: .tcgCSV,
+                sourceVariantID: "holofoil", sourceUpdatedAt: nil, fetchedAt: date.addingTimeInterval(-60))],
+                successfulCheckAt: date.addingTimeInterval(-60))
+            let restored = browse()
+            await restored.setQuoteStoreProvider { _ in store }
+            var last: CatalogPriceUpdate?
+            for await update in restored.sortPriceUpdates(for: [summary]) { last = update }
+            XCTAssertEqual(last?.prices[summary.id], 50, "A newer positive restores the current price")
         }
     }
 
@@ -10908,6 +11004,12 @@ private actor SavedSortTCGCSVSource: PokemonTCGCSVPriceSource {
     func snapshot(setID: String, retry: Bool) async throws -> PokemonTCGCSVSnapshot {
         calls += 1
         return saved
+    }
+}
+
+private actor FailingSortTCGCSVSource: PokemonTCGCSVPriceSource {
+    func snapshot(setID: String, retry: Bool) async throws -> PokemonTCGCSVSnapshot {
+        throw URLError(.timedOut)
     }
 }
 

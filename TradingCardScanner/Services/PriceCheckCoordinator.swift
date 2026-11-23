@@ -409,10 +409,10 @@ final class PriceCheckCoordinator {
                 resolvedScan, key: key,
                 quote: catalogQuote,
                 retrievedAt: catalogEvidence.retrievedAt,
-                quoteState: Self.isStale(catalogEvidence, game: key.game, now: now()) ? .stale : .current,
+                quoteState: Self.isStale(catalogEvidence, now: now()) ? .stale : .current,
                 // Identification stays fast, but an old session-cache payload
                 // must not disable the newer-price check.
-                shouldAutoRefresh: Self.isStale(catalogEvidence, game: key.game, now: now())
+                shouldAutoRefresh: Self.isStale(catalogEvidence, now: now())
             )
         }
 
@@ -446,8 +446,8 @@ final class PriceCheckCoordinator {
                 resolvedScan, key: key,
                 quote: localLookup,
                 retrievedAt: local.retrievedAt,
-                quoteState: Self.isStale(local, game: key.game, now: now()) ? .stale : .current,
-                shouldAutoRefresh: Self.isStale(local, game: key.game, now: now())
+                quoteState: Self.isStale(local, now: now()) ? .stale : .current,
+                shouldAutoRefresh: Self.isStale(local, now: now())
             )
         }
 
@@ -769,9 +769,11 @@ final class PriceCheckCoordinator {
         return LocalEvidence(price: price, retrievedAt: price.fetchedAt)
     }
 
-    private static func isStale(_ evidence: LocalEvidence, game: CardGame, now: Date = .now) -> Bool {
-        game == .pokemon ? evidence.price.isStale(now: now)
-            : now.timeIntervalSince(evidence.retrievedAt) > PriceDisplay.staleAfter
+    /// The same normalized quote age the result presents: provider data date
+    /// when published, otherwise receipt. A recent download of an old
+    /// snapshot is stale and keeps its one permitted refresh.
+    private static func isStale(_ evidence: LocalEvidence, now: Date = .now) -> Bool {
+        evidence.price.isStale(now: now)
     }
 
     static func isUsableUSD(_ quote: PriceLookup) -> Bool {

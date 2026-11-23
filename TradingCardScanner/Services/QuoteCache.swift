@@ -28,6 +28,12 @@ enum QuoteEvidenceOrdering {
     }
 }
 
+/// An exact provider answer that a printing and finish has no USD quote.
+struct ConfirmedQuoteMiss: Equatable, Sendable {
+    let source: PriceSource
+    let checkedAt: Date
+}
+
 /// Persistence boundary for non-collection price knowledge.
 ///
 /// There is deliberately no path from this service to `PriceObservationLog`,
@@ -111,6 +117,17 @@ struct QuoteCache {
         return store(.price(price), game: key.game, printingID: key.printingID, variantID: key.variantID,
             at: successfulCheckAt, treatmentIDs: key.treatmentIDs, successfulCheckAt: successfulCheckAt,
             saveImmediately: saveImmediately).normalizedPrice
+    }
+
+    /// Marks an existing quote as disproved by a later exact check from the
+    /// same source. Never creates a row and never clears the dated amount.
+    func recordConfirmedMiss(_ miss: ConfirmedQuoteMiss, key: CatalogQuoteKey) {
+        guard let record = quote(game: key.game, printingID: key.printingID,
+                                 variantID: key.variantID, treatmentIDs: key.treatmentIDs),
+              record.source == miss.source,
+              miss.checkedAt > (record.retrievedAt ?? .distantPast),
+              record.lastConfirmedMissAt.map({ miss.checkedAt > $0 }) ?? true else { return }
+        record.lastConfirmedMissAt = miss.checkedAt
     }
 
     @discardableResult
@@ -197,7 +214,10 @@ actor ReferenceQuoteStore: BackgroundModelActor {
         isCurrent = continuation
     }
 
-    func quotes(forKeys keys: [String], now: Date = .now) -> [String: NormalizedPrice] {
+    /// `excludingConfirmedMisses` is for surfaces that promote a quote to a
+    /// current price. Last-known presentation still reads the dated amount.
+    func quotes(forKeys keys: [String], now: Date = .now,
+                excludingConfirmedMisses: Bool = false) -> [String: NormalizedPrice] {
         guard isCurrent(), !keys.isEmpty, !Task.isCancelled else { return [:] }
         let context = ModelContext(modelContainer)
         var result: [String: NormalizedPrice] = [:]
@@ -206,6 +226,7 @@ actor ReferenceQuoteStore: BackgroundModelActor {
             let descriptor = FetchDescriptor<ReferenceQuote>(predicate: #Predicate { chunk.contains($0.key) })
             guard let quotes = try? context.fetch(descriptor) else { continue }
             for quote in quotes {
+                if excludingConfirmedMisses, quote.hasConfirmedMiss { continue }
                 guard let price = quote.normalizedPrice,
                       CollectionStore.acceptsCatalogPrice(price, game: CardGame(rawValue: quote.game),
                                                           key: quote.key, in: modelContainer),
@@ -226,6 +247,21 @@ actor ReferenceQuoteStore: BackgroundModelActor {
             for (key, price) in batch where CollectionStore.acceptsCatalogPrice(price, game: key.game,
                 key: key.rawValue, in: modelContainer) {
                 cache.storeIfNewer(price, key: key, successfulCheckAt: successfulCheckAt, saveImmediately: false)
+            }
+            guard isCurrent(), !Task.isCancelled else { throw CancellationError() }
+            cache.save()
+        }
+    }
+
+    /// Persists exact checks that found no USD quote, so a relaunched Browse
+    /// does not promote the disproved amount. Only the quote's own source can
+    /// disprove it; a failed or incomplete check is never passed here.
+    func recordConfirmedMisses(_ misses: [CatalogQuoteKey: ConfirmedQuoteMiss]) {
+        guard !misses.isEmpty, isCurrent(), !Task.isCancelled else { return }
+        try? CollectionWriteSerializer.perform(container: modelContainer, timeout: .immediate) { context in
+            let cache = QuoteCache(context: context)
+            for (key, miss) in misses {
+                cache.recordConfirmedMiss(miss, key: key)
             }
             guard isCurrent(), !Task.isCancelled else { throw CancellationError() }
             cache.save()

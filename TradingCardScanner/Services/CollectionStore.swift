@@ -714,9 +714,15 @@ actor ScannerCollectionWriter: BackgroundModelActor {
                                 !PokemonReviewedPhysicalObjects.requiresReview(row) else { return false }
                           return (try prices.selectedRecord(for: row)?.key ?? row.priceKey) == expectedSelectedKey
                       }) else { throw CollectionStoreError.staleQuantity }
-                if let price = lookup.usablePrice,
-                   !CollectionStore.acceptsCatalogPrice(price, game: card.cardGame, key: expectedSelectedKey,
-                                                        in: context.container) { throw PriceQuoteError.identityMismatch }
+            }
+            // Every caller crossed a network await. A catalog activation in that
+            // window can replace this instrument's mapping, and an owner with no
+            // prior price left activation nothing to withdraw. Check the quote
+            // against the live authority for the key it would be written under.
+            if let price = lookup.usablePrice,
+               !CollectionStore.acceptsCatalogPrice(price, game: card.cardGame,
+                   key: expectedSelectedKey ?? card.priceKey, in: context.container) {
+                throw PriceQuoteError.identityMismatch
             }
             let reason = PriceStore.ownedPriceRetentionReason(existing: try prices.selectedRecord(for: card), incoming: lookup)
             guard prices.storeOwnedPrice(lookup, collectionKey: collectionKey), prices.save() else {

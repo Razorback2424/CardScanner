@@ -137,6 +137,31 @@ final class QuoteCacheTests: XCTestCase {
         }
     }
 
+    /// Initial refresh eligibility uses the same quote age the result shows.
+    /// A recent receipt of an old provider snapshot is stale and refreshes.
+    func testNonPokemonInitialRefreshUsesProviderDateNotReceipt() throws {
+        let day: TimeInterval = 86_400
+        for game in [CardGame.magic, .lorcana, .yuGiOh, .onePiece] {
+            for (sourceAge, expectsRefresh) in [(7 * day, true), (0.5 * day, false), (nil, false)] as [(TimeInterval?, Bool)] {
+                let context = try makeContext()
+                let scan = try rawScan(game: game)
+                let now = Date.now
+                let price = PriceLookup.price(NormalizedPrice(unitMarketPriceUSD: 20, currencyCode: "USD",
+                    source: .tcgplayer, sourceVariantID: "normal",
+                    sourceUpdatedAt: sourceAge.map { now.addingTimeInterval(-$0) }, fetchedAt: now.addingTimeInterval(-60)))
+                QuoteCache(context: context).store(price, game: game, printingID: scan.card.providerID, variantID: "normal")
+                let coordinator = PriceCheckCoordinator(context: context,
+                    refreshProvider: StubPriceCheckProvider(outcome: .quote(price)), now: { now })
+                let result = coordinator.present(scan)
+                let label = "\(game.rawValue) \(String(describing: sourceAge))"
+                XCTAssertEqual(result.display.amount, 20, label)
+                XCTAssertEqual(result.shouldAutoRefresh, expectsRefresh, label)
+                XCTAssertEqual(result.quoteState, expectsRefresh ? .stale : .current, label)
+                XCTAssertEqual(result.successfulQuoteState, result.quoteState, label)
+            }
+        }
+    }
+
     func testPriceCheckCannotReportAnOfflineYuGiOhBundleAsASuccessfulCheck() async throws {
         let context = try makeContext()
         let date = Date.now.addingTimeInterval(-2 * 86_400)

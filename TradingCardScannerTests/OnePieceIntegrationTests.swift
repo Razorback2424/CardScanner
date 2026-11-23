@@ -1959,6 +1959,47 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(calls, 1)
     }
 
+    /// Catalog detail reconciles without an expected selected key. A mapping
+    /// replaced during its lookup must not price an owner that had no value
+    /// for activation to withdraw.
+    func testOwnedPriceReconciliationRejectsQuoteFromReplacedMappingWithoutExpectedKey() async throws {
+        for mappingChanges in [true, false] {
+            let registry = try registry(withMarketMapping: true)
+            let (model, container) = try model(registry: registry, fixtureWritesEnabled: true)
+            defer { model.viewDisappeared() }
+            let id = uuid(1).uuidString.lowercased()
+            let card = try OnePieceCatalogAdapter(registry: registry).resolution(forPrintingID: uuid(1)).card
+            let mutation = try CollectionStore(context: container.mainContext)
+                .add(card, resolved: .init(variant: .foil, resolution: .userConfirmed))
+            let quote = try await OnePiecePriceAdapter(registry: registry, source: OnePieceTestPriceSource())
+                .refreshStoredPrinting(id, variant: .foil)
+            let key = PriceRecord.key(game: .onePiece, printingID: id, variantID: "foil")
+            let authority = mappingChanges
+                ? GameCatalogPriceAuthority(game: .onePiece, managedSources: [.tcgCSV],
+                    identityByPriceKey: [key: "replacement-product-mapping"])
+                : OnePiecePriceAdapter.priceAuthority(registry)
+            XCTAssertTrue(CollectionStore.installCatalogAdapter(OnePieceCatalogAdapter(registry: registry),
+                revision: 100, priceAuthority: authority, for: container))
+            try authority.install(in: container)
+            let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            do {
+                let result = try await writer.reconcileOwnedPrice(quote, collectionKey: mutation.collectionKey,
+                    shouldContinue: { true })
+                XCTAssertFalse(mappingChanges, "An obsolete mapping must not become an owned value")
+                XCTAssertEqual(result.display.amount, 8.16)
+            } catch PriceQuoteError.identityMismatch {
+                XCTAssertTrue(mappingChanges)
+            }
+            let fresh = ModelContext(container)
+            XCTAssertEqual(PriceStore(context: fresh).record(forKey: key)?.effectiveUnitMarketPriceUSD,
+                mappingChanges ? nil : 8.16)
+            if mappingChanges {
+                let observed = try fresh.fetch(FetchDescriptor<PriceObservation>()).filter { $0.instrumentKey == key }
+                XCTAssertTrue(observed.isEmpty, "A rejected quote must not enter portfolio history")
+            }
+        }
+    }
+
     func testPriceAuthorityWithdrawalPreservesManualValuesAndRejectsOldReceipts() async throws {
         let registry = try registry(withMarketMapping: true), source = OnePieceTestPriceSource()
         let (_, container) = try model(registry: registry)

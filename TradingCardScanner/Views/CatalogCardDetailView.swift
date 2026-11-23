@@ -1053,9 +1053,14 @@ struct CatalogCardDetailView: View {
         }
     }
 
+    /// One decision for the headline amount and its status. A usable saved
+    /// owned value wins; an unpriced owned finish shows the exact market quote
+    /// as an estimate (see `showsMarketEstimate`) and keeps its own dated state
+    /// only when no such quote exists.
     private func priceDisplay(for variant: PhysicalVariant, card: IdentifiedCard, slot: CatalogFinishOwnership) -> PriceDisplay {
-        if !slot.hasConflict, !slot.price.entriesDisagree,
-           Set(slot.price.entries.map(\.selectedPriceKey)).count == 1 {
+        let ownedIsSingleInstrument = !slot.hasConflict && !slot.price.entriesDisagree
+            && Set(slot.price.entries.map(\.selectedPriceKey)).count == 1
+        if ownedIsSingleInstrument, slot.price.display.amount != nil {
             return slot.price.display
         }
         let lookup = mappedPrices[variant.id] ?? CardPricing.price(for: card, variant: variant,
@@ -1063,7 +1068,14 @@ struct CatalogCardDetailView: View {
             at: details?.retrievedAt ?? .distantPast)
         if case let .price(quote) = lookup,
            TCGCSVPriceMirror.canServe(source: quote.source, capturedAt: quote.fetchedAt) { return PriceDisplay(quote) }
-        return .unknown
+        return ownedIsSingleInstrument ? slot.price.display : .unknown
+    }
+
+    /// The headline shows a market quote while the owned copies of this
+    /// finish have no saved value, so Collection and Portfolio exclude it.
+    private func showsMarketEstimate(_ slot: CatalogFinishOwnership?, currentPrice: PriceDisplay) -> Bool {
+        guard let slot, !slot.price.entries.isEmpty else { return false }
+        return slot.price.display.amount == nil && currentPrice.amount != nil
     }
 
     // MARK: - Inline quantity
@@ -1386,8 +1398,14 @@ struct CatalogCardDetailView: View {
                 // above; only check notes and recovery sit under it.
                 let notes = Set((slot?.targets ?? []).compactMap { ownedPriceChecks[$0.collectionKey]?.caption })
                 let updateFailed = quoteRequest != nil && ownedPriceUpdateFailure == quoteRequest
-                if !notes.isEmpty || updateFailed {
+                let estimate = showsMarketEstimate(slot, currentPrice: currentPrice)
+                if !notes.isEmpty || updateFailed || estimate {
                     VStack(alignment: .leading, spacing: 6) {
+                        if estimate {
+                            Text("Market price. Your copies don’t have a saved price yet, so it isn’t in your collection value.")
+                                .font(.caption).foregroundStyle(.secondary)
+                                .accessibilityIdentifier("card-detail-market-estimate-note")
+                        }
                         ForEach(notes.sorted(), id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
                         if updateFailed {
                             Text("Couldn’t update the price in your collection.").font(.caption).foregroundStyle(.secondary)

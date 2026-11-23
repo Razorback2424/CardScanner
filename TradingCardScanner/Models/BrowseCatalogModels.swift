@@ -1536,9 +1536,12 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
         candidates(for: summary).filter { Self.matches($0, summary: summary) }
     }
 
-    func priceRows(game: CardGame, providerID: String) -> [CatalogOwnershipCardSnapshot] {
+    /// Raw rows that can hold the scanned printing's price. Another Pokémon
+    /// print run shares the provider ID but is a different instrument.
+    func priceRows(game: CardGame, providerID: String, pokemonPrintRun: PokemonPrintRun?) -> [CatalogOwnershipCardSnapshot] {
         (byProviderID[providerID.lowercased()] ?? []).filter {
             $0.game == game && $0.itemKind == .rawCard && !UnverifiedReportKey.hasReport($0.collectionKey)
+                && Self.pokemonPrintRunMatches($0, required: pokemonPrintRun)
         }
     }
 
