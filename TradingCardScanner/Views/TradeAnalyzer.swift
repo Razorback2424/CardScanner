@@ -9,6 +9,9 @@ enum TradeSide: CaseIterable, Hashable, Sendable {
     var shortTitle: String { self == .give ? "Give" : "Receive" }
     var opposite: Self { self == .give ? .receive : .give }
     var cashTitle: String { self == .give ? "Cash you give" : "Cash you receive" }
+    /// Give is always mint and receive always indigo, so the ledger, the guide
+    /// brackets and the receipt agree about where a card went.
+    var tint: Color { self == .give ? .mint : Color(red: 0.49, green: 0.48, blue: 1) }
 }
 
 struct TradeScanDestination: Equatable, Sendable {
@@ -32,6 +35,11 @@ struct TradeEntry: Identifiable {
             scan.pokemonPrintRun?.label,
             finish
         ].compactMap { $0 }.joined(separator: " · ")
+    }
+
+    var artwork: CatalogCardArtworkSource {
+        CatalogCardArtworkSource(identifiedCard: result.card, thumbnailURL: result.card.thumbnailImageURL,
+                                 imageURL: result.card.displayImageURL, prefersFullSize: false)
     }
 
     var unitPrice: Money? {
@@ -172,6 +180,30 @@ struct TradeDraft {
         guard let removed else { return }
         entries.insert(removed.entry, at: min(removed.index, entries.count))
         self.removed = nil
+        alignQuotes(for: removed.entry.refreshKey)
+    }
+
+    /// Rows of one exact instrument (same printing, finish and slab evidence)
+    /// carry its newest usable quote, so identical cards on either side are
+    /// valued alike regardless of when each was priced. Rows still awaiting
+    /// their own check are left to it; side and quantity never change.
+    mutating func alignQuotes(for key: PriceCheckCoordinator.TradeRefreshKey) {
+        let matching = entries.indices.filter { entries[$0].refreshKey == key }
+        guard matching.count > 1 else { return }
+        var newest: PriceCheckResult?
+        for index in matching {
+            let result = entries[index].result
+            guard let price = result.quote.usablePrice else { continue }
+            if let current = newest?.quote.usablePrice,
+               !QuoteEvidenceOrdering.isNewer(price, than: current, game: result.card.game) { continue }
+            newest = result
+        }
+        guard let newest, let newestPrice = newest.quote.usablePrice else { return }
+        for index in matching where !entries[index].result.shouldAutoRefresh {
+            guard let price = entries[index].result.quote.usablePrice,
+                  QuoteEvidenceOrdering.isNewer(newestPrice, than: price, game: newest.card.game) else { continue }
+            entries[index].result.adoptEvidence(from: newest)
+        }
     }
 
     mutating func forgetRemoval() { removed = nil }
@@ -182,9 +214,146 @@ struct TradeScannerControls: View {
     @ObservedObject var model: ScannerViewModel
     let openReview: () -> Void
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.locale) private var locale
 
     var body: some View {
+        Group {
+            // At accessibility sizes the ledger's three columns can't hold
+            // their text; the one-line pills keep every control reachable.
+            if dynamicTypeSize.isAccessibilitySize {
+                pillControls
+            } else {
+                ViewThatFits(in: .horizontal) {
+                    ledger
+                    pillControls
+                }
+            }
+        }
+        // The band above the guide holds one 44-pt row; beyond this size the
+        // one-line controls would be cut off. VoiceOver labels stay complete.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: Ledger
+
+    /// The whole trade in one glance: each side's latest cards and value, and
+    /// the gap between them in the middle. A side is also the switch that sends
+    /// the next scan there; the middle opens review.
+    private var ledger: some View {
+        let draft = model.tradeDraft
+        let give = draft.total(on: .give)
+        let receive = draft.total(on: .receive)
+        let difference = TradeDraft.difference(give: give, receive: receive)
+        return HStack(spacing: 2) {
+            ledgerSide(.give, total: give, entries: draft.entries)
+            balance(difference: difference, give: give, receive: receive)
+            ledgerSide(.receive, total: receive, entries: draft.entries)
+        }
+        .padding(3)
+        .appGlass(cornerRadius: 22)
+        .animation(reduceMotion ? nil : .spring(response: 0.32, dampingFraction: 0.86), value: draft.scanSide)
+        .animation(reduceMotion ? nil : .spring(response: 0.36, dampingFraction: 0.8), value: draft.entries.count)
+        .animation(reduceMotion ? nil : .spring(response: 0.36, dampingFraction: 0.8), value: difference)
+        .sensoryFeedback(.success, trigger: difference?.isZero == true) { wasEven, isEven in !wasEven && isEven }
+    }
+
+    private func ledgerSide(_ side: TradeSide, total: TradeSideTotal, entries: [TradeEntry]) -> some View {
+        let selected = model.tradeDraft.scanSide == side
+        let leading = side == .give
+        let shape = RoundedRectangle(cornerRadius: 19, style: .continuous)
+        // Entries are appended as they are scanned, so the newest is last.
+        let stack = TradeSideStack(
+            entries: Array(entries.filter { $0.side == side }.suffix(3)),
+            count: total.count,
+            tint: side.tint
+        )
+        let labels = VStack(alignment: leading ? .leading : .trailing, spacing: 0) {
+            Text(side.title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(side.tint)
+            ledgerValue(total)
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
+        return Button {
+            model.setTradeScanSide(side)
+        } label: {
+            HStack(spacing: 9) {
+                if leading {
+                    stack
+                    labels
+                } else {
+                    labels
+                    stack
+                }
+            }
+            .padding(.horizontal, 9)
+            .frame(maxWidth: .infinity, minHeight: 55, alignment: leading ? .leading : .trailing)
+            .background {
+                if selected {
+                    shape.fill(side.tint.opacity(0.2))
+                        .overlay(shape.strokeBorder(side.tint.opacity(0.45), lineWidth: 1))
+                }
+            }
+            .contentShape(shape)
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.white)
+        .accessibilityLabel("\(side.title), \(detail(side))")
+        .accessibilityHint(selected ? "" : String(localized: "Scans go to this side."))
+        .accessibilityAddTraits(selected ? .isSelected : [])
+        .accessibilityIdentifier("trade-side-\(side)")
+    }
+
+    /// A side's value shows only once every card on it is priced, so it is
+    /// never a partial sum.
+    @ViewBuilder
+    private func ledgerValue(_ total: TradeSideTotal) -> some View {
+        if total.isPresent, total.missing == 0, total.total.isValid {
+            Text(total.total.formatted(locale: locale))
+                .font(.headline.monospacedDigit())
+                .contentTransition(.numericText())
+        } else {
+            let status: LocalizedStringKey = !total.isPresent ? "None yet"
+                : total.checking > 0 ? "Pricing…" : "Price missing"
+            Text(status)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.6))
+        }
+    }
+
+    private func balance(difference: Money?, give: TradeSideTotal, receive: TradeSideTotal) -> some View {
+        let state = TradeBalanceState(difference: difference, give: give, receive: receive, locale: locale)
+        return Button(action: openReview) {
+            VStack(spacing: 2) {
+                Text(state.caption)
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.65))
+                Text(state.amount)
+                    .font(.subheadline.weight(.semibold).monospacedDigit())
+                    .foregroundStyle(state.color)
+                    .contentTransition(.numericText())
+                TradeBalanceGauge(lean: state.lean, tint: state.color)
+                    .padding(.top, 2)
+            }
+            .lineLimit(1)
+            .padding(.horizontal, 4)
+            .frame(minWidth: 64, minHeight: 55)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .fixedSize(horizontal: true, vertical: false)
+        .accessibilityLabel("Review trade")
+        .accessibilityValue(Text(state.accessibilityValue))
+        .accessibilityIdentifier("trade-review")
+        .disabled(!model.canOpenTradeReview)
+    }
+
+    // MARK: Large-text pills
+
+    private var pillControls: some View {
         ViewThatFits(in: .horizontal) {
             HStack(spacing: 6) {
                 side(.give)
@@ -214,10 +383,6 @@ struct TradeScannerControls: View {
                 review()
             }
         }
-        // The band above the guide holds one 44-pt row; beyond this size the
-        // one-line controls would be cut off. VoiceOver labels stay complete.
-        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     /// The count confirms the stack was fully scanned; the value appears only
@@ -294,6 +459,111 @@ struct TradeScannerControls: View {
     }
 }
 
+/// What the middle of the ledger says. It agrees with the review sheet's
+/// verdict: only an exact match is "Even".
+private struct TradeBalanceState {
+    let caption: LocalizedStringKey
+    let amount: String
+    let color: Color
+    /// -1 leans fully toward give, 1 fully toward receive.
+    let lean: Double
+    let accessibilityValue: LocalizedStringKey
+
+    init(difference: Money?, give: TradeSideTotal, receive: TradeSideTotal, locale: Locale) {
+        guard let difference else {
+            let pricing = give.checking + receive.checking > 0
+            caption = "Balance"
+            amount = pricing ? String(localized: "Pricing…") : "–"
+            color = .white.opacity(0.6)
+            lean = 0
+            accessibilityValue = pricing ? "Getting prices" : "Not enough to compare yet"
+            return
+        }
+        let formatted = difference.magnitude.formatted(locale: locale)
+        let larger = max(give.total, receive.total)
+        let ratio = larger.isZero ? 0 : Double(difference.tenThousandths) / Double(larger.tenThousandths)
+        lean = min(1, max(-1, ratio))
+        if difference.isZero {
+            caption = "Balance"
+            amount = String(localized: "Even")
+            color = .green
+            accessibilityValue = "Even trade"
+        } else if difference < .zero {
+            caption = "You're over"
+            amount = formatted
+            color = .orange
+            accessibilityValue = "You give \(formatted) more"
+        } else {
+            caption = "You're up"
+            amount = formatted
+            color = .green
+            accessibilityValue = "You receive \(formatted) more"
+        }
+    }
+}
+
+/// A short track with a center mark; the dot leans toward the side giving more.
+private struct TradeBalanceGauge: View {
+    let lean: Double
+    let tint: Color
+
+    var body: some View {
+        ZStack {
+            Capsule().fill(.white.opacity(0.16)).frame(width: 46, height: 4)
+            Capsule().fill(.white.opacity(0.5)).frame(width: 2, height: 8)
+            Circle()
+                .fill(tint)
+                .frame(width: 8, height: 8)
+                .shadow(color: tint.opacity(0.7), radius: 3)
+                .offset(x: lean * 19)
+        }
+        .frame(width: 46, height: 8)
+        .accessibilityHidden(true)
+    }
+}
+
+/// The latest cards on one side, fanned with the newest on top, and the side's
+/// card count as a badge. Same footprint as the collection session stack.
+private struct TradeSideStack: View {
+    /// Oldest first; the last entry is the newest.
+    let entries: [TradeEntry]
+    let count: Int
+    let tint: Color
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            if entries.isEmpty {
+                RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+                    .strokeBorder(tint.opacity(0.55), style: StrokeStyle(lineWidth: 1, dash: [3, 2]))
+                    .frame(width: 20, height: 28)
+            }
+            ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
+                let depth = entries.count - 1 - index
+                CardThumbnail(artwork: entry.artwork, width: 20)
+                    .shadow(color: .black.opacity(0.35), radius: 1.5, y: 1)
+                    .rotationEffect(.degrees(Double(depth) * -9), anchor: .bottom)
+                    .offset(x: CGFloat(depth) * -4)
+                    .transition(.scale(scale: 0.6).combined(with: .opacity))
+            }
+        }
+        .frame(width: 30, height: 32)
+        .overlay(alignment: .topTrailing) {
+            if count > 0 {
+                Text(count, format: .number)
+                    .font(.caption2.weight(.bold).monospacedDigit())
+                    .foregroundStyle(.black.opacity(0.82))
+                    .padding(.horizontal, 4)
+                    .frame(minWidth: 17, minHeight: 17)
+                    .background(tint, in: Capsule())
+                    .overlay(Capsule().strokeBorder(.black.opacity(0.35), lineWidth: 1))
+                    .offset(x: 7, y: -6)
+                    .contentTransition(.numericText())
+            }
+        }
+        .accessibilityHidden(true)
+    }
+}
+
 struct TradeScannerReceipt: View {
     let entry: TradeEntry
     let undo: () -> Void
@@ -303,8 +573,21 @@ struct TradeScannerReceipt: View {
     private var priceText: String? { entry.unitPrice?.formatted(locale: locale) }
 
     var body: some View {
-        HStack(spacing: 8) {
-            ScannerStatusBadge(tone: .added, systemName: "checkmark")
+        HStack(spacing: 9) {
+            // The card itself leads, so the receipt is recognizable without
+            // reading; the green check still says it was added.
+            CardThumbnail(artwork: entry.artwork, width: 28)
+                .overlay(alignment: .bottomTrailing) {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 8, weight: .heavy))
+                        .foregroundStyle(.black.opacity(0.8))
+                        .frame(width: 16, height: 16)
+                        .background(.green, in: Circle())
+                        .overlay(Circle().strokeBorder(.black.opacity(0.45), lineWidth: 1.5))
+                        .offset(x: 5, y: 1)
+                }
+                .padding(.trailing, 2)
+                .accessibilityHidden(true)
             if dynamicTypeSize.isAccessibilitySize {
                 ScrollView(.horizontal) {
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -314,7 +597,7 @@ struct TradeScannerReceipt: View {
                         }
                         Text(entry.side.title)
                             .font(.caption2.weight(.semibold))
-                            .foregroundStyle(.mint)
+                            .foregroundStyle(entry.side.tint)
                         Text(entry.identityText)
                             .font(.caption2.monospacedDigit())
                             .foregroundStyle(.white.opacity(0.78))
@@ -324,22 +607,26 @@ struct TradeScannerReceipt: View {
                 .frame(height: 44)
             } else {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(entry.result.card.name)
-                        .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
+                    // The price shares the name's line so the identifier below
+                    // gets the full width and the finish is not cut off.
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text(entry.result.card.name)
+                            .font(.subheadline.weight(.semibold))
+                            .lineLimit(1)
+                        Spacer(minLength: 4)
+                        if let priceText {
+                            Text("+\(priceText)")
+                                .font(.subheadline.weight(.semibold).monospacedDigit())
+                        } else if entry.result.shouldAutoRefresh {
+                            ProgressView().controlSize(.small).tint(.white)
+                        }
+                    }
                     // The side leads so a long identifier truncates instead of
                     // hiding where the card went.
-                    Text("\(Text(entry.side.title).foregroundStyle(.mint)) · \(entry.identityText)")
+                    Text("\(Text(entry.side.title).foregroundStyle(entry.side.tint)) · \(entry.identityText)")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.white.opacity(0.78))
                         .lineLimit(1)
-                }
-                Spacer(minLength: 4)
-                if let priceText {
-                    Text(priceText)
-                        .font(.subheadline.weight(.semibold).monospacedDigit())
-                } else if entry.result.shouldAutoRefresh {
-                    ProgressView().controlSize(.small).tint(.white)
                 }
             }
             if dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 0) }
@@ -353,7 +640,7 @@ struct TradeScannerReceipt: View {
             .accessibilityLabel("Undo scan of \(entry.result.card.name)")
         }
         .foregroundStyle(.white)
-        .padding(.leading, 10)
+        .padding(.leading, 8)
         .padding(.trailing, 4)
         .padding(.vertical, dynamicTypeSize.isAccessibilitySize ? 0 : 2)
         .appGlass(cornerRadius: 18)

@@ -23,13 +23,17 @@ struct CameraPreview: UIViewRepresentable {
     /// Increments at OCR confirmation, before catalog resolution and persistence.
     /// This is the immediate "recognized" pulse, distinct from the green add pulse.
     var recognitionCount: Int
+    /// Colors the corner brackets (Trade Analyzer's active side). Nil keeps the
+    /// neutral white guide.
+    var guideTint: Color?
     var onGuideFramesChange: ((ScannerGuideFrames) -> Void)?
 
-    init(scanner: CardScanner, successCount: Int, recognitionCount: Int = 0,
+    init(scanner: CardScanner, successCount: Int, recognitionCount: Int = 0, guideTint: Color? = nil,
          onGuideFramesChange: ((ScannerGuideFrames) -> Void)? = nil) {
         self.scanner = scanner
         self.successCount = successCount
         self.recognitionCount = recognitionCount
+        self.guideTint = guideTint
         self.onGuideFramesChange = onGuideFramesChange
         _scannerState = ObservedObject(wrappedValue: scanner.uiState)
 #if DEBUG
@@ -50,6 +54,7 @@ struct CameraPreview: UIViewRepresentable {
         view.subjectMode = scannerState.subjectMode
         view.slabFraming = scannerState.slabFraming
         view.footerVisionRect = scannerState.footerRegionOfInterest
+        view.cornerTint = guideTint.map(UIColor.init)
         view.syncRecognitionCount(recognitionCount)
         view.syncSuccessCount(successCount)
 #if DEBUG
@@ -75,6 +80,7 @@ struct CameraPreview: UIViewRepresentable {
         if subjectModeChanged { uiView.subjectMode = scannerState.subjectMode }
         if slabFramingChanged { uiView.slabFraming = scannerState.slabFraming }
         if footerROIChanged { uiView.footerVisionRect = scannerState.footerRegionOfInterest }
+        uiView.cornerTint = guideTint.map(UIColor.init)
         uiView.syncRecognitionCount(recognitionCount)
         uiView.syncSuccessCount(successCount)
 #if DEBUG
@@ -120,6 +126,14 @@ final class PreviewView: UIView {
 #endif
 
     var slabFraming: GradedSlabEvidence?
+    /// A tinted guide says where the next card goes, so the hairline outline
+    /// is dropped and the brackets glow in that color instead.
+    var cornerTint: UIColor? {
+        didSet {
+            guard cornerTint != oldValue else { return }
+            applyCornerStyle()
+        }
+    }
     /// The band the scanner told us it is reading. Mirrored rather than derived
     /// so the read band and the debug boxes cannot drift from the real ROI.
     var footerVisionRect = CardFramingRegion.visionRect.union(
@@ -308,7 +322,7 @@ final class PreviewView: UIView {
         // The corners confirm the whole card was consumed, not just its footer.
         let corners = CABasicAnimation(keyPath: "strokeColor")
         corners.fromValue = UIColor.systemGreen.cgColor
-        corners.toValue = Self.cornerColor
+        corners.toValue = restingCornerColor
         corners.duration = 0.55
 
         scanRegionLayer.add(border, forKey: "successBorderFlash")
@@ -393,6 +407,22 @@ final class PreviewView: UIView {
     // MARK: - Guide styling
 
     private static let cornerColor = UIColor.white.withAlphaComponent(0.95).cgColor
+
+    private var restingCornerColor: CGColor { cornerTint?.cgColor ?? Self.cornerColor }
+
+    /// Stand-alone layers animate these changes implicitly, so switching sides
+    /// crossfades the brackets.
+    private func applyCornerStyle() {
+        cardCornerLayer.strokeColor = restingCornerColor
+        cardRegionLayer.isHidden = cornerTint != nil
+        if let cornerTint {
+            cardCornerLayer.shadowColor = cornerTint.cgColor
+            cardCornerLayer.shadowOpacity = 0.55
+            cardCornerLayer.shadowRadius = 6
+        } else {
+            Self.applyLegibilityShadow(to: cardCornerLayer)
+        }
+    }
     private static let bandBorderColor = UIColor.systemGreen.withAlphaComponent(0.92).cgColor
     private static let bandFillColor = UIColor.systemGreen.withAlphaComponent(0.1).cgColor
 

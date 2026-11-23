@@ -2353,6 +2353,40 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(try context().fetchCount(FetchDescriptor<PriceRecord>()), 0)
     }
 
+    /// The same printing and finish on opposite sides must not differ in value
+    /// only because each copy was priced at a different time.
+    func testTradeAppliesNewerQuoteToEarlierPricedIdenticalCopy() async throws {
+        let provider = ScannerGatedPriceCheckProvider()
+        let model = try makeModel(variants: [.normal], priceCheckProvider: provider)
+        model.setPurpose(.tradeAnalyzer)
+        let first = UUID()
+        confirm(model, scannerIdentifier(), encounterID: first)
+        await assertEventually { model.tradeDraft.latest?.id == first }
+        await provider.gate.waitUntilStarted()
+        await provider.gate.release()
+        await assertEventually { model.tradeDraft.entries.allSatisfy { !$0.result.shouldAutoRefresh } }
+        XCTAssertEqual(model.tradeDraft.total(on: .receive).total, Money(rounding: 999))
+
+        model.setTradeScanSide(.give)
+        let second = UUID()
+        confirm(model, scannerIdentifier(), encounterID: second)
+        await assertEventually {
+            model.tradeDraft.latest?.id == second && model.tradeDraft.entries.allSatisfy { !$0.result.shouldAutoRefresh }
+        }
+        XCTAssertEqual(provider.calls, 2, "The stale first quote must schedule the second copy's refresh")
+        let newer = try XCTUnwrap(Money(rounding: 4.43))
+        XCTAssertEqual(model.tradeDraft.entries.map(\.unitPrice), [newer, newer])
+        XCTAssertEqual(model.tradeDraft.entries.map(\.side), [.give, .receive])
+        XCTAssertEqual(TradeDraft.difference(give: model.tradeDraft.total(on: .give),
+                                             receive: model.tradeDraft.total(on: .receive)), .zero)
+
+        // A different card keeps its own quote.
+        let other = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: other)
+        await assertEventually { model.tradeDraft.entries.allSatisfy { !$0.result.shouldAutoRefresh } }
+        XCTAssertEqual(model.tradeDraft.entries.filter { $0.id != other }.map(\.unitPrice), [newer, newer])
+    }
+
     func testTradeCashBalancesBothDirectionsAndRetainsDraftAfterPurposeSwitch() async throws {
         let provider = ScannerGatedPriceCheckProvider()
         let model = try makeModel(variants: [.normal], priceCheckProvider: provider)

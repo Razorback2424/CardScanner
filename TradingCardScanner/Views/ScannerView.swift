@@ -119,6 +119,7 @@ struct ScannerView: View {
                 scanner: model.scanner,
                 successCount: model.successCount,
                 recognitionCount: model.recognitionCount,
+                guideTint: model.purpose == .tradeAnalyzer ? model.tradeDraft.scanSide.tint : nil,
                 onGuideFramesChange: { guideFrames = $0 }
             )
                 .ignoresSafeArea()

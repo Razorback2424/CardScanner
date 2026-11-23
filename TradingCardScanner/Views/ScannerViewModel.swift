@@ -593,6 +593,18 @@ struct PriceCheckResult: Identifiable {
         quoteState = issue.map { .lastKnown($0) } ?? successfulQuoteState
     }
 
+    /// Takes another result's evidence for the same exact instrument without
+    /// changing this result's identity or its pending-check state.
+    mutating func adoptEvidence(from other: PriceCheckResult) {
+        quote = other.quote
+        checkedAt = other.checkedAt
+        quoteState = other.quoteState
+        refreshFailed = other.refreshFailed
+        lastSuccessfulCheckAt = other.lastSuccessfulCheckAt
+        checkTimeIsRetrievalEvidence = other.checkTimeIsRetrievalEvidence
+        isRefreshing = false
+    }
+
     mutating func recordFailedCheck(at date: Date = .now) {
         if hasUsableAmount, !checkTimeIsRetrievalEvidence {
             lastSuccessfulCheckAt = lastSuccessfulCheckAt ?? checkedAt
@@ -6413,6 +6425,7 @@ final class ScannerViewModel: ObservableObject {
         var draft = tradeDraft
         draft.entries.insert(entry, at: 0)
         draft.latestScanID = entry.id
+        draft.alignQuotes(for: entry.refreshKey)
         tradeDraft = draft
         successCount += 1
         feedback.added()
@@ -6478,6 +6491,8 @@ final class ScannerViewModel: ObservableObject {
                     }
                     draft.entries[index].result = result
                 }
+                // A copy priced earlier takes this newer evidence too.
+                draft.alignQuotes(for: key)
                 self.tradeDraft = draft
             }
         }
@@ -6620,7 +6635,8 @@ final class ScannerViewModel: ObservableObject {
         guard scan.request.subject.slab == nil, let variant = scan.resolved.variant,
               let projection = collectionProjection?.snapshot else { return nil }
         let slot = CatalogFinishOwnership(
-            rows: projection.ownership.priceRows(game: scan.card.game, providerID: scan.card.providerID),
+            rows: projection.ownership.priceRows(game: scan.card.game, providerID: scan.card.providerID,
+                pokemonPrintRun: scan.pokemonPrintRun),
             variant: variant, treatments: key.treatmentIDs,
             qualifiers: scan.card.magicTreatmentQualifiers(for: variant), name: scan.card.name, projection: projection)
         guard !slot.hasConflict, !slot.price.entriesDisagree, !slot.targets.isEmpty,

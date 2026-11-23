@@ -154,6 +154,9 @@ struct ContentView: View {
                 .tag(Tab.browse)
 
             ScannerView(browseCatalog: browseCatalog)
+                // The scanner is always a camera screen; a light tab bar
+                // would be the brightest thing on it.
+                .toolbarColorScheme(.dark, for: .tabBar)
                 .tabItem {
                     Label("Scan", systemImage: "viewfinder")
                 }
