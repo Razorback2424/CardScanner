@@ -1087,6 +1087,9 @@ final class BrowseFeatureTests: XCTestCase {
                 XCTAssertEqual(hints?.value[summary.id]?.price, expected)
                 XCTAssertEqual(hints?.value[summary.id]?.checkedAt, checkedAt)
             }
+            let detail = try await catalog.price(for: summary, variant: .holo)
+            XCTAssertEqual(detail.usablePrice?.unitMarketPriceUSD, sourceAge == 0 ? 42 : 99)
+            XCTAssertEqual(detail.usablePrice?.source, sourceAge == 0 ? .tcgplayer : .tcgCSV)
         }
     }
 
@@ -1116,6 +1119,104 @@ final class BrowseFeatureTests: XCTestCase {
             XCTAssertEqual(flags, forceFirst ? [true] : [false, true])
             XCTAssertEqual(firstResult.card.name, forceFirst ? "Forced" : "Ordinary")
             XCTAssertEqual(secondResult.card.name, "Forced")
+        }
+    }
+
+    @MainActor
+    func testScannerQuoteOverlaysOlderHintAndKeepsNewerHintAndOwnedValue() async throws {
+        for (hintOffset, expected) in [(nil, 42.0), (-60.0, 42.0), (30.0, 73.0)] as [(TimeInterval?, Double)] {
+            let root = try makeTemporaryCacheDirectory()
+            defer { try? FileManager.default.removeItem(at: root) }
+            let fixture = try priceConsistencyFixture()
+            let container = try ModelContainer(for: ReferenceQuote.self, PriceRecord.self, ProductIdentity.self,
+                configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+            let cache = CatalogCacheStore(root: root.appendingPathComponent("pages"))
+            let transport = PriceConsistencyTransport(set: fixture.set, card: fixture.card)
+            let catalog = BrowseCatalog(cache: cache, pokemonTransport: transport,
+                checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil))
+            let store = await ReferenceQuoteStore.makeBackground(modelContainer: container)
+            let gate = AsyncStream<ReferenceQuoteStore>.makeStream()
+            await catalog.setQuoteStoreProvider { _ in
+                var iterator = gate.stream.makeAsyncIterator()
+                return await iterator.next()
+            }
+            let receipt = Date.now.addingTimeInterval(-120)
+            let card = IdentifiedCard.pokemon(fixture.card, setCode: fixture.summary.setCode)
+            let identifier = ScanIdentifier.pokemon(setCode: "FIX", cardNumber: "001", printedTotal: 1,
+                setDefinition: PokemonSetDefinition(printedCode: "FIX", tcgdexSetID: "fixture", officialCount: 1, releaseIndex: 1))
+            let scan = ResolvedScan(request: .init(subject: .init(identifier: identifier), purpose: .priceCheck, generation: 0),
+                card: card, resolved: .init(variant: .normal, resolution: .userConfirmed),
+                pokemonPrintRun: nil, options: [.normal], catalogRetrievedAt: receipt)
+            let coordinator = PriceCheckCoordinator(context: container.mainContext)
+            let checked = coordinator.present(scan)
+            XCTAssertEqual(checked.display.amount, 42)
+            await coordinator.flushReferenceWrites()
+            if let hintOffset {
+                await cache.storeSortPrices([fixture.summary.id: .init(price: 73, checkedAt: receipt.addingTimeInterval(hintOffset))],
+                    for: fixture.summary.setID.id)
+            }
+            let firstEmit = expectation(description: "Disk hints emit before the shared store is ready")
+            let updates = Task {
+                var values: [CatalogPriceUpdate] = []
+                for await update in catalog.sortPriceUpdates(for: [fixture.summary]) {
+                    if values.isEmpty { firstEmit.fulfill() }
+                    values.append(update)
+                }
+                return values
+            }
+            await fulfillment(of: [firstEmit], timeout: 2)
+            gate.continuation.yield(store)
+            gate.continuation.finish()
+            let values = await updates.value
+            XCTAssertEqual(values.first?.prices[fixture.summary.id], hintOffset == nil ? nil : 73)
+            if hintOffset != 30 { XCTAssertEqual(values.dropFirst().first?.prices[fixture.summary.id], 42) }
+            let latest = values.last
+            XCTAssertEqual(latest?.prices[fixture.summary.id], expected)
+            XCTAssertTrue(latest?.resolvedIDs.contains(fixture.summary.id) == true)
+            let calls = await transport.flags
+            XCTAssertTrue(calls.isEmpty, "A current local quote resolves the slot before provider work")
+            let detail = await catalog.referenceQuotes(for: fixture.summary, variants: [.normal])
+            XCTAssertEqual(detail[PhysicalVariant.normal.id]?.unitMarketPriceUSD, 42)
+
+            let owned = CollectedCard(card: card, resolved: scan.resolved)
+            let ownership = CatalogOwnershipIndex(rows: [
+                CatalogOwnershipCardSnapshot(owned, selectedPriceKey: owned.priceKey,
+                    selectedPrice: PriceDisplay(amount: 6, source: .tcgplayer, fetchedAt: receipt))
+            ])
+            XCTAssertEqual(OwnedCatalogPrice.displayPrices(for: [fixture.summary], catalogPrices: latest?.prices ?? [:],
+                ownership: ownership)[fixture.summary.id], 6)
+        }
+    }
+
+    func testDefinitiveNoQuoteClearsSharedEvidenceUnlessItIsNewerAndCurrent() async throws {
+        for (receiptOffset, sourceAge, expected) in [(-60.0, 120.0, nil), (60, 120, 42.0), (60, 172_800, nil)] as [(Double, Double, Double?)] {
+            let root = try makeTemporaryCacheDirectory()
+            defer { try? FileManager.default.removeItem(at: root) }
+            let fixture = try priceConsistencyFixture(setID: "30th")
+            var summary = fixture.summary
+            summary.masterSetVariant = .holo
+            let date = Date.now
+            let mirror = SavedSortTCGCSVSource(snapshot: .init(schemaVersion: 1, setID: "30th", feedBuild: "gap",
+                fetchedAt: date, validatedAt: date, valuesByCardID: [:]))
+            let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+                pokemonTransport: PriceConsistencyTransport(set: fixture.set, card: fixture.card), tcgCSVSource: mirror,
+                checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil),
+                now: { date })
+            let container = try ModelContainer(for: ReferenceQuote.self,
+                configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+            let store = await ReferenceQuoteStore.makeBackground(modelContainer: container)
+            let key = CatalogQuoteKey.make(for: summary, variant: .holo)
+            let quote = NormalizedPrice(unitMarketPriceUSD: 42, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "holofoil", sourceUpdatedAt: date.addingTimeInterval(-sourceAge),
+                fetchedAt: date.addingTimeInterval(receiptOffset))
+            await store.store([key: quote], successfulCheckAt: date)
+            await catalog.setQuoteStoreProvider { _ in store }
+            await catalog.resetPriceResolution(for: [summary.id])
+            var updates: [CatalogPriceUpdate] = []
+            for await update in catalog.sortPriceUpdates(for: [summary]) { updates.append(update) }
+            XCTAssertTrue(updates.contains { $0.prices[summary.id] == 42 })
+            XCTAssertEqual(updates.last?.prices[summary.id], expected)
+            XCTAssertTrue(updates.last?.resolvedIDs.contains(summary.id) == true)
         }
     }
 

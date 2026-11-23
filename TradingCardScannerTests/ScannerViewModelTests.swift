@@ -244,9 +244,11 @@ private actor ScannerGradedResolverGate {
 @MainActor
 private final class ScannerStubPriceCheckProvider: PriceCheckRefreshProvider {
     let outcome: PriceCheckRefreshOutcome
+    let origin: PriceCheckProviderResult.Origin
 
-    init(outcome: PriceCheckRefreshOutcome) {
+    init(outcome: PriceCheckRefreshOutcome, origin: PriceCheckProviderResult.Origin = .primary) {
         self.outcome = outcome
+        self.origin = origin
     }
 
     func refresh(
@@ -255,6 +257,11 @@ private final class ScannerStubPriceCheckProvider: PriceCheckRefreshProvider {
         pokemonPrintRun: PokemonPrintRun?
     ) async -> PriceCheckRefreshOutcome {
         outcome
+    }
+
+    func refreshWithOrigin(card: IdentifiedCard, variant: PhysicalVariant?,
+                           pokemonPrintRun: PokemonPrintRun?) async -> PriceCheckProviderResult {
+        .init(outcome: outcome, origin: origin)
     }
 }
 
@@ -2230,6 +2237,86 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertFalse(cached.contains { $0.effectiveAmount == 999 }, "Dismissed requests must not write late cache results")
     }
 
+    func testPriceCheckReconcilesAnOwnedRawCardAndSkipsConflictingOwnership() async throws {
+        for hasConflict in [false, true] {
+            let date = Date.now
+            let oldDate = date.addingTimeInterval(-2 * 86_400)
+            let fresh = NormalizedPrice(unitMarketPriceUSD: 78, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "normal", sourceUpdatedAt: date, fetchedAt: date)
+            let projection = CollectionProjectionStore()
+            let generation = CollectionStorageGeneration()
+            generation.installReady(storeID: UUID())
+            let model = try makeModel(variants: [.normal], priceCheckOutcome: .quote(.price(fresh)),
+                storageGeneration: generation, collectionProjection: projection)
+            defer { model.viewDisappeared() }
+            let context = context()
+            let card = IdentifiedCard.pokemon(catalogCard(variants: [.normal], localID: "001"), setCode: "TST")
+            let owner = CollectedCard(card: card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+            context.insert(owner)
+            if hasConflict {
+                let conflict = CollectedCard(card: card, resolved: .init(variant: .reverse, resolution: .userConfirmed))
+                conflict.collectionKey = owner.collectionKey
+                context.insert(conflict)
+            }
+            let prices = PriceStore(context: context)
+            XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: 6, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "normal", sourceUpdatedAt: oldDate, fetchedAt: oldDate)),
+                game: .pokemon, printingID: card.providerID, variantID: PhysicalVariant.normal.id, at: oldDate))
+            XCTAssertTrue(prices.save())
+            await projection.rebuild(container: context.container)
+            model.setPurpose(.priceCheck)
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await assertEventually { model.priceCheckResult?.lastSuccessfulCheckAt != nil && model.priceCheckResult?.isRefreshing == false }
+            let stored = PriceStore(context: ModelContext(context.container)).record(forKey: owner.priceKey)
+            XCTAssertEqual(stored?.display.amount, hasConflict ? 6 : 78)
+            if !hasConflict {
+                XCTAssertEqual(projection.snapshot?.rowsByCollectionKey[owner.collectionKey]?.price.amount, 78)
+                XCTAssertEqual(model.priceCheckResult?.display.amount, 78)
+                XCTAssertEqual(model.priceCheckResult?.display.effectiveAsOf, date)
+            }
+        }
+    }
+
+    func testPriceCheckJustTCGFallbackLeavesSavedAndUnpricedOwnersAlone() async throws {
+        for savedAmount in [6.0, nil] as [Double?] {
+            let now = Date.now
+            let priorDate = now.addingTimeInterval(-2 * 86_400)
+            let fallback = NormalizedPrice(unitMarketPriceUSD: 78, currencyCode: "USD", source: .justTCG,
+                sourceVariantID: "exact-normal", sourceUpdatedAt: now, fetchedAt: now)
+            let projection = CollectionProjectionStore()
+            let generation = CollectionStorageGeneration()
+            generation.installReady(storeID: UUID())
+            let provider = ScannerStubPriceCheckProvider(outcome: .quote(.price(fallback)), origin: .fallback)
+            let model = try makeModel(variants: [.normal], priceCheckProvider: provider,
+                storageGeneration: generation, collectionProjection: projection)
+            defer { model.viewDisappeared() }
+            let context = context()
+            let card = IdentifiedCard.pokemon(catalogCard(variants: [.normal], localID: "001"), setCode: "TST")
+            let owner = CollectedCard(card: card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+            context.insert(owner)
+            if let savedAmount {
+                let prices = PriceStore(context: context)
+                XCTAssertTrue(prices.store(.price(.init(unitMarketPriceUSD: savedAmount, currencyCode: "USD", source: .tcgplayer,
+                    sourceVariantID: "normal", sourceUpdatedAt: priorDate, fetchedAt: priorDate)),
+                    game: .pokemon, printingID: card.providerID, variantID: PhysicalVariant.normal.id, at: priorDate))
+                XCTAssertTrue(prices.save())
+            }
+            try context.save()
+            await projection.rebuild(container: context.container)
+            model.setPurpose(.priceCheck)
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await assertEventually { model.priceCheckResult?.lastSuccessfulCheckAt != nil && model.priceCheckResult?.isRefreshing == false }
+
+            let stored = PriceStore(context: ModelContext(context.container)).record(forKey: owner.priceKey)
+            XCTAssertEqual(stored?.display.amount, savedAmount)
+            XCTAssertEqual(stored?.lastCheckedAt, savedAmount.map { _ in priorDate })
+            XCTAssertEqual(projection.snapshot?.rowsByCollectionKey[owner.collectionKey]?.price.amount, savedAmount)
+            // A saved value stays consistent with Collection; an unpriced owner
+            // still sees the fallback quote without it becoming the saved value.
+            XCTAssertEqual(model.priceCheckResult?.display.amount, savedAmount ?? 78)
+        }
+    }
+
     func testTradeCapturesScanSideAndKeepsScanningWhileIdenticalQuotesShareARefresh() async throws {
         let provider = ScannerGatedPriceCheckProvider()
         let model = try makeModel(variants: [.normal], priceCheckProvider: provider)
@@ -2304,6 +2391,14 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.tradeDraft.count(on: .give), 0)
         model.restoreTradeEntry()
         XCTAssertEqual(model.tradeDraft.count(on: .give), 1)
+
+        // Closing review or dismissing the banner ends that undo.
+        model.removeTradeEntry(giveID)
+        XCTAssertNotNil(model.tradeDraft.removedName)
+        model.forgetTradeRemoval()
+        XCTAssertNil(model.tradeDraft.removedName)
+        model.restoreTradeEntry()
+        XCTAssertEqual(model.tradeDraft.count(on: .give), 0)
     }
 
     func testTradeReviewWaitsForIdentificationAndKeepsFractionalCentPrices() async throws {
@@ -5329,6 +5424,7 @@ final class ScannerViewModelTests: XCTestCase {
         priceCheckOutcome: PriceCheckRefreshOutcome? = nil,
         priceCheckProvider: (any PriceCheckRefreshProvider)? = nil,
         storageGeneration: CollectionStorageGeneration? = nil,
+        collectionProjection: CollectionProjectionStore? = nil,
         collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)? = nil,
         certificationRefinementOverride: (@MainActor (RecentScan, GradedSlabEvidence) async throws -> CollectionMutation?)? = nil,
         sourceFailure: ScannerStubPokemonSource.Failure? = nil,
@@ -5422,7 +5518,8 @@ final class ScannerViewModelTests: XCTestCase {
             startCamera: false,
             shouldRefreshMagicDirectory: false,
             writeCoordinator: writeCoordinator,
-            storageGeneration: storageGeneration
+            storageGeneration: storageGeneration,
+            collectionProjection: collectionProjection
         )
         return model
     }

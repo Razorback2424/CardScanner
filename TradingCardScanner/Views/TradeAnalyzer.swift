@@ -5,6 +5,8 @@ enum TradeSide: CaseIterable, Hashable, Sendable {
     case receive
 
     var title: String { self == .give ? "You give" : "You receive" }
+    /// For the one-line scanner controls at large text sizes.
+    var shortTitle: String { self == .give ? "Give" : "Receive" }
     var opposite: Self { self == .give ? .receive : .give }
     var cashTitle: String { self == .give ? "Cash you give" : "Cash you receive" }
 }
@@ -56,8 +58,8 @@ struct TradeEntry: Identifiable {
         case .providerUnavailable: return "Couldn’t reach the price provider."
         case .fallbackDisabled: return "Backup prices are off in Settings → Pricing."
         case .fallbackUnconfigured: return "Set up JustTCG in Settings → Pricing."
-        case let .rateLimited(retryAt): return "Too many checks. Try again \(retryAt.formatted())."
-        case let .budgetLimited(resetAt): return "Price checks used up. Resets \(resetAt.formatted())."
+        case let .rateLimited(retryAt): return "Too many checks. Try again at \(Self.timeText(retryAt))."
+        case let .budgetLimited(resetAt): return "Price checks used up. Resets \(Self.timeText(resetAt))."
         case .unsupportedGame: return "Prices are unavailable for this game."
         case .unsupportedFinish, .unsupportedTreatment, .gradedFinishUnresolved, .gradedIdentityUnresolved:
             return "The provider can’t identify this version for pricing."
@@ -68,6 +70,11 @@ struct TradeEntry: Identifiable {
             return "No market price found for this version."
         case .checking, .current, .stale, .lastKnown: return nil
         }
+    }
+
+    /// Today's limits read as a time; only a later reset needs its date.
+    private static func timeText(_ date: Date) -> String {
+        date.formatted(date: Calendar.current.isDateInToday(date) ? .omitted : .abbreviated, time: .shortened)
     }
 
     var canRetryPrice: Bool {
@@ -166,6 +173,8 @@ struct TradeDraft {
         entries.insert(removed.entry, at: min(removed.index, entries.count))
         self.removed = nil
     }
+
+    mutating func forgetRemoval() { removed = nil }
 }
 
 
@@ -187,12 +196,17 @@ struct TradeScannerControls: View {
                 side(.receive)
                 review(compact: true)
             }
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    side(.give)
-                    side(.receive)
-                }
-                review()
+            // Large text: one line per control keeps both sides and Review in
+            // the short band above the guide instead of a hidden scroll.
+            HStack(spacing: 6) {
+                side(.give, compact: true)
+                side(.receive, compact: true)
+                review(compact: true)
+            }
+            HStack(spacing: 6) {
+                side(.give, compact: true, showsCount: false)
+                side(.receive, compact: true, showsCount: false)
+                review(compact: true)
             }
             VStack(alignment: .leading, spacing: 4) {
                 side(.give)
@@ -200,6 +214,9 @@ struct TradeScannerControls: View {
                 review()
             }
         }
+        // The band above the guide holds one 44-pt row; beyond this size the
+        // one-line controls would be cut off. VoiceOver labels stay complete.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -212,18 +229,30 @@ struct TradeScannerControls: View {
         return "\(cards) · \(total.total.formatted(locale: locale))"
     }
 
-    private func side(_ side: TradeSide) -> some View {
+    private func side(_ side: TradeSide, compact: Bool = false, showsCount: Bool = true) -> some View {
         let selected = model.tradeDraft.scanSide == side
         let detail = detail(side)
         return Button {
             model.setTradeScanSide(side)
         } label: {
             HStack(spacing: 5) {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(side.title).font(.footnote.weight(.semibold))
-                    Text(detail)
-                        .font((dynamicTypeSize.isAccessibilitySize ? Font.caption2 : .caption).monospacedDigit())
-                        .foregroundStyle(.white.opacity(0.82))
+                if compact {
+                    HStack(spacing: 4) {
+                        Text(side.shortTitle).font(.footnote.weight(.semibold))
+                        if showsCount {
+                            Text(model.tradeDraft.count(on: side), format: .number)
+                                .font(.footnote.monospacedDigit())
+                                .foregroundStyle(.white.opacity(0.82))
+                        }
+                    }
+                    .lineLimit(1)
+                } else {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(side.title).font(.footnote.weight(.semibold))
+                        Text(detail)
+                            .font((dynamicTypeSize.isAccessibilitySize ? Font.caption2 : .caption).monospacedDigit())
+                            .foregroundStyle(.white.opacity(0.82))
+                    }
                 }
                 if selected {
                     Image(systemName: "checkmark")
@@ -369,7 +398,7 @@ struct TradeReviewSheet: View {
             .scrollDismissesKeyboard(.interactively)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if let removed = draft.removedName, focusedCash == nil {
-                    RemovalUndoBanner(name: removed, onUndo: model.restoreTradeEntry)
+                    RemovalUndoBanner(name: removed, onUndo: model.restoreTradeEntry, onDismiss: model.forgetTradeRemoval)
                 }
             }
             .contentWidthLimit(.standard)
@@ -411,6 +440,8 @@ struct TradeReviewSheet: View {
         }
         .interactiveDismissDisabled(!invalidCash.isEmpty)
         .onAppear(perform: reloadCashInputs)
+        // Undo belongs to this review visit; a later one starts clean.
+        .onDisappear(perform: model.forgetTradeRemoval)
     }
 
     // MARK: Summary
@@ -477,8 +508,11 @@ struct TradeReviewSheet: View {
         let unavailable = give.unavailable + receive.unavailable
         if unavailable > 0 {
             note(
-                unavailable == 1 ? "1 card has no price. Retry or remove it." : "\(unavailable) cards have no price. Retry or remove them.",
-                systemImage: "exclamationmark.circle"
+                unavailable == 1
+                    ? "1 card has no price. Tap it below to retry or remove it."
+                    : "\(unavailable) cards have no price. Tap each below to retry or remove it.",
+                systemImage: "exclamationmark.circle.fill",
+                iconStyle: .orange
             )
         }
         if give.hasLastKnown || receive.hasLastKnown {
@@ -486,9 +520,11 @@ struct TradeReviewSheet: View {
         }
     }
 
-    private func note(_ text: LocalizedStringResource, systemImage: String) -> some View {
+    private func note(_ text: LocalizedStringResource, systemImage: String, iconStyle: Color? = nil) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 5) {
-            Image(systemName: systemImage).accessibilityHidden(true)
+            Image(systemName: systemImage)
+                .foregroundStyle(iconStyle.map(AnyShapeStyle.init) ?? AnyShapeStyle(.secondary))
+                .accessibilityHidden(true)
             Text(text).fixedSize(horizontal: false, vertical: true)
         }
         .font(.footnote)
@@ -526,7 +562,11 @@ struct TradeReviewSheet: View {
             }
             cashRow(side)
         } header: {
-            Text(total.count == 1 ? "\(side.title) · 1 card" : "\(side.title) · \(total.count) cards")
+            switch total.count {
+            case 0: Text(side.title)
+            case 1: Text("\(side.title) · 1 card")
+            default: Text("\(side.title) · \(total.count) cards")
+            }
         }
     }
 
@@ -666,8 +706,18 @@ struct TradeReviewSheet: View {
                 } else {
                     Text("Updating").font(.caption).foregroundStyle(.secondary)
                 }
-            } else if unitPrice == nil || entry.isLastKnown {
-                Text(unitPrice == nil ? "No price" : "Last known")
+            } else if unitPrice == nil {
+                // Matches the summary's note so the row holding up the
+                // comparison is easy to find.
+                HStack(spacing: 3) {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .foregroundStyle(.orange)
+                        .accessibilityHidden(true)
+                    Text("No price").foregroundStyle(.secondary)
+                }
+                .font(.caption.weight(.semibold))
+            } else if entry.isLastKnown {
+                Text("Last known")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

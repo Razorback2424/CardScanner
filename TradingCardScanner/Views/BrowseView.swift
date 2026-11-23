@@ -856,7 +856,7 @@ struct BrowseView: View {
             let ranked = candidates.compactMap { card -> (Double, String?, String?)? in
                 let quote = CatalogBrowsePresentation.effectiveQuote(card, quoted: rootQuotes[card.id], ownership: ownership)
                 guard let amount = quote.amount else { return nil }
-                let label = [card.masterSetVariant?.label, quote.status.label].compactMap { $0 }.joined(separator: " · ")
+                let label = [card.masterSetVariant?.label, quote.freshnessLabel].compactMap { $0 }.joined(separator: " · ")
                 return (amount, label.isEmpty ? nil : label, card.masterSetVariant?.id)
             }.max { $0.0 < $1.0 }
             return ranked ?? (nil, nil, nil)
@@ -3879,7 +3879,7 @@ private struct CatalogCardDisplayGroupTile: View {
         guard let amount = quote.amount else { return quote.status.label }
         let price = amount.formatted(.currency(code: "USD"))
         let finish = browseRow?.representative?.masterSetVariant?.label
-        let freshness = quote.status.label
+        let freshness = quote.freshnessLabel
         return [price, finish, freshness].compactMap { $0 }.joined(separator: " · ")
     }
 

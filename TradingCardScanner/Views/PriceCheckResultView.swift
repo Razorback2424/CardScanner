@@ -178,13 +178,17 @@ struct PriceCheckResultView: View {
                         Text("Last checked \(successfulCheck.formatted(date: .abbreviated, time: .standard))")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                    } else if result.checkTimeIsRetrievalEvidence, let retrieved = display.fetchedAt {
+                    } else if result.checkTimeIsRetrievalEvidence, display.source != .tcgCSV, let retrieved = display.fetchedAt {
                         Text("Quote received \(retrieved.formatted(date: .abbreviated, time: .standard))")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                     if result.refreshFeedback == .failed {
                         Text("Last attempt failed \(result.checkedAt.formatted(date: .abbreviated, time: .standard))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else if let reason = result.ownedPriceRetentionReason {
+                        Text(reason.caption)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else if result.refreshFeedback == .noNewerData {
@@ -402,6 +406,9 @@ struct PriceCheckResultView: View {
             prefix = "Last known "
         } else {
             prefix = ""
+        }
+        if display.source == .tcgCSV, let caption = display.detailAttribution.first {
+            return "\(prefix)\(caption)"
         }
         if let asOf = display.sourceUpdatedAt {
             return "\(prefix)\(source) · Price data as of \(asOf.formatted(date: .abbreviated, time: .shortened))"

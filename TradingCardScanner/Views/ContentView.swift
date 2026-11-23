@@ -245,6 +245,11 @@ struct ContentView: View {
         }
 #endif
         .task {
+            await browseCatalog.setQuoteStoreProvider(generation: {
+                await CollectionStorageGeneration.shared.currentToken()
+            }) { token in
+                await ReferenceQuoteStore.forActiveSession(expectedToken: token)
+            }
 #if DEBUG || CARD_FINISH_PERF_HARNESS
             await seedDebugRouteFixtures()
 #endif

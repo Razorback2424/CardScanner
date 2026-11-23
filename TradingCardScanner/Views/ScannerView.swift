@@ -10,6 +10,7 @@ struct ScannerView: View {
     @EnvironmentObject private var model: ScannerViewModel
     @EnvironmentObject private var summaryStore: ScanSessionSummaryStore
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
+    @EnvironmentObject private var collectionProjection: CollectionProjectionStore
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @ObservedObject private var storageGeneration = CollectionStorageGeneration.shared
@@ -296,7 +297,8 @@ struct ScannerView: View {
                 shouldRefreshMagicDirectory: usesCamera,
                 summaryStore: summaryStore,
                 writeCoordinator: writeCoordinator,
-                storageGeneration: storageGeneration
+                storageGeneration: storageGeneration,
+                collectionProjection: collectionProjection
             )
 #if DEBUG && LOCAL_ONLY_SIGNING
             if LorcanaReviewLaunch.isEnabled(), !injectedLorcanaSample {

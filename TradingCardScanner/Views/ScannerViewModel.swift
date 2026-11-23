@@ -563,6 +563,7 @@ struct PriceCheckResult: Identifiable {
     var refreshFailed = false
     var isRefreshing = false
     var refreshFeedback: PriceCheckRefreshFeedback?
+    var ownedPriceRetentionReason: OwnedPriceRetentionReason?
     var lastSuccessfulCheckAt: Date?
     /// Legacy/replayed evidence has a known retrieval time, not a known successful check.
     var checkTimeIsRetrievalEvidence = false
@@ -1679,6 +1680,7 @@ final class ScannerViewModel: ObservableObject {
     var collectionContainsOverrideForTesting: (@Sendable (CollectionCommitCandidate) async throws -> Bool)?
     private let certificationRefinementOverride: (@MainActor (RecentScan, GradedSlabEvidence) async throws -> CollectionMutation?)?
     private var modelContainer: ModelContainer?
+    private weak var collectionProjection: CollectionProjectionStore?
     private var priceCheckCoordinator: PriceCheckCoordinator?
     private var tradeQuoteTask: Task<Void, Never>?
     private let priceCheckRefreshProvider: (any PriceCheckRefreshProvider)?
@@ -1845,6 +1847,7 @@ final class ScannerViewModel: ObservableObject {
         let summaryStore: ScanSessionSummaryStore?
         let writeCoordinator: DerivedStateWriteCoordinator?
         let storageGeneration: CollectionStorageGeneration?
+        let collectionProjection: CollectionProjectionStore?
     }
     private var pendingSessionStart: PendingSessionStart?
     private var startsCameraForSession = false
@@ -2231,7 +2234,8 @@ final class ScannerViewModel: ObservableObject {
         shouldRefreshMagicDirectory: Bool = true,
         summaryStore: ScanSessionSummaryStore? = nil,
         writeCoordinator: DerivedStateWriteCoordinator? = nil,
-        storageGeneration: CollectionStorageGeneration? = nil
+        storageGeneration: CollectionStorageGeneration? = nil,
+        collectionProjection: CollectionProjectionStore? = nil
     ) {
         startsCameraForSession = startCamera
         self.summaryStore = summaryStore
@@ -2247,7 +2251,8 @@ final class ScannerViewModel: ObservableObject {
                 shouldRefreshMagicDirectory: shouldRefreshMagicDirectory,
                 summaryStore: summaryStore,
                 writeCoordinator: writeCoordinator ?? self.writeCoordinator,
-                storageGeneration: storageGeneration
+                storageGeneration: storageGeneration,
+                collectionProjection: collectionProjection
             )
             recognitionEligibility.isScannerVisible = true
             recognitionEligibility.isSceneActive = isSceneActive
@@ -2256,6 +2261,7 @@ final class ScannerViewModel: ObservableObject {
             return
         }
         self.storageGeneration = storageGeneration
+        self.collectionProjection = collectionProjection
         storageGenerationToken = storageGeneration?.currentToken()
         let beginsNewSession = !isScannerSessionActive
         CollectionStore.configureGames(gameRegistry, for: context.container)
@@ -2297,7 +2303,8 @@ final class ScannerViewModel: ObservableObject {
             context: ModelContext(context.container),
             refreshProvider: priceCheckRefreshProvider,
             quoteService: priceQuoteService,
-            gradedResolver: gradedResolver
+            gradedResolver: gradedResolver,
+            storageIsCurrent: writerContinuation
         )
         drainTradeQuotes()
         feedback.prepare()
@@ -2403,7 +2410,8 @@ final class ScannerViewModel: ObservableObject {
                 shouldRefreshMagicDirectory: pendingStart.shouldRefreshMagicDirectory,
                 summaryStore: pendingStart.summaryStore,
                 writeCoordinator: pendingStart.writeCoordinator,
-                storageGeneration: pendingStart.storageGeneration
+                storageGeneration: pendingStart.storageGeneration,
+                collectionProjection: pendingStart.collectionProjection
             )
         }
     }
@@ -2802,6 +2810,11 @@ final class ScannerViewModel: ObservableObject {
     func restoreTradeEntry() {
         tradeDraft.restore()
         drainTradeQuotes()
+    }
+
+    func forgetTradeRemoval() {
+        guard tradeDraft.removedName != nil else { return }
+        tradeDraft.forgetRemoval()
     }
 
     func setTradeCash(_ amount: Money, on side: TradeSide) {
@@ -6488,7 +6501,8 @@ final class ScannerViewModel: ObservableObject {
         recognitionEligibility.isBlockedByPresentation = true
         scanner.pauseRecognition()
         scanner.turnOffScanLight()
-        let result = priceCheckCoordinator.present(resolvedScan)
+        let key = priceCheckCoordinator.quoteKey(for: resolvedScan)
+        let result = priceCheckCoordinator.present(resolvedScan, usesOwnedPrice: ownedPriceSlot(for: resolvedScan, key: key) != nil)
         presentedPriceCheckSubject = resolvedScan.request.subject
         priceCheckResult = result
         PerformanceSignpost.emitEvent("successUIPublication", "price-check \(resolvedScan.request.encounterID.uuidString)")
@@ -6507,6 +6521,7 @@ final class ScannerViewModel: ObservableObject {
         result.quoteState = .checking
         result.refreshFailed = false
         result.refreshFeedback = nil
+        result.ownedPriceRetentionReason = nil
         priceCheckResult = result
         let resultID = result.id
         let refreshID = UUID()
@@ -6532,22 +6547,39 @@ final class ScannerViewModel: ObservableObject {
                 return
             }
             let shouldContinue = self.storageGenerationContinuation
+            var primaryQuote: PriceLookup?
+            var successfulCheckAt: Date?
             let outcome = await priceCheckCoordinator.refresh(
                 result,
-                shouldContinue: shouldContinue
+                shouldContinue: shouldContinue,
+                capturePrimaryQuote: { primaryQuote = $0 },
+                captureSuccessfulCheckAt: { successfulCheckAt = $0 }
             )
             switch outcome {
             case let .quote(refreshed), let .lastKnown(refreshed, _):
                 guard !Task.isCancelled,
                       self.isStorageGenerationCurrent,
                       self.activeQuoteRefreshID == refreshID,
-                      var latest = self.priceCheckResult,
-                      latest.id == resultID else { return }
+                      self.priceCheckResult?.id == resultID else { return }
+                let key = priceCheckCoordinator.quoteKey(for: result.resolvedScan)
+                let reason: OwnedPriceRetentionReason?
+                if let primaryQuote {
+                    reason = await self.reconcilePriceCheckOwnership(primaryQuote, scan: result.resolvedScan,
+                        key: key, resultID: resultID, refreshID: refreshID)
+                } else { reason = nil }
+                guard !Task.isCancelled, self.isStorageGenerationCurrent,
+                      self.activeQuoteRefreshID == refreshID,
+                      var latest = self.priceCheckResult, latest.id == resultID else { return }
+                // A saved owned value is what Collection shows; an unpriced owner
+                // keeps the checked quote, including an unsaved fallback.
+                let saved = self.ownedPriceSlot(for: latest.resolvedScan, key: key) == nil
+                    ? nil : priceCheckCoordinator.savedOwnedQuote(for: key).usablePrice
+                let displayed = saved.map(PriceLookup.price) ?? refreshed
                 // A primary request can succeed while its optional fallback fails.
                 let issue: PriceCheckRefreshIssue?
                 if case let .lastKnown(_, failure) = outcome { issue = failure } else { issue = nil }
-                latest.completeRefresh(refreshed, issue: issue,
-                    at: priceCheckCoordinator.lastSuccessfulCheckAt(for: latest) ?? .now)
+                latest.completeRefresh(displayed, issue: issue, at: successfulCheckAt ?? .now)
+                latest.ownedPriceRetentionReason = reason
                 self.priceCheckResult = latest
             case let .failed(issue):
                 guard !Task.isCancelled,
@@ -6582,6 +6614,52 @@ final class ScannerViewModel: ObservableObject {
                 self.priceCheckResult = latest
             }
         }
+    }
+
+    private func ownedPriceSlot(for scan: ResolvedScan, key: CatalogQuoteKey) -> CatalogFinishOwnership? {
+        guard scan.request.subject.slab == nil, let variant = scan.resolved.variant,
+              let projection = collectionProjection?.snapshot else { return nil }
+        let slot = CatalogFinishOwnership(
+            rows: projection.ownership.priceRows(game: scan.card.game, providerID: scan.card.providerID),
+            variant: variant, treatments: key.treatmentIDs,
+            qualifiers: scan.card.magicTreatmentQualifiers(for: variant), name: scan.card.name, projection: projection)
+        guard !slot.hasConflict, !slot.price.entriesDisagree, !slot.targets.isEmpty,
+              slot.price.entries.allSatisfy({ $0.selectedPriceKey == key.rawValue }) else { return nil }
+        return slot
+    }
+
+    private func reconcilePriceCheckOwnership(_ quote: PriceLookup, scan: ResolvedScan, key: CatalogQuoteKey,
+                                             resultID: UUID, refreshID: UUID) async -> OwnedPriceRetentionReason? {
+        func canWrite() -> Bool {
+            !Task.isCancelled && isStorageGenerationCurrent && activeQuoteRefreshID == refreshID
+                && priceCheckResult?.id == resultID && pendingWriteCounts.isEmpty
+                && writeCoordinator?.activeExclusiveOperation == nil
+        }
+        guard canWrite(), let slot = ownedPriceSlot(for: scan, key: key),
+              let collectionWriter, let collectionProjection, let modelContainer else { return nil }
+        let writer = await collectionWriter.value
+        let shouldContinue = writerContinuation
+        var reason: OwnedPriceRetentionReason?
+        var attemptedWrite = false
+        for target in slot.targets {
+            guard canWrite(), let rowCount = collectionProjection.snapshot?.physicalRowCountsByKey[target.collectionKey]
+            else { break }
+            attemptedWrite = true
+            do {
+                let result = try await CollectionExclusiveWrites.retryingIfRequired {
+                    guard canWrite() else { throw CancellationError() }
+                    return try await writer.reconcileOwnedPrice(quote, collectionKey: target.collectionKey,
+                        expectedSelectedKey: key.rawValue, expectedRowCount: rowCount, shouldContinue: shouldContinue)
+                }
+                reason = reason ?? result.retainedReason
+            } catch {
+                // A changed owner or an intervening exclusive write can invalidate the projected target.
+            }
+        }
+        if attemptedWrite, isStorageGenerationCurrent, !Task.isCancelled {
+            await collectionProjection.rebuild(container: modelContainer)
+        }
+        return reason
     }
 
     private func cancelPriceCheckRefresh() {

@@ -153,6 +153,9 @@ struct CatalogCardDetailView: View {
     @State private var selectedPriceCheck: (request: QuoteRequest, status: CatalogDetailPriceCheck)?
     @State private var ownedPriceUpdateFailure: QuoteRequest?
     @State private var priceRetryID = 0
+    @State private var handledPriceRetryID = 0
+    @State private var completedPriceRetryID = 0
+    @State private var catalogIdentityReloadID = 0
     @State private var catalogUpdateSequence: UInt64?
     @State private var ownedPriceChecks: [String: OwnedPriceRetentionReason] = [:]
     /// The exact raw entry a − tap targets; the dialog chooses plain removal or
@@ -1058,7 +1061,8 @@ struct CatalogCardDetailView: View {
         let lookup = mappedPrices[variant.id] ?? CardPricing.price(for: card, variant: variant,
             magicTreatments: card.magicTreatments(for: variant), pokemonPrintRun: summary.pokemonPrintRun,
             at: details?.retrievedAt ?? .distantPast)
-        if case let .price(quote) = lookup { return PriceDisplay(quote) }
+        if case let .price(quote) = lookup,
+           TCGCSVPriceMirror.canServe(source: quote.source, capturedAt: quote.fetchedAt) { return PriceDisplay(quote) }
         return .unknown
     }
 
@@ -1213,40 +1217,65 @@ struct CatalogCardDetailView: View {
         let variant: PhysicalVariant
         let retrievedAt: Date
         let retry: Int
+        let identityReload: Int
     }
 
     private var selectedQuoteRequest: QuoteRequest? {
         guard !needsCatalogResolution, catalogCardSelection == nil,
               catalog.gameRegistry.supports(summary.game, .pricing), let details,
               let variant = selectedVariant(details.card) else { return nil }
-        return QuoteRequest(summary: summary, variant: variant, retrievedAt: details.retrievedAt, retry: priceRetryID)
+        return QuoteRequest(summary: summary, variant: variant, retrievedAt: details.retrievedAt,
+                            retry: priceRetryID, identityReload: catalogIdentityReloadID)
     }
 
     private func loadSelectedQuote(_ request: QuoteRequest) async {
-        guard let card = details?.card, selectedQuoteRequest == request else { return }
+        guard var card = details?.card, selectedQuoteRequest == request else { return }
         let generation = CollectionStorageGeneration.shared
         let token = generation.currentToken()
         let variant = request.variant
+        let isRetry = request.retry > completedPriceRetryID
         selectedPriceCheck = (request, .checking)
         ownedPriceUpdateFailure = nil
         let quote: PriceLookup
         do {
-            quote = try await catalog.price(for: request.summary, variant: variant)
+            if request.retry > handledPriceRetryID {
+                let refreshed = try await catalog.details(for: request.summary, refreshingPrices: true)
+                guard !Task.isCancelled, selectedQuoteRequest == request,
+                      token.map({ generation.isCurrent($0) }) ?? true else { return }
+                handledPriceRetryID = request.retry
+                details = refreshed
+                // A new receipt or selected finish starts the rekeyed task.
+                guard refreshed.retrievedAt == request.retrievedAt, selectedQuoteRequest == request else { return }
+                card = refreshed.card
+            }
+            let shared = await catalog.referenceQuotes(for: request.summary, variants: finishVariants(card))
+            guard !Task.isCancelled, selectedQuoteRequest == request,
+                  token.map({ generation.isCurrent($0) }) ?? true else { return }
+            for (id, price) in shared {
+                applyMappedPrice(.price(price), variantID: id, game: request.summary.game)
+            }
+            quote = try await catalog.price(for: request.summary, variant: variant, refreshingPrices: isRetry)
         } catch is CancellationError {
             return
         } catch {
-            guard !Task.isCancelled, selectedQuoteRequest == request else { return }
+            guard !Task.isCancelled, selectedQuoteRequest == request,
+                  token.map({ generation.isCurrent($0) }) ?? true else { return }
+            completedPriceRetryID = request.retry
             selectedPriceCheck = (request, CatalogDetailPriceCheck(error: error))
             return
         }
-        guard !Task.isCancelled, selectedQuoteRequest == request else { return }
-        mappedPrices[variant.id] = quote
+        guard !Task.isCancelled, selectedQuoteRequest == request,
+              token.map({ generation.isCurrent($0) }) ?? true else { return }
+        completedPriceRetryID = request.retry
+        applyMappedPrice(quote, variantID: variant.id, game: request.summary.game)
         do {
             if PriceFallbackQuoteResolver.needsFallback(quote, identifiedCatalogCard: true),
+               mappedPrices[variant.id]?.usablePrice.map({ !$0.isStale() }) != true,
                ownedSlot(for: variant, card: card).price.display.amount == nil,
                let fallback = await exactMarketFallback(for: card, variant: variant, printRun: request.summary.pokemonPrintRun),
                let current = fallback.quote.current() {
-                guard !Task.isCancelled, selectedQuoteRequest == request else { return }
+                guard !Task.isCancelled, selectedQuoteRequest == request,
+                      token.map({ generation.isCurrent($0) }) ?? true else { return }
                 mappedPrices[variant.id] = .price(current)
                 selectedPriceCheck = (request, .priced)
                 if let token, generation.isCurrent(token), !isWritePending,
@@ -1295,6 +1324,14 @@ struct CatalogCardDetailView: View {
         }
     }
 
+    private func applyMappedPrice(_ lookup: PriceLookup, variantID: String, game: CardGame) {
+        if let previous = mappedPrices[variantID]?.usablePrice {
+            guard let price = lookup.usablePrice,
+                  QuoteEvidenceOrdering.isNewer(price, than: previous, game: game) else { return }
+        }
+        mappedPrices[variantID] = lookup
+    }
+
     private func exactMarketFallback(
         for card: IdentifiedCard, variant: PhysicalVariant, printRun: PokemonPrintRun?
     ) async -> (quote: CardMarketHistoryResult.Quote, request: CardMarketHistoryRequest)? {
@@ -1339,6 +1376,10 @@ struct CatalogCardDetailView: View {
                 .padding(.horizontal, -16)
             if currentPrice.amount != nil, let status, status.canRetry {
                 catalogPriceStatus(status, releaseDate: nil)
+            } else if let slot, !slot.hasConflict, !slot.price.entriesDisagree,
+                      Set(slot.price.entries.map(\.selectedPriceKey)).count == 1,
+                      currentPrice.state() == .stale, status != .checking {
+                retryPriceCheck
             }
             if variant != nil {
                 // The headline, chart and source details live in the panel
@@ -1380,7 +1421,7 @@ struct CatalogCardDetailView: View {
     }
 
     private var retryPriceCheck: some View {
-        Button("Retry price check") { priceRetryID += 1 }
+        Button("Check again") { priceRetryID += 1 }
             .font(.subheadline)
             .frame(minHeight: 44)
     }
@@ -1642,9 +1683,11 @@ struct CatalogCardDetailView: View {
             details = installed
         }
         do {
-            let needsRefresh = OwnedCatalogPrice(rows: ownership.matchingRows(for: summary)).entries
-                .contains { $0.selectedPrice.state() == .stale }
-            let refreshed = try await catalog.details(for: summary, refreshingPrices: needsRefresh || priceRetryID > 0)
+            let lastForcedAt = await catalog.lastForcedPriceRefresh(for: summary)
+            let needsRefresh = OwnedPriceRecheckPolicy.needsForcedRefresh(
+                OwnedCatalogPrice(rows: ownership.matchingRows(for: summary)).entries,
+                lastForcedAt: lastForcedAt, now: .now)
+            let refreshed = try await catalog.details(for: summary, refreshingPrices: needsRefresh)
             guard !Task.isCancelled else { return }
             details = refreshed
             loadedFullDetails = true
@@ -1657,6 +1700,8 @@ struct CatalogCardDetailView: View {
         guard !isLoading else { return }
         isLoading = true
         needsCatalogResolution = true
+        handledPriceRetryID = priceRetryID
+        completedPriceRetryID = priceRetryID
         decrementTarget = nil
         showsFinishChoice = false
         mappedPrices = [:]
@@ -1676,7 +1721,7 @@ struct CatalogCardDetailView: View {
             loadedFullDetails = true
             historyVariantID = selectedVariant(refreshed.card)?.id
             needsCatalogResolution = false
-            priceRetryID += 1
+            catalogIdentityReloadID += 1
         } catch {
             // Retain the last identity for display until it can be reverified.
         }
