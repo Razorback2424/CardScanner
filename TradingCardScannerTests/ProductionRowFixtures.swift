@@ -6,8 +6,9 @@ import SwiftData
 /// Explicit metadata, including deliberately malformed metadata, is preserved.
 enum MarketMirrorFixture {
     static let baseURL = URL(string: "https://pricing.example")!
+    static let build = "2026-01-01T00:00:00Z"
     static func stamped(_ data: Data, capturedAt: Date = .now,
-                        build: String = "2026-01-01T00:00:00Z") -> Data {
+                        build: String = Self.build) -> Data {
         guard var object = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
               object["success"] as? Bool == true,
               object["sourceBuild"] == nil, object["sourceFetchedAt"] == nil else { return data }

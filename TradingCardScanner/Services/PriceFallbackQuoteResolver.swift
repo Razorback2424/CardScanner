@@ -476,7 +476,11 @@ final class PriceFallbackQuoteResolver {
         for card: IdentifiedCard,
         pokemonPrintRun: PokemonPrintRun?
     ) -> String {
-        pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" } ?? card.providerID
+        printingID(for: card.providerID, pokemonPrintRun: pokemonPrintRun)
+    }
+
+    nonisolated static func printingID(for providerID: String, pokemonPrintRun: PokemonPrintRun?) -> String {
+        pokemonPrintRun.map { "\(providerID)@\($0.rawValue)" } ?? providerID
     }
 
     /// The `ja` set id embedded in a Japanese catalog card id — `M2-001` is

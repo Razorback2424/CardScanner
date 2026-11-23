@@ -3,6 +3,19 @@ import Foundation
 /// Devices consume the app's server-ingested feeds. Upstream TCGCSV is only
 /// contacted by the daily publisher, never by a user-facing app or a redirect.
 enum TCGCSVPriceMirror {
+    static let refreshAfter: TimeInterval = 6 * 3600
+    static let maxServeAge: TimeInterval = 7 * 86_400
+
+    static func isWithinAge(_ date: Date, now: Date, maxAge: TimeInterval) -> Bool {
+        let age = now.timeIntervalSince(date)
+        return age >= 0 && age < maxAge
+    }
+
+    static func canServe(source: PriceSource?, capturedAt: Date?, now: Date = .now) -> Bool {
+        guard source == .tcgCSV else { return true }
+        return capturedAt.map { isWithinAge($0, now: now, maxAge: maxServeAge) } ?? false
+    }
+
     static var baseURL: URL? {
         guard let value = Bundle.main.object(forInfoDictionaryKey: "TCGCSV_PRICE_BASE_URL") as? String,
               let url = URL(string: value), isPermitted(url),
@@ -27,12 +40,27 @@ enum TCGCSVPriceMirror {
             completionHandler(nil)
         }
     }
-    static let session = URLSession(configuration: .ephemeral, delegate: NoRedirects(), delegateQueue: nil)
+    static let session = URLSession(configuration: .default, delegate: NoRedirects(), delegateQueue: nil)
+
+    static func download(_ request: URLRequest, session: URLSession, interval: StaticString)
+        async throws -> (Data, HTTPURLResponse) {
+        let signpost = PerformanceSignpost.beginInterval(interval, id: PerformanceSignpost.makeID(), "")
+        var byteCount = 0
+        var status = 0
+        defer { PerformanceSignpost.endInterval(interval, signpost, "bytes=\(byteCount) status=\(status)") }
+        let (data, response) = try await session.data(for: request)
+        byteCount = data.count
+        guard let http = response as? HTTPURLResponse, http.url == request.url else {
+            throw PriceQuoteError.providerUnavailable
+        }
+        status = http.statusCode
+        return (data, http)
+    }
 
     /// The server's original capture time survives CDN fetches and app relaunch.
     /// Matching daily-build markers prevent independently cached files mixing.
     static func captureDate(products: Data, prices: Data, expectedBuild: String? = nil,
-                            now: Date = .now) throws -> Date {
+                            now: Date = .now, maxAge: TimeInterval = maxServeAge) throws -> Date {
         struct Metadata: Decodable { let sourceBuild: String; let sourceFetchedAt: String }
         func date(_ string: String) -> Date? {
             let formatter = ISO8601DateFormatter()
@@ -46,10 +74,80 @@ enum TCGCSVPriceMirror {
               let build = date(price.sourceBuild), let captured = date(price.sourceFetchedAt),
               let productCaptured = date(product.sourceFetchedAt),
               build <= captured, build <= productCaptured,
-              captured <= now, productCaptured <= now,
-              now.timeIntervalSince(captured) < 86_400,
-              now.timeIntervalSince(productCaptured) < 86_400 else { throw PriceQuoteError.providerUnavailable }
+              isWithinAge(captured, now: now, maxAge: maxAge),
+              isWithinAge(productCaptured, now: now, maxAge: maxAge) else {
+            throw PriceQuoteError.providerUnavailable
+        }
         return captured
+    }
+}
+
+actor TCGCSVMirrorBuildMarker {
+    static let shared = TCGCSVMirrorBuildMarker(baseURL: TCGCSVPriceMirror.baseURL,
+        session: TCGCSVPriceMirror.session, defaultsKey: "TCGCSVMirrorBuildMarker.v1")
+
+    private struct Check: Codable, Sendable {
+        let value: String
+        let checkedAt: Date
+        let etag: String?
+    }
+
+    private let baseURL: URL?
+    private let session: URLSession
+    private let now: @Sendable () -> Date
+    private let defaultsKey: String?
+    private var check: Check?
+    private var pending: Task<Check, Error>?
+
+    init(baseURL: URL?, session: URLSession, now: @escaping @Sendable () -> Date = { .now },
+         defaultsKey: String? = nil) {
+        self.baseURL = baseURL
+        self.session = session
+        self.now = now
+        self.defaultsKey = defaultsKey.map { "\($0)|\(baseURL?.absoluteString ?? "")" }
+        if let key = self.defaultsKey, let bytes = UserDefaults.standard.data(forKey: key) {
+            check = try? JSONDecoder().decode(Check.self, from: bytes)
+        }
+    }
+
+    func lastKnownBuild() -> String? { check?.value }
+
+    func currentBuild(forceRefresh: Bool = false) async throws -> String {
+        guard let baseURL, TCGCSVPriceMirror.isPermitted(baseURL) else {
+            throw PriceQuoteError.providerUnavailable
+        }
+        if let pending { return try await pending.value.value }
+        if !forceRefresh, let check, TCGCSVPriceMirror.isWithinAge(check.checkedAt,
+            now: now(), maxAge: TCGCSVPriceMirror.refreshAfter) { return check.value }
+
+        let task = Task {
+            defer { self.pending = nil }
+            let previous = self.check
+            var request = URLRequest(url: baseURL.appendingPathComponent("last-updated.txt"),
+                cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 12)
+            request.setValue("ScanStash/1.0 (iOS; market build check)", forHTTPHeaderField: "User-Agent")
+            if let etag = previous?.etag { request.setValue(etag, forHTTPHeaderField: "If-None-Match") }
+            let (body, response) = try await TCGCSVPriceMirror.download(request, session: self.session, interval: "mirror.marker")
+            let updated: Check
+            if response.statusCode == 304, let previous, previous.etag != nil {
+                updated = Check(value: previous.value, checkedAt: self.now(),
+                    etag: response.value(forHTTPHeaderField: "ETag") ?? previous.etag)
+            } else {
+                guard response.statusCode == 200, body.count <= 1_024,
+                      let value = String(data: body, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      value.count < 100, ISO8601DateFormatter().date(from: value) != nil else {
+                    throw PriceQuoteError.providerUnavailable
+                }
+                updated = Check(value: value, checkedAt: self.now(), etag: response.value(forHTTPHeaderField: "ETag"))
+            }
+            self.check = updated
+            if let defaultsKey = self.defaultsKey, let bytes = try? JSONEncoder().encode(updated) {
+                UserDefaults.standard.set(bytes, forKey: defaultsKey)
+            }
+            return updated
+        }
+        pending = task
+        return try await task.value.value
     }
 }
 
@@ -61,6 +159,7 @@ actor TCGCSVProductPriceSource {
         let errors: [String]
         let results: [Row]
         let totalItems: Int?
+        let sourceBuild: String
     }
     private struct Product: Codable, Sendable {
         struct Field: Codable, Sendable { let name: String; let value: String }
@@ -73,10 +172,14 @@ actor TCGCSVProductPriceSource {
     private struct Snapshot: Codable, Sendable {
         let products: [Product]; let prices: [Price]; let fetchedAt: Date
         var catalogGeneration: String? = nil
+        var sourceBuild: String? = nil
+        var validatedAt: Date? = nil
     }
     private let session: URLSession
     private let baseURL: URL?
     private let cacheDirectory: URL
+    private let now: @Sendable () -> Date
+    private let marker: TCGCSVMirrorBuildMarker
     private struct GroupKey: Hashable { let category: Int; let group: Int }
     private struct CacheKey: Hashable {
         let group: GroupKey
@@ -94,18 +197,29 @@ actor TCGCSVProductPriceSource {
     init(baseURL: URL? = TCGCSVPriceMirror.baseURL,
          session: URLSession = TCGCSVPriceMirror.session,
          cacheDirectory: URL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("TCGCSVProductPrices-v1")) {
+            .appendingPathComponent("TCGCSVProductPrices-v1"),
+         now: @escaping @Sendable () -> Date = { .now }, marker: TCGCSVMirrorBuildMarker? = nil) {
         self.session = session; self.baseURL = baseURL; self.cacheDirectory = cacheDirectory
+        self.now = now
+        self.marker = marker ?? (baseURL == TCGCSVPriceMirror.baseURL && session === TCGCSVPriceMirror.session
+            ? .shared : TCGCSVMirrorBuildMarker(baseURL: baseURL, session: session, now: now))
     }
 
     func quote(category: Int, group: Int, productID: Int, name: String, number: String?,
-               lane: String, generation: String?, minimumFetchedAt: Date?, allowsMissingNumber: Bool = false) async throws -> PriceLookup {
+               lane: String, generation: String?, minimumFetchedAt: Date?, allowsMissingNumber: Bool = false,
+               allowsStaleFallback: Bool = true) async throws -> PriceLookup {
         guard category > 0, group > 0, productID > 0, !name.isEmpty, number != "",
               ["Normal", "Foil", "Cold Foil", "Holofoil", "Reverse Holofoil", "1st Edition", "Unlimited", "Limited"]
                 .contains(lane) else { throw PriceQuoteError.identityMismatch }
         let groupKey = GroupKey(category: category, group: group)
-        let snapshot = try await snapshot(group: groupKey, generation: generation, minimumFetchedAt: minimumFetchedAt)
+        let snapshot = try await snapshot(group: groupKey, generation: generation, minimumFetchedAt: minimumFetchedAt) { cached in
+            allowsStaleFallback && cached.prices.contains {
+                $0.productId == productID && $0.subTypeName == lane && $0.marketPrice != nil
+            }
+        }
         try Task.checkCancellation()
+        guard isServable(snapshot) else { throw PriceQuoteError.providerUnavailable }
+        let hasCurrentCapture = TCGCSVPriceMirror.isWithinAge(snapshot.fetchedAt, now: now(), maxAge: PriceDisplay.staleAfter)
         let products = snapshot.products.filter { $0.productId == productID }
         guard products.count == 1, let product = products.first,
               product.categoryId == category, product.groupId == group, product.name == name else {
@@ -117,13 +231,17 @@ actor TCGCSVProductPriceSource {
         }
         let rows = snapshot.prices.filter { $0.productId == productID && $0.subTypeName == lane }
         guard rows.count <= 1 else { throw PriceQuoteError.identityMismatch }
-        guard let amount = rows.first?.marketPrice else { return .unavailable(.tcgCSV) }
+        guard let amount = rows.first?.marketPrice else {
+            guard hasCurrentCapture else { throw PriceQuoteError.providerUnavailable }
+            return .unavailable(.tcgCSV)
+        }
         guard amount.isFinite, amount >= 0 else { throw PriceQuoteError.providerUnavailable }
         return .price(.init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgCSV,
             sourceVariantID: "tcgplayer:\(productID):\(lane)", sourceUpdatedAt: nil, fetchedAt: snapshot.fetchedAt))
     }
 
-    private func snapshot(group: GroupKey, generation: String?, minimumFetchedAt: Date?) async throws -> Snapshot {
+    private func snapshot(group: GroupKey, generation: String?, minimumFetchedAt: Date?,
+                          canUseFallback: (Snapshot) -> Bool) async throws -> Snapshot {
         try Task.checkCancellation()
         // A withdrawal starts a new request cohort. It must not join a fetch
         // that began before its watermark, even within the same generation.
@@ -135,55 +253,104 @@ actor TCGCSVProductPriceSource {
            (try? validate(value, group: group)) != nil {
             snapshots[group] = value
         }
-        if let cached = snapshots[group], cached.catalogGeneration == generation,
-           minimumFetchedAt.map({ cached.fetchedAt > $0 }) ?? true,
-           Date.now.timeIntervalSince(cached.fetchedAt) >= 0,
-           Date.now.timeIntervalSince(cached.fetchedAt) < 86_400 { return cached }
-        if let task = pending[key] {
-            return try await task.valueForCurrentWaiter()
+        let cached = snapshots[group].flatMap { value in
+            value.catalogGeneration == generation && (minimumFetchedAt.map { value.fetchedAt > $0 } ?? true)
+                ? value : nil
         }
-        if let failure = failures[key], Date.now.timeIntervalSince(failure) < 900 {
+        if let cached, let sourceBuild = cached.sourceBuild,
+           TCGCSVPriceMirror.isWithinAge(cached.validatedAt ?? cached.fetchedAt, now: now(),
+               maxAge: TCGCSVPriceMirror.refreshAfter), isServable(cached),
+           await marker.lastKnownBuild().map({ $0 == sourceBuild }) ?? true { return cached }
+        let servable = cached.flatMap { isServable($0) && canUseFallback($0) ? $0 : nil }
+        if let task = pending[key] {
+            if minimumFetchedAt == nil, let servable { return servable }
+            return try await waitForSnapshot(task, fallback: servable)
+        }
+        if let failure = failures[key], TCGCSVPriceMirror.isWithinAge(failure, now: now(), maxAge: 900) {
+            if let servable { return servable }
             throw PriceQuoteError.providerUnavailable
         }
         let task = Task<Snapshot, Error> {
             defer { self.pending[key] = nil }
             let value: Snapshot
             do {
-                let productsData = try await self.fetch(group: group, resource: "products")
-                let pricesData = try await self.fetch(group: group, resource: "prices")
-                let fetchedAt = try TCGCSVPriceMirror.captureDate(products: productsData, prices: pricesData)
-                let products = try JSONDecoder().decode(Response<Product>.self, from: productsData)
-                let prices = try JSONDecoder().decode(Response<Price>.self, from: pricesData)
-                guard products.success, products.errors.isEmpty, prices.success, prices.errors.isEmpty,
-                      products.totalItems.map({ $0 == products.results.count }) ?? true,
-                      prices.totalItems.map({ $0 == prices.results.count }) ?? true else {
+                let build = try await self.marker.currentBuild()
+                if let cached, cached.sourceBuild == build, self.isServable(cached) {
+                    if self.snapshots[group]?.fetchedAt == cached.fetchedAt,
+                       self.snapshots[group]?.catalogGeneration == cached.catalogGeneration {
+                        self.snapshots[group]?.validatedAt = self.now()
+                    }
+                    self.failures[key] = nil
+                    return cached
+                }
+                value = try await self.download(group: group, generation: generation, build: build)
+                guard minimumFetchedAt.map({ value.fetchedAt > $0 }) ?? true else {
                     throw PriceQuoteError.providerUnavailable
                 }
-                value = Snapshot(products: products.results, prices: prices.results, fetchedAt: fetchedAt,
-                    catalogGeneration: generation)
-                try self.validate(value, group: group)
-                self.failures[key] = nil
             } catch {
                 // Transport interruption stays retryable; rejected provider
                 // responses retain the existing cooldown.
-                if !(error is CancellationError), !(error is URLError) { self.failures[key] = .now }
+                if !(error is CancellationError), !(error is URLError) { self.failures[key] = self.now() }
                 throw error
             }
-            guard minimumFetchedAt.map({ value.fetchedAt > $0 }) ?? true else {
-                throw PriceQuoteError.providerUnavailable
-            }
+            self.failures[key] = nil
             // A slower, older request must not replace a newer observation.
             if self.snapshots[group].map({ value.fetchedAt >= $0.fetchedAt }) ?? true {
                 self.snapshots[group] = value
-            }
-            if self.snapshots[group]?.fetchedAt == value.fetchedAt, let bytes = try? JSONEncoder().encode(value) {
-                try? FileManager.default.createDirectory(at: self.cacheDirectory, withIntermediateDirectories: true)
-                try? bytes.write(to: file, options: .atomic)
+                if let bytes = try? JSONEncoder().encode(value) {
+                    try? FileManager.default.createDirectory(at: self.cacheDirectory, withIntermediateDirectories: true)
+                    try? bytes.write(to: file, options: .atomic)
+                }
             }
             return value
         }
         pending[key] = task
-        return try await task.valueForCurrentWaiter()
+        // The unstructured task owns the revalidation even if no caller waits.
+        if minimumFetchedAt == nil, let servable { return servable }
+        return try await waitForSnapshot(task, fallback: servable)
+    }
+
+    private func download(group: GroupKey, generation: String?, build: String) async throws -> Snapshot {
+        do {
+            return try await downloadGroup(group, generation: generation, expectedBuild: build)
+        } catch PriceQuoteError.providerUnavailable {
+            // The publication can advance between the marker and either group file.
+            let latest = try await marker.currentBuild(forceRefresh: true)
+            guard latest != build else { throw PriceQuoteError.providerUnavailable }
+            return try await downloadGroup(group, generation: generation, expectedBuild: latest)
+        }
+    }
+
+    private func downloadGroup(_ group: GroupKey, generation: String?, expectedBuild: String) async throws -> Snapshot {
+        let productsData = try await fetch(group: group, resource: "products")
+        let pricesData = try await fetch(group: group, resource: "prices")
+        let fetchedAt = try TCGCSVPriceMirror.captureDate(products: productsData, prices: pricesData,
+            expectedBuild: expectedBuild, now: now())
+        let products = try JSONDecoder().decode(Response<Product>.self, from: productsData)
+        let prices = try JSONDecoder().decode(Response<Price>.self, from: pricesData)
+        guard products.success, products.errors.isEmpty, prices.success, prices.errors.isEmpty,
+              products.totalItems.map({ $0 == products.results.count }) ?? true,
+              prices.totalItems.map({ $0 == prices.results.count }) ?? true else {
+            throw PriceQuoteError.providerUnavailable
+        }
+        let value = Snapshot(products: products.results, prices: prices.results, fetchedAt: fetchedAt,
+            catalogGeneration: generation, sourceBuild: prices.sourceBuild, validatedAt: now())
+        try validate(value, group: group)
+        return value
+    }
+
+    private func isServable(_ snapshot: Snapshot) -> Bool {
+        TCGCSVPriceMirror.isWithinAge(snapshot.fetchedAt, now: now(), maxAge: TCGCSVPriceMirror.maxServeAge)
+    }
+
+    private func waitForSnapshot(_ task: Task<Snapshot, Error>, fallback: Snapshot?) async throws -> Snapshot {
+        do {
+            return try await task.valueForCurrentWaiter()
+        } catch {
+            try Task.checkCancellation()
+            if !(error is CancellationError), let fallback, isServable(fallback) { return fallback }
+            throw error
+        }
     }
 
     /// Reject invalid group responses before either cache can retain them for
@@ -208,8 +375,9 @@ actor TCGCSVProductPriceSource {
         var request = URLRequest(url: baseURL.appendingPathComponent("tcgplayer/\(group.category)/\(group.group)/\(resource)"))
         request.timeoutInterval = 15
         request.setValue("ScanStash/1.0 (iOS; daily product market pricing)", forHTTPHeaderField: "User-Agent")
-        let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse, http.statusCode == 200, http.url == request.url,
+        request.cachePolicy = .reloadRevalidatingCacheData
+        let (data, http) = try await TCGCSVPriceMirror.download(request, session: session, interval: "mirror.group")
+        guard http.statusCode == 200,
               data.count <= 8 * 1_024 * 1_024 else { throw PriceQuoteError.providerUnavailable }
         return data
     }

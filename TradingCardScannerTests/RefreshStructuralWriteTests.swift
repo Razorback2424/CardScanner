@@ -30,6 +30,35 @@ private actor RefreshTestBarrier {
 final class RefreshStructuralWriteTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testPriceCheckReconciliationCannotRecreateARemovedOwner() async throws {
+        let container = try makeContainer()
+        let card = try ProductionRowFixtures.pokemonCard()
+        let (collectionKey, priceKey) = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            let row = CollectedCard(card: card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+            context.insert(row)
+            try context.save()
+            return (row.collectionKey, row.priceKey)
+        }
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            let owner = try XCTUnwrap(CollectionStore(context: context).card(forKey: collectionKey))
+            context.delete(owner)
+            try context.save()
+        }
+        let incoming = PriceLookup.price(.init(unitMarketPriceUSD: 50, currencyCode: "USD", source: .tcgplayer,
+            sourceVariantID: "normal", sourceUpdatedAt: .now, fetchedAt: .now))
+        do {
+            _ = try await writer.reconcileOwnedPrice(incoming, collectionKey: collectionKey,
+                expectedSelectedKey: priceKey, expectedRowCount: 1, shouldContinue: { true })
+            XCTFail("A removed owner must not accept a Price Check result")
+        } catch CollectionStoreError.missingDestinationRow(let key) {
+            XCTAssertEqual(key, collectionKey)
+        }
+        let verification = ModelContext(container)
+        XCTAssertEqual(try verification.fetchCount(FetchDescriptor<CollectedCard>()), 0)
+        XCTAssertEqual(try verification.fetchCount(FetchDescriptor<PriceRecord>()), 0)
+    }
+
     func testPokemonRefreshBackfillsOnlyTheExactProductForEachOwnedPrintRun() async throws {
         let container = try makeContainer()
         let pokemon = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"{"id":"svp-1","localId":"1","name":"Test","set":{"id":"svp","name":"Set","cardCount":{"total":2,"official":2}},"variants":{"firstEdition":false,"holo":true,"normal":false,"reverse":false},"pricing":{"tcgplayer":{"holofoil":{"marketPrice":12.5,"productId":123456}}}}"#.utf8))

@@ -2,18 +2,20 @@ import CryptoKit
 import Foundation
 
 protocol LorcanaMarketPriceSource: Sendable {
-    func quote(mapping: LorcanaMarketMapping, generation: String, minimumFetchedAt: Date?) async throws -> PriceLookup
+    func quote(mapping: LorcanaMarketMapping, generation: String, minimumFetchedAt: Date?,
+               allowsStaleFallback: Bool) async throws -> PriceLookup
 }
 
 struct LorcanaTCGCSVPriceSource: LorcanaMarketPriceSource {
     var transport: TCGCSVProductPriceSource = .shared
-    func quote(mapping: LorcanaMarketMapping, generation: String, minimumFetchedAt: Date?) async throws -> PriceLookup {
+    func quote(mapping: LorcanaMarketMapping, generation: String, minimumFetchedAt: Date?,
+               allowsStaleFallback: Bool = true) async throws -> PriceLookup {
         guard mapping.hasValidMarketLane else {
             throw PriceQuoteError.identityMismatch
         }
         return try await transport.quote(category: 71, group: mapping.groupID, productID: mapping.productID,
             name: mapping.productName, number: mapping.productNumber, lane: mapping.providerVariantID,
-            generation: generation, minimumFetchedAt: minimumFetchedAt)
+            generation: generation, minimumFetchedAt: minimumFetchedAt, allowsStaleFallback: allowsStaleFallback)
     }
 }
 
@@ -58,7 +60,7 @@ struct LorcanaPriceAdapter: GamePriceAdapter {
         let current = try await currentRegistry()
         let card = try exactCard(printingID, registry: current)
         return try await refresh(.init(identity: .legacy(card), variant: variant,
-            pokemonPrintRun: nil, catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt))
+            pokemonPrintRun: nil, catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt, allowsHistoricalFallback: false))
     }
 
     private func exactCard(_ printingID: String, registry: LorcanaCatalogRegistry) throws -> ResolvedCatalogCard {
@@ -79,7 +81,7 @@ struct LorcanaPriceAdapter: GamePriceAdapter {
         let mappings = current.physicalCatalog?.printingByID[id]?.marketMappings ?? []
         guard let mapping = mappings.first(where: { $0.finish.rawValue == variant.id }) else { return .unavailable(nil) }
         let quote = try await source.quote(mapping: mapping, generation: current.generation,
-            minimumFetchedAt: request.minimumFetchedAt)
+            minimumFetchedAt: request.minimumFetchedAt, allowsStaleFallback: request.allowsHistoricalFallback)
         try Task.checkCancellation()
         // Validate the entire current physical resolution as well as the lane:
         // a family may have become incomplete/conflicted while HTTP was in flight.

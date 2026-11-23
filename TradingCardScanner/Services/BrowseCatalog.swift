@@ -149,6 +149,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private struct SortPriceSlot: Sendable {
         let id: String
         let resolution: CatalogSortPriceResolution
+        var quotes: [CatalogQuoteKey: NormalizedPrice] = [:]
     }
 
     private struct SortPriceGroupResult: Sendable {
@@ -188,6 +189,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
     /// card in the set) cannot accumulate decoded card details indefinitely.
     /// A miss re-reads through the normal detail path.
     private var detailCache = BoundedCache<String, CatalogCardDetails>(capacity: 1_024)
+    private var lastForcedPriceRefresh: [String: Date] = [:]
+    private var quoteStoreProvider: (@Sendable (StorageGenerationToken?) async -> ReferenceQuoteStore?)?
+    private var quoteStoreGeneration: @Sendable () async -> StorageGenerationToken? = { nil }
+    private var quoteStoreBinding = UUID()
+    private var cachedQuoteStore: (token: StorageGenerationToken?, task: Task<ReferenceQuoteStore?, Never>)?
     private var detailTasks: [String: DetailTaskState] = [:]
     private var magicPageTasks: [String: Task<CatalogPage<CatalogCardSummary>, Error>] = [:]
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
@@ -247,6 +253,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var sortPriceRetries: Set<String> = []
     private var sortPriceCheckedAt: [String: Date] = [:]
     private var sortPriceSources: [String: PriceSource] = [:]
+    private var sortPriceEvidence: [String: NormalizedPrice] = [:]
     private var pokemonBulkPriceCache: [String: PokemonBulkSnapshot] = [:]
     private var refreshingSetDirectories: Set<CardGame> = []
     private var memoryWarningObserver: NSObjectProtocol?
@@ -1169,6 +1176,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
             requestID = UUID()
             let retryRequested = priceRetryDetailKeys.remove(key) != nil
             let ignoresCache = refreshingPrices || stale != nil || retryRequested
+            if refreshingPrices {
+                let startedAt = now()
+                lastForcedPriceRefresh = lastForcedPriceRefresh.filter {
+                    startedAt.timeIntervalSince($0.value) < OwnedPriceRecheckPolicy.interval
+                }
+                lastForcedPriceRefresh[key] = startedAt
+            }
             let newTask = Task { [self] in
                 try await loadDetails(for: summary, ignoringCache: ignoresCache)
             }
@@ -1314,7 +1328,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func addingTCGCSVPrices(
-        to details: CatalogCardDetails, reportFailure: Bool = false
+        to details: CatalogCardDetails, reportFailure: Bool = false, retry: Bool = false
     ) async throws -> CatalogCardDetails {
         guard let source = tcgCSVSource,
               case let .pokemon(payload, code) = details.card.legacyIdentity,
@@ -1323,7 +1337,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         // A failed refresh must not erase a previously retrieved quote or its
         // provenance. A successful snapshot still replaces it, including gaps.
         do {
-            card.supplementalTCGCSV = try await source.snapshot(setID: card.set.id, retry: false)
+            card.supplementalTCGCSV = try await source.snapshot(setID: card.set.id, retry: retry)
         } catch {
             if reportFailure { throw error }
             return details
@@ -1332,6 +1346,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
             card: .pokemon(card, setCode: code), set: details.set,
             retrievedAt: details.retrievedAt
         )
+    }
+
+    func lastForcedPriceRefresh(for summary: CatalogCardSummary) async -> Date? {
+        lastForcedPriceRefresh[detailCacheKey(for: summary)]
     }
 
     private func detailCacheKey(for summary: CatalogCardSummary) -> String {
@@ -1406,15 +1424,67 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
-        try await price(for: summary, variant: variant, catalogHealthCheck: false)
+        try await price(for: summary, variant: variant, refreshingPrices: false)
     }
 
-    func price(for summary: CatalogCardSummary, variant: PhysicalVariant, catalogHealthCheck: Bool) async throws -> PriceLookup {
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant, refreshingPrices: Bool) async throws -> PriceLookup {
+        let store = await referenceQuoteStore()
+        let lookup = try await price(for: summary, variant: variant, catalogHealthCheck: false, refreshingPrices: refreshingPrices)
+        try Task.checkCancellation()
+        if let store, let price = lookup.usablePrice {
+            await store.store([CatalogQuoteKey.make(for: summary, variant: variant): price], successfulCheckAt: now())
+        }
+        return lookup
+    }
+
+    func setQuoteStoreProvider(
+        generation: @escaping @Sendable () async -> StorageGenerationToken? = { nil },
+        _ provider: @escaping @Sendable (StorageGenerationToken?) async -> ReferenceQuoteStore?
+    ) {
+        quoteStoreBinding = UUID()
+        cachedQuoteStore = nil
+        quoteStoreGeneration = generation
+        quoteStoreProvider = provider
+    }
+
+    private func referenceQuoteStore() async -> ReferenceQuoteStore? {
+        guard let provider = quoteStoreProvider else { return nil }
+        let binding = quoteStoreBinding
+        let token = await quoteStoreGeneration()
+        guard binding == quoteStoreBinding, !Task.isCancelled else { return nil }
+        let task: Task<ReferenceQuoteStore?, Never>
+        if let cached = cachedQuoteStore, cached.token == token {
+            task = cached.task
+        } else {
+            task = Task { await provider(token) }
+            cachedQuoteStore = (token, task)
+        }
+        let store = await task.value
+        guard binding == quoteStoreBinding, cachedQuoteStore?.token == token, !Task.isCancelled else { return nil }
+        return store
+    }
+
+    func referenceQuotes(for summary: CatalogCardSummary, variants: [PhysicalVariant]) async -> [String: NormalizedPrice] {
+        guard let store = await referenceQuoteStore(), !Task.isCancelled else { return [:] }
+        await synchronizeGameBrowseAuthority(for: summary.game)
+        if let adapter = gameBrowseAdapters.adapter(for: summary.game),
+           adapter.generation != summary.catalogGeneration { return [:] }
+        let keys = variants.map { CatalogQuoteKey.make(for: summary, variant: $0) }
+        let quotes = await store.quotes(forKeys: keys.map(\.rawValue), now: now())
+        return Dictionary(keys.compactMap { key in
+            guard let id = key.variantID, let quote = quotes[key.rawValue] else { return nil }
+            return (id, quote)
+        }, uniquingKeysWith: { first, _ in first })
+    }
+
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant, catalogHealthCheck: Bool,
+               refreshingPrices: Bool = false) async throws -> PriceLookup {
         if let product = PokemonReviewedMarketProduct.entry(for: summary, variantID: variant.id), product.variant.id == variant.id {
             await synchronizeCatalogAuthority()
             _ = try await authorizedPokemonDetailSet(for: summary)
             let revision = catalogRevision
-            let quote = try await pokemonReviewedPrices?.quote(for: product) ?? .unavailable(nil)
+            let quote = try await pokemonReviewedPrices?.quote(for: product,
+                allowsStaleFallback: !refreshingPrices) ?? .unavailable(nil)
             try Task.checkCancellation()
             guard revision == catalogRevision else { throw CatalogLookupError.staleCatalog }
             return quote
@@ -1429,15 +1499,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let baseDetails = try await details(for: summary)
         let checksSupplement = variant == .holo && (summary.pokemonPrintRun == nil || summary.pokemonPrintRun == .unlimited)
         let details: CatalogCardDetails
-        if catalogHealthCheck {
+        if catalogHealthCheck || refreshingPrices {
+            let checkedAt = now()
             let embedded = CardPricing.price(for: baseDetails.card, variant: variant,
                 magicTreatments: baseDetails.card.magicTreatments(for: variant),
-                pokemonPrintRun: summary.pokemonPrintRun, at: baseDetails.retrievedAt)
-            if case let .price(quote) = embedded, quote.isUsableUSD, !quote.isStale(),
+                pokemonPrintRun: summary.pokemonPrintRun, at: baseDetails.retrievedAt, now: checkedAt,
+                supplementalPokemonQuote: .unavailable(nil))
+            if let quote = embedded.usablePrice, !quote.isStale(now: checkedAt),
                summary.game == .pokemon {
                 return embedded
             }
-            details = checksSupplement ? try await addingTCGCSVPrices(to: baseDetails, reportFailure: true) : baseDetails
+            details = checksSupplement
+                ? try await addingTCGCSVPrices(to: baseDetails, reportFailure: true, retry: refreshingPrices) : baseDetails
         } else {
             details = try await addingTCGCSVPrices(to: baseDetails)
         }
@@ -1454,7 +1527,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
         if priceQuoteService.supportsStoredPrintingRefresh(for: summary.game) {
             let quote = try await priceQuoteService.refresh(card: details.card, variant: variant,
-                                                           pokemonPrintRun: summary.pokemonPrintRun)
+                pokemonPrintRun: summary.pokemonPrintRun, allowsHistoricalFallback: !refreshingPrices)
             await synchronizeGameBrowseAuthority(for: summary.game)
             guard gameBrowseAdapters.adapter(for: summary.game)?.generation == summary.catalogGeneration else {
                 throw CatalogLookupError.staleCatalog
@@ -1463,7 +1536,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
         let lookup = CardPricing.price(for: details.card, variant: variant,
                                        magicTreatments: details.card.magicTreatments(for: variant),
-                                       pokemonPrintRun: summary.pokemonPrintRun, at: details.retrievedAt)
+                                       pokemonPrintRun: summary.pokemonPrintRun, at: details.retrievedAt, now: now())
         if case let .price(price) = lookup, price.currencyCode == "USD" { return lookup }
         // Reuse the set-wide source used by the grid, only for an exact ordinary finish.
         guard !catalogHealthCheck, summary.game == .pokemon, summary.pokemonPrintRun == nil,
@@ -1517,6 +1590,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             sortPriceCache = sortPriceCache.filter { !$0.key.hasPrefix(prefix) }
             sortPriceCheckedAt = sortPriceCheckedAt.filter { !$0.key.hasPrefix(prefix) }
             sortPriceSources = sortPriceSources.filter { !$0.key.hasPrefix(prefix) }
+            sortPriceEvidence = sortPriceEvidence.filter { !$0.key.hasPrefix(prefix) }
             resolvedSortPrices = resolvedSortPrices.filter { !$0.hasPrefix(prefix) }
             unresolvedSortPrices = unresolvedSortPrices.filter { !$0.hasPrefix(prefix) }
             missingMappingSortPrices = missingMappingSortPrices.filter { !$0.hasPrefix(prefix) }
@@ -1576,6 +1650,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             sortPriceCache.removeValue(forKey: id)
             sortPriceCheckedAt.removeValue(forKey: id)
             sortPriceSources.removeValue(forKey: id)
+            sortPriceEvidence.removeValue(forKey: id)
             // Use the actual cache keys, including catalog generation and set scope.
             let matchingKeys = detailCache.keys { _, details in
                 let matches = id.hasPrefix("\(details.card.game.rawValue):\(details.set.catalogID.providerID.lowercased()):")
@@ -1660,13 +1735,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
         // A long-lived Browse actor must recheck prices that arrived after a
         // set opened. In particular, a negative result is never permanent.
-        let now = Date.now
+        let now = now()
         for card in cards {
             guard let checkedAt = sortPriceCheckedAt[card.id] else { continue }
+            if !TCGCSVPriceMirror.canServe(source: sortPriceSources[card.id], capturedAt: checkedAt, now: now) {
+                sortPriceCache[card.id] = nil
+                sortPriceEvidence[card.id] = nil
+                sortPriceSources[card.id] = nil
+                sortPriceCheckedAt[card.id] = nil
+                resolvedSortPrices.remove(card.id)
+                continue
+            }
             let maxAge: TimeInterval = sortPriceCache[card.id] == nil
                 ? 6 * 60 * 60 : 24 * 60 * 60
             let age = now.timeIntervalSince(checkedAt)
-            guard age < 0 || age >= maxAge else { continue }
+            guard age < 0 || age >= maxAge || sortPriceEvidence[card.id]?.isStale(now: now) == true else { continue }
             resolvedSortPrices.remove(card.id)
             missingMappingSortPrices.remove(card.id)
             printingReviewSortPrices.remove(card.id)
@@ -1681,15 +1764,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
             guard let cached = await cache.sortPrices(for: setID) else { continue }
             let currentIDs = Set(setCards.map(\.id))
             for (id, hint) in cached.value where currentIDs.contains(id) && isCurrent(id) {
+                guard TCGCSVPriceMirror.canServe(source: hint.source, capturedAt: hint.checkedAt, now: now) else { continue }
                 // A newer provider check may have disproved a persisted price.
                 // Do not resurrect that old ordering hint on this screen.
                 if resolvedSortPrices.contains(id),
                    let checkedAt = sortPriceCheckedAt[id], checkedAt >= hint.checkedAt,
                    sortPriceCache[id] == nil { continue }
                 if let date = sortPriceCheckedAt[id], date > hint.checkedAt { continue }
+                if sortPriceEvidence[id] != nil, sortPriceCheckedAt[id] == hint.checkedAt { continue }
                 sortPriceCache[id] = hint.price
                 sortPriceCheckedAt[id] = hint.checkedAt
                 sortPriceSources[id] = hint.source
+                sortPriceEvidence[id] = nil
                 if sortPriceRetries.contains(id) {
                     // Retain last-known evidence while an explicit retry
                     // checks the provider, even when this hint is still fresh.
@@ -1704,13 +1790,50 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
 
         emit()
+        let store = await referenceQuoteStore()
+        guard !Task.isCancelled else { return }
+        if let store {
+            let keysByCard = cards.map { ($0, CatalogQuoteKey.gridKeys(for: $0)) }
+            let quotes = await store.quotes(forKeys: Array(Set(keysByCard.flatMap { $0.1.map(\.rawValue) })), now: now)
+            guard !Task.isCancelled else { return }
+            var overlaidQuote = false
+            for (card, keys) in keysByCard where isCurrent(card.id) {
+                let exact = keys.compactMap { quotes[$0.rawValue] }
+                guard let best = exact.max(by: { $0.unitMarketPriceUSD < $1.unitMarketPriceUSD }) else { continue }
+                if exact.count < keys.count, let previous = sortPriceCache[card.id],
+                   best.unitMarketPriceUSD < previous { continue }
+                if let prior = sortPriceEvidence[card.id] {
+                    guard best == prior || QuoteEvidenceOrdering.isNewer(best, than: prior, game: card.game, now: now) else { continue }
+                } else if let date = sortPriceCheckedAt[card.id] {
+                    let matchesHint = best.fetchedAt == date && best.unitMarketPriceUSD == sortPriceCache[card.id]
+                        && best.source == sortPriceSources[card.id]
+                    guard matchesHint || QuoteEvidenceOrdering.isNewer(best, thanHintCheckedAt: date, game: card.game) else { continue }
+                }
+                setSortPrice(best, for: card.id)
+                overlaidQuote = true
+                if !sortPriceRetries.contains(card.id), exact.count == keys.count,
+                   exact.allSatisfy({ !$0.isStale(now: now) }) {
+                    resolvedSortPrices.insert(card.id)
+                    unresolvedSortPrices.remove(card.id)
+                    missingMappingSortPrices.remove(card.id)
+                    printingReviewSortPrices.remove(card.id)
+                } else {
+                    resolvedSortPrices.remove(card.id)
+                    unresolvedSortPrices.insert(card.id)
+                }
+            }
+            if overlaidQuote { emit() }
+        }
 
         let pending = providerGroups(from: cards.filter { isCurrent($0.id) && !resolvedSortPrices.contains($0.id) })
+        let checkStartedAt = self.now()
         await preparePokemonBulkPrices(for: pending.flatMap { $0 })
         guard !Task.isCancelled else { return }
         var iterator = pending.map { group in group.filter { isCurrent($0.id) } }
             .filter { !$0.isEmpty }.makeIterator()
         var refreshedIDs: Set<String> = []
+        var collectedQuotes: [String: [CatalogQuoteKey: NormalizedPrice]] = [:]
+        let cardsByID = Dictionary(cards.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         var completedSinceEmit = 0
         var lastEmit = Date.now
 
@@ -1731,28 +1854,48 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         return
                     }
                     for slot in result.slots where isCurrent(slot.id) {
+                        guard let summary = cardsByID[slot.id] else { continue }
+                        if store != nil, !slot.quotes.isEmpty {
+                            collectedQuotes[slot.id] = slot.quotes
+                        }
                         refreshedIDs.insert(slot.id)
                         if slot.resolution != .unresolved { sortPriceRetries.remove(slot.id) }
                         printingReviewSortPrices.remove(slot.id)
                         switch slot.resolution {
                         case let .priced(price, asOf, source):
                             missingMappingSortPrices.remove(slot.id)
-                            if SortPriceHint(price: price, checkedAt: asOf).isFresh() {
+                            let exact = slot.quotes.values.max { $0.unitMarketPriceUSD < $1.unitMarketPriceUSD }
+                            let retained: NormalizedPrice? = sortPriceEvidence[slot.id].flatMap { previous in
+                                guard let exact, slot.quotes.count == 1, CatalogQuoteKey.gridKeys(for: summary).count == 1,
+                                      !QuoteEvidenceOrdering.isNewer(exact, than: previous, game: summary.game, now: now) else { return nil }
+                                return previous
+                            }
+                            let shown = retained ?? exact
+                            if shown.map({ !$0.isStale(now: now) }) ?? SortPriceHint(price: price, checkedAt: asOf).isFresh() {
                                 resolvedSortPrices.insert(slot.id)
                                 unresolvedSortPrices.remove(slot.id)
                             } else {
                                 resolvedSortPrices.remove(slot.id)
                                 unresolvedSortPrices.insert(slot.id)
                             }
-                            sortPriceCache[slot.id] = price
-                            sortPriceCheckedAt[slot.id] = asOf
-                            sortPriceSources[slot.id] = source
+                            if let shown { setSortPrice(shown, for: slot.id) }
+                            else {
+                                sortPriceCache[slot.id] = price
+                                sortPriceCheckedAt[slot.id] = asOf
+                                sortPriceSources[slot.id] = source
+                                sortPriceEvidence[slot.id] = nil
+                            }
                         case .noUSDQuote:
+                            let completedAt = self.now()
                             missingMappingSortPrices.remove(slot.id)
                             resolvedSortPrices.insert(slot.id)
                             unresolvedSortPrices.remove(slot.id)
+                            if let existing = sortPriceEvidence[slot.id],
+                               existing.fetchedAt > checkStartedAt, !existing.isStale(now: completedAt) { continue }
                             sortPriceCache.removeValue(forKey: slot.id)
-                            sortPriceCheckedAt[slot.id] = .now
+                            sortPriceEvidence[slot.id] = nil
+                            sortPriceSources[slot.id] = nil
+                            sortPriceCheckedAt[slot.id] = completedAt
                         case .mappingMissing, .printingNeedsReview:
                             if slot.resolution == .mappingMissing {
                                 missingMappingSortPrices.insert(slot.id)
@@ -1763,6 +1906,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                             resolvedSortPrices.insert(slot.id)
                             unresolvedSortPrices.remove(slot.id)
                             sortPriceCache.removeValue(forKey: slot.id)
+                            sortPriceEvidence[slot.id] = nil
                             sortPriceCheckedAt[slot.id] = .now
                         case .unresolved:
                             missingMappingSortPrices.remove(slot.id)
@@ -1804,6 +1948,16 @@ actor BrowseCatalog: BrowseCatalogProviding {
         guard !Task.isCancelled else { return }
 
         for (setID, setCards) in cardsBySet {
+            if let store {
+                let batch = setCards.filter { isCurrent($0.id) }.reduce(into: [CatalogQuoteKey: NormalizedPrice]()) {
+                    for (key, price) in collectedQuotes[$1.id] ?? [:] {
+                        if let previous = $0[key],
+                           !QuoteEvidenceOrdering.isNewer(price, than: previous, game: key.game) { continue }
+                        $0[key] = price
+                    }
+                }
+                await store.store(batch, successfulCheckAt: now)
+            }
             if let game = setCards.first?.game,
                priceQuoteService.supportsStoredPrintingRefresh(for: game) { continue }
             guard setCards.contains(where: { refreshedIDs.contains($0.id) }) else { continue }
@@ -1821,6 +1975,19 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
 
         emit()
+    }
+
+    private static func exactSortPrice(_ lookup: PriceLookup, for summary: CatalogCardSummary,
+                                       variant: PhysicalVariant) -> SortPriceSlot {
+        let quotes = lookup.usablePrice.map { [CatalogQuoteKey.make(for: summary, variant: variant): $0] } ?? [:]
+        return SortPriceSlot(id: summary.id, resolution: .exactLookup(lookup), quotes: quotes)
+    }
+
+    private func setSortPrice(_ price: NormalizedPrice, for id: String) {
+        sortPriceCache[id] = price.unitMarketPriceUSD
+        sortPriceCheckedAt[id] = price.fetchedAt
+        sortPriceSources[id] = price.source
+        sortPriceEvidence[id] = price
     }
 
     private func providerGroups(from cards: [CatalogCardSummary]) -> [[CatalogCardSummary]] {
@@ -1861,7 +2028,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             printingNeedsReviewIDs: printingReviewSortPrices.intersection(cardIDs),
             quoteDates: Dictionary(uniqueKeysWithValues: cardIDs.compactMap { id in
                 guard sortPriceCache[id] != nil, let date = sortPriceCheckedAt[id] else { return nil }
-                return (id, date)
+                return (id, sortPriceEvidence[id]?.effectiveAsOf ?? date)
             }),
             quoteSources: Dictionary(uniqueKeysWithValues: cardIDs.compactMap { id in
                 guard sortPriceCache[id] != nil, let source = sortPriceSources[id] else { return nil }
@@ -1933,8 +2100,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 } else { regular.append(summary) }
                 continue
             }
-            let lookup = try? await price(for: summary, variant: variant)
-            slots.append(SortPriceSlot(id: summary.id, resolution: lookup.map(CatalogSortPriceResolution.exactLookup) ?? .unresolved))
+            let lookup = try? await price(for: summary, variant: variant, catalogHealthCheck: false)
+            slots.append(Self.exactSortPrice(lookup ?? .unavailable(nil), for: summary, variant: variant))
         }
         if !regular.isEmpty {
             slots.append(contentsOf: await sortPokemonCatalogPriceGroup(for: regular).slots)
@@ -1954,24 +2121,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 try Task.checkCancellation()
                 let checkedAt = now()
                 return SortPriceGroupResult(slots: summaries.map { summary in
-                    if let details = detailCache[detailCacheKey(for: summary)],
-                       Self.detailsAreFresh(details, now: checkedAt) {
-                        let detailed = details.card
-                        let existing = CardPricing.price(
-                            for: detailed, variant: summary.masterSetVariant ?? .holo,
-                            magicTreatments: detailed.magicTreatments(for: summary.masterSetVariant),
-                            pokemonPrintRun: summary.pokemonPrintRun, at: details.retrievedAt
-                        )
-                        if case let .price(price) = existing, price.source != .tcgCSV,
-                           price.currencyCode == "USD", !price.isStale(now: checkedAt) {
-                            return SortPriceSlot(id: summary.id, resolution: CatalogSortPriceResolution.exactLookup(.price(price)))
-                        }
+                    let variant = summary.masterSetVariant ?? .holo
+                    let mayUseSnapshot = TCGCSVPriceMirror.canServe(source: .tcgCSV, capturedAt: snapshot.fetchedAt, now: checkedAt)
+                    let mirror = mayUseSnapshot ? snapshot.quote(
+                        cardID: summary.providerID, variant: variant, printRun: summary.pokemonPrintRun)
+                        : nil
+                    let lookup: PriceLookup
+                    if let details = detailCache[detailCacheKey(for: summary)] {
+                        lookup = CardPricing.price(for: details.card, variant: variant,
+                            magicTreatments: details.card.magicTreatments(for: variant),
+                            pokemonPrintRun: summary.pokemonPrintRun, at: details.retrievedAt, now: checkedAt,
+                            supplementalPokemonQuote: mirror ?? .unavailable(nil))
+                    } else {
+                        lookup = mirror ?? .unavailable(nil)
                     }
-                    guard let lookup = snapshot.quote(
-                        cardID: summary.providerID, variant: summary.masterSetVariant ?? .holo,
-                        printRun: summary.pokemonPrintRun
-                    ) else { return SortPriceSlot(id: summary.id, resolution: .unresolved) }
-                    return SortPriceSlot(id: summary.id, resolution: CatalogSortPriceResolution.exactLookup(lookup))
+                    return Self.exactSortPrice(lookup, for: summary, variant: variant)
                 })
             } catch {
                 return SortPriceGroupResult(slots: summaries.map {
@@ -1989,7 +2153,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
             return SortPriceGroupResult(slots: fallback.slots.map { slot in
                 SortPriceSlot(
                     id: slot.id,
-                    resolution: slot.resolution == .noUSDQuote ? .unresolved : slot.resolution
+                    resolution: slot.resolution == .noUSDQuote ? .unresolved : slot.resolution,
+                    quotes: slot.quotes
                 )
             })
         }
@@ -2022,7 +2187,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                             providerID: summary.providerID,
                             variant: summary.masterSetVariant
                         ))
-                        ? .unresolved : fallback.resolution
+                        ? .unresolved : fallback.resolution,
+                    quotes: fallback.quotes
                 ))
             }
         }
@@ -2280,16 +2446,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 return SortPriceSlot(id: summary.id, resolution: .printingNeedsReview)
             }
             var lookups: [PriceLookup] = []
+            var quotes: [CatalogQuoteKey: NormalizedPrice] = [:]
             var hasMissingMapping = false
             do {
                 for variant in summary.masterSetVariant.map({ [$0] }) ?? details.card.variantEvidence.catalogVariants {
-                    do { lookups.append(try await price(for: summary, variant: variant)) }
+                    do {
+                        let lookup = try await price(for: summary, variant: variant, catalogHealthCheck: false)
+                        lookups.append(lookup)
+                        quotes[CatalogQuoteKey.make(for: summary, variant: variant)] = lookup.usablePrice
+                    }
                     catch PriceQuoteError.mappingUnavailable { hasMissingMapping = true }
                 }
                 if hasMissingMapping, !lookups.contains(where: {
                     if case let .price(price) = $0 { return price.isUsableUSD }; return false
                 }) { return SortPriceSlot(id: summary.id, resolution: .mappingMissing) }
-                return SortPriceSlot(id: summary.id, resolution: CatalogSortPriceResolution.aggregate(lookups))
+                return SortPriceSlot(id: summary.id, resolution: CatalogSortPriceResolution.aggregate(lookups), quotes: quotes)
             } catch {
                 return SortPriceSlot(id: summary.id, resolution: .unresolved)
             }
@@ -2302,22 +2473,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 pokemonPrintRun: summary.pokemonPrintRun,
                 at: details.retrievedAt
             )
-            if case let .price(price) = lookup,
-               price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
-                return SortPriceSlot(
-                    id: summary.id,
-                    resolution: .priced(price.unitMarketPriceUSD, asOf: price.fetchedAt, source: price.source)
-                )
-            }
-            return SortPriceSlot(
-                id: summary.id,
-                resolution: CatalogSortPriceResolution.exactLookup(lookup)
-            )
+            return Self.exactSortPrice(lookup, for: summary, variant: variant)
         }
 
         // An unqualified printing may expose several exact finishes. Sort by
         // the highest current USD quote without changing their identities.
         var lookups: [PriceLookup] = []
+        var quotes: [CatalogQuoteKey: NormalizedPrice] = [:]
         for variant in details.card.variantEvidence.catalogVariants {
             let lookup = CardPricing.price(
                 for: details.card,
@@ -2327,10 +2489,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 at: details.retrievedAt
             )
             lookups.append(lookup)
+            quotes[CatalogQuoteKey.make(for: summary, variant: variant)] = lookup.usablePrice
         }
         return SortPriceSlot(
             id: summary.id,
-            resolution: CatalogSortPriceResolution.aggregate(lookups)
+            resolution: CatalogSortPriceResolution.aggregate(lookups),
+            quotes: quotes
         )
     }
 
@@ -2389,6 +2553,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         printingReviewSortPrices.removeAll()
         sortPriceCheckedAt.removeAll()
         sortPriceSources.removeAll()
+        sortPriceEvidence.removeAll()
         pokemonBulkPriceCache.removeAll()
     }
 

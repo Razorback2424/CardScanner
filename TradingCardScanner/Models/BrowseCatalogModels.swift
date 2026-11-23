@@ -1536,6 +1536,12 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
         candidates(for: summary).filter { Self.matches($0, summary: summary) }
     }
 
+    func priceRows(game: CardGame, providerID: String) -> [CatalogOwnershipCardSnapshot] {
+        (byProviderID[providerID.lowercased()] ?? []).filter {
+            $0.game == game && $0.itemKind == .rawCard && !UnverifiedReportKey.hasReport($0.collectionKey)
+        }
+    }
+
     /// Detail needs physical identity. Set completion intentionally accepts
     /// some aliases and excludes stamped variants.
     func exactPrintingRows(for summary: CatalogCardSummary) -> [CatalogOwnershipCardSnapshot] {
@@ -1860,9 +1866,12 @@ protocol BrowseCatalogProviding: Sendable {
     ) async throws -> CatalogPage<CatalogCardSummary>
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails
     func details(for summary: CatalogCardSummary, refreshingPrices: Bool) async throws -> CatalogCardDetails
+    func lastForcedPriceRefresh(for summary: CatalogCardSummary) async -> Date?
+    func referenceQuotes(for summary: CatalogCardSummary, variants: [PhysicalVariant]) async -> [String: NormalizedPrice]
     /// Immediately available card details backed by an installed checklist.
     func installedDetails(for summary: CatalogCardSummary) async -> CatalogCardDetails?
     func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant, refreshingPrices: Bool) async throws -> PriceLookup
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]>
     nonisolated func sortPriceUpdates(for cards: [CatalogCardSummary]) -> AsyncStream<CatalogPriceUpdate>
     func resetPriceResolution(for ids: [String]) async
@@ -1881,6 +1890,11 @@ extension BrowseCatalogProviding {
     var gameRegistry: CardGameRegistry { .standard }
     func completeLocalCards(in set: CatalogSet) async throws -> [CatalogCardSummary]? { nil }
     func installedDetails(for summary: CatalogCardSummary) async -> CatalogCardDetails? { nil }
+    func lastForcedPriceRefresh(for summary: CatalogCardSummary) async -> Date? { nil }
+    func referenceQuotes(for summary: CatalogCardSummary, variants: [PhysicalVariant]) async -> [String: NormalizedPrice] { [:] }
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant, refreshingPrices: Bool) async throws -> PriceLookup {
+        try await price(for: summary, variant: variant)
+    }
     func refreshCatalogNow() async { await prepareCatalog() }
 
     func details(for summary: CatalogCardSummary, refreshingPrices: Bool) async throws -> CatalogCardDetails {

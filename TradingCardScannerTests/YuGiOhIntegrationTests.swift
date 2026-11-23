@@ -656,7 +656,9 @@ private final class YuGiOhPricingProtocol: URLProtocol {
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
         do {
-            let data = MarketMirrorFixture.stamped(try Self.handler!(request))
+            let data = request.url?.lastPathComponent == "last-updated.txt"
+                ? Data(MarketMirrorFixture.build.utf8)
+                : MarketMirrorFixture.stamped(try Self.handler!(request))
             client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: data); client?.urlProtocolDidFinishLoading(self)
         } catch { client?.urlProtocol(self, didFailWithError: error) }
@@ -1242,7 +1244,8 @@ final class YuGiOhWorkflowTests: XCTestCase {
         let printing = try XCTUnwrap(catalog.printingByID.values.first)
         let date = Date.now.addingTimeInterval(-2 * 86_400)
         QuoteCache(context: store.mainContext).store(.price(.init(unitMarketPriceUSD: 7, currencyCode: "USD",
-            source: .tcgCSV, sourceVariantID: "retained", sourceUpdatedAt: date, fetchedAt: date)),
+            source: .tcgCSV, sourceVariantID: "retained", sourceUpdatedAt: date, fetchedAt: date,
+            catalogIdentity: YuGiOhPriceAdapter.mappingIdentity(printing, .first))),
             game: .yuGiOh, printingID: printing.idString, variantID: PhysicalVariant.yugiohFirstEdition.id, at: date)
         let model = ScannerViewModel(gameRegistry: bound.registry, priceQuoteService: bound.makePriceQuoteService(),
             catalog: bound.makeCardCatalog(), priceCheckRefreshProvider: UnavailableProvider(),
@@ -1255,8 +1258,13 @@ final class YuGiOhWorkflowTests: XCTestCase {
         let finished = await waitUntil { model.priceCheckResult?.refreshFeedback == .failed && model.priceCheckResult?.isRefreshing == false }
         XCTAssertTrue(finished)
         let result = try XCTUnwrap(model.priceCheckResult)
-        let reference = try XCTUnwrap(QuoteCache(context: ModelContext(store)).quote(game: .yuGiOh,
-            printingID: printing.idString, variantID: PhysicalVariant.yugiohFirstEdition.id))
+        func savedReference() -> ReferenceQuote? {
+            QuoteCache(context: ModelContext(store)).quote(game: .yuGiOh, printingID: printing.idString,
+                variantID: PhysicalVariant.yugiohFirstEdition.id)
+        }
+        let persisted = await waitUntil { savedReference()?.lastFailureAt != nil }
+        XCTAssertTrue(persisted)
+        let reference = try XCTUnwrap(savedReference())
         XCTAssertEqual(reference.effectiveAmount, 7)
         XCTAssertEqual(reference.retrievedAt, date)
         XCTAssertNotNil(reference.lastFailureAt)

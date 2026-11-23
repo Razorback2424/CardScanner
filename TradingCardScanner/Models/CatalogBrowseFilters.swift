@@ -206,6 +206,13 @@ struct CatalogBrowseQuote: Equatable, Sendable {
 
     var canRetry: Bool { status == .failed || status == .stale }
 
+    var freshnessLabel: String? {
+        if status == .stale, source == .tcgCSV, let asOf {
+            return String(localized: "Stale · as of \(asOf.formatted(date: .abbreviated, time: .omitted))")
+        }
+        return status.label
+    }
+
     static func from(_ update: CatalogPriceUpdate, id: String) -> Self {
         if update.printingNeedsReviewIDs.contains(id) { return .init(amount: nil, status: .printingReview) }
         if update.missingMappingIDs.contains(id) { return .init(amount: nil, status: .mappingPending) }
@@ -220,6 +227,9 @@ struct CatalogBrowseQuote: Equatable, Sendable {
     }
 
     static func merging(_ update: CatalogPriceUpdate, id: String, previous: Self?) -> Self? {
+        let previous = previous.flatMap {
+            TCGCSVPriceMirror.canServe(source: $0.source, capturedAt: $0.asOf) ? $0 : nil
+        }
         let incoming = from(update, id: id)
         if incoming.status == .pending { return previous }
         if incoming.status == .failed, var lastQuote = previous, lastQuote.amount != nil {

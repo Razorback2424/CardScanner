@@ -1,6 +1,42 @@
 import Foundation
 import SwiftData
 
+struct CatalogQuoteKey: Hashable, Sendable {
+    let game: CardGame
+    let printingID: String
+    let variantID: String?
+    let treatmentIDs: [String]
+
+    var rawValue: String {
+        ReferenceQuote.key(game: game, printingID: printingID, variantID: variantID, treatmentIDs: treatmentIDs)
+    }
+
+    static func make(game: CardGame, providerID: String, printRun: PokemonPrintRun?,
+                     variantID: String?, treatmentIDs: [String]) -> Self {
+        Self(game: game, printingID: PriceFallbackQuoteResolver.printingID(for: providerID, pokemonPrintRun: printRun),
+             variantID: variantID, treatmentIDs: MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs))
+    }
+
+    static func make(for summary: CatalogCardSummary, variant: PhysicalVariant?) -> Self {
+        make(game: summary.game, providerID: summary.providerID, printRun: summary.pokemonPrintRun,
+             variantID: variant?.id,
+             treatmentIDs: summary.magicTreatmentEvidence.applicableTreatments(for: variant).map(\.id))
+    }
+
+    static func gridKeys(for summary: CatalogCardSummary) -> [Self] {
+        if let variant = summary.masterSetVariant {
+            return [make(for: summary, variant: variant)]
+        }
+        if summary.game == .pokemon,
+           PokemonTCGCSVMapping.byCardID[summary.providerID]?.setID == summary.setID.providerID {
+            return [make(for: summary, variant: .holo)]
+        }
+        let variants = summary.verifiedBrowseFinishes
+            ?? summary.magicFinishIDs?.compactMap { PhysicalVariant.resolving($0) } ?? []
+        return variants.map { make(for: summary, variant: $0) }
+    }
+}
+
 /// A reusable market quote for a printing and physical variant.
 ///
 /// This is intentionally separate from `PriceRecord`: a reference quote means
@@ -78,11 +114,22 @@ final class ReferenceQuote {
         )
     }
 
+    var normalizedPrice: NormalizedPrice? {
+        guard let amount = effectiveAmount, let source, let sourceVariantID, !sourceVariantID.isEmpty,
+              let retrievedAt else { return nil }
+        return NormalizedPrice(unitMarketPriceUSD: amount, currencyCode: currencyCode, source: source,
+            sourceVariantID: sourceVariantID, sourceUpdatedAt: sourceUpdatedAt, fetchedAt: retrievedAt,
+            catalogIdentity: catalogPriceIdentity)
+    }
+
     func apply(_ lookup: PriceLookup, at date: Date, isReplay: Bool = false) {
         if case let .price(price) = lookup, let invalidatedAt, price.fetchedAt <= invalidatedAt { return }
         // Cached catalog responses can finish after a newer lookup. Their
         // arrival time must not replace the newer price or its freshness.
-        if case let .price(price) = lookup, let retrievedAt, price.fetchedAt < retrievedAt { return }
+        if case let .price(price) = lookup, let retrievedAt, price.fetchedAt < retrievedAt {
+            guard let previous = normalizedPrice,
+                  QuoteEvidenceOrdering.isNewer(price, than: previous, game: CardGame(rawValue: game)) else { return }
+        }
 
         switch lookup {
         case let .price(price):

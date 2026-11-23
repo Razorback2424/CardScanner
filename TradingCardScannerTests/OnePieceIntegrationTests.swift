@@ -11,7 +11,8 @@ private actor OnePieceTestPriceSource: OnePieceMarketPriceSource {
     var calls = 0
     var lastMinimumFetchedAt: Date?
     func failRequests() { fails = true }
-    func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?) async throws -> PriceLookup {
+    func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?,
+               allowsStaleFallback: Bool) async throws -> PriceLookup {
         calls += 1
         lastMinimumFetchedAt = minimumFetchedAt
         if fails { throw URLError(.timedOut) }
@@ -51,6 +52,10 @@ private final class OnePiecePriceTestProtocol: URLProtocol {
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
+        if request.url?.lastPathComponent == "last-updated.txt" {
+            send(Data(MarketMirrorFixture.build.utf8))
+            return
+        }
         if let handler = Self.asyncHandler {
             responseTask = Task {
                 let data = await handler(request)
@@ -2031,6 +2036,15 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(published.revision, 2)
         let priceKey = PriceRecord.key(game: .onePiece, printingID: uuid(1).uuidString.lowercased(), variantID: "foil")
         XCTAssertNil(PriceStore(context: ModelContext(container)).record(forKey: priceKey)?.effectiveUnitMarketPriceUSD)
+        let referenceKey = CatalogQuoteKey.make(game: .onePiece, providerID: uuid(1).uuidString.lowercased(),
+            printRun: nil, variantID: "foil", treatmentIDs: [])
+        let delayedPrice = try XCTUnwrap(quote.usablePrice)
+        let referenceStore = await ReferenceQuoteStore.makeBackground(modelContainer: container)
+        await referenceStore.store([referenceKey: delayedPrice], successfulCheckAt: now)
+        await referenceStore.recordPriceCheck(quote, key: referenceKey, at: now, isReplay: false, successfulCheckAt: now)
+        XCTAssertNil(QuoteCache(context: ModelContext(container)).quote(game: .onePiece,
+            printingID: referenceKey.printingID, variantID: referenceKey.variantID),
+            "A delayed write must not create a reference quote for the withdrawn mapping")
         XCTAssertThrowsError(try published.catalog.validateVariantCorrection(printingID: uuid(1).uuidString.lowercased(), variantID: "foil"))
         // Snapshot after the intentional quote withdrawal. The rejected
         // correction must not move ownership or add further price history.

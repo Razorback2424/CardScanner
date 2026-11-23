@@ -36,6 +36,7 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     private let cacheDirectory: URL
     private let now: @Sendable () -> Date
     private let spacing: TimeInterval
+    private let marker: TCGCSVMirrorBuildMarker
     private var snapshots: [String: PokemonTCGCSVSnapshot] = [:]
     private struct PendingSnapshot {
         let task: Task<PokemonTCGCSVSnapshot, Error>
@@ -43,8 +44,6 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     }
     private var tasks: [String: PendingSnapshot] = [:]
     private var failures: [String: Date] = [:]
-    private var build: (value: String, checkedAt: Date)?
-    private var buildTask: Task<String, Error>?
     private var nextRequestAt = Date.distantPast
 
     init(
@@ -53,13 +52,16 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         cacheDirectory: URL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("TCGCSV-v1", isDirectory: true),
         now: @escaping @Sendable () -> Date = { .now },
-        spacing: TimeInterval = 0.1
+        spacing: TimeInterval = 0.1,
+        marker: TCGCSVMirrorBuildMarker? = nil
     ) {
         self.session = session
         self.baseURL = baseURL
         self.cacheDirectory = cacheDirectory
         self.now = now
         self.spacing = spacing
+        self.marker = marker ?? (baseURL == TCGCSVPriceMirror.baseURL && session === TCGCSVPriceMirror.session
+            ? .shared : TCGCSVMirrorBuildMarker(baseURL: baseURL, session: session, now: now))
     }
 
     func snapshot(setID: String, retry: Bool = false) async throws -> PokemonTCGCSVSnapshot {
@@ -67,10 +69,12 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         guard let groupID = PokemonTCGCSVMapping.groupID(for: key) else {
             throw PokemonTCGCSVError.unsupportedSet
         }
+        let knownBuild = await marker.lastKnownBuild()
         try Task.checkCancellation()
         let cached = load(key)
         if !retry, let cached, isFresh(cached),
-           build == nil || build?.value == cached.feedBuild { return cached }
+           knownBuild == nil || knownBuild == cached.feedBuild { return cached }
+        let backgroundFallback = !retry && cached.map { !isFresh($0) && isServable($0) } == true ? cached : nil
         if let pending = tasks[key] {
             if retry, !pending.retry {
                 // An ordinary request may finish with its saved fallback.
@@ -79,10 +83,11 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
                 try Task.checkCancellation()
                 return try await snapshot(setID: key, retry: true)
             }
+            if let backgroundFallback { return backgroundFallback }
             return try await waitFor(pending.task)
         }
-        if !retry, let failure = failures[key], now().timeIntervalSince(failure) < 15 * 60 {
-            if let cached, isFresh(cached) { return cached }
+        if !retry, let failure = failures[key], TCGCSVPriceMirror.isWithinAge(failure, now: now(), maxAge: 900) {
+            if let cached, isServable(cached) { return cached }
             throw PokemonTCGCSVError.retryLater
         }
         let task = Task {
@@ -97,13 +102,14 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
                 if !(error is CancellationError) {
                     self.failures[key] = self.now()
                     // A newer publication does not invalidate the saved quote.
-                    // Recheck freshness after the request; never extend its dates.
-                    if !retry, let cached, self.isFresh(cached) { return cached }
+                    // Recheck the serve limit after the request ends.
+                    if !retry, let cached, self.isServable(cached) { return cached }
                 }
                 throw error
             }
         }
         tasks[key] = PendingSnapshot(task: task, retry: retry)
+        if let backgroundFallback { return backgroundFallback }
         return try await waitFor(task)
     }
 
@@ -125,12 +131,15 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     }
 
     private func isFresh(_ date: Date) -> Bool {
-        let age = now().timeIntervalSince(date)
-        return age >= 0 && age < 24 * 60 * 60
+        TCGCSVPriceMirror.isWithinAge(date, now: now(), maxAge: TCGCSVPriceMirror.refreshAfter)
     }
 
     private func isFresh(_ snapshot: PokemonTCGCSVSnapshot) -> Bool {
-        isFresh(snapshot.fetchedAt) && isFresh(snapshot.validatedAt)
+        isServable(snapshot) && isFresh(snapshot.validatedAt)
+    }
+
+    private func isServable(_ snapshot: PokemonTCGCSVSnapshot) -> Bool {
+        TCGCSVPriceMirror.isWithinAge(snapshot.fetchedAt, now: now(), maxAge: TCGCSVPriceMirror.maxServeAge)
     }
 
     private func load(_ key: String) -> PokemonTCGCSVSnapshot? {
@@ -152,15 +161,17 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     private func download(setID: String, groupID: Int, retry: Bool) async throws -> PokemonTCGCSVSnapshot {
         let feedBuild = try await currentBuild(forceRefresh: retry)
         let result: PokemonTCGCSVSnapshot
-        do {
+        if load(setID)?.feedBuild == feedBuild {
             result = try await download(setID: setID, groupID: groupID, feedBuild: feedBuild)
-        } catch PriceQuoteError.providerUnavailable {
-            // Publication may advance while our marker is still cached. Retry
-            // once against a newly observed build; torn or invalid files under
-            // the same marker remain failures, never accepted quotes.
-            let latestBuild = try await currentBuild(forceRefresh: true)
-            guard latestBuild != feedBuild else { throw PriceQuoteError.providerUnavailable }
-            result = try await download(setID: setID, groupID: groupID, feedBuild: latestBuild)
+        } else {
+            do {
+                result = try await download(setID: setID, groupID: groupID, feedBuild: feedBuild)
+            } catch PriceQuoteError.providerUnavailable {
+                // A rollover can leave independently cached group files mixed.
+                let latestBuild = try await currentBuild(forceRefresh: true)
+                guard latestBuild != feedBuild else { throw PriceQuoteError.providerUnavailable }
+                result = try await download(setID: setID, groupID: groupID, feedBuild: latestBuild)
+            }
         }
         // A cache write failure must not hide an otherwise valid current quote.
         if let data = try? JSONEncoder().encode(result) {
@@ -171,10 +182,8 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
     }
 
     private func download(setID: String, groupID: Int, feedBuild: String) async throws -> PokemonTCGCSVSnapshot {
-        if var previous = load(setID), previous.feedBuild == feedBuild {
+        if var previous = load(setID), previous.feedBuild == feedBuild, isServable(previous) {
             // Checking an unchanged marker cannot renew the server's capture.
-            // This also repairs caches revalidated indefinitely by older builds.
-            guard isFresh(previous.fetchedAt) else { throw PriceQuoteError.providerUnavailable }
             previous.validatedAt = now()
             return previous
         } else {
@@ -191,26 +200,11 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         }
     }
 
-    private func currentBuild(forceRefresh: Bool = false) async throws -> String {
-        if let task = buildTask { return try await task.value }
-        if !forceRefresh, let build, isFresh(build.checkedAt) { return build.value }
-        let task = Task {
-            let data = try await self.fetch("last-updated.txt")
-            guard let raw = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
-                  raw.count < 100, ISO8601DateFormatter().date(from: raw) != nil else {
-                throw PokemonTCGCSVError.invalidResponse
-            }
-            return raw
-        }
-        buildTask = task
+    private func currentBuild(forceRefresh: Bool) async throws -> String {
         do {
-            let value = try await task.value
-            build = (value, now())
-            buildTask = nil
-            return value
-        } catch {
-            buildTask = nil
-            throw error
+            return try await marker.currentBuild(forceRefresh: forceRefresh)
+        } catch PriceQuoteError.providerUnavailable {
+            throw PokemonTCGCSVError.invalidResponse
         }
     }
 
@@ -222,11 +216,10 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         if delay > 0 { try await Task.sleep(for: .seconds(delay)) }
         var request = URLRequest(url: baseURL.appendingPathComponent(path))
         request.timeoutInterval = 12
-        request.cachePolicy = .reloadIgnoringLocalCacheData
+        request.cachePolicy = .reloadRevalidatingCacheData
         request.setValue("ScanStash/1.0 (iOS; daily set pricing)", forHTTPHeaderField: "User-Agent")
-        let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse, http.url == request.url,
-              http.statusCode == 200, data.count <= 8 * 1_024 * 1_024 else {
+        let (data, http) = try await TCGCSVPriceMirror.download(request, session: session, interval: "mirror.group")
+        guard http.statusCode == 200, data.count <= 8 * 1_024 * 1_024 else {
             throw PokemonTCGCSVError.invalidResponse
         }
         return data
@@ -497,10 +490,12 @@ struct PokemonMarketPriceResolver: Sendable {
         return snapshot.quote(cardID: cardID, variant: variant, printRun: printRun)
     }
 
-    func quote(for product: PokemonReviewedMarketProduct, minimumFetchedAt: Date? = nil) async throws -> PriceLookup {
+    func quote(for product: PokemonReviewedMarketProduct, minimumFetchedAt: Date? = nil,
+               allowsStaleFallback: Bool = true) async throws -> PriceLookup {
         try await productSource.quote(category: 3, group: product.groupID, productID: product.productID,
             name: product.marketName, number: product.number, lane: product.printing,
-            generation: nil, minimumFetchedAt: minimumFetchedAt, allowsMissingNumber: product.allowsMissingMarketNumber)
+            generation: nil, minimumFetchedAt: minimumFetchedAt, allowsMissingNumber: product.allowsMissingMarketNumber,
+            allowsStaleFallback: allowsStaleFallback)
     }
 
     func price(for card: IdentifiedCard, variant: PhysicalVariant?, printRun: PokemonPrintRun?) async -> PriceLookup {

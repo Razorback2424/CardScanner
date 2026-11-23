@@ -1,6 +1,33 @@
 import Foundation
 import SwiftData
 
+enum QuoteEvidenceOrdering {
+    static func isNewer(_ candidate: NormalizedPrice, than previous: NormalizedPrice, game: CardGame,
+                        now: Date = .now) -> Bool {
+        guard game == .pokemon else { return candidate.fetchedAt > previous.fetchedAt }
+        switch (candidate.source, previous.source) {
+        case (.tcgplayer, .tcgCSV), (.tcgCSV, .tcgplayer):
+            let embed = candidate.source == .tcgplayer ? candidate : previous
+            let mirror = candidate.source == .tcgCSV ? candidate : previous
+            return PokemonPriceSelection.preferred(embed: embed, tcgCSV: mirror, now: now) == candidate
+        default: break
+        }
+        guard candidate.fetchedAt >= previous.fetchedAt else { return false }
+        if previous.sourceUpdatedAt != nil, candidate.sourceUpdatedAt == nil { return false }
+        if candidate.sourceUpdatedAt != nil, previous.sourceUpdatedAt == nil {
+            return candidate.effectiveAsOf > previous.effectiveAsOf
+        }
+        if candidate.effectiveAsOf != previous.effectiveAsOf {
+            return candidate.effectiveAsOf > previous.effectiveAsOf
+        }
+        return candidate.fetchedAt > previous.fetchedAt
+    }
+
+    static func isNewer(_ candidate: NormalizedPrice, thanHintCheckedAt checkedAt: Date, game: CardGame) -> Bool {
+        (game == .pokemon ? candidate.effectiveAsOf : candidate.fetchedAt) > checkedAt
+    }
+}
+
 /// Persistence boundary for non-collection price knowledge.
 ///
 /// There is deliberately no path from this service to `PriceObservationLog`,
@@ -34,7 +61,8 @@ struct QuoteCache {
         at date: Date = .now,
         treatmentIDs: [String] = [],
         isReplay: Bool = false,
-        successfulCheckAt: Date? = nil
+        successfulCheckAt: Date? = nil,
+        saveImmediately: Bool = true
     ) -> ReferenceQuote {
         let record = quote(
             game: game,
@@ -67,8 +95,22 @@ struct QuoteCache {
            record.lastSuccessfulCheckAt.map({ successfulCheckAt >= $0 }) ?? true {
             record.lastSuccessfulCheckAt = successfulCheckAt
         }
-        save()
+        if saveImmediately { save() }
         return record
+    }
+
+    @discardableResult
+    func storeIfNewer(_ price: NormalizedPrice, key: CatalogQuoteKey, successfulCheckAt: Date,
+                      saveImmediately: Bool = true) -> NormalizedPrice? {
+        let previous = quote(game: key.game, printingID: key.printingID,
+            variantID: key.variantID, treatmentIDs: key.treatmentIDs)?.normalizedPrice
+        guard price.isUsableUSD, !price.sourceVariantID.isEmpty else { return previous }
+        if let previous, !QuoteEvidenceOrdering.isNewer(price, than: previous, game: key.game) {
+            return previous
+        }
+        return store(.price(price), game: key.game, printingID: key.printingID, variantID: key.variantID,
+            at: successfulCheckAt, treatmentIDs: key.treatmentIDs, successfulCheckAt: successfulCheckAt,
+            saveImmediately: saveImmediately).normalizedPrice
     }
 
     @discardableResult
@@ -77,7 +119,8 @@ struct QuoteCache {
         printingID: String,
         variantID: String?,
         at date: Date = .now,
-        treatmentIDs: [String] = []
+        treatmentIDs: [String] = [],
+        saveImmediately: Bool = true
     ) -> ReferenceQuote {
         let record = quote(
             game: game,
@@ -104,7 +147,7 @@ struct QuoteCache {
             record.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
         record.recordFailure(at: date)
-        save()
+        if saveImmediately { save() }
         return record
     }
 
@@ -113,7 +156,7 @@ struct QuoteCache {
     /// mutation. Production Price Check contexts are separate from collection
     /// ownership state as well.
     @discardableResult
-    private func save() -> Bool {
+    fileprivate func save() -> Bool {
         guard context.hasChanges else { return true }
         let signpost = PerformanceSignpost.beginInterval("PriceCheck.quoteSave", id: PerformanceSignpost.makeID(), "")
         do {
@@ -124,6 +167,111 @@ struct QuoteCache {
             context.rollback()
             PerformanceSignpost.endInterval("PriceCheck.quoteSave", signpost, "rollback")
             return false
+        }
+    }
+}
+
+@ModelActor
+actor ReferenceQuoteStore: BackgroundModelActor {
+    private var isCurrent: StorageGenerationContinuation = { true }
+
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
+    @MainActor
+    static func forActiveSession(expectedToken: StorageGenerationToken?) async -> ReferenceQuoteStore? {
+        let generation = CollectionStorageGeneration.shared
+        guard let token = expectedToken, generation.isCurrent(token),
+              let container = generation.activeSession()?.container else {
+            return nil
+        }
+        let store = await makeBackground(modelContainer: container)
+        guard generation.isCurrent(token) else { return nil }
+        await store.setContinuation(generation.continuation(for: token))
+        return store
+    }
+
+    func setContinuation(_ continuation: @escaping StorageGenerationContinuation) {
+        isCurrent = continuation
+    }
+
+    func quotes(forKeys keys: [String], now: Date = .now) -> [String: NormalizedPrice] {
+        guard isCurrent(), !keys.isEmpty, !Task.isCancelled else { return [:] }
+        let context = ModelContext(modelContainer)
+        var result: [String: NormalizedPrice] = [:]
+        for start in stride(from: 0, to: keys.count, by: 256) {
+            let chunk = Array(keys[start..<min(start + 256, keys.count)])
+            let descriptor = FetchDescriptor<ReferenceQuote>(predicate: #Predicate { chunk.contains($0.key) })
+            guard let quotes = try? context.fetch(descriptor) else { continue }
+            for quote in quotes {
+                guard let price = quote.normalizedPrice,
+                      CollectionStore.acceptsCatalogPrice(price, game: CardGame(rawValue: quote.game),
+                                                          key: quote.key, in: modelContainer),
+                      TCGCSVPriceMirror.canServe(source: price.source, capturedAt: price.fetchedAt, now: now) else { continue }
+                if let existing = result[quote.key],
+                   !QuoteEvidenceOrdering.isNewer(price, than: existing, game: CardGame(rawValue: quote.game), now: now) { continue }
+                result[quote.key] = price
+            }
+        }
+        return isCurrent() ? result : [:]
+    }
+
+    func store(_ batch: [CatalogQuoteKey: NormalizedPrice], successfulCheckAt: Date) {
+        guard !batch.isEmpty, isCurrent(), !Task.isCancelled else { return }
+        // Browse can still display and sort the live quote during an ownership write.
+        try? CollectionWriteSerializer.perform(container: modelContainer, timeout: .immediate) { context in
+            let cache = QuoteCache(context: context)
+            for (key, price) in batch where CollectionStore.acceptsCatalogPrice(price, game: key.game,
+                key: key.rawValue, in: modelContainer) {
+                cache.storeIfNewer(price, key: key, successfulCheckAt: successfulCheckAt, saveImmediately: false)
+            }
+            guard isCurrent(), !Task.isCancelled else { throw CancellationError() }
+            cache.save()
+        }
+    }
+
+    func recordPriceCheck(_ lookup: PriceLookup, key: CatalogQuoteKey, at date: Date,
+                          isReplay: Bool, successfulCheckAt: Date?) async {
+        await writePriceCheck { cache in
+            if let price = lookup.usablePrice,
+               !CollectionStore.acceptsCatalogPrice(price, game: key.game, key: key.rawValue, in: modelContainer) { return }
+            var selected = lookup
+            if let candidate = lookup.usablePrice,
+               let previous = cache.quote(game: key.game, printingID: key.printingID,
+                   variantID: key.variantID, treatmentIDs: key.treatmentIDs)?.normalizedPrice,
+               !QuoteEvidenceOrdering.isNewer(candidate, than: previous, game: key.game) {
+                selected = .price(previous)
+            }
+            cache.store(selected, game: key.game, printingID: key.printingID, variantID: key.variantID,
+                at: date, treatmentIDs: key.treatmentIDs, isReplay: isReplay,
+                successfulCheckAt: successfulCheckAt, saveImmediately: false)
+        }
+    }
+
+    func recordPriceCheckFailure(key: CatalogQuoteKey, at date: Date) async {
+        await writePriceCheck { cache in
+            cache.recordFailure(game: key.game, printingID: key.printingID, variantID: key.variantID,
+                at: date, treatmentIDs: key.treatmentIDs, saveImmediately: false)
+        }
+    }
+
+    private func writePriceCheck(_ write: (QuoteCache) -> Void) async {
+        while isCurrent(), !Task.isCancelled {
+            do {
+                try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { context in
+                    guard isCurrent(), !Task.isCancelled else { throw CancellationError() }
+                    let cache = QuoteCache(context: context)
+                    write(cache)
+                    guard isCurrent(), !Task.isCancelled else { throw CancellationError() }
+                    cache.save()
+                }
+                return
+            } catch CollectionStoreError.collectionBusy {
+                // An exclusive ownership session can outlast one lock acquisition.
+                try? await Task.sleep(for: .milliseconds(80))
+            } catch { return }
         }
     }
 }

@@ -30,7 +30,8 @@ struct PokemonPriceAdapter: GamePriceAdapter {
                   ProductCatalogIdentity.numbersMatch(product.number, card.cardNumber) else {
                 throw PriceQuoteError.identityMismatch
             }
-            return try await marketPrices.quote(for: product, minimumFetchedAt: request.minimumFetchedAt)
+            return try await marketPrices.quote(for: product, minimumFetchedAt: request.minimumFetchedAt,
+                allowsStaleFallback: request.allowsHistoricalFallback)
         }
         if PokemonReviewedMarketProduct.usesReviewedVariantsOnly(cardID: card.printingID, setID: card.setID) {
             if let promo = PokemonDeltaReignCatalog.card(card.printingID), promo.isPromo, pokemonPrintRun == nil,
@@ -55,11 +56,23 @@ struct PokemonPriceAdapter: GamePriceAdapter {
             ) { return fallback }
             throw error
         }
-        if case let .price(price) = catalog, price.currencyCode == "USD" { return catalog }
-        return try await marketPrices.fallback(
-            cardID: card.printingID, game: card.game, variant: variant,
-            printRun: pokemonPrintRun, retry: true
-        ) ?? catalog
+        let now = Date.now
+        let embed = catalog.usablePrice
+        if let embed, !embed.isStale(now: now) { return catalog }
+        do {
+            let mirror = try await marketPrices.fallback(
+                cardID: card.printingID, game: card.game, variant: variant,
+                printRun: pokemonPrintRun, retry: embed == nil || !request.allowsHistoricalFallback
+            )
+            if let preferred = PokemonPriceSelection.preferred(embed: embed, tcgCSV: mirror?.usablePrice, now: now) {
+                return .price(preferred)
+            }
+            return mirror ?? catalog
+        } catch {
+            if error is CancellationError || Task.isCancelled { throw CancellationError() }
+            if embed != nil { return catalog }
+            throw error
+        }
     }
 
     private func refreshCatalog(

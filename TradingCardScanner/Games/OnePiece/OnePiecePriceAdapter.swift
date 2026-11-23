@@ -2,7 +2,8 @@ import Foundation
 import OnePieceCatalogCore
 
 protocol OnePieceMarketPriceSource: Sendable {
-    func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?) async throws -> PriceLookup
+    func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?,
+               allowsStaleFallback: Bool) async throws -> PriceLookup
 }
 
 /// One Piece owns mapping validation; the bounded feed transport is shared.
@@ -17,7 +18,7 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
         transport = TCGCSVProductPriceSource(baseURL: baseURL, session: session, cacheDirectory: cacheDirectory)
     }
     func quote(mapping: OnePieceMarketMapping, number: String, generation: String? = nil,
-               minimumFetchedAt: Date? = nil) async throws -> PriceLookup {
+               minimumFetchedAt: Date? = nil, allowsStaleFallback: Bool = true) async throws -> PriceLookup {
         guard mapping.provider == "tcgplayer", mapping.market == "us", mapping.currency == "USD",
               mapping.condition == "aggregate", mapping.status == .exact,
               let group = mapping.qualifiers["groupID"].flatMap(Int.init), group > 0,
@@ -27,7 +28,8 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
               ["normal": "Normal", "foil": "Foil"][mapping.variantID] == lane,
               mapping.qualifiers["finish"] == lane else { throw PriceQuoteError.identityMismatch }
         return try await transport.quote(category: 68, group: group, productID: productID,
-            name: name, number: number, lane: lane, generation: generation, minimumFetchedAt: minimumFetchedAt)
+            name: name, number: number, lane: lane, generation: generation, minimumFetchedAt: minimumFetchedAt,
+            allowsStaleFallback: allowsStaleFallback)
     }
 }
 
@@ -76,7 +78,7 @@ struct OnePiecePriceAdapter: GamePriceAdapter {
         }
         let card = try OnePieceCatalogAdapter(registry: current).resolution(forPrintingID: id).card
         return try await refresh(.init(identity: .legacy(card), variant: variant,
-            pokemonPrintRun: nil, catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt))
+            pokemonPrintRun: nil, catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt, allowsHistoricalFallback: false))
     }
 
     func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {
@@ -98,7 +100,8 @@ struct OnePiecePriceAdapter: GamePriceAdapter {
         guard mappings.count <= 1 else { throw PriceQuoteError.identityMismatch }
         guard let mapping = mappings.first else { return .unavailable(nil) }
         let quote = try await source.quote(mapping: mapping, number: canonical.printedNumber,
-            generation: current.generation, minimumFetchedAt: request.minimumFetchedAt)
+            generation: current.generation, minimumFetchedAt: request.minimumFetchedAt,
+            allowsStaleFallback: request.allowsHistoricalFallback)
         // A mapping withdrawn while HTTP was in flight must not publish an old quote.
         let latest = await currentRegistry()
         guard latest.printingByID[id]?.status == .verified,

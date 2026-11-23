@@ -694,15 +694,30 @@ actor ScannerCollectionWriter: BackgroundModelActor {
     }
 
     func reconcileOwnedPrice(_ lookup: PriceLookup, collectionKey: String,
+                             expectedSelectedKey: String? = nil, expectedRowCount: Int? = nil,
                              shouldContinue: StorageGenerationContinuation) throws -> OwnedPriceReconciliation {
         try performOwnershipWrite { context in
             try Task.checkCancellation()
             guard shouldContinue() else { throw CancellationError() }
-            guard let card = try context.fetch(FetchDescriptor<CollectedCard>(
-                predicate: #Predicate { $0.collectionKey == collectionKey })).first else {
+            let rows = try context.fetch(FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey == collectionKey }))
+            guard let card = rows.first else {
                 throw CollectionStoreError.missingDestinationRow(collectionKey)
             }
             let prices = PriceStore(context: context)
+            if let expectedSelectedKey {
+                guard expectedRowCount.map({ $0 == rows.count }) ?? true,
+                      Set(rows.map(\.priceKey)).count == 1,
+                      try rows.allSatisfy({ row in
+                          guard row.quantity > 0, row.itemKind == .rawCard,
+                                !UnverifiedReportKey.hasReport(row.collectionKey),
+                                !PokemonReviewedPhysicalObjects.requiresReview(row) else { return false }
+                          return (try prices.selectedRecord(for: row)?.key ?? row.priceKey) == expectedSelectedKey
+                      }) else { throw CollectionStoreError.staleQuantity }
+                if let price = lookup.usablePrice,
+                   !CollectionStore.acceptsCatalogPrice(price, game: card.cardGame, key: expectedSelectedKey,
+                                                        in: context.container) { throw PriceQuoteError.identityMismatch }
+            }
             let reason = PriceStore.ownedPriceRetentionReason(existing: try prices.selectedRecord(for: card), incoming: lookup)
             guard prices.storeOwnedPrice(lookup, collectionKey: collectionKey), prices.save() else {
                 context.rollback()
@@ -1751,6 +1766,7 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
         var pokemonCatalogCoordinator: PokemonCatalogCoordinator?
         var legacyCorrectionGames = Set<CardGame>()
         var catalogRevisions: [CardGame: Int] = [:]
+        var priceAuthorities: [CardGame: GameCatalogPriceAuthority] = [:]
         var hasCatalogAuthority = false
 
         init(container: ModelContainer, session: CollectionStoreSession) {
@@ -1795,6 +1811,7 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
     func installCatalogAdapter(
         _ adapter: any GameCatalogAdapter,
         revision: Int,
+        priceAuthority: GameCatalogPriceAuthority?,
         for container: ModelContainer
     ) -> Bool {
         _ = session(for: container)
@@ -1803,13 +1820,20 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
         guard let entry = entries[ObjectIdentifier(container)], revision >= 0 else { return false }
         let installedRevision = entry.catalogRevisions[adapter.game, default: -1]
         if revision == installedRevision {
-            return entry.catalogAdapters?.adapter(for: adapter.game)?.generation == adapter.generation
+            guard entry.catalogAdapters?.adapter(for: adapter.game)?.generation == adapter.generation else { return false }
+            if let priceAuthority { entry.priceAuthorities[adapter.game] = priceAuthority }
+            return true
         }
         guard revision > installedRevision else { return false }
         let current = entry.catalogAdapters ?? (try! GameCatalogAdapterRegistry(adapters: []))
         entry.catalogAdapters = current.replacing(adapter)
         entry.catalogRevisions[adapter.game] = revision
+        entry.priceAuthorities[adapter.game] = priceAuthority
         return true
+    }
+
+    func priceAuthority(for game: CardGame, container: ModelContainer) -> GameCatalogPriceAuthority? {
+        lock.withLock { entries[ObjectIdentifier(container)]?.priceAuthorities[game] }
     }
 
     func canInstallCatalogAdapter(_ adapter: any GameCatalogAdapter, revision: Int,
@@ -2164,9 +2188,18 @@ struct CollectionStore {
     static func installCatalogAdapter(
         _ adapter: any GameCatalogAdapter,
         revision: Int,
+        priceAuthority: GameCatalogPriceAuthority? = nil,
         for container: ModelContainer
     ) -> Bool {
-        CollectionStoreSessionRegistry.shared.installCatalogAdapter(adapter, revision: revision, for: container)
+        CollectionStoreSessionRegistry.shared.installCatalogAdapter(adapter, revision: revision,
+            priceAuthority: priceAuthority, for: container)
+    }
+
+    static func acceptsCatalogPrice(_ price: NormalizedPrice, game: CardGame, key: String,
+                                    in container: ModelContainer) -> Bool {
+        guard let authority = CollectionStoreSessionRegistry.shared.priceAuthority(for: game, container: container),
+              authority.managedSources.contains(price.source) else { return true }
+        return authority.identityByPriceKey[key].map { $0 == price.catalogIdentity } ?? false
     }
 
     static func canInstallCatalogAdapter(_ adapter: any GameCatalogAdapter, revision: Int,

@@ -35,6 +35,11 @@ enum PriceLookup: Equatable, Sendable {
     /// this exact physical variant. `nil` means no pricing source was queried.
     case unavailable(PriceSource?)
 
+    var usablePrice: NormalizedPrice? {
+        guard case let .price(price) = self, price.isUsableUSD else { return nil }
+        return price
+    }
+
     /// Whether this lookup contains an observation worth persisting.
     var hasObservation: Bool {
         switch self {
@@ -43,6 +48,19 @@ enum PriceLookup: Equatable, Sendable {
         case let .unavailable(source):
             return source != nil
         }
+    }
+}
+
+enum PokemonPriceSelection {
+    static func preferred(embed: NormalizedPrice?, tcgCSV: NormalizedPrice?, now: Date) -> NormalizedPrice? {
+        let embed = embed.flatMap { $0.isUsableUSD ? $0 : nil }
+        let tcgCSV = tcgCSV.flatMap {
+            $0.isUsableUSD && TCGCSVPriceMirror.canServe(source: $0.source, capturedAt: $0.fetchedAt, now: now) ? $0 : nil
+        }
+        guard let embed, let tcgCSV else { return embed ?? tcgCSV }
+        guard embed.isStale(now: now) else { return embed }
+        guard tcgCSV.isStale(now: now) else { return tcgCSV }
+        return tcgCSV.effectiveAsOf > embed.effectiveAsOf ? tcgCSV : embed
     }
 }
 
@@ -331,7 +349,9 @@ enum CardPricing {
         variant: PhysicalVariant?,
         magicTreatments: [MagicTreatment],
         pokemonPrintRun: PokemonPrintRun? = nil,
-        at fetchedAt: Date = .now
+        at fetchedAt: Date = .now,
+        now: Date = .now,
+        supplementalPokemonQuote: PriceLookup? = nil
     ) -> PriceLookup {
         if case let .pokemon(pokemon, _) = card.legacyIdentity,
            signedPriceIsBlocked(on: pokemon, variant: variant) { return .unavailable(.tcgplayer) }
@@ -339,11 +359,14 @@ enum CardPricing {
             for: card, variant: variant, magicTreatments: magicTreatments,
             pokemonPrintRun: pokemonPrintRun, at: fetchedAt
         )
-        if case let .price(price) = catalog, price.isUsableUSD { return catalog }
-        if case let .pokemon(pokemon, _) = card.legacyIdentity,
-           let supplemental = pokemon.supplementalTCGCSV?.quote(
-               cardID: pokemon.id, variant: variant, printRun: pokemonPrintRun
-           ) { return supplemental }
+        if case let .pokemon(pokemon, _) = card.legacyIdentity {
+            let supplemental = supplementalPokemonQuote
+                ?? pokemon.supplementalTCGCSV?.quote(cardID: pokemon.id, variant: variant, printRun: pokemonPrintRun)
+            if let preferred = PokemonPriceSelection.preferred(
+                embed: catalog.usablePrice, tcgCSV: supplemental?.usablePrice, now: now
+            ) { return .price(preferred) }
+            if case .unavailable(.tcgCSV)? = supplemental { return .unavailable(.tcgCSV) }
+        }
         if case let .price(price) = catalog, !price.isUsableUSD { return .unavailable(price.source) }
         return catalog
     }

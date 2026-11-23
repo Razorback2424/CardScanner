@@ -36,7 +36,8 @@ struct YuGiOhDailyPriceSource: YuGiOhMarketPriceSource {
         do {
             return try await transport.quote(category: 2, group: group,
                 productID: productID, name: printing.productName, number: printing.code,
-                lane: edition.tcgplayerSubtype, generation: generation, minimumFetchedAt: minimumFetchedAt)
+                lane: edition.tcgplayerSubtype, generation: generation, minimumFetchedAt: minimumFetchedAt,
+                allowsStaleFallback: allowsHistoricalFallback)
         } catch is CancellationError {
             throw CancellationError()
         } catch let error as URLError where error.code == .cancelled {

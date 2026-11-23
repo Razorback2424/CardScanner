@@ -4,6 +4,113 @@ import XCTest
 
 @MainActor
 final class QuoteCacheTests: XCTestCase {
+    func testPriceCheckPersistsQuoteAndFailureAfterSerializerContention() async throws {
+        let context = try makeContext()
+        let container = context.container
+        let date = Date.now
+        let price = quote(42, at: date)
+        let coordinator = PriceCheckCoordinator(context: context,
+            refreshProvider: StubPriceCheckProvider(outcome: .quote(price)), now: { date })
+        let scan = priceCheckScan()
+        let visible = coordinator.present(scan)
+        let locked = expectation(description: "The background writer holds the serializer")
+        let release = DispatchSemaphore(value: 0)
+        DispatchQueue.global().async {
+            try? CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                locked.fulfill()
+                _ = release.wait(timeout: .now() + 5)
+            }
+        }
+        defer { release.signal() }
+        await fulfillment(of: [locked], timeout: 2)
+        let outcome = await coordinator.refresh(visible)
+        XCTAssertEqual(outcome, .quote(price))
+        XCTAssertEqual(coordinator.recordRefreshFailure(for: visible), date)
+        let key = coordinator.quoteKey(for: scan)
+        XCTAssertNil(QuoteCache(context: context).quote(game: key.game, printingID: key.printingID, variantID: key.variantID))
+        release.signal()
+        await coordinator.flushReferenceWrites()
+
+        let row = QuoteCache(context: ModelContext(container))
+            .quote(game: key.game, printingID: key.printingID, variantID: key.variantID)
+        XCTAssertEqual(row?.normalizedPrice, price.usablePrice)
+        XCTAssertEqual(row?.lastSuccessfulCheckAt, date)
+        XCTAssertEqual(row?.lastFailureAt, date)
+    }
+
+    func testStoreIfNewerKeepsProviderDateReceiptAndWithdrawalGuards() throws {
+        let context = try makeContext()
+        let cache = QuoteCache(context: context)
+        let t0 = Date(timeIntervalSince1970: 1_800_000_000)
+        func price(_ amount: Double, data: Double, receipt: Double) -> NormalizedPrice {
+            .init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "holo", sourceUpdatedAt: t0.addingTimeInterval(data),
+                fetchedAt: t0.addingTimeInterval(receipt), catalogIdentity: "tested-mapping")
+        }
+        let key = CatalogQuoteKey.make(game: .pokemon, providerID: "fixture-card", printRun: nil,
+            variantID: "holo", treatmentIDs: [])
+        let saved = price(12, data: 10, receipt: 20)
+        XCTAssertEqual(cache.storeIfNewer(saved, key: key, successfulCheckAt: t0.addingTimeInterval(20)), saved)
+        let later = t0.addingTimeInterval(40)
+        XCTAssertEqual(cache.storeIfNewer(price(99, data: 5, receipt: 30), key: key, successfulCheckAt: later), saved)
+        XCTAssertEqual(cache.storeIfNewer(price(99, data: 11, receipt: 19), key: key, successfulCheckAt: later), saved)
+        let record = try XCTUnwrap(cache.quote(game: .pokemon, printingID: key.printingID, variantID: "holo"))
+        record.invalidatedAt = later
+        try context.save()
+        XCTAssertNil(cache.storeIfNewer(price(99, data: 29, receipt: 40), key: key, successfulCheckAt: later))
+        let recovered = price(18, data: 41, receipt: 41)
+        XCTAssertEqual(cache.storeIfNewer(recovered, key: key, successfulCheckAt: recovered.fetchedAt), recovered)
+        XCTAssertEqual(record.catalogPriceIdentity, "tested-mapping")
+    }
+
+    func testCatalogQuoteKeysMatchScannerWithPrintRunsAndTreatments() throws {
+        let coordinator = PriceCheckCoordinator(context: try makeContext())
+        let pokemon = priceCheckScan(variant: .holo)
+        let magicCard = try JSONDecoder().decode(ScryfallCard.self, from: Data(#"""
+            {"id":"cb82d614-13d8-40ec-9213-8e6852d37c9c","name":"Fixture","set":"fic",
+             "set_name":"Fixture Set","collector_number":"10","lang":"en","digital":false,
+             "layout":"normal","finishes":["foil"],"promo_types":["surgefoil"]}
+            """#.utf8))
+        let magic = ResolvedScan(request: try rawScan(game: .magic).request, card: .magic(magicCard),
+            resolved: .init(variant: .foil, resolution: .userConfirmed), pokemonPrintRun: nil, options: [.foil])
+        XCTAssertEqual(magic.card.magicTreatments(for: .foil), [.surgeFoil])
+        for (scan, run) in [(pokemon, nil), (pokemon, PokemonPrintRun.firstEdition), (magic, nil),
+                            (try rawScan(game: .onePiece), nil)] {
+            let resolved = ResolvedScan(request: scan.request, card: scan.card, resolved: scan.resolved,
+                pokemonPrintRun: run, options: scan.options)
+            let variant = resolved.resolved.variant
+            let summary = CatalogCardSummary(game: scan.card.game, providerID: scan.card.providerID,
+                setID: CatalogSetID(game: scan.card.game, providerID: "fixture", pokemonPrintRun: run),
+                setName: "Fixture", setCode: "FIX", name: scan.card.name, collectorNumber: "1",
+                thumbnailURL: nil, imageURL: nil,
+                magicTreatmentIDsRaw: scan.card.magicTreatments(for: variant).map(\.id))
+            let key = CatalogQuoteKey.make(for: summary, variant: variant)
+            XCTAssertEqual(coordinator.quoteKey(for: resolved), key)
+            XCTAssertEqual(key.rawValue, PriceRecord.key(game: scan.card.game,
+                printingID: PriceFallbackQuoteResolver.printingID(for: scan.card, pokemonPrintRun: run),
+                variantID: variant?.id, treatmentIDs: summary.magicTreatmentIDsRaw))
+        }
+    }
+
+    func testSharedMirrorQuoteExpiresWithoutChangingOwnedValue() async throws {
+        let context = try makeContext()
+        let capture = Date.now.addingTimeInterval(-2 * 86_400)
+        let key = CatalogQuoteKey.make(game: .pokemon, providerID: "fixture", printRun: nil,
+            variantID: "holo", treatmentIDs: [])
+        let price = NormalizedPrice(unitMarketPriceUSD: 12, currencyCode: "USD", source: .tcgCSV,
+            sourceVariantID: "holo", sourceUpdatedAt: nil, fetchedAt: capture)
+        let prices = PriceStore(context: context)
+        XCTAssertTrue(prices.store(.price(price), game: key.game, printingID: key.printingID, variantID: key.variantID))
+        XCTAssertTrue(prices.save())
+        let store = await ReferenceQuoteStore.makeBackground(modelContainer: context.container)
+        await store.store([key: price], successfulCheckAt: .now)
+        let recent = await store.quotes(forKeys: [key.rawValue], now: capture.addingTimeInterval(2 * 86_400))
+        let expired = await store.quotes(forKeys: [key.rawValue], now: capture.addingTimeInterval(8 * 86_400))
+        XCTAssertEqual(recent[key.rawValue], price)
+        XCTAssertNil(expired[key.rawValue])
+        XCTAssertEqual(prices.record(forKey: key.rawValue)?.display.amount, 12)
+    }
+
     func testNonPokemonPriceChecksShowStaleEvidenceAndRetainNewerQuotes() async throws {
         for game in [CardGame.magic, .lorcana, .yuGiOh] {
             let context = try makeContext()
@@ -68,6 +175,7 @@ final class QuoteCacheTests: XCTestCase {
         let outcome = await coordinator.refresh(result)
         XCTAssertEqual(outcome, .failed(.providerUnavailable))
         result.recordFailedCheck(at: try XCTUnwrap(coordinator.recordRefreshFailure(for: result)))
+        await coordinator.flushReferenceWrites()
         XCTAssertEqual(result.quote, historical)
         XCTAssertEqual(result.refreshFeedback, .failed)
         XCTAssertNil(result.lastSuccessfulCheckAt)
@@ -494,17 +602,19 @@ final class QuoteCacheTests: XCTestCase {
         let fresh = quote(4.03, at: .now)
         let unknownAge = PriceLookup.price(NormalizedPrice(unitMarketPriceUSD: 99, currencyCode: "USD",
             source: .justTCG, sourceVariantID: "exact", sourceUpdatedAt: nil, fetchedAt: .now))
-        for (primary, alternate, expected, expectedCalls) in [
-            (old, fresh, fresh, 1), (old, quote(99, at: oldDate.addingTimeInterval(-60)), old, 1),
-            (old, unknownAge, old, 1), (fresh, old, fresh, 0)
+        for (primary, alternate, expected, expectedCalls, origin) in [
+            (old, fresh, fresh, 1, PriceCheckProviderResult.Origin.fallback),
+            (old, quote(99, at: oldDate.addingTimeInterval(-60)), old, 1, .primary),
+            (old, unknownAge, old, 1, .primary), (fresh, old, fresh, 0, .primary)
         ] {
             var calls = 0
             let provider = LivePriceCheckRefreshProvider(
                 quoteService: PriceQuoteService(catalogRefreshOverride: { _, _, _ in primary }),
                 fallbackResolver: PriceFallbackQuoteResolver(context: context),
                 fallbackOverride: { _, _, _ in calls += 1; return .quote(alternate) })
-            let outcome = await provider.refresh(card: scan.card, variant: .holo, pokemonPrintRun: nil)
-            XCTAssertEqual(outcome, .quote(expected))
+            let outcome = await provider.refreshWithOrigin(card: scan.card, variant: .holo, pokemonPrintRun: nil)
+            XCTAssertEqual(outcome.outcome, .quote(expected))
+            XCTAssertEqual(outcome.origin, origin)
             XCTAssertEqual(calls, expectedCalls)
         }
     }
@@ -582,6 +692,7 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertFalse(visible.shouldAutoRefresh, "T1's exact quote is still fresh at T2")
         let outcome = await coordinator.refresh(visible)
         XCTAssertEqual(outcome, .quote(retained))
+        await coordinator.flushReferenceWrites()
         visible.completeRefresh(retained, at: try XCTUnwrap(coordinator.lastSuccessfulCheckAt(for: visible)))
         XCTAssertEqual(visible.checkedAt, t2)
         XCTAssertEqual(visible.lastSuccessfulCheckAt, t2)
@@ -591,6 +702,7 @@ final class QuoteCacheTests: XCTestCase {
             let failure = await failedCheck.refresh(visible)
             XCTAssertEqual(failure, .failed(.providerUnavailable))
             visible.recordFailedCheck(at: try XCTUnwrap(failedCheck.recordRefreshFailure(for: visible)))
+            await failedCheck.flushReferenceWrites()
         }
         try context.save()
 
@@ -744,6 +856,7 @@ final class QuoteCacheTests: XCTestCase {
 
         let outcome = await coordinator.refresh(result)
         XCTAssertEqual(outcome, .quote(refreshed))
+        await coordinator.flushReferenceWrites()
         let cached = QuoteCache(context: context).quote(
             game: .pokemon,
             printingID: "sv10-085",
@@ -808,6 +921,7 @@ final class QuoteCacheTests: XCTestCase {
         }
         XCTAssertEqual(quote.unitMarketPriceUSD, 125)
         XCTAssertEqual(quote.sourceVariantID, gradedVariant.id)
+        await coordinator.flushReferenceWrites()
 
         let cached = QuoteCache(context: context).quote(
             game: .pokemon,

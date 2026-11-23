@@ -75,6 +75,12 @@ enum PriceCheckRefreshOutcome: Equatable, Sendable {
 
 typealias PriceCheckContinuationCheck = @MainActor @Sendable () -> Bool
 
+struct PriceCheckProviderResult: Sendable {
+    enum Origin: Equatable, Sendable { case primary, fallback }
+    let outcome: PriceCheckRefreshOutcome
+    let origin: Origin
+}
+
 /// Small seam around the network portion of Price Check. The live implementation
 /// preserves the provider order, while tests can exercise immediate/cached and
 /// cancellation behavior without a real network request.
@@ -85,6 +91,17 @@ protocol PriceCheckRefreshProvider {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> PriceCheckRefreshOutcome
+
+    func refreshWithOrigin(card: IdentifiedCard, variant: PhysicalVariant?,
+                           pokemonPrintRun: PokemonPrintRun?) async -> PriceCheckProviderResult
+}
+
+extension PriceCheckRefreshProvider {
+    func refreshWithOrigin(card: IdentifiedCard, variant: PhysicalVariant?,
+                           pokemonPrintRun: PokemonPrintRun?) async -> PriceCheckProviderResult {
+        let outcome = await refresh(card: card, variant: variant, pokemonPrintRun: pokemonPrintRun)
+        return .init(outcome: outcome, origin: .primary)
+    }
 }
 
 @MainActor
@@ -108,6 +125,20 @@ final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> PriceCheckRefreshOutcome {
+        await refreshWithOrigin(card: card, variant: variant, pokemonPrintRun: pokemonPrintRun).outcome
+    }
+
+    func refreshWithOrigin(card: IdentifiedCard, variant: PhysicalVariant?,
+                           pokemonPrintRun: PokemonPrintRun?) async -> PriceCheckProviderResult {
+        var origin = PriceCheckProviderResult.Origin.primary
+        let outcome = await resolve(card: card, variant: variant, pokemonPrintRun: pokemonPrintRun) {
+            origin = .fallback
+        }
+        return .init(outcome: outcome, origin: origin)
+    }
+
+    private func resolve(card: IdentifiedCard, variant: PhysicalVariant?, pokemonPrintRun: PokemonPrintRun?,
+                         markFallback: () -> Void) async -> PriceCheckRefreshOutcome {
         guard quoteService.supportsPricing(for: card.game) else {
             return .failed(.unsupportedGame)
         }
@@ -128,6 +159,7 @@ final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
                     if case let .quote(.price(newer)) = alternate,
                        newer.isUsableUSD, let sourceDate = newer.sourceUpdatedAt,
                        sourceDate > price.effectiveAsOf {
+                        markFallback()
                         return alternate
                     }
                     if case let .failed(issue) = alternate {
@@ -137,6 +169,7 @@ final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
                 return .quote(catalogQuote)
             }
             guard quoteService.allowsProviderFallback(for: card.game) else { return .quote(catalogQuote) }
+            markFallback()
             return await fallback(
                 card: card,
                 variant: variant,
@@ -154,6 +187,7 @@ final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
             return .failed(.mappingUnavailable)
         } catch {
             guard quoteService.allowsProviderFallback(for: card.game) else { return .failed(.providerUnavailable) }
+            markFallback()
             // JustTCG is deliberately sequential: it is consulted only after
             // TCGdex fails or cannot provide a usable USD quote.
             return await fallback(
@@ -211,21 +245,26 @@ final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
 /// quote caching and direct quote refresh, never collection valuation records.
 @MainActor
 final class PriceCheckCoordinator {
-    private let cache: QuoteCache
+    private let container: ModelContainer
+    private var cache: QuoteCache { QuoteCache(context: ModelContext(container)) }
     private let collectionPrices: PriceStore
     private let refreshProvider: PriceCheckRefreshProvider
     private let gradedResolver: ScannedGradedResolving
     private let quoteService: PriceQuoteService
     private let now: () -> Date
+    private let storageIsCurrent: StorageGenerationContinuation
+    private var referenceStore: Task<ReferenceQuoteStore, Never>?
+    private var pendingReferenceWrite: Task<Void, Never>?
 
     init(
         context: ModelContext,
         refreshProvider: PriceCheckRefreshProvider? = nil,
         quoteService: PriceQuoteService = PriceQuoteService(),
         gradedResolver: ScannedGradedResolving = ScannedGradedResolver(),
+        storageIsCurrent: @escaping StorageGenerationContinuation = { true },
         now: @escaping () -> Date = { .now }
     ) {
-        cache = QuoteCache(context: context)
+        container = context.container
         collectionPrices = PriceStore(context: context)
         let fallbackResolver = PriceFallbackQuoteResolver(context: context)
         self.refreshProvider = refreshProvider
@@ -233,6 +272,7 @@ final class PriceCheckCoordinator {
         self.gradedResolver = gradedResolver
         self.quoteService = quoteService
         self.now = now
+        self.storageIsCurrent = storageIsCurrent
     }
 
     private static func gradedIssue(for blocker: GradedLookupBlocker) -> PriceCheckRefreshIssue {
@@ -250,7 +290,7 @@ final class PriceCheckCoordinator {
         return PokemonVariantRules.requiresPhysicalReview(cardID: scan.card.providerID, variant: finish)
     }
 
-    func present(_ resolvedScan: ResolvedScan) -> PriceCheckResult {
+    func present(_ resolvedScan: ResolvedScan, usesOwnedPrice: Bool = false) -> PriceCheckResult {
         if requiresPhysicalReview(resolvedScan) {
             return PriceCheckResult(resolvedScan: resolvedScan, quote: .unavailable(nil),
                 checkedAt: resolvedScan.catalogRetrievedAt, quoteState: .unsupportedFinish, shouldAutoRefresh: false)
@@ -312,7 +352,7 @@ final class PriceCheckCoordinator {
                     variantID: nil,
                     treatmentIDs: []
                 )
-                _ = cache.store(
+                storeReferenceQuote(
                     quote,
                     game: key.game,
                     printingID: key.printingID,
@@ -329,6 +369,20 @@ final class PriceCheckCoordinator {
             )
         }
 
+        let key = quoteKey(for: resolvedScan)
+        if usesOwnedPrice, let saved = savedOwnedQuote(for: key).usablePrice {
+            let state: PriceCheckQuoteState = saved.isStale(now: now()) ? .stale : .current
+            return presentEvidence(resolvedScan, key: key, quote: .price(saved), retrievedAt: saved.fetchedAt,
+                quoteState: state, shouldAutoRefresh: state != .current)
+        }
+        var result = presentReferenceEvidence(resolvedScan, key: key)
+        // An unpriced owner still sees catalog evidence immediately; the
+        // check lets a primary quote become its saved collection value.
+        if usesOwnedPrice { result.shouldAutoRefresh = true }
+        return result
+    }
+
+    private func presentReferenceEvidence(_ resolvedScan: ResolvedScan, key: QuoteKey) -> PriceCheckResult {
         let catalogQuote = CardPricing.price(
             for: resolvedScan.card,
             variant: resolvedScan.resolved.variant,
@@ -336,13 +390,13 @@ final class PriceCheckCoordinator {
             pokemonPrintRun: resolvedScan.pokemonPrintRun,
             at: resolvedScan.catalogRetrievedAt
         )
-        let key = quoteKey(for: resolvedScan)
         let localEvidence = newestLocalEvidence(for: key)
 
         if Self.isUsableUSD(catalogQuote),
            let catalogEvidence = Self.evidence(from: catalogQuote),
-           localEvidence.map({ Self.isNewer(catalogEvidence, than: $0, game: key.game) }) ?? true {
-            _ = cache.store(
+           TCGCSVPriceMirror.canServe(source: catalogEvidence.price.source, capturedAt: catalogEvidence.retrievedAt, now: now()),
+           localEvidence.map({ QuoteEvidenceOrdering.isNewer(catalogEvidence.price, than: $0.price, game: key.game, now: now()) }) ?? true {
+            storeReferenceQuote(
                 catalogQuote,
                 game: key.game,
                 printingID: key.printingID,
@@ -365,15 +419,17 @@ final class PriceCheckCoordinator {
         // Initial presentation is read-only with respect to collection pricing:
         // it reuses only exact, successful evidence that already exists.
         if let local = localEvidence {
-            _ = cache.store(
-                .price(local.price),
-                game: key.game,
-                printingID: key.printingID,
-                variantID: key.variantID,
-                at: local.retrievedAt,
-                treatmentIDs: key.treatmentIDs,
-                isReplay: true
-            )
+            if !local.isReference {
+                storeReferenceQuote(
+                    .price(local.price),
+                    game: key.game,
+                    printingID: key.printingID,
+                    variantID: key.variantID,
+                    at: local.retrievedAt,
+                    treatmentIDs: key.treatmentIDs,
+                    isReplay: true
+                )
+            }
             let localLookup = PriceLookup.price(local.price)
             guard Self.isUsableUSD(localLookup) else {
                 // Keep the native-currency evidence visible, but do not call
@@ -413,7 +469,9 @@ final class PriceCheckCoordinator {
 
     func refresh(
         _ result: PriceCheckResult,
-        shouldContinue: PriceCheckContinuationCheck? = nil
+        shouldContinue: PriceCheckContinuationCheck? = nil,
+        capturePrimaryQuote: ((PriceLookup) -> Void)? = nil,
+        captureSuccessfulCheckAt: ((Date) -> Void)? = nil
     ) async -> PriceCheckRefreshOutcome {
         guard shouldContinue?() ?? true else { return .cancelled }
         guard !requiresPhysicalReview(result.resolvedScan) else { return .failed(.unsupportedFinish) }
@@ -447,7 +505,7 @@ final class PriceCheckCoordinator {
                 )
                 guard shouldContinue?() ?? true else { return .cancelled }
                 let key = quoteKey(for: result.resolvedScan, gradedVariant: variant)
-                _ = cache.store(
+                storeReferenceQuote(
                     quote,
                     game: key.game,
                     printingID: key.printingID,
@@ -468,11 +526,12 @@ final class PriceCheckCoordinator {
             }
         }
 
-        var outcome = await refreshProvider.refresh(
+        let providerResult = await refreshProvider.refreshWithOrigin(
             card: result.card,
             variant: result.resolved.variant,
             pokemonPrintRun: result.pokemonPrintRun
         )
+        var outcome = providerResult.outcome
         guard !Task.isCancelled, shouldContinue?() ?? true else { return .cancelled }
         let lookup: PriceLookup?
         let issue: PriceCheckRefreshIssue?
@@ -487,13 +546,14 @@ final class PriceCheckCoordinator {
         if case .unavailable(nil)? = lookup {
             return .failed(.providerUnavailable)
         }
+        if providerResult.origin == .primary, let lookup, let price = lookup.usablePrice, price.source != .justTCG {
+            capturePrimaryQuote?(lookup)
+        }
         if case let .price(candidate)? = lookup,
            case let .price(previous) = result.quote, previous.isUsableUSD {
-            let isOlder = result.card.game == .pokemon
-                ? (candidate.effectiveAsOf < previous.effectiveAsOf
-                    || (previous.sourceUpdatedAt != nil && candidate.sourceUpdatedAt == nil))
-                : candidate.fetchedAt < previous.fetchedAt
-            if isOlder {
+            if candidate != previous,
+               !QuoteEvidenceOrdering.isNewer(candidate, than: previous, game: result.card.game, now: now()),
+               TCGCSVPriceMirror.canServe(source: previous.source, capturedAt: previous.fetchedAt, now: now()) {
                 // A successful check can still return older upstream data.
                 // Preserve the better quote while the view records this new check.
                 outcome = issue.map { .lastKnown(result.quote, $0) } ?? .quote(result.quote)
@@ -508,7 +568,8 @@ final class PriceCheckCoordinator {
            case .price = quote {
             let key = quoteKey(for: result.resolvedScan)
             let completedAt = now()
-            _ = cache.store(
+            captureSuccessfulCheckAt?(completedAt)
+            storeReferenceQuote(
                 quote,
                 game: key.game,
                 printingID: key.printingID,
@@ -518,8 +579,7 @@ final class PriceCheckCoordinator {
                 successfulCheckAt: completedAt
             )
             if issue != nil {
-                _ = cache.recordFailure(game: key.game, printingID: key.printingID,
-                    variantID: key.variantID, at: completedAt, treatmentIDs: key.treatmentIDs)
+                recordReferenceFailure(for: key, at: completedAt)
             }
         }
         if case .quote(.unavailable) = outcome {
@@ -542,22 +602,44 @@ final class PriceCheckCoordinator {
         guard shouldContinue?() ?? true else { return nil }
         let key = quoteKey(for: result.resolvedScan)
         let attemptedAt = now()
-        _ = cache.recordFailure(
-            game: key.game,
-            printingID: key.printingID,
-            variantID: key.variantID,
-            at: attemptedAt,
-            treatmentIDs: key.treatmentIDs
-        )
+        recordReferenceFailure(for: key, at: attemptedAt)
         return attemptedAt
     }
 
-    struct QuoteKey: Hashable, Sendable {
-        let game: CardGame
-        let printingID: String
-        let variantID: String?
-        let treatmentIDs: [String]
+    private func enqueueReferenceWrite(_ write: @escaping @Sendable (ReferenceQuoteStore) async -> Void) {
+        let store = referenceStore ?? Task { [container, storageIsCurrent] in
+            let store = await ReferenceQuoteStore.makeBackground(modelContainer: container)
+            await store.setContinuation(storageIsCurrent)
+            return store
+        }
+        referenceStore = store
+        let previous = pendingReferenceWrite
+        pendingReferenceWrite = Task {
+            await previous?.value
+            await write(store.value)
+        }
     }
+
+    func flushReferenceWrites() async {
+        await pendingReferenceWrite?.value
+    }
+
+    private func storeReferenceQuote(_ lookup: PriceLookup, game: CardGame, printingID: String, variantID: String?,
+                                     at date: Date = .now, treatmentIDs: [String] = [], isReplay: Bool = false,
+                                     successfulCheckAt: Date? = nil) {
+        let key = QuoteKey(game: game, printingID: printingID, variantID: variantID, treatmentIDs: treatmentIDs)
+        enqueueReferenceWrite { store in
+            await store.recordPriceCheck(lookup, key: key, at: date, isReplay: isReplay, successfulCheckAt: successfulCheckAt)
+        }
+    }
+
+    private func recordReferenceFailure(for key: QuoteKey, at date: Date) {
+        enqueueReferenceWrite { store in
+            await store.recordPriceCheckFailure(key: key, at: date)
+        }
+    }
+
+    typealias QuoteKey = CatalogQuoteKey
 
     struct TradeRefreshKey: Hashable, Sendable {
         let quote: QuoteKey
@@ -566,6 +648,15 @@ final class PriceCheckCoordinator {
 
     func tradeRefreshKey(for scan: ResolvedScan) -> TradeRefreshKey {
         TradeRefreshKey(quote: quoteKey(for: scan), slab: scan.request.subject.slab)
+    }
+
+    func savedOwnedQuote(for key: QuoteKey) -> PriceLookup {
+        let store = PriceStore(context: ModelContext(container))
+        guard let record = store.record(forKey: key.rawValue), let amount = record.display.amount,
+              let source = record.source, let fetchedAt = record.fetchedAt else { return .unavailable(nil) }
+        return .price(NormalizedPrice(unitMarketPriceUSD: amount, currencyCode: record.currencyCode,
+            source: source, sourceVariantID: record.sourceVariantID ?? record.variantID ?? "",
+            sourceUpdatedAt: record.sourceUpdatedAt, fetchedAt: fetchedAt, catalogIdentity: record.catalogPriceIdentity))
     }
 
     /// A cached quote's retrieval is not proof of when a later check succeeded.
@@ -589,18 +680,17 @@ final class PriceCheckCoordinator {
     private struct LocalEvidence {
         let price: NormalizedPrice
         let retrievedAt: Date
+        var isReference = false
     }
 
-    private func quoteKey(for resolvedScan: ResolvedScan) -> QuoteKey {
+    func quoteKey(for resolvedScan: ResolvedScan) -> QuoteKey {
         if case let .bound(variant)? = resolvedScan.gradedOutcome {
             return quoteKey(for: resolvedScan, gradedVariant: variant)
         }
-        return QuoteKey(
+        return CatalogQuoteKey.make(
             game: resolvedScan.card.game,
-            printingID: PriceFallbackQuoteResolver.printingID(
-                for: resolvedScan.card,
-                pokemonPrintRun: resolvedScan.pokemonPrintRun
-            ),
+            providerID: resolvedScan.card.providerID,
+            printRun: resolvedScan.pokemonPrintRun,
             variantID: resolvedScan.resolved.variant?.id,
             treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
                 from: resolvedScan.card.magicTreatments(for: resolvedScan.resolved.variant)
@@ -623,14 +713,7 @@ final class PriceCheckCoordinator {
     /// Chooses by market-data time, then successful retrieval, never a failed attempt. Ties
     /// consistently favor the quote cache Price Check already owns.
     private func newestLocalEvidence(for key: QuoteKey) -> LocalEvidence? {
-        let record = collectionPrices.record(
-            forKey: PriceRecord.key(
-                game: key.game,
-                printingID: key.printingID,
-                variantID: key.variantID,
-                treatmentIDs: key.treatmentIDs
-            )
-        ).flatMap(Self.evidence(from:))
+        let record = collectionPrices.record(forKey: key.rawValue).flatMap(Self.evidence(from:))
         let reference = cache.quote(
             game: key.game,
             printingID: key.printingID,
@@ -638,25 +721,15 @@ final class PriceCheckCoordinator {
             treatmentIDs: key.treatmentIDs
         ).flatMap(Self.evidence(from:))
 
-        let evidence = [record, reference].compactMap { $0 }
+        let evidence = [record, reference].compactMap { $0 }.filter {
+            TCGCSVPriceMirror.canServe(source: $0.price.source, capturedAt: $0.retrievedAt, now: now())
+        }
         guard !evidence.isEmpty else { return nil }
         let usdEvidence = evidence.filter {
             $0.price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame
         }
         return (usdEvidence.isEmpty ? evidence : usdEvidence)
-            .max(by: { Self.isNewer($1, than: $0, game: key.game) })
-    }
-
-    private static func isNewer(_ candidate: LocalEvidence, than previous: LocalEvidence, game: CardGame) -> Bool {
-        guard game == .pokemon else { return candidate.retrievedAt > previous.retrievedAt }
-        if previous.price.sourceUpdatedAt != nil, candidate.price.sourceUpdatedAt == nil { return false }
-        if candidate.price.sourceUpdatedAt != nil, previous.price.sourceUpdatedAt == nil {
-            return candidate.price.effectiveAsOf > previous.price.effectiveAsOf
-        }
-        if candidate.price.effectiveAsOf != previous.price.effectiveAsOf {
-            return candidate.price.effectiveAsOf > previous.price.effectiveAsOf
-        }
-        return candidate.retrievedAt > previous.retrievedAt
+            .max(by: { QuoteEvidenceOrdering.isNewer($1.price, than: $0.price, game: key.game, now: now()) })
     }
 
     private static func evidence(from record: PriceRecord) -> LocalEvidence? {
@@ -684,25 +757,7 @@ final class PriceCheckCoordinator {
     }
 
     private static func evidence(from quote: ReferenceQuote) -> LocalEvidence? {
-        guard let amount = quote.effectiveAmount,
-              Money(rounding: amount) != nil,
-              let source = quote.source,
-              let sourceVariantID = quote.sourceVariantID,
-              !sourceVariantID.isEmpty,
-              let retrievedAt = quote.retrievedAt else {
-            return nil
-        }
-        return LocalEvidence(
-            price: NormalizedPrice(
-                unitMarketPriceUSD: amount,
-                currencyCode: quote.currencyCode,
-                source: source,
-                sourceVariantID: sourceVariantID,
-                sourceUpdatedAt: quote.sourceUpdatedAt,
-                fetchedAt: retrievedAt, catalogIdentity: quote.catalogPriceIdentity
-            ),
-            retrievedAt: retrievedAt
-        )
+        quote.normalizedPrice.map { LocalEvidence(price: $0, retrievedAt: $0.fetchedAt, isReference: true) }
     }
 
     private static func evidence(from lookup: PriceLookup) -> LocalEvidence? {

@@ -432,7 +432,9 @@ struct PriceDisplay: Equatable, Sendable {
     var detailAttribution: [String] {
         var lines: [String] = []
         if let source {
-            if let sourceUpdatedAt {
+            if source == .tcgCSV, let fetchedAt {
+                lines.append(String(localized: "TCGplayer daily market snapshot · as of \(fetchedAt.formatted(date: .abbreviated, time: .shortened))"))
+            } else if let sourceUpdatedAt {
                 lines.append(String(localized: "\(source.label) · price data as of \(sourceUpdatedAt.formatted(date: .abbreviated, time: .shortened))"))
             } else {
                 lines.append(String(localized: "\(source.label) · source date unavailable"))

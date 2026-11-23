@@ -2972,6 +2972,31 @@ final class PricingTests: XCTestCase {
             "Retrying unsupported work is not manual primary intent")
     }
 
+    @MainActor
+    func testOwnedPriceRecheckUsesAttemptDateWithoutChangingStaleState() throws {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let row = legacyOwnedRow(try pokemonCard())
+        let cases: [(quoteAge: TimeInterval, checkedHoursAgo: Double?, forcedHoursAgo: Double?, force: Bool)] = [
+            (172_800, nil, nil, true),
+            (172_800, 1, nil, false),
+            (172_800, 9, nil, true),
+            (172_800, 8, nil, true),
+            (0, nil, nil, false),
+            (172_800, 9, 1, false),
+            (172_800, -1, nil, true),
+            (172_800, -1, 1, false),
+        ]
+        for test in cases {
+            let quote = PriceDisplay(amount: 5, source: .tcgplayer,
+                sourceUpdatedAt: now.addingTimeInterval(-test.quoteAge), fetchedAt: now,
+                lastCheckedAt: test.checkedHoursAgo.map { now.addingTimeInterval(-$0 * 3600) })
+            let entry = CatalogOwnershipCardSnapshot(row, selectedPriceKey: row.priceKey, selectedPrice: quote)
+            XCTAssertEqual(OwnedPriceRecheckPolicy.needsForcedRefresh([entry],
+                lastForcedAt: test.forcedHoursAgo.map { now.addingTimeInterval(-$0 * 3600) }, now: now),
+                test.force, "\(test)")
+        }
+    }
+
     func testDetailAttributionKeepsOldSourceDateSeparateFromTodayAndFailure() {
         let today = Date(timeIntervalSince1970: 1_800_000_000)
         let old = today.addingTimeInterval(-6 * 86400)
@@ -2991,6 +3016,47 @@ final class PricingTests: XCTestCase {
         quote.lastCheckedAt = nil
         XCTAssertFalse(quote.detailAttribution.joined().contains("unknown"))
         XCTAssertFalse(quote.detailAttribution.joined().contains("Quote received"))
+    }
+
+    func testPokemonPriceSelectionPrefersCurrentThenDatedEvidence() {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        func quote(_ source: PriceSource, daysOld: Double, currency: String = "USD") -> NormalizedPrice {
+            let date = now.addingTimeInterval(-daysOld * 86_400)
+            return .init(unitMarketPriceUSD: 5, currencyCode: currency, source: source,
+                sourceVariantID: "holofoil", sourceUpdatedAt: source == .tcgplayer ? date : nil, fetchedAt: date)
+        }
+        let freshEmbed = quote(.tcgplayer, daysOld: 0.5)
+        let freshMirror = quote(.tcgCSV, daysOld: 0)
+        let staleEmbed = quote(.tcgplayer, daysOld: 3)
+        let staleMirror = quote(.tcgCSV, daysOld: 2)
+        let eur = quote(.tcgplayer, daysOld: 0, currency: "EUR")
+        let cases: [(NormalizedPrice?, NormalizedPrice?, NormalizedPrice?)] = [
+            (nil, nil, nil), (eur, nil, nil), (eur, freshMirror, freshMirror),
+            (freshEmbed, freshMirror, freshEmbed), (freshEmbed, staleMirror, freshEmbed),
+            (staleEmbed, freshMirror, freshMirror), (staleEmbed, staleMirror, staleMirror),
+            (staleEmbed, quote(.tcgCSV, daysOld: 4), staleEmbed),
+        ]
+        for (embed, mirror, expected) in cases {
+            XCTAssertEqual(PokemonPriceSelection.preferred(embed: embed, tcgCSV: mirror, now: now), expected)
+            if let embed, let mirror, embed.isUsableUSD {
+                XCTAssertEqual(QuoteEvidenceOrdering.isNewer(mirror, than: embed, game: .pokemon, now: now), expected == mirror)
+                XCTAssertEqual(QuoteEvidenceOrdering.isNewer(embed, than: mirror, game: .pokemon, now: now), expected == embed)
+            }
+        }
+        XCTAssertEqual(PokemonPriceSelection.preferred(embed: staleEmbed, tcgCSV: quote(.tcgCSV, daysOld: 7), now: now), staleEmbed)
+        XCTAssertNil(PokemonPriceSelection.preferred(embed: nil, tcgCSV: quote(.tcgCSV, daysOld: 7), now: now))
+    }
+
+    func testMirrorDetailAttributionUsesPublisherCaptureDate() {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let capture = now.addingTimeInterval(-3 * 86_400)
+        let quote = PriceDisplay(amount: 5, source: .tcgCSV, fetchedAt: capture, lastCheckedAt: now)
+        XCTAssertEqual(quote.state(now: now), .stale)
+        XCTAssertEqual(quote.detailAttribution.first,
+            "TCGplayer daily market snapshot · as of \(capture.formatted(date: .abbreviated, time: .shortened))")
+        XCTAssertNil(quote.sourceUpdatedAt)
+        XCTAssertEqual(CatalogBrowseQuote(amount: 5, status: .stale, asOf: capture, source: .tcgCSV).freshnessLabel,
+            "Stale · as of \(capture.formatted(date: .abbreviated, time: .omitted))")
     }
 
     /// Every owned copy of a printing-and-variant shares one price record, so a

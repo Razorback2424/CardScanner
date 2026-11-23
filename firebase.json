@@ -10,14 +10,21 @@
       ],
       "headers": [
         {
-          "source": "/market-prices/v1/**",
+          "source": "/market-prices/v1/last-updated.txt",
+          "headers": [{"key": "Cache-Control", "value": "no-cache"}]
+        },
+        {
+          "source": "/market-prices/v1/index.json",
           "headers": [
             {"key": "Cache-Control", "value": "public,max-age=300"}
           ]
         },
         {
           "source": "/market-prices/v1/tcgplayer/**",
-          "headers": [{"key": "Content-Type", "value": "application/json; charset=utf-8"}]
+          "headers": [
+            {"key": "Cache-Control", "value": "public,max-age=300"},
+            {"key": "Content-Type", "value": "application/json; charset=utf-8"}
+          ]
         },
         {
           "source": "/yugioh/v1/current.json",

@@ -182,7 +182,8 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
                 #else
                 try snapshot.priceAuthority?.install(in: context)
                 #endif
-                guard CollectionStore.installCatalogAdapter(snapshot.catalog, revision: snapshot.revision, for: container) else { return false }
+                guard CollectionStore.installCatalogAdapter(snapshot.catalog, revision: snapshot.revision,
+                    priceAuthority: snapshot.priceAuthority, for: container) else { return false }
                 if let next = snapshot.capabilities { capabilities?.install(next, for: game) }
                 return true
             }

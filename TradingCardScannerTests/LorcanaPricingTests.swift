@@ -17,7 +17,8 @@ private actor LorcanaTestPriceSource: LorcanaMarketPriceSource {
     func fail(with code: URLError.Code?) { failure = code }
     func setUnavailable(_ value: Bool) { noQuote = value }
     func recordHealthyFetch(_ id: String) { healthyFetches.insert(id) }
-    func quote(mapping: LorcanaMarketMapping, generation: String, minimumFetchedAt: Date?) async throws -> PriceLookup {
+    func quote(mapping: LorcanaMarketMapping, generation: String, minimumFetchedAt: Date?,
+               allowsStaleFallback: Bool) async throws -> PriceLookup {
         calls += 1; minimum = minimumFetchedAt
         if let failure { throw URLError(failure) }
         if noQuote { return .unavailable(.tcgCSV) }
@@ -34,7 +35,9 @@ private final class LorcanaPricingProtocol: URLProtocol {
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
         do {
-            let data = MarketMirrorFixture.stamped(try Self.handler!(request))
+            let data = request.url?.lastPathComponent == "last-updated.txt"
+                ? Data(MarketMirrorFixture.build.utf8)
+                : MarketMirrorFixture.stamped(try Self.handler!(request))
             client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 200,
                 httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: data); client?.urlProtocolDidFinishLoading(self)
@@ -649,6 +652,7 @@ final class LorcanaPricingTests: XCTestCase {
         let result = coordinator.present(scan)
         guard case let .quote(.price(price)) = await coordinator.refresh(result) else { return XCTFail() }
         XCTAssertEqual(price.unitMarketPriceUSD, 8.16)
+        await coordinator.flushReferenceWrites()
         XCTAssertEqual(QuoteCache(context: container.mainContext).quote(game: .lorcana, printingID: card.providerID,
             variantID: "foil")?.effectiveAmount, 8.16)
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)

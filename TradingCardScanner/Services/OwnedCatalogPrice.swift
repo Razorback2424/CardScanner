@@ -1,5 +1,20 @@
 import Foundation
 
+enum OwnedPriceRecheckPolicy {
+    static let interval = PriceRefreshController.automaticRefreshInterval
+
+    static func needsForcedRefresh(
+        _ entries: [CatalogOwnershipCardSnapshot], lastForcedAt: Date?, now: Date
+    ) -> Bool {
+        entries.contains { entry in
+            guard entry.selectedPrice.state(now: now) == .stale else { return false }
+            let lastCheck = [entry.selectedPrice.lastCheckedAt, lastForcedAt]
+                .compactMap { $0 }.filter { $0 <= now }.max()
+            return lastCheck.map { now.timeIntervalSince($0) >= interval } ?? true
+        }
+    }
+}
+
 enum OwnedPriceRetentionReason: Equatable, Sendable {
     case olderSourceDate(PriceSource, Date)
     case missingSourceDate(PriceSource)
