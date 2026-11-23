@@ -1,3 +1,27 @@
+# 2026-11-23 — Production review pricing fixes
+
+Fixes for the eight code findings in the `c624c506` production review:
+catalog-detail owned writes now check the live catalog price authority at
+the serialized write; Browse keeps a source-confirmed miss on the local
+reference quote (`ReferenceQuote.lastConfirmedMissAt`, new optional
+local-only attribute) so a relaunch does not promote the disproved amount;
+catalog detail shows an exact market quote, labelled as outside collection
+value, for an unpriced owned finish; identical trade rows share the newest
+eligible quote; Price Check narrows owned rows to the scanned Pokémon print
+run; initial Price Check refresh uses the presented quote age for every
+game; the Pro camera shutter waits for a running capture session; and an
+interrupted CSV import reports entries processed rather than added.
+
+Source base `c624c506` with the uncommitted fix set. ProfileLocal on an
+iPhone 17 / iOS 27.0 simulator: OnePieceIntegrationTests,
+BrowseFeatureTests, QuoteCacheTests, ScannerViewModelTests,
+CSVImportResumeTests, PricingTests and RefreshStructuralWriteTests executed
+583 tests with one skip (live One Piece feed receipt) and zero failures.
+All six new regressions failed on the unfixed source. The camera readiness
+change and the detail estimate caption are not covered by tests and were
+not exercised on a device. Results are in
+`pricing-review-fixes-20261123` on the external SSD.
+
 # 2026-11-23 — Pricing smoothness
 
 The pricing review fixes keep JustTCG fallback in the reference store.
