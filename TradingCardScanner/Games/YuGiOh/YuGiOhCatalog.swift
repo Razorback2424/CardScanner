@@ -58,10 +58,6 @@ struct YuGiOhCatalog: Sendable {
         var explicitSelectionSupported: Bool {
             identityReason == nil && !editions.isEmpty && (coverageVerified || !membership.isEmpty)
         }
-        var browseVariants: [PhysicalVariant] {
-            guard explicitSelectionSupported else { return [] }
-            return editions.map { $0 == .limited && hasDuelTerminalStamp ? YuGiOhEdition.duelTerminalVariant : $0.variant }
-        }
         let thumbnailURL: URL?; let imageURL: URL?
         var idString: String { id.uuidString.lowercased() }
         var cardName: String { officialName ?? card.name }
