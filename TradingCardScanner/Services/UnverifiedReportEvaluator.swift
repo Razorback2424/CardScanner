@@ -70,9 +70,8 @@ enum UnverifiedReportEvaluator {
 }
 
 /// Runs the evaluator over every unverified report and applies the result
-/// through the serialized writer. Reports already evaluated against the
-/// current revision are skipped. Catalog lookups are injected so the same
-/// pass runs on activation, at launch, and when synced rows arrive.
+/// through the serialized writer. Finished evaluations are skipped for the
+/// same revision. The pass runs on activation, at launch, and on synced rows.
 struct UnverifiedReportReconciler: Sendable {
     typealias CardLookup = @Sendable (_ providerID: String) async -> IdentifiedCard?
     typealias UnknownSetLookup = @Sendable (_ observed: UnverifiedReport.ObservedIdentity) async -> IdentifiedCard?
@@ -91,8 +90,14 @@ struct UnverifiedReportReconciler: Sendable {
         var outcome = Outcome()
         for pending in try await writer.pendingReports() {
             try Task.checkCancellation()
-            guard let report = UnverifiedReport.decode(pending.reportJSON),
-                  report.lastEvaluatedCatalogRevision != catalogRevision else { continue }
+            guard let report = UnverifiedReport.decode(pending.reportJSON), report.isUnderstood,
+                  report.linkedAt == nil else { continue }
+            // Previous builds also stamped waiting reports after an offline lookup.
+            // A collector's explicit dismissal still completes the revision.
+            if report.lastEvaluatedCatalogRevision == catalogRevision,
+               report.reviewState != .waiting || report.reviewDismissedAt != nil { continue }
+            if report.unlinkedAt == nil, let created = report.catalogRevisionAtCreation,
+               catalogRevision <= created { continue }
             let base = await report.baseProviderID.asyncFlatMap(baseCard)
             let unknown = await report.observed.asyncFlatMap { report.kind == .unknownSet ? await unknownSetMatch($0) : nil }
             let decision = UnverifiedReportEvaluator.evaluate(report, catalogRevision: catalogRevision,
@@ -113,11 +118,12 @@ struct UnverifiedReportReconciler: Sendable {
                     }
                     continue
                 }
-                let state: UnverifiedReport.ReviewState
-                if case .needsReview = decision { state = .needsReview } else { state = .waiting }
+                // A waiting result can be an offline lookup. Keep it eligible
+                // for another pass even when the catalog revision stays put.
+                guard case .needsReview = decision else { continue }
                 try await writer.recordReportEvaluation(reportID: report.reportID,
-                    expectedReportJSON: pending.reportJSON, catalogRevision: catalogRevision, state: state)
-                if state == .needsReview { outcome.needsReview.append(report.reportID) }
+                    expectedReportJSON: pending.reportJSON, catalogRevision: catalogRevision, state: .needsReview)
+                outcome.needsReview.append(report.reportID)
             } catch CollectionStoreError.staleReport {
                 // Edited, linked or re-evaluated elsewhere meanwhile; the next
                 // pass sees the new state.
