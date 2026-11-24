@@ -28,9 +28,18 @@ final class CameraRotationTests: XCTestCase {
         }
     }
 
+    func testStoppedCameraDoesNotStartCapture() {
+        let camera = CenteringCameraController()
+        camera.capture()
+        XCTAssertFalse(camera.isReadyToCapture)
+        XCTAssertFalse(camera.isCapturing)
+        XCTAssertNil(camera.capturedData)
+    }
+
     func testRejectedCaptureClearsPendingStateAndAllowsRetry() async {
         let camera = CenteringCameraController()
         for _ in 0..<2 {
+            camera.markCaptureReadyForTesting()
             let cleared = expectation(description: "Stopped session rejects the capture")
             let observation = camera.$isCapturing.dropFirst().filter { !$0 }.sink { _ in cleared.fulfill() }
             camera.capture()
@@ -45,10 +54,12 @@ final class CameraRotationTests: XCTestCase {
 
     func testStoppingCaptureClearsPendingStateImmediately() {
         let camera = CenteringCameraController()
+        camera.markCaptureReadyForTesting()
         camera.capture()
         XCTAssertTrue(camera.isCapturing)
         camera.stop()
         XCTAssertFalse(camera.isCapturing)
+        XCTAssertFalse(camera.isReadyToCapture)
     }
 
     func testUprightSensorOnlyFlipsTheVerticalAxis() {

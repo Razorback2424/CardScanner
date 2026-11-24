@@ -85,6 +85,13 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         isReadyToCapture = session.isRunning && !session.isInterrupted
     }
 
+#if DEBUG
+    /// Models a shutter that became ready just before the capture session stopped.
+    func markCaptureReadyForTesting() {
+        isReadyToCapture = true
+    }
+#endif
+
     func start() {
         let requestID = UUID()
         sessionQueue.async { [weak self] in
