@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import base64
 from datetime import datetime, timezone
+import gzip
 import hashlib
 from http.client import IncompleteRead
 import json
@@ -57,11 +58,19 @@ class NoRedirects(HTTPRedirectHandler):
 
 
 def read_http(url, maximum=MAX_FILE_BYTES, absent_ok=False):
-    request = Request(url, headers={"User-Agent": "ScanStashPricePublisher/1.0", "Accept": "application/json,text/plain"})
+    request = Request(url, headers={"User-Agent": "ScanStashPricePublisher/1.0",
+                                    "Accept": "application/json,text/plain", "Accept-Encoding": "gzip"})
     for attempt in range(3):
         try:
             with build_opener(NoRedirects()).open(request, timeout=45) as response:
-                raw = response.read(maximum + 1)
+                encoding = response.headers.get("Content-Encoding", "identity").strip().lower()
+                if encoding == "gzip":
+                    with gzip.GzipFile(fileobj=response) as decoded:
+                        raw = decoded.read(maximum + 1)
+                elif encoding == "identity":
+                    raw = response.read(maximum + 1)
+                else:
+                    raise ValueError(f"Unsupported feed content encoding: {encoding}")
             if len(raw) > maximum:
                 raise ValueError("Response exceeds the byte limit")
             return raw

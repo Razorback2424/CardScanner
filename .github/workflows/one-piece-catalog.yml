@@ -349,7 +349,7 @@ jobs:
               v1/current.json magic/v1/current.json yugioh/v1/current.json market-prices/v1/index.json; do
               expected="publisher/site/$path"
               if [ ! -f "$expected" ]; then continue; fi
-              curl --fail --silent --show-error --retry 3 --max-time 60 \
+              curl --fail --silent --show-error --compressed --retry 3 --max-time 60 \
                 --dump-header "$headers" --output "$readback" \
                 "$origin/$path?publication_check=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
               cmp "$expected" "$readback"

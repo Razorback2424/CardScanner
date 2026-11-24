@@ -103,7 +103,7 @@ jobs:
       - name: Read the active production pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
-          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+          if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
             "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
@@ -300,7 +300,7 @@ jobs:
       - name: Read the active production pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
-          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+          if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
             "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
@@ -332,7 +332,7 @@ jobs:
       - name: Read the active Magic production pointer
         run: |
           active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
-          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+          if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
             "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
@@ -416,7 +416,7 @@ jobs:
           for host in "$POKEMON_CATALOG_PRODUCTION_READ_ORIGIN" https://catalog.scan-stash.com; do
             for artifact in current.json "releases/$revision/catalog-release.json" "releases/$revision/pokemon-catalog-snapshot.json"; do
               for attempt in 1 2 3 4 5 6; do
-                if curl --fail --silent --show-error --max-time 25 --proto '=https' \
+                if curl --fail --silent --show-error --compressed --max-time 25 --proto '=https' \
                   --header 'Cache-Control: no-cache' --output "$readback" "$host/v1/$artifact" &&
                   cmp -s "publisher/site/v1/$artifact" "$readback"; then
                   break

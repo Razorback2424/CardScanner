@@ -126,7 +126,7 @@ restore_namespace() {
     local release_url="$origin/$namespace/releases/$revision"
 
     local status
-    if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+    if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
       --output "$temporary_release/catalog-release.json" \
       --write-out '%{http_code}' \
       "$release_url/catalog-release.json")"; then
@@ -151,7 +151,7 @@ restore_namespace() {
 
     local file
     for file in ${release_files[@]+"${release_files[@]}"}; do
-      if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+      if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
         --output "$temporary_release/$file" \
         --write-out '%{http_code}' \
         "$release_url/$file")"; then
@@ -219,7 +219,7 @@ restore_namespace \
 if [ -z "$one_piece_active_path" ]; then
   one_piece_active_path="$(mktemp "${RUNNER_TEMP:-/tmp}/one-piece-current.XXXXXX")"
   trap 'rm -f "$one_piece_active_path"' EXIT
-  status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+  status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
     --output "$one_piece_active_path" --write-out '%{http_code}' "$origin/one-piece/v1/current.json")"
   if [ "$status" = "404" ]; then
     rm -f "$one_piece_active_path"
@@ -236,7 +236,7 @@ restore_namespace "$one_piece_active_path" "one-piece/v1" "$one_piece_package" "
 # deployment-preparation failure, never permission to silently drop it.
 if [ -z "$yugioh_active_path" ]; then
   yugioh_active_path="$(mktemp "${RUNNER_TEMP:-/tmp}/yugioh-current.XXXXXX")"
-  status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+  status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
     --output "$yugioh_active_path" --write-out '%{http_code}' "$origin/yugioh/v1/current.json")"
   if [ "$status" = "404" ]; then
     rm -f "$yugioh_active_path"

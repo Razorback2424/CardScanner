@@ -33,6 +33,7 @@ class CatalogHostingRestoreTests(unittest.TestCase):
         self.tool("curl", """#!/usr/bin/env python3
 import os, pathlib, sys
 a=sys.argv[1:]; url=a[-1]; output=pathlib.Path(a[a.index('--output')+1])
+assert '--compressed' in a
 status=os.environ.get('POINTER_STATUS','200') if url.endswith('current.json') else '200'
 if '/yugioh/' in url: status=os.environ.get('YUGIOH_POINTER_STATUS','404') if url.endswith('current.json') else '200'
 if url.endswith('web.app/v1/releases/2/catalog-release.json'): status=os.environ.get('POKEMON_RELEASE_STATUS','200')
