@@ -4502,7 +4502,7 @@ enum CollectionArtworkStore {
 
     /// A partial quantity correction can legitimately map two collection keys
     /// to the same local image. Delete the file only after the row being changed
-    /// has been saved and no remaining override points at it.
+    /// has been saved and no live or restorable position points at it.
     @discardableResult
     static func removeIfUnreferenced(_ filename: String?, in context: ModelContext) -> Bool {
         guard let filename, !filename.isEmpty else { return true }
@@ -4518,6 +4518,15 @@ enum CollectionArtworkStore {
                 )
             )
             guard references == 0, legacyReferences == 0 else { return true }
+            let removed = CollectionActivityKind.removed.rawValue
+            let cutoff = Date.now.addingTimeInterval(-CollectionActivity.restoreWindow)
+            let recentRemovals = try context.fetch(FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { $0.kindRaw == removed && $0.occurredAt >= cutoff }
+            ))
+            let decoder = JSONDecoder()
+            guard !recentRemovals.contains(where: {
+                ArtworkOrphanSweep.removalArtworkFilename(in: $0, decoder: decoder) == filename
+            }) else { return true }
             remove(filename: filename)
             return true
         } catch {

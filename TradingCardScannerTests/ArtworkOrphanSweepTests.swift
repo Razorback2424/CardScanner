@@ -138,6 +138,42 @@ final class ArtworkOrphanSweepTests: XCTestCase {
         XCTAssertNotNil(CollectionArtworkStore.image(filename: filename))
     }
 
+    func testRemovingSharedLivePhotoPreservesRestorableLegacyPhoto() async throws {
+        let container = try makeContainer()
+        let filename = try saveArtwork()
+        defer { CollectionArtworkStore.remove(filename: filename) }
+        let card = try ProductionRowFixtures.pokemonCard()
+        let (snapshot, liveKey) = try CollectionWriteSerializer.perform(
+            container: container, timeout: .wait
+        ) { context in
+            let store = CollectionStore(context: context)
+            let removed = try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed),
+                source: .scan)
+            let retained = try store.add(card, resolved: .init(variant: .reverse, resolution: .userConfirmed),
+                source: .scan)
+            for row in try context.fetch(FetchDescriptor<CollectedCard>()) {
+                row.userArtworkFilename = filename
+            }
+            try context.save()
+            return (try store.remove(collectionKey: removed.collectionKey), retained.collectionKey)
+        }
+
+        let detailWriter = await CollectionDetailWriter.makeBackground(modelContainer: container)
+        try await detailWriter.removeArtwork(collectionKey: liveKey, shouldContinue: { true })
+        try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            try CollectionStore(context: context).restore(snapshot)
+        }
+
+        let context = ModelContext(container)
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        let restored = try XCTUnwrap(rows.first { $0.collectionKey == snapshot.collectionKey })
+        let retained = try XCTUnwrap(rows.first { $0.collectionKey == liveKey })
+        XCTAssertEqual(restored.userArtworkFilename, filename)
+        XCTAssertNil(CollectionArtworkStore.filename(for: liveKey, legacyFilename: retained.userArtworkFilename,
+            in: context))
+        XCTAssertNotNil(CollectionArtworkStore.image(filename: filename))
+    }
+
     func testCorrectingIntoExistingFinishThenUndoKeepsSourceArtwork() throws {
         let container = try makeContainer()
         let sourceFilename = try saveArtwork()

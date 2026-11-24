@@ -362,9 +362,8 @@ enum ArtworkOrphanSweep {
         // A legacy photo may be reachable only through the removal snapshot
         // until the card is restored or its undo window expires.
         let decoder = JSONDecoder()
-        let restorableFilenames = Set(recentActivities.compactMap { activity -> String? in
-            guard activity.kind == .removed, let data = activity.removalSnapshotData else { return nil }
-            return (try? decoder.decode(RemovedCardSnapshot.self, from: data))?.userArtworkFilename
+        let restorableFilenames = Set(recentActivities.compactMap {
+            removalArtworkFilename(in: $0, decoder: decoder)
         })
         return Snapshot(
             liveCardKeys: liveKeys,
@@ -381,6 +380,11 @@ enum ArtworkOrphanSweep {
                 .union(cards.compactMap(\.userArtworkFilename)),
             restorableFilenames: restorableFilenames
         )
+    }
+
+    static func removalArtworkFilename(in activity: CollectionActivity, decoder: JSONDecoder) -> String? {
+        guard activity.kind == .removed, let data = activity.removalSnapshotData else { return nil }
+        return (try? decoder.decode(RemovedCardSnapshot.self, from: data))?.userArtworkFilename
     }
 
     /// Compatibility entry point for isolated callers. Production runs
