@@ -1,3 +1,14 @@
+# 2026-11-24 — Catalog activation and delayed pricing saves
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records a
+reproduced race between a catalog mapping replacement and a delayed first
+quote save. The serialized checkpoint now checks the active mapping before
+writing the amount and portfolio observation. The signed pricing and
+structural write run passed 287 cases with eight opt-in skips. Read-only
+production checks confirmed HTTP 509, Cloud Billing disabled, and the
+Firebase Hosting API enabled. The owner deferred further centering work
+and specified the outer printed frame as the measurement reference.
+
 # 2026-11-24 — Release-stability blockers and verification
 
 The [audit ledger](docs/audits/release-stability-ledger.md) records the
