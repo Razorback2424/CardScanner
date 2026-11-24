@@ -19,6 +19,7 @@ The launch contract records owner and external prerequisites for provider access
 | --- | --- | --- |
 | iOS full target | Starting commit, Xcode 27.2 (27B52), ProfileLocal / DebugRemoteLocal, unsigned iPhone 17 Pro on iOS 27.0, `Baseline.xcresult` on T7 | Running with reproduced failures |
 | iOS production build | `ReleaseBuild.log`, ProfileLocal / Release, generic iOS Simulator, Xcode 27.2. Package contains the privacy manifest, iPhone portrait and all four iPad orientations. | Passed |
+| iOS production checkpoint | `ReleaseCheckpoint.log`, candidate `baab2639`, same generic simulator Release gate. | Passed |
 | Catalog core tests | Pokémon 93 passed and 1 skipped, Magic 19 passed, One Piece 54 passed, zero failures | Passed with one skip |
 | Offline script suite | `ScriptBaseline.log` hit a failing module import. `ScriptAfterDiscoveryRepair.log` completed 428 cases with 423 passed and five native-publisher skips. | Passed after RS-01; skipped cases run separately under RS-08 |
 | Yu-Gi-Oh! publishing | 59 retained Python fixture cases passed. The native publisher failed to compile at baseline. `YuGiOhPublisher.log` contains five passing publisher contract cases after repair. | Publisher passed after RS-08 |
@@ -80,6 +81,7 @@ Record an ID, severity, checkpoint, affected promise, reproducible evidence, roo
 | RS-13 | Medium | Checkpoints 04/05/06/07/08/09. The label “Only variant printed” overstated the evidence for an uncertified catalog singleton (part of LR06). It now reads “Only finish listed” and retains the existing acquisition rules and persisted provenance. All 69 signed finish-resolution and Pokémon evidence checks passed. Complete physical finish certification remains open. The bundle contains 22 certified sets and 2,262 certified card rows. |
 | RS-14 | Medium | Checkpoints 10/12. Cold Browse detail read the preserved reference amount after a newer exact check from the same source found no quote. The reference overlay could display it as a current market value. Detail now shares the grid's confirmed-miss exclusion. The signed fixture confirms a failed check is still eligible, a disproved quote is excluded, a later positive restores it, and the dated amount remains available to last-known consumers. |
 | RS-15 | Medium, local beta | Checkpoints 04/05/11. An unavailable lookup stamped an unverified report as evaluated against the current catalog revision. A later connected pass skipped it until the next revision even if evidence for the exact report was available. Waiting lookups remain eligible for another pass, including legacy waiting records without an explicit dismissal. The signed regression exercises disconnect/reconnect at the same revision and the existing explicit dismissal tests pass. The distribution feature gate is unchanged. |
+| RS-16 | High | Checkpoints 17/18. The shared Firebase validation step exited 1 against the committed configuration because it required a removed wildcard market-feed TTL. The job gates multiple catalog publishers. The check now verifies the exact live marker, index and TCGplayer JSON declarations. The real configuration passed, four one-header mutations failed as expected, and 10 namespace restoration and 24 market-feed cases passed. Firebase deployment remains blocked separately by RS-11. |
 
 ### Recognition review progress
 
@@ -108,6 +110,8 @@ Traced HTTPS endpoint validation, redirects, transfer limits, cancellation and c
 ### Centering accuracy investigation
 
 The existing [centering evidence](centering-guided-repair.md) distinguishes the production guide error from DEBUG-only printed-reference tests. For the four production failures, prior overlays show both physical-cut and inner-reference disagreement. Starting Town has conflicting boundary targets across the retained annotation and supplied-layout experiment. Resolve the intended inner reference and obtain independently reviewed boundary evidence before changing selection rules. Both original tests and tolerances remain in the branch.
+
+The signed broad candidate reproduced all four failures. The maximum absolute error remained 10.97 percentage points. A renewed inspection of the retained annotated contact sheet confirmed that the Starting Town cyan quad includes the gold type banner whereas the supplied-layout probe measures the illustration window. This single-reader review does not establish replacement ground truth. The passing controls and unchanged production confirmation gate remain part of acceptance.
 
 ### Prior launch review dispositions
 
