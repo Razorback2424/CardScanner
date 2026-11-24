@@ -327,6 +327,7 @@ enum ArtworkOrphanSweep {
         let overrides: [OverrideSnapshot]
         let recentActivityKeys: Set<String>
         let referencedFilenames: Set<String>
+        let restorableFilenames: Set<String>
     }
 
     struct Report: Equatable, Sendable {
@@ -355,11 +356,16 @@ enum ArtworkOrphanSweep {
                 canonicalKeysByLegacyKey[legacyKey, default: []].insert(canonicalKey)
             }
         }
-        let recentActivityKeys = Set(
-            activities
-                .filter { now.timeIntervalSince($0.occurredAt) <= CollectionActivity.restoreWindow }
-                .map(\.collectionKey)
-        )
+        let recentActivities = activities.filter {
+            now.timeIntervalSince($0.occurredAt) <= CollectionActivity.restoreWindow
+        }
+        // A legacy photo may be reachable only through the removal snapshot
+        // until the card is restored or its undo window expires.
+        let decoder = JSONDecoder()
+        let restorableFilenames = Set(recentActivities.compactMap { activity -> String? in
+            guard activity.kind == .removed, let data = activity.removalSnapshotData else { return nil }
+            return (try? decoder.decode(RemovedCardSnapshot.self, from: data))?.userArtworkFilename
+        })
         return Snapshot(
             liveCardKeys: liveKeys,
             canonicalKeysByLegacyKey: canonicalKeysByLegacyKey,
@@ -370,9 +376,10 @@ enum ArtworkOrphanSweep {
                     updatedAt: $0.updatedAt
                 )
             },
-            recentActivityKeys: recentActivityKeys,
+            recentActivityKeys: Set(recentActivities.map(\.collectionKey)),
             referencedFilenames: Set(overrides.map(\.filename))
-                .union(cards.compactMap(\.userArtworkFilename))
+                .union(cards.compactMap(\.userArtworkFilename)),
+            restorableFilenames: restorableFilenames
         )
     }
 
@@ -478,6 +485,7 @@ enum ArtworkOrphanSweep {
             let candidateFiles = agedFileCandidates
                 .subtracting(snapshot.referencedFilenames)
                 .union(pendingCleanupFiles)
+                .subtracting(snapshot.restorableFilenames)
             var filesToRemove = Set<String>()
             let candidateFilenameList = Array(candidateFiles)
             if !candidateFilenameList.isEmpty {

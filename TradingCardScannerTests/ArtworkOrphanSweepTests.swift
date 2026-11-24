@@ -220,6 +220,40 @@ final class ArtworkOrphanSweepTests: XCTestCase {
         XCTAssertNotNil(CollectionArtworkStore.image(filename: destinationFilename))
     }
 
+    func testSweepKeepsLegacyArtworkForARestorableRemoval() throws {
+        let container = try makeContainer()
+        let filename = try saveArtwork()
+        defer { CollectionArtworkStore.remove(filename: filename) }
+        let mutation = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            try CollectionStore(context: context).add(
+                ProductionRowFixtures.pokemonCard(),
+                resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+                source: .scan
+            )
+        }
+        let activityID = try XCTUnwrap(mutation.activityID)
+        let removal = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            let card = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+            card.userArtworkFilename = filename
+            try context.save()
+            return try CollectionStore(context: context).remove(activityID: activityID)
+        }
+        XCTAssertEqual(removal.userArtworkFilename, filename)
+
+        let snapshot = try ArtworkOrphanSweep.snapshot(in: container)
+        let plan = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            try ArtworkOrphanSweep.prepare(in: context, snapshot: snapshot, agedFileCandidates: [filename])
+        }
+        CollectionArtworkStore.removeFiles(named: plan.filesToRemove)
+        try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            try CollectionStore(context: context).restore(removal)
+        }
+
+        let restored = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(restored.userArtworkFilename, filename)
+        XCTAssertNotNil(CollectionArtworkStore.image(filename: filename))
+    }
+
     func testSweepRemovesOnlyOldUnreferencedFiles() throws {
         let container = try makeContainer()
         let referencedFilename = try saveArtwork()
