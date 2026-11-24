@@ -1,6 +1,6 @@
 # Release-stability audit ledger
 
-**Status:** Coverage mapped and baseline running — 2026-11-23.
+**Status:** Initial repairs verified in focused checks. Whole-codebase review and release gates remain open — 2026-11-23.
 
 - Worktree `/private/tmp/ScanStash-release-stability`, branch `audit/release-stability`.
 - Starting commit `5800704bdb22d6b9f2a3974b7fe0143e0606b2e8`. The local `origin/main` ref and GitHub's current `refs/heads/main` agreed when isolation was established.
@@ -17,11 +17,15 @@ The launch contract records owner and external prerequisites for provider access
 
 | Gate | Candidate and evidence | Status |
 | --- | --- | --- |
-| iOS full target | Clean starting commit, Xcode 27.2 (27B52), ProfileLocal / DebugRemoteLocal, unsigned iPhone 17 Pro on iOS 27.0, `Baseline.xcresult` on T7 | Running |
-| iOS production build | ProfileLocal / Release, generic iOS Simulator, Xcode 27.2 | Pending |
+| iOS full target | Starting commit, Xcode 27.2 (27B52), ProfileLocal / DebugRemoteLocal, unsigned iPhone 17 Pro on iOS 27.0, `Baseline.xcresult` on T7 | Running with reproduced failures |
+| iOS production build | `ReleaseBuild.log`, ProfileLocal / Release, generic iOS Simulator, Xcode 27.2. Package contains the privacy manifest, iPhone portrait and all four iPad orientations. | Passed |
 | Catalog core tests | Pokémon 93 passed and 1 skipped, Magic 19 passed, One Piece 54 passed, zero failures | Passed with one skip |
-| Offline script suite | `ScriptBaseline.log`, Python 3.12. Of 373 reported cases, one was a failing module import and five were skipped. | Failed at baseline; see RS-01 |
-| External and device gates | Physical camera and rotation, iPhone/iPad journeys, lifecycle/performance, signing/archive, StoreKit, provider and hosted publication, CloudKit where active | Evidence pending |
+| Offline script suite | `ScriptBaseline.log` hit a failing module import. `ScriptAfterDiscoveryRepair.log` completed 428 cases with 423 passed and five native-publisher skips. | Passed after RS-01; skipped cases run separately under RS-08 |
+| Yu-Gi-Oh! publishing | 59 retained Python fixture cases passed. The native publisher failed to compile at baseline. `YuGiOhPublisher.log` contains five passing publisher contract cases after repair. | Publisher passed after RS-08 |
+| Build and CI inputs | Xcode project, app Info.plist, privacy manifest and both entitlements passed plist validation. CI selector validator resolved all 84 XCTest selectors. All 177 Python and 18 shell sources parsed. | Passed |
+| Focused app checkpoint | `Checkpoint1.log` reported 263 passed, one skip and two failures on the unsigned host. The same two Keychain tests passed with signing. `SignedCheckpoint.log` also verifies 56 Yu-Gi-Oh! app cases. | Changed behavior passed |
+| Signed local fixtures | `LocalFixtures.log` reported 36 passed and one StoreKit interrupted-purchase skip. Includes Pokémon offline release, StoreKit local approval/restore and ProductIdentity Keychain tests. | Passed with one skip |
+| External and device gates | Public catalog and market-feed checks returned HTTP 509 (RS-11). Configured Release privacy and support URLs are empty as documented. Physical camera/rotation, sustained lifecycle, App Store Connect and distribution acceptance remain unverified. | Open |
 
 Artifact root `/Volumes/T7/ScanStash_ReleaseStability_20261123`. Keep raw evidence out of Git.
 
@@ -31,22 +35,22 @@ A checkpoint closes after tracing its production entry points through shared bou
 
 | ID | Primary area | Workflow and boundaries | Status |
 | --- | --- | --- | --- |
-| 01 | App startup, navigation and settings | Opening and onboarding → tab routing → settings, support, permissions, app/scene lifecycle and accessibility. | Pending |
-| 02 | Storage, recovery and sync | Launch → schema and storage selection → interruption/relaunch, migrations, CloudKit readiness and session replacement. | Pending |
+| 01 | App startup, navigation and settings | Opening and onboarding → tab routing → settings, support, permissions, app/scene lifecycle and accessibility. | Startup and Release config in progress |
+| 02 | Storage, recovery and sync | Launch → schema and storage selection → interruption/relaunch, migrations, CloudKit readiness and session replacement. | Artwork recovery in progress |
 | 03 | Camera and recognition | Permission → frames and ROI → OCR, cadence, identifier confirmation, slab capture and duplicate suppression. | In progress |
 | 04 | Scan resolution and recovery | Recognition → exact catalog result → variant and print-run choice → save, correction, retries, departure and restored review. | Pending |
-| 05 | Pokémon catalog and game adapters | Discovery, historical titles and numbers, exact products and variants, signed delivery, import and prices. | Pending |
+| 05 | Pokémon catalog and game adapters | Discovery, historical titles and numbers, exact products and variants, signed delivery, import and prices. | Signed bundle and hosting in progress |
 | 06 | Magic catalog and game adapters | Scryfall discovery and pacing, historical variants, foil/treatment identity, paired objects, catalog updates and pricing. | Pending |
 | 07 | One Piece catalog and game adapters | Seed/remote activation, English identity, reviewed finishes, signed updates, import, artwork and market lanes. | Pending |
 | 08 | Lorcana catalog and game adapters | Discovery, source normalization, reviewed identity and finishes, activation, import and pricing. | Pending |
-| 09 | Yu-Gi-Oh! catalog and game adapters | Set and printing identity, release activation, lookup and import, recognition and price mapping. | Pending |
+| 09 | Yu-Gi-Oh! catalog and game adapters | Set and printing identity, release activation, lookup and import, recognition and price mapping. | Printings, editions and publisher verified with fixtures. Live delivery open |
 | 10 | Browse, detail and shared catalog | Game registration → search, filters, pagination, completion, artwork, exact details, manual add and sealed browse. | Pending |
 | 11 | Collection and activity | Owned presentation → edit, acquisition, correction, quantity, sale, deletion/undo and revision notifications. | Pending |
-| 12 | Pricing and products | Provider and Keychain inputs → exact lookup, fallback, quotas, stale/cache states, sealed/graded quotes, refresh and offline retention. | Pending |
+| 12 | Pricing and products | Provider and Keychain inputs → exact lookup, fallback, quotas, stale/cache states, sealed/graded quotes, refresh and offline retention. | Reference quote lifecycle in progress |
 | 13 | Portfolio and durable accounting | Ledger authority → daily close, replay and current projections → movement, history and owned-value reconciliation. | Pending |
 | 14 | Import, export and trade | CSV validation, matching, interruption/resume and export → privacy, trade selection, valuation and review. | Trade review in progress |
-| 15 | Centering and listing photos | Pro camera/library → centering correction, review and output → listing photo crop, export, save and cancellation. | Pending |
-| 16 | Purchases and paid access | StoreKit configuration → entitlement, offer, restore and paid/free access checks. | Pending |
+| 15 | Centering and listing photos | Pro camera/library → centering correction, review and output → listing photo crop, export, save and cancellation. | Camera and initial-guide evidence in progress |
+| 16 | Purchases and paid access | StoreKit configuration → entitlement, offer, restore and paid/free access checks. | Source and local fixtures reviewed. One simulator skip and production acceptance open |
 | 17 | Publisher, tooling and evidence | Curated inputs → retained tests, builders, signing, hosting, feed verification, maintenance and research harnesses. | Pending |
 | 18 | Build, CI and test infrastructure | Project membership, Release declarations, CI selectors, fixtures, test reliability, packaging and external integration configuration. | In progress |
 | 19 | Final cross-module verification | Recheck changed paths and actual workflows, run broad gates and reconcile all findings, skips and external limitations. | Pending |
@@ -57,13 +61,33 @@ Record an ID, severity, checkpoint, affected promise, reproducible evidence, roo
 
 | ID | Severity | Evidence and disposition |
 | --- | --- | --- |
-| RS-01 | Medium | Checkpoints 05/17/18. At the starting commit, the offline CI suite hit `IndentationError` when importing `test_certify_pokemon_finish_coverage.py`. One e-card method declaration was outside its Python test class, which made the following declaration invalid. Restoring class indentation preserves all assertions and restores discovery. 56 focused tests passed, including the reviewed e-card group, finish evidence and replay cases. Broad suite rerun pending. |
-| RS-02 | Medium | Checkpoint 14. Trade Review balances the bar using priced cards and cash even when missing quotes make the verdict withhold the comparison. Source evidence is in `TradeReviewHero` and `TradeDraft.difference`. Rendered reproduction and repair pending. |
+| RS-01 | Medium | Checkpoints 05/17/18. At the starting commit, the offline CI suite hit `IndentationError` when importing `test_certify_pokemon_finish_coverage.py`. One e-card method declaration was outside its Python test class, which made the following declaration invalid. Restoring class indentation preserves all assertions and restores discovery. 56 focused tests passed, followed by the broad script rerun above. |
+| RS-02 | Medium | Checkpoint 14. Trade Review drew a comparison bar from partial totals while its verdict withheld the comparison. Reproduced on an iPhone 17 Pro simulator with `TradeAnalyzer review-partial` ($181.60 and $176.00 priced so far, pending and unavailable quotes). Candidate renders show the partial totals and pending verdict without the bar and the complete $5.60 difference with its bar and cash action. Evidence is in the `TradeBeforePartial`, `TradeAfterPartial` and `TradeAfterComplete` artifact directories. |
 | RS-03 | Low | Checkpoint 14. Both trade summary artwork stacks take the last three rows, although new scans insert at index zero. With four or more distinct rows on a side the artwork previews show older rows while the latest receipt, count and totals still reflect the new scan. Recorded without a repair. |
+| RS-04 | Medium | Checkpoints 02/11. A user can remove a card before delayed legacy-artwork migration. The orphan sweep could delete an aged photo while Restore remained available because only live rows and current overrides protected filenames. The repair protects recent removal snapshots. All eight artwork sweep tests passed, including restore of the card and photo after cleanup. |
+| RS-05 | Medium | Checkpoints 15/18. The baseline reproduced two invalid camera test setups after `4d0b628e` added a deliberate readiness check. The fixture models readiness becoming stale before queue admission, preserving rejection/retry and immediate-stop assertions and checking that a fresh stopped shutter does nothing. All 18 camera rotation cases passed. |
+| RS-06 | High | Checkpoint 15. The baseline reproduced LR03 in `CardCenteringGroundTruthTests/testInitialGuidesMatchExistingDevelopmentAnnotations`. The 2.0 percentage-point criterion failed on four retained photos, reaching 10.97 points top/bottom for IMG_0780. The paid tool requires confirmation and allows guide editing. The candidate still fails the initial-guide criterion. Root-cause review and repair remain open. |
+| RS-07 | Medium | Checkpoints 04/10/12/14. Browse records a same-source confirmed miss, but Price Check and Trade could reopen the quote as current. The repair treats the older receipt as last known and rejects a replay during refresh. All 45 quote-cache tests passed, including the stored marker and replacement by a newer successful quote. |
+| RS-08 | High | Checkpoints 09/17/18. The standalone publisher failed to compile because a shared catalog model used app-only `PhysicalVariant`. The projection now lives with the variant definitions in the iOS adapter. Five publisher contract cases and 56 signed app cases passed, including both Duel Terminal scan/Browse/CSV and Limited identity/quote coverage. |
+| RS-09 | Medium | Checkpoints 16/18. The signed ProfileLocal host failed to load product data in three StoreKit tests. The scheme omitted the existing StoreKit configuration used by the shared Debug scheme. Referencing the same fixture restored local purchase, pending approval and restore coverage. 14 Collector Tools cases passed; one interrupted-purchase case skipped because this simulator granted the verified entitlement before issue resolution. |
+| RS-10 | Medium | Checkpoints 05/18. The bundled Pokémon tests expected revision 24 after `1104b78f` installed signed revision 26. Expected revisions now come from verification of the packaged envelope. Checks still require exact activation, persistence, older-release replacement, known sets and rejection of untrusted input. All three cases passed. |
+| RS-11 | High, external | Checkpoints 05/07/09/12/17. On 2026-11-23, the public Pokémon, One Piece and Yu-Gi-Oh! current pointers and the market-feed last-updated marker returned HTTP 509 on both the configured production host and documented Firebase mirror. Pokémon refresh in the simulator recorded the same result. Root cause and restoration need hosting-side evidence. Bundled fallback tests give local evidence only. |
 
 ### Recognition review progress
 
 Current code supersedes the earlier [scanner module review](scanner_module_review.md) on four points. A title attempt retains its exhausted budget through the TTL, the preview and debug overlays consume the installed footer ROI, missing buffers trigger request recovery without treating an OCR failure as evidence of a card exit, and the lens probe checks reported minimum focus distance under a versioned cache key. Recognition-device timing, debug overlay/frame coherence during ROI transitions, and sustained failure behavior remain under review.
+
+### Paid access review progress
+
+Traced startup and foreground reconciliation, StoreKit product identity/type, purchase delivery, verification, restore, revocation and stale ownership snapshots through the offer, centering gate and listing photo archive delivery. The production build omits the owner-only paid-tool bypass. Signed local fixtures passed as described in RS-09. App Store Connect purchase, restore and interrupted purchase remain externally gated.
+
+### Shared catalog delivery review progress
+
+Traced HTTPS endpoint validation, redirects, transfer limits, cancellation and conditional headers through the shared transport. Traced decoded release validation, predecessor checks, two-slot writes, corruption recovery and serialized withdrawal of superseded prices through activation. The hosted endpoints are currently blocked by RS-11. Game-specific signer/activation traces and device acceptance remain open.
+
+### Centering accuracy investigation
+
+The existing [centering evidence](centering-guided-repair.md) distinguishes the production guide error from DEBUG-only printed-reference tests. For the four production failures, prior overlays show both physical-cut and inner-reference disagreement. Starting Town has conflicting boundary targets across the retained annotation and supplied-layout experiment. Resolve the intended inner reference and obtain independently reviewed boundary evidence before changing selection rules. Both original tests and tolerances remain in the branch.
 
 Re-evaluate launch review LR01–LR08 and current release follow-ups on this candidate. The final cross-module verification pass follows initial coverage and the last qualifying repair.
 

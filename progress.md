@@ -1,3 +1,20 @@
+# 2026-11-23 — Release-stability audit repairs and verification
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records the
+isolated work from `5800704b`. Focused checks verified restoration of
+legacy artwork after removal, withheld trade comparisons while quotes are
+incomplete, and retained last-known scan quotes when Browse has confirmed a
+miss. The Yu-Gi-Oh! publisher compiles again and both native and app-side
+checks passed. Camera tests now model the readiness race, the ProfileLocal
+scheme loads the existing StoreKit fixture, and bundled Pokémon tests check
+the signed package revision.
+
+The simulator Release build passed. Offline script and package results,
+signed simulator results and the StoreKit skip are in the ledger. The
+previous centering initial-guide failure reproduced, and production catalog
+and feed requests returned HTTP 509 from both public origins. Review and
+release gates remain open.
+
 # 2026-11-23 — Release-stability audit baseline
 
 The [audit ledger](docs/audits/release-stability-ledger.md) maps the source
