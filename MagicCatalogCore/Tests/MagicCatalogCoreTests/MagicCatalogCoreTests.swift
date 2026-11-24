@@ -1048,6 +1048,27 @@ final class MagicCatalogCoreTests: XCTestCase {
         }
     }
 
+    func testPublisherKeepsCurrentPointerWhenImmutableObjectCannotBeRead() throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("magic-catalog-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let key = Curve25519.Signing.PrivateKey()
+        let publisher = MagicCatalogFilesystemPublisher(root: root, environment: .production)
+        let first = try build()
+        let receipt = try publisher.publish(MagicCatalogSigner.sign(first, privateKey: key, keyID: "test"))
+        let pointer = root.appendingPathComponent(receipt.currentPointerPath)
+        let firstPointer = try Data(contentsOf: pointer)
+        let blockedObject = root.appendingPathComponent("magic/v1/releases/2/review-report.json", isDirectory: true)
+        try FileManager.default.createDirectory(at: blockedObject, withIntermediateDirectories: true)
+
+        let second = try build(active: first.release, revision: 2)
+        let signed = try MagicCatalogSigner.sign(second, privateKey: key, keyID: "test")
+        XCTAssertThrowsError(try publisher.publish(signed, activeRelease: first.release)) { error in
+            XCTAssertEqual(error as? MagicCatalogPublisherError, .immutableRevisionConflict(2))
+        }
+        XCTAssertEqual(try Data(contentsOf: pointer), firstPointer)
+    }
+
     func testSignatureCorruptionFailsClosed() throws {
         let key = Curve25519.Signing.PrivateKey()
         let envelope = try MagicCatalogSignatureVerifier.sign(
