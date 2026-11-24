@@ -1472,7 +1472,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         if let adapter = gameBrowseAdapters.adapter(for: summary.game),
            adapter.generation != summary.catalogGeneration { return [:] }
         let keys = variants.map { CatalogQuoteKey.make(for: summary, variant: $0) }
-        let quotes = await store.quotes(forKeys: keys.map(\.rawValue), now: now())
+        let quotes = await store.quotes(forKeys: keys.map(\.rawValue), now: now(), excludingConfirmedMisses: true)
         return Dictionary(keys.compactMap { key in
             guard let id = key.variantID, let quote = quotes[key.rawValue] else { return nil }
             return (id, quote)

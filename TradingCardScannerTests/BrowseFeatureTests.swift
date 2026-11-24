@@ -1293,6 +1293,8 @@ final class BrowseFeatureTests: XCTestCase {
 
             let relaunched = browse()
             await relaunched.setQuoteStoreProvider { _ in store }
+            let detailQuotes = await relaunched.referenceQuotes(for: summary, variants: [.holo])
+            XCTAssertEqual(detailQuotes[PhysicalVariant.holo.id]?.unitMarketPriceUSD, checkFails ? 42 : nil)
             var updates: [CatalogPriceUpdate] = []
             for await update in relaunched.sortPriceUpdates(for: [summary]) { updates.append(update) }
             if checkFails {
@@ -1310,6 +1312,8 @@ final class BrowseFeatureTests: XCTestCase {
                 successfulCheckAt: date.addingTimeInterval(-60))
             let restored = browse()
             await restored.setQuoteStoreProvider { _ in store }
+            let restoredDetailQuotes = await restored.referenceQuotes(for: summary, variants: [.holo])
+            XCTAssertEqual(restoredDetailQuotes[PhysicalVariant.holo.id]?.unitMarketPriceUSD, 50)
             var last: CatalogPriceUpdate?
             for await update in restored.sortPriceUpdates(for: [summary]) { last = update }
             XCTAssertEqual(last?.prices[summary.id], 50, "A newer positive restores the current price")
