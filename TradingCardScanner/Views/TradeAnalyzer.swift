@@ -1317,7 +1317,7 @@ private struct TradeReviewHero: View {
             }
             table
             verdictView
-            if give.isPresent, receive.isPresent, give.total.isValid, receive.total.isValid {
+            if difference != nil {
                 TradeValueBar(give: give.total, receive: receive.total)
                     .padding(.horizontal, 8)
             }
