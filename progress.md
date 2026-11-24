@@ -1,3 +1,12 @@
+# 2026-11-24 — Production Hosting transfer
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records the
+10.5 GB Hosting Usage total, repeated production downloads during successful
+price publishes, and a bandwidth reduction for catalog and feed downloads.
+The focused offline suites passed 44 cases. Both readers preserved exact
+payload bytes in a compressed HTTP fixture. Firebase still returned HTTP
+509 on both public domains with Cloud Billing disabled.
+
 # 2026-11-24 — Relative centering inset trial
 
 One [audit trial](docs/audits/release-stability-ledger.md#centering-accuracy-investigation)
