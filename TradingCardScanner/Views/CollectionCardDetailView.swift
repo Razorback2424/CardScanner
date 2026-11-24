@@ -42,8 +42,10 @@ struct CollectionDetailQuantityState {
         displayedQuantity(for: input)
     }
 
-    static func validateIntent(observed: Int, refreshed: Int) throws {
-        guard observed == refreshed else { throw CollectionStoreError.staleQuantity }
+    func validatedQuantity(for input: Input, observed: Int) throws -> Int? {
+        guard let saved = savedQuantity(for: input) else { return nil }
+        guard observed == saved else { throw CollectionStoreError.staleQuantity }
+        return saved
     }
 
     @discardableResult
@@ -1611,19 +1613,14 @@ private struct CollectionCardDetailContent: View {
             var outcome = "superseded"
             defer { PerformanceSignpost.endInterval("CardDetail.quantityWrite", signpost, outcome) }
             do {
-                let expectedCurrent: Int
-                if let saved = quantityState.savedQuantity(for: input) {
-                    expectedCurrent = saved
-                } else {
+                if quantityState.savedQuantity(for: input) == nil {
                     await refreshDisplayedQuantity(for: input)
                     guard generation.isCurrent(token), quantityInput == input else { return }
-                    guard let refreshedQuantity = quantityState.savedQuantity(for: input) else {
-                        outcome = "unavailable"
-                        errorMessage = "The current quantity could not be loaded. Try again in a moment."
-                        return
-                    }
-                    try CollectionDetailQuantityState.validateIntent(observed: observedQuantity, refreshed: refreshedQuantity)
-                    expectedCurrent = refreshedQuantity
+                }
+                guard let expectedCurrent = try quantityState.validatedQuantity(for: input, observed: observedQuantity) else {
+                    outcome = "unavailable"
+                    errorMessage = "The current quantity could not be loaded. Try again in a moment."
+                    return
                 }
                 let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
                 let savedQuantity = try await CollectionExclusiveWrites.retryingIfRequired {
