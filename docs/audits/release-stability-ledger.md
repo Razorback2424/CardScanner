@@ -25,6 +25,7 @@ The launch contract records owner and external prerequisites for provider access
 | Build and CI inputs | Xcode project, app Info.plist, privacy manifest and both entitlements passed plist validation. CI selector validator resolved all 84 XCTest selectors. All 177 Python and 18 shell sources parsed. | Passed |
 | Focused app checkpoint | `Checkpoint1.log` reported 263 passed, one skip and two failures on the unsigned host. The same two Keychain tests passed with signing. `SignedCheckpoint.log` also verifies 56 Yu-Gi-Oh! app cases. | Changed behavior passed |
 | Signed local fixtures | `LocalFixtures.log` reported 36 passed and one StoreKit interrupted-purchase skip. Includes Pokémon offline release, StoreKit local approval/restore and ProductIdentity Keychain tests. | Passed with one skip |
+| Signed cross-module checkpoint | `CrossModule.log`, candidate `baab2639`. All 361 cases passed across Browse, ownership revision and concurrency, CSV resume, portfolio replay and daily close, pricing refresh lifecycle, and catalog delivery and activation. | Passed |
 | External and device gates | Public catalog and market-feed checks returned HTTP 509 (RS-11). Configured Release privacy and support URLs are empty as documented. Physical camera/rotation, sustained lifecycle, App Store Connect and distribution acceptance remain unverified. | Open |
 
 Artifact root `/Volumes/T7/ScanStash_ReleaseStability_20261123`. Keep raw evidence out of Git.
@@ -41,14 +42,14 @@ A checkpoint closes after tracing its production entry points through shared bou
 | 04 | Scan resolution and recovery | Recognition → exact catalog result → variant and print-run choice → save, correction, retries, departure and restored review. | Pending |
 | 05 | Pokémon catalog and game adapters | Discovery, historical titles and numbers, exact products and variants, signed delivery, import and prices. | Signed bundle and hosting in progress |
 | 06 | Magic catalog and game adapters | Scryfall discovery and pacing, historical variants, foil/treatment identity, paired objects, catalog updates and pricing. | Pending |
-| 07 | One Piece catalog and game adapters | Seed/remote activation, English identity, reviewed finishes, signed updates, import, artwork and market lanes. | Pending |
-| 08 | Lorcana catalog and game adapters | Discovery, source normalization, reviewed identity and finishes, activation, import and pricing. | Pending |
+| 07 | One Piece catalog and game adapters | Seed/remote activation, English identity, reviewed finishes, signed updates, import, artwork and market lanes. | Recognition and activation in progress |
+| 08 | Lorcana catalog and game adapters | Discovery, source normalization, reviewed identity and finishes, activation, import and pricing. | Recognition and activation in progress |
 | 09 | Yu-Gi-Oh! catalog and game adapters | Set and printing identity, release activation, lookup and import, recognition and price mapping. | Printings, editions and publisher verified with fixtures. Live delivery open |
-| 10 | Browse, detail and shared catalog | Game registration → search, filters, pagination, completion, artwork, exact details, manual add and sealed browse. | Pending |
+| 10 | Browse, detail and shared catalog | Game registration → search, filters, pagination, completion, artwork, exact details, manual add and sealed browse. | Search, pricing and detail in progress |
 | 11 | Collection and activity | Owned presentation → edit, acquisition, correction, quantity, sale, deletion/undo and revision notifications. | Pending |
 | 12 | Pricing and products | Provider and Keychain inputs → exact lookup, fallback, quotas, stale/cache states, sealed/graded quotes, refresh and offline retention. | Reference quote lifecycle in progress |
-| 13 | Portfolio and durable accounting | Ledger authority → daily close, replay and current projections → movement, history and owned-value reconciliation. | Pending |
-| 14 | Import, export and trade | CSV validation, matching, interruption/resume and export → privacy, trade selection, valuation and review. | Trade review in progress |
+| 13 | Portfolio and durable accounting | Ledger authority → daily close, replay and current projections → movement, history and owned-value reconciliation. | Epoch and replay in progress |
+| 14 | Import, export and trade | CSV validation, matching, interruption/resume and export → privacy, trade selection, valuation and review. | Trade and CSV resume in progress |
 | 15 | Centering and listing photos | Pro camera/library → centering correction, review and output → listing photo crop, export, save and cancellation. | Camera and initial-guide evidence in progress |
 | 16 | Purchases and paid access | StoreKit configuration → entitlement, offer, restore and paid/free access checks. | Source and local fixtures reviewed. One simulator skip and production acceptance open |
 | 17 | Publisher, tooling and evidence | Curated inputs → retained tests, builders, signing, hosting, feed verification, maintenance and research harnesses. | Pending |
@@ -72,6 +73,7 @@ Record an ID, severity, checkpoint, affected promise, reproducible evidence, roo
 | RS-09 | Medium | Checkpoints 16/18. The signed ProfileLocal host failed to load product data in three StoreKit tests. The scheme omitted the existing StoreKit configuration used by the shared Debug scheme. Referencing the same fixture restored local purchase, pending approval and restore coverage. 14 Collector Tools cases passed; one interrupted-purchase case skipped because this simulator granted the verified entitlement before issue resolution. |
 | RS-10 | Medium | Checkpoints 05/18. The bundled Pokémon tests expected revision 24 after `1104b78f` installed signed revision 26. Expected revisions now come from verification of the packaged envelope. Checks still require exact activation, persistence, older-release replacement, known sets and rejection of untrusted input. All three cases passed. |
 | RS-11 | High, external | Checkpoints 05/07/09/12/17. On 2026-11-23, the public Pokémon, One Piece and Yu-Gi-Oh! current pointers and the market-feed last-updated marker returned HTTP 509 on both the configured production host and documented Firebase mirror. Pokémon refresh in the simulator recorded the same result. Root cause and restoration need hosting-side evidence. Bundled fallback tests give local evidence only. |
+| RS-12 | Low | Checkpoint 14. Trade Review's combined warning says all affected prices are older than today, even when a same-day quote is flagged as last known after a confirmed miss. Individual entries preserve their last-known status and the balance verdict requires current quotes. Recorded without a repair. |
 
 ### Recognition review progress
 
@@ -84,6 +86,14 @@ Traced startup and foreground reconciliation, StoreKit product identity/type, pu
 ### Shared catalog delivery review progress
 
 Traced HTTPS endpoint validation, redirects, transfer limits, cancellation and conditional headers through the shared transport. Traced decoded release validation, predecessor checks, two-slot writes, corruption recovery and serialized withdrawal of superseded prices through activation. The hosted endpoints are currently blocked by RS-11. Game-specific signer/activation traces and device acceptance remain open.
+
+### Cross-module review progress
+
+- Startup and settings. Traced opening-state handoff, scene readiness, storage generation and configured privacy/support entry points. Keychain updates the saved vendor key in place, retries indeterminate presence on later reads and separates explicit removal from background access. Confirmed owner-provisioned access remains a launch dependency. Rendered navigation, permission denial, VoiceOver and physical lifecycle remain open.
+- Browse. Traced request generation, page deduplication, cursor progress, authority changes and owned-value currency eligibility. Detail add re-resolves a stale identity and retains separate saved values for owned copies. Sealed product search and exact price and ownership paths remain partly reviewed.
+- CSV and portfolio. Traced security-scoped file access, validation, exclusive writes, generation fences and resume. Traced pinned epoch/time zone, half-open close boundaries, replay tie ordering and grouped correction legs. The signed checkpoint covers CSV resume, ledger completeness, concurrency and replay. Physical file-provider failures, final exported artifacts and history presentation remain open.
+- One Piece and Lorcana. Traced the English One Piece identity and explicit sibling finish selection, and the Lorcana recognizer's footer and marker requirements and activation. Local activation and integration passed in the signed checkpoint. Game-specific pricing/import and artwork still need coverage.
+- Listing photos. Traced temporary ownership through photo input, per-side crop, archive, reorder and share retention. The Photos save path owns its input through authorization and library commit. Review of actual Photos permissions, full-resolution memory pressure and hardware capture remains open.
 
 ### Centering accuracy investigation
 
