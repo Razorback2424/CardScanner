@@ -19,8 +19,8 @@ The launch contract records owner and external prerequisites for provider access
 | --- | --- | --- |
 | iOS full target | Clean starting commit, Xcode 27.2 (27B52), ProfileLocal / DebugRemoteLocal, unsigned iPhone 17 Pro on iOS 27.0, `Baseline.xcresult` on T7 | Running |
 | iOS production build | ProfileLocal / Release, generic iOS Simulator, Xcode 27.2 | Pending |
-| Catalog core tests | Pokémon, Magic and One Piece Swift packages, scratch paths and logs on T7 | Running |
-| Offline script suite | `python3 -m unittest discover -s scripts/tests`, log on T7 | Running |
+| Catalog core tests | Pokémon 93 passed and 1 skipped, Magic 19 passed, One Piece 54 passed, zero failures | Passed with one skip |
+| Offline script suite | `ScriptBaseline.log`, Python 3.12. Of 373 reported cases, one was a failing module import and five were skipped. | Failed at baseline; see RS-01 |
 | External and device gates | Physical camera and rotation, iPhone/iPad journeys, lifecycle/performance, signing/archive, StoreKit, provider and hosted publication, CloudKit where active | Evidence pending |
 
 Artifact root `/Volumes/T7/ScanStash_ReleaseStability_20261123`. Keep raw evidence out of Git.
@@ -33,7 +33,7 @@ A checkpoint closes after tracing its production entry points through shared bou
 | --- | --- | --- | --- |
 | 01 | App startup, navigation and settings | Opening and onboarding → tab routing → settings, support, permissions, app/scene lifecycle and accessibility. | Pending |
 | 02 | Storage, recovery and sync | Launch → schema and storage selection → interruption/relaunch, migrations, CloudKit readiness and session replacement. | Pending |
-| 03 | Camera and recognition | Permission → frames and ROI → OCR, cadence, identifier confirmation, slab capture and duplicate suppression. | Pending |
+| 03 | Camera and recognition | Permission → frames and ROI → OCR, cadence, identifier confirmation, slab capture and duplicate suppression. | In progress |
 | 04 | Scan resolution and recovery | Recognition → exact catalog result → variant and print-run choice → save, correction, retries, departure and restored review. | Pending |
 | 05 | Pokémon catalog and game adapters | Discovery, historical titles and numbers, exact products and variants, signed delivery, import and prices. | Pending |
 | 06 | Magic catalog and game adapters | Scryfall discovery and pacing, historical variants, foil/treatment identity, paired objects, catalog updates and pricing. | Pending |
@@ -44,18 +44,28 @@ A checkpoint closes after tracing its production entry points through shared bou
 | 11 | Collection and activity | Owned presentation → edit, acquisition, correction, quantity, sale, deletion/undo and revision notifications. | Pending |
 | 12 | Pricing and products | Provider and Keychain inputs → exact lookup, fallback, quotas, stale/cache states, sealed/graded quotes, refresh and offline retention. | Pending |
 | 13 | Portfolio and durable accounting | Ledger authority → daily close, replay and current projections → movement, history and owned-value reconciliation. | Pending |
-| 14 | Import, export and trade | CSV validation, matching, interruption/resume and export → privacy, trade selection, valuation and review. | Pending |
+| 14 | Import, export and trade | CSV validation, matching, interruption/resume and export → privacy, trade selection, valuation and review. | Trade review in progress |
 | 15 | Centering and listing photos | Pro camera/library → centering correction, review and output → listing photo crop, export, save and cancellation. | Pending |
 | 16 | Purchases and paid access | StoreKit configuration → entitlement, offer, restore and paid/free access checks. | Pending |
 | 17 | Publisher, tooling and evidence | Curated inputs → retained tests, builders, signing, hosting, feed verification, maintenance and research harnesses. | Pending |
-| 18 | Build, CI and test infrastructure | Project membership, Release declarations, CI selectors, fixtures, test reliability, packaging and external integration configuration. | Pending |
+| 18 | Build, CI and test infrastructure | Project membership, Release declarations, CI selectors, fixtures, test reliability, packaging and external integration configuration. | In progress |
 | 19 | Final cross-module verification | Recheck changed paths and actual workflows, run broad gates and reconcile all findings, skips and external limitations. | Pending |
 
 ## Findings and verification
 
 Record an ID, severity, checkpoint, affected promise, reproducible evidence, root cause, disposition, focused regression and remaining limitations. Critical covers catastrophic loss, serious exposure or widespread failure. High covers broken core behavior, material error or corruption, or frequent crashes. Medium covers meaningful workflow failure, incorrect or misleading behavior, or functional degradation. Low covers limited practical impact.
 
-No findings have been adjudicated yet. Start with launch review LR01–LR08, the scanner module review and current release follow-ups. The final cross-module verification pass follows initial coverage and the last qualifying repair.
+| ID | Severity | Evidence and disposition |
+| --- | --- | --- |
+| RS-01 | Medium | Checkpoints 05/17/18. At the starting commit, the offline CI suite hit `IndentationError` when importing `test_certify_pokemon_finish_coverage.py`. One e-card method declaration was outside its Python test class, which made the following declaration invalid. Restoring class indentation preserves all assertions and restores discovery. 56 focused tests passed, including the reviewed e-card group, finish evidence and replay cases. Broad suite rerun pending. |
+| RS-02 | Medium | Checkpoint 14. Trade Review balances the bar using priced cards and cash even when missing quotes make the verdict withhold the comparison. Source evidence is in `TradeReviewHero` and `TradeDraft.difference`. Rendered reproduction and repair pending. |
+| RS-03 | Low | Checkpoint 14. Both trade summary artwork stacks take the last three rows, although new scans insert at index zero. With four or more distinct rows on a side the artwork previews show older rows while the latest receipt, count and totals still reflect the new scan. Recorded without a repair. |
+
+### Recognition review progress
+
+Current code supersedes the earlier [scanner module review](scanner_module_review.md) on four points. A title attempt retains its exhausted budget through the TTL, the preview and debug overlays consume the installed footer ROI, missing buffers trigger request recovery without treating an OCR failure as evidence of a card exit, and the lens probe checks reported minimum focus distance under a versioned cache key. Recognition-device timing, debug overlay/frame coherence during ROI transitions, and sustained failure behavior remain under review.
+
+Re-evaluate launch review LR01–LR08 and current release follow-ups on this candidate. The final cross-module verification pass follows initial coverage and the last qualifying repair.
 
 ## Tracked file inventory
 

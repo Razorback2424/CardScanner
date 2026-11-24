@@ -1,3 +1,11 @@
+# 2026-11-23 — Release-stability audit baseline
+
+The [audit ledger](docs/audits/release-stability-ledger.md) maps the source
+and workflow checkpoints from `5800704b`. The offline baseline found a
+Python indentation error that blocked discovery of the entire Pokémon
+finish-certification test module. The corrected module passed all 56 tests,
+with the broad script suite scheduled for a rerun.
+
 # 2026-11-23 — Production review pricing fixes
 
 Fixes for the eight code findings in the `c624c506` production review:
