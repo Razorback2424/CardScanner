@@ -2000,6 +2000,39 @@ final class OnePieceIntegrationTests: XCTestCase {
         }
     }
 
+    func testRefreshCheckpointSkipsFirstQuoteFromReplacedCatalogMapping() async throws {
+        for mappingChanges in [true, false] {
+            let registry = try registry(withMarketMapping: true)
+            let (_, container) = try model(registry: registry)
+            let printingID = uuid(1).uuidString.lowercased()
+            let key = PriceRecord.key(game: .onePiece, printingID: printingID, variantID: "foil")
+            let quote = try await OnePiecePriceAdapter(registry: registry, source: OnePieceTestPriceSource())
+                .refreshStoredPrinting(printingID, variant: .foil)
+            let checkpoint = PriceStore(context: ModelContext(container), checkpointsInFreshContext: true)
+            XCTAssertTrue(checkpoint.store(quote, game: .onePiece, printingID: printingID, variantID: "foil"))
+
+            let authority = mappingChanges
+                ? GameCatalogPriceAuthority(game: .onePiece, managedSources: [.tcgCSV],
+                    identityByPriceKey: [key: "replacement-product-mapping"])
+                : OnePiecePriceAdapter.priceAuthority(registry)
+            XCTAssertTrue(CollectionStore.installCatalogAdapter(OnePieceCatalogAdapter(registry: registry),
+                revision: 100, priceAuthority: authority, for: container))
+            try authority.install(in: container)
+
+            XCTAssertTrue(checkpoint.save())
+            let fresh = ModelContext(container)
+            let record = PriceStore(context: fresh).record(forKey: key)
+            let observations = try fresh.fetch(FetchDescriptor<PriceObservation>()).filter { $0.instrumentKey == key }
+            if mappingChanges {
+                XCTAssertNil(record, "Publication has no existing price to invalidate before the first quote")
+                XCTAssertTrue(observations.isEmpty, "A withdrawn quote must not enter portfolio history")
+            } else {
+                XCTAssertEqual(record?.effectiveUnitMarketPriceUSD, 8.16)
+                XCTAssertEqual(observations.count, 1)
+            }
+        }
+    }
+
     func testPriceAuthorityWithdrawalPreservesManualValuesAndRejectsOldReceipts() async throws {
         let registry = try registry(withMarketMapping: true), source = OnePieceTestPriceSource()
         let (_, container) = try model(registry: registry)
