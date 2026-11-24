@@ -1,3 +1,14 @@
+# 2026-11-24 — Release-stability blockers and verification
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records the
+remaining centering and live-delivery blockers. The signed broad regression
+resume passed 1,757 cases with six skips. All 20 Magic publisher tests and
+16 opening tests passed after their focused repairs, and the catalog recovery
+banner rendered legibly at the largest accessibility text size. Production
+centering replay and raw-photo boundary checks found discrepancies in the
+retained references. The accuracy gate remains open. Production catalog
+and market-feed endpoints still returned HTTP 509 on recheck.
+
 # 2026-11-23 — Release-stability audit repairs and verification
 
 The [audit ledger](docs/audits/release-stability-ledger.md) records the
