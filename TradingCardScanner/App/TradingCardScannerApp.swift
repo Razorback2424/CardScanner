@@ -248,6 +248,7 @@ private struct CollectionSessionContent: View {
 
 @MainActor
 private struct CatalogRecoveryBanner: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let names: String
     @ObservedObject var scanner: ScannerViewModel
     let preparing: Bool
@@ -259,8 +260,15 @@ private struct CatalogRecoveryBanner: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Label("\(names) catalog unavailable", systemImage: "exclamationmark.triangle")
-                    .font(.headline)
+                Group {
+                    if dynamicTypeSize.isAccessibilitySize {
+                        Text(names)
+                    } else {
+                        Label("\(names) catalog unavailable", systemImage: "exclamationmark.triangle")
+                    }
+                }
+                .font(.headline)
+                .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
                 Button(action: dismiss) {
                     Image(systemName: "xmark")
@@ -274,22 +282,39 @@ private struct CatalogRecoveryBanner: View {
             }
             message
                 .font(.subheadline)
-            Button(preparing ? "Retrying…" : recoveryReady ? "Reload catalog" : "Retry catalog", action: reload)
-                .disabled(preparing || !scanner.canReloadCatalogs)
-                .buttonStyle(.bordered)
+                .fixedSize(horizontal: false, vertical: true)
+            Button(action: reload) {
+                Text(actionTitle)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .disabled(preparing || !scanner.canReloadCatalogs)
+            .buttonStyle(.bordered)
         }
+        .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(.regularMaterial)
     }
 
+    private var actionTitle: LocalizedStringKey {
+        if preparing { return "Retrying…" }
+        if recoveryReady { return dynamicTypeSize.isAccessibilitySize ? "Reload" : "Reload catalog" }
+        return dynamicTypeSize.isAccessibilitySize ? "Retry" : "Retry catalog"
+    }
+
     private var message: Text {
+        if dynamicTypeSize.isAccessibilitySize {
+            if recoveryReady { return Text("Update ready. Finish scanning first.") }
+            if retryStillUnavailable { return Text("Still unavailable. Retry here or in Settings.") }
+            return Text("Catalog unavailable. Retry here or in Settings.")
+        }
         if retryStillUnavailable {
-            Text("The catalog is still unavailable. You can try again here or in Settings.")
+            return Text("The catalog is still unavailable. You can try again here or in Settings.")
         } else if recoveryReady {
-            Text("A catalog update is available. Reloading returns you to the main screen. Finish scanning first.")
+            return Text("A catalog update is available. Reloading returns you to the main screen. Finish scanning first.")
         } else {
-            Text("Your collection is safe. Other games are available. You can also retry in Settings.")
+            return Text("Your collection is safe. Other games are available. You can also retry in Settings.")
         }
     }
 }
