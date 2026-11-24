@@ -331,6 +331,41 @@ final class StoreRevisionMonitorTests: XCTestCase {
         XCTAssertEqual(projection.snapshot?.rows.first?.variantResolution, .userConfirmed)
     }
 
+    func testScopedFingerprintMatchesFullReadAfterSameCountEditsAndDeletion() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let card = monitorCard(game: .lorcana)
+        let price = PriceRecord(key: card.priceKey, game: .lorcana,
+            printingID: card.providerID, variantID: PhysicalVariant.normal.id)
+        let artwork = LocalArtworkOverride(collectionKey: card.collectionKey, filename: "scoped-artwork")
+        context.insert(card)
+        context.insert(price)
+        context.insert(artwork)
+        try context.save()
+
+        let reader = await StoreRevisionModelActor.makeBackground(modelContainer: container)
+        let before = await reader.fingerprint()
+        card.name = "Updated title"
+        price.lastFailureAt = .now
+        context.delete(artwork)
+        try context.save()
+
+        let updatedReader = await StoreRevisionModelActor.makeBackground(modelContainer: container)
+        let pricesOnly = await updatedReader.fingerprint(reusing: before, tables: .prices)
+        XCTAssertEqual(pricesOnly.cards, before.cards)
+        XCTAssertEqual(pricesOnly.artwork, before.artwork)
+        XCTAssertEqual(pricesOnly.priceShape, before.priceShape)
+        XCTAssertNotEqual(pricesOnly.priceValues, before.priceValues)
+
+        let allChanges = await updatedReader.fingerprint(reusing: pricesOnly, tables: [.cards, .artwork])
+        let full = await updatedReader.fingerprint()
+        XCTAssertEqual(allChanges, full)
+        XCTAssertEqual(allChanges.cardCount, before.cardCount)
+        XCTAssertNotEqual(allChanges.cards, before.cards)
+        XCTAssertNotEqual(allChanges.artwork, before.artwork)
+    }
+
     func testOwnershipEditReplaysBeforeAnActivePriceRefreshFinishes() async throws {
         for usesBulkInterval in [false, true] {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
@@ -766,25 +801,32 @@ final class StoreRevisionMonitorTests: XCTestCase {
         context.insert(identity)
         try context.save()
 
-        XCTAssertFalse(isRelevant([observation.persistentModelID, checkDay.persistentModelID, close.persistentModelID, reference.persistentModelID, identity.persistentModelID], passInFlight: false))
-        XCTAssertFalse(isRelevant([price.persistentModelID], passInFlight: true))
-        XCTAssertTrue(isRelevant([price.persistentModelID], passInFlight: false))
-        XCTAssertTrue(isRelevant([row.persistentModelID, price.persistentModelID], passInFlight: true))
+        XCTAssertEqual(changedTables(inserted: [observation.persistentModelID, checkDay.persistentModelID,
+            close.persistentModelID, reference.persistentModelID, identity.persistentModelID], passInFlight: false), [])
+        XCTAssertEqual(changedTables(updated: [price.persistentModelID], passInFlight: true), [])
+        XCTAssertEqual(changedTables(updated: [price.persistentModelID], passInFlight: false), .prices)
+        XCTAssertEqual(changedTables(updated: [price.persistentModelID], deleted: [row.persistentModelID],
+            passInFlight: true), [.cards, .prices])
     }
 
     func testMissingIdentifierKeysUseSafeRelevantDefault() {
         let info: [AnyHashable: Any] = ["inserted": [PersistentIdentifier]()]
-        XCTAssertTrue(StoreRevisionSaveFilter.isRelevantSave(userInfo: info, passInFlight: true))
-        XCTAssertTrue(StoreRevisionSaveFilter.isRelevantSave(userInfo: nil, passInFlight: false))
+        XCTAssertEqual(StoreRevisionSaveFilter.changedTables(userInfo: info, passInFlight: true), .all)
+        XCTAssertEqual(StoreRevisionSaveFilter.changedTables(userInfo: nil, passInFlight: false), .all)
     }
 
-    private func isRelevant(_ identifiers: [PersistentIdentifier], passInFlight: Bool) -> Bool {
+    private func changedTables(
+        inserted: [PersistentIdentifier] = [],
+        updated: [PersistentIdentifier] = [],
+        deleted: [PersistentIdentifier] = [],
+        passInFlight: Bool
+    ) -> StoreRevisionTables {
         let info: [AnyHashable: Any] = [
-            ModelContext.NotificationKey.insertedIdentifiers: identifiers,
-            ModelContext.NotificationKey.updatedIdentifiers: [PersistentIdentifier](),
-            ModelContext.NotificationKey.deletedIdentifiers: [PersistentIdentifier]()
+            ModelContext.NotificationKey.insertedIdentifiers: inserted,
+            ModelContext.NotificationKey.updatedIdentifiers: updated,
+            ModelContext.NotificationKey.deletedIdentifiers: deleted
         ]
-        return StoreRevisionSaveFilter.isRelevantSave(userInfo: info, passInFlight: passInFlight)
+        return StoreRevisionSaveFilter.changedTables(userInfo: info, passInFlight: passInFlight)
     }
 }
 

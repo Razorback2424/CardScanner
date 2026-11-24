@@ -14,6 +14,16 @@ final class PriceRefreshCompletionSignal: ObservableObject {
     }
 }
 
+struct StoreRevisionTables: OptionSet, Sendable {
+    let rawValue: UInt8
+    static let cards = Self(rawValue: 1 << 0)
+    static let inventory = Self(rawValue: 1 << 1)
+    static let activities = Self(rawValue: 1 << 2)
+    static let prices = Self(rawValue: 1 << 3)
+    static let artwork = Self(rawValue: 1 << 4)
+    static let all: Self = [.cards, .inventory, .activities, .prices, .artwork]
+}
+
 enum StoreRevisionSaveFilter {
     private static let derivedOnlyEntityNames: Set<String> = [
         "PriceObservation",
@@ -23,11 +33,11 @@ enum StoreRevisionSaveFilter {
         "ProductIdentity"
     ]
 
-    static func isRelevantSave(
+    static func changedTables(
         userInfo: [AnyHashable: Any]?,
         passInFlight: Bool
-    ) -> Bool {
-        guard let userInfo else { return true }
+    ) -> StoreRevisionTables {
+        guard let userInfo else { return .all }
         let keys: [(ModelContext.NotificationKey, String)] = [
             (.insertedIdentifiers, "inserted"),
             (.updatedIdentifiers, "updated"),
@@ -41,31 +51,48 @@ enum StoreRevisionSaveFilter {
                 }
                 return (key.base as? String) == stringKey
             }?.value
-            guard let values = value as? [PersistentIdentifier] else { return true }
+            guard let values = value as? [PersistentIdentifier] else { return .all }
             allIdentifiers.append(contentsOf: values)
         }
-        guard !allIdentifiers.isEmpty else { return true }
-        let ignoredEntities = passInFlight
-            ? derivedOnlyEntityNames.union(["PriceRecord"])
-            : derivedOnlyEntityNames
-        return allIdentifiers.contains { !ignoredEntities.contains($0.entityName) }
+        guard !allIdentifiers.isEmpty else { return .all }
+        var tables: StoreRevisionTables = []
+        for entityName in Set(allIdentifiers.map(\.entityName)) {
+            switch entityName {
+            case "CollectedCard": tables.insert(.cards)
+            case "InventoryEvent": tables.insert(.inventory)
+            case "CollectionActivity": tables.insert(.activities)
+            case "PriceRecord": tables.insert(.prices)
+            case "LocalArtworkOverride": tables.insert(.artwork)
+            case _ where derivedOnlyEntityNames.contains(entityName): break
+            default: return .all
+            }
+        }
+        // The refresh completion signal settles price-only checkpoints.
+        return passInFlight && tables == .prices ? [] : tables
     }
+
 }
 
 /// One off-main read of the durable inputs that can drive a derived snapshot.
 /// The hashes are session-local change tokens, not persisted identifiers.
 struct StoreRevisionFingerprint: Equatable, Sendable {
-    let cards: Int
-    let cardCount: Int
-    let inventoryEvents: Int
-    let collectionActivities: Int
-    let priceValues: Int
-    let priceShape: Int
-    let artwork: Int
-    let magicCards: Int
-    let stalePriceCollectionFingerprint: Int
-    let stalePriceTargetFingerprint: Int
+    var cards: Int
+    var cardCount: Int
+    var inventoryEvents: Int
+    var collectionActivities: Int
+    var priceValues: Int
+    var priceShape: Int
+    var artwork: Int
+    var magicCards: Int
+    var stalePriceCollectionFingerprint: Int
+    var stalePriceTargetFingerprint: Int
     var pendingMagicMigrationKeys: Set<String> = []
+
+    fileprivate static let empty = Self(
+        cards: 0, cardCount: 0, inventoryEvents: 0, collectionActivities: 0,
+        priceValues: 0, priceShape: 0, artwork: 0, magicCards: 0,
+        stalePriceCollectionFingerprint: 0, stalePriceTargetFingerprint: 0
+    )
 }
 
 enum StoreRevisionDecisions {
@@ -366,6 +393,8 @@ struct StoreRevisionMonitor: View {
 
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var saveGeneration: UInt = 0
+    @State private var pendingTables: StoreRevisionTables = []
+    @State private var lastFingerprintRead: (inputs: FullReadInputs, fingerprint: StoreRevisionFingerprint)?
     @State private var processedBulkGeneration: UInt = 0
     @State private var foregroundGeneration: UInt = 0
     @State private var pendingForegroundEligibility = false
@@ -392,11 +421,30 @@ struct StoreRevisionMonitor: View {
     @AppStorage("priceRefreshObservedUsesPriceFallback")
     private var lastObservedFallbackPreference = false
 
+    private struct FullReadInputs: Equatable {
+        let hasStartedPortfolio: Bool
+        let usesPriceFallback: Bool
+        let bulkGeneration: UInt
+        let storageToken: StorageGenerationToken?
+        let refreshGeneration: UInt
+        let foregroundGeneration: UInt
+    }
+
+    private struct Observation: Equatable {
+        let fullReadInputs: FullReadInputs
+        let saveGeneration: UInt
+    }
+
     var body: some View {
         PerformanceSignpost.signposter.emitEvent("StoreRevisionMonitor.body")
         let storageToken = storageGeneration.currentToken()
         let bulkGeneration = writeCoordinator.generation
-        let observation = "\(hasStartedPortfolio)-\(usesPriceFallback)-\(saveGeneration)-\(writeCoordinator.generation)-\(storageToken?.generation ?? 0)-\(completionSignal.generation)-\(foregroundGeneration)"
+        let fullReadInputs = FullReadInputs(
+            hasStartedPortfolio: hasStartedPortfolio, usesPriceFallback: usesPriceFallback,
+            bulkGeneration: bulkGeneration, storageToken: storageToken,
+            refreshGeneration: completionSignal.generation, foregroundGeneration: foregroundGeneration
+        )
+        let observation = Observation(fullReadInputs: fullReadInputs, saveGeneration: saveGeneration)
 
         return Color.clear
             .onChange(of: scenePhase) { _, phase in
@@ -405,13 +453,19 @@ struct StoreRevisionMonitor: View {
                 foregroundGeneration &+= 1
             }
             .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave).receive(on: RunLoop.main)) { notification in
-                guard StoreRevisionSaveFilter.isRelevantSave(
+                let passInFlight = refresh.isPassInFlight
+                let tables = StoreRevisionSaveFilter.changedTables(
                     userInfo: notification.userInfo,
-                    passInFlight: refresh.isPassInFlight
-                ) else { return }
+                    passInFlight: passInFlight
+                )
+                guard !tables.isEmpty else { return }
+                // A price-only checkpoint may have been suppressed earlier
+                // in this pass. Include it when a different save wakes us.
+                pendingTables.formUnion(passInFlight ? tables.union(.prices) : tables)
                 saveGeneration &+= 1
             }
             .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: RunLoop.main)) { _ in
+                pendingTables = .all
                 saveGeneration &+= 1
             }
             .task(id: observation) {
@@ -424,13 +478,19 @@ struct StoreRevisionMonitor: View {
                 }
                 guard !Task.isCancelled, !writeCoordinator.isBulkWriteInFlight else { return }
 
+                let cachedRead = lastFingerprintRead
+                let reusable = cachedRead?.inputs == fullReadInputs ? cachedRead?.fingerprint : nil
+                let tables = pendingTables
                 let actor = await StoreRevisionModelActor.makeBackground(modelContainer: modelContext.container)
-                let fingerprint = await actor.fingerprint()
+                let fingerprint = await actor.fingerprint(reusing: reusable, tables: tables)
                 guard await actor.readSucceeded() else { return }
                 guard !Task.isCancelled,
                       !writeCoordinator.isBulkWriteInFlight,
                       writeCoordinator.generation == bulkGeneration,
+                      saveGeneration == observation.saveGeneration,
                       storageGeneration.isCurrent(storageToken) else { return }
+                lastFingerprintRead = (fullReadInputs, fingerprint)
+                pendingTables = []
                 let fallbackWasJustEnabled = !lastObservedFallbackPreference && usesPriceFallback
                 if lastObservedFallbackPreference != usesPriceFallback {
                     // The fallback capability is an input even when the
@@ -940,29 +1000,24 @@ actor StoreRevisionModelActor: BackgroundModelActor {
         return Set(rows.map(\.collectionKey))
     }
 
-    func fingerprint() -> StoreRevisionFingerprint {
+    func fingerprint(
+        reusing previous: StoreRevisionFingerprint? = nil,
+        tables: StoreRevisionTables = .all
+    ) -> StoreRevisionFingerprint {
         do {
-            let fingerprint = try makeFingerprint()
+            let fingerprint = try makeFingerprint(reusing: previous, tables: previous == nil ? .all : tables)
             lastReadSucceeded = true
             return fingerprint
         } catch {
             lastReadSucceeded = false
-            return StoreRevisionFingerprint(
-                cards: 0,
-                cardCount: 0,
-                inventoryEvents: 0,
-                collectionActivities: 0,
-                priceValues: 0,
-                priceShape: 0,
-                artwork: 0,
-                magicCards: 0,
-                stalePriceCollectionFingerprint: 0,
-                stalePriceTargetFingerprint: 0
-            )
+            return .empty
         }
     }
 
-    private func makeFingerprint() throws -> StoreRevisionFingerprint {
+    private func makeFingerprint(
+        reusing previous: StoreRevisionFingerprint?,
+        tables: StoreRevisionTables
+    ) throws -> StoreRevisionFingerprint {
         let signpostState = PerformanceSignpost.signposter
             .beginInterval("makeStoreRevisionFingerprint")
         defer {
@@ -970,22 +1025,18 @@ actor StoreRevisionModelActor: BackgroundModelActor {
                 .endInterval("makeStoreRevisionFingerprint", signpostState)
         }
 
+        var result = previous ?? .empty
+        if tables.contains(.cards) { try fingerprintCards(into: &result) }
+        if tables.contains(.inventory) { result.inventoryEvents = try fingerprintInventory() }
+        if tables.contains(.activities) { result.collectionActivities = try fingerprintActivities() }
+        if tables.contains(.prices) { try fingerprintPrices(into: &result) }
+        if tables.contains(.artwork) { result.artwork = try fingerprintArtwork() }
+        return result
+    }
+
+    private func fingerprintCards(into result: inout StoreRevisionFingerprint) throws {
         let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
             .sorted { $0.collectionKey < $1.collectionKey }
-        let inventoryEvents = try modelContext.fetch(FetchDescriptor<InventoryEvent>())
-            .sorted { StoreRevisionFingerprinting.uuidPrecedes($0.eventID, $1.eventID) }
-        let collectionActivities = try modelContext.fetch(FetchDescriptor<CollectionActivity>())
-            .sorted { StoreRevisionFingerprinting.uuidPrecedes($0.id, $1.id) }
-        let priceRecords = try modelContext.fetch(FetchDescriptor<PriceRecord>())
-            .sorted { $0.key < $1.key }
-        let artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
-            .sorted {
-                if $0.collectionKey != $1.collectionKey {
-                    return $0.collectionKey < $1.collectionKey
-                }
-                return $0.filename < $1.filename
-            }
-
         var cardHasher = Hasher()
         var magicHasher = Hasher()
         var stalePriceCollectionHasher = Hasher()
@@ -1043,6 +1094,17 @@ actor StoreRevisionModelActor: BackgroundModelActor {
             }
         }
 
+        result.cards = cardHasher.finalize()
+        result.cardCount = cards.count
+        result.magicCards = magicHasher.finalize()
+        result.stalePriceCollectionFingerprint = stalePriceCollectionHasher.finalize()
+        result.stalePriceTargetFingerprint = stalePriceTargetHasher.finalize()
+        result.pendingMagicMigrationKeys = pendingMagicMigrationKeys
+    }
+
+    private func fingerprintInventory() throws -> Int {
+        let inventoryEvents = try modelContext.fetch(FetchDescriptor<InventoryEvent>())
+            .sorted { StoreRevisionFingerprinting.uuidPrecedes($0.eventID, $1.eventID) }
         var inventoryHasher = Hasher()
         for event in inventoryEvents {
             inventoryHasher.combine(event.eventID)
@@ -1057,6 +1119,12 @@ actor StoreRevisionModelActor: BackgroundModelActor {
             inventoryHasher.combine(event.reversesEventID)
         }
 
+        return inventoryHasher.finalize()
+    }
+
+    private func fingerprintActivities() throws -> Int {
+        let collectionActivities = try modelContext.fetch(FetchDescriptor<CollectionActivity>())
+            .sorted { StoreRevisionFingerprinting.uuidPrecedes($0.id, $1.id) }
         var activityHasher = Hasher()
         for activity in collectionActivities {
             activityHasher.combine(activity.id)
@@ -1068,6 +1136,12 @@ actor StoreRevisionModelActor: BackgroundModelActor {
             activityHasher.combine(activity.ledgerOperationIDs)
         }
 
+        return activityHasher.finalize()
+    }
+
+    private func fingerprintPrices(into result: inout StoreRevisionFingerprint) throws {
+        let priceRecords = try modelContext.fetch(FetchDescriptor<PriceRecord>())
+            .sorted { $0.key < $1.key }
         var priceShapeHasher = Hasher()
         for record in priceRecords {
             priceShapeHasher.combine(record.key)
@@ -1075,24 +1149,24 @@ actor StoreRevisionModelActor: BackgroundModelActor {
             priceShapeHasher.combine(record.magicTreatmentIDsRaw)
         }
 
+        result.priceShape = priceShapeHasher.finalize()
+        result.priceValues = StoreRevisionFingerprinting.priceValuesInKeyOrder(priceRecords)
+    }
+
+    private func fingerprintArtwork() throws -> Int {
+        let artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
+            .sorted {
+                if $0.collectionKey != $1.collectionKey {
+                    return $0.collectionKey < $1.collectionKey
+                }
+                return $0.filename < $1.filename
+            }
         var artworkHasher = Hasher()
         for override in artworkOverrides {
             artworkHasher.combine(override.collectionKey)
             artworkHasher.combine(override.filename)
         }
 
-        return StoreRevisionFingerprint(
-            cards: cardHasher.finalize(),
-            cardCount: cards.count,
-            inventoryEvents: inventoryHasher.finalize(),
-            collectionActivities: activityHasher.finalize(),
-            priceValues: StoreRevisionFingerprinting.priceValuesInKeyOrder(priceRecords),
-            priceShape: priceShapeHasher.finalize(),
-            artwork: artworkHasher.finalize(),
-            magicCards: magicHasher.finalize(),
-            stalePriceCollectionFingerprint: stalePriceCollectionHasher.finalize(),
-            stalePriceTargetFingerprint: stalePriceTargetHasher.finalize(),
-            pendingMagicMigrationKeys: pendingMagicMigrationKeys
-        )
+        return artworkHasher.finalize()
     }
 }

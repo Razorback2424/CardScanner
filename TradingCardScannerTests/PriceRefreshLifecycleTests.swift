@@ -951,6 +951,40 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         XCTAssertEqual(saved.justTCGVariantID, "permit-market-variant")
     }
 
+    func testRewritePermitCanBeBoundExplicitlyAndExpiresWithItsGate() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let enforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = enforced }
+
+        func requirePermit() throws {
+            try CollectionWriteSerializer.perform(container: container, timeout: .mainThread) { _ in
+                try PriceIdentityRewritePermit.requireForSerializedOwnershipWrite()
+            }
+        }
+
+        let expiredPermit = try await PriceIdentityRewriteAuthorization.withAuthorization { permit in
+            try await Task { @MainActor in
+                try await PriceIdentityRewriteAuthorization.withAuthorizedTask(permit) {
+                    try requirePermit()
+                }
+            }.value
+            try await PriceIdentityRewriteAuthorization.withAuthorizedTask(permit) {
+                try requirePermit()
+            }
+            try requirePermit()
+            return permit
+        }
+        try await PriceIdentityRewriteAuthorization.withAuthorizedTask(expiredPermit) {
+            XCTAssertThrowsError(try requirePermit()) { error in
+                guard case CollectionStoreError.priceIdentityExclusivityRequired = error else {
+                    return XCTFail("Unexpected error \(error)")
+                }
+            }
+        }
+    }
+
     func testAddGradedUsesPermitForUnboundSlabIdentityRewrite() async throws {
         let container = try makeContainer(withCard: false)
         let card = try ProductionRowFixtures.pokemonCard()

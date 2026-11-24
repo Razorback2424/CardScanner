@@ -1,4 +1,5 @@
 import Foundation
+import os
 import SwiftData
 
 /// Serializes ownership mutations across every context in the process.
@@ -166,62 +167,42 @@ enum CollectionWriteSerializer {
 }
 
 /// Unforgeable authorization passed only by the migration and identity gates.
-/// It is deliberately not a task-local value: Swift copies task-local values
-/// into unstructured child tasks, which could otherwise outlive the gate.
 struct PriceIdentityRewritePermit: Sendable {
-    fileprivate let id: UUID
+    private let active = OSAllocatedUnfairLock(initialState: true)
+
+    fileprivate init() {}
+
+    fileprivate var isActive: Bool { active.withLock { $0 } }
+
+    fileprivate func deactivate() {
+        active.withLock { $0 = false }
+    }
 }
 
-private final class PriceIdentityRewritePermitRegistry: @unchecked Sendable {
+/// Task-local bindings are copied to child tasks. The match restricts a
+/// binding to the task that created it, and is cleared before its unsafe task
+/// reference goes out of scope. Checking and clearing it share the same lock.
+private final class PriceIdentityRewriteTaskBinding: @unchecked Sendable {
     private let lock = NSLock()
-    private var activePermitIDs: Set<UUID> = []
-    private var permitsByTask: [UnsafeCurrentTask: Set<UUID>] = [:]
+    private let previous: PriceIdentityRewriteTaskBinding?
+    private var matches: ((UnsafeCurrentTask) -> Bool)?
 
-    func activate(_ permit: PriceIdentityRewritePermit) {
-        lock.lock()
-        activePermitIDs.insert(permit.id)
-        lock.unlock()
+    init(previous: PriceIdentityRewriteTaskBinding?, matches: @escaping (UnsafeCurrentTask) -> Bool) {
+        self.previous = previous
+        self.matches = matches
     }
 
-    func deactivate(_ permit: PriceIdentityRewritePermit) {
-        lock.lock()
-        activePermitIDs.remove(permit.id)
-        for task in Array(permitsByTask.keys) {
-            permitsByTask[task]?.remove(permit.id)
-            if permitsByTask[task]?.isEmpty == true {
-                permitsByTask.removeValue(forKey: task)
-            }
-        }
-        lock.unlock()
+    func authorizes(_ task: UnsafeCurrentTask) -> Bool {
+        lock.withLock { matches?(task) == true } || previous?.authorizes(task) == true
     }
 
-    func add(_ permit: PriceIdentityRewritePermit, to task: UnsafeCurrentTask) -> Bool {
-        lock.lock()
-        defer { lock.unlock() }
-        guard activePermitIDs.contains(permit.id) else { return false }
-        permitsByTask[task, default: []].insert(permit.id)
-        return true
-    }
-
-    func remove(_ permit: PriceIdentityRewritePermit, from task: UnsafeCurrentTask) {
-        lock.lock()
-        defer { lock.unlock() }
-        permitsByTask[task]?.remove(permit.id)
-        if permitsByTask[task]?.isEmpty == true {
-            permitsByTask.removeValue(forKey: task)
-        }
-    }
-
-    func authorizesCurrentTask() -> Bool {
-        guard let task = withUnsafeCurrentTask(body: { $0 }) else { return false }
-        lock.lock()
-        defer { lock.unlock() }
-        return permitsByTask[task]?.contains(where: activePermitIDs.contains) == true
+    func invalidate() {
+        lock.withLock { matches = nil }
     }
 }
 
 enum PriceIdentityRewriteAuthorization {
-    private static let registry = PriceIdentityRewritePermitRegistry()
+    @TaskLocal private static var binding: PriceIdentityRewriteTaskBinding?
 
     /// Starts an authorized gate scope and makes its capability available to
     /// the operation. Child tasks must explicitly bind that capability with
@@ -230,9 +211,8 @@ enum PriceIdentityRewriteAuthorization {
     static func withAuthorization<T>(
         _ operation: @MainActor (PriceIdentityRewritePermit) async throws -> T
     ) async rethrows -> T {
-        let permit = PriceIdentityRewritePermit(id: UUID())
-        registry.activate(permit)
-        defer { registry.deactivate(permit) }
+        let permit = PriceIdentityRewritePermit()
+        defer { permit.deactivate() }
         return try await withAuthorizedTask(permit, operation: {
             try await operation(permit)
         })
@@ -245,17 +225,29 @@ enum PriceIdentityRewriteAuthorization {
         _ permit: PriceIdentityRewritePermit,
         operation: @MainActor () async throws -> T
     ) async rethrows -> T {
-        guard let task = withUnsafeCurrentTask(body: { $0 }), registry.add(permit, to: task) else {
-            return try await operation()
+        guard permit.isActive else { return try await operation() }
+        return try await withUnsafeCurrentTask { task in
+            guard let task else { return try await operation() }
+            let scopedBinding = PriceIdentityRewriteTaskBinding(previous: binding) {
+                $0 == task && permit.isActive
+            }
+            // Keep the reference inside the async overload's closure, including
+            // while the authorized operation is suspended on another actor.
+            defer { scopedBinding.invalidate() }
+            return try await $binding.withValue(scopedBinding) {
+                try await operation()
+            }
         }
-        defer { registry.remove(permit, from: task) }
-        return try await operation()
     }
 
     static func requireForSerializedOwnershipWrite() throws {
         guard CollectionWriteSerializer.enforcesOwnershipRule,
               CollectionWriteSerializer.isHeldByCurrentThread else { return }
-        guard registry.authorizesCurrentTask() else {
+        let authorized = withUnsafeCurrentTask { task in
+            guard let task else { return false }
+            return binding?.authorizes(task) == true
+        }
+        guard authorized else {
             throw CollectionStoreError.priceIdentityExclusivityRequired
         }
     }

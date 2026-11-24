@@ -347,6 +347,52 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         )
     }
 
+    func testArtworkSweepWaitsForWriterAndRechecksStorageAfterAcquiringIt() async throws {
+        for retireStorage in [false, true] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            container.mainContext.insert(LocalArtworkOverride(
+                collectionKey: "missing-owner", filename: UUID().uuidString,
+                updatedAt: .now.addingTimeInterval(-30 * 24 * 60 * 60)
+            ))
+            try container.mainContext.save()
+            let generation = CollectionStorageGeneration()
+            generation.installReady(storeID: localID)
+            let shouldContinue = generation.continuation(for: try XCTUnwrap(generation.currentToken()))
+            let locked = expectation(description: "Writer holds the ownership lock")
+            let release = DispatchSemaphore(value: 0)
+            let writer = Task.detached {
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { _ in
+                    locked.fulfill()
+                    return release.wait(timeout: .now() + 5) == .success
+                }
+            }
+            await fulfillment(of: [locked], timeout: 3)
+
+            let sweep = Task {
+                try await CollectionStorageBootstrap.runArtworkOrphanSweep(
+                    container: container, shouldContinue: shouldContinue
+                )
+            }
+            // Exceed the former UI deadline while the sweep waits for the lock.
+            try? await Task.sleep(for: .milliseconds(1700))
+            if retireStorage { generation.suspend() }
+            release.signal()
+            let writerReleased = try await writer.value
+            XCTAssertTrue(writerReleased)
+            if retireStorage {
+                do {
+                    try await sweep.value
+                    XCTFail("A retired storage session cannot run the sweep")
+                } catch is CancellationError {}
+            } else {
+                try await sweep.value
+            }
+            XCTAssertEqual(try ModelContext(container).fetchCount(FetchDescriptor<LocalArtworkOverride>()),
+                retireStorage ? 1 : 0)
+        }
+    }
+
     func testFreshNoAccountOpensOneProvenLocalSession() async throws {
         let dependencies = try makeDependencies(account: { .noAccount })
         let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)

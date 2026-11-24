@@ -774,7 +774,7 @@ final class CollectionStorageBootstrap: ObservableObject {
     private var restorationContainer: ModelContainer?
     private var pendingRestoration: (storeID: UUID, accountFingerprint: String)?
     private var accountChangedObserver: NSObjectProtocol?
-    private var artworkSweepScheduledStoreIDs: Set<UUID> = []
+    private var artworkSweptStoreIDs: Set<UUID> = []
     private(set) var lastErrorCategory: String?
 
     init(dependencies: CollectionStorageBootstrapDependencies? = nil) {
@@ -1621,42 +1621,28 @@ final class CollectionStorageBootstrap: ObservableObject {
         TradingCardScannerApp.storageIsReady = true
         TradingCardScannerApp.activeStoreID = session.storeID
         TradingCardScannerApp.lastBootstrapErrorCategory = nil
-        if artworkSweepScheduledStoreIDs.insert(session.storeID).inserted {
+        if !artworkSweptStoreIDs.contains(session.storeID),
+           let token = dependencies.storageGeneration.currentToken() {
             let container = session.container
-            Task.detached(priority: .utility) {
+            let shouldContinue = dependencies.storageGeneration.continuation(for: token)
+            Task { [weak self] in
                 // Let the launch path finish its short ownership backfills
                 // before the full-file cleanup pass takes the serializer.
                 try? await Task.sleep(for: .seconds(5))
-                for attempt in 0..<3 {
+                while shouldContinue() && !Task.isCancelled {
                     do {
-                        try CollectionWriteSerializer.perform(
+                        try await Self.runArtworkOrphanSweep(
                             container: container,
-                            timeout: .mainThread
-                        ) { context in
-                            try CollectionArtworkStore.migrateLegacyMappings(in: context)
-                        }
-                        let now = Date.now
-                        let snapshot = try ArtworkOrphanSweep.snapshot(in: container, now: now)
-                        let agedFileCandidates = CollectionArtworkStore.agedFilenames(
-                            olderThan: now.addingTimeInterval(-24 * 60 * 60)
+                            shouldContinue: shouldContinue
                         )
-                        let report = try CollectionWriteSerializer.perform(
-                            container: container,
-                            timeout: .mainThread
-                        ) { context in
-                            try ArtworkOrphanSweep.prepare(
-                                in: context,
-                                snapshot: snapshot,
-                                agedFileCandidates: agedFileCandidates,
-                                now: now
-                            )
-                        }
-                        CollectionArtworkStore.removeFiles(named: report.filesToRemove)
+                        self?.artworkSweptStoreIDs.insert(token.storeID)
                         return
                     } catch CollectionStoreError.collectionBusy {
-                        if attempt < 2 {
-                            try? await Task.sleep(for: .seconds(3))
-                        }
+                        // A tokened exclusive operation can span several
+                        // serializer calls, so even .wait can return busy.
+                        try? await Task.sleep(for: .seconds(3))
+                    } catch is CancellationError {
+                        return
                     } catch {
                         Self.logger.error(
                             "Artwork orphan sweep failed: \(error.localizedDescription, privacy: .private)"
@@ -1664,10 +1650,42 @@ final class CollectionStorageBootstrap: ObservableObject {
                         return
                     }
                 }
-                Self.logger.error("Artwork orphan sweep could not acquire the collection writer")
             }
         }
         state = .ready(session: session)
+    }
+
+    nonisolated static func runArtworkOrphanSweep(
+        container: ModelContainer,
+        shouldContinue: @escaping StorageGenerationContinuation
+    ) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            DispatchQueue.global(qos: .utility).async {
+                do {
+                    try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+                        guard shouldContinue() else { throw CancellationError() }
+                        try CollectionArtworkStore.migrateLegacyMappings(in: context)
+                    }
+                    guard shouldContinue() else { throw CancellationError() }
+                    let now = Date.now
+                    let snapshot = try ArtworkOrphanSweep.snapshot(in: container, now: now)
+                    let agedFiles = CollectionArtworkStore.agedFilenames(
+                        olderThan: now.addingTimeInterval(-24 * 60 * 60)
+                    )
+                    let plan = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+                        guard shouldContinue() else { throw CancellationError() }
+                        return try ArtworkOrphanSweep.prepare(
+                            in: context, snapshot: snapshot, agedFileCandidates: agedFiles, now: now
+                        )
+                    }
+                    guard shouldContinue() else { throw CancellationError() }
+                    CollectionArtworkStore.removeFiles(named: plan.filesToRemove)
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
     private func openPerformanceContainer(generation currentGeneration: UInt) async {
