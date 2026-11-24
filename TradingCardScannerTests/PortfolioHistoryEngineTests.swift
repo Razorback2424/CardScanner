@@ -496,7 +496,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 summary: PortfolioSummary(currentValue: money(130)),
                 epoch: dayOne,
                 timeZoneIdentifier: "UTC",
-                now: dayTwo,
+                now: date(3),
                 contributions: PortfolioContributionIndex(
                     byDay: [dayOne: ["anchor": money(100)], dayTwo: ["card": money(30)]]
                 )
@@ -762,19 +762,19 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             close(at: day(-40), value: 110, timeZoneID: timeZoneID, market: 4),
             close(at: day(-20), value: 115, timeZoneID: timeZoneID, market: 5),
             close(at: day(-6), value: 121, timeZoneID: timeZoneID, market: 6),
-            close(at: day(-1), value: 128, timeZoneID: timeZoneID, market: 7),
-            close(at: day(0), value: 136, timeZoneID: timeZoneID, market: 8)
+            close(at: day(-1), value: 128, timeZoneID: timeZoneID, market: 7)
         ]
-        let contributions = PortfolioContributionIndex(
-            byDay: Dictionary(uniqueKeysWithValues: closes.map { ($0.date, ["market": $0.market]) })
-        )
+        var attribution = PortfolioClose.Attribution()
+        attribution.market = money(8)
+        var contributionsByDay = Dictionary(uniqueKeysWithValues: closes.map { ($0.date, ["market": $0.market]) })
+        contributionsByDay[today] = ["market": money(8)]
         let historyInput = PortfolioHistoryInput(
             closes: closes,
-            summary: PortfolioSummary(currentValue: money(136)),
+            summary: PortfolioSummary(currentValue: money(136), attribution: attribution),
             epoch: closes.first?.date,
             timeZoneIdentifier: timeZoneID,
             now: now,
-            contributions: contributions
+            contributions: PortfolioContributionIndex(byDay: contributionsByDay)
         )
 
         let expectedMarkets: [(PortfolioHistoryRange, Int64)] = [
@@ -808,7 +808,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                     close(2, value: 50_100, flow: 50_000)
                 ],
                 currentValue: 50_100,
-                now: date(2)
+                now: date(3)
             ),
             range: .all
         )
@@ -850,7 +850,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             input: input(
                 closes: [close(1, value: 100), adjustedClose],
                 currentValue: 110,
-                now: date(2)
+                now: date(3)
             ),
             range: .all
         )
@@ -1067,7 +1067,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                     close(2, value: 115, revision: 2, reason: .lateInventoryTruth),
                     close(3, value: 120)
                 ],
-                currentValue: 120, now: date(3)
+                currentValue: 120, now: date(4)
             ),
             range: .all
         )
@@ -1082,7 +1082,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         let result = PortfolioHistoryEngine.calculate(
             input: input(
                 closes: [close(1, value: 100, market: 100), close(2, value: 120, market: 20)],
-                currentValue: 120, now: date(2)
+                currentValue: 120, now: date(3)
             ),
             range: .all
         )
@@ -1217,6 +1217,30 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertEqual(atBoundary.points.count, 2)
         XCTAssertEqual(afterBoundary.points.count, 3)
         XCTAssertTrue(afterBoundary.points.last?.isLive == true)
+    }
+
+    func testHistoryEndsAtNowWhenStoredCloseIsAheadOfTheClock() {
+        let now = date(3, hour: 1)
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [
+                    close(1, value: 100),
+                    close(2, value: 110, market: 10),
+                    close(3, value: 900, market: 790),
+                    close(3, value: 901, revision: 2, market: 791, reason: .recomputed)
+                ],
+                currentValue: 115,
+                now: now
+            ),
+            range: .all
+        )
+
+        XCTAssertEqual(result.points.map(\.value), [money(100), money(110), money(115)])
+        XCTAssertEqual(result.points.last?.instant, now)
+        XCTAssertTrue(result.points.last?.isLive == true)
+        XCTAssertEqual(result.accounting?.market, money(10))
+        XCTAssertEqual(result.accountingInterval?.includedClosedDays, [date(2)])
+        XCTAssertTrue(result.revisions.isEmpty)
     }
 
     func testEmptyHistoryIsExplicitlyEmpty() {

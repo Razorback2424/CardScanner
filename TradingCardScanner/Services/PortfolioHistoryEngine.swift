@@ -12,7 +12,10 @@ enum PortfolioHistoryEngine {
     ) -> PortfolioHistoryResult {
         let timeZone = TimeZone(identifier: input.timeZoneIdentifier) ?? .current
         let calendar = PortfolioCalendar.calendar(in: timeZone)
-        let latestByDate = Dictionary(grouping: input.closes, by: \.date)
+        // A previously published close may end after the current device time
+        // following a clock correction. Keep it out of this chart and period.
+        let eligibleCloses = input.closes.filter { $0.instant <= input.now }
+        let latestByDate = Dictionary(grouping: eligibleCloses, by: \.date)
             .compactMapValues { $0.max { lhs, rhs in lhs.revision < rhs.revision } }
         let latest = latestByDate.values.sorted { $0.date < $1.date }
         let requestedStart = range.requestedStart(
@@ -115,7 +118,7 @@ enum PortfolioHistoryEngine {
         }
 
         let selectedDates = Set(selected.map(\.date))
-        let audit = revisionAudit(closes: input.closes, dates: selectedDates)
+        let audit = revisionAudit(closes: eligibleCloses, dates: selectedDates)
         let accounting = accounting(
             anchor: anchor,
             interval: interval,

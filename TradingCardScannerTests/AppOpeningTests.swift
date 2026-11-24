@@ -522,6 +522,27 @@ final class PortfolioLaunchPresentationTests: XCTestCase {
         XCTAssertEqual(engine.launchHistory?.points, result.points)
     }
 
+    func testLaunchSnapshotsOmitValuesAndHistoryAheadOfTheClock() async throws {
+        let storeID = UUID()
+        let snapshots = PortfolioLaunchSnapshotStore(defaults: defaults)
+        let presentations = PortfolioLaunchPresentationStore(fileURL: directory.appendingPathComponent("p.json"))
+        let result = history(range: .oneWeek, contributions: [:])
+        let endpoint = try XCTUnwrap(result.points.last?.instant)
+        let now = endpoint.addingTimeInterval(-60)
+
+        snapshots.record(PortfolioSummary(currentValue: Money(tenThousandths: 15_0000), copyCount: 2),
+                         storeID: storeID, now: endpoint)
+        presentations.record(PortfolioLaunchPresentation(
+            storeID: storeID, savedAt: now, holdings: [], history: result
+        ))
+        await presentations.waitForPendingWrites()
+
+        XCTAssertNil(snapshots.load(storeID: storeID, now: now))
+        XCTAssertNil(presentations.load(storeID: storeID, now: now))
+        XCTAssertNotNil(snapshots.load(storeID: storeID, now: endpoint))
+        XCTAssertEqual(presentations.load(storeID: storeID, now: endpoint)?.history?.result.points, result.points)
+    }
+
     func testHistoryStoreKeepsLaunchChartUntilThisLaunchHasHistory() throws {
         let selected = PortfolioHistoryStore().range
         let other = PortfolioHistoryRange.allCases.first { $0 != selected }!

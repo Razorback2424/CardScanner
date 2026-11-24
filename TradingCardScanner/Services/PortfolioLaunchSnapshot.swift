@@ -45,11 +45,12 @@ final class PortfolioLaunchSnapshotStore {
         self.key = key
     }
 
-    func load(storeID: UUID?) -> PortfolioLaunchSnapshot? {
+    func load(storeID: UUID?, now: Date = .now) -> PortfolioLaunchSnapshot? {
         guard let storeID,
               let data = defaults.data(forKey: key),
               let snapshot = try? JSONDecoder().decode(PortfolioLaunchSnapshot.self, from: data),
-              snapshot.storeID == storeID else { return nil }
+              snapshot.storeID == storeID,
+              snapshot.savedAt <= now else { return nil }
         return snapshot
     }
 
@@ -388,11 +389,13 @@ final class PortfolioLaunchPresentationStore {
         self.fileURL = fileURL
     }
 
-    func load(storeID: UUID?) -> PortfolioLaunchPresentation? {
+    func load(storeID: UUID?, now: Date = .now) -> PortfolioLaunchPresentation? {
         guard let storeID,
               let data = try? Data(contentsOf: fileURL),
               let presentation = try? JSONDecoder().decode(PortfolioLaunchPresentation.self, from: data),
-              presentation.storeID == storeID else { return nil }
+              presentation.storeID == storeID,
+              presentation.savedAt <= now,
+              presentation.history?.points.allSatisfy({ $0.instant <= now }) ?? true else { return nil }
         return presentation
     }
 
