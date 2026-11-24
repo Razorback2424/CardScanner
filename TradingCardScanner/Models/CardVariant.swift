@@ -351,7 +351,7 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
         case attention
     }
 
-    /// The catalog says this printing physically exists in exactly one variant.
+    /// The catalog supplied one supported finish for this printing.
     case uniqueInCatalog
     /// A set-specific rule this app owns narrowed the possibilities to one.
     case deterministicSetRule
@@ -373,7 +373,7 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
 
     var label: String {
         switch self {
-        case .uniqueInCatalog: return "Only variant printed"
+        case .uniqueInCatalog: return "Only finish listed"
         case .deterministicSetRule: return "Set rule"
         case .finishLock: return "Finish Lock"
         case .printedLabel: return "Printed label"
