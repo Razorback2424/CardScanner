@@ -1,6 +1,6 @@
 # Release-stability audit ledger
 
-**Status:** Initial repairs verified in focused checks. Whole-codebase review and release gates remain open — 2026-11-23.
+**Status:** Initial repairs verified in focused checks. Whole-codebase review and release gates remain open — 2026-11-24.
 
 - Worktree `/private/tmp/ScanStash-release-stability`, branch `audit/release-stability`.
 - Starting commit `5800704bdb22d6b9f2a3974b7fe0143e0606b2e8`. The local `origin/main` ref and GitHub's current `refs/heads/main` agreed when isolation was established.
@@ -17,9 +17,10 @@ The launch contract records owner and external prerequisites for provider access
 
 | Gate | Candidate and evidence | Status |
 | --- | --- | --- |
-| iOS full target | Starting commit, Xcode 27.2 (27B52), ProfileLocal / DebugRemoteLocal, unsigned iPhone 17 Pro on iOS 27.0, `Baseline.xcresult` on T7 | Running with reproduced failures |
+| iOS full target | Starting commit, Xcode 27.2 (27B52), ProfileLocal / DebugRemoteLocal, unsigned iPhone 17 Pro on iOS 27.0. `Baseline.xcresult` records 3,657 test executions, 22 skips and 19 failing methods (34 reported failures). | Failed |
 | iOS production build | `ReleaseBuild.log`, ProfileLocal / Release, generic iOS Simulator, Xcode 27.2. Package contains the privacy manifest, iPhone portrait and all four iPad orientations. | Passed |
 | iOS production checkpoint | `ReleaseCheckpoint.log`, candidate `baab2639`, same generic simulator Release gate. | Passed |
+| Current iOS production build | `ReleaseCurrent.log`, application source through `3b016336`, same generic simulator Release gate. | Running |
 | Catalog core tests | Pokémon 93 passed and 1 skipped, Magic 19 passed, One Piece 54 passed, zero failures | Passed with one skip |
 | Offline script suite | `ScriptBaseline.log` hit a failing module import. `ScriptAfterDiscoveryRepair.log` completed 428 cases with 423 passed and five native-publisher skips. | Passed after RS-01; skipped cases run separately under RS-08 |
 | Yu-Gi-Oh! publishing | 59 retained Python fixture cases passed. The native publisher failed to compile at baseline. `YuGiOhPublisher.log` contains five passing publisher contract cases after repair. | Publisher passed after RS-08 |
@@ -29,7 +30,10 @@ The launch contract records owner and external prerequisites for provider access
 | Signed cross-module checkpoint | `CrossModule.log`, candidate `baab2639`. All 361 cases passed across Browse, ownership revision and concurrency, CSV resume, portfolio replay and daily close, pricing refresh lifecycle, and catalog delivery and activation. | Passed |
 | Signed finish and detail checkpoints | `FinishEvidence.log` reports 69 passed. `DetailAndStorage.log` reports 353 passed and five CloudKit mode-transition skips across Browse detail, collection history and recovery, Magic, and listing photo export. | Passed with five skips |
 | Signed scan recovery checkpoint | `ScanRecovery.log` reports 116 passed across unverified and unresolved scans, slab label parsing, import kinds, and privacy/support surfaces. | Passed |
-| Broad signed candidate regression | `SignedBroad.log`, compiled through RS-15. Only the four centering research classes (`CenteringBoundaryResolverExperimentTests`, `CenteringNativeResearchTests`, `CenteringPrintPilotTests`, `CenteringProfileDumpTests`) are excluded and separately exercised by the baseline. Includes the production initial-guide ground-truth test. | Running |
+| Broad signed candidate regression | `SignedBroad.log`, compiled through RS-15. Four centering research classes excluded and exercised by the baseline. The process stopped during One Piece integration without a completed result. The production initial-guide test reproduced the four misses. The startup reveal timeout passed on a focused rerun. | Interrupted with reproduced centering failure |
+| Signed fixture follow-up | `FixtureFollowup.log` reports 41 passed. Includes both Keychain-dependent scanner cases, the hosted startup reveal with its original thresholds and the graded quote persistence assertion after RS-17. | Passed |
+| Signed artwork follow-up | `ArtworkResume.log` reports all 108 passed on `3b016336`, including the shared legacy photo removal and restore regression, activity history and correction cleanup. | Passed |
+| Resumed broad signed coverage | `SignedBroadRemaining.log` selects the 82 baseline classes without a terminal result in the interrupted signed run, excluding those same four research classes. Runs the signed test bundle compiled through `3b016336`. | Running |
 | External and device gates | Public catalog and market-feed checks returned HTTP 509 (RS-11). Configured Release privacy and support URLs are empty as documented. Physical camera/rotation, sustained lifecycle, App Store Connect and distribution acceptance remain unverified. | Open |
 
 Artifact root `/Volumes/T7/ScanStash_ReleaseStability_20261123`. Keep raw evidence out of Git.
@@ -82,6 +86,10 @@ Record an ID, severity, checkpoint, affected promise, reproducible evidence, roo
 | RS-14 | Medium | Checkpoints 10/12. Cold Browse detail read the preserved reference amount after a newer exact check from the same source found no quote. The reference overlay could display it as a current market value. Detail now shares the grid's confirmed-miss exclusion. The signed fixture confirms a failed check is still eligible, a disproved quote is excluded, a later positive restores it, and the dated amount remains available to last-known consumers. |
 | RS-15 | Medium, local beta | Checkpoints 04/05/11. An unavailable lookup stamped an unverified report as evaluated against the current catalog revision. A later connected pass skipped it until the next revision even if evidence for the exact report was available. Waiting lookups remain eligible for another pass, including legacy waiting records without an explicit dismissal. The signed regression exercises disconnect/reconnect at the same revision and the existing explicit dismissal tests pass. The distribution feature gate is unchanged. |
 | RS-16 | High | Checkpoints 17/18. The shared Firebase validation step exited 1 against the committed configuration because it required a removed wildcard market-feed TTL. The job gates multiple catalog publishers. The check now verifies the exact live marker, index and TCGplayer JSON declarations. The real configuration passed, four one-header mutations failed as expected, and 10 namespace restoration and 24 market-feed cases passed. Firebase deployment remains blocked separately by RS-11. |
+| RS-17 | Medium | Checkpoints 04/12/18. The baseline graded scan fixture read the reference cache before the queued background write. Awaiting the existing write drain preserves the assertions for both unresolved and confirmed finishes. The signed fixture follow-up passed. |
+| RS-18 | Medium | Checkpoints 02/11. A live legacy holding and a recently removed holding can share a photo file. Removing the live photo previously ignored the other holding's restore snapshot when deciding whether to delete the file. Commit `3b016336` checks recent snapshots. The signed follow-up passed the new remove-then-restore regression and all 107 other selected cases. |
+
+The 2026-11-24 read-only recheck still returned HTTP 509 for all four configured-host routes in RS-11 and the Pokémon pointer on the Firebase mirror.
 
 ### Recognition review progress
 
@@ -106,6 +114,7 @@ Traced HTTPS endpoint validation, redirects, transfer limits, cancellation and c
 - Scan recovery. Traced scope-bound retry, generation and cancellation checks, the atomic unresolved-file merge and preservation of future/malformed records, and catalog-driven report review. Verified offline retry for reports and signed unresolved-storage, slab parsing and CSV/import fixtures. Physical scanner interruption, relaunch and camera handoff remain open.
 - Magic. Traced ordinary expiry and outage fallback, pre-modern print eligibility and language, candidate resolution, token face pairing, and the price adapter's exact printing check. The historical, catalog activation, token pairing and treatment migration suites passed at this checkpoint. Remaining scope includes nonhistorical scan shapes, catalog-installed treatment identity across ownership and pricing, and live provider behavior.
 - Publishers. Confirmed the shared Hosting restore reconstructs the Pokémon, Magic, One Piece, Yu-Gi-Oh! and daily-price namespaces before a full deployment. Existing restore tests cover missing/corrupt artifacts, unrelated namespace preservation and propagation of price-restore failures. No production action was taken during the read-only outage check.
+- Shared market feed. Traced bounded transport, redirect refusal, exact product/price pair and build-marker validation, receipt freshness and content hash checks through preparation and restoration. Offline tests cover these boundaries. Live publication and downstream readback remain open.
 
 ### Centering accuracy investigation
 
