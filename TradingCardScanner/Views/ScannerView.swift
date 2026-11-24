@@ -249,7 +249,7 @@ struct ScannerView: View {
                     populated: !arguments.contains("empty") && !arguments.contains("review-empty"),
                     partiallyPriced: arguments.contains("review-partial")
                 )
-                isShowingTradeReview = ["review", "review-empty", "review-partial"].contains { arguments.contains($0) }
+                isShowingTradeReview = ["review", "review-empty", "review-partial", "review-vendor"].contains { arguments.contains($0) }
             }
             if scannerScreenshotRoute == "WholeCardScanner" || scannerScreenshotRoute == "TrustScanReceipt" {
                 if ProcessInfo.processInfo.arguments.contains("permission-denied") {

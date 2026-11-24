@@ -1825,6 +1825,7 @@ final class ScannerViewModel: ObservableObject {
     private var sessionFinalizationTask: Task<Void, Never>? {
         didSet { refreshCatalogReloadBlock() }
     }
+    private var finishSessionDrain: AsyncStream<Void>.Continuation?
     /// Counts are keyed by session because a timed-out old writer may finish
     /// after a new session has started; one session's defer must not decrement
     /// another session's in-flight count.
@@ -1848,7 +1849,7 @@ final class ScannerViewModel: ObservableObject {
             || pendingWriteCounts.values.contains { $0 != 0 }
         if blocked != hasCatalogReloadBlockingWork { hasCatalogReloadBlockingWork = blocked }
     }
-    private static let sessionFinalizationDrainTimeout: TimeInterval = 2
+    private static let sessionFinalizationDrainTimeout: Duration = .seconds(2)
     /// A tab can be revisited while the previous session is waiting for its
     /// last writer operation. Hold the new appearance until that old session
     /// has published its summary and cleared its projections.
@@ -2379,16 +2380,22 @@ final class ScannerViewModel: ObservableObject {
         invalidatePendingScan()
         scanner.endSession()
 
+        let (drain, completion) = AsyncStream<Void>.makeStream()
+        if pendingWriteCounts[finalizingSessionID, default: 0] > 0 {
+            finishSessionDrain = completion
+        } else {
+            completion.finish()
+        }
         sessionFinalizationTask = Task { @MainActor [weak self] in
             guard let self else { return }
-            let deadline = Date.now.addingTimeInterval(Self.sessionFinalizationDrainTimeout)
-            // Identification was cancelled and fenced by invalidation above.
-            // Only writes already handed to the writer need a bounded drain.
-            while self.pendingWriteCounts[finalizingSessionID, default: 0] > 0,
-                  !Task.isCancelled,
-                  Date.now < deadline {
-                try? await Task.sleep(for: .milliseconds(10))
+            let timeout = Task {
+                try? await Task.sleep(for: Self.sessionFinalizationDrainTimeout)
+                if !Task.isCancelled { completion.finish() }
             }
+            var iterator = drain.makeAsyncIterator()
+            _ = await iterator.next()
+            timeout.cancel()
+            self.finishSessionDrain = nil
 
             if self.pendingWriteCounts[finalizingSessionID, default: 0] > 0 {
                 // A wedged local write must not make every later Scan visit
@@ -2405,9 +2412,6 @@ final class ScannerViewModel: ObservableObject {
                 await log.endSession(id: sessionID, at: endedAt)
             }
             self.scannerSessionID = UUID()
-            if self.pendingWriteCounts[finalizingSessionID] == 0 {
-                self.pendingWriteCounts.removeValue(forKey: finalizingSessionID)
-            }
             self.clearSessionState()
             let pendingStart = self.pendingSessionStart
             self.pendingSessionStart = nil
@@ -2436,6 +2440,9 @@ final class ScannerViewModel: ObservableObject {
         guard let count = pendingWriteCounts[sessionID] else { return }
         if count <= 1 {
             pendingWriteCounts.removeValue(forKey: sessionID)
+            if sessionID == scannerSessionID {
+                finishSessionDrain?.finish()
+            }
         } else {
             pendingWriteCounts[sessionID] = count - 1
         }
@@ -2835,6 +2842,13 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func balanceTrade() { tradeDraft.balance() }
+
+    /// Nil, or 100, is market value; anything outside 1–99 is ignored.
+    func setTradeVendorRate(_ percent: Int?) {
+        guard let percent, percent != 100 else { tradeDraft.vendorRate = nil; return }
+        guard TradeDraft.vendorRates.contains(percent) else { return }
+        tradeDraft.vendorRate = percent
+    }
 
     func clearTrade() {
         tradeQuoteTask?.cancel()
@@ -7165,6 +7179,7 @@ final class ScannerViewModel: ObservableObject {
         }
         tradeDraft.latestScanID = give.id
         tradeDraft.scanSide = .give
+        if ProcessInfo.processInfo.arguments.contains("vendor-80") { tradeDraft.vendorRate = 80 }
     }
 
     func seedLongScannerToolbarForScreenshot() {

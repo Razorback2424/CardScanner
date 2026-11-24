@@ -2435,6 +2435,53 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.tradeDraft.count(on: .give), 0)
     }
 
+    func testTradeVendorRateScalesOnlyYourCardsAndBalancesWithAdjustedValue() async throws {
+        let quote = NormalizedPrice(unitMarketPriceUSD: 64.05, currencyCode: "USD", source: .tcgplayer,
+            sourceVariantID: "normal", sourceUpdatedAt: .now, fetchedAt: .now)
+        let model = try makeModel(variants: [.normal], priceCheckOutcome: .quote(.price(quote)))
+        model.setPurpose(.tradeAnalyzer)
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.tradeDraft.total(on: .receive).cards == Money(rounding: 64.05) }
+        model.setTradeScanSide(.give)
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+        await assertEventually { model.tradeDraft.total(on: .give).cards == Money(rounding: 64.05) }
+        let two = try XCTUnwrap(Money(rounding: 2))
+        model.setTradeCash(two, on: .give)
+
+        model.setTradeVendorRate(80)
+        let give = model.tradeDraft.total(on: .give)
+        XCTAssertEqual(give.vendorRate, 80)
+        XCTAssertEqual(give.marketCards, Money(rounding: 64.05))
+        XCTAssertEqual(give.cards, Money(rounding: 51.24))
+        XCTAssertEqual(give.total, Money(rounding: 53.24), "Cash is never scaled")
+        let receive = model.tradeDraft.total(on: .receive)
+        XCTAssertNil(receive.vendorRate)
+        XCTAssertEqual(receive.cards, Money(rounding: 64.05), "Their cards stay at market")
+        XCTAssertEqual(TradeDraft.difference(give: give, receive: receive), Money(rounding: 10.81))
+
+        model.balanceTrade()
+        XCTAssertEqual(model.tradeDraft.cash[.give], Money(rounding: 12.81))
+        XCTAssertEqual(model.tradeDraft.total(on: .give).total, model.tradeDraft.total(on: .receive).total)
+
+        model.setTradeVendorRate(0)
+        model.setTradeVendorRate(150)
+        XCTAssertEqual(model.tradeDraft.vendorRate, 80, "Out-of-range rates are ignored")
+        model.setTradeVendorRate(100)
+        XCTAssertNil(model.tradeDraft.vendorRate, "100% is market value")
+        XCTAssertEqual(model.tradeDraft.total(on: .give).cards, Money(rounding: 64.05))
+
+        model.setTradeVendorRate(70)
+        model.clearTrade()
+        XCTAssertNil(model.tradeDraft.vendorRate, "A new trade starts at market value")
+    }
+
+    func testTradeVendorRateRoundsHalfUpToTheCent() throws {
+        XCTAssertEqual(TradeDraft.scaled(try XCTUnwrap(Money(rounding: 0.05)), percent: 70), Money(rounding: 0.04))
+        XCTAssertEqual(TradeDraft.scaled(try XCTUnwrap(Money(rounding: 9.99)), percent: 33), Money(rounding: 3.30))
+        XCTAssertEqual(TradeDraft.scaled(try XCTUnwrap(Money(rounding: 181.60)), percent: 80), Money(rounding: 145.28))
+        XCTAssertEqual(TradeDraft.scaled(.zero, percent: 80), .zero)
+    }
+
     func testTradeReviewWaitsForIdentificationAndKeepsFractionalCentPrices() async throws {
         let gate = ScannerFetchGate()
         let quote = NormalizedPrice(unitMarketPriceUSD: 0.0049, currencyCode: "USD", source: .tcgplayer,
@@ -4882,6 +4929,25 @@ final class ScannerViewModelTests: XCTestCase {
                 XCTAssertTrue(model.sessionScans.isEmpty)
             }
         }
+    }
+
+    func testDeferredRestartTimesOutAndFencesTheOldWriteCompletion() async throws {
+        let gate = ScannerCollectionAddGate(outcome: .success)
+        let model = try makeModel(variants: [.normal], collectionAddOverride: { try await gate.add($0) })
+        let summaryStore = ScanSessionSummaryStore()
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await gate.waitUntilStarted()
+
+        model.viewDisappeared()
+        model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false,
+            summaryStore: summaryStore)
+        XCTAssertFalse(model.isScannerSessionActiveForTesting)
+        let restarted = await waitUntil { model.isScannerSessionActiveForTesting }
+        await gate.release()
+        XCTAssertTrue(restarted, "A stuck write cannot hold the next scan session open")
+        await settle()
+        XCTAssertTrue(model.sessionScans.isEmpty)
+        XCTAssertNil(summaryStore.summary)
     }
 
     func testPausedScannerReportsLiveFramesPeriodicallyUntilResumed() async {
