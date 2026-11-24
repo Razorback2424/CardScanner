@@ -1,3 +1,12 @@
+# 2026-11-24 — Portfolio history after a clock correction
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records a
+reproduced future daily close replacing the live history point and inflating
+market movement. History and launch presentation now respect the current
+clock. The persisted closes remain available at their normal boundary.
+The signed history, replay, ledger and opening run passed 241 cases with
+one opt-in performance skip.
+
 # 2026-11-24 — Catalog activation and delayed pricing saves
 
 The [audit ledger](docs/audits/release-stability-ledger.md) records a
