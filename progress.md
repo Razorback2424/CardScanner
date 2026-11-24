@@ -1,3 +1,20 @@
+# 2026-11-24 — Relative centering inset trial
+
+One [audit trial](docs/audits/release-stability-ledger.md#centering-accuracy-investigation)
+ranked Vision rectangles by their normalized inset from the card edge.
+Starting Town and the three other failing development references had unchanged
+geometry. Three prior analyzer passes regressed, so the candidate was reverted.
+The production catalog pointer and market-feed marker still returned HTTP 509
+on both hosting domains.
+
+# 2026-11-24 — Collection quantity under concurrent changes
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records a
+quantity edit that could replace newly acquired copies if the newer read
+finished between the tap and the queued write. Detail now validates the
+write against the count observed at the tap. The signed ownership,
+continuity, rendered detail and activity suites passed all 142 cases.
+
 # 2026-11-24 — Portfolio history after a clock correction
 
 The [audit ledger](docs/audits/release-stability-ledger.md) records a
