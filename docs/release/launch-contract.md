@@ -519,7 +519,7 @@ deliberate confirmation and matching annotated output.
 | S12.02 | Physical edges and printed boundaries stay distinct; initial guides are useful; uncertainty visible; invalid geometry cannot look credible. | Not verified — four historical initial-guide misses reproduce |
 | S12.03 | Drag, numeric edit, zoom, pan and Undo affect the intended geometry; Done commits the latest complete localized input exactly once. | Not verified |
 | S12.04 | Guides, ratios and export refer to the same current photo and geometry; confirmation explicit; automatic reporting stays disabled. | Not verified |
-| S12.05 | Meet the frozen production accuracy and interaction requirements; DEBUG reference research stays separate with a reasoned applicability decision; tolerances never loosened. | **Fail (automated)** — six acceptance methods fail; each needs a shipped-behavior disposition ([ledger](../audits/centering-guided-repair.md#six-remaining-failures-focused-investigation--2026-11-09)) |
+| S12.05 | Meet the frozen production accuracy and interaction requirements; DEBUG reference research stays separate with a reasoned applicability decision; tolerances never loosened. | **Fail (automated)** — six acceptance methods fail ([ledger](../audits/centering-guided-repair.md#six-remaining-failures-focused-investigation--2026-11-09)). Five (supplied-layout probe, both foil Gengar gates, Prismatic right edge, assisted-reference latency) test the DEBUG-only print-reference route and are dispositioned outside Release scope ([reachability ruling](../audits/centering-guided-repair.md#release-reachability-disposition--2026-11-10); guards rechecked 2026-11-24). The sixth, untouched initial guides on four photos, is shipped behavior and stays open: it needs an algorithm fix or a visible owner exception |
 | S12.06 | Real users complete capture/import, correction, confirmation and actual share/save; result described as an estimate, not grading. | Not verified |
 
 *Verification:* `CenteringReviewTests`, `CenteringExportTests`, `CenteringSpatialMeasurementTests`, applicable corpus/invariant tests; physical workflow evidence.
@@ -572,7 +572,7 @@ overlays, artwork and finish presentation, `PrivacyAndSupportSettingsView.swift`
 | S15.02 | No clipped primary controls, unreadable prices, wrong thumbnails, overlapping feedback, unexplained disabled actions or placeholder copy. | Not verified |
 | S15.03 | Largest accessibility text, light/dark, iPad layouts and orientation changes preserve task completion. | Not verified |
 | S15.04 | VoiceOver identifies cards, prices, uncertainty, controls, selected values and destructive actions in useful order; state not conveyed only by color. | Not verified |
-| S15.05 | Feedback is prompt and reports success only after it happens. Version/build and support are discoverable in normal settings. | **Fail** — version/build appear only inside the Developer & Diagnostics sync-diagnostics export; support link shows "not available in this build" |
+| S15.05 | Feedback is prompt and reports success only after it happens. Version/build and support are discoverable in normal settings. | **Fail (support link only)** — version and build are in Settings › About (since 2026-11-10; the 2026-11-24 validation note below was wrong). The support link still shows "not available in this build" until S17.03 URLs are set |
 
 *Verification:* presentation/accessibility tests where available; screen-state screenshots; spoken VoiceOver checks; uncoached real-user completion.
 
@@ -769,7 +769,7 @@ no averaging a broken paid tool against unrelated passes.
 | Gate | Pass condition | Status |
 | --- | --- | --- |
 | G01 Scope matches reality | Manifest, code, installed Release build and marketing agree; no undeclared production/local difference. | **Fail** — manifest unfilled; One Piece Release configuration enabled, device acceptance pending |
-| G02 No known customer defects | All confirmed user-visible violations closed; any owner exception is visible and changes the claim. | **Fail** — S12.05, S15.05, S17.03 |
+| G02 No known customer defects | All confirmed user-visible violations closed; any owner exception is visible and changes the claim. | **Fail** — S12.05 (untouched initial guides), S15.05 (support link, waits on S17.03), S17.03 |
 | G03 Integrity checks pass | Ownership, identity, durability, import replay, currency, chronology, arithmetic and output invariants pass with no unexplained failures. | Not verified |
 | G04 Every critical journey passes | J01–J13 complete and reconcile on the actual candidate, including recovery and delivered output. | Not verified |
 | G05 Recognition is useful and safe | Frozen corpora meet error, completion and friction criteria; no deterministic failure hidden in aggregates. | Not verified — corpus not assembled |
@@ -823,7 +823,7 @@ Every concrete reference in the contract was checked against the working tree.
 | Photo drafts not restored after process death | Matches [monetization plan](../plans/CARDSCANNER_LAUNCH_MONETIZATION.md). |
 | ~1,500-card workload | Matches [release follow-ups](../plans/release_followups.md). |
 | Old framework contradicts paid tools | Confirmed (body said "No StoreKit implementation exists"); archived. |
-| S15.05 version/build discoverability | **Fail found during validation:** `CFBundleShortVersionString`/`CFBundleVersion` are read only for the sync-diagnostics export under Developer & Diagnostics; Privacy & Support shows neither. |
+| S15.05 version/build discoverability | **Corrected 2026-11-24:** this validation missed the Settings › About section (`ScannerSettingsView.swift`, added 2026-11-10), which shows both values. Privacy & Support shows neither, but they are discoverable in normal settings. |
 
 ### Source references
 

@@ -154,10 +154,16 @@ clients already enforce exact-variant matching.
   - delta cutoffs widen by `PricingProxy.maximumCachedQuoteAge`.
 
   With the setting empty, the legacy developer key path is unchanged.
-- **Deferred to launch preparation:** the App Attest token. `PricingProxy.appCheckToken()` returns nil until
-  the app is registered for App Check; the Firebase App Check SDK, or a direct App Attest exchange, is added
-  then, with launch time and binary size measured. Also deferred: settings, support and privacy copy beyond
-  the Settings footer.
+- **App Check token (built 2026-11-24):** `PricingAppCheck` (`Services/PricingAppCheck.swift`) gets tokens
+  from Apple's App Attest through the Firebase App Check REST API, without linking the Firebase SDK, so the app
+  gains no package and no launch-time cost. First use attests a new key; renewals sign `SHA256(artifact ‖ challenge)`.
+  Tokens are cached until 5 minutes before expiry, and concurrent callers share one exchange. A key the service
+  rejects (400/403/404) is replaced. Outages keep the key and back off for 60 seconds. A proxy 401 clears the
+  cached token. DEBUG builds can exchange a console-registered debug token from the scheme environment variable
+  `PRICING_APP_CHECK_DEBUG_TOKEN`, which is never committed. The build settings `PRICING_APP_CHECK_APP_ID` and
+  `PRICING_APP_CHECK_API_KEY` stay empty until launch preparation, and requests carry no token while they are
+  empty. `PricingAppCheckTests` covers the flow against a fake service and attester; nothing has run against
+  real Firebase or on a device. Still deferred: settings, support and privacy copy beyond the Settings footer.
 
 ### Verification (maps to S09.07, J06 and G07)
 
