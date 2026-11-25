@@ -30,6 +30,10 @@
 	<string>$(TCGCSV_PRICE_BASE_URL)</string>
 	<key>JUSTTCG_PROXY_BASE_URL</key>
 	<string>$(JUSTTCG_PROXY_BASE_URL)</string>
+	<key>PRICING_APP_CHECK_APP_ID</key>
+	<string>$(PRICING_APP_CHECK_APP_ID)</string>
+	<key>PRICING_APP_CHECK_API_KEY</key>
+	<string>$(PRICING_APP_CHECK_API_KEY)</string>
 	<key>POKEMON_CATALOG_ALLOWED_ORIGIN_HOST</key>
 	<string>$(POKEMON_CATALOG_ALLOWED_ORIGIN_HOST)</string>
 	<key>POKEMON_CATALOG_ROLLOUT_MODE</key>

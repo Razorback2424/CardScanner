@@ -409,6 +409,7 @@ actor JustTCGTransport {
 
         guard (200..<300).contains(http.statusCode) else {
             requestOutcome = "http-\(http.statusCode)"
+            if configuration.proxy != nil { await PricingProxy.noteRejection(http) }
             throw TransportError.badResponse(status: http.statusCode)
         }
         requestOutcome = "http-\(http.statusCode)"

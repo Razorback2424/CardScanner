@@ -10,6 +10,11 @@ TCGCSV_PRICE_BASE_URL = https:/$()/catalog.scan-stash.com/market-prices/v1
 // launch preparation: empty keeps the developer customer-key path; setting it
 // (https, ending in /v1/justtcg) routes all JustTCG traffic through the proxy.
 JUSTTCG_PROXY_BASE_URL =
+// Firebase App Check for the proxy (PricingAppCheck): the Firebase iOS app ID
+// (1:<project number>:ios:<hex>) and its API key, set with the proxy URL at
+// launch preparation. Empty means requests carry no App Check token.
+PRICING_APP_CHECK_APP_ID =
+PRICING_APP_CHECK_API_KEY =
 // Set these only after the owner-approved public pages are published and
 // verified. Target settings must not override this release configuration.
 CARD_SCANNER_PRIVACY_URL =

@@ -68,7 +68,12 @@ These steps cost money and are deferred until launch preparation, before the fin
 4. Buy the JustTCG paid plan, then set the secrets:
    `firebase functions:secrets:set JUSTTCG_API_KEY` and `PRICING_INSTALL_SALT` (a random 32-byte value).
 5. Set `JUSTTCG_TIER` if the plan isn't `starter`.
-6. Register the iOS app for App Check with the App Attest provider, then enforce it.
+6. Register the iOS app for App Check with the App Attest provider, then enforce it. In the app's
+   `Config/PokemonCatalogProduction.xcconfig`, set `PRICING_APP_CHECK_APP_ID` (the Firebase iOS app ID) and
+   `PRICING_APP_CHECK_API_KEY` alongside `JUSTTCG_PROXY_BASE_URL`. Add the App Attest capability with
+   `com.apple.developer.devicecheck.appattest-environment` set to `production` in
+   `TradingCardScanner.entitlements`. Without it App Attest uses Apple's development environment.
+   Restrict the API key to the App Check API and the app's bundle ID.
 7. Create the `pricingControl/main` document with `subscriptionActive: true`. If it's missing, the proxy serves
    nothing. Set it to `false` the day the subscription ends.
 8. Deploy only this codebase: `firebase deploy --only functions:pricing,firestore:rules`. Catalog workflows

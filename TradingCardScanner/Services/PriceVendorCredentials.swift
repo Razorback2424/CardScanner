@@ -200,10 +200,20 @@ enum PricingProxy {
         return created
     }
 
-    /// A Firebase App Check token (App Attest provider) proving the request
-    /// comes from the genuine app. Wired up at launch preparation, when the app
-    /// is registered for App Check; the local emulator accepts requests without one.
-    static func appCheckToken() async -> String? { nil }
+    /// A Firebase App Check token (App Attest) proving the request comes from
+    /// the genuine app; see `PricingAppCheck`. Nil until the build sets
+    /// `PRICING_APP_CHECK_APP_ID` and `PRICING_APP_CHECK_API_KEY` at launch
+    /// preparation; the local emulator accepts requests without one.
+    static func appCheckToken() async -> String? {
+        await PricingAppCheck.shared?.token()
+    }
+
+    /// The proxy rejected the request's App Check token: the next request
+    /// fetches a new one instead of reusing it.
+    static func noteRejection(_ response: HTTPURLResponse) async {
+        guard response.statusCode == 401 else { return }
+        await PricingAppCheck.shared?.invalidate()
+    }
 
     static func authorize(_ request: inout URLRequest, endpoint: Endpoint, lane: JustTCGRequestLane) async {
         request.setValue(endpoint.installID, forHTTPHeaderField: "X-ScanStash-Install")

@@ -55,6 +55,7 @@
 		A0020025 /* ProductIdentityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020025 /* ProductIdentityTests.swift */; };
 		A0010055 /* ProductIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010055 /* ProductIdentity.swift */; };
 		A0010054 /* PriceVendorCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010054 /* PriceVendorCredentials.swift */; };
+		A0019F01 /* PricingAppCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0019F01 /* PricingAppCheck.swift */; };
 		A0010001 /* TradingCardScannerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010001 /* TradingCardScannerApp.swift */; };
 		A0010002 /* CollectedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010002 /* CollectedCard.swift */; };
 		A0010003 /* TCGdexCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010003 /* TCGdexCard.swift */; };
@@ -453,6 +454,7 @@
 		B0020025 /* ProductIdentityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIdentityTests.swift; sourceTree = "<group>"; };
 		B0010055 /* ProductIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIdentity.swift; sourceTree = "<group>"; };
 		B0010054 /* PriceVendorCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceVendorCredentials.swift; sourceTree = "<group>"; };
+		B0019F01 /* PricingAppCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PricingAppCheck.swift; sourceTree = "<group>"; };
 		B0010001 /* TradingCardScannerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradingCardScannerApp.swift; sourceTree = "<group>"; };
 		B0010002 /* CollectedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectedCard.swift; sourceTree = "<group>"; };
 		B0010003 /* TCGdexCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGdexCard.swift; sourceTree = "<group>"; };
@@ -1070,6 +1072,7 @@
 				B0010114 /* EbayListingPhotoExport.swift */,
 				B0010117 /* ListingPhotoLibrarySaver.swift */,
 							B0010054 /* PriceVendorCredentials.swift */,
+							B0019F01 /* PricingAppCheck.swift */,
 							B0010056 /* ProductCatalogIdentity.swift */,
 							B0010057 /* ProductPriceService.swift */,
 							B0010058 /* ProductIdentityStore.swift */,
@@ -1499,6 +1502,7 @@
 				A0010056 /* ProductCatalogIdentity.swift in Sources */,
 				A0010055 /* ProductIdentity.swift in Sources */,
 				A0010054 /* PriceVendorCredentials.swift in Sources */,
+				A0019F01 /* PricingAppCheck.swift in Sources */,
 				A0010001 /* TradingCardScannerApp.swift in Sources */,
 				A00100D2 /* AppDelegate.swift in Sources */,
 				A0010002 /* CollectedCard.swift in Sources */,

@@ -2,6 +2,7 @@ import XCTest
 import SwiftData
 import Network
 import Security
+import CryptoKit
 @testable import TradingCardScanner
 
 private actor MarketRefreshProgressProbe {
@@ -4659,4 +4660,243 @@ private final class PricingProxyStubURLProtocol: URLProtocol, @unchecked Sendabl
         client?.urlProtocolDidFinishLoading(self)
     }
     override func stopLoading() {}
+}
+
+final class PricingAppCheckTests: XCTestCase {
+    private let configuration = PricingAppCheck.Configuration.make(
+        appID: "1:123456789:ios:abc123", apiKey: "AIzaTestKey_1", bundleID: "com.example.cards"
+    )!
+
+    func testConfigurationRequiresAFirebaseIOSAppIDAndKey() {
+        XCTAssertEqual(configuration.projectNumber, "123456789")
+        XCTAssertNil(PricingAppCheck.Configuration.make(appID: "", apiKey: "k", bundleID: "b"))
+        XCTAssertNil(PricingAppCheck.Configuration.make(appID: "1:123:android:abc", apiKey: "k", bundleID: "b"))
+        XCTAssertNil(PricingAppCheck.Configuration.make(appID: "1:123:ios:abc", apiKey: "", bundleID: "b"))
+        XCTAssertNil(PricingAppCheck.Configuration.make(appID: "1:123:ios:abc", apiKey: "$(PRICING_APP_CHECK_API_KEY)", bundleID: "b"))
+        XCTAssertNil(PricingAppCheck.Configuration.make(appID: "1:123:ios:abc", apiKey: "k", bundleID: nil))
+    }
+
+    func testFirstUseAttestsThenCachesTheToken() async throws {
+        let service = FakeAppCheckService()
+        let attester = FakeAttester()
+        let store = MemoryAttestKeyStore()
+        let check = PricingAppCheck(configuration: configuration, attester: attester, keyStore: store,
+                                    transport: service.transport, now: service.clock, debugToken: nil)
+
+        let token = await check.token()
+        XCTAssertEqual(token, "token-1")
+        XCTAssertEqual(service.methods, ["generateAppAttestChallenge", "exchangeAppAttestAttestation"])
+        let exchange = try XCTUnwrap(service.bodies.last)
+        XCTAssertEqual(exchange["keyId"], "key-1")
+        XCTAssertEqual(exchange["challenge"], service.challenge(1).base64EncodedString())
+        XCTAssertEqual(attester.attestHashes, [Data(SHA256.hash(data: service.challenge(1)))])
+        XCTAssertEqual(store.key, .init(keyID: "key-1", artifact: Data("artifact".utf8)))
+        XCTAssertEqual(service.requests.first?.value(forHTTPHeaderField: "X-Goog-Api-Key"), "AIzaTestKey_1")
+        XCTAssertEqual(service.requests.first?.value(forHTTPHeaderField: "X-Ios-Bundle-Identifier"), "com.example.cards")
+        XCTAssertEqual(service.requests.first?.url?.absoluteString,
+                       "https://firebaseappcheck.googleapis.com/v1/projects/123456789/apps/1:123456789:ios:abc123:generateAppAttestChallenge")
+
+        let again = await check.token()
+        XCTAssertEqual(again, "token-1")
+        XCTAssertEqual(service.methods.count, 2, "a fresh token is reused")
+    }
+
+    func testAnExpiringTokenIsRenewedWithAnAssertionOverArtifactAndChallenge() async throws {
+        let service = FakeAppCheckService()
+        let attester = FakeAttester()
+        let store = MemoryAttestKeyStore()
+        let check = PricingAppCheck(configuration: configuration, attester: attester, keyStore: store,
+                                    transport: service.transport, now: service.clock, debugToken: nil)
+        _ = await check.token()
+        service.advance(3600 - PricingAppCheck.refreshMargin + 1)
+
+        let renewed = await check.token()
+        XCTAssertEqual(renewed, "token-2")
+        XCTAssertEqual(service.methods.suffix(2), ["generateAppAttestChallenge", "exchangeAppAttestAssertion"])
+        XCTAssertEqual(attester.assertionHashes, [Data(SHA256.hash(data: Data("artifact".utf8) + service.challenge(2)))])
+        XCTAssertEqual(service.bodies.last?["artifact"], Data("artifact".utf8).base64EncodedString())
+        XCTAssertEqual(attester.generatedKeys, 1, "the attested key is reused")
+    }
+
+    func testARejectedKeyIsReplacedByANewAttestation() async {
+        let service = FakeAppCheckService()
+        service.assertionStatus = 403
+        let attester = FakeAttester()
+        let store = MemoryAttestKeyStore()
+        store.key = .init(keyID: "old-key", artifact: Data("old".utf8))
+        let check = PricingAppCheck(configuration: configuration, attester: attester, keyStore: store,
+                                    transport: service.transport, now: service.clock, debugToken: nil)
+
+        let token = await check.token()
+        XCTAssertNotNil(token)
+        XCTAssertEqual(service.methods.last, "exchangeAppAttestAttestation")
+        XCTAssertEqual(store.key?.keyID, "key-1")
+    }
+
+    func testAnOutageKeepsTheKeyAndBacksOff() async {
+        let service = FakeAppCheckService()
+        service.assertionStatus = 503
+        let store = MemoryAttestKeyStore()
+        store.key = .init(keyID: "kept", artifact: Data("a".utf8))
+        let check = PricingAppCheck(configuration: configuration, attester: FakeAttester(), keyStore: store,
+                                    transport: service.transport, now: service.clock, debugToken: nil)
+
+        let failed = await check.token()
+        XCTAssertNil(failed)
+        XCTAssertEqual(store.key?.keyID, "kept", "a service outage is not a bad key")
+        let calls = service.methods.count
+        let backingOff = await check.token()
+        XCTAssertNil(backingOff)
+        XCTAssertEqual(service.methods.count, calls, "no request during the back-off")
+
+        service.assertionStatus = 200
+        service.advance(PricingAppCheck.failureBackoff + 1)
+        let recovered = await check.token()
+        XCTAssertNotNil(recovered)
+    }
+
+    func testDevicesWithoutAppAttestGetNoTokenAndMakeNoRequests() async {
+        let service = FakeAppCheckService()
+        let attester = FakeAttester()
+        attester.supported = false
+        let check = PricingAppCheck(configuration: configuration, attester: attester, keyStore: MemoryAttestKeyStore(),
+                                    transport: service.transport, now: service.clock, debugToken: nil)
+        let token = await check.token()
+        XCTAssertNil(token)
+        XCTAssertTrue(service.methods.isEmpty)
+    }
+
+    func testConcurrentCallersShareOneExchange() async {
+        let service = FakeAppCheckService()
+        let check = PricingAppCheck(configuration: configuration, attester: FakeAttester(), keyStore: MemoryAttestKeyStore(),
+                                    transport: service.transport, now: service.clock, debugToken: nil)
+        let tokens = await withTaskGroup(of: String?.self) { group in
+            for _ in 0..<20 { group.addTask { await check.token() } }
+            var all: [String?] = []
+            for await token in group { all.append(token) }
+            return all
+        }
+        XCTAssertEqual(Set(tokens.compactMap { $0 }), ["token-1"])
+        XCTAssertEqual(tokens.count, 20)
+        XCTAssertEqual(service.methods.filter { $0 == "exchangeAppAttestAttestation" }.count, 1)
+    }
+
+    func testInvalidateForcesANewToken() async {
+        let service = FakeAppCheckService()
+        let check = PricingAppCheck(configuration: configuration, attester: FakeAttester(), keyStore: MemoryAttestKeyStore(),
+                                    transport: service.transport, now: service.clock, debugToken: nil)
+        _ = await check.token()
+        await check.invalidate()
+        let next = await check.token()
+        XCTAssertEqual(next, "token-2")
+    }
+
+    func testDebugTokenIsExchangedInDebugBuilds() async {
+        let service = FakeAppCheckService()
+        let check = PricingAppCheck(configuration: configuration, attester: FakeAttester(), keyStore: MemoryAttestKeyStore(),
+                                    transport: service.transport, now: service.clock, debugToken: "debug-secret")
+        let token = await check.token()
+        #if DEBUG
+        XCTAssertNotNil(token)
+        XCTAssertEqual(service.methods, ["exchangeDebugToken"])
+        XCTAssertEqual(service.bodies.first?["debugToken"], "debug-secret")
+        #else
+        XCTAssertNotNil(token)
+        XCTAssertFalse(service.methods.contains("exchangeDebugToken"))
+        #endif
+    }
+}
+
+private final class FakeAppCheckService: @unchecked Sendable {
+    private let lock = NSLock()
+    private var _requests: [URLRequest] = []
+    private var _bodies: [[String: String]] = []
+    private var challenges = 0
+    private var tokens = 0
+    private var _now = Date(timeIntervalSince1970: 1_800_000_000)
+    private var _assertionStatus = 200
+
+    var assertionStatus: Int {
+        get { lock.withLock { _assertionStatus } }
+        set { lock.withLock { _assertionStatus = newValue } }
+    }
+    var requests: [URLRequest] { lock.withLock { _requests } }
+    var bodies: [[String: String]] { lock.withLock { _bodies } }
+    var methods: [String] { requests.compactMap { $0.url?.absoluteString.components(separatedBy: ":").last } }
+
+    func challenge(_ n: Int) -> Data { Data("challenge-\(n)".utf8) }
+    func advance(_ seconds: TimeInterval) { lock.withLock { _now += seconds } }
+    var clock: @Sendable () -> Date { { [unowned self] in self.lock.withLock { self._now } } }
+
+    var transport: PricingAppCheck.Transport {
+        { [unowned self] request in
+            await Task.yield()
+            return self.respond(to: request)
+        }
+    }
+
+    private func respond(to request: URLRequest) -> (Data, URLResponse) {
+        lock.lock()
+        defer { lock.unlock() }
+        _requests.append(request)
+        let body = (request.httpBody.flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [String: String]) ?? [:]
+        _bodies.append(body)
+        let method = request.url?.absoluteString.components(separatedBy: ":").last ?? ""
+        var status = 200
+        var json: [String: Any] = [:]
+        switch method {
+        case "generateAppAttestChallenge":
+            challenges += 1
+            json = ["challenge": challenge(challenges).base64EncodedString(), "ttl": "300s"]
+        case "exchangeAppAttestAttestation":
+            tokens += 1
+            json = ["artifact": Data("artifact".utf8).base64EncodedString(), "appCheckToken": ["token": "token-\(tokens)", "ttl": "3600s"]]
+        case "exchangeAppAttestAssertion":
+            status = _assertionStatus
+            if status == 200 { tokens += 1; json = ["token": "token-\(tokens)", "ttl": "3600s"] }
+        case "exchangeDebugToken":
+            tokens += 1
+            json = ["token": "token-\(tokens)", "ttl": "3600s"]
+        default:
+            status = 404
+        }
+        let response = HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: nil)!
+        return ((try? JSONSerialization.data(withJSONObject: json)) ?? Data(), response)
+    }
+}
+
+private final class FakeAttester: PricingAppAttester, @unchecked Sendable {
+    private let lock = NSLock()
+    var supported = true
+    private(set) var generatedKeys = 0
+    private(set) var attestHashes: [Data] = []
+    private(set) var assertionHashes: [Data] = []
+
+    var isSupported: Bool { lock.withLock { supported } }
+
+    func generateKey() async throws -> String {
+        lock.withLock { generatedKeys += 1; return "key-\(generatedKeys)" }
+    }
+
+    func attestKey(_ keyID: String, clientDataHash: Data) async throws -> Data {
+        lock.withLock { attestHashes.append(clientDataHash) }
+        return Data("attestation-\(keyID)".utf8)
+    }
+
+    func generateAssertion(_ keyID: String, clientDataHash: Data) async throws -> Data {
+        lock.withLock { assertionHashes.append(clientDataHash) }
+        return Data("assertion-\(keyID)".utf8)
+    }
+}
+
+private final class MemoryAttestKeyStore: PricingAppAttestKeyStore, @unchecked Sendable {
+    private let lock = NSLock()
+    private var _key: PricingAppCheck.StoredKey?
+    var key: PricingAppCheck.StoredKey? {
+        get { lock.withLock { _key } }
+        set { lock.withLock { _key = newValue } }
+    }
+    func load() -> PricingAppCheck.StoredKey? { key }
+    func save(_ key: PricingAppCheck.StoredKey) { self.key = key }
+    func clear() { key = nil }
 }

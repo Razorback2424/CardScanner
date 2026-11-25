@@ -415,6 +415,7 @@ actor ProductPriceService {
                 await budget.recordRateLimit(until: retryAt)
                 throw ProductPriceError.rateLimited(retryAt)
             }
+            if configuration.proxy != nil { await PricingProxy.noteRejection(http) }
             throw ProductPriceError.badResponse
         }
         // An automatic refresh must not treat a past-TTL proxy answer as a
