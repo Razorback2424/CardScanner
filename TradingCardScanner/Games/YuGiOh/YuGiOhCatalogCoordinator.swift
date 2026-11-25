@@ -45,6 +45,9 @@ actor YuGiOhCatalogCoordinator: GameCatalogActivationSource {
         let revision = value.catalog.publicationRevision ?? 0
         if let cached, cached.revision >= revision { return cached }
         let catalog = value.catalog
+        // Delivery snapshots are installed under the ownership lock on the
+        // main actor. Build this revision's mappings on the coordinator first.
+        _ = value.priceAuthority.identityByPriceKey
         let snapshot = GameCatalogSnapshot(revision: revision, catalog: YuGiOhCatalogAdapter(catalog: catalog),
             recognizer: YuGiOhRecognitionAdapter(catalog: catalog), variantPolicy: YuGiOhVariantPolicy(),
             browse: YuGiOhBrowseAdapter(catalog: catalog), importer: YuGiOhImportAdapter(catalog: catalog),

@@ -40,10 +40,25 @@ final class CollectionProjectionStore: ObservableObject {
 
     private var rebuildTask: Task<Void, Never>?
     private var rebuildRequested = false
+    private var requestedContainer: ModelContainer?
+    private var requestedToken: StorageGenerationToken?
+    private let workerSlot = BackgroundModelActorSlot<CollectionProjectionActor>()
     private static let maximumReadAttempts = 3
     private static let readRetryDelay: Duration = .milliseconds(80)
 
     func rebuild(container: ModelContainer) async {
+        let storage = CollectionStorageGeneration.shared
+        let token = storage.activeSession()?.container === container ? storage.currentToken() : nil
+        if let requestedContainer, requestedContainer !== container || requestedToken != token {
+            if snapshot != nil {
+                snapshot = nil
+                revision &+= 1
+                cardOwnershipRevision &+= 1
+            }
+            isLoaded = false
+        }
+        requestedContainer = container
+        requestedToken = token
         rebuildRequested = true
         guard rebuildTask == nil else {
             await rebuildTask?.value
@@ -54,45 +69,31 @@ final class CollectionProjectionStore: ObservableObject {
             guard let self else { return }
             defer { self.rebuildTask = nil }
 
-            while self.rebuildRequested {
+            while self.rebuildRequested, let currentContainer = self.requestedContainer {
                 self.rebuildRequested = false
                 self.loadFailed = false
+                let currentToken = self.requestedToken
+                let actor = await self.workerSlot.worker(for: currentContainer, token: currentToken)
                 var snapshot: CollectionProjectionSnapshot?
-                var readSucceeded = false
                 for attempt in 0..<Self.maximumReadAttempts {
-                    let actor = await CollectionProjectionActor.makeBackground(modelContainer: container)
-                    let candidate = await actor.snapshot()
-                    if await actor.readSucceeded() {
-                        snapshot = candidate
-                        readSucceeded = true
-                        break
-                    }
+                    guard !Task.isCancelled,
+                          currentToken.map(storage.isCurrent) ?? true else { break }
+                    snapshot = await actor.readSnapshot()
+                    if snapshot != nil || self.rebuildRequested { break }
                     guard attempt + 1 < Self.maximumReadAttempts else { break }
                     try? await Task.sleep(for: Self.readRetryDelay)
-                    guard !Task.isCancelled else { return }
                 }
-                guard readSucceeded, let snapshot else {
-                    // A request can arrive while the actor is suspended for
-                    // its final read. Preserve that request instead of turning
-                    // a transient failure into another dropped rebuild.
-                    if self.rebuildRequested {
-                        continue
-                    }
+                guard !Task.isCancelled else { return }
+                // A save or store transition can request a newer read while
+                // this one is in flight, including after a failed attempt.
+                guard !self.rebuildRequested else { continue }
+                guard currentToken.map(storage.isCurrent) ?? true else { return }
+                guard let snapshot else {
                     // Keep the failure visible. A later SwiftData save or the
                     // explicit retry affordance can make progress without
                     // leaving the tab on an infinite loading spinner.
                     self.loadFailed = true
                     return
-                }
-                guard !Task.isCancelled else { return }
-
-                // Serialize overlapping requests and let the newest read win.
-                // A refresh or CloudKit merge can invalidate the view while the
-                // actor is fetching; returning here would leave that change
-                // without a projection retry.
-                guard !self.rebuildRequested else {
-                    self.rebuildRequested = true
-                    continue
                 }
                 if self.snapshot != snapshot {
                     let ownershipChanged = self.snapshot?.ownership.hasSameCardOwnership(as: snapshot.ownership) != true
@@ -118,11 +119,17 @@ actor CollectionProjectionActor: BackgroundModelActor {
         self.modelExecutor = modelExecutor
     }
 
-    private var lastReadSucceeded = false
-
-    func readSucceeded() -> Bool { lastReadSucceeded }
-
     func snapshot() -> CollectionProjectionSnapshot {
+        readSnapshot() ?? CollectionProjectionSnapshot(
+            rows: [],
+            rowsByCollectionKey: [:],
+            diagnosticsByCollectionKey: [:],
+            physicalRowCountsByKey: [:],
+            ownership: CatalogOwnershipIndex(rows: [])
+        )
+    }
+
+    func readSnapshot() -> CollectionProjectionSnapshot? {
         let signpostState = PerformanceSignpost.signposter
             .beginInterval("makeCachedProjection")
         defer {
@@ -130,6 +137,8 @@ actor CollectionProjectionActor: BackgroundModelActor {
                 .endInterval("makeCachedProjection", signpostState)
         }
 
+        let modelContext = ModelContext(modelContainer)
+        defer { withExtendedLifetime(modelContext) {} }
         let cards: [CollectedCard]
         let records: [PriceRecord]
         let artworkOverrides: [LocalArtworkOverride]
@@ -142,14 +151,7 @@ actor CollectionProjectionActor: BackgroundModelActor {
             records = try modelContext.fetch(FetchDescriptor<PriceRecord>())
             artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
         } catch {
-            lastReadSucceeded = false
-            return CollectionProjectionSnapshot(
-                rows: [],
-                rowsByCollectionKey: [:],
-                diagnosticsByCollectionKey: [:],
-                physicalRowCountsByKey: [:],
-                ownership: CatalogOwnershipIndex(rows: [])
-            )
+            return nil
         }
         let recordsByKey = Dictionary(grouping: records, by: \.key)
             .compactMapValues(PriceStore.authoritativeRecord(in:))
@@ -231,7 +233,6 @@ actor CollectionProjectionActor: BackgroundModelActor {
                         ? .unknown : (recordsByKey[key]?.display ?? .unknown))
             })
         )
-        lastReadSucceeded = true
         return snapshot
     }
 }

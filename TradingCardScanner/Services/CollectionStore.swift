@@ -341,13 +341,18 @@ enum ArtworkOrphanSweep {
         let filesToRemove: Set<String>
     }
 
-    /// Captures the full-table read-only inventory away from the ownership
+    /// Captures the read-only artwork inventory away from the ownership
     /// lock. `prepare` re-fetches every candidate it plans to mutate.
     static func snapshot(in container: ModelContainer, now: Date = .now) throws -> Snapshot {
         let context = ModelContext(container)
         let cards = try context.fetch(FetchDescriptor<CollectedCard>())
         let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
-        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        let recentActivityCutoff = now.addingTimeInterval(-CollectionActivity.restoreWindow)
+        let activities = try context.fetch(
+            FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { $0.occurredAt >= recentActivityCutoff }
+            )
+        )
         let liveKeys = Set(cards.map(\.collectionKey))
         var canonicalKeysByLegacyKey: [String: Set<String>] = [:]
         for canonicalKey in liveKeys {
@@ -355,11 +360,7 @@ enum ArtworkOrphanSweep {
                 canonicalKeysByLegacyKey[legacyKey, default: []].insert(canonicalKey)
             }
         }
-        let recentActivityKeys = Set(
-            activities
-                .filter { now.timeIntervalSince($0.occurredAt) <= CollectionActivity.restoreWindow }
-                .map(\.collectionKey)
-        )
+        let recentActivityKeys = Set(activities.map(\.collectionKey))
         return Snapshot(
             liveCardKeys: liveKeys,
             canonicalKeysByLegacyKey: canonicalKeysByLegacyKey,

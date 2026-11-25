@@ -44,6 +44,21 @@ final class BoundedCacheTests: XCTestCase {
         XCTAssertEqual(cache[3], "c")
     }
 
+    func testCopiesKeepIndependentEvictionOrder() {
+        var original = BoundedCache<Int, String>(capacity: 2)
+        original[1] = "a"
+        original[2] = "b"
+        var copy = original
+        _ = copy[1]
+        original[3] = "c"
+        copy[3] = "c"
+
+        XCTAssertNil(original[1])
+        XCTAssertEqual(original[2], "b")
+        XCTAssertEqual(copy[1], "a")
+        XCTAssertNil(copy[2])
+    }
+
     func testRemovalHelpersDropEntriesAndRecency() {
         var cache = BoundedCache<String, Int>(capacity: 3)
         cache["pokemon:a"] = 1

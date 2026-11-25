@@ -394,6 +394,7 @@ struct StoreRevisionMonitor: View {
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var saveGeneration: UInt = 0
     @State private var pendingTables: StoreRevisionTables = []
+    @State private var revisionWorker = BackgroundModelActorSlot<StoreRevisionModelActor>()
     @State private var lastFingerprintRead: (inputs: FullReadInputs, fingerprint: StoreRevisionFingerprint)?
     @State private var processedBulkGeneration: UInt = 0
     @State private var foregroundGeneration: UInt = 0
@@ -481,9 +482,8 @@ struct StoreRevisionMonitor: View {
                 let cachedRead = lastFingerprintRead
                 let reusable = cachedRead?.inputs == fullReadInputs ? cachedRead?.fingerprint : nil
                 let tables = pendingTables
-                let actor = await StoreRevisionModelActor.makeBackground(modelContainer: modelContext.container)
-                let fingerprint = await actor.fingerprint(reusing: reusable, tables: tables)
-                guard await actor.readSucceeded() else { return }
+                let actor = await revisionWorker.worker(for: modelContext.container, token: storageToken)
+                guard let fingerprint = await actor.readFingerprint(reusing: reusable, tables: tables) else { return }
                 guard !Task.isCancelled,
                       !writeCoordinator.isBulkWriteInFlight,
                       writeCoordinator.generation == bulkGeneration,
@@ -570,10 +570,10 @@ struct StoreRevisionMonitor: View {
             let didRunMigration = shouldRunMigration
             if didRunMigration {
                 guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
-                let actor = await StoreRevisionModelActor.makeBackground(
-                    modelContainer: modelContext.container
-                )
+                let actor = await revisionWorker.worker(for: modelContext.container, token: storageToken)
                 let refreshedKeys = await actor.pendingMagicMigrationKeys()
+                guard storageGeneration.isCurrent(storageToken), !Task.isCancelled,
+                      applyGeneration == generation else { return }
                 UserDefaults.standard.set(
                     StoreRevisionFingerprinting.pendingMagicMigrationFingerprint(refreshedKeys),
                     forKey: Self.pendingMagicMigrationFingerprintKey
@@ -928,9 +928,8 @@ struct StoreRevisionMonitor: View {
                   !self.writeCoordinator.isBulkWriteInFlight,
                   let storageToken = self.storageGeneration.currentToken() else { return }
 
-            let actor = await StoreRevisionModelActor.makeBackground(modelContainer: self.modelContext.container)
-            let fingerprint = await actor.fingerprint()
-            guard await actor.readSucceeded(),
+            let actor = await self.revisionWorker.worker(for: self.modelContext.container, token: storageToken)
+            guard let fingerprint = await actor.readFingerprint(),
                   self.pendingForcedFallbackRetry.isPending,
                   self.usesPriceFallback,
                   self.storageGeneration.isCurrent(storageToken) else { return }
@@ -989,7 +988,9 @@ actor StoreRevisionModelActor: BackgroundModelActor {
     func pendingMagicMigrationKeys() -> Set<String> {
         let magicRawValue = CardGame.magic.rawValue
         let migrationVersion = MagicTreatmentMigration.currentVersion
-        guard let rows = try? modelContext.fetch(
+        let context = ModelContext(modelContainer)
+        defer { withExtendedLifetime(context) {} }
+        guard let rows = try? context.fetch(
             FetchDescriptor<CollectedCard>(
                 predicate: #Predicate {
                     $0.game == magicRawValue
@@ -1004,14 +1005,16 @@ actor StoreRevisionModelActor: BackgroundModelActor {
         reusing previous: StoreRevisionFingerprint? = nil,
         tables: StoreRevisionTables = .all
     ) -> StoreRevisionFingerprint {
-        do {
-            let fingerprint = try makeFingerprint(reusing: previous, tables: previous == nil ? .all : tables)
-            lastReadSucceeded = true
-            return fingerprint
-        } catch {
-            lastReadSucceeded = false
-            return .empty
-        }
+        let fingerprint = readFingerprint(reusing: previous, tables: tables)
+        lastReadSucceeded = fingerprint != nil
+        return fingerprint ?? .empty
+    }
+
+    func readFingerprint(
+        reusing previous: StoreRevisionFingerprint? = nil,
+        tables: StoreRevisionTables = .all
+    ) -> StoreRevisionFingerprint? {
+        try? makeFingerprint(reusing: previous, tables: previous == nil ? .all : tables)
     }
 
     private func makeFingerprint(
@@ -1025,16 +1028,17 @@ actor StoreRevisionModelActor: BackgroundModelActor {
                 .endInterval("makeStoreRevisionFingerprint", signpostState)
         }
 
+        let context = ModelContext(modelContainer)
         var result = previous ?? .empty
-        if tables.contains(.cards) { try fingerprintCards(into: &result) }
-        if tables.contains(.inventory) { result.inventoryEvents = try fingerprintInventory() }
-        if tables.contains(.activities) { result.collectionActivities = try fingerprintActivities() }
-        if tables.contains(.prices) { try fingerprintPrices(into: &result) }
-        if tables.contains(.artwork) { result.artwork = try fingerprintArtwork() }
+        if tables.contains(.cards) { try fingerprintCards(into: &result, in: context) }
+        if tables.contains(.inventory) { result.inventoryEvents = try fingerprintInventory(in: context) }
+        if tables.contains(.activities) { result.collectionActivities = try fingerprintActivities(in: context) }
+        if tables.contains(.prices) { try fingerprintPrices(into: &result, in: context) }
+        if tables.contains(.artwork) { result.artwork = try fingerprintArtwork(in: context) }
         return result
     }
 
-    private func fingerprintCards(into result: inout StoreRevisionFingerprint) throws {
+    private func fingerprintCards(into result: inout StoreRevisionFingerprint, in modelContext: ModelContext) throws {
         let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
             .sorted { $0.collectionKey < $1.collectionKey }
         var cardHasher = Hasher()
@@ -1102,7 +1106,7 @@ actor StoreRevisionModelActor: BackgroundModelActor {
         result.pendingMagicMigrationKeys = pendingMagicMigrationKeys
     }
 
-    private func fingerprintInventory() throws -> Int {
+    private func fingerprintInventory(in modelContext: ModelContext) throws -> Int {
         let inventoryEvents = try modelContext.fetch(FetchDescriptor<InventoryEvent>())
             .sorted { StoreRevisionFingerprinting.uuidPrecedes($0.eventID, $1.eventID) }
         var inventoryHasher = Hasher()
@@ -1122,7 +1126,7 @@ actor StoreRevisionModelActor: BackgroundModelActor {
         return inventoryHasher.finalize()
     }
 
-    private func fingerprintActivities() throws -> Int {
+    private func fingerprintActivities(in modelContext: ModelContext) throws -> Int {
         let collectionActivities = try modelContext.fetch(FetchDescriptor<CollectionActivity>())
             .sorted { StoreRevisionFingerprinting.uuidPrecedes($0.id, $1.id) }
         var activityHasher = Hasher()
@@ -1139,7 +1143,7 @@ actor StoreRevisionModelActor: BackgroundModelActor {
         return activityHasher.finalize()
     }
 
-    private func fingerprintPrices(into result: inout StoreRevisionFingerprint) throws {
+    private func fingerprintPrices(into result: inout StoreRevisionFingerprint, in modelContext: ModelContext) throws {
         let priceRecords = try modelContext.fetch(FetchDescriptor<PriceRecord>())
             .sorted { $0.key < $1.key }
         var priceShapeHasher = Hasher()
@@ -1153,7 +1157,7 @@ actor StoreRevisionModelActor: BackgroundModelActor {
         result.priceValues = StoreRevisionFingerprinting.priceValuesInKeyOrder(priceRecords)
     }
 
-    private func fingerprintArtwork() throws -> Int {
+    private func fingerprintArtwork(in modelContext: ModelContext) throws -> Int {
         let artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
             .sorted {
                 if $0.collectionKey != $1.collectionKey {

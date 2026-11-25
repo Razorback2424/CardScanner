@@ -282,15 +282,34 @@ enum BackgroundPriceRefresh {
             }
         )
         guard let refreshResult else { return false }
-        guard !refreshResult.wasPreempted,
+        guard !refreshResult.targetBuildFailed,
+              !refreshResult.wasPreempted,
               !Task.isCancelled,
               shouldContinue() else { return false }
 
         // Do not call `start`: a background launch must never establish a new
         // portfolio epoch. It may only publish a close from an epoch the person
         // has already opened in the app.
-        await PortfolioEngine().recomputeAndWait(context: context)
-        return !refreshResult.targetBuildFailed && !Task.isCancelled && shouldContinue()
+        let portfolio = PortfolioEngine(
+            launchSnapshots: .shared,
+            launchPresentations: .shared,
+            headlessSession: storage
+        )
+        await portfolio.recomputeAndWait(context: context)
+        guard !Task.isCancelled, shouldContinue() else { return false }
+        if let summary = portfolio.replaySummary, summary.isAuthoritative,
+           summary.defects.isEmpty, (summary.copyCount ?? 0) > 0 {
+            let history = PortfolioHistoryStore()
+            history.recompute(
+                context: context, summary: summary,
+                factors: portfolio.performanceFactors, contributions: portfolio.contributionIndex
+            )
+            await history.waitForPendingComputation()
+            guard !Task.isCancelled, shouldContinue() else { return false }
+            portfolio.recordLaunchPresentation(history: history.activeResult)
+            await PortfolioLaunchPresentationStore.shared.waitForPendingWrites()
+        }
+        return !Task.isCancelled && shouldContinue()
     }
 }
 

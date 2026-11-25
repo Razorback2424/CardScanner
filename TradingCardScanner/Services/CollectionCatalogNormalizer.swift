@@ -89,6 +89,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
     private let resolver: ImportedCatalogBatchResolver
     private let gameRegistry: CardGameRegistry
     private nonisolated static let retryInterval: TimeInterval = 8 * 60 * 60
+    private static let applyBatchSize = 25
     /// Bumped whenever the resolver learns to match something it previously
     /// could not, so existing collections re-run against the new rules instead
     /// of waiting out `retryInterval` on a stale result.
@@ -213,20 +214,33 @@ final class CollectionCatalogNormalizer: ObservableObject {
                 row.itemKind != .rawCard && row.marketVariantID != marketVariantID
             }
         }
-        func applyResolvedMetadata() async throws {
-            try await inputActor.apply(resolution, inputs: inputs, now: now,
-                gameRegistry: gameRegistry, shouldContinue: shouldContinue)
-        }
-
         do {
+            func applyBatches() async throws {
+                for start in stride(from: 0, to: requests.count, by: Self.applyBatchSize) {
+                    try Task.checkCancellation()
+                    guard shouldContinue?() ?? true else { throw CancellationError() }
+                    let end = min(start + Self.applyBatchSize, requests.count)
+                    let batch = requests[start..<end]
+                    func applyBatch() async throws {
+                        try await inputActor.apply(resolution, requests: batch,
+                            rowIdentitiesByProviderID: rowIdentitiesByProviderID, now: now,
+                            gameRegistry: gameRegistry, shouldContinue: shouldContinue)
+                    }
+                    if needsIdentityGate {
+                        try await applyBatch()
+                    } else {
+                        try await CollectionExclusiveWrites.retryingIfRequired { try await applyBatch() }
+                    }
+                }
+            }
+            // Keep refresh suspended across planned structural rewrites. Each
+            // batch still releases the ownership lock so ordinary writes can run.
             if needsIdentityGate {
                 try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
-                    try await applyResolvedMetadata()
+                    try await applyBatches()
                 }
             } else {
-                try await CollectionExclusiveWrites.retryingIfRequired {
-                    try await applyResolvedMetadata()
-                }
+                try await applyBatches()
             }
             guard shouldContinue?() ?? true else {
                 requestsAnotherPass = false
@@ -358,19 +372,19 @@ actor CollectionCatalogNormalizationInputActor: BackgroundModelActor {
 
     fileprivate func apply(
         _ resolution: ImportedCatalogResolution,
-        inputs: ImportedCatalogNormalizationInputs,
+        requests: ArraySlice<GameImportRequest>,
+        rowIdentitiesByProviderID: [String: [ImportedCatalogRowIdentity]],
         now: Date,
         gameRegistry: CardGameRegistry,
         shouldContinue: StorageGenerationContinuation?
     ) throws {
         guard !Task.isCancelled, shouldContinue?() ?? true else { throw CancellationError() }
-        let requests = inputs.requests
-        let rowIdentitiesByProviderID = inputs.rowIdentitiesByProviderID
         let matches = resolution.matches
         try CollectionWriteSerializer.perform(
             container: modelContainer,
             timeout: .wait
         ) { writeContext in
+                guard !Task.isCancelled, shouldContinue?() ?? true else { throw CancellationError() }
                 let store = CollectionStore(context: writeContext, gameRegistry: gameRegistry)
                 let priceLog = PriceObservationLog(context: writeContext)
                 for request in requests {

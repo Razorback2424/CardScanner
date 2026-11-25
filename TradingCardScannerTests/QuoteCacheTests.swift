@@ -38,6 +38,31 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertEqual(row?.lastFailureAt, date)
     }
 
+    func testPriceCheckDropsBusyWriteAndNextQuoteCanPersist() async throws {
+        let context = try makeContext()
+        let container = context.container
+        let store = await ReferenceQuoteStore.makeBackground(modelContainer: container)
+        let key = CatalogQuoteKey.make(game: .pokemon, providerID: "fixture",
+            printRun: nil, variantID: "holo", treatmentIDs: [])
+        let now = Date.now
+        let completedWhileBusy = expectation(description: "Best-effort write stops retrying")
+        let token = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+        let pending = Task {
+            await store.recordPriceCheckFailure(key: key, at: now)
+            completedWhileBusy.fulfill()
+        }
+        await fulfillment(of: [completedWhileBusy], timeout: 3)
+        CollectionWriteSerializer.endExclusive(token)
+        await pending.value
+
+        let cache = QuoteCache(context: context)
+        XCTAssertNil(cache.quote(game: key.game, printingID: key.printingID, variantID: key.variantID))
+        let lookup = quote(42, at: now)
+        await store.recordPriceCheck(lookup, key: key, at: now, isReplay: false, successfulCheckAt: now)
+        XCTAssertEqual(cache.quote(game: key.game, printingID: key.printingID, variantID: key.variantID)?.normalizedPrice,
+                       lookup.usablePrice)
+    }
+
     func testStoreIfNewerKeepsProviderDateReceiptAndWithdrawalGuards() throws {
         let context = try makeContext()
         let cache = QuoteCache(context: context)

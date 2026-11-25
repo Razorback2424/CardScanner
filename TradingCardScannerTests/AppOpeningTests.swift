@@ -380,6 +380,42 @@ final class PortfolioLaunchSnapshotTests: XCTestCase {
         XCTAssertEqual(engine.integrityDefects.first?.reason, .unreadableStore)
     }
 
+    func testHeadlessReplayRecordsOnlyForItsCurrentStore() async throws {
+        let context = try makeContext()
+        let storeID = UUID()
+        let snapshots = PortfolioLaunchSnapshotStore(defaults: defaults)
+        let gate = LaunchReplayGate()
+        let replayStarted = expectation(description: "Headless replay read the old session")
+        let now = PortfolioEpoch.startedAt() ?? .now
+        let generation = CollectionStorageGeneration()
+        generation.installReady(session: CollectionStorageSession(
+            container: context.container, storeID: storeID, mode: .onDevice, isAuthoritative: true
+        ))
+        let currentToken = try XCTUnwrap(generation.currentToken())
+        let session = HeadlessCollectionStorageSession(
+            container: context.container, storeID: storeID, mode: .onDevice, isAuthoritative: true,
+            token: currentToken, continuation: generation.continuation(for: currentToken)
+        )
+        let firstEngine = PortfolioEngine(computationProvider: { _, epoch, through, zone in
+            Self.computation(value: 612_5000, copies: 8, epoch: epoch, through: through, zone: zone)
+        }, launchSnapshots: snapshots, headlessSession: session)
+        await firstEngine.recomputeAndWait(context: context, now: now)
+        XCTAssertEqual(snapshots.load(storeID: storeID)?.valueTenThousandths, 612_5000)
+        XCTAssertNil(snapshots.load(storeID: UUID()))
+
+        let lateEngine = PortfolioEngine(computationProvider: { _, epoch, through, zone in
+            replayStarted.fulfill()
+            await gate.wait()
+            return Self.computation(value: 700_0000, copies: 8, epoch: epoch, through: through, zone: zone)
+        }, launchSnapshots: snapshots, headlessSession: session)
+        let replay = Task { await lateEngine.recomputeAndWait(context: context, now: now) }
+        await fulfillment(of: [replayStarted], timeout: 2)
+        generation.suspend()
+        await gate.open()
+        await replay.value
+        XCTAssertEqual(snapshots.load(storeID: storeID)?.valueTenThousandths, 612_5000)
+    }
+
     func testOpeningReleasesImmediatelyWithTheCachedCopyCount() async throws {
         let storeID = UUID()
         let store = PortfolioLaunchSnapshotStore(defaults: defaults)

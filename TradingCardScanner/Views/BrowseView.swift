@@ -1953,6 +1953,7 @@ struct CatalogGameCardsView: View {
     @State private var isVisible = false
     @State private var ownershipRevision: UInt?
     @State private var resultRows: [CatalogBrowsePresentation.Row] = []
+    @State private var presentedCards: [CatalogCardSummary] = []
     @State private var visibleCardID: String?
     @State private var priceCandidates: [CatalogCardSummary] = []
     @State private var visiblePriceSlots: [String: CatalogCardSummary] = [:]
@@ -1994,13 +1995,19 @@ struct CatalogGameCardsView: View {
 
     private var pricesAllCandidates: Bool { sort.needsPrices || filters.needsPrices }
 
-    /// Unattempted slots in request order: every candidate for a price sort or
-    /// filter, otherwise the visible tiles, most recently shown first.
-    private var pendingPriceSlots: [CatalogCardSummary] {
-        if pricesAllCandidates { return priceCandidates.filter { !attemptedPrices.contains($0.id) } }
-        return visiblePriceOrder.reversed().compactMap { id in
-            attemptedPrices.contains(id) ? nil : visiblePriceSlots[id]
+    private var hasPendingPriceSlots: Bool {
+        if pricesAllCandidates { return hasUnattemptedPriceCandidates }
+        return visiblePriceOrder.reversed().contains { !attemptedPrices.contains($0) }
+    }
+
+    /// Stop walking once we have the next request's worth of eligible slots.
+    private func nextPriceBatch() -> [CatalogCardSummary] {
+        if pricesAllCandidates {
+            return Array(priceCandidates.lazy.filter { !attemptedPrices.contains($0.id) }.prefix(24))
         }
+        return Array(visiblePriceOrder.reversed().lazy.compactMap { id in
+            attemptedPrices.contains(id) ? nil : visiblePriceSlots[id]
+        }.prefix(24))
     }
 
     private var hasUnattemptedPriceCandidates: Bool {
@@ -2049,7 +2056,7 @@ struct CatalogGameCardsView: View {
             priceRevision: priceRevision, isActive: isActive)
         let priceRequest = PriceRequest(scope: priceScope, retry: priceRetry, isActive: isActive,
                                         pricesAllCandidates: pricesAllCandidates,
-                                        hasPending: !pendingPriceSlots.isEmpty)
+                                        hasPending: hasPendingPriceSlots)
         return ScrollView {
             LazyVStack {
                 resultStatus
@@ -2147,9 +2154,11 @@ struct CatalogGameCardsView: View {
             return (candidates, rows)
         }
         let result = await withTaskCancellationHandler { await projection.value } onCancel: { projection.cancel() }
-        guard !Task.isCancelled, request.priceScope == priceScope else { return }
+        guard !Task.isCancelled, request.priceScope == priceScope,
+              request.cards == (hasSearchText ? searchCards : cards) else { return }
         if priceCandidates != result.0 { priceCandidates = result.0 }
         resultRows = result.1
+        presentedCards = request.cards
     }
 
     private func resetResultPrices() {
@@ -2159,6 +2168,7 @@ struct CatalogGameCardsView: View {
         visiblePriceSlots = [:]
         visiblePriceOrder = []
         resultRows = []
+        presentedCards = []
         visibleCardID = nil
         quotes = [:]
         attemptedPrices = []
@@ -2167,7 +2177,7 @@ struct CatalogGameCardsView: View {
     }
 
     private func loadResultPrices(request: PriceRequest) async {
-        guard request.isActive, request.scope == priceScope, !pendingPriceSlots.isEmpty else { return }
+        guard request.isActive, request.scope == priceScope, request.hasPending else { return }
         let load = UUID()
         activePriceLoad = load
         isLoadingPrices = true
@@ -2180,21 +2190,28 @@ struct CatalogGameCardsView: View {
         // Re-read the queue per batch so tiles or pages that arrived meanwhile
         // are picked up without restarting this task.
         while !Task.isCancelled, request.scope == priceScope {
-            let batch = Array(pendingPriceSlots.prefix(24))
+            let batch = nextPriceBatch()
             guard !batch.isEmpty else { return }
             for await update in catalog.sortPriceUpdates(for: batch) {
                 guard !Task.isCancelled, request.scope == priceScope else { return }
+                var changed = false
                 for card in batch {
-                    quotes[card.id] = CatalogBrowseQuote.merging(update, id: card.id, previous: quotes[card.id])
+                    let previous = quotes[card.id]
+                    let merged = CatalogBrowseQuote.merging(update, id: card.id, previous: previous)
+                    guard merged != previous else { continue }
+                    quotes[card.id] = merged
+                    changed = true
                 }
-                priceRevision += 1
+                if changed { priceRevision += 1 }
             }
             guard !Task.isCancelled, request.scope == priceScope else { return }
+            var changed = false
             for card in batch where quotes[card.id] == nil || quotes[card.id]?.status == .pending {
                 quotes[card.id] = .failed
+                changed = true
             }
             attemptedPrices.formUnion(batch.map(\.id))
-            priceRevision += 1
+            if changed { priceRevision += 1 }
             await Task.yield()
         }
     }
@@ -2380,7 +2397,11 @@ struct CatalogGameCardsView: View {
                 skipFailedSetButton
             } else if completeSortRequest == nil, filters.isActive {
                 filteredFooter
-            } else if completeSortRequest == nil, hasMoreSets, nextSetIndex > 0 || !cards.isEmpty {
+            } else if completeSortRequest == nil, hasMoreSets, presentedCards == cards,
+                      nextSetIndex > 0 || !cards.isEmpty {
+                // The cursor advances before the off-main presentation is
+                // ready. Mount the footer after the new rows so the previous
+                // page's visible footer cannot trigger another load.
                 CatalogPaginationFooter(requestID: defaultPaginationKey, viewport: viewport) { await loadDefaultMore() }
             }
         }
@@ -2397,7 +2418,7 @@ struct CatalogGameCardsView: View {
                 Button("Keep Searching More Sets") { Task { await loadDefaultMore() } }
                     .buttonStyle(.bordered)
                     .padding(.bottom, 8)
-            } else if !cards.isEmpty {
+            } else if !cards.isEmpty, presentedCards == cards {
                 CatalogPaginationFooter(
                     requestID: "\(contentRevision)-filtered-\(String(describing: filteredPosition))", viewport: viewport
                 ) { await loadDefaultMore() }
@@ -2504,7 +2525,7 @@ struct CatalogGameCardsView: View {
                       searchStoppedAtLimit || (filters.needsPrices && resultRows.isEmpty) {
                 Button("Keep Searching") { Task { await loadMoreSearch(query: providerSearch) } }
                     .buttonStyle(.bordered)
-            } else if completeSortRequest == nil, searchCursor != nil {
+            } else if completeSortRequest == nil, searchCursor != nil, presentedCards == searchCards {
                 CatalogPaginationFooter(
                     requestID: "\(searchRequestKey?.uuidString ?? "")-\(searchCursor ?? "")", viewport: viewport
                 ) { await loadMoreSearch(query: providerSearch) }

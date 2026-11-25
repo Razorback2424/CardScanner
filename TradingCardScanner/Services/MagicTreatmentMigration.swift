@@ -405,7 +405,9 @@ enum MagicTreatmentMigration {
 
         let cards: [CollectedCard]
         do {
-            cards = try writeContext.fetch(FetchDescriptor<CollectedCard>())
+            cards = try writeContext.fetch(
+                FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.game == magicGameRawValue })
+            )
         } catch {
             report.fail("Could not read Magic collection rows: \(error)")
             return report

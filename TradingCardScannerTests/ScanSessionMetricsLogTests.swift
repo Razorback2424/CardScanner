@@ -92,6 +92,8 @@ final class ScanSessionMetricsLogTests: XCTestCase {
         await log.increment(sessionID: old, counter: .undo)
         await log.endSession(id: old)
         let bytes = try await log.exportData()
+        let restored = try await ScanSessionMetricsLog(fileURL: log.fileURL).exportData()
+        XCTAssertEqual(restored, bytes, "Export flushes completed encounters from the active session")
         let session = try XCTUnwrap(Self.decode(bytes).sessions.last)
         XCTAssertNil(session.endedAt)
         XCTAssertEqual(session.counters["undo"], 0)

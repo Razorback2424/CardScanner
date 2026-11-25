@@ -124,11 +124,10 @@ typealias PortfolioComputationProvider = @Sendable (
 @MainActor
 final class PortfolioEngine: ObservableObject {
     private let computationProvider: PortfolioComputationProvider?
-    /// Nil for headless and test engines: only the app's foreground engine
-    /// opens on, and records, the last known value.
     private let launchSnapshots: PortfolioLaunchSnapshotStore?
     /// The rest of the dashboard as last published, beside `launchSnapshots`.
     private let launchPresentations: PortfolioLaunchPresentationStore?
+    private let headlessSession: HeadlessCollectionStorageSession?
     /// The store the running replay reads, when it is the active session.
     private var launchSnapshotStoreID: UUID?
     /// The chart/movers result the previous launch last showed, for the
@@ -139,11 +138,13 @@ final class PortfolioEngine: ObservableObject {
         computationProvider: PortfolioComputationProvider? = nil,
         launchSnapshots: PortfolioLaunchSnapshotStore? = nil,
         launchPresentations: PortfolioLaunchPresentationStore? = nil,
-        launchStoreID: UUID? = nil
+        launchStoreID: UUID? = nil,
+        headlessSession: HeadlessCollectionStorageSession? = nil
     ) {
         self.computationProvider = computationProvider
         self.launchSnapshots = launchSnapshots
         self.launchPresentations = launchPresentations
+        self.headlessSession = headlessSession
         // Open on the last value this store published so launch never shows a
         // blank calculating screen. It is provisional and deliberately not a
         // `lastUsableSummary`: an unreadable first replay must still say
@@ -435,10 +436,24 @@ final class PortfolioEngine: ObservableObject {
             status = .computing
         }
 
-        let storage = CollectionStorageGeneration.shared
-        let token = storage.activeSession()?.container === container ? storage.currentToken() : nil
-        launchSnapshotStoreID = token?.storeID
-        let shouldContinue: StorageGenerationContinuation = token.map { storage.continuation(for: $0) } ?? { true }
+        let shouldContinue: StorageGenerationContinuation
+        if let headlessSession {
+            launchSnapshotStoreID = headlessSession.storeID
+            if headlessSession.container === container, headlessSession.isAuthoritative {
+                shouldContinue = headlessSession.continuation
+            } else {
+                shouldContinue = { false }
+            }
+        } else {
+            let storage = CollectionStorageGeneration.shared
+            let token = storage.activeSession()?.container === container ? storage.currentToken() : nil
+            launchSnapshotStoreID = token?.storeID
+            if let token {
+                shouldContinue = storage.continuation(for: token)
+            } else {
+                shouldContinue = { true }
+            }
+        }
         let computationProvider = self.computationProvider
         computationTask = Task { @MainActor [weak self] in
             // Publication still uses the context after the background read ends.
@@ -528,7 +543,18 @@ final class PortfolioEngine: ObservableObject {
         // When a pass was already in flight, this request became its one
         // trailing replay. Await both; work requested after that belongs to a
         // later input change and must not keep a background caller waiting.
-        await computationTask?.value
+        let task = computationTask
+        if headlessSession != nil {
+            // Cancellation of the BackgroundTasks callback must reach the
+            // replay before it publishes closes or replaces the launch value.
+            await withTaskCancellationHandler {
+                await task?.value
+            } onCancel: {
+                task?.cancel()
+            }
+        } else {
+            await task?.value
+        }
         guard wasAlreadyRecomputing else { return }
         await computationTask?.value
     }

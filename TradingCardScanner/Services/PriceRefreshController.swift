@@ -686,9 +686,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         }
 
         let previousLatest = latestKnownSourceUpdate(in: store)
-        let rowIdentitiesByPriceKey = PriceRefreshController.rowIdentitiesByPriceKey(
-            in: modelContext
-        )
+        let rowIdentitiesByPriceKey = order.isEmpty ? [:]
+            : PriceRefreshController.rowIdentitiesByPriceKey(in: modelContext)
         let importedRowIdentitiesByProviderID = Dictionary(
             grouping: rowIdentitiesByPriceKey.values.flatMap { $0 }
                 .filter { $0.providerID.hasPrefix("csv:") },
@@ -1032,17 +1031,20 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         // Corrections commit in sibling contexts. Rebuild from the live rows so
         // pricing picks up destination metadata and cannot carry an outgoing
         // finish's marketplace handle or failure state onto the new price key.
-        let reconciliationContext = ModelContext(modelContext.container)
         let currentTargets: [PriceTarget]
-        do {
-            currentTargets = try PriceRefreshTargets.make(
-                context: reconciliationContext,
-                usesPriceFallback: request.usesPriceFallback,
-                includeImported: true
-            )
-        } catch {
-            persistenceFailed = true
+        if deferredPriceTargets.isEmpty, repairedDestinationCards.isEmpty {
             currentTargets = []
+        } else {
+            do {
+                currentTargets = try PriceRefreshTargets.make(
+                    context: ModelContext(modelContext.container),
+                    usesPriceFallback: request.usesPriceFallback,
+                    includeImported: true
+                )
+            } catch {
+                persistenceFailed = true
+                currentTargets = []
+            }
         }
         let currentTargetsByID = Dictionary(
             currentTargets.map { ($0.id, $0) },
@@ -1513,7 +1515,13 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         fallbackOutcome = "running"
 
         let (identities, identityIndex) = makeIdentityState()
-        let rowIdentities = PriceRefreshController.rowIdentitiesByPriceKey(in: modelContext)
+        // Catalog checkpoints can rekey rows or fill the evidence used by
+        // fallback. Re-read the non-slab owners after those writes settle.
+        let gradedKind = CollectionItemKind.gradedCard.rawValue
+        let rowIdentities = PriceRefreshController.rowIdentitiesByPriceKey(
+            in: ModelContext(modelContainer),
+            matching: #Predicate { $0.itemKindRaw != gradedKind }
+        )
         artworkRowIdentitiesByPriceKey = rowIdentities.mapValues {
             $0.filter(\.imageURLIsMissing)
         }
@@ -1894,9 +1902,11 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         // Collection state is represented by keys and identity values only.
         // A vendor response can arrive after any one of these rows was removed
         // or rekeyed, so the checkpoint will re-fetch and validate it.
+        let gradedKind = CollectionItemKind.gradedCard.rawValue
         let gradedRowsByPriceKey = PriceRefreshController.rowIdentitiesByPriceKey(
-            in: modelContext
-        ).mapValues { $0.filter { $0.itemKind == .gradedCard } }
+            in: ModelContext(modelContainer),
+            matching: #Predicate { $0.itemKindRaw == gradedKind }
+        )
 
         func selectGradedVariant(
             from variants: [GradedVariant],
@@ -3950,9 +3960,9 @@ final class PriceRefreshController: ObservableObject {
     /// left exactly as the catalog left it — including a Cardmarket euro price,
     /// which stays as the last resort rather than being cleared.
     nonisolated fileprivate static func rowIdentities(
-        in context: ModelContext
+        in context: ModelContext, matching predicate: Predicate<CollectedCard>? = nil
     ) -> [RefreshRowIdentity] {
-        let rows = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        let rows = (try? context.fetch(FetchDescriptor<CollectedCard>(predicate: predicate))) ?? []
         return rows.map {
             RefreshRowIdentity(
                 collectionKey: $0.collectionKey,
@@ -3968,9 +3978,9 @@ final class PriceRefreshController: ObservableObject {
     }
 
     nonisolated fileprivate static func rowIdentitiesByPriceKey(
-        in context: ModelContext
+        in context: ModelContext, matching predicate: Predicate<CollectedCard>? = nil
     ) -> [String: [RefreshRowIdentity]] {
-        rowIdentities(in: context).reduce(into: [:]) { result, row in
+        rowIdentities(in: context, matching: predicate).reduce(into: [:]) { result, row in
             result[row.priceKey, default: []].append(row)
         }
     }

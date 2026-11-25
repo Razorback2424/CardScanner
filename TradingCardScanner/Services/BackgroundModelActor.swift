@@ -21,6 +21,22 @@ extension BackgroundModelActor {
     }
 }
 
+/// Reuses a read worker's executor for one storage generation. Workers that
+/// observe sibling saves still create a fresh read context for each snapshot.
+@MainActor
+final class BackgroundModelActorSlot<Worker: BackgroundModelActor> {
+    private var current: (container: ModelContainer, token: StorageGenerationToken?, task: Task<Worker, Never>)?
+
+    func worker(for container: ModelContainer, token: StorageGenerationToken?) async -> Worker {
+        if let current, current.container === container, current.token == token {
+            return await current.task.value
+        }
+        let task = Task { await Worker.makeBackground(modelContainer: container) }
+        current = (container, token, task)
+        return await task.value
+    }
+}
+
 /// Context creation and every actor job use the same private serial queue.
 /// Only the actor and Sendable results cross back to the UI; no model context
 /// or fetched model is handed to a different owner.

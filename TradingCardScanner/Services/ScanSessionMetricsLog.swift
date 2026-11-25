@@ -75,6 +75,7 @@ actor ScanSessionMetricsLog {
     private var activeSessionID: UUID?
     private var pending: [UUID: PendingEncounter] = [:]
     private var completed: [UUID: Int] = [:]
+    private var pendingPersistence: Task<Void, Never>?
 
     init(fileURL: URL? = nil) {
         let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
@@ -84,6 +85,7 @@ actor ScanSessionMetricsLog {
     }
 
     func beginSession(id: UUID, enabled: Bool, at date: Date = .now) {
+        flushScheduledPersistence()
         activeSessionID = nil
         pending.removeAll()
         completed.removeAll()
@@ -109,7 +111,7 @@ actor ScanSessionMetricsLog {
         } else if let index = completed[encounterID] {
             // A held-copy offer may appear after the original receipt commits.
             payload.sessions[payload.sessions.count - 1].encounters[index].interruptions.append(interruption)
-            persist()
+            schedulePersistence()
         }
     }
 
@@ -124,13 +126,13 @@ actor ScanSessionMetricsLog {
             durationMs: Int(max(0, uptime - encounter.uptime) * 1_000),
             interruptions: encounter.interruptions
         ))
-        persist()
+        schedulePersistence()
     }
 
     func increment(sessionID: UUID, counter: Counter, by count: Int = 1) {
         guard activeSessionID == sessionID, count > 0 else { return }
         payload.sessions[payload.sessions.count - 1].counters[counter.rawValue, default: 0] += count
-        persist()
+        schedulePersistence()
     }
 
     func endSession(id: UUID, at date: Date = .now) {
@@ -142,11 +144,14 @@ actor ScanSessionMetricsLog {
         payload.sessions[payload.sessions.count - 1].endedAt = date
         activeSessionID = nil
         completed.removeAll()
+        pendingPersistence?.cancel()
+        pendingPersistence = nil
         persist()
     }
 
     func exportData() throws -> Data {
         loadIfNeeded()
+        flushScheduledPersistence()
         if let storageError { throw storageError }
         return try Self.encoder().encode(payload)
     }
@@ -169,6 +174,29 @@ actor ScanSessionMetricsLog {
                 return
             }
         }
+    }
+
+    private func schedulePersistence() {
+        guard storageError == nil, pendingPersistence == nil else { return }
+        // Start the timer at the first change so even continuous scanning
+        // periodically leaves a durable checkpoint.
+        pendingPersistence = Task { [weak self] in
+            await self?.persistAfterDelay()
+        }
+    }
+
+    private func persistAfterDelay() async {
+        do { try await Task.sleep(for: .seconds(1)) }
+        catch { return }
+        guard !Task.isCancelled else { return }
+        flushScheduledPersistence()
+    }
+
+    private func flushScheduledPersistence() {
+        guard let pendingPersistence else { return }
+        pendingPersistence.cancel()
+        self.pendingPersistence = nil
+        persist()
     }
 
     private func persist() {

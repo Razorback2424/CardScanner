@@ -294,9 +294,11 @@ actor ReferenceQuoteStore: BackgroundModelActor {
     }
 
     private func writePriceCheck(_ write: (QuoteCache) -> Void) async {
-        while isCurrent(), !Task.isCancelled {
+        let maximumAttempts = 10
+        for attempt in 1...maximumAttempts {
+            guard isCurrent(), !Task.isCancelled else { return }
             do {
-                try CollectionWriteSerializer.perform(container: modelContainer, timeout: .wait) { context in
+                try CollectionWriteSerializer.perform(container: modelContainer, timeout: .immediate) { context in
                     guard isCurrent(), !Task.isCancelled else { throw CancellationError() }
                     let cache = QuoteCache(context: context)
                     write(cache)
@@ -305,8 +307,11 @@ actor ReferenceQuoteStore: BackgroundModelActor {
                 }
                 return
             } catch CollectionStoreError.collectionBusy {
-                // An exclusive ownership session can outlast one lock acquisition.
-                try? await Task.sleep(for: .milliseconds(80))
+                // Reference quote persistence is best-effort. Keep a busy
+                // ownership writer from indefinitely delaying later quotes.
+                guard attempt < maximumAttempts else { return }
+                do { try await Task.sleep(for: .milliseconds(80)) }
+                catch { return }
             } catch { return }
         }
     }
