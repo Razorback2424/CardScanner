@@ -11,6 +11,11 @@ subscription beyond the selected paid JustTCG plan a prelaunch prerequisite. App
 cache and global quota controls remains mandatory. The unresolved third-party
 pricing-rights risk is documented below; this decision is not proof of licensing
 compliance or App Store approval.
+**Owner-choice amendment — 2026-11-24:** adds the product bar below the
+finish line, the [fallback log](fallback-log.md), finding intake and bounded
+review rules (§6), a fallback-log condition on G06, and the Trade Analyzer
+scope shipped after adoption (S05.06–S05.08, J13). All nine gates and their
+existing pass conditions stay in force; nothing is relaxed.
 **Source:** owner-supplied *Card Scanner Launch Contract — Scanstash 1.0 system
 definitions and release acceptance* (prepared 2026-11-09, repository baseline
 `df6d4c0`). This Markdown is the repository authority; the .docx is not
@@ -29,6 +34,16 @@ on-device storage. Validation against the repository is recorded in
 > have evidence of passing. Unexpected inputs and unavailable dependencies must
 > produce an understandable, safe outcome. They must never silently change what
 > the user owns or imply a result that did not happen.
+
+**The product bar.** Correctness is the floor, not the goal. Within the
+declared scope, a collector should never leave Card Scanner for Collectr or
+another app because ours was missing something, broken, slow or confusing for
+the task at hand. The owner's everyday use and the external collector
+sessions (§5) test this directly. Every time someone falls back to another app,
+it is recorded in the [fallback log](fallback-log.md). §6 turns entries into
+release work, and G06 (§8) requires the log to be closed and quiet. The bar is
+high and finite: it covers the jobs the declared scope promises, not every
+idea for a better app.
 
 ## 1. What bug free means
 
@@ -66,7 +81,7 @@ capability and card family.
 
 | Area | Boundary for this release |
 | --- | --- |
-| Free | Scanning, collection access and corrections, basic inventory import/export, single-card listing-photo output — all usable without Collector Tools. |
+| Free | Scanning, collection access and corrections, basic inventory import/export, single-card listing-photo output and Trade Analyzer (an in-memory two-sided trade comparison that never writes ownership) — all usable without Collector Tools. |
 | Paid | Approved $9.99 US base-price non-consumable Collector Tools: batch listing photos and guided centering. Show the localized StoreKit price. No subscription or scan credits. |
 | Pricing service | App-funded paid JustTCG supplies supported history, graded/sealed data and existing exact-price fallbacks with no customer key, through a globally quota-controlled shared cache. Keep current TCGdex/Scryfall/TCGCSV raw-price paths rather than making JustTCG the new primary price source before launch. Active tier, cache, coverage and distribution acceptance remain open. |
 | Storage | On-device continuity required. Live iCloud sync deferred. Do not promise collection restoration after app deletion because a purchase can be restored. |
@@ -375,8 +390,11 @@ confirmation and persistent resolution of interrupted work.
 | S05.03 | Added means the ownership write committed; a later pricing failure cannot become a retry that adds twice. | Not verified |
 | S05.04 | Cancel, replacement card, new session, backgrounding and late responses cannot overwrite a newer choice or receipt. | Not verified |
 | S05.05 | Needs Attention keeps intended work through interruptions and relaunch; successful retry retires the right item exactly once. | Not verified |
+| S05.06 | Trade Analyzer: a trade draft never writes ownership, activity, history or portfolio. Each confirmed card lands once on the side selected at confirmation. Undo, removal, side moves and quantity changes affect exactly the intended line. | Not verified |
+| S05.07 | Trade side totals use the exact eligible-quote rules of S09.01 and S09.05 plus each side's cash. A missing or still-checking price withholds the difference and the cash-to-balance action. Last-known quotes show their age. | Not verified |
+| S05.08 | The trade draft survives tab switches, settings changes and brief backgrounding while the scanner model lives. Late quotes for removed or superseded lines never apply. Clear trade confirms before discarding a populated draft. | Not verified |
 
-*Verification:* `ScannerViewModelTests`, `CardLatchTests`, `UnresolvedScanStoreTests`; mixed-stack and forced-interruption journeys.
+*Verification:* `ScannerViewModelTests`, `CardLatchTests`, `UnresolvedScanStoreTests`; mixed-stack and forced-interruption journeys; J13 for Trade Analyzer ([plan](../plans/trade-analyzer-plan.md)).
 
 ### S06 Browse, artwork and discovery
 
@@ -614,6 +632,7 @@ Record exact results, counts and output. All start **NOT VERIFIED**.
 | J10 | Paid offer → cancel/pending/failure → retry/success → relaunch/restore → refund/revocation; free access and in-session work stay correct. | Not verified |
 | J11 | Network loss, slow responses and background/resume; each task finishes or recovers without forced restart or data cleanup. | Not verified |
 | J12 | Upgrade a copy of an existing collection → verify holdings/history → sustained use → next-day reopen; support links, version/build and diagnostics available. | Not verified |
+| J13 | Trade Analyzer at card-show pace: scan the received card → scan a give stack → remove returned cards, move one side, add cash → Review. Totals and verdict match hand-calculated exact comps, the collection is unchanged, and the draft survives a tab switch. | Not verified |
 
 ## 5. Environments and measurable outcomes
 
@@ -668,8 +687,10 @@ imports and batches need accurate progress and cancel.
 At least two 30-minute physical sessions covering scanning, browsing, edits and
 paid tools (memory, thermals, latency). Five collectors complete the relevant
 journeys without coaching, with a second session including reopen or next-day
-return, on users and devices outside the developer's setup. This defines an
-exercise; it does not authorize contacting testers automatically.
+return, on users and devices outside the developer's setup. Each collector also
+notes any time they reach for another app during the trial, and those notes go
+into the [fallback log](fallback-log.md). This defines an exercise; it does not
+authorize contacting testers automatically.
 
 ## 6. Evidence and defect rules
 
@@ -696,6 +717,32 @@ historical bad records; affected user data needs its own disposition.
 counts, exclusions with reasons, environment, timestamps, catalog/feed revision
 and location. Keep automated, inspected-UI, physical-device and
 live-provider/purchase results distinct.
+
+### Finding intake (amendment 2026-11-24)
+
+Every finding is classified once, when it is recorded, whatever its source:
+everyday use, a tester, a journey run or a review. There are three classes.
+
+| Class | Test | Release effect |
+| --- | --- | --- |
+| **Defect** | Violates a requirement ID (S01–S17) or journey (J01–J13), confirmed by reproduction, a failing applicable test or a deterministic trace through current source. | Blocks G02 until fixed per the rules above. |
+| **Fallback gap** | Someone used another app for a task inside the declared scope because ours was missing something, broken, slow or confusing. Recorded in the [fallback log](fallback-log.md) even when it is also a defect. | Blocks G06 until resolved. Resolution is a fix verified on a build, or a declared limitation **approved by Sean** that changes the claim and stays visible in the support manifest. |
+| **Improvement** | Neither of the above: polish ideas, preferences, out-of-scope capabilities, or unconfirmed review hypotheses. | Goes to the next-release section of the fallback log. Does not block. Reclassify it if it is later confirmed as a defect or causes a fallback. |
+
+Classification never lowers severity. A data, identity, ownership, price,
+payment or privacy harm is a defect even if nobody has hit it yet in use. An
+improvement isn't promoted just because a review found it again.
+
+### Bounded review (amendment 2026-11-24)
+
+From now on, reviews are scoped, not open-ended sweeps of the whole app. Each
+review names the requirement IDs or the journey it covers. It traces that
+workflow end to end and records either a pass with evidence or classified
+findings. A requirement that has passed on the current candidate line is
+reviewed again only when a file listed under its *Code* line, or the shared
+service behind it, changes. The last full pass is the §8 final-candidate run,
+not another review cycle. This keeps the defect bar unchanged and makes the
+finding loop converge.
 
 ## 7. Starting point (2026-11-09)
 
@@ -724,9 +771,9 @@ no averaging a broken paid tool against unrelated passes.
 | G01 Scope matches reality | Manifest, code, installed Release build and marketing agree; no undeclared production/local difference. | **Fail** — manifest unfilled; One Piece Release configuration enabled, device acceptance pending |
 | G02 No known customer defects | All confirmed user-visible violations closed; any owner exception is visible and changes the claim. | **Fail** — S12.05, S15.05, S17.03 |
 | G03 Integrity checks pass | Ownership, identity, durability, import replay, currency, chronology, arithmetic and output invariants pass with no unexplained failures. | Not verified |
-| G04 Every critical journey passes | J01–J12 complete and reconcile on the actual candidate, including recovery and delivered output. | Not verified |
+| G04 Every critical journey passes | J01–J13 complete and reconcile on the actual candidate, including recovery and delivered output. | Not verified |
 | G05 Recognition is useful and safe | Frozen corpora meet error, completion and friction criteria; no deterministic failure hidden in aggregates. | Not verified — corpus not assembled |
-| G06 The experience is polished | Screen states, accessibility, layouts, responsiveness and sustained use pass; external users finish uncoached. | Not verified |
+| G06 The experience is polished | Screen states, accessibility, layouts, responsiveness and sustained use pass; external users finish uncoached. The [fallback log](fallback-log.md) is closed: every in-scope entry is resolved, and 14 consecutive days of the owner's everyday use, together with the external collector sessions, produce no new in-scope entry. | Not verified — fallback log opened 2026-11-24; quiet window not started |
 | G07 Paid and external services work | Configured product, restoration, paid JustTCG with protected shared cache/global quotas, catalog/feed activation and public links have candidate evidence. Pricing passes §2 and S09.07 without a customer provider account/key. Record the separate owner-accepted TCGCSV licensing uncertainty under S17.05 without labeling it licensed. | Not verified — shared-cache, quota, no-key integration and owner risk record/acceptance evidence open |
 | G08 The candidate is traceable | Automated checks, exclusions and device receipts reconcile to the tested source and distributed build; skips never pass as passes. | Not verified |
 | G09 The submission is complete | Archive/signing, privacy metadata, screenshots, descriptions, links, review notes and in-app purchase submission complete and truthful. | Not verified |
@@ -748,13 +795,22 @@ requirement, exposes material data/payment/privacy harm or invalidates the
 declared scope. New features and stylistic preferences go to the next release.
 Once G01–G09 pass, submit.
 
+**Scope growth and the freeze (amendment 2026-11-24).** Before the freeze, a
+new capability enters this release only to close a logged fallback gap within
+the declared jobs, and it arrives with its requirement and journey rows. After
+the freeze, a fallback gap that needs a new capability is an owner decision.
+Either build it, which reopens the affected requirements, journeys and the G06
+quiet window, or record it as a declared limitation **approved by Sean**. It is
+never silently deferred. A new blocking entry restarts the 14-day quiet window.
+Landing a fix does not: the final-candidate run above re-verifies everything.
+
 ## 9. Repository validation — 2026-11-09
 
 Every concrete reference in the contract was checked against the working tree.
 
 | Check | Result |
 | --- | --- |
-| Requirement count | 86 requirements across S01–S17 (4+4+5×6+7+5+5+6+5×5), including the owner-directed commercial pricing amendment S09.07. |
+| Requirement count | 86 requirements across S01–S17 (4+4+5×6+7+5+5+6+5×5), including the owner-directed commercial pricing amendment S09.07. The 2026-11-24 amendment adds S05.06–S05.08 (89 requirements) and J13. |
 | Adoption source files (76) | All exist; additional commercial-pricing references are checked below. |
 | Named test suites (36) | All exist in `TradingCardScannerTests`. |
 | Platforms | `IPHONEOS_DEPLOYMENT_TARGET = 18.0`, `TARGETED_DEVICE_FAMILY = 1,2`; phone portrait only; four iPad orientations in `Info.plist`. |

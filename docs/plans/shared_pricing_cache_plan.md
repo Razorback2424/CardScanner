@@ -28,6 +28,178 @@ free-only/no-StoreKit wording. This JustTCG/Firebase cache design remains a
 proposal with Gates A–C open; the launch requirement does not select Firebase or
 authorize resource creation.
 
+## Launch slice — 2026-11-24 (current build plan)
+
+**Status:** proposed and awaiting the owner decisions listed under
+[Owner actions](#owner-actions-blocking-deployment-not-coding). This section
+is the build plan for launch. It meets every pricing requirement in the
+[launch contract](../release/launch-contract.md#pricing-service-for-launch-mandatory-product-and-licensing-prerequisite)
+and S09.07 with the smallest backend that can satisfy them. The September
+design below stays as the post-launch roadmap. Its warming tiers, repository
+seam, shadow comparison and sampled rollout are **not** launch prerequisites:
+there are no production users to sample yet, and the contract does not
+require any of them.
+
+### Why a transparent proxy is enough
+
+Every JustTCG request in the app already goes through one actor,
+`JustTCGTransport`. It has a single `baseURL` and adds the customer key as
+`x-api-key`. The app calls five request shapes:
+
+| Request | Callers | Use |
+| --- | --- | --- |
+| `GET v1/sets?game=` | `JustTCGV1Client`, `JustTCGV2GradedClient` | Set directory for sealed and graded lookup |
+| `GET v1/cards` (one lookup, 1-year history) | `JustTCGV1Client`, `CardMarketHistoryService` | Detail market history, single lookups |
+| `POST v1/cards` (batch of up to `JustTCGQuota.batchSize`) | `JustTCGV1Client` | Exact-price fallback and refresh |
+| `GET v2/cards` (graded, paginated by cursor) | `JustTCGV2GradedClient`, `CardMarketHistoryService` | Graded listings and graded history |
+
+So the backend is a **caching, quota-governed proxy for exactly these
+paths**. It returns JustTCG's response bodies unchanged and adds a few
+`X-ScanStash-*` headers. The app keeps all of its existing parsing, exact
+identity rules and ledger rules. Only the transport changes, along with the
+Settings copy and the handling of stale responses. This deliberately skips
+the new `PriceRequest`/`PriceResult` type system in §5, because the existing
+clients already enforce exact-variant matching.
+
+### Backend (Firebase, same project as the catalog host)
+
+- **Runtime:** one Cloud Functions 2nd-gen HTTPS function, `justtcgProxy`,
+  written in TypeScript under a new `pricing-proxy/` directory and registered
+  in `firebase.json`. The JustTCG key lives in Secret Manager and never
+  leaves the server.
+- **Who can call it:** requests must carry a valid Firebase App Check token,
+  using the App Attest provider on devices and the debug provider in the
+  simulator. That keeps the proxy from becoming a public JustTCG mirror,
+  which JustTCG's terms prohibit. The app also sends a random per-install ID
+  (`X-ScanStash-Install`), generated locally and not tied to any account. It
+  is used only for per-client throttling, stored as a hash, and deleted after
+  7 days. There is no Firebase Auth.
+- **Path allow-list:** only the four request shapes above, with allow-listed
+  query keys. Anything else gets 404. The batch size is capped at the paid
+  tier's limit.
+- **Cache (Firestore, server-only, client rules deny everything):**
+  - `POST v1/cards` is cached **per item**, keyed by the item's lookup
+    (variant, TCGplayer or card ID, plus the flags). A batch is answered from
+    cache, and only the misses go upstream, as one batch. This is where
+    cross-user reuse actually happens.
+  - Every other request is cached per normalized request: method, path and
+    sorted query, hashed.
+  - TTLs are configuration, not constants. They start at sets 24 h, quotes
+    60 min, history 12 h and genuine no-price 15 min. Provider errors are
+    never cached.
+- **Duplicate suppression:** a Firestore lease per cache key, acquired in a
+  transaction, with the upstream call made outside the transaction. A
+  concurrent miss on the same key gets the stale entry if there is one,
+  otherwise `503` with `Retry-After: 2`. Delivery is at-most-once in normal
+  operation, not exactly-once.
+- **Global quota governor:** Firestore transactional counters for the minute,
+  day and month windows, at 80% of the purchased tier's published limits
+  (the tier table is configuration). The app's existing `interactive` and
+  `background` lanes travel as `X-ScanStash-Lane`. Background work may use at
+  most 60% of each window, so it can never starve a tap. There is also a
+  per-install ceiling per minute and per day.
+- **Provider failures:** honor `Retry-After` on a 429 and open a circuit
+  breaker on repeated 5xx responses or timeouts. If Firestore is unreachable,
+  the proxy fails closed: no upstream call is made.
+- **Stale fallback and licence switch:** a Firestore control document holds
+  `subscriptionActive`. While it is true, quota exhaustion, a 429, an outage
+  or an expired key serves the last cached body with
+  `X-ScanStash-Cache: stale` and its real `X-ScanStash-Fetched-At`. When it is
+  false, nothing stored is served: every request returns `503` with
+  `X-ScanStash-Unavailable: subscription`. This is the contract's rule that
+  stored data is only used while the subscription is active.
+- **Headers on every response:** `X-ScanStash-Cache` (`hit`, `miss` or
+  `stale`) and `X-ScanStash-Fetched-At`. When nothing usable exists, `429`
+  with `Retry-After` maps onto the app's existing rate-limit handling.
+- **Telemetry:** aggregate counters only (hits, misses, stale serves,
+  upstream batches, 429s, 5xx, quota used). No per-card logs tied to an
+  install.
+
+### App changes
+
+1. Read `JUSTTCG_PROXY_BASE_URL` from the xcconfig and Info.plist into
+   `JustTCGTransport.Configuration`. Replace `x-api-key` with the App Check
+   token and the install ID. The Firebase iOS SDK is added only for
+   `FirebaseAppCheck`. It is the app's first Swift package, so measure launch
+   time and binary size before and after.
+2. Replace the client's free-tier ceilings (95 a day, batch 20, a 6.5 s
+   interval) with server-governed behavior. The client ledger becomes a local
+   courtesy cap that mirrors the per-install limit, and the batch size follows
+   the tier (100).
+3. Treat `X-ScanStash-Cache: stale` as `staleFallback`: show the value with
+   its real age and write no `PriceCheckDay` and no `lastSuccessfulCheckAt`
+   (see the ledger table in §6 and contract S09.03). Map
+   `X-ScanStash-Unavailable` to an honest unavailable state.
+4. Retire customer keys. Remove the Settings key field and
+   `PriceVendorCredentials`, and delete any stored key from Keychain on
+   upgrade. Rewrite the Settings, support and privacy copy that says a key
+   is required.
+5. Turn the JustTCG exact-price fallback on for everyone (`usesPriceFallback`
+   is `false` today). The contract lists "existing exact-price fallbacks" as
+   part of the JustTCG service. This raises upstream use, which the quota
+   governor bounds.
+
+### Build status — 2026-11-24
+
+- **Proxy:** built in [`pricing-proxy/`](../../pricing-proxy/README.md). 35 Node tests pass against a stub
+  upstream and an in-memory store, and the code type-checks. The Firestore store and App Check verification
+  have not run: the Firestore emulator needs a Java runtime, and App Check needs launch-time registration.
+  Batches of up to 100 items are split to the plan's batch size upstream.
+- **App:** `JUSTTCG_PROXY_BASE_URL` (empty in every configuration until launch preparation) switches
+  `JustTCGTransport` and `ProductPriceService` to the proxy. In that mode:
+  - no customer key is read and the Settings key controls are hidden;
+  - a saved key is deleted once at launch, and gap filling defaults on;
+  - client limits mirror the proxy's per-install caps, with batches of 100;
+  - a `stale` answer on the background lane is refused, so it never counts as a successful check;
+  - delta cutoffs widen by `PricingProxy.maximumCachedQuoteAge`.
+
+  With the setting empty, the legacy developer key path is unchanged.
+- **Deferred to launch preparation:** the App Attest token. `PricingProxy.appCheckToken()` returns nil until
+  the app is registered for App Check; the Firebase App Check SDK, or a direct App Attest exchange, is added
+  then, with launch time and binary size measured. Also deferred: settings, support and privacy copy beyond
+  the Settings footer.
+
+### Verification (maps to S09.07, J06 and G07)
+
+- **Proxy, Functions emulator:** tests for the path allow-list; rejection of
+  a missing or bad App Check token; per-item batch reuse; a fresh hit never
+  calling upstream; an expired entry refreshing; no-price negative caching;
+  provider errors never overwriting a good entry; 50 simultaneous misses on
+  one key producing one upstream call; each quota window exhausted; the
+  background-lane cap; the per-install cap; a 429 followed by a stale serve;
+  and `subscriptionActive = false` serving nothing.
+- **App:** `URLProtocol`-stubbed transport tests for the headers, stale
+  handling with no success evidence, unavailable mapping, and Keychain key
+  removal on upgrade. Rerun `PricingTests`, `PriceRefreshLifecycleTests`,
+  `QuoteCacheTests` and the per-game pricing suites.
+- **Live (owner plan active):** a fresh install with no key on a physical
+  device. History charts, graded and sealed prices, and refresh all work.
+  Then force exhaustion with a temporarily lowered quota and confirm the app
+  is honest about it. That is J06 and the G07 pricing evidence.
+
+### Owner actions (blocking deployment, not coding)
+
+| # | Decision or action | Recommendation |
+| --- | --- | --- |
+| 1 | Buy the JustTCG paid tier under the app's own account | Starter for launch: 10k a month, 1k a day, 50 a minute, batch 100. The tier is configuration, so upgrading to Professional is a config change once telemetry shows the need. |
+| 2 | Upgrade the Firebase project to the Blaze (pay-as-you-go) plan and set a budget alert | Required for Functions and Secret Manager. It also lifts the Hosting bandwidth cap behind the 2026-11-23 HTTP 509 catalog/price-mirror outage. |
+| 3 | Pick the Firestore region (irreversible) and the Functions region | `us-central1` for both, given a US-only audience and USD pricing. |
+| 4 | Register the app for App Check (App Attest) in the Firebase console | Needs the Apple Team ID and bundle ID. Debug tokens for the simulator stay local and are never committed. |
+| 5 | Approve the privacy-label change | A random install ID, used only for abuse throttling and kept 7 days. App Check attestation data. No account, no collection contents. |
+
+**Timing (owner decision, 2026-11-24):** actions 1 and 2 are paid and happen
+at launch preparation, not before. "Launch preparation" means before the final
+candidate is tested, because G07 and J06 need live paid-plan evidence on that
+build. Until then, the proxy and the app transport are built and verified at
+no cost in the Firebase Emulator Suite, against a stubbed JustTCG upstream. A
+developer's own free key may be used only for local prototyping, never for a
+build that other people use. Actions 3–5 can be decided at any time. Spark
+Hosting's bandwidth cap (the cause of the 2026-11-23 HTTP 509) is a separate
+launch risk that the action-2 upgrade also resolves.
+
+Coding the proxy and the app transport does not wait on these. They gate only
+deployment and live verification.
+
 **CardScanner · Pricing Infrastructure**
 Status: Draft validated, three gates open, warming scope added · Date: 06 September 2026 · Repository reconciliation: 14 September 2026 · Verdict: Proceed after Gate A
 
