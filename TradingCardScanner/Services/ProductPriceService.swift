@@ -109,9 +109,12 @@ actor ProductPriceService {
 
     struct Configuration: Sendable {
         var baseURL = URL(string: "https://api.justtcg.com/v1")!
+        /// When set, requests go to the operator's pricing proxy (its
+        /// `v1/...` paths) and no customer key is used.
+        var proxy: PricingProxy.Endpoint? = PricingProxy.configured
         /// Free tier: 10 requests/minute. Paid tiers raise this, but a client
         /// that paces itself politely is correct on all of them.
-        var minimumRequestInterval: TimeInterval = 6.5
+        var minimumRequestInterval: TimeInterval = PricingProxy.isEnabled ? 2.1 : 6.5
         var timeout: TimeInterval = 20
         var resultLimit = 10
     }
@@ -141,6 +144,7 @@ actor ProductPriceService {
 
     private var apiKey: String? { apiKeyOverride ?? PriceVendorCredentials.key }
     private var hasCredentials: Bool {
+        if configuration.proxy != nil { return true }
         if let apiKeyOverride { return !apiKeyOverride.isEmpty }
         return PriceVendorCredentials.hasKey
     }
@@ -365,8 +369,10 @@ actor ProductPriceService {
         query: [(String, String)],
         lane: JustTCGRequestLane
     ) async throws -> T {
+        let base = configuration.proxy.map { $0.baseURL.appendingPathComponent("v1") }
+            ?? configuration.baseURL
         guard var components = URLComponents(
-            url: configuration.baseURL.appendingPathComponent(path),
+            url: base.appendingPathComponent(path),
             resolvingAgainstBaseURL: false
         ) else {
             throw ProductPriceError.invalidURL
@@ -374,11 +380,14 @@ actor ProductPriceService {
         components.queryItems = query.map { URLQueryItem(name: $0.0, value: $0.1) }
         guard let url = components.url else { throw ProductPriceError.invalidURL }
 
-        guard let key = apiKey else { throw ProductPriceError.missingCredentials }
-
         var request = URLRequest(url: url)
         request.timeoutInterval = configuration.timeout
-        request.setValue(key, forHTTPHeaderField: "x-api-key")
+        if let proxy = configuration.proxy {
+            await PricingProxy.authorize(&request, endpoint: proxy, lane: lane)
+        } else {
+            guard let key = apiKey else { throw ProductPriceError.missingCredentials }
+            request.setValue(key, forHTTPHeaderField: "x-api-key")
+        }
         // Cloudflare fronts this API and rejects a default client User-Agent
         // with error 1010 — a 403 that reads exactly like an authentication
         // failure. `TCGdexService` sets one for the same reason.
@@ -406,6 +415,11 @@ actor ProductPriceService {
                 await budget.recordRateLimit(until: retryAt)
                 throw ProductPriceError.rateLimited(retryAt)
             }
+            throw ProductPriceError.badResponse
+        }
+        // An automatic refresh must not treat a past-TTL proxy answer as a
+        // successful check.
+        if configuration.proxy != nil, lane == .background, PricingProxy.isStale(http) {
             throw ProductPriceError.badResponse
         }
         return try JSONDecoder().decode(T.self, from: data)

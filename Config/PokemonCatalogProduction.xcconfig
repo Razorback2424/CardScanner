@@ -6,6 +6,10 @@ POKEMON_CATALOG_BASE_URL = https:/$()/catalog.scan-stash.com
 POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = catalog.scan-stash.com
 // Shared daily market feed for reviewed product/finish mappings across games.
 TCGCSV_PRICE_BASE_URL = https:/$()/catalog.scan-stash.com/market-prices/v1
+// Operator-funded JustTCG pricing proxy (pricing-proxy/). Leave empty until
+// launch preparation: empty keeps the developer customer-key path; setting it
+// (https, ending in /v1/justtcg) routes all JustTCG traffic through the proxy.
+JUSTTCG_PROXY_BASE_URL =
 // Set these only after the owner-approved public pages are published and
 // verified. Target settings must not override this release configuration.
 CARD_SCANNER_PRIVACY_URL =

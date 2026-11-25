@@ -31,7 +31,11 @@ enum HTTPDateParser {
 /// margin; local freshness and synchronization bookkeeping stay in device time.
 final class JustTCGServerClock: @unchecked Sendable {
     static let shared = JustTCGServerClock()
-    static let deltaSafetyMargin: TimeInterval = 15 * 60
+    /// Through the pricing proxy an answer may come from its shared cache, so
+    /// the margin also covers the oldest cached quote it will serve as fresh.
+    static var deltaSafetyMargin: TimeInterval {
+        15 * 60 + (PricingProxy.isEnabled ? PricingProxy.maximumCachedQuoteAge : 0)
+    }
 
     private let lock = NSLock()
     private var offsetFromDevice: TimeInterval?
@@ -205,14 +209,16 @@ enum JustTCGRequestLane: Sendable, Equatable {
 enum JustTCGQuota {
     /// Documented free tier is 100/day; keep five requests of headroom for
     /// provider-side accounting differences and out-of-app usage.
-    static let dailyHardLimit = 95
+    static var dailyHardLimit: Int { PricingProxy.isEnabled ? 600 : 95 }
     /// Documented free tier is 1,000/month; 900 keeps the same headroom.
-    static let monthlyHardLimit = 900
+    static var monthlyHardLimit: Int { PricingProxy.isEnabled ? 18_000 : 900 }
     /// Background work stops here, leaving 20 for interactive work such as
     /// resolving sealed products and opening marketplace catalog screens.
-    static let backgroundDailyCeiling = 75
-    /// Free tier batch size. One request carries this many variants.
-    static let batchSize = 20
+    static var backgroundDailyCeiling: Int { PricingProxy.isEnabled ? 450 : 75 }
+    /// Free tier batch size. One request carries this many variants. Through
+    /// the pricing proxy (`pricing-proxy/`, which mirrors these per-install
+    /// limits) a batch carries up to 100 and the proxy splits it to the plan.
+    static var batchSize: Int { PricingProxy.isEnabled ? 100 : 20 }
     /// The largest `limit` a list request may ask for. The free plan rejects
     /// anything above this outright — `{"error": "Limit must be between 1 and
     /// 20 for your plan."}` — which failed the whole request rather than
@@ -242,8 +248,11 @@ actor JustTCGTransport {
 
     struct Configuration: Sendable {
         var baseURL = URL(string: "https://api.justtcg.com")!
-        /// Free tier allows 10 requests/minute.
-        var minimumRequestInterval: TimeInterval = 6.5
+        /// When set, requests go to the operator's pricing proxy instead of
+        /// `baseURL` and no customer key is used.
+        var proxy: PricingProxy.Endpoint? = PricingProxy.configured
+        /// Free tier allows 10 requests/minute; the proxy allows 30 per install.
+        var minimumRequestInterval: TimeInterval = PricingProxy.isEnabled ? 2.1 : 6.5
         var timeout: TimeInterval = 25
     }
 
@@ -302,7 +311,7 @@ actor JustTCGTransport {
         lane: JustTCGRequestLane,
         as type: Response.Type = Response.self
     ) async throws -> Response {
-        let request = try buildRequest(path: path, query: query, method: "GET", body: nil)
+        let request = try buildRequest(path: path, query: query, method: "GET", body: nil, lane: lane)
         return try await perform(request, lane: lane)
     }
 
@@ -312,7 +321,7 @@ actor JustTCGTransport {
         _ path: String, query: [(String, String)], lane: JustTCGRequestLane,
         as type: Response.Type = Response.self
     ) async throws -> (value: Response, link: String?) {
-        let request = try buildRequest(path: path, query: query, method: "GET", body: nil)
+        let request = try buildRequest(path: path, query: query, method: "GET", body: nil, lane: lane)
         return try await performPage(request, lane: lane)
     }
 
@@ -324,7 +333,7 @@ actor JustTCGTransport {
         as type: Response.Type = Response.self
     ) async throws -> Response {
         let encoded = try JSONEncoder().encode(body)
-        let request = try buildRequest(path: path, query: query, method: "POST", body: encoded)
+        let request = try buildRequest(path: path, query: query, method: "POST", body: encoded, lane: lane)
         return try await perform(request, lane: lane)
     }
 
@@ -375,6 +384,10 @@ actor JustTCGTransport {
                 "path=\(requestPath) result=\(requestOutcome)"
             )
         }
+        var request = request
+        if let proxy = configuration.proxy {
+            await PricingProxy.authorize(&request, endpoint: proxy, lane: lane)
+        }
         let (data, response) = try await session.data(for: request, delegate: PricingRedirectGuard.shared)
         guard let http = response as? HTTPURLResponse else {
             throw TransportError.badResponse(status: -1)
@@ -400,6 +413,13 @@ actor JustTCGTransport {
         }
         requestOutcome = "http-\(http.statusCode)"
 
+        // An automatic refresh must not record a past-TTL proxy answer as a
+        // successful check; it keeps the prices it already holds instead.
+        if configuration.proxy != nil, lane == .background, PricingProxy.isStale(http) {
+            requestOutcome = "proxy-stale"
+            throw TransportError.badResponse(status: 503)
+        }
+
         serverClock.observe(
             serverDateHeader: http.value(forHTTPHeaderField: "Date")
         )
@@ -420,14 +440,25 @@ actor JustTCGTransport {
         path: String,
         query: [(String, String)],
         method: String,
-        body: Data?
+        body: Data?,
+        lane: JustTCGRequestLane
     ) throws -> URLRequest {
-        guard let key = (apiKeyOverride ?? PriceVendorCredentials.key)?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !key.isEmpty else {
-            throw TransportError.missingCredentials
+        // Through the proxy the operator holds the credential; the request
+        // carries install/lane headers (added in `performPage`) instead.
+        let key: String?
+        if configuration.proxy != nil {
+            key = nil
+        } else {
+            guard let saved = (apiKeyOverride ?? PriceVendorCredentials.key)?
+                .trimmingCharacters(in: .whitespacesAndNewlines),
+                  !saved.isEmpty else {
+                throw TransportError.missingCredentials
+            }
+            key = saved
         }
+        let base = configuration.proxy?.baseURL ?? configuration.baseURL
         guard var components = URLComponents(
-            url: configuration.baseURL.appendingPathComponent(path),
+            url: base.appendingPathComponent(path),
             resolvingAgainstBaseURL: false
         ) else {
             throw TransportError.invalidURL
@@ -441,7 +472,7 @@ actor JustTCGTransport {
         request.httpMethod = method
         request.timeoutInterval = configuration.timeout
         request.httpBody = body
-        request.setValue(key, forHTTPHeaderField: "x-api-key")
+        if let key { request.setValue(key, forHTTPHeaderField: "x-api-key") }
         // Cloudflare fronts this API and rejects a default client User-Agent
         // with error 1010 — a 403 that reads exactly like an auth failure.
         request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")

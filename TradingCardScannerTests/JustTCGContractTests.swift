@@ -4546,3 +4546,117 @@ private final class PricingRedirectServer: @unchecked Sendable {
         connection.send(content: Data((headers + body).utf8), completion: .contentProcessed { _ in connection.cancel() })
     }
 }
+
+// MARK: - Operator pricing proxy
+
+/// The launch pricing path: JustTCG through the operator's proxy, with no
+/// customer key (launch contract S09.07 / J06).
+final class PricingProxyTransportTests: XCTestCase {
+    private let endpoint = PricingProxy.Endpoint(
+        baseURL: URL(string: "https://proxy.example/justtcgProxy/v1/justtcg")!,
+        installID: "11111111-2222-3333-4444-555555555555"
+    )
+
+    override func tearDown() {
+        PricingProxyStubURLProtocol.setHandler(nil)
+        super.tearDown()
+    }
+
+    private func makeTransport() throws -> JustTCGTransport {
+        let sessionConfiguration = URLSessionConfiguration.ephemeral
+        sessionConfiguration.protocolClasses = [PricingProxyStubURLProtocol.self]
+        var configuration = JustTCGTransport.Configuration()
+        configuration.proxy = endpoint
+        configuration.minimumRequestInterval = 0
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "pricing-proxy-tests-\(UUID().uuidString)"))
+        return JustTCGTransport(configuration: configuration, session: URLSession(configuration: sessionConfiguration),
+                                ledger: .init(defaults: defaults), pacer: .init())
+    }
+
+    private func respond(cache: String, body: String = #"{"data":[]}"#) {
+        PricingProxyStubURLProtocol.setHandler { request in
+            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: [
+                "Content-Type": "application/json",
+                "X-ScanStash-Cache": cache,
+            ])!
+            return (response, Data(body.utf8))
+        }
+    }
+
+    func testProxyBaseURLMustBeSecureAndEndInTheProxyPrefix() {
+        XCTAssertNotNil(PricingProxy.baseURL(from: "https://us-central1-x.cloudfunctions.net/justtcgProxy/v1/justtcg"))
+        XCTAssertNil(PricingProxy.baseURL(from: ""))
+        XCTAssertNil(PricingProxy.baseURL(from: "https://example.com/justtcgProxy"))
+        XCTAssertNil(PricingProxy.baseURL(from: "https://example.com/v1/justtcg?key=1"))
+        XCTAssertNil(PricingProxy.baseURL(from: "http://example.com/v1/justtcg"))
+        // The local emulator is plain HTTP and allowed only in debug builds.
+        XCTAssertNotNil(PricingProxy.baseURL(from: "http://127.0.0.1:5001/demo/us-central1/justtcgProxy/v1/justtcg"))
+    }
+
+    func testRequestsGoToTheProxyWithoutACustomerKey() async throws {
+        respond(cache: "miss")
+        let transport = try makeTransport()
+        let _: JustTCGBatchResponse = try await transport.post(
+            "v1/cards", query: [("include_price_history", "false")],
+            body: JustTCGBatchRequest(items: [.variantID("variant-1")], includePriceHistory: false, updatedAfter: nil),
+            lane: .background
+        )
+        let request = try XCTUnwrap(PricingProxyStubURLProtocol.requests().first)
+        XCTAssertEqual(request.url?.absoluteString,
+                       "https://proxy.example/justtcgProxy/v1/justtcg/v1/cards?include_price_history=false")
+        XCTAssertNil(request.value(forHTTPHeaderField: "x-api-key"))
+        XCTAssertEqual(request.value(forHTTPHeaderField: "X-ScanStash-Install"), endpoint.installID)
+        XCTAssertEqual(request.value(forHTTPHeaderField: "X-ScanStash-Lane"), "background")
+    }
+
+    func testAStaleProxyAnswerIsNeverAnAutomaticRefreshCheck() async throws {
+        respond(cache: "stale")
+        let transport = try makeTransport()
+        do {
+            let _: JustTCGBatchResponse = try await transport.get("v1/cards", query: [("variantId", "v")], lane: .background)
+            XCTFail("A background refresh must not accept data past the proxy's freshness window")
+        } catch JustTCGTransport.TransportError.badResponse(let status) {
+            XCTAssertEqual(status, 503)
+        }
+        // Something the user is looking at may still show it, with its real age.
+        let shown: JustTCGBatchResponse = try await transport.get("v1/cards", query: [("variantId", "v")], lane: .interactive)
+        XCTAssertTrue(shown.data.isEmpty)
+        XCTAssertEqual(PricingProxyStubURLProtocol.requests().last?.value(forHTTPHeaderField: "X-ScanStash-Lane"), "interactive")
+    }
+}
+
+private final class PricingProxyStubURLProtocol: URLProtocol, @unchecked Sendable {
+    typealias Handler = (URLRequest) -> (HTTPURLResponse, Data)
+    private static let lock = NSLock()
+    private static var handler: Handler?
+    private static var captured: [URLRequest] = []
+
+    static func setHandler(_ value: Handler?) {
+        lock.lock(); defer { lock.unlock() }
+        handler = value
+        captured = []
+    }
+
+    static func requests() -> [URLRequest] {
+        lock.lock(); defer { lock.unlock() }
+        return captured
+    }
+
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {
+        Self.lock.lock()
+        Self.captured.append(request)
+        let handler = Self.handler
+        Self.lock.unlock()
+        guard let handler else {
+            client?.urlProtocol(self, didFailWithError: URLError(.badServerResponse))
+            return
+        }
+        let (response, data) = handler(request)
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: data)
+        client?.urlProtocolDidFinishLoading(self)
+    }
+    override func stopLoading() {}
+}

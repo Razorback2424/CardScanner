@@ -80,5 +80,15 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": [
+    {
+      "source": "pricing-proxy",
+      "codebase": "pricing",
+      "runtime": "nodejs22",
+      "ignore": ["node_modules", "test", ".gitignore", "*.local"],
+      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
+    }
+  ],
+  "firestore": {"rules": "pricing-proxy/firestore.rules"}
 }

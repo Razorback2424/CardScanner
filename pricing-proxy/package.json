@@ -1,0 +1,21 @@
+{
+  "name": "scanstash-pricing-proxy",
+  "private": true,
+  "description": "App Check–protected, cached, quota-governed JustTCG proxy for Card Scanner.",
+  "type": "module",
+  "main": "lib/index.js",
+  "engines": { "node": "22" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --experimental-strip-types --no-warnings --test test/*.test.ts"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.8.0"
+  }
+}

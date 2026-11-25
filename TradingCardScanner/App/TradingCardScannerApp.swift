@@ -17,6 +17,8 @@ struct TradingCardScannerApp: App {
     init() {
         CollectionWriteSerializer.enforcesOwnershipRule =
             ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil
+        // Proxy builds: gap filling on by default; retire any saved customer key.
+        PricingProxy.prepareAtLaunch()
         // Catalog registration is the slower half of launch preparation; start
         // it now rather than when the first frame schedules the launch task.
         PerformanceSignpost.measureLaunch("Launch.startCatalogPreparation") {
