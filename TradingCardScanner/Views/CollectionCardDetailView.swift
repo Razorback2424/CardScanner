@@ -42,8 +42,10 @@ struct CollectionDetailQuantityState {
         displayedQuantity(for: input)
     }
 
-    static func validateIntent(observed: Int, refreshed: Int) throws {
-        guard observed == refreshed else { throw CollectionStoreError.staleQuantity }
+    func validatedQuantity(for input: Input, observed: Int) throws -> Int? {
+        guard let saved = savedQuantity(for: input) else { return nil }
+        guard observed == saved else { throw CollectionStoreError.staleQuantity }
+        return saved
     }
 
     @discardableResult
@@ -1611,19 +1613,14 @@ private struct CollectionCardDetailContent: View {
             var outcome = "superseded"
             defer { PerformanceSignpost.endInterval("CardDetail.quantityWrite", signpost, outcome) }
             do {
-                let expectedCurrent: Int
-                if let saved = quantityState.savedQuantity(for: input) {
-                    expectedCurrent = saved
-                } else {
+                if quantityState.savedQuantity(for: input) == nil {
                     await refreshDisplayedQuantity(for: input)
                     guard generation.isCurrent(token), quantityInput == input else { return }
-                    guard let refreshedQuantity = quantityState.savedQuantity(for: input) else {
-                        outcome = "unavailable"
-                        errorMessage = "The current quantity could not be loaded. Try again in a moment."
-                        return
-                    }
-                    try CollectionDetailQuantityState.validateIntent(observed: observedQuantity, refreshed: refreshedQuantity)
-                    expectedCurrent = refreshedQuantity
+                }
+                guard let expectedCurrent = try quantityState.validatedQuantity(for: input, observed: observedQuantity) else {
+                    outcome = "unavailable"
+                    errorMessage = "The current quantity could not be loaded. Try again in a moment."
+                    return
                 }
                 let writer = await CollectionDetailWriter.makeBackground(modelContainer: container)
                 let savedQuantity = try await CollectionExclusiveWrites.retryingIfRequired {
@@ -4502,7 +4499,7 @@ enum CollectionArtworkStore {
 
     /// A partial quantity correction can legitimately map two collection keys
     /// to the same local image. Delete the file only after the row being changed
-    /// has been saved and no remaining override points at it.
+    /// has been saved and no live or restorable position points at it.
     @discardableResult
     static func removeIfUnreferenced(_ filename: String?, in context: ModelContext) -> Bool {
         guard let filename, !filename.isEmpty else { return true }
@@ -4518,6 +4515,15 @@ enum CollectionArtworkStore {
                 )
             )
             guard references == 0, legacyReferences == 0 else { return true }
+            let removed = CollectionActivityKind.removed.rawValue
+            let cutoff = Date.now.addingTimeInterval(-CollectionActivity.restoreWindow)
+            let recentRemovals = try context.fetch(FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { $0.kindRaw == removed && $0.occurredAt >= cutoff }
+            ))
+            let decoder = JSONDecoder()
+            guard !recentRemovals.contains(where: {
+                ArtworkOrphanSweep.removalArtworkFilename(in: $0, decoder: decoder) == filename
+            }) else { return true }
             remove(filename: filename)
             return true
         } catch {

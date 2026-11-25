@@ -1573,7 +1573,7 @@ final class VariantResolverTests: XCTestCase {
                 finish: "Reverse Holo",
                 resolution: .uniqueInCatalog
             ),
-            "Reverse Holo · Only variant printed"
+            "Reverse Holo · Only finish listed"
         )
         XCTAssertEqual(
             VariantProvenancePresentation.text(

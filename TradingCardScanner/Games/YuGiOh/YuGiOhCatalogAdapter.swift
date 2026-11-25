@@ -10,6 +10,13 @@ extension YuGiOhEdition {
     }
 }
 
+extension YuGiOhCatalog.Printing {
+    var browseVariants: [PhysicalVariant] {
+        guard explicitSelectionSupported else { return [] }
+        return editions.map { $0 == .limited && hasDuelTerminalStamp ? YuGiOhEdition.duelTerminalVariant : $0.variant }
+    }
+}
+
 extension YuGiOhCatalog {
     var runtime: CardGameRuntime { YuGiOhGameRuntime(catalog: self).runtime }
 

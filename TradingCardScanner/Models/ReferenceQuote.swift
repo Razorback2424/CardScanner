@@ -76,6 +76,10 @@ final class ReferenceQuote {
         return lastConfirmedMissAt > (retrievedAt ?? .distantPast)
     }
 
+    func hasConfirmedMiss(for price: NormalizedPrice) -> Bool {
+        source == price.source && lastConfirmedMissAt.map { $0 > price.fetchedAt } == true
+    }
+
     init(
         key: String,
         game: CardGame,

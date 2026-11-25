@@ -20,6 +20,7 @@ final class ScannedGradedResolverTests: XCTestCase {
                 resolved: .init(variant: finish, resolution: .userConfirmed), pokemonPrintRun: nil,
                 options: [], gradedOutcome: nil)
             let outcome = await coordinator.refresh(coordinator.present(scan))
+            await coordinator.flushReferenceWrites()
             if finish == nil {
                 XCTAssertEqual(outcome, .failed(.gradedFinishUnresolved))
                 XCTAssertEqual(try container.mainContext.fetchCount(FetchDescriptor<ReferenceQuote>()), 0)

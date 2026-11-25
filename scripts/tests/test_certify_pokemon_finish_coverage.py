@@ -953,7 +953,7 @@ class PokemonFinishCoverageBatchTests(unittest.TestCase):
         self.assertEqual(comparison["ex15-1"]["status"], "conflict")
         self.assertEqual(comparison["ex15-1"]["market"], ["holo"])
 
-def test_ecard_holo_title_accepts_only_the_same_number_and_holo_lane(self):
+    def test_ecard_holo_title_accepts_only_the_same_number_and_holo_lane(self):
         card = {"name": "Ampharos", "number": "H01", "checklist": ["holo"]}
         market = {"productId": 83537, "name": "Ampharos (H1)", "number": "H01/H32",
                   "subtypes": ["Holofoil"]}

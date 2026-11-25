@@ -720,6 +720,33 @@ final class UnverifiedReportTests: XCTestCase {
         XCTAssertEqual(rows.first { !$0.isUnverified }?.variantResolution, .linkedFromReport)
     }
 
+    func testReconcilerRetriesUnavailableLookupAtTheSameRevision() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let writer = await ScannerCollectionWriter.makeBackground(modelContainer: container)
+        let base = try ProductionRowFixtures.pokemonCard()
+        let updated = try eeveeWithHolo()
+        let report = knownReport(for: base, stamps: [])
+        let legacyReport = knownReport(for: base, stamps: [])
+        _ = try await writer.addUnverified(report: report, baseCard: base)
+        _ = try await writer.addUnverified(report: legacyReport, baseCard: base)
+        let pending = try await writer.pendingReports()
+        let legacy = try XCTUnwrap(pending.first { $0.reportID == legacyReport.reportID.uuidString.lowercased() })
+        try await writer.recordReportEvaluation(reportID: legacyReport.reportID,
+            expectedReportJSON: legacy.reportJSON, catalogRevision: 2, state: .waiting)
+
+        let offline = UnverifiedReportReconciler(writer: writer, baseCard: { _ in nil }, unknownSetMatch: { _ in nil })
+        let unavailable = try await offline.run(catalogRevision: 2)
+        XCTAssertEqual(unavailable, .init())
+        let awaiting = try await writer.pendingReports()
+        let fresh = try XCTUnwrap(awaiting.first { $0.reportID == report.reportID.uuidString.lowercased() })
+        XCTAssertNil(UnverifiedReport.decode(fresh.reportJSON)?.lastEvaluatedCatalogRevision)
+
+        let online = UnverifiedReportReconciler(writer: writer, baseCard: { _ in updated }, unknownSetMatch: { _ in nil })
+        let recovered = try await online.run(catalogRevision: 2)
+        XCTAssertEqual(Set(recovered.linked), [report.reportID, legacyReport.reportID])
+    }
+
     // MARK: - Review
 
     func testCollectorConfirmsALinkOnlyToAValidPrintingAndFinish() async throws {

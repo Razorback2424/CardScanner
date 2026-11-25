@@ -1570,6 +1570,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
                 physicalQuantity: 1, logicalQuantity: 1, isLogicalConflict: false, treatments: [])
             var state = CollectionDetailQuantityState()
             let observed = state.expectedQuantity(for: input)
+            XCTAssertNil(try state.validatedQuantity(for: input, observed: observed))
             // The initial read is pending while a sibling adds a separate row.
             await Task.yield()
             let sibling = ModelContext(context.container)
@@ -1587,15 +1588,23 @@ final class CollectionActivityHistoryTests: XCTestCase {
             state.update(live, for: input)
             XCTAssertEqual(live, 5)
             XCTAssertThrowsError(try CollectionWriteSerializer.perform(container: context.container, timeout: .mainThread) {
-                try CollectionDetailQuantityState.validateIntent(observed: observed, refreshed: live)
-                return try CollectionStore(context: $0).setQuantity(target, forCollectionKey: mutation.collectionKey, expectedCurrent: live)
-            })
+                let validated = try state.validatedQuantity(for: input, observed: observed)
+                let expected = try XCTUnwrap(validated)
+                return try CollectionStore(context: $0).setQuantity(target,
+                    forCollectionKey: mutation.collectionKey, expectedCurrent: expected)
+            }) { error in
+                guard case CollectionStoreError.staleQuantity = error else {
+                    return XCTFail("Expected the newer read to reject the old intent, got \(error)")
+                }
+            }
             // Two subsequent taps use the refreshed receipt; the second write
             // races a stale absolute editor and must leave that editor rejected.
             for count in [6, 7] {
                 let saved = try CollectionWriteSerializer.perform(container: context.container, timeout: .mainThread) {
-                    try CollectionStore(context: $0).setQuantity(count, forCollectionKey: mutation.collectionKey,
-                        expectedCurrent: state.expectedQuantity(for: input))
+                    let expected = try XCTUnwrap(state.validatedQuantity(for: input,
+                        observed: state.expectedQuantity(for: input)))
+                    return try CollectionStore(context: $0).setQuantity(count,
+                        forCollectionKey: mutation.collectionKey, expectedCurrent: expected)
                 }
                 state.update(saved, for: input)
             }
@@ -1618,7 +1627,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
         let reader = CollectionDetailQuantityReader(modelContainer: context.container)
         let value = try await reader.logicalQuantity(forAnyKey: mutation.collectionKey, magicTreatmentIDsRaw: [])
         let read = try XCTUnwrap(value)
-        try CollectionDetailQuantityState.validateIntent(observed: 1, refreshed: read)
+        XCTAssertEqual(read, 1)
         _ = try CollectionWriteSerializer.perform(container: context.container, timeout: .mainThread) {
             try CollectionStore(context: $0).setQuantity(5, forCollectionKey: mutation.collectionKey, expectedCurrent: 1)
         }

@@ -1,4 +1,5 @@
 import copy
+import gzip
 import io
 import json
 import os
@@ -11,6 +12,12 @@ from urllib.error import HTTPError, URLError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import market_price_feeds as feeds
+
+
+def response_body(body, encoding=None):
+    response = io.BytesIO(body)
+    response.headers = {"Content-Encoding": encoding} if encoding else {}
+    return response
 
 
 class MarketPriceFeedTests(unittest.TestCase):
@@ -210,7 +217,7 @@ class MarketPriceFeedTests(unittest.TestCase):
     def test_http_reads_retry_transient_timeouts_and_server_errors(self):
         with patch.object(feeds, "build_opener") as opener, patch.object(feeds.time, "sleep") as pause:
             opener.return_value.open.side_effect = [URLError(TimeoutError()),
-                HTTPError("https://feed.test", 503, "temporary", {}, None), io.BytesIO(b"valid")]
+                HTTPError("https://feed.test", 503, "temporary", {}, None), response_body(b"valid")]
             self.assertEqual(feeds.read_http("https://feed.test"), b"valid")
             self.assertEqual(opener.return_value.open.call_count, 3)
             self.assertEqual([call.args[0] for call in pause.call_args_list], [1, 2])
@@ -235,10 +242,26 @@ class MarketPriceFeedTests(unittest.TestCase):
             self.assertIsNone(feeds.read_http("https://feed.test", absent_ok=True))
             pause.assert_not_called()
         with patch.object(feeds, "build_opener") as opener, patch.object(feeds.time, "sleep") as pause:
-            opener.return_value.open.return_value = io.BytesIO(b"too large")
+            opener.return_value.open.return_value = response_body(b"too large")
             with self.assertRaises(ValueError):
                 feeds.read_http("https://feed.test", maximum=2)
             pause.assert_not_called()
+
+    def test_http_requests_gzip_and_limits_decoded_bytes(self):
+        raw = b"catalog " * 1024
+        encoded = gzip.compress(raw)
+        with patch.object(feeds, "build_opener") as opener:
+            opener.return_value.open.side_effect = [
+                response_body(encoded, "gzip"), response_body(encoded, "gzip"),
+                response_body(encoded, "br"),
+            ]
+            self.assertEqual(feeds.read_http("https://feed.test", maximum=len(raw)), raw)
+            request = opener.return_value.open.call_args.args[0]
+            self.assertEqual(request.get_header("Accept-encoding"), "gzip")
+            with self.assertRaisesRegex(ValueError, "byte limit"):
+                feeds.read_http("https://feed.test", maximum=len(raw) - 1)
+            with self.assertRaisesRegex(ValueError, "Unsupported.*encoding"):
+                feeds.read_http("https://feed.test")
 
     def test_invalid_prices_duplicate_lanes_foreign_products_and_partial_exports_fail(self):
         original = self.prices["results"][0]

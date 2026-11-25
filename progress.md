@@ -1,3 +1,85 @@
+# 2026-11-24 — Production Hosting transfer
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records the
+10.5 GB Hosting Usage total, repeated production downloads during successful
+price publishes, and a bandwidth reduction for catalog and feed downloads.
+The focused offline suites passed 44 cases. Both readers preserved exact
+payload bytes in a compressed HTTP fixture. Firebase still returned HTTP
+509 on both public domains with Cloud Billing disabled.
+
+# 2026-11-24 — Relative centering inset trial
+
+One [audit trial](docs/audits/release-stability-ledger.md#centering-accuracy-investigation)
+ranked Vision rectangles by their normalized inset from the card edge.
+Starting Town and the three other failing development references had unchanged
+geometry. Three prior analyzer passes regressed, so the candidate was reverted.
+The production catalog pointer and market-feed marker still returned HTTP 509
+on both hosting domains.
+
+# 2026-11-24 — Collection quantity under concurrent changes
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records a
+quantity edit that could replace newly acquired copies if the newer read
+finished between the tap and the queued write. Detail now validates the
+write against the count observed at the tap. The signed ownership,
+continuity, rendered detail and activity suites passed all 142 cases.
+
+# 2026-11-24 — Portfolio history after a clock correction
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records a
+reproduced future daily close replacing the live history point and inflating
+market movement. History and launch presentation now respect the current
+clock. The persisted closes remain available at their normal boundary.
+The signed history, replay, ledger and opening run passed 241 cases with
+one opt-in performance skip.
+
+# 2026-11-24 — Catalog activation and delayed pricing saves
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records a
+reproduced race between a catalog mapping replacement and a delayed first
+quote save. The serialized checkpoint now checks the active mapping before
+writing the amount and portfolio observation. The signed pricing and
+structural write run passed 287 cases with eight opt-in skips. Read-only
+production checks confirmed HTTP 509, Cloud Billing disabled, and the
+Firebase Hosting API enabled. The owner deferred further centering work
+and specified the outer printed frame as the measurement reference.
+
+# 2026-11-24 — Release-stability blockers and verification
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records the
+remaining centering and live-delivery blockers. The signed broad regression
+resume passed 1,757 cases with six skips. All 20 Magic publisher tests and
+16 opening tests passed after their focused repairs, and the catalog recovery
+banner rendered legibly at the largest accessibility text size. Production
+centering replay and raw-photo boundary checks found discrepancies in the
+retained references. The accuracy gate remains open. Production catalog
+and market-feed endpoints still returned HTTP 509 on recheck.
+
+# 2026-11-23 — Release-stability audit repairs and verification
+
+The [audit ledger](docs/audits/release-stability-ledger.md) records the
+isolated work from `5800704b`. Focused checks verified restoration of
+legacy artwork after removal, withheld trade comparisons while quotes are
+incomplete, and retained last-known scan quotes when Browse has confirmed a
+miss. The Yu-Gi-Oh! publisher compiles again and both native and app-side
+checks passed. Camera tests now model the readiness race, the ProfileLocal
+scheme loads the existing StoreKit fixture, and bundled Pokémon tests check
+the signed package revision.
+
+The simulator Release build passed. Offline script and package results,
+signed simulator results and the StoreKit skip are in the ledger. The
+previous centering initial-guide failure reproduced, and production catalog
+and feed requests returned HTTP 509 from both public origins. Review and
+release gates remain open.
+
+# 2026-11-23 — Release-stability audit baseline
+
+The [audit ledger](docs/audits/release-stability-ledger.md) maps the source
+and workflow checkpoints from `5800704b`. The offline baseline found a
+Python indentation error that blocked discovery of the entire Pokémon
+finish-certification test module. The corrected module passed all 56 tests,
+with the broad script suite scheduled for a rerun.
+
 # 2026-11-23 — Production review pricing fixes
 
 Fixes for the eight code findings in the `c624c506` production review:

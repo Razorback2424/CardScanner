@@ -185,10 +185,11 @@ public struct MagicCatalogFilesystemPublisher: Sendable {
         ]
         for (name, data) in objects {
             let path = releaseDirectory.appendingPathComponent(name)
-            if let existing = try? Data(contentsOf: path), existing != data {
-                throw MagicCatalogPublisherError.immutableRevisionConflict(revision)
-            }
-            if !FileManager.default.fileExists(atPath: path.path) {
+            if FileManager.default.fileExists(atPath: path.path) {
+                guard let existing = try? Data(contentsOf: path), existing == data else {
+                    throw MagicCatalogPublisherError.immutableRevisionConflict(revision)
+                }
+            } else {
                 try data.write(to: path, options: .atomic)
             }
         }

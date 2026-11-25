@@ -89,7 +89,7 @@ jobs:
       - name: Read the active Magic production pointer
         run: |
           active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
-          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+          if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
             "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
@@ -258,7 +258,7 @@ jobs:
       - name: Read the active Magic production pointer
         run: |
           active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
-          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+          if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
             "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
@@ -273,7 +273,7 @@ jobs:
       - name: Read the active Pokémon production pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
-          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+          if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
             "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then

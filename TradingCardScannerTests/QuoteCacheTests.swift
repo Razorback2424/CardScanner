@@ -533,6 +533,38 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertEqual(result.display.amount, 12.34)
     }
 
+    func testPriceCheckKeepsQuoteDisprovedByBrowseAsLastKnownUntilNewEvidence() async throws {
+        let context = try makeContext()
+        let cache = QuoteCache(context: context)
+        let scan = priceCheckScan()
+        let checkedAt = Date.now
+        let oldQuote = quote(12.34, at: checkedAt.addingTimeInterval(-120))
+        let refreshed = quote(16.50, at: checkedAt)
+        let coordinator = PriceCheckCoordinator(context: context,
+            refreshProvider: StubPriceCheckProvider(outcome: .quote(oldQuote)))
+        let key = coordinator.quoteKey(for: scan)
+        cache.store(oldQuote, game: key.game, printingID: key.printingID, variantID: key.variantID)
+        cache.recordConfirmedMiss(.init(source: .tcgplayer, checkedAt: checkedAt.addingTimeInterval(-60)), key: key)
+        try context.save()
+
+        let initial = coordinator.present(scan)
+        XCTAssertEqual(initial.display.amount, 12.34)
+        XCTAssertEqual(initial.quoteState, .lastKnown(.noExactPrice))
+        XCTAssertTrue(initial.shouldAutoRefresh)
+        let retry = await coordinator.refresh(initial)
+        XCTAssertEqual(retry, .failed(.noExactPrice))
+
+        let live = PriceCheckCoordinator(context: context,
+            refreshProvider: StubPriceCheckProvider(outcome: .quote(refreshed)))
+        let outcome = await live.refresh(initial)
+        XCTAssertEqual(outcome, .quote(refreshed))
+        await live.flushReferenceWrites()
+        let reopened = PriceCheckCoordinator(context: ModelContext(context.container)).present(scan)
+        XCTAssertEqual(reopened.display.amount, 16.50)
+        XCTAssertEqual(reopened.quoteState, .current)
+        XCTAssertFalse(reopened.shouldAutoRefresh)
+    }
+
     func testPriceCheckDoesNotRefetchAQuoteAlreadyReturnedByCardResolution() throws {
         let context = try makeContext()
         let card = TCGdexPricing(

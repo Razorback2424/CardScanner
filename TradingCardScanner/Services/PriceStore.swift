@@ -1208,6 +1208,12 @@ struct PriceStore {
             treatmentIDs: treatmentIDs
         )
         if enqueue(keys: [key], { fresh in
+            // Catalog activation can replace the mapping before a staged
+            // receipt commits, even if there was no previous price to withdraw.
+            if case let .price(price) = lookup,
+               !CollectionStore.acceptsCatalogPrice(price, game: game, key: key, in: fresh.context.container) {
+                return
+            }
             // Quote provenance stays in fetchedAt. At a delayed checkpoint,
             // compare clock skew against the actual write time, not an older
             // retrieval time that would make a valid newer row look future-dated.

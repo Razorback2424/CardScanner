@@ -546,6 +546,11 @@ final class PriceCheckCoordinator {
         if case .unavailable(nil)? = lookup {
             return .failed(.providerUnavailable)
         }
+        let key = quoteKey(for: result.resolvedScan)
+        let cached = cachedQuote(for: key)
+        if let price = lookup?.usablePrice, cached?.hasConfirmedMiss(for: price) == true {
+            return .failed(.noExactPrice)
+        }
         if providerResult.origin == .primary, let lookup, let price = lookup.usablePrice, price.source != .justTCG {
             capturePrimaryQuote?(lookup)
         }
@@ -556,7 +561,8 @@ final class PriceCheckCoordinator {
                TCGCSVPriceMirror.canServe(source: previous.source, capturedAt: previous.fetchedAt, now: now()) {
                 // A successful check can still return older upstream data.
                 // Preserve the better quote while the view records this new check.
-                outcome = issue.map { .lastKnown(result.quote, $0) } ?? .quote(result.quote)
+                let retentionIssue = issue ?? (cached?.hasConfirmedMiss(for: previous) == true ? .noExactPrice : nil)
+                outcome = retentionIssue.map { .lastKnown(result.quote, $0) } ?? .quote(result.quote)
             }
         }
         let successfulQuote: PriceLookup?
@@ -566,7 +572,6 @@ final class PriceCheckCoordinator {
         }
         if let quote = successfulQuote,
            case .price = quote {
-            let key = quoteKey(for: result.resolvedScan)
             let completedAt = now()
             captureSuccessfulCheckAt?(completedAt)
             storeReferenceQuote(
@@ -641,6 +646,11 @@ final class PriceCheckCoordinator {
 
     typealias QuoteKey = CatalogQuoteKey
 
+    private func cachedQuote(for key: QuoteKey) -> ReferenceQuote? {
+        cache.quote(game: key.game, printingID: key.printingID,
+                    variantID: key.variantID, treatmentIDs: key.treatmentIDs)
+    }
+
     struct TradeRefreshKey: Hashable, Sendable {
         let quote: QuoteKey
         let slab: GradedSlabEvidence?
@@ -665,11 +675,12 @@ final class PriceCheckCoordinator {
         _ scan: ResolvedScan, key: QuoteKey, quote: PriceLookup, retrievedAt: Date,
         quoteState: PriceCheckQuoteState, shouldAutoRefresh: Bool = true
     ) -> PriceCheckResult {
-        let cached = cache.quote(game: key.game, printingID: key.printingID,
-            variantID: key.variantID, treatmentIDs: key.treatmentIDs)
+        let cached = cachedQuote(for: key)
+        let confirmedMiss = quote.usablePrice.map { cached?.hasConfirmedMiss(for: $0) == true } ?? false
         var result = PriceCheckResult(resolvedScan: scan, quote: quote,
             checkedAt: cached?.lastCheckedAt ?? retrievedAt,
-            quoteState: quoteState, shouldAutoRefresh: shouldAutoRefresh)
+            quoteState: confirmedMiss ? .lastKnown(.noExactPrice) : quoteState,
+            shouldAutoRefresh: shouldAutoRefresh || confirmedMiss)
         result.lastSuccessfulCheckAt = cached?.lastSuccessfulCheckAt
         result.checkTimeIsRetrievalEvidence = result.lastSuccessfulCheckAt == nil
         result.refreshFailed = cached?.lastFailureAt != nil
