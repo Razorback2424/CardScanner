@@ -32,6 +32,7 @@ SITE_ROOT = "publisher/site"
 PRESERVED_POINTERS = ("v1/current.json", "magic/v1/current.json", "yugioh/v1/current.json",
                       "lorcana/v1/current.json", "market-prices/v1/index.json")
 ONE_PIECE_POINTER = "one-piece/v1/current.json"
+MARKET_SCOPES = ("one-piece/v1/market-price-scope.json", "yugioh/v1/market-price-scope.json")
 # Workflows that deploy the shared site under the scanstash-catalog-production-hosting lock.
 SHARED_SITE_WORKFLOWS = ("one-piece-catalog.yml", "magic-catalog.yml", "pokemon-catalog.yml", "yugioh-catalog.yml")
 DIGEST = re.compile(r"[0-9a-f]{64}\Z")
@@ -110,7 +111,7 @@ def preservation_problems(site, live_fetch):
 def readback_problems(site, revision, live_fetch_with_headers):
     """Compare every staged pointer with each production origin, as the workflow does."""
     problems = []
-    paths = (ONE_PIECE_POINTER, f"one-piece/v1/releases/{revision}/catalog-release.json") + PRESERVED_POINTERS
+    paths = (ONE_PIECE_POINTER, f"one-piece/v1/releases/{revision}/catalog-release.json") + PRESERVED_POINTERS + MARKET_SCOPES
     stamp = int(time.time())
     for origin in ORIGINS:
         for relative in paths:
@@ -126,7 +127,7 @@ def readback_problems(site, revision, live_fetch_with_headers):
             found = []
             if body != expected.read_bytes():
                 found.append(f"{origin}/{relative} bytes differ")
-            elif relative == ONE_PIECE_POINTER and "no-cache" not in cache:
+            elif relative in (ONE_PIECE_POINTER, *MARKET_SCOPES) and "no-cache" not in cache:
                 found.append(f"{origin}/{relative} lacks no-cache")
             elif relative.startswith("one-piece/v1/releases/") and not (
                     "max-age=31536000" in cache and "immutable" in cache):
@@ -226,6 +227,8 @@ def main(argv=None):
         else:
             shutil.copyfile(envelope, immutable)
         shutil.copyfile(envelope, destination / "current.json")
+        run(["python3", "scripts/market_price_feeds.py", "write-catalog-scopes", "--site-root", SITE_ROOT,
+             "--game", "one-piece"], cwd=checkout)
         run(["bash", "scripts/verify_pokemon_catalog_hosting_config.sh"], cwd=checkout)
 
         def live_bytes(relative):
