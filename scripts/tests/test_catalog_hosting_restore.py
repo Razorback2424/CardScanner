@@ -34,6 +34,8 @@ class CatalogHostingRestoreTests(unittest.TestCase):
 import os, pathlib, sys
 a=sys.argv[1:]; url=a[-1]; output=pathlib.Path(a[a.index('--output')+1])
 assert '--compressed' in a
+with open(pathlib.Path(os.environ['RUNNER_TEMP'], 'curl-requests'), 'a') as record:
+    record.write(url+'\\n')
 status=os.environ.get('POINTER_STATUS','200') if url.endswith('current.json') else '200'
 if '/yugioh/' in url: status=os.environ.get('YUGIOH_POINTER_STATUS','404') if url.endswith('current.json') else '200'
 if url.endswith('web.app/v1/releases/2/catalog-release.json'): status=os.environ.get('POKEMON_RELEASE_STATUS','200')
@@ -71,6 +73,9 @@ print(revision)
         self.tool("python3", f"""#!{sys.executable}
 import os, pathlib, subprocess, sys
 if len(sys.argv)>1 and sys.argv[1].endswith('market_price_feeds.py'):
+    if sys.argv[2] == 'write-catalog-scopes':
+        pathlib.Path(os.environ['RUNNER_TEMP'], 'scope-write-called').write_text('called')
+        sys.exit(0)
     assert '--require-present' in sys.argv
     pathlib.Path(os.environ['RUNNER_TEMP'], 'price-restore-called').write_text('called')
     sys.exit(1 if os.environ.get('PRICE_RESTORE_FAIL') else 0)
@@ -98,6 +103,32 @@ sys.exit(subprocess.call([{sys.executable!r}] + sys.argv[1:]))
         self.assertIn("Production pointer v1/current.json is missing", result.stderr)
         self.assertFalse((self.root / "publisher/site").exists())
         self.assertFalse((self.root / "price-restore-called").exists())
+        self.assertFalse((self.root / "scope-write-called").exists())
+
+    def test_a_verified_cache_skips_immutable_requests_and_preserves_prior_revisions(self):
+        result = self.restore()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        requests = self.root / "curl-requests"
+        requests.unlink()
+        work = self.root / "verified-cache"
+        work.mkdir()
+        (work / "pokemon-cached-through").write_text("2\n")
+        self.environment["CATALOG_RESTORE_CACHE_WORK"] = str(work)
+        result = self.restore()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("web.app/v1/releases/", requests.read_text())
+        self.assertEqual((work / "pokemon-verified-through").read_text(), "2\n")
+        self.assertTrue((self.root / "publisher/site/v1/releases/1/catalog-release.json").exists())
+
+    def test_a_verified_cache_does_not_allow_revision_rollback(self):
+        work = self.root / "verified-cache"
+        work.mkdir()
+        (work / "pokemon-cached-through").write_text("3\n")
+        self.environment["CATALOG_RESTORE_CACHE_WORK"] = str(work)
+        result = self.restore()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("older than the verified restore cache", result.stderr)
+        self.assertFalse((self.root / "price-restore-called").exists())
 
     def test_explicit_pokemon_bootstrap_preserves_other_namespaces(self):
         self.pokemon_pointer.unlink()
@@ -106,6 +137,7 @@ sys.exit(subprocess.call([{sys.executable!r}] + sys.argv[1:]))
         self.assertFalse((self.root / "publisher/site/v1").exists())
         self.assertEqual((self.root / "publisher/site/one-piece/v1/current.json").read_text(), "2")
         self.assertTrue((self.root / "price-restore-called").exists())
+        self.assertTrue((self.root / "scope-write-called").exists())
 
     def test_missing_active_immutable_pokemon_revision_blocks_deployment(self):
         self.environment["POKEMON_RELEASE_STATUS"] = "404"

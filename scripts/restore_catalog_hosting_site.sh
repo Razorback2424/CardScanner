@@ -107,9 +107,23 @@ restore_namespace() {
 
   local current_revision
   current_revision="$(verify_release "$package_path" "$publisher_command" "$active_path" "$trusted_keys_file")"
-  if [ "$current_revision" -lt 1 ] || [ "$current_revision" -gt "$max_restore_revision" ]; then
+  if [[ ! "$current_revision" =~ ^[1-9][0-9]{0,5}$ ]] || [ "$current_revision" -gt "$max_restore_revision" ]; then
     echo "$namespace pointer revision is outside the safe restore range: $current_revision" >&2
     exit 1
+  fi
+
+  local cached_through=0
+  local cache_name="${namespace%/v1}"
+  if [ "$namespace" = "v1" ]; then cache_name="pokemon"; fi
+  if [ -n "${CATALOG_RESTORE_CACHE_WORK:-}" ]; then
+    local cache_progress="$CATALOG_RESTORE_CACHE_WORK/$cache_name-cached-through"
+    if [ -f "$cache_progress" ]; then
+      read -r cached_through < "$cache_progress"
+      if [[ ! "$cached_through" =~ ^[1-9][0-9]{0,5}$ ]] || [ "$cached_through" -gt "$current_revision" ]; then
+        echo "$namespace production revision is older than the verified restore cache" >&2
+        exit 1
+      fi
+    fi
   fi
 
   local runner_temp="${RUNNER_TEMP:-/tmp}"
@@ -120,7 +134,7 @@ restore_namespace() {
   local restored=0
 
   local revision
-  for revision in $(seq 1 "$current_revision"); do
+  for (( revision = cached_through + 1; revision <= current_revision; revision += 1 )); do
     local temporary_release="$restore_root/$revision"
     mkdir -p "$temporary_release"
     local release_url="$origin/$namespace/releases/$revision"
@@ -195,6 +209,9 @@ restore_namespace() {
 
   mkdir -p "$site_root/$namespace"
   cp -f "$active_path" "$site_root/$namespace/current.json"
+  if [ -n "${CATALOG_RESTORE_CACHE_WORK:-}" ]; then
+    printf '%s\n' "$current_revision" > "$CATALOG_RESTORE_CACHE_WORK/$cache_name-verified-through"
+  fi
   echo "Restored $restored $namespace production revision object(s) through revision $current_revision"
 }
 
@@ -256,3 +273,4 @@ fi
 # Hosting deploys replace the complete site. Preserve independently published
 # daily prices too; an unreadable/corrupt existing namespace blocks preparation.
 python3 scripts/market_price_feeds.py restore --site-root "$site_root" --origin "$origin" --require-present
+python3 scripts/market_price_feeds.py write-catalog-scopes --site-root "$site_root"
