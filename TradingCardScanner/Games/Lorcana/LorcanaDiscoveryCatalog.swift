@@ -384,7 +384,7 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         }
         return try await browsePriceSource.quote(category: 71, group: mapping.groupID, productID: mapping.productID,
             name: mapping.productName, number: mapping.productNumber.isEmpty ? nil : mapping.productNumber,
-            lane: mapping.providerVariantID, generation: generation, minimumFetchedAt: nil)
+            lane: mapping.providerVariantID, minimumFetchedAt: nil)
     }
 
     func identifierForRetry(_ identifier: ScanIdentifier) throws -> ScanIdentifier {

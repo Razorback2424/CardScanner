@@ -230,7 +230,7 @@ actor ReferenceQuoteStore: BackgroundModelActor {
                 guard let price = quote.normalizedPrice,
                       CollectionStore.acceptsCatalogPrice(price, game: CardGame(rawValue: quote.game),
                                                           key: quote.key, in: modelContainer),
-                      TCGCSVPriceMirror.canServe(source: price.source, capturedAt: price.fetchedAt, now: now) else { continue }
+                      TCGCSVPriceMirror.hasValidCapture(source: price.source, capturedAt: price.fetchedAt, now: now) else { continue }
                 if let existing = result[quote.key],
                    !QuoteEvidenceOrdering.isNewer(price, than: existing, game: CardGame(rawValue: quote.game), now: now) { continue }
                 result[quote.key] = price

@@ -166,10 +166,11 @@ struct PriceCheckResultView: View {
                         openSettingsButton
                     }
                 }
-                if !result.isRefreshing, result.successfulQuoteState == .stale {
-                    Label("Latest available quote is more than a day old", systemImage: "clock.badge.exclamationmark")
+                if !result.isRefreshing, let asOf = display.effectiveAsOf {
+                    let freshness = PriceDisplay.freshness(asOf: asOf)
+                    Text(PriceDisplay.datedFreshnessLabel(asOf: asOf))
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(freshness == .current ? Color.secondary : Color.orange)
                 }
 
                 if !result.isRefreshing {

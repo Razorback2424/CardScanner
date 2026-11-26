@@ -2173,6 +2173,9 @@ private struct CardDetailHeroPrice: View {
             switch price.state() {
             case .current:
                 formattedAmount
+                if let label = price.datedFreshnessLabel {
+                    Text(label).font(.subheadline).foregroundStyle(.secondary)
+                }
             case .stale:
                 // Source and time live in Price details; only an out-of-date
                 // quote earns a mark beside the number itself.
@@ -2231,19 +2234,14 @@ private struct CardDetailHeroPrice: View {
 
     private var staleTag: some View {
         Label {
-            if let asOf = price.effectiveAsOf {
-                Text(asOf, format: .relative(presentation: .named))
-            } else {
-                Text("Out of date")
-            }
+            Text(price.datedFreshnessLabel ?? String(localized: "Out of date"))
         } icon: {
             Image(systemName: "clock")
         }
         .labelStyle(CardDetailCompactLabelStyle())
         .font(.subheadline.weight(.semibold))
         .foregroundStyle(.orange)
-        .lineLimit(1)
-        .fixedSize()
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private var accessibilityText: String {
@@ -2251,9 +2249,8 @@ private struct CardDetailHeroPrice: View {
             return price.state() == .unavailable ? "Price unavailable" : "Price not checked yet"
         }
         let value = amount.formatted(.currency(code: price.currencyCode))
-        guard price.state() == .stale else { return value }
-        let age = price.effectiveAsOf.map { ", updated \($0.formatted(.relative(presentation: .named)))" } ?? ""
-        return "\(value), out of date\(age)"
+        if let label = price.datedFreshnessLabel { return "\(value), \(label)" }
+        return price.state() == .stale ? "\(value), out of date" : value
     }
 }
 

@@ -1,3 +1,32 @@
+# 2026-11-26 — Revision-bound publisher price scopes
+
+Added compact One Piece and Yu-Gi-Oh! scope files generated from verified
+catalogs. The price workflow reads those files and verifies both against the
+restored catalog tree before deployment. Local replay confirmed 1.35 MB of
+uncompressed scope input and rejected a prepared feed after an intervening
+catalog approval. All 60 focused Python cases passed.
+
+# 2026-11-26 — Catalog parity across retained game inputs
+
+Expanded the parity command to all five games. The four repository-backed
+inputs matched `cf59824f`; the retained Magic capture enumerated 108,232
+English paper printings. The optional before-and-after mirror captures use
+the publisher's integrity checks and report changes to priced product and
+finish coverage. The [Stage 1 ledger](docs/plans/offline-catalog-delivery-stage-1.md#parity-and-release-gates)
+records the input for each reader and the outstanding production gates.
+
+# 2026-11-26 — Offline price reliability and Firebase restore caching
+
+Verified dated mirror fallback, snapshot migration to Application Support,
+withdrawal watermarks and signed Pokémon and Magic pointer validators. The
+price publication job now reuses immutable catalog revisions and checks for
+pointer changes before deployment. The final ProfileLocal results on the
+review simulator were 797 passes and 11 skips across 808 distinct cases.
+The focused Python selections passed all
+82 cases. The [Stage 1 ledger](docs/plans/offline-catalog-delivery-stage-1.md)
+records the simulator bundle sizes, complete Yu-Gi-Oh! seed comparison, HTTP 509
+checks, and remaining release gates.
+
 # 2026-11-24 — Production Hosting transfer
 
 The [audit ledger](docs/audits/release-stability-ledger.md) records the

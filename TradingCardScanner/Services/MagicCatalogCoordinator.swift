@@ -87,6 +87,7 @@ actor MagicCatalogCoordinator {
             guard activeRevision.map({ stored.release.revision > $0 }) ?? true else { return }
             activeRegistry = stored.registry
             activeRevision = stored.release.revision
+            await client.useVerifiedETag(for: stored.envelope, from: store.pointerETagURL)
             Self.logger.info("Loaded persisted Magic catalog revision \(self.activeRevision ?? 0)")
         } else if activeRevision == nil {
             activeRegistry = store.recoverFromBundledSeed()
@@ -115,7 +116,12 @@ actor MagicCatalogCoordinator {
             } else {
                 result = await activateEnvelope(envelope)
             }
-            if case .rejected = result { await client.resetConditionalState() }
+            if case .rejected = result {
+                await client.resetConditionalState()
+            } else if rolloutMode == .remoteAuthority, let stored = await store.activeRelease,
+                      stored.release.revision == activeRevision, stored.envelope == envelope {
+                await client.rememberVerifiedETag(for: envelope, at: store.pointerETagURL)
+            }
             return result
         }
     }

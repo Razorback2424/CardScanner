@@ -29,6 +29,25 @@ final class MagicCatalogActivationTests: XCTestCase {
         guard case .activated = await coordinator.refresh() else { return XCTFail("second refresh must activate") }
         XCTAssertEqual(conditionalHeaders.count, 2)
         XCTAssertTrue(conditionalHeaders.allSatisfy { $0 == nil })
+
+        func reopen() -> MagicCatalogCoordinator {
+            MagicCatalogCoordinator(store: MagicCatalogReleaseStore(root: root),
+                client: MagicCatalogUpdateClient(session: session),
+                keys: [.init(id: keyID, publicKey: key.publicKey)], rolloutMode: .remoteAuthority)
+        }
+        MagicActivationURLProtocol.handler = { request in
+            XCTAssertEqual(request.value(forHTTPHeaderField: "If-None-Match"), "catalog-v5")
+            return (HTTPURLResponse(url: request.url!, statusCode: 304, httpVersion: nil, headerFields: nil)!, Data())
+        }
+        guard case .notModified = await reopen().refresh() else { return XCTFail("Expected the verified validator") }
+
+        let receipt = MagicCatalogReleaseStore(root: root).pointerETagURL
+        try Data("corrupt validator".utf8).write(to: receipt)
+        MagicActivationURLProtocol.handler = { request in
+            XCTAssertNil(request.value(forHTTPHeaderField: "If-None-Match"))
+            return (HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!, data)
+        }
+        guard case .notModified = await reopen().refresh() else { return XCTFail("Expected a full pointer check") }
     }
 
     private let key = Curve25519.Signing.PrivateKey()

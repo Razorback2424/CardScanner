@@ -1,3 +1,4 @@
+import base64
 import copy
 import gzip
 import io
@@ -21,6 +22,50 @@ def response_body(body, encoding=None):
 
 
 class MarketPriceFeedTests(unittest.TestCase):
+    def test_bundled_scopes_round_trip_without_losing_a_product_or_finish(self):
+        repo = Path(__file__).resolve().parents[2]
+        captures = {game: feeds.catalog_scope(repo, self.root / "empty", game) for game in feeds.CATALOG_NAMESPACES}
+        legacy = feeds.scope_from_repo(repo)
+        self.assertEqual(feeds.scope_from_repo(repo, scopes=captures), legacy)
+        for game, raw in captures.items():
+            with self.subTest(game=game):
+                self.assertLess(len(raw), feeds.MAX_SCOPE_BYTES)
+                self.assertIsNone(json.loads(raw)["pointerSHA256"])
+
+    def test_locked_publication_rejects_price_scope_for_superseded_catalog(self):
+        repo = Path(__file__).resolve().parents[2]
+        site, prepared = self.root / "stage", self.root / "prepared"
+        feeds.write_catalog_scopes(repo, prepared)
+        feeds.write_catalog_scopes(repo, site)
+        feeds.check_catalog_scopes(site, prepared)
+        # Simulate approval of a Yu-Gi-Oh catalog between ingest and publication.
+        catalog = feeds.packed({"printings": [{"p": 99, "g": 1, "e": ["yugiohLimited"]}]})
+        payload = feeds.packed({"revision": 7, "status": "approved", "sha256": feeds.digest(catalog)})
+        envelope = {"payload": base64.urlsafe_b64encode(payload).decode().rstrip("="),
+                    "catalog": base64.b64encode(catalog).decode()}
+        pointer = site / "yugioh/v1/current.json"
+        pointer.write_bytes(feeds.packed(envelope))
+        feeds.write_catalog_scopes(repo, site, "yugioh")
+        scope = (pointer.parent / feeds.SCOPE_FILE).read_bytes()
+        self.assertEqual(json.loads(scope)["pointerSHA256"], feeds.digest(pointer.read_bytes()))
+        self.assertEqual(feeds.validate_catalog_scope(scope, "yugioh"), {1: {99: {"Limited"}}})
+        with self.assertRaisesRegex(ValueError, "yugioh price scope changed"):
+            feeds.check_catalog_scopes(site, prepared)
+        self.assertEqual((site / "one-piece/v1" / feeds.SCOPE_FILE).read_bytes(),
+                         (prepared / "one-piece/v1" / feeds.SCOPE_FILE).read_bytes())
+
+    def test_scope_rejects_duplicate_groups_and_foreign_lanes(self):
+        doc = {"schemaVersion": 1, "game": "one-piece", "pointerSHA256": None, "revision": None,
+               "catalogSHA256": "a" * 64, "groups": [[1, [[9, ["Foil"]]]]]}
+        with self.assertRaisesRegex(ValueError, "scope group"):
+            feeds.validate_catalog_scope(feeds.packed({**doc, "groups": doc["groups"] * 2}), "one-piece")
+        doc["groups"][0][1][0][1] = ["Cold Foil"]
+        with self.assertRaisesRegex(ValueError, "product or lane"):
+            feeds.validate_catalog_scope(feeds.packed(doc), "one-piece")
+        doc.update(revision=7, pointerSHA256="b" * 64, groups=[])
+        # A verified catalog can deliberately withdraw its last eligible lane.
+        self.assertEqual(feeds.validate_catalog_scope(feeds.packed(doc), "one-piece"), {})
+
     def test_prize_pack_market_scope_uses_only_reviewed_finishes(self):
         scope = feeds.scope_from_repo(Path(__file__).resolve().parents[2])
         self.assertEqual(scope[(3, 22880)], {704473: {"Holofoil"}, 709703: {"Normal"}})
@@ -115,6 +160,21 @@ class MarketPriceFeedTests(unittest.TestCase):
         self.assertEqual(self.calls, ["https://tcgcsv.com/last-updated.txt"] * 2)
         self.assertEqual((self.root / "replay" / feeds.NAMESPACE / "index.json").read_bytes(), index)
 
+    def test_publication_rejects_a_prepared_build_older_than_the_active_marker(self):
+        self.prepare()
+        site = self.root / "site"
+        def fetch(value):
+            def read(url, maximum, absent_ok=False):
+                self.assertEqual((url, maximum, absent_ok),
+                                 (f"{feeds.ORIGIN}/{feeds.NAMESPACE}/last-updated.txt", 1024, True))
+                return value
+            return read
+
+        feeds.check_publication_build(site, fetch=fetch(None))
+        feeds.check_publication_build(site, fetch=fetch(b"2026-10-29T07:00:00+00:00\n"))
+        with self.assertRaisesRegex(ValueError, "older than the active"):
+            feeds.check_publication_build(site, fetch=fetch(b"2026-10-30T07:00:00Z\n"))
+
     def test_upstream_product_without_metadata_keeps_an_empty_staged_number_list(self):
         del self.products["results"][0]["extendedData"]
         self.prices["results"] = []
@@ -180,6 +240,18 @@ class MarketPriceFeedTests(unittest.TestCase):
         self.assertIn("https://tcgcsv.com/tcgplayer/2/1/prices", self.calls)
         prices = json.loads((self.root / "site" / feeds.NAMESPACE / "tcgplayer/2/1/prices").read_bytes())
         self.assertEqual(prices["sourceFetchedAt"], "2026-10-30T08:00:00+00:00")
+
+    def test_yugioh_scope_can_include_a_group_absent_from_candidate_capture(self):
+        source = self.root / "yugioh"
+        source.mkdir()
+        for name in ("source-build-start.txt", "source-build-end.txt"):
+            (source / name).write_text(self.marker)
+        for row in self.products["results"]:
+            row["categoryId"] = 2
+        feeds.prepare({(2, 1): {123: {"Holofoil"}}}, self.root / "cache", self.root / "site",
+                      fetch=self.fetch, now=lambda: self.captured, pause=lambda _: None, yugioh_source=source)
+        self.assertIn("https://tcgcsv.com/tcgplayer/2/1/products", self.calls)
+        self.assertIn("https://tcgcsv.com/tcgplayer/2/1/prices", self.calls)
 
     def test_aging_captures_are_refetched_without_relabeling_cached_bytes(self):
         self.prepare()

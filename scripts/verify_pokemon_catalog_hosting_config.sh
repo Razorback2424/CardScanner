@@ -44,6 +44,10 @@ jq -e '
   | (map(select(.source == "/market-prices/v1/last-updated.txt" and
        ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1)) | length == 1)
     and
+    (map(select(.source == "/one-piece/v1/market-price-scope.json" or .source == "/yugioh/v1/market-price-scope.json"))
+       | (map(.source) | unique | length) == 2
+         and all(.[]; ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1))
+    and
     (map(select(.source == "/market-prices/v1/index.json" and
        ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=300")] | length) == 1)) | length == 1)
     and

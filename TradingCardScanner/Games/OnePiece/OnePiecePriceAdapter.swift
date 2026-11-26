@@ -28,7 +28,7 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
               ["normal": "Normal", "foil": "Foil"][mapping.variantID] == lane,
               mapping.qualifiers["finish"] == lane else { throw PriceQuoteError.identityMismatch }
         return try await transport.quote(category: 68, group: group, productID: productID,
-            name: name, number: number, lane: lane, generation: generation, minimumFetchedAt: minimumFetchedAt,
+            name: name, number: number, lane: lane, minimumFetchedAt: minimumFetchedAt,
             allowsStaleFallback: allowsStaleFallback)
     }
 }
@@ -77,8 +77,10 @@ struct OnePiecePriceAdapter: GamePriceAdapter {
             throw PriceQuoteError.identityMismatch
         }
         let card = try OnePieceCatalogAdapter(registry: current).resolution(forPrintingID: id).card
-        return try await refresh(.init(identity: .legacy(card), variant: variant,
-            pokemonPrintRun: nil, catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt, allowsHistoricalFallback: false))
+        return try await TCGCSVPriceMirror.$awaitsRevalidation.withValue(true) {
+            try await refresh(.init(identity: .legacy(card), variant: variant,
+                pokemonPrintRun: nil, catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt))
+        }
     }
 
     func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {

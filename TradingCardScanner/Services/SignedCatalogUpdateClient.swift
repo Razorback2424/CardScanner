@@ -9,6 +9,34 @@ enum SignedCatalogFetchResult<Envelope: Sendable>: Sendable {
     case fetched(Envelope), notModified
 }
 
+/// A conditional request is useful after launch only if the same signed
+/// pointer is still active locally. A missing or damaged receipt is a cache miss.
+struct VerifiedCatalogETag: Codable {
+    let endpoint: URL
+    let keyID: String
+    let signature: String
+    let etag: String
+
+    static func load(from file: URL, endpoint: URL, keyID: String, signature: String) -> String? {
+        guard let handle = try? FileHandle(forReadingFrom: file) else { return nil }
+        defer { try? handle.close() }
+        guard let bytes = try? handle.read(upToCount: 8_193), bytes.count <= 8_192,
+              let receipt = try? JSONDecoder().decode(Self.self, from: bytes), receipt.endpoint == endpoint,
+              receipt.keyID == keyID, receipt.signature == signature, isValid(receipt.etag) else { return nil }
+        return receipt.etag
+    }
+
+    func save(to file: URL) {
+        guard Self.isValid(etag), let bytes = try? JSONEncoder().encode(self) else { return }
+        try? FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try? bytes.write(to: file, options: .atomic)
+    }
+
+    private static func isValid(_ value: String) -> Bool {
+        !value.isEmpty && value.utf8.count <= 1_024 && value.rangeOfCharacter(from: .controlCharacters) == nil
+    }
+}
+
 /// Transport only. Signature, revision and registry validation remain with the
 /// game contract. Validators are cleared when that contract rejects a response.
 actor SignedCatalogUpdateClient<Envelope: Decodable & Sendable> {

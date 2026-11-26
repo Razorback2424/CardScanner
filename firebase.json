@@ -27,6 +27,14 @@
           ]
         },
         {
+          "source": "/yugioh/v1/market-price-scope.json",
+          "headers": [{"key": "Cache-Control", "value": "no-cache"}]
+        },
+        {
+          "source": "/one-piece/v1/market-price-scope.json",
+          "headers": [{"key": "Cache-Control", "value": "no-cache"}]
+        },
+        {
           "source": "/yugioh/v1/current.json",
           "headers": [{"key": "Cache-Control", "value": "no-cache"}]
         },

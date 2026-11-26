@@ -315,6 +315,7 @@ jobs:
             cp "$envelope" "$immutable"
           fi
           cp "$envelope" "$destination/current.json"
+          python3 scripts/market_price_feeds.py write-catalog-scopes --site-root publisher/site --game one-piece
           bash scripts/verify_pokemon_catalog_hosting_config.sh
           printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"
       - name: Install Firebase CLI
@@ -346,6 +347,7 @@ jobs:
           headers="$RUNNER_TEMP/one-piece-hosting-headers"
           for origin in "$HOSTING_ORIGIN" https://catalog.scan-stash.com; do
             for path in one-piece/v1/current.json "one-piece/v1/releases/$REVISION/catalog-release.json" \
+              one-piece/v1/market-price-scope.json yugioh/v1/market-price-scope.json \
               v1/current.json magic/v1/current.json yugioh/v1/current.json market-prices/v1/index.json; do
               expected="publisher/site/$path"
               if [ ! -f "$expected" ]; then continue; fi
@@ -354,7 +356,7 @@ jobs:
                 "$origin/$path?publication_check=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
               cmp "$expected" "$readback"
               case "$path" in
-                one-piece/v1/current.json) grep -qi '^cache-control:.*no-cache' "$headers" ;;
+                one-piece/v1/current.json|*/market-price-scope.json) grep -qi '^cache-control:.*no-cache' "$headers" ;;
                 one-piece/v1/releases/*)
                   grep -qi '^cache-control:.*max-age=31536000' "$headers"
                   grep -qi '^cache-control:.*immutable' "$headers" ;;

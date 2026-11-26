@@ -1067,7 +1067,7 @@ struct CatalogCardDetailView: View {
             magicTreatments: card.magicTreatments(for: variant), pokemonPrintRun: summary.pokemonPrintRun,
             at: details?.retrievedAt ?? .distantPast)
         if case let .price(quote) = lookup,
-           TCGCSVPriceMirror.canServe(source: quote.source, capturedAt: quote.fetchedAt) { return PriceDisplay(quote) }
+           TCGCSVPriceMirror.hasValidCapture(source: quote.source, capturedAt: quote.fetchedAt) { return PriceDisplay(quote) }
         return ownedIsSingleInstrument ? slot.price.display : .unknown
     }
 

@@ -1740,7 +1740,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let now = now()
         for card in cards {
             guard let checkedAt = sortPriceCheckedAt[card.id] else { continue }
-            if !TCGCSVPriceMirror.canServe(source: sortPriceSources[card.id], capturedAt: checkedAt, now: now) {
+            if !TCGCSVPriceMirror.hasValidCapture(source: sortPriceSources[card.id], capturedAt: checkedAt, now: now) {
                 sortPriceCache[card.id] = nil
                 sortPriceEvidence[card.id] = nil
                 sortPriceSources[card.id] = nil
@@ -1766,7 +1766,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             guard let cached = await cache.sortPrices(for: setID) else { continue }
             let currentIDs = Set(setCards.map(\.id))
             for (id, hint) in cached.value where currentIDs.contains(id) && isCurrent(id) {
-                guard TCGCSVPriceMirror.canServe(source: hint.source, capturedAt: hint.checkedAt, now: now) else { continue }
+                guard TCGCSVPriceMirror.hasValidCapture(source: hint.source, capturedAt: hint.checkedAt, now: now) else { continue }
                 // A newer provider check may have disproved a persisted price.
                 // Do not resurrect that old ordering hint on this screen.
                 if resolvedSortPrices.contains(id),
@@ -2150,10 +2150,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 let checkedAt = now()
                 return SortPriceGroupResult(slots: summaries.map { summary in
                     let variant = summary.masterSetVariant ?? .holo
-                    let mayUseSnapshot = TCGCSVPriceMirror.canServe(source: .tcgCSV, capturedAt: snapshot.fetchedAt, now: checkedAt)
-                    let mirror = mayUseSnapshot ? snapshot.quote(
-                        cardID: summary.providerID, variant: variant, printRun: summary.pokemonPrintRun)
-                        : nil
+                    let mirror = snapshot.quote(cardID: summary.providerID, variant: variant,
+                        printRun: summary.pokemonPrintRun, now: checkedAt)
                     let lookup: PriceLookup
                     var evidenceAt = snapshot.fetchedAt
                     if let details = detailCache[detailCacheKey(for: summary)] {
