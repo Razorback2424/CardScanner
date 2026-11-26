@@ -821,7 +821,9 @@ final class YuGiOhPricingTests: XCTestCase {
         let offlineWithReceipt = YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhDailyPriceSource(transport:
             .init(baseURL: nil, session: session, cacheDirectory: root, now: { outageDate })))
         let carriedForward = try await offlineWithReceipt.refreshStoredPrinting(printing.idString, variant: .yugiohUnlimited)
-        XCTAssertEqual(carriedForward, .price(fresh), "Collection refresh keeps an acquired quote and its original date")
+        var expectedFallback = fresh
+        expectedFallback.retainedAfterRefreshFailure = true
+        XCTAssertEqual(carriedForward, .price(expectedFallback), "Collection refresh keeps an acquired quote and its original date, but reports failed revalidation")
 
         amount = nil
         let absent = try await adapter.refreshStoredPrinting(printing.idString, variant: .yugiohUnlimited, minimumFetchedAt: .now)

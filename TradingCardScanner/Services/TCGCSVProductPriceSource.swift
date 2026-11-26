@@ -323,8 +323,9 @@ actor TCGCSVProductPriceSource {
         }
         // Set projections are keyed to a feed build; a cache file written
         // before builds were recorded cannot stand in for one.
-        let received = try await snapshot(group: key, minimumFetchedAt: nil, forceRefresh: retry,
+        let result = try await snapshot(group: key, minimumFetchedAt: nil, forceRefresh: retry,
                                           waitForKnownBuild: true) { !retry && $0.sourceBuild != nil }
+        let received = result.value
         return snapshots[key].flatMap { $0.sourceBuild != nil && $0.isNewer(than: received) ? $0 : nil } ?? received
     }
 
@@ -341,12 +342,13 @@ actor TCGCSVProductPriceSource {
             let numbers = product.extendedData.filter { $0.name == "Number" }.map(\.value)
             return numbers == (number.map { [$0] } ?? []) || (allowsMissingNumber && numbers.isEmpty)
         }
-        let fetched = try await snapshot(group: groupKey, minimumFetchedAt: minimumFetchedAt) { cached in
+        let result = try await snapshot(group: groupKey, minimumFetchedAt: minimumFetchedAt) { cached in
             allowsStaleFallback && cached.legacyPositiveOnly != true && matchesProduct(cached) && cached.prices.contains {
                 $0.productId == productID && $0.subTypeName == lane && $0.marketPrice != nil
             }
         }
         try Task.checkCancellation()
+        let fetched = result.value
         let snapshot = snapshots[groupKey].flatMap { $0.isNewer(than: fetched) ? $0 : nil } ?? fetched
         guard snapshot.legacyPositiveOnly != true, isServable(snapshot) else { throw PriceQuoteError.providerUnavailable }
         let hasCurrentCapture = PriceDisplay.freshness(asOf: snapshot.fetchedAt, now: now()) == .current
@@ -354,21 +356,24 @@ actor TCGCSVProductPriceSource {
         let rows = snapshot.prices.filter { $0.productId == productID && $0.subTypeName == lane }
         guard rows.count <= 1 else { throw PriceQuoteError.identityMismatch }
         guard let amount = rows.first?.marketPrice else {
-            guard hasCurrentCapture else { throw PriceQuoteError.providerUnavailable }
+            guard hasCurrentCapture, !result.revalidationFailed else { throw PriceQuoteError.providerUnavailable }
             return .unavailable(.tcgCSV)
         }
         guard amount.isFinite, amount >= 0 else { throw PriceQuoteError.providerUnavailable }
         return .price(.init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgCSV,
-            sourceVariantID: "tcgplayer:\(productID):\(lane)", sourceUpdatedAt: nil, fetchedAt: snapshot.fetchedAt))
+            sourceVariantID: "tcgplayer:\(productID):\(lane)", sourceUpdatedAt: nil, fetchedAt: snapshot.fetchedAt,
+            retainedAfterRefreshFailure: TCGCSVPriceMirror.awaitsRevalidation && result.revalidationFailed ? true : nil))
     }
 
     private func load(group: GroupKey, name: String) -> Snapshot? {
         files.read(name, maxBytes: 16 * 1_024 * 1_024) { (try? validate($0, group: group)) != nil }
     }
 
+    private typealias SnapshotResult = (value: Snapshot, revalidationFailed: Bool)
+
     private func snapshot(group: GroupKey, minimumFetchedAt: Date?, forceRefresh: Bool = false,
                           waitForKnownBuild: Bool = false,
-                          canUseFallback: (Snapshot) -> Bool) async throws -> Snapshot {
+                          canUseFallback: (Snapshot) -> Bool) async throws -> SnapshotResult {
         let knownBuild = await marker.lastKnownBuild()
         try Task.checkCancellation()
         // A withdrawal starts a new request cohort. It must not join a fetch
@@ -385,7 +390,7 @@ actor TCGCSVProductPriceSource {
            TCGCSVPriceMirror.isWithinAge(cached.validatedAt ?? cached.fetchedAt, now: now(),
                maxAge: TCGCSVPriceMirror.refreshAfter), isServable(cached),
            (canUseFallback(cached) || isWithinDownloadAge(cached)),
-           knownBuild.map({ $0 == sourceBuild }) ?? true { return cached }
+           knownBuild.map({ $0 == sourceBuild }) ?? true { return (cached, false) }
         let servable = cached.flatMap { isServable($0) && canUseFallback($0) ? $0 : nil }
         let immediateFallback = minimumFetchedAt == nil && !forceRefresh
             && !TCGCSVPriceMirror.awaitsRevalidation && (!waitForKnownBuild
@@ -399,11 +404,11 @@ actor TCGCSVProductPriceSource {
                 return try await snapshot(group: group, minimumFetchedAt: minimumFetchedAt, forceRefresh: true,
                                           waitForKnownBuild: waitForKnownBuild, canUseFallback: canUseFallback)
             }
-            if immediateFallback, let servable { return servable }
+            if immediateFallback, let servable { return (servable, false) }
             return try await waitForSnapshot(request.task, key: key, canUseFallback: canUseFallback)
         }
         if !forceRefresh, let failure = failures[key], TCGCSVPriceMirror.isWithinAge(failure, now: now(), maxAge: 900) {
-            if let servable { return servable }
+            if let servable { return (servable, true) }
             throw PriceQuoteError.providerUnavailable
         }
         let task = Task<Snapshot, Error> {
@@ -443,7 +448,7 @@ actor TCGCSVProductPriceSource {
         }
         pending[key] = PendingSnapshot(task: task, forced: forceRefresh)
         // The unstructured task owns the revalidation even if no caller waits.
-        if immediateFallback, let servable { return servable }
+        if immediateFallback, let servable { return (servable, false) }
         return try await waitForSnapshot(task, key: key, canUseFallback: canUseFallback)
     }
 
@@ -499,16 +504,17 @@ actor TCGCSVProductPriceSource {
     }
 
     private func waitForSnapshot(_ task: Task<Snapshot, Error>, key: CacheKey,
-                                 canUseFallback: (Snapshot) -> Bool) async throws -> Snapshot {
+                                 canUseFallback: (Snapshot) -> Bool) async throws -> SnapshotResult {
         do {
-            return try await task.valueForCurrentWaiter()
+            return (try await task.valueForCurrentWaiter(), false)
         } catch {
             try Task.checkCancellation()
             // Another cohort may have replaced or withdrawn the lane while
             // this request was failing. Recheck the latest snapshot now.
-            if !(error is CancellationError), let fallback = snapshots[key.group], isServable(fallback),
+            if !(error is CancellationError), (error as? URLError)?.code != .cancelled,
+               let fallback = snapshots[key.group], isServable(fallback),
                key.minimumFetchedAt.map({ fallback.fetchedAt > $0 }) ?? true, canUseFallback(fallback) {
-                return fallback
+                return (fallback, true)
             }
             throw error
         }

@@ -15,6 +15,9 @@ struct NormalizedPrice: Codable, Equatable, Sendable {
     let fetchedAt: Date
     /// Catalog-owned mapping evidence; nil for providers without this contract.
     var catalogIdentity: String? = nil
+    /// A stored-printing refresh could not revalidate this cached observation.
+    /// Nil for normal lookups and older serialized quotes.
+    var retainedAfterRefreshFailure: Bool? = nil
 
     var effectiveAsOf: Date { sourceUpdatedAt ?? fetchedAt }
 
