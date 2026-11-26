@@ -62,7 +62,17 @@
   - priced-product coverage.
 
   An allowlist of reviewed, expected differences is checked into the PR.
-- **Collection safety.** An app test loads a fixture store that references **every printing ID of the old catalog** and checks that each one still resolves after migration, so no record is orphaned.
+
+  **What is implemented vs required (2026-11-26):**
+
+  | Comparison | State |
+  | --- | --- |
+  | Pokémon, Lorcana, One Piece (including the owner catalog), Yu-Gi-Oh catalogs | Runs automatically on every PR against its base (`catalog-coverage-tests.yml`) |
+  | Magic catalog | Reader exists and is fixture-tested; **required in CI before Magic's Stage 4 migration** |
+  | Priced-product coverage from captured price feeds | Comparator exists; **required before any price-publication change in Stage 2** |
+- **Collection safety, in two layers:**
+  - **Implemented:** `CollectionPrintingBaselineTests` pins every printing a collection can hold today (Yu-Gi-Oh 47,917, One Piece 4,153, Lorcana 3,576) and fails if any stops resolving. Pokémon and Magic store provider IDs that resolve live, so this layer doesn't cover them.
+  - **Required before each catalog-format migration (Stages 3 and 4):** an upgrade test that opens a saved collection store built with the previous app version, with rows for every game, migrates it, and checks that no row is lost or orphaned. A representative store is enough. It does not need tens of thousands of rows, because the baseline layer already covers every ID.
 - **Budgets, measured first in Stage 1 and then held.** Each is recorded per game and in total, and any regression must be approved explicitly:
   - app download and install size;
   - on-device catalog and price storage;
@@ -71,6 +81,14 @@
   - peak memory.
 
   Measurements are taken on the simulator and labelled as such. Device numbers come from you.
+
+  **Budget scope.** The storage budget applies only to **replaceable** data: downloaded catalog releases and price caches. User-owned data (the collection, photos, price history) is measured and reported separately, and is never evicted to meet an infrastructure budget. Proposed limits, pending owner approval:
+  - app bundle growth within 5% per stage (provisional);
+  - replaceable catalog and price data under 300 MB;
+  - no cold-launch regression from the Stage 1 baseline;
+  - first-launch peak memory under 400 MB (provisional until measured on a device).
+
+  The Stage 1 memory numbers were taken without hosted updates, so the memory budget must also be re-measured during a fully populated session (every game browsed and priced, plus a collection refresh) before it is accepted.
 - **Failure drills (automated where possible):**
   - fresh offline install;
   - upgrade of an existing install;
@@ -90,9 +108,14 @@ Implemented and verified locally, in review as [#62](https://github.com/Razorbac
 
 Verification: 689 simulator tests with 0 failures and 8 skipped, plus the Python suites. These are simulator results only.
 
-**Still open before Stage 1 closes:**
-- Merge #62, then #63.
-- Owner approval of the measured budgets.
+**Still open before Stage 1 closes.** These come from the 2026-11-26 review of #62–#65; each was confirmed against the code.
+- **#62: save the restore cache only after the production readback passes.** Today `yugioh-catalog.yml` seals and saves the cache before the "Verify published bytes from the origin" step.
+- **#62: re-check historical revisions.** The restore resumes at `cached_through + 1`, so an older revision that returned 404 and was later repaired is never picked up again. Add a periodic full inventory reconciliation, or invalidate the cache when a historical revision is recovered.
+- **#63: report a failed refresh as a failure.** When a download fails, `TCGCSVProductPriceSource` returns the cached snapshot as an ordinary `.price`, and `PriceRefreshController` counts it as priced. Carry the failure through the collection-refresh path (narrowly: keep the amount and capture date, report the check as failed). Don't build a new pricing framework for this.
+- **#63: bound the in-memory snapshot cache.** `TCGCSVProductPriceSource.snapshots` is never evicted, while the disk copy is capped at 128 MiB. Stress-test extensive browsing plus a full collection refresh, then bound that existing dictionary if growth is material. While there, mark in-memory hits as recent on disk so the disk LRU doesn't evict frequently used groups (low severity).
+- **Integrated candidate:** retarget #63 to `main` after #62 merges, reconcile `project.pbxproj` and `progress.md` with #64 (keep both sides), and run the **complete** iOS test suite on that candidate. The PR workflow skips the full suite unless triggered manually.
+- **Merge order:** #64, then #62, then #63.
+- **Owner approval of the budgets,** as scoped in the gate section below.
 - Production revision inventory and HTTPS rollback rehearsal, **blocked** while Firebase returns HTTP 509. This is a precondition for the Stage 2 cutover, not for Stage 1 releasability.
 
 ## Stage 1: stabilize the current app (no format or host changes)
@@ -146,7 +169,11 @@ The host changes; the formats don't. Every path, file and header the app sees st
   - Upload new immutable objects first, then read each one back through the public domain and verify its hash. **Write mutable pointers last**: a single object PUT, so it's atomic.
   - A publish that fails before the flip changes nothing users see.
   - The app's signature and hash checks are a second barrier.
-  - Price builds follow the same rule (new files first, `last-updated.txt` last).
+  - **Price builds must not overwrite live files.** Firebase swaps the whole site at once, but R2 writes one object at a time. Overwriting `market-prices/v1/...` in place would leave a mix of two builds if a publish fails partway. The app's build checks would reject the mix, so prices stay correct, but new installs and uncached groups would get no prices until the publish is repaired. The design:
+    - Each price build is uploaded to its own immutable path, `market-prices/v2/builds/<build>/<category>/<group>.json`, then read back and hash-checked.
+    - A small `market-prices/v2/latest.json` pointer, listing the build and each file's hash, is written **last** in a single PUT. Clients see either the old build or the new one, never a mix.
+    - **Precondition:** an app release that reads `v2` must ship before the cutover. The app keeps last-known prices on device (Stage 1), so a client switching paths loses nothing.
+    - **Compatibility for builds that only read `v1`:** keep publishing the mutable `v1` paths after `v2` is complete, with `last-updated.txt` written last. The partial-publish window is documented. Recovery is to re-run the publish, which rewrites every `v1` file from the same verified `v2` build. Those clients fall back to their dated on-device prices in the meantime. Retire `v1` once old builds age out.
 - **Cloudflare caching (checked by a test, not assumed).**
   - Immutable releases: `max-age=31536000, immutable`.
   - Pointers and `last-updated.txt`: a cache rule **bypasses edge cache**, plus `no-cache` revalidation.
@@ -163,6 +190,12 @@ The host changes; the formats don't. Every path, file and header the app sees st
 - **Rollback**, which has to work with revision monotonicity:
   - **Content problems** are fixed by **rolling forward**. A script republishes known-good content, signed, under the **next** revision number. The app would rightly reject an older revision.
   - **Infrastructure problems.** During a 30-day window the publisher keeps the Firebase site *current*. It rebuilds the tree **from R2**, which costs nothing to download from, and deploys it to Firebase on every catalog and price publish. Firebase then serves nothing until DNS points back at it, so falling back is a DNS change to a site that is up to date.
+  - **Rollback readiness is checked on every publish during the window, not assumed from the first setup.** Each publish reads back from the Firebase origin (`scanstash-catalog-prod.web.app`) and checks that:
+    - every pointer and price build matches R2 at the same revision;
+    - the custom domain's HTTPS certificate on Firebase is still valid;
+    - Firebase hosting usage has headroom left under its quota.
+
+    If any check fails, the job fails visibly and the rollback target is marked not ready until a later publish passes again. A failed Firebase publish never blocks the R2 publish.
 - **Cutover.**
   1. Publish to both for at least one week on a staging hostname, with hash parity on every publish.
   2. Move DNS.
@@ -196,7 +229,7 @@ The host changes; the formats don't. Every path, file and header the app sees st
   - checks on launch and on foreground, with a cooldown.
 
   It does not rewrite game-specific registries.
-- **Pilot: Yu-Gi-Oh** (off → authority) first. Then, one PR each and only after the pilot holds in parity, drills and budgets: Lorcana, One Piece, Pokémon (including `finish-coverage.json`), Magic.
+- **Pilot: Yu-Gi-Oh** (off → authority) first. Then, one PR each and only after the pilot holds in parity, drills and budgets: Lorcana, One Piece, Pokémon (including `finish-coverage.json`). Magic moves onto the channel only in Stage 4, together with its offline catalog, so it never goes through an intermediate migration.
 - **Old paths.** Each game's old path stays in place, and published, until its replacement has passed the gate. If the app is already in users' hands, `v1` stays published until old builds age out.
 
 ## Stage 4: offline Magic catalog (Scryfall prices stay)
