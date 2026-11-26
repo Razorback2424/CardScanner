@@ -1,6 +1,6 @@
 # Offline-first, outage-resilient catalog and price delivery
 
-**Status** · current plan, 2026-11-26. The owner approved the direction after review. Stage 1 is implemented in open PRs: [#62](https://github.com/Razorback2424/CardScanner/pull/62) (hosting and CI bandwidth) and [#63](https://github.com/Razorback2424/CardScanner/pull/63) (app pricing reliability, stacked on #62). Stages 2–5 have not started. Stage evidence lives in [`offline-catalog-delivery-stage-1.md`](offline-catalog-delivery-stage-1.md), added by #63.
+**Status** · current plan, 2026-11-26. The owner approved the direction after review. Stage 1: [#62](https://github.com/Razorback2424/CardScanner/pull/62) (hosting and CI bandwidth) is merged; [#63](https://github.com/Razorback2424/CardScanner/pull/63) (app pricing reliability) is open against `main`. Stages 2–5 have not started. Stage evidence lives in [`offline-catalog-delivery-stage-1.md`](offline-catalog-delivery-stage-1.md), added by #63.
 
 **Owner decisions recorded here:**
 - Static hosting moves to Cloudflare R2. The pricing proxy's Functions, Firestore and App Check stay on Firebase.
@@ -101,22 +101,25 @@
 
 ## Stage 1 status (2026-11-26)
 
-Implemented and verified locally, in review as [#62](https://github.com/Razorback2424/CardScanner/pull/62) and [#63](https://github.com/Razorback2424/CardScanner/pull/63):
+Implemented in [#62](https://github.com/Razorback2424/CardScanner/pull/62) (merged) and [#63](https://github.com/Razorback2424/CardScanner/pull/63) (open):
 - **App:** freshness tiers, identity checks, failures never overwriting a price, backup-excluded bounded storage, the shared Pokémon cache, persisted ETags, collection refresh through outages, and review fixes.
 - **CI:** the restore cache, revision-bound price scopes, and the ETag-cached Yu-Gi-Oh parent.
 - **Gates:** full-catalog parity for all five games, the collection printing baseline, simulator budget measurements, and the failure-drill map.
 
 Verification: 689 simulator tests with 0 failures and 8 skipped, plus the Python suites. These are simulator results only.
 
-**Still open before Stage 1 closes.** These come from the 2026-11-26 review of #62–#65; each was confirmed against the code.
-- **#62: save the restore cache only after the production readback passes.** Today `yugioh-catalog.yml` seals and saves the cache before the "Verify published bytes from the origin" step.
-- **#62: re-check historical revisions.** The restore resumes at `cached_through + 1`, so an older revision that returned 404 and was later repaired is never picked up again. Add a periodic full inventory reconciliation, or invalidate the cache when a historical revision is recovered.
-- **#63: report a failed refresh as a failure.** When a download fails, `TCGCSVProductPriceSource` returns the cached snapshot as an ordinary `.price`, and `PriceRefreshController` counts it as priced. Carry the failure through the collection-refresh path (narrowly: keep the amount and capture date, report the check as failed). Don't build a new pricing framework for this.
-- **#63: bound the in-memory snapshot cache.** `TCGCSVProductPriceSource.snapshots` is never evicted, while the disk copy is capped at 128 MiB. Stress-test extensive browsing plus a full collection refresh, then bound that existing dictionary if growth is material. While there, mark in-memory hits as recent on disk so the disk LRU doesn't evict frequently used groups (low severity).
-- **Integrated candidate:** retarget #63 to `main` after #62 merges, reconcile `project.pbxproj` and `progress.md` with #64 (keep both sides), and run the **complete** iOS test suite on that candidate. The PR workflow skips the full suite unless triggered manually.
-- **Merge order:** #64, then #62, then #63.
+**Review follow-ups (2026-11-26).** These came from the review of #62–#65, and each was confirmed against the code.
+- **Done, in #62 (merged as `3a2fd71`):** the restore cache is saved only after the production readback passes, and recovered historical revisions can be reconciled on demand (`ff52b7bd`).
+- **Done, in #63:** a refresh that keeps a cached price after a failed download is reported as failed, with its amount and capture date unchanged (`963d434b`, `622683ec`).
+- **Done, in #63:** decoded price groups held in memory are capped at 64, least recently used first. An evicted group reloads from disk without a network request, and in-memory hits keep the disk copy marked as recent (`3c5ab779`).
+
+**Still open before Stage 1 closes:**
+- **Done: the complete iOS test suite on the integrated candidate.** The candidate was `main` at `3a2fd71` with #63 (`3c5ab779`) and #64 merged; they merge without conflicts.
+  - On the iOS 27.0 simulator: 3,691 tests, 22 skipped, 9 failing tests (18 assertion failures).
+  - **None are regressions.** The 6 centering research tests fail the same way on plain `main` (they need local fixtures). The 3 local StoreKit tests in `CollectorToolsTests` pass when run alone on both the candidate and `main`, so their full-suite failures are interference between tests.
+  - The pre-existing centering and StoreKit-order failures are tracked separately, not as Stage 1 work.
+- **Merge order:** #64 and #63, in either order, since #62 is already merged.
 - **Owner approval of the budgets,** as scoped in the gate section below.
-- Production revision inventory and HTTPS rollback rehearsal, **blocked** while Firebase returns HTTP 509. This is a precondition for the Stage 2 cutover, not for Stage 1 releasability.
 
 ## Stage 1: stabilize the current app (no format or host changes)
 
