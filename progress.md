@@ -9419,3 +9419,15 @@ decimal digit while keeping valid cash, changing quantity, moving a card,
 undoing a removal, and switching sides at Accessibility 5. Screenshots in the
 same directory cover iPhone SE and iPad mini, dark appearance, and French
 number formatting with partial quotes.
+
+# 2026-11-25 — Release blocker preparation
+
+Updated the local Bluehost drafts and their Markdown sources for operator-funded
+JustTCG pricing and App Check. Checked both HTML route layouts, reciprocal links
+and the support email link. The public support route still returns HTTP 404.
+
+On `cf59824f`, the Hosting configuration validator, 10 Hosting restore tests,
+35 local pricing-proxy tests, and proxy type checking passed. The production
+market feed and catalog pointer still return HTTP 509, and Firebase billing is
+disabled. Live page publication, backend deployment, Release configuration, and
+TestFlight verification remain open.

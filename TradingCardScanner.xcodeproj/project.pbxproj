@@ -589,6 +589,7 @@
 		B0010092 /* PortfolioReplaySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplaySnapshot.swift; sourceTree = "<group>"; };
 		B0010090 /* LogicalCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicalCollection.swift; sourceTree = "<group>"; };
 		B00100A0 /* TradingCardScanner-Local.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TradingCardScanner-Local.entitlements"; sourceTree = "<group>"; };
+		B00100A1 /* TradingCardScanner-Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TradingCardScanner-Release.entitlements"; sourceTree = "<group>"; };
 		B0010087 /* PortfolioEpoch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEpoch.swift; sourceTree = "<group>"; };
 		B0010088 /* PortfolioClose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioClose.swift; sourceTree = "<group>"; };
 		B0010089 /* PortfolioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEngine.swift; sourceTree = "<group>"; };
@@ -855,6 +856,7 @@
 				B0010072 /* PrivacyInfo.xcprivacy */,
 				B0010073 /* TradingCardScanner.entitlements */,
 				B00100A0 /* TradingCardScanner-Local.entitlements */,
+				B00100A1 /* TradingCardScanner-Release.entitlements */,
 				B0010015 /* Info.plist */,
 				B00100C1 /* PokemonChecklistSnapshot */,
 				B00100E1 /* MagicTreatmentSnapshot */,
@@ -2000,7 +2002,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Local.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Release.entitlements";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) NO_CLOUDKIT";
 				CODE_SIGN_STYLE = Automatic;
 			CURRENT_PROJECT_VERSION = 1;

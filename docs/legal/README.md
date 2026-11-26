@@ -2,6 +2,11 @@
 
 **Status:** app copy reviewed against current source and Apple guidance on 2026-10-03; publication and owner/provider verification remain open.
 
+**2026-11-25 release preparation.** The local privacy and support drafts now describe
+the operator-funded pricing service, App Check, and installation rate limits.
+The live privacy route still serves the website policy, and the support route
+returns HTTP 404. The Release URL settings are still blank.
+
 **Owner deferral — 2026-10-14:** privacy/support page publication, live-page
 verification and app/App Store Connect URL configuration are deferred until
 the owner resumes this step. Drafts, the upload package and walkthrough are
