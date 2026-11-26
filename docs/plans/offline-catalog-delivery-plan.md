@@ -1,6 +1,6 @@
 # Offline-first, outage-resilient catalog and price delivery
 
-**Status** · current plan, 2026-11-26. The owner approved the direction after review. Stage 1 code is merged: [#62](https://github.com/Razorback2424/CardScanner/pull/62) (hosting and CI bandwidth, `3a2fd71`), [#63](https://github.com/Razorback2424/CardScanner/pull/63) (app pricing reliability, `404e94c`) and [#64](https://github.com/Razorback2424/CardScanner/pull/64) (release preparation, `5c566e5`). Stage 1 is **not closed**: production verification and budget approval remain (see Stage 1 status). Stages 2–5 have not started. Stage evidence lives in [`offline-catalog-delivery-stage-1.md`](offline-catalog-delivery-stage-1.md).
+**Status** · current plan, 2026-11-26. The owner approved the direction after review. Stage 1 code is merged: [#62](https://github.com/Razorback2424/CardScanner/pull/62) (hosting and CI bandwidth, `3a2fd71`), [#63](https://github.com/Razorback2424/CardScanner/pull/63) (app pricing reliability, `404e94c`) and [#64](https://github.com/Razorback2424/CardScanner/pull/64) (release preparation, `5c566e5`). Stage 1 is **not closed**: the price-publish readback, a populated memory measurement and budget approval remain (see Stage 1 status). Stages 2–5 have not started. Stage evidence lives in [`offline-catalog-delivery-stage-1.md`](offline-catalog-delivery-stage-1.md).
 
 **Owner decisions recorded here:**
 - Static hosting moves to Cloudflare R2. The pricing proxy's Functions, Firestore and App Check stay on Firebase.
@@ -123,14 +123,14 @@ The Python selections passed too: 82 catalog and market-feed cases, and 60 scope
 - The pre-existing centering and StoreKit-order failures are tracked separately, not as Stage 1 work.
 - **CI on merged `main` (`5c566e5`):** the PR checks passed on each branch before merge. The scheduled catalog jobs on `main` fail at the production pointer read with HTTP 509, not on code. A green scheduled run is part of the production verification below.
 
-**Still open before Stage 1 closes.** Each item needs Firebase to serve again (Blaze upgrade or the December 1 quota reset) or needs the owner:
-1. **Production revision inventory** of what existing clients, the Yu-Gi-Oh parent chains, rollback and audit need (Stage 1 item 9).
-2. **HTTPS rollback rehearsal** against the production origin.
+**Still open before Stage 1 closes.** The project moved to Blaze on 2026-11-26 and hosting serves again; items 1 and 2 are done:
+1. **Done: production revision inventory** (Stage 1 item 9). The origin holds only Pokémon revisions 1–26, One Piece revisions 1–7 and one price build; there are no hosted Yu-Gi-Oh, Magic or Lorcana catalogs, so no parent chains to retain. Everything is kept. Details in the evidence document.
+2. **Done: HTTPS rollback rehearsal.** The custom-domain certificate validates; all 1,497 files match the inventory hashes; both signed pointers verify against the pinned keys and match what the app ships.
 3. **Production readback of the price scope files** (`market-price-scope.json`): one scheduled price publish observed end to end, reading only the compact scopes and leaving the restore cache warm for the next run.
 4. **Fully populated memory measurement:** every game browsed and priced plus a collection refresh, with hosted updates arriving. The current numbers were taken while production returned 509.
 5. **Owner approval of the budgets,** as scoped in the gate section above. The memory budget stays provisional until item 4 is measured.
 
-Stage 1 closes when items 1–4 are recorded in the evidence document and item 5 is approved.
+Stage 1 closes when items 3 and 4 are recorded in the evidence document and item 5 is approved.
 
 ## Stage 1: stabilize the current app (no format or host changes)
 

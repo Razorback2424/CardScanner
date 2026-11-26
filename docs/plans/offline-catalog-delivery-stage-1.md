@@ -1,6 +1,6 @@
 # Offline catalog delivery · Stage 1 evidence
 
-**Status** · 2026-11-26. Stage 1 code is merged to `main` ([#62](https://github.com/Razorback2424/CardScanner/pull/62), [#63](https://github.com/Razorback2424/CardScanner/pull/63)). Stage 1 is not closed. The production revision inventory, the HTTPS rollback rehearsal, production readback of the price scope files and a fully populated memory measurement are all blocked while Firebase returns HTTP 509. The storage and performance budgets below await owner approval. The [delivery plan](offline-catalog-delivery-plan.md#stage-1-status-2026-11-26) lists the closing criteria.
+**Status** · 2026-11-26. Stage 1 code is merged to `main` ([#62](https://github.com/Razorback2424/CardScanner/pull/62), [#63](https://github.com/Razorback2424/CardScanner/pull/63)). Stage 1 is not closed. The production inventory and HTTPS rollback rehearsal are done (Firebase serves again after the Blaze upgrade). Production readback of the price scope files from a scheduled publish and a fully populated memory measurement remain. The storage and performance budgets below await owner approval. The [delivery plan](offline-catalog-delivery-plan.md#stage-1-status-2026-11-26) lists the closing criteria.
 
 | Stage 1 item | State |
 | --- | --- |
@@ -16,11 +16,11 @@
 | Collection fixture | Done. `CollectionPrintingBaselineTests` pins every holdable printing (Yu-Gi-Oh 47,917, One Piece 4,153, Lorcana 3,576) and fails if any stops resolving. Pokémon and Magic collections store provider IDs resolved live, so the parity tool covers them. |
 | Budgets measured | Done on the simulator; awaiting owner approval. |
 | Failure drills | Done; see the drill table. |
-| Production inventory and rollback rehearsal | **Blocked** by HTTP 509 until the monthly quota reset or a plan upgrade. |
+| Production inventory and rollback rehearsal | Done on 2026-11-26 after the Blaze upgrade cleared HTTP 509; see the inventory below. The scheduled price publish readback is still open. |
 
 ## Historical release inventory
 
-Keep the complete production history until a verified origin inventory and an HTTPS rollback rehearsal establish what can be retired. The restore checks each revision through the signed pointer and rejects a missing active immutable release. Read-only HEAD checks on November 26 returned HTTP 509 for the Firebase Pokémon pointer and the custom-domain price marker, so the table uses retained repository evidence. [Restore script](../../scripts/restore_catalog_hosting_site.sh) · [Hosting audit](../audits/release-stability-ledger.md)
+Keep the complete production history until a verified origin inventory and an HTTPS rollback rehearsal establish what can be retired. The restore checks each revision through the signed pointer and rejects a missing active immutable release. The table below records the repository evidence; the verified origin inventory after it supersedes it for what is actually hosted. [Restore script](../../scripts/restore_catalog_hosting_site.sh) · [Hosting audit](../audits/release-stability-ledger.md)
 
 | Game | Evidence in the repository | Keep for existing clients and recovery |
 | --- | --- | --- |
@@ -31,6 +31,27 @@ Keep the complete production history until a verified origin inventory and an HT
 | Lorcana | The app bundles discovery and reviewed physical catalogs. The signed rollout path is available in source. | Keep the bundled resources and review evidence. Record any hosted Lorcana revisions in the pre-cutover origin inventory. [Bundled catalogs](../../TradingCardScanner/LorcanaCatalogSeed) · [Activation](../../TradingCardScanner/Games/Lorcana/LorcanaCatalogCoordinator.swift) |
 
 Before migration, record each origin pointer with its ETag, verified revision and SHA-256. Inventory every immutable object and hash, then associate them with the supported client versions, signed parent chains and rollback releases. Rehearse infrastructure rollback with a real HTTPS request against Firebase's custom domain and verify the returned bytes and certificate before changing nameservers.
+
+### Verified origin inventory (2026-11-26)
+
+The project moved to the Blaze plan on November 26 and hosting stopped returning HTTP 509 at 21:33 UTC. The inventory comes from the Firebase Hosting REST API, which lists every file and its hash without using hosting bandwidth. The rehearsal then fetched every file through the custom domain. All checks were read-only: nothing was deployed or changed.
+
+- **Live version:** `sites/scanstash-catalog-prod/versions/aaa3aab8ff241a63`, released 2026-11-21 08:32 UTC, 1,499 files. The release history holds 67 finalized deploys back to 2026-09-19.
+
+| Hosted path | Contents | Signed pointer |
+| --- | --- | --- |
+| `v1/` (Pokémon) | `current.json` and revisions 1–26, each with `catalog-payload.json`, `catalog-release.json`, `pokemon-catalog-snapshot.json` and `review-report.json` (104 files) | Revision 26, generated 2026-11-19. Byte-identical to revision 26's `catalog-release.json` and to the release bundled in the app (SHA-256 `62b4bc15…`); the bundled checklist snapshot also matches revision 26. |
+| `one-piece/v1/` | `current.json` and revisions 1–7 (`catalog-release.json` each) | Revision 7, rules version 2. Same hash as revision 7's envelope. |
+| `market-prices/v1/` | `index.json`, `last-updated.txt`, and a products and prices file per group: Yu-Gi-Oh! 1,226, One Piece 102, Lorcana 40, Pokémon 14 | Build marker `2026-11-20T20:06:21+0000`; no publish has succeeded since the 509 began. |
+| `__/firebase/` | Firebase SDK init files | — |
+
+- **Not hosted:** there are no Yu-Gi-Oh!, Magic or Lorcana catalog objects on the origin. Those games run only from bundled catalogs today, so there are no hosted Yu-Gi-Oh! parent chains or Magic objects to retain, retire or migrate in Stage 2. Stage 2's historical copy is the 112 Pokémon and One Piece catalog files plus the current price build.
+- **Rollback rehearsal (HTTPS, custom domain):**
+  - The certificate served for `catalog.scan-stash.com` validates. It is a Google Trust Services (WR3) certificate whose subject alternative names include the domain, valid until 2027-02-15.
+  - All 1,497 content files returned HTTP 200. Each response's ETag equals the file hash in the API inventory (0 mismatches). The catalog files total 324,693,299 bytes uncompressed.
+  - Both pointers' Ed25519 signatures verify against the keys pinned in `Config/PokemonCatalogProduction.xcconfig` and `Config/OnePieceCatalogProduction.xcconfig`. The signature covers the decoded payload bytes.
+  - Pointers and catalog files are served with `cache-control: no-cache`; price files with `public,max-age=300`.
+- **Retention decision:** keep everything. Nothing on the origin is unused: each Pokémon and One Piece revision is a possible roll-forward source and audit record, and the totals are small enough that retirement buys nothing.
 
 ## Simulator size checkpoint
 
