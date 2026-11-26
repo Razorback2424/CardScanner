@@ -75,7 +75,7 @@ def get_pointer(namespace, tag, *, optional):
         raise
 
 
-def prepare(cache, site, work, get=get_pointer):
+def prepare(cache, site, work, get=get_pointer, *, reconcile_history=False):
     try:
         cached = json.loads((cache / "catalogs.json").read_bytes())
         known = cached["catalogs"]
@@ -98,6 +98,10 @@ def prepare(cache, site, work, get=get_pointer):
                     or inventory(local) != entry["files"]):
                 entry = None
         except (OSError, ValueError, KeyError, TypeError):
+            entry = None
+        # Explicit recovery rechecks history even when the pointer is unchanged.
+        # Keep the prior inventory for confirm() to prevent losing known objects.
+        if reconcile_history:
             entry = None
         status, body, tag = get(namespace, entry.get("etag") if entry else None,
                                 optional=name != "pokemon" and name not in known)
@@ -173,9 +177,11 @@ def main():
     parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--site", type=Path, required=True)
     parser.add_argument("--work", type=Path, required=True)
+    parser.add_argument("--reconcile-history", action="store_true",
+                        help="Restore all revisions after historical origin recovery")
     args = parser.parse_args()
     if args.command == "prepare":
-        prepare(args.cache, args.site, args.work)
+        prepare(args.cache, args.site, args.work, reconcile_history=args.reconcile_history)
     elif args.command == "confirm":
         confirm(args.work, args.site)
     else:

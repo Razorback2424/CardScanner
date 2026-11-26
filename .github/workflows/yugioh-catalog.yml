@@ -6,6 +6,10 @@ on:
         description: "Publish the validated daily price feeds (does not activate a catalog)"
         type: boolean
         default: false
+      reconcile_catalog_history:
+        description: "Recheck all historical revisions after an origin repair (requires publish_prices)"
+        type: boolean
+        default: false
   schedule:
     - cron: "23 1,7,13,19 * * *"
 permissions:
@@ -247,10 +251,14 @@ jobs:
           PY
           bash scripts/verify_pokemon_catalog_hosting_config.sh
       - name: Restore every existing catalog alongside the prepared prices
+        env:
+          RECONCILE_CATALOG_HISTORY: ${{ inputs.reconcile_catalog_history == true }}
         run: |
           export CATALOG_RESTORE_CACHE_WORK="$RUNNER_TEMP/price-catalog-pointers"
+          reconcile=()
+          if [[ "$RECONCILE_CATALOG_HISTORY" == true ]]; then reconcile+=(--reconcile-history); fi
           python3 scripts/catalog_hosting_cache.py prepare --site publisher/site \
-            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$CATALOG_RESTORE_CACHE_WORK"
+            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$CATALOG_RESTORE_CACHE_WORK" "${reconcile[@]}"
           bash scripts/restore_catalog_hosting_site.sh \
             "$CATALOG_RESTORE_CACHE_WORK/pokemon-current.json" \
             "$CATALOG_RESTORE_CACHE_WORK/magic-current.json" publisher/site \
@@ -273,17 +281,6 @@ jobs:
             --prepared publisher/price-candidate/scopes
           python3 scripts/market_price_feeds.py check-publication-build --site-root publisher/site
           firebase deploy --only hosting:production --project "$FIREBASE_PROJECT_ID" --non-interactive
-      - name: Seal the verified catalog tree for the next price publication
-        id: catalog-cache
-        run: |
-          key=$(python3 scripts/catalog_hosting_cache.py seal --site publisher/site \
-            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$RUNNER_TEMP/price-catalog-pointers")
-          echo "key=$key" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache/save@v4
-        if: steps.catalog-cache.outputs.key != ''
-        with:
-          path: ${{ runner.temp }}/firebase-catalog-cache
-          key: firebase-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Verify published bytes from the origin
         run: |
           python3 - <<'PY'
@@ -300,3 +297,14 @@ jobs:
               relative = Path(namespace) / SCOPE_FILE
               assert read_http(f'{ORIGIN}/{relative}', MAX_SCOPE_BYTES) == (Path('publisher/site') / relative).read_bytes()
           PY
+      - name: Seal the verified catalog tree for the next price publication
+        id: catalog-cache
+        run: |
+          key=$(python3 scripts/catalog_hosting_cache.py seal --site publisher/site \
+            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$RUNNER_TEMP/price-catalog-pointers")
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/save@v4
+        if: steps.catalog-cache.outputs.key != ''
+        with:
+          path: ${{ runner.temp }}/firebase-catalog-cache
+          key: firebase-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
