@@ -206,6 +206,7 @@
 		A0020040 /* PortfolioLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020040 /* PortfolioLedgerTests.swift */; };
 		A0010035 /* CollectionFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010035 /* CollectionFilters.swift */; };
 		A0020020 /* CollectionQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020020 /* CollectionQueryTests.swift */; };
+		A0C0BA5E00000000000000A1 /* CollectionPrintingBaselineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C0BA5E00000000000000B1 /* CollectionPrintingBaselineTests.swift */; };
 		A0020060 /* PortfolioTrustPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020060 /* PortfolioTrustPassTests.swift */; };
 		A0020051 /* TCGplayerLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020051 /* TCGplayerLinkTests.swift */; };
 		A0020050 /* PortfolioReplayEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020050 /* PortfolioReplayEngineTests.swift */; };
@@ -589,6 +590,7 @@
 		B0010092 /* PortfolioReplaySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplaySnapshot.swift; sourceTree = "<group>"; };
 		B0010090 /* LogicalCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicalCollection.swift; sourceTree = "<group>"; };
 		B00100A0 /* TradingCardScanner-Local.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TradingCardScanner-Local.entitlements"; sourceTree = "<group>"; };
+		B00100A1 /* TradingCardScanner-Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "TradingCardScanner-Release.entitlements"; sourceTree = "<group>"; };
 		B0010087 /* PortfolioEpoch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEpoch.swift; sourceTree = "<group>"; };
 		B0010088 /* PortfolioClose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioClose.swift; sourceTree = "<group>"; };
 		B0010089 /* PortfolioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioEngine.swift; sourceTree = "<group>"; };
@@ -609,6 +611,7 @@
 		B0020040 /* PortfolioLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioLedgerTests.swift; sourceTree = "<group>"; };
 		B0010035 /* CollectionFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionFilters.swift; sourceTree = "<group>"; };
 		B0020020 /* CollectionQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQueryTests.swift; sourceTree = "<group>"; };
+		B0C0BA5E00000000000000B1 /* CollectionPrintingBaselineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionPrintingBaselineTests.swift; sourceTree = "<group>"; };
 		B0020060 /* PortfolioTrustPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioTrustPassTests.swift; sourceTree = "<group>"; };
 		B0020051 /* TCGplayerLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGplayerLinkTests.swift; sourceTree = "<group>"; };
 		B0020050 /* PortfolioReplayEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioReplayEngineTests.swift; sourceTree = "<group>"; };
@@ -855,6 +858,7 @@
 				B0010072 /* PrivacyInfo.xcprivacy */,
 				B0010073 /* TradingCardScanner.entitlements */,
 				B00100A0 /* TradingCardScanner-Local.entitlements */,
+				B00100A1 /* TradingCardScanner-Release.entitlements */,
 				B0010015 /* Info.plist */,
 				B00100C1 /* PokemonChecklistSnapshot */,
 				B00100E1 /* MagicTreatmentSnapshot */,
@@ -1209,6 +1213,7 @@
 				F30B00000000000000000016 /* LorcanaPricingTests.swift */,
 				F30B00000000000000000007,
 				B0020020 /* CollectionQueryTests.swift */,
+				B0C0BA5E00000000000000B1 /* CollectionPrintingBaselineTests.swift */,
 				B0020060 /* PortfolioTrustPassTests.swift */,
 				BF0A0002 /* AppOpeningTests.swift */,
 				B0020051 /* TCGplayerLinkTests.swift */,
@@ -1754,6 +1759,7 @@
 				F30A00000000000000000013,
 				F30A00000000000000000016 /* LorcanaPricingTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
+				A0C0BA5E00000000000000A1 /* CollectionPrintingBaselineTests.swift in Sources */,
 				A0020060 /* PortfolioTrustPassTests.swift in Sources */,
 				AF0A0002 /* AppOpeningTests.swift in Sources */,
 				A0020051 /* TCGplayerLinkTests.swift in Sources */,
@@ -2000,7 +2006,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Local.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Release.entitlements";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) NO_CLOUDKIT";
 				CODE_SIGN_STYLE = Automatic;
 			CURRENT_PROJECT_VERSION = 1;

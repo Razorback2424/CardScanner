@@ -195,6 +195,9 @@ actor PokemonCatalogCoordinator {
             Self.logger.info("Using bundled seed registry")
         }
         await installBundledReleaseIfNewer()
+        if let stored = await store.activeRelease, stored.release.revision == activeRevision {
+            await client.useVerifiedETag(for: stored.envelope, from: store.pointerETagURL)
+        }
         await diagnostics.recordLaunchLoad(mode: rolloutMode, duration: Date().timeIntervalSince(start),
             usedPersistedRelease: usedPersistedRelease)
     }
@@ -283,7 +286,12 @@ actor PokemonCatalogCoordinator {
             } else {
                 result = await validateAndDiscard(envelope)
             }
-            if case .rejected = result { await client.resetConditionalState() }
+            if case .rejected = result {
+                await client.resetConditionalState()
+            } else if rolloutMode == .remoteAuthority, let stored = await store.activeRelease,
+                      stored.release.revision == activeRevision, stored.envelope == envelope {
+                await client.rememberVerifiedETag(for: envelope, at: store.pointerETagURL)
+            }
             return result
         }
     }

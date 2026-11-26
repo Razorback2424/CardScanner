@@ -18,6 +18,7 @@ struct PortfolioCoverage: Equatable, Sendable {
 /// Everything the Today card needs, derived once.
 struct PortfolioSummary: Equatable, Sendable {
     var currentValue: Money = .zero
+    var oldestPriceAsOf: Date?
     var copyCount: Int?
     /// Absent on the first day of tracking, which genuinely has no yesterday.
     var attribution: PortfolioClose.Attribution?
@@ -598,6 +599,7 @@ final class PortfolioEngine: ObservableObject {
 
         var summary = PortfolioSummary(
             currentValue: valuation.value,
+            oldestPriceAsOf: valuation.oldestPriceAsOf,
             copyCount: valuation.copiesHeld,
             unpricedCount: valuation.unpricedCount,
             otherCurrencyCount: valuation.otherCurrencyCount
@@ -773,6 +775,7 @@ final class PortfolioEngine: ObservableObject {
 
     struct CurrentValuation: Sendable {
         var value: Money = .zero
+        var oldestPriceAsOf: Date?
         /// Nil when the count overflows; a display count never affects value.
         var copiesHeld: Int? = 0
         var unpricedCount: Int = 0
@@ -805,7 +808,8 @@ final class PortfolioEngine: ObservableObject {
             let instrumentKey = position.priceStorageKey
             instruments.insert(instrumentKey)
 
-            guard let price = valuations.valuation(for: instrumentKey).unitPrice else {
+            let quote = valuations.valuation(for: instrumentKey)
+            guard let price = quote.unitPrice else {
                 // Two different absences, kept apart because they mean
                 // different things to the person reading the total.
                 let isOtherCurrency = otherCurrencyInstruments.contains(instrumentKey)
@@ -826,6 +830,10 @@ final class PortfolioEngine: ObservableObject {
                 continue
             }
             valuation.value = total
+            if !positionValue.isZero, let date = quote.effectiveAt ?? quote.receivedAt,
+               valuation.oldestPriceAsOf.map({ date < $0 }) ?? true {
+                valuation.oldestPriceAsOf = date
+            }
         }
 
         valuation.instrumentsHeld = Array(instruments)

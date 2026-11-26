@@ -14,10 +14,12 @@ actor MagicCatalogReleaseStore {
     typealias StoredRelease = Core.StoredRelease
     typealias ActivationResult = SignedCatalogActivationResult
     private let core: Core
+    nonisolated let pointerETagURL: URL
 
     init(root: URL? = nil) {
         let root = root ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first!.appendingPathComponent("BrowseCatalogCache/MagicCatalogReleases", isDirectory: true)
+        pointerETagURL = root.appendingPathComponent("pointer-etag.json")
         core = Core(root: root, currentName: Slot.current.rawValue, previousName: Slot.previous.rawValue,
                     revisionPolicy: .activeRelease, revision: { $0.revision },
                     encode: { try MagicCatalogJSON.encode($0) })

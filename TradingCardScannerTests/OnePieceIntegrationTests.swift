@@ -10,7 +10,9 @@ private actor OnePieceTestPriceSource: OnePieceMarketPriceSource {
     var fails = false
     var calls = 0
     var lastMinimumFetchedAt: Date?
+    private var failedCapture: Date?
     func failRequests() { fails = true }
+    func retainAfterFailure(capturedAt: Date) { failedCapture = capturedAt }
     func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?,
                allowsStaleFallback: Bool) async throws -> PriceLookup {
         calls += 1
@@ -18,7 +20,8 @@ private actor OnePieceTestPriceSource: OnePieceMarketPriceSource {
         if fails { throw URLError(.timedOut) }
         return .price(.init(unitMarketPriceUSD: 8.16, currencyCode: "USD", source: .tcgCSV,
             sourceVariantID: "tcgplayer:\(mapping.productID):\(mapping.providerVariantID!)",
-            sourceUpdatedAt: nil, fetchedAt: .now))
+            sourceUpdatedAt: nil, fetchedAt: failedCapture ?? .now,
+            retainedAfterRefreshFailure: failedCapture == nil ? nil : true))
     }
 }
 
@@ -83,10 +86,12 @@ private actor OnePiecePriceRequestGate {
     private(set) var priceCalls = 0
     private let olderCapture: Date
     private let freshCapture: Date
+    private let withdrawsQuote: Bool
 
-    init(watermark: Date) {
+    init(watermark: Date, withdrawsQuote: Bool = false) {
         olderCapture = watermark.addingTimeInterval(-1)
         freshCapture = watermark.addingTimeInterval(1)
+        self.withdrawsQuote = withdrawsQuote
     }
 
     func response(_ request: URLRequest) async -> Data {
@@ -99,7 +104,10 @@ private actor OnePiecePriceRequestGate {
         priceCalls += 1
         // The fresh cohort finishes while the older products request is held.
         // Feed age belongs to its server capture, regardless of delivery order.
-        return MarketMirrorFixture.stamped(Data(#"{"success":true,"errors":[],"results":[{"productId":454664,"subTypeName":"Foil","marketPrice":8.16}]}"#.utf8), capturedAt: priceCalls == 1 ? freshCapture : olderCapture)
+        let body = priceCalls == 1 && withdrawsQuote
+            ? #"{"success":true,"errors":[],"results":[{"productId":454664,"subTypeName":"Foil","marketPrice":null}]}"#
+            : #"{"success":true,"errors":[],"results":[{"productId":454664,"subTypeName":"Foil","marketPrice":8.16}]}"#
+        return MarketMirrorFixture.stamped(Data(body.utf8), capturedAt: priceCalls == 1 ? freshCapture : olderCapture)
     }
 }
 
@@ -1764,6 +1772,24 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(record.sourceRaw, PriceSource.tcgCSV.rawValue)
         XCTAssertEqual(record.sourceVariantID, "tcgplayer:454664:Foil")
         XCTAssertNil(record.lastFailureAt)
+
+        let originalCapture = try XCTUnwrap(record.fetchedAt)
+        let originalSuccess = record.lastSuccessfulCheckAt
+        let originalCoverage = try context.fetchCount(FetchDescriptor<PriceCheckDay>())
+        await source.retainAfterFailure(capturedAt: originalCapture)
+        let retry = await worker.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false, intent: .manual),
+            progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(failedResult) = retry else { return XCTFail("Expected completed retry") }
+        XCTAssertEqual(failedResult.failed, 1)
+        XCTAssertEqual(failedResult.priced, 0)
+        let freshContext = ModelContext(container)
+        let retained = try XCTUnwrap(PriceStore(context: freshContext).record(forKey: record.key))
+        XCTAssertEqual(retained.effectiveUnitMarketPriceUSD, 8.16)
+        XCTAssertEqual(retained.fetchedAt, originalCapture)
+        XCTAssertEqual(retained.lastSuccessfulCheckAt, originalSuccess)
+        XCTAssertNotNil(retained.lastFailureAt)
+        XCTAssertEqual(try freshContext.fetchCount(FetchDescriptor<PriceCheckDay>()), originalCoverage)
     }
 
     func testOnePieceTCGCSVExactLaneAndDailyCache() async throws {
@@ -1789,22 +1815,17 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(cached, price)
         do { _ = try await source.quote(mapping: mapping, number: "OP01-001"); XCTFail() }
         catch PriceQuoteError.identityMismatch {}
-        OnePiecePriceTestProtocol.handler = validResponse
-        guard case let .price(refreshed) = try await relaunched.quote(mapping: mapping, number: "OP01-120", generation: "corrected-catalog") else { return XCTFail() }
-        XCTAssertGreaterThan(refreshed.fetchedAt, cached.fetchedAt)
-        OnePiecePriceTestProtocol.handler = { _ in Data("invalid network response".utf8) }
-        guard case let .price(sameGeneration) = try await relaunched.quote(mapping: mapping, number: "OP01-120", generation: "corrected-catalog") else { return XCTFail() }
-        XCTAssertEqual(sameGeneration, refreshed)
+        let unchanged = try await relaunched.quote(mapping: mapping, number: "OP01-120", generation: "new-catalog")
+        XCTAssertEqual(unchanged, .price(cached), "An unchanged product and finish retain the original capture across catalog revisions")
         OnePiecePriceTestProtocol.handler = validResponse
         guard case let .price(afterWithdrawal) = try await relaunched.quote(mapping: mapping, number: "OP01-120",
-            generation: "corrected-catalog", minimumFetchedAt: sameGeneration.fetchedAt) else { return XCTFail() }
-        XCTAssertGreaterThan(afterWithdrawal.fetchedAt, sameGeneration.fetchedAt)
+            generation: "new-catalog", minimumFetchedAt: cached.fetchedAt) else { return XCTFail() }
+        XCTAssertGreaterThan(afterWithdrawal.fetchedAt, cached.fetchedAt)
         async let oldGeneration = source.quote(mapping: mapping, number: "OP01-120", generation: "old-generation")
         async let newGeneration = source.quote(mapping: mapping, number: "OP01-120", generation: "new-generation")
         guard case let .price(oldPrice) = try await oldGeneration,
               case let .price(newPrice) = try await newGeneration else { return XCTFail() }
-        XCTAssertNotEqual(oldPrice.fetchedAt, newPrice.fetchedAt,
-            "Requests from different catalog generations must not share an in-flight snapshot")
+        XCTAssertEqual(oldPrice, newPrice)
     }
 
     func testCancelledDailyPriceWaiterPreservesSharedDownloadAndDiskCache() async throws {
@@ -1823,7 +1844,7 @@ final class OnePieceIntegrationTests: XCTestCase {
             session: URLSession(configuration: configuration), cacheDirectory: directory)
         let quote: @Sendable () async throws -> PriceLookup = {
             try await source.quote(category: 68, group: 3188, productID: 454664, name: "Shanks",
-                number: "OP01-120", lane: "Foil", generation: "shared", minimumFetchedAt: nil)
+                number: "OP01-120", lane: "Foil", minimumFetchedAt: nil)
         }
         let cancelled = expectation(description: "Price waiter exits while shared HTTP is still held")
         let original = Task {
@@ -1849,7 +1870,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         let reopened = TCGCSVProductPriceSource(baseURL: MarketMirrorFixture.baseURL,
             session: URLSession(configuration: configuration), cacheDirectory: directory)
         let cached = try await reopened.quote(category: 68, group: 3188, productID: 454664, name: "Shanks",
-            number: "OP01-120", lane: "Foil", generation: "shared", minimumFetchedAt: nil)
+            number: "OP01-120", lane: "Foil", minimumFetchedAt: nil)
         XCTAssertEqual(cached, result)
     }
 
@@ -1890,7 +1911,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceConcurrentPrice-\(UUID())")
         // Both server captures stay in the past and straddle this withdrawal.
         let watermark = Date.now.addingTimeInterval(-60)
-        let gate = OnePiecePriceRequestGate(watermark: watermark)
+        let gate = OnePiecePriceRequestGate(watermark: watermark, withdrawsQuote: true)
         OnePiecePriceTestProtocol.asyncHandler = { await gate.response($0) }
         defer {
             OnePiecePriceTestProtocol.asyncHandler = nil
@@ -1911,13 +1932,12 @@ final class OnePieceIntegrationTests: XCTestCase {
         await fulfillment(of: [completed], timeout: 5)
         await gate.firstRequest.resume()
         let quotes = try await freshRequests.value
-        guard case let .price(fresh) = quotes.0, case let .price(coalesced) = quotes.1 else { return XCTFail() }
-        XCTAssertGreaterThan(fresh.fetchedAt, watermark)
-        XCTAssertEqual(fresh, coalesced)
-        guard case let .price(older) = try await old.value else { return XCTFail() }
-        XCTAssertLessThan(older.fetchedAt, watermark)
-        guard case let .price(cached) = try await source.quote(mapping: mapping, number: "OP01-120", generation: "same-generation") else { return XCTFail() }
-        XCTAssertEqual(cached, fresh, "The older completion must not overwrite the newer cache")
+        XCTAssertEqual(quotes.0, .unavailable(.tcgCSV))
+        XCTAssertEqual(quotes.1, quotes.0)
+        let late = try await old.value
+        XCTAssertEqual(late, quotes.0, "A late reply cannot resurrect a withdrawn price")
+        let cached = try await source.quote(mapping: mapping, number: "OP01-120", generation: "same-generation")
+        XCTAssertEqual(cached, quotes.0, "The older completion must not overwrite the newer cache")
         let products = await gate.productCalls, prices = await gate.priceCalls
         XCTAssertEqual(products, 2)
         XCTAssertEqual(prices, 2)

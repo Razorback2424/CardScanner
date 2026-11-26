@@ -20,7 +20,7 @@ Use even lighting, avoid glare, and keep the whole card visible. Confirm the set
 
 ## Catalog and pricing
 
-Catalog downloads and fresh pricing require a working network connection. Saved collection records and available offline catalog data remain usable without one. If a provider is unavailable or rate-limited, wait before retrying. For JustTCG issues, check or remove the key in pricing settings without sending it to support. To limit background updates, use iOS Background App Refresh settings; requests while using the app can still occur. Prices are reference information and may be stale or unavailable; they do not guarantee a sale price or a professional grade.
+Catalog downloads and fresh pricing require a working network connection. Saved collection records and available offline catalog data remain usable without one. If a provider is unavailable or rate-limited, wait before retrying. Scanstash provides JustTCG pricing through its own service. If a pricing problem persists, email support with the card, finish, and message shown in the app. To limit background updates, use iOS Background App Refresh settings; requests while using the app can still occur. Prices are reference information and may be stale or unavailable; they do not guarantee a sale price or a professional grade.
 
 Lorcana collection saves and pricing currently cover reviewed ordinary English printings from the first eight expansions, with explicit Normal/Foil selection. Other cards may appear in Browse while pricing or Add is unavailable. Premium, promo, Quest, later-set and ambiguous printings remain outside that reviewed ordinary scope.
 
@@ -34,6 +34,6 @@ If the app reports a local storage error, avoid deleting app data and contact Su
 
 ## Deletion and privacy requests
 
-Delete Entire Collection in Settings → Collection removes card records and current ownership, but retains removal activity, inventory events, price records, and Value History. To remove local app files, use iOS Delete App rather than Offload App. Remove your JustTCG key separately first because Keychain entries may persist. Delete exported copies and backups separately using their storage service's controls.
+Delete Entire Collection in Settings → Collection removes card records and current ownership, but retains removal activity, inventory events, price records, and Value History. To remove local app files, use iOS Delete App rather than Offload App. Delete exported copies and backups separately using their storage service's controls.
 
 For help withdrawing permissions, removing local data, or accessing, correcting, or deleting information you emailed us, contact [Info@scan-stash.com](mailto:Info@scan-stash.com). We cannot remotely access your device-local collection. See the [Privacy Policy](privacy-policy.md) for retention and third-party request details.

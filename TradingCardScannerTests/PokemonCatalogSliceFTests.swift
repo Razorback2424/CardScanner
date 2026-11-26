@@ -150,7 +150,8 @@ final class PokemonCatalogSliceFTests: XCTestCase {
             keys: [SliceFFixture.pinnedKey], rolloutMode: .remoteAuthority,
             diagnostics: diagnostics, now: { clock.date }
         )
-        guard case .activated = await coordinator.activateEnvelope(try SliceFFixture.envelope()) else {
+        let envelope = try SliceFFixture.envelope()
+        guard case .activated = await coordinator.activateEnvelope(envelope) else {
             return XCTFail("Expected an active release before the failed update")
         }
 
@@ -174,8 +175,12 @@ final class PokemonCatalogSliceFTests: XCTestCase {
         let afterExplicitRetry = await diagnostics.snapshot()
         XCTAssertEqual(afterExplicitRetry.networkRequestCount, 2)
 
+        let data = try JSONEncoder().encode(envelope)
         SliceFURLProtocol.handler = { request in
-            (HTTPURLResponse(url: request.url!, statusCode: 304, httpVersion: nil, headerFields: nil)!, Data())
+            let tag = "\"slice-f-cooldown\""
+            let notModified = request.value(forHTTPHeaderField: "If-None-Match") == tag
+            return (HTTPURLResponse(url: request.url!, statusCode: notModified ? 304 : 200, httpVersion: nil,
+                                    headerFields: ["ETag": tag])!, notModified ? Data() : data)
         }
         clock.advance(1)
         guard case .notModified? = await coordinator.refreshAutomatically() else {
@@ -186,6 +191,16 @@ final class PokemonCatalogSliceFTests: XCTestCase {
         }
         let recovered = await diagnostics.snapshot()
         XCTAssertEqual(recovered.networkRequestCount, 4)
+        let reopened = PokemonCatalogCoordinator(
+            store: PokemonCatalogReleaseStore(root: root),
+            client: PokemonCatalogUpdateClient(session: session, diagnostics: diagnostics),
+            keys: [SliceFFixture.pinnedKey], rolloutMode: .remoteAuthority
+        )
+        SliceFURLProtocol.handler = { request in
+            XCTAssertEqual(request.value(forHTTPHeaderField: "If-None-Match"), "\"slice-f-cooldown\"")
+            return (HTTPURLResponse(url: request.url!, statusCode: 304, httpVersion: nil, headerFields: nil)!, Data())
+        }
+        guard case .notModified = await reopened.refresh() else { return XCTFail("Expected a conditional relaunch check") }
     }
 
     func testBundledValidationOnlyVerifiesAndDiscardsRemoteRelease() async throws {

@@ -3044,7 +3044,8 @@ final class PricingTests: XCTestCase {
             }
         }
         XCTAssertEqual(PokemonPriceSelection.preferred(embed: staleEmbed, tcgCSV: quote(.tcgCSV, daysOld: 7), now: now), staleEmbed)
-        XCTAssertNil(PokemonPriceSelection.preferred(embed: nil, tcgCSV: quote(.tcgCSV, daysOld: 7), now: now))
+        let historical = quote(.tcgCSV, daysOld: 31)
+        XCTAssertEqual(PokemonPriceSelection.preferred(embed: nil, tcgCSV: historical, now: now), historical)
     }
 
     func testMirrorDetailAttributionUsesPublisherCaptureDate() {
@@ -3055,8 +3056,35 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(quote.detailAttribution.first,
             "TCGplayer daily market snapshot · as of \(capture.formatted(date: .abbreviated, time: .shortened))")
         XCTAssertNil(quote.sourceUpdatedAt)
-        XCTAssertEqual(CatalogBrowseQuote(amount: 5, status: .stale, asOf: capture, source: .tcgCSV).freshnessLabel,
-            "Stale · as of \(capture.formatted(date: .abbreviated, time: .omitted))")
+        XCTAssertEqual(PriceDisplay.datedFreshnessLabel(asOf: capture, now: now),
+            "Updated 3 days ago · stale · \(capture.formatted(date: .abbreviated, time: .omitted))")
+        XCTAssertEqual(PriceDisplay.freshness(asOf: now.addingTimeInterval(-86_400), now: now), .current)
+        XCTAssertEqual(PriceDisplay.freshness(asOf: now.addingTimeInterval(-86_401), now: now), .stale(days: 1))
+        XCTAssertEqual(PriceDisplay.freshness(asOf: now.addingTimeInterval(-30 * 86_400), now: now), .stale(days: 30))
+        XCTAssertEqual(PriceDisplay.freshness(asOf: now.addingTimeInterval(-30 * 86_400 - 1), now: now), .historical)
+    }
+
+    func testDatedLabelSaysYesterdayForACurrentCaptureFromThePreviousDay() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        let now = calendar.date(from: DateComponents(year: 2026, month: 11, day: 26, hour: 9))!
+        let lateYesterday = now.addingTimeInterval(-10 * 3600)
+        XCTAssertEqual(PriceDisplay.freshness(asOf: lateYesterday, now: now), .current)
+        XCTAssertTrue(PriceDisplay.datedFreshnessLabel(asOf: lateYesterday, now: now, calendar: calendar)
+            .hasPrefix("Updated yesterday · "))
+        XCTAssertTrue(PriceDisplay.datedFreshnessLabel(asOf: now.addingTimeInterval(-3600), now: now, calendar: calendar)
+            .hasPrefix("Updated today · "))
+    }
+
+    func testBrowseQuoteKeptAfterFailedRefreshStillSaysSo() {
+        let recent = Date.now.addingTimeInterval(-600)
+        let kept = CatalogBrowseQuote(amount: 12, status: .stale, asOf: recent, source: .tcgCSV)
+        XCTAssertEqual(kept.freshnessLabel?.hasPrefix("Refresh failed · Updated"), true)
+        XCTAssertTrue(kept.canRetry)
+        let priced = CatalogBrowseQuote(amount: 12, status: .priced, asOf: recent, source: .tcgCSV)
+        XCTAssertEqual(priced.freshnessLabel?.hasPrefix("Updated"), true)
+        let old = CatalogBrowseQuote(amount: 12, status: .stale, asOf: Date.now.addingTimeInterval(-3 * 86_400), source: .tcgCSV)
+        XCTAssertEqual(old.freshnessLabel?.hasPrefix("Updated 3 days ago · stale"), true)
     }
 
     /// Every owned copy of a printing-and-variant shares one price record, so a

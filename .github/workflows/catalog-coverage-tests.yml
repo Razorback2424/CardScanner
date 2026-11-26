@@ -10,6 +10,8 @@ on:
       - "Config/*Catalog*.xcconfig"
       - "TestFixtures/TradingCards/**"
       - "publisher/catalog-input.json"
+      - "publisher/pokemon-battle-deck-finishes.json"
+      - "publisher/pokemon-deck-exclusive-normals.json"
       - "publisher/pokemon-mcdonalds-2026.json"
       - "publisher/pokemon-delta-reign-printings.json"
       - "publisher/pokemon-prize-pack-printings.json"
@@ -58,6 +60,34 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin "$CATALOG_BASE_SHA"
           python3 scripts/audit_catalog_coverage.py --repo . --output "$RUNNER_TEMP/catalog-coverage" --lorcana-baseline-ref "$CATALOG_BASE_SHA"
+      - name: Compare retained catalogs against the pull request base
+        shell: bash
+        env:
+          CATALOG_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          baseline=$(mktemp -d "$RUNNER_TEMP/catalog-parity.XXXXXX")
+          git archive "$CATALOG_BASE_SHA" \
+            TradingCardScanner/PokemonChecklistSnapshot TradingCardScanner/PokemonCatalogRelease \
+            TradingCardScanner/Services/PokemonTCGCSVMapping.swift \
+            TradingCardScanner/LorcanaCatalogSeed TradingCardScanner/OnePieceCatalogSeed \
+            TradingCardScanner/OnePieceOwnerCatalog TradingCardScanner/YuGiOhCatalogSeed \
+            publisher/pokemon-battle-deck-finishes.json publisher/pokemon-deck-exclusive-normals.json \
+            publisher/pokemon-delta-reign-printings.json publisher/pokemon-mcdonalds-2026.json \
+            publisher/pokemon-prize-pack-printings.json | tar -xf - -C "$baseline"
+          compare() {
+            local game="$1" name="$2" before="$3" after="$4"
+            local allowlist="scripts/catalog_parity_allowlists/$name.json"
+            local -a approvals=()
+            if [[ -f "$allowlist" ]] && ! git diff --quiet "$CATALOG_BASE_SHA" HEAD -- "$allowlist"; then
+              approvals=(--allowlist "$allowlist")
+            fi
+            python3 scripts/catalog_parity.py "$game" --before "$before" --after "$after" "${approvals[@]}"
+          }
+          compare pokemon pokemon "$baseline" .
+          compare lorcana lorcana "$baseline/TradingCardScanner/LorcanaCatalogSeed" TradingCardScanner/LorcanaCatalogSeed
+          compare one-piece one-piece "$baseline/TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json" TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json
+          compare one-piece one-piece-owner "$baseline/TradingCardScanner/OnePieceOwnerCatalog/one-piece-owner-catalog.json" TradingCardScanner/OnePieceOwnerCatalog/one-piece-owner-catalog.json
+          compare yugioh yugioh "$baseline/TradingCardScanner/YuGiOhCatalogSeed/catalog.json" TradingCardScanner/YuGiOhCatalogSeed/catalog.json
       - name: Retain the catalog census
         if: always()
         uses: actions/upload-artifact@v4

@@ -6,6 +6,10 @@ on:
         description: "Publish the validated daily price feeds (does not activate a catalog)"
         type: boolean
         default: false
+      reconcile_catalog_history:
+        description: "Recheck all historical revisions after an origin repair (requires publish_prices)"
+        type: boolean
+        default: false
   schedule:
     - cron: "23 1,7,13,19 * * *"
 permissions:
@@ -50,7 +54,15 @@ jobs:
             ${{ runner.temp }}/yugioh-source
             ${{ runner.temp }}/market-price-source
           key: tcgcsv-daily-${{ steps.upstream.outputs.build_hash }}
+      # The approved parent can be 68 MB. Keep the last copy and revalidate it
+      # with its ETag so an unchanged parent costs a 304, not a full download.
+      - uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/yugioh-parent-cache
+          key: yugioh-approved-parent-v1-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: yugioh-approved-parent-v1-
       - name: Resolve the latest verified approved parent
+        id: approved-parent
         env:
           APPROVED_PARENT_URL: ${{ vars.YUGIOH_APPROVED_PARENT_URL }}
         run: |
@@ -63,11 +75,32 @@ jobs:
             https://scanstash-catalog-prod.web.app/yugioh/v1/current.json|https://catalog.scan-stash.com/yugioh/v1/current.json) ;;
             *) echo "Unapproved parent origin/path" >&2; exit 1 ;;
           esac
-          curl --fail --proto '=https' --tlsv1.2 --max-filesize 68157440 --max-time 60 \
-            "$APPROVED_PARENT_URL" -o "$RUNNER_TEMP/yugioh-approved-parent.json"
+          cache="$RUNNER_TEMP/yugioh-parent-cache"
+          mkdir -p "$cache"
+          rm -f "$cache/parent.download" "$cache/etag.new"
+          etag_args=(--etag-save "$cache/etag.new")
+          if [ -s "$cache/parent.json" ] && [ -s "$cache/etag" ]; then
+            etag_args+=(--etag-compare "$cache/etag")
+          fi
+          status=$(curl --fail --proto '=https' --tlsv1.2 --compressed --max-filesize 68157440 --max-time 60 \
+            "${etag_args[@]}" -w '%{http_code}' "$APPROVED_PARENT_URL" -o "$cache/parent.download")
+          case "$status" in
+            304) echo "Approved parent unchanged; reusing the cached copy" ;;
+            200) mv "$cache/parent.download" "$cache/parent.json"; mv "$cache/etag.new" "$cache/etag" ;;
+            *) echo "Unexpected approved parent status $status" >&2; exit 1 ;;
+          esac
+          # The cached copy is verified against the pinned keys below on every run.
+          cp "$cache/parent.json" "$RUNNER_TEMP/yugioh-approved-parent.json"
+          echo "key=$(shasum -a 256 "$cache/parent.json" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
           "$RUNNER_TEMP/yugioh-publisher" export-parent --input "$RUNNER_TEMP/yugioh-approved-parent.json" \
             --keys Config/YuGiOhCatalogProduction.keys.json --output "$RUNNER_TEMP/yugioh-approved-parent-catalog.json"
           echo "YUGIOH_PREVIOUS_SEED=$RUNNER_TEMP/yugioh-approved-parent-catalog.json" >> "$GITHUB_ENV"
+      - uses: actions/cache/save@v4
+        if: steps.approved-parent.outputs.key != ''
+        continue-on-error: true
+        with:
+          path: ${{ runner.temp }}/yugioh-parent-cache
+          key: yugioh-approved-parent-v1-${{ steps.approved-parent.outputs.key }}
       - name: Ingest once on the server and stage a candidate
         shell: bash
         run: |
@@ -96,28 +129,53 @@ jobs:
             --user-agent 'ScanStashPricePublisher/1.0' \
             https://tcgcsv.com/last-updated.txt -o "$RUNNER_TEMP/yugioh-source/source-build-end.txt"
           cmp "$RUNNER_TEMP/yugioh-source/source-build-start.txt" "$RUNNER_TEMP/yugioh-source/source-build-end.txt"
-      - name: Verify the active One Piece pricing scope
+      - name: Capture the active catalog pricing scopes
         run: |
-          python3 - "$RUNNER_TEMP/one-piece-price-scope.json" <<'PY'
-          import sys
+          python3 - <<'PY'
+          import os, shutil, subprocess, sys
           from pathlib import Path
           sys.path.insert(0, 'scripts')
-          from market_price_feeds import ORIGIN, read_http
+          from market_price_feeds import (CATALOG_NAMESPACES, MAX_SCOPE_BYTES, ORIGIN, SCOPE_FILE,
+                                         catalog_scope, read_http, validate_catalog_scope)
 
-          data = read_http(f'{ORIGIN}/one-piece/v1/current.json', 64 * 1024 * 1024, absent_ok=True)
-          if data is None:
-              data = Path('TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json').read_bytes()
-          Path(sys.argv[1]).write_bytes(data)
+          work = Path(os.environ['RUNNER_TEMP'])
+          fallback = work / 'catalog-scope-fallback'
+          for game, (_, namespace) in CATALOG_NAMESPACES.items():
+              relative = Path(namespace) / SCOPE_FILE
+              data = read_http(f'{ORIGIN}/{relative}', MAX_SCOPE_BYTES, absent_ok=True)
+              if data is None:
+                  # First deployment can rebuild the sidecars from the same signed
+                  # inputs the legacy workflow already uses.
+                  pointer = fallback / namespace / 'current.json'
+                  pointer.parent.mkdir(parents=True, exist_ok=True)
+                  if game == 'one-piece':
+                      active = read_http(f'{ORIGIN}/{namespace}/current.json', 64 * 1024 * 1024, absent_ok=True)
+                      if active is not None:
+                          pointer.write_bytes(active)
+                      verification_input = pointer if active is not None else Path(
+                          'TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json')
+                      pins = work / 'one-piece-app-pins.json'
+                      subprocess.run(['python3', 'scripts/one_piece_pinned_keys.py',
+                                      'Config/OnePieceCatalogProduction.xcconfig', pins], check=True)
+                      subprocess.run(['swift', 'run', '--package-path', 'OnePieceCatalogCore',
+                                      'one-piece-catalog-publisher', 'verify-hosted-release',
+                                      '--input', verification_input, '--trusted-keys', pins], check=True)
+                  else:
+                      parent = work / 'yugioh-approved-parent.json'
+                      if parent.is_file():
+                          shutil.copyfile(parent, pointer)
+                  data = catalog_scope(Path('.'), fallback, game)
+              validate_catalog_scope(data, game)
+              captured = work / 'price-candidate/scopes' / relative
+              captured.parent.mkdir(parents=True, exist_ok=True)
+              captured.write_bytes(data)
           PY
-          python3 scripts/one_piece_pinned_keys.py Config/OnePieceCatalogProduction.xcconfig "$RUNNER_TEMP/one-piece-app-pins.json"
-          swift run --package-path OnePieceCatalogCore one-piece-catalog-publisher verify-hosted-release \
-            --input "$RUNNER_TEMP/one-piece-price-scope.json" --trusted-keys "$RUNNER_TEMP/one-piece-app-pins.json"
       - name: Prepare scoped prices using the same YGO capture
         run: >-
           python3 scripts/market_price_feeds.py prepare
           --cache-dir "${RUNNER_TEMP}/market-price-source"
           --yugioh-source "${RUNNER_TEMP}/yugioh-source"
-          --verified-one-piece-envelope "${RUNNER_TEMP}/one-piece-price-scope.json"
+          --catalog-scopes "${RUNNER_TEMP}/price-candidate/scopes"
           --site-root "${RUNNER_TEMP}/price-candidate/site"
           --report "${RUNNER_TEMP}/price-candidate/report.json"
       - uses: actions/upload-artifact@v4
@@ -161,6 +219,14 @@ jobs:
       FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/firebase-catalog-cache
+          key: firebase-catalog-restore-v1-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: firebase-catalog-restore-v1-
       - uses: actions/download-artifact@v4
         with:
           name: market-price-feeds
@@ -185,32 +251,20 @@ jobs:
           PY
           bash scripts/verify_pokemon_catalog_hosting_config.sh
       - name: Restore every existing catalog alongside the prepared prices
+        env:
+          RECONCILE_CATALOG_HISTORY: ${{ inputs.reconcile_catalog_history == true }}
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          from urllib.error import HTTPError
-          import os, sys
-          sys.path.insert(0, 'scripts')
-          from market_price_feeds import read_http, ORIGIN
-          root = Path(os.environ['RUNNER_TEMP']) / 'price-catalog-pointers'
-          root.mkdir(parents=True, exist_ok=True)
-          for name, namespace in [('pokemon', 'v1'), ('magic', 'magic/v1')]:
-              path = root / (name + '-current.json')
-              try:
-                  raw = read_http(ORIGIN + '/' + namespace + '/current.json', 68 * 1024 * 1024, absent_ok=name == 'magic')
-              except HTTPError as error:
-                  if name == 'pokemon' and error.code == 404:
-                      sys.exit('::error::Production pointer v1/current.json is missing; restore the last verified Pokémon release before deploying the shared site.')
-                  raise
-              if raw is None:
-                  path.unlink(missing_ok=True)
-              else:
-                  path.write_bytes(raw)
-          PY
+          export CATALOG_RESTORE_CACHE_WORK="$RUNNER_TEMP/price-catalog-pointers"
+          reconcile=()
+          if [[ "$RECONCILE_CATALOG_HISTORY" == true ]]; then reconcile+=(--reconcile-history); fi
+          python3 scripts/catalog_hosting_cache.py prepare --site publisher/site \
+            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$CATALOG_RESTORE_CACHE_WORK" "${reconcile[@]}"
           bash scripts/restore_catalog_hosting_site.sh \
-            "$RUNNER_TEMP/price-catalog-pointers/pokemon-current.json" \
-            "$RUNNER_TEMP/price-catalog-pointers/magic-current.json" publisher/site \
-            https://scanstash-catalog-prod.web.app
+            "$CATALOG_RESTORE_CACHE_WORK/pokemon-current.json" \
+            "$CATALOG_RESTORE_CACHE_WORK/magic-current.json" publisher/site \
+            https://scanstash-catalog-prod.web.app PokemonCatalogCore Config/PokemonCatalogProduction.xcconfig \
+            MagicCatalogCore Config/MagicCatalogProduction.xcconfig "$CATALOG_RESTORE_CACHE_WORK/one-piece-current.json" \
+            OnePieceCatalogCore Config/OnePieceCatalogProduction.xcconfig "$CATALOG_RESTORE_CACHE_WORK/yugioh-current.json"
       - name: Install Firebase CLI
         run: npm install --global firebase-tools@13.35.1
       - name: Publish the complete preserved site
@@ -221,6 +275,11 @@ jobs:
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$service_account_file"
           export GOOGLE_APPLICATION_CREDENTIALS="$service_account_file"
           firebase target:apply hosting production "$FIREBASE_HOSTING_SITE_ID" --project "$FIREBASE_PROJECT_ID"
+          python3 scripts/catalog_hosting_cache.py confirm --site publisher/site \
+            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$RUNNER_TEMP/price-catalog-pointers"
+          python3 scripts/market_price_feeds.py check-catalog-scopes --site-root publisher/site \
+            --prepared publisher/price-candidate/scopes
+          python3 scripts/market_price_feeds.py check-publication-build --site-root publisher/site
           firebase deploy --only hosting:production --project "$FIREBASE_PROJECT_ID" --non-interactive
       - name: Verify published bytes from the origin
         run: |
@@ -228,9 +287,24 @@ jobs:
           from pathlib import Path
           import sys
           sys.path.insert(0, 'scripts')
-          from market_price_feeds import restore, NAMESPACE
+          from market_price_feeds import (CATALOG_NAMESPACES, MAX_SCOPE_BYTES, NAMESPACE, ORIGIN,
+                                         SCOPE_FILE, read_http, restore)
           destination = Path('publisher/price-readback')
           assert restore(destination, require_fresh=True)
           expected = Path('publisher/site') / NAMESPACE / 'index.json'
           assert (destination / NAMESPACE / 'index.json').read_bytes() == expected.read_bytes()
+          for _, namespace in CATALOG_NAMESPACES.values():
+              relative = Path(namespace) / SCOPE_FILE
+              assert read_http(f'{ORIGIN}/{relative}', MAX_SCOPE_BYTES) == (Path('publisher/site') / relative).read_bytes()
           PY
+      - name: Seal the verified catalog tree for the next price publication
+        id: catalog-cache
+        run: |
+          key=$(python3 scripts/catalog_hosting_cache.py seal --site publisher/site \
+            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$RUNNER_TEMP/price-catalog-pointers")
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/save@v4
+        if: steps.catalog-cache.outputs.key != ''
+        with:
+          path: ${{ runner.temp }}/firebase-catalog-cache
+          key: firebase-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
