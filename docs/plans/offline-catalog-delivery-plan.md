@@ -1,6 +1,6 @@
 # Offline-first, outage-resilient catalog and price delivery
 
-**Status** · current plan, 2026-11-26. The owner approved the direction after review. Stage 1 code is merged: [#62](https://github.com/Razorback2424/CardScanner/pull/62) (hosting and CI bandwidth, `3a2fd71`), [#63](https://github.com/Razorback2424/CardScanner/pull/63) (app pricing reliability, `404e94c`) and [#64](https://github.com/Razorback2424/CardScanner/pull/64) (release preparation, `5c566e5`). Stage 1 is **not closed**: the price-publish readback, a populated memory measurement and budget approval remain (see Stage 1 status). Stages 2–5 have not started. Stage evidence lives in [`offline-catalog-delivery-stage-1.md`](offline-catalog-delivery-stage-1.md).
+**Status** · current plan, 2026-11-26. The owner approved the direction after review. Stage 1 code is merged: [#62](https://github.com/Razorback2424/CardScanner/pull/62) (hosting and CI bandwidth, `3a2fd71`), [#63](https://github.com/Razorback2424/CardScanner/pull/63) (app pricing reliability, `404e94c`) and [#64](https://github.com/Razorback2424/CardScanner/pull/64) (release preparation, `5c566e5`). Stage 1 is **not closed**: the populated memory measurement exceeds the proposed budget and needs an owner decision (see Stage 1 status). Stages 2–5 have not started. Stage evidence lives in [`offline-catalog-delivery-stage-1.md`](offline-catalog-delivery-stage-1.md).
 
 **Owner decisions recorded here:**
 - Static hosting moves to Cloudflare R2. The pricing proxy's Functions, Firestore and App Check stay on Firebase.
@@ -126,11 +126,11 @@ The Python selections passed too: 82 catalog and market-feed cases, and 60 scope
 **Still open before Stage 1 closes.** The project moved to Blaze on 2026-11-26 and hosting serves again; items 1 and 2 are done:
 1. **Done: production revision inventory** (Stage 1 item 9). The origin holds only Pokémon revisions 1–26, One Piece revisions 1–7 and one price build; there are no hosted Yu-Gi-Oh, Magic or Lorcana catalogs, so no parent chains to retain. Everything is kept. Details in the evidence document.
 2. **Done: HTTPS rollback rehearsal.** The custom-domain certificate validates; all 1,497 files match the inventory hashes; both signed pointers verify against the pinned keys and match what the app ships.
-3. **Production readback of the price scope files** (`market-price-scope.json`): one scheduled price publish observed end to end, reading only the compact scopes and leaving the restore cache warm for the next run.
-4. **Fully populated memory measurement:** every game browsed and priced plus a collection refresh, with hosted updates arriving. The current numbers were taken while production returned 509.
-5. **Owner approval of the budgets,** as scoped in the gate section above. The memory budget stays provisional until item 4 is measured.
+3. **Done: production price publish.** Run `45900178304` published today's build, created the scope sidecars, read them back from the origin and saved the restore cache. The next scheduled run should confirm a warm-cache publish.
+4. **Done: populated memory measurement.** Session peak 629.5 MB and later-launch peak 491.9 MB on the simulator, driven by the 49.9 MB hosted One Piece revision 7 envelope. This exceeds the proposed 400 MB budget.
+5. **Owner decision on the budgets.** Either accept the measured memory as the Stage 1 baseline and make "under 400 MB" a Stage 3 exit criterion, or treat it as a release blocker now. Device measurements remain outstanding either way.
 
-Stage 1 closes when items 3 and 4 are recorded in the evidence document and item 5 is approved.
+Stage 1 closes when item 5 is decided. A follow-up, outside Stage 1's acceptance: make "Retry Prices" and the Portfolio refresh re-check the price build marker, which is cached for six hours.
 
 ## Stage 1: stabilize the current app (no format or host changes)
 
