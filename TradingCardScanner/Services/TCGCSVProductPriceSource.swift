@@ -113,14 +113,20 @@ struct TCGCSVSnapshotFiles {
         guard let data = try? handle.read(upToCount: maxBytes + 1), data.count <= maxBytes,
               let value = try? JSONDecoder().decode(Value.self, from: data), validating(value) else { return nil }
         if source == destination {
-            if let lastAccess = try? source.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate,
-               Date.now.timeIntervalSince(lastAccess) >= TCGCSVPriceMirror.refreshAfter {
-                try? files.setAttributes([.modificationDate: Date.now], ofItemAtPath: source.path)
-            }
+            touch(name)
         } else {
             save(data, as: name)
         }
         return value
+    }
+
+    /// Marks a group as recently used for the LRU eviction in `save`. Throttled
+    /// so frequent in-memory hits do not turn into a file write per request.
+    func touch(_ name: String) {
+        let url = directory.appendingPathComponent(name)
+        guard let lastAccess = try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate,
+              Date.now.timeIntervalSince(lastAccess) >= TCGCSVPriceMirror.refreshAfter else { return }
+        try? FileManager.default.setAttributes([.modificationDate: Date.now], ofItemAtPath: url.path)
     }
 
     @discardableResult
@@ -281,7 +287,34 @@ actor TCGCSVProductPriceSource {
         let productID: Int
         let lane: String
     }
-    private var snapshots: [GroupKey: Snapshot] = [:]
+    /// Decoded groups kept in memory, bounded by count. An evicted group is
+    /// reloaded from disk on its next use, without a network request.
+    private struct RecentSnapshots {
+        let limit: Int
+        private var values: [GroupKey: Snapshot] = [:]
+        private var lastUse: [GroupKey: UInt64] = [:]
+        private var clock: UInt64 = 0
+        init(limit: Int) { self.limit = max(1, limit) }
+        var count: Int { values.count }
+        subscript(key: GroupKey) -> Snapshot? {
+            mutating get {
+                guard let value = values[key] else { return nil }
+                clock += 1; lastUse[key] = clock
+                return value
+            }
+            set {
+                clock += 1
+                values[key] = newValue
+                lastUse[key] = newValue == nil ? nil : clock
+                while values.count > limit, let oldest = lastUse.min(by: { $0.value < $1.value })?.key {
+                    values[oldest] = nil; lastUse[oldest] = nil
+                }
+            }
+        }
+    }
+    private var snapshots: RecentSnapshots
+    /// Test and diagnostics hook: how many decoded groups are resident.
+    var residentGroupCount: Int { snapshots.count }
     private struct PendingSnapshot {
         let task: Task<Snapshot, Error>
         let forced: Bool
@@ -293,8 +326,9 @@ actor TCGCSVProductPriceSource {
          session: URLSession = TCGCSVPriceMirror.session,
          cacheDirectory: URL? = nil,
          now: @escaping @Sendable () -> Date = { .now }, marker: TCGCSVMirrorBuildMarker? = nil,
-         spacing: TimeInterval = 0.1) {
+         spacing: TimeInterval = 0.1, memoryGroupLimit: Int = 64) {
         self.session = session; self.baseURL = baseURL
+        self.snapshots = RecentSnapshots(limit: memoryGroupLimit)
         self.files = cacheDirectory.map { TCGCSVSnapshotFiles(directory: $0, legacyDirectory: nil, byteLimit: .max) }
             ?? .live("TCGCSVProductPrices-v1", byteLimit: 128 * 1_024 * 1_024)
         self.now = now
@@ -381,7 +415,7 @@ actor TCGCSVProductPriceSource {
         // against its current mapping before the shared group can yield a price.
         let key = CacheKey(group: group, minimumFetchedAt: minimumFetchedAt)
         let name = "\(group.category)-\(group.group).json"
-        if snapshots[group] == nil { snapshots[group] = load(group: group, name: name) }
+        if snapshots[group] == nil { snapshots[group] = load(group: group, name: name) } else { files.touch(name) }
         let cached = snapshots[group].flatMap { value in
             (minimumFetchedAt.map { value.fetchedAt > $0 } ?? true)
                 ? value : nil

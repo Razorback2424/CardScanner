@@ -1474,8 +1474,10 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         server.advance(7 * 3600)
         server.publish(build: ISO8601DateFormatter().string(from: server.now.addingTimeInterval(-60)))
         server.fail = true
-        let afterFailure = try await collectionQuote()
-        XCTAssertEqual(afterFailure, .price(updated), "After a failed check the dated quote is still shown")
+        guard case let .price(afterFailure) = try await collectionQuote() else { return XCTFail("Expected the kept quote") }
+        XCTAssertEqual(afterFailure.unitMarketPriceUSD, updated.unitMarketPriceUSD, "After a failed check the dated quote is kept")
+        XCTAssertEqual(afterFailure.fetchedAt, updated.fetchedAt, "Keeping it does not restamp its capture date")
+        XCTAssertEqual(afterFailure.retainedAfterRefreshFailure, true, "The refresh is still reported as failed")
     }
 
     func testPriceStillServesWhenTheSnapshotCannotBeSavedToDisk() async throws {
@@ -1504,6 +1506,35 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         server.fail = true
         let duringOutage = try await quote()
         XCTAssertEqual(duringOutage, .price(first), "The in-memory snapshot still serves during an outage")
+    }
+
+    func testInMemoryGroupsStayBoundedAndEvictedGroupsReloadFromDisk() async throws {
+        var routes = ["/last-updated.txt": Data("2026-09-29T20:05:57+0000".utf8)]
+        for group in 1...40 {
+            routes["/tcgplayer/71/\(group)/products"] = Data(#"{"success":true,"errors":[],"results":[{"productId":1,"categoryId":71,"groupId":\#(group),"name":"Fixture","extendedData":[]}]}"#.utf8)
+            routes["/tcgplayer/71/\(group)/prices"] = Data(#"{"success":true,"errors":[],"results":[{"productId":1,"subTypeName":"Normal","marketPrice":4}]}"#.utf8)
+        }
+        let server = TCGCSVTestServer(routes: routes, now: date)
+        TCGCSVTestURLProtocol.server = server
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: root) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let source = TCGCSVProductPriceSource(baseURL: MarketMirrorFixture.baseURL,
+            session: URLSession(configuration: configuration), cacheDirectory: root, now: { server.now },
+            spacing: 0, memoryGroupLimit: 8)
+        func quote(_ group: Int) async throws -> PriceLookup {
+            try await source.quote(category: 71, group: group, productID: 1, name: "Fixture", number: nil,
+                lane: "Normal", minimumFetchedAt: nil)
+        }
+        for group in 1...40 {
+            guard case .price = try await quote(group) else { return XCTFail("Expected a quote for group \(group)") }
+            let resident = await source.residentGroupCount
+            XCTAssertLessThanOrEqual(resident, 8)
+        }
+        let requests = server.requests.count
+        guard case .price = try await quote(1) else { return XCTFail("An evicted group must still quote") }
+        XCTAssertEqual(server.requests.count, requests, "An evicted group reloads from disk, not the network")
     }
 
     func testCompleteSnapshotOutranksLegacyImportWhateverItsTimestamp() {
