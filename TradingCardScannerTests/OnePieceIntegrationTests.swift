@@ -10,7 +10,9 @@ private actor OnePieceTestPriceSource: OnePieceMarketPriceSource {
     var fails = false
     var calls = 0
     var lastMinimumFetchedAt: Date?
+    private var failedCapture: Date?
     func failRequests() { fails = true }
+    func retainAfterFailure(capturedAt: Date) { failedCapture = capturedAt }
     func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?,
                allowsStaleFallback: Bool) async throws -> PriceLookup {
         calls += 1
@@ -18,7 +20,8 @@ private actor OnePieceTestPriceSource: OnePieceMarketPriceSource {
         if fails { throw URLError(.timedOut) }
         return .price(.init(unitMarketPriceUSD: 8.16, currencyCode: "USD", source: .tcgCSV,
             sourceVariantID: "tcgplayer:\(mapping.productID):\(mapping.providerVariantID!)",
-            sourceUpdatedAt: nil, fetchedAt: .now))
+            sourceUpdatedAt: nil, fetchedAt: failedCapture ?? .now,
+            retainedAfterRefreshFailure: failedCapture == nil ? nil : true))
     }
 }
 
@@ -1769,6 +1772,24 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(record.sourceRaw, PriceSource.tcgCSV.rawValue)
         XCTAssertEqual(record.sourceVariantID, "tcgplayer:454664:Foil")
         XCTAssertNil(record.lastFailureAt)
+
+        let originalCapture = try XCTUnwrap(record.fetchedAt)
+        let originalSuccess = record.lastSuccessfulCheckAt
+        let originalCoverage = try context.fetchCount(FetchDescriptor<PriceCheckDay>())
+        await source.retainAfterFailure(capturedAt: originalCapture)
+        let retry = await worker.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false, intent: .manual),
+            progress: { _ in }, shouldContinue: nil)
+        guard case let .completed(failedResult) = retry else { return XCTFail("Expected completed retry") }
+        XCTAssertEqual(failedResult.failed, 1)
+        XCTAssertEqual(failedResult.priced, 0)
+        let freshContext = ModelContext(container)
+        let retained = try XCTUnwrap(PriceStore(context: freshContext).record(forKey: record.key))
+        XCTAssertEqual(retained.effectiveUnitMarketPriceUSD, 8.16)
+        XCTAssertEqual(retained.fetchedAt, originalCapture)
+        XCTAssertEqual(retained.lastSuccessfulCheckAt, originalSuccess)
+        XCTAssertNotNil(retained.lastFailureAt)
+        XCTAssertEqual(try freshContext.fetchCount(FetchDescriptor<PriceCheckDay>()), originalCoverage)
     }
 
     func testOnePieceTCGCSVExactLaneAndDailyCache() async throws {

@@ -61,6 +61,25 @@ class CatalogHostingCacheTests(unittest.TestCase):
             (self.work / f"{name}-verified-through").write_text("2\n")
         self.assertEqual(hosting.seal(self.cache, self.site, self.work), "")
 
+    def test_explicit_reconciliation_rechecks_history_even_with_unchanged_pointer(self):
+        self.seal_verified_fixture()
+        hosting.prepare(self.cache, self.site, self.work, get=self.fetch, reconcile_history=True)
+        self.assertIn(("v1", None), self.requests)
+        self.assertFalse((self.work / "pokemon-cached-through").exists())
+        for name, namespace in hosting.NAMESPACES.items():
+            if namespace not in self.origin:
+                continue
+            root = self.site / namespace
+            for revision in (1, 2):
+                release = root / "releases" / str(revision) / "catalog-release.json"
+                release.parent.mkdir(parents=True)
+                release.write_bytes(f"{name}-{revision}".encode())
+            (root / "current.json").write_bytes(self.origin[namespace][0])
+        hosting.confirm(self.work, self.site, get=self.fetch)
+        (self.site / "v1/releases/1/catalog-release.json").unlink()
+        with self.assertRaisesRegex(ValueError, "lost or changed"):
+            hosting.confirm(self.work, self.site, get=self.fetch)
+
     def test_changed_namespace_reuses_old_files_while_other_pointer_returns_304(self):
         self.seal_verified_fixture()
         self.origin["one-piece/v1"] = (b"one-piece-3", '"one-piece-3"')
