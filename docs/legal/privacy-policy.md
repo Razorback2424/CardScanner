@@ -30,9 +30,11 @@ To support scheduled price refresh after the device has been unlocked once, the 
 
 ## Catalog and pricing requests
 
-To identify cards and retrieve catalog, artwork, or pricing information, Scanstash sends card, set, printing, product, and search identifiers to the providers used by the feature, including TCGdex, Scryfall, Pokémon TCG API, TCGCSV, and optional JustTCG requests. Automatic price refresh can make requests for cards in your collection. Providers and their hosting infrastructure receive the network information needed to serve requests, such as your IP address, request time, and requested resource; their retention practices govern any server logs. These requests support catalog and pricing features and are not used by Scanstash for advertising or cross-app tracking.
+To identify cards and retrieve catalog, artwork, or pricing information, Scanstash sends card, set, printing, product, and search identifiers to the providers used by the feature, including TCGdex, Scryfall, Pokémon TCG API, and the TCGCSV market feed. Automatic price refresh can make requests for cards in your collection. Providers and their hosting infrastructure receive the network information needed to serve requests, such as your IP address, request time, and requested resource; their retention practices govern any server logs. These requests support catalog and pricing features and are not used by Scanstash for advertising or cross-app tracking.
 
-A user-provided JustTCG key is stored in the device Keychain and sent to JustTCG to authenticate requests. It may associate requests with your JustTCG account. Remove the key using the pricing settings' key-removal control; do not rely on uninstalling the app to remove Keychain entries. You can limit background updates using iOS Background App Refresh settings. This does not disable requests made while using the app, including manual lookups and catalog downloads.
+Scanstash 1.0 uses our Firebase-hosted pricing service for JustTCG lookups. The app sends card or product lookup identifiers, a randomly generated installation ID, and a Firebase App Check token. Firebase uses Apple App Attest to verify that requests come from the app. The pricing service uses the installation ID to limit requests and stores a salted hash in rate-limit records that expire after seven days. The service sends lookup details to JustTCG using our account and caches provider responses for reuse.
+
+You can limit background updates in iOS Background App Refresh settings. Manual lookups and catalog downloads can still occur while you use the app.
 
 Our policy is to use providers that protect shared user data at least as well as this policy and Apple's App Review privacy requirements. We do not authorize providers to use shared data for advertising or cross-app tracking. Provider protections and retention must be verified before release; see the maintainer publication checks.
 
@@ -42,7 +44,7 @@ TCGCSV's public product/finish feeds. Card artwork is retrieved from the public
 Ravensburger and TCGplayer image URLs referenced by the catalog; those hosts receive
 the connection information and public resource path needed to serve the image.
 The app does not send its allocated Lorcana printing UUIDs, collection exports or
-camera frames to these sources. Optional JustTCG authentication is described above.
+camera frames to these sources.
 
 To keep Pokémon set definitions current, CardScanner may also retrieve a small
 signed catalog-control file from `catalog.scan-stash.com`. It contains app-owned
@@ -61,7 +63,7 @@ If you email us, we receive your email address, message, and any attachments you
 
 On-device collection data remains until you delete it or remove the app's data. In Settings → Collection, Export CSV gives you a portable copy of collection records. CSV is not a full backup of custom artwork, settings, or all historical data.
 
-Delete Collection removes card records and current ownership. Removal activity, inventory events, price records, and Value History remain on the device; this action does not erase all app data. To remove the app's local files, use iOS Delete App rather than Offload App. Remove your JustTCG key separately before deleting the app. Copies you saved to Files, Photos, another service, or a device backup must be deleted separately using that service's controls. Device backup and restoration are separate from the app's unavailable iCloud collection sync.
+Delete Collection removes card records and current ownership. Removal activity, inventory events, price records, and Value History remain on the device; this action does not erase all app data. To remove the app's local files, use iOS Delete App rather than Offload App. Copies you saved to Files, Photos, another service, or a device backup must be deleted separately using that service's controls. Device backup and restoration are separate from the app's unavailable iCloud collection sync.
 
 We cannot remotely read or erase your device-local collection. Contact us for help with local deletion or to request deletion of support correspondence. Provider request logs are managed by those providers; deleting your collection does not delete their records. Stop using network features to stop new requests, and contact the relevant provider about previously retained data.
 
