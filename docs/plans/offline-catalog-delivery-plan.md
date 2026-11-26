@@ -126,7 +126,7 @@ The Python selections passed too: 82 catalog and market-feed cases, and 60 scope
 **Still open before Stage 1 closes.** The project moved to Blaze on 2026-11-26 and hosting serves again; items 1 and 2 are done:
 1. **Done: production revision inventory** (Stage 1 item 9). The origin holds only Pokémon revisions 1–26, One Piece revisions 1–7 and one price build; there are no hosted Yu-Gi-Oh, Magic or Lorcana catalogs, so no parent chains to retain. Everything is kept. Details in the evidence document.
 2. **Done: HTTPS rollback rehearsal.** The custom-domain certificate validates; all 1,497 files match the inventory hashes; both signed pointers verify against the pinned keys and match what the app ships.
-3. **Done: production price publish.** Run `45900178304` published today's build, created the scope sidecars, read them back from the origin and saved the restore cache. The next scheduled run should confirm a warm-cache publish.
+3. **Done: production price publish.** Run `45900178304` published today's build, created the scope sidecars, read them back from the origin and saved the restore cache. The next scheduled run (`45904884248`) hit the cache and re-downloaded no catalog revisions.
 4. **Done: populated memory measurement.** Session peak 629.5 MB and later-launch peak 491.9 MB on the simulator, driven by the 49.9 MB hosted One Piece revision 7 envelope. This exceeds the proposed 400 MB budget.
 5. **Owner decision on the budgets.** Either accept the measured memory as the Stage 1 baseline and make "under 400 MB" a Stage 3 exit criterion, or treat it as a release blocker now. Device measurements remain outstanding either way.
 
