@@ -1,6 +1,6 @@
 # Offline catalog delivery · Stage 1 evidence
 
-**Status** · 2026-11-26, working tree based on `cf59824f`; all changes are local and uncommitted. Stage 1 is complete except for two items that need the owner: the production revision inventory and HTTPS rollback rehearsal (blocked while Firebase returns HTTP 509), and approval of the storage and performance budgets below.
+**Status** · 2026-11-26. Stage 1 code is merged to `main` ([#62](https://github.com/Razorback2424/CardScanner/pull/62), [#63](https://github.com/Razorback2424/CardScanner/pull/63)). Stage 1 is not closed. The production revision inventory, the HTTPS rollback rehearsal, production readback of the price scope files and a fully populated memory measurement are all blocked while Firebase returns HTTP 509. The storage and performance budgets below await owner approval. The [delivery plan](offline-catalog-delivery-plan.md#stage-1-status-2026-11-26) lists the closing criteria.
 
 | Stage 1 item | State |
 | --- | --- |

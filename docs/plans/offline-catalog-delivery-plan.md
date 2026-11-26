@@ -1,6 +1,6 @@
 # Offline-first, outage-resilient catalog and price delivery
 
-**Status** · current plan, 2026-11-26. The owner approved the direction after review. Stage 1: [#62](https://github.com/Razorback2424/CardScanner/pull/62) (hosting and CI bandwidth) is merged; [#63](https://github.com/Razorback2424/CardScanner/pull/63) (app pricing reliability) is open against `main`. Stages 2–5 have not started. Stage evidence lives in [`offline-catalog-delivery-stage-1.md`](offline-catalog-delivery-stage-1.md), added by #63.
+**Status** · current plan, 2026-11-26. The owner approved the direction after review. Stage 1 code is merged: [#62](https://github.com/Razorback2424/CardScanner/pull/62) (hosting and CI bandwidth, `3a2fd71`), [#63](https://github.com/Razorback2424/CardScanner/pull/63) (app pricing reliability, `404e94c`) and [#64](https://github.com/Razorback2424/CardScanner/pull/64) (release preparation, `5c566e5`). Stage 1 is **not closed**: production verification and budget approval remain (see Stage 1 status). Stages 2–5 have not started. Stage evidence lives in [`offline-catalog-delivery-stage-1.md`](offline-catalog-delivery-stage-1.md).
 
 **Owner decisions recorded here:**
 - Static hosting moves to Cloudflare R2. The pricing proxy's Functions, Firestore and App Check stay on Firebase.
@@ -101,25 +101,36 @@
 
 ## Stage 1 status (2026-11-26)
 
-Implemented in [#62](https://github.com/Razorback2424/CardScanner/pull/62) (merged) and [#63](https://github.com/Razorback2424/CardScanner/pull/63) (open):
+Implemented in [#62](https://github.com/Razorback2424/CardScanner/pull/62) and [#63](https://github.com/Razorback2424/CardScanner/pull/63), both merged:
 - **App:** freshness tiers, identity checks, failures never overwriting a price, backup-excluded bounded storage, the shared Pokémon cache, persisted ETags, collection refresh through outages, and review fixes.
 - **CI:** the restore cache, revision-bound price scopes, and the ETag-cached Yu-Gi-Oh parent.
 - **Gates:** full-catalog parity for all five games, the collection printing baseline, simulator budget measurements, and the failure-drill map.
 
-Verification: 689 simulator tests with 0 failures and 8 skipped, plus the Python suites. These are simulator results only.
+**Verification (simulator only).** There are two app test runs, and their counts measure different things:
+- **Targeted Stage 1 selection,** the final per-case result across pricing, game integrations, activation, recovery, variant resolution, portfolio eligibility and Collection: 808 cases, 797 passed, 11 skipped, 0 failed. An earlier interim count of 689 is superseded by this one.
+- **Complete suite on the integrated candidate:** 3,691 tests (details below).
+
+The Python selections passed too: 82 catalog and market-feed cases, and 60 scope cases.
 
 **Review follow-ups (2026-11-26).** These came from the review of #62–#65, and each was confirmed against the code.
 - **Done, in #62 (merged as `3a2fd71`):** the restore cache is saved only after the production readback passes, and recovered historical revisions can be reconciled on demand (`ff52b7bd`).
-- **Done, in #63:** a refresh that keeps a cached price after a failed download is reported as failed, with its amount and capture date unchanged (`963d434b`, `622683ec`).
+- **Done, in #63 (merged as `404e94c`):** a refresh that keeps a cached price after a failed download is reported as failed, with its amount and capture date unchanged (`963d434b`, `622683ec`).
 - **Done, in #63:** decoded price groups held in memory are capped at 64, least recently used first. An evicted group reloads from disk without a network request, and in-memory hits keep the disk copy marked as recent (`3c5ab779`).
 
-**Still open before Stage 1 closes:**
-- **Done: the complete iOS test suite on the integrated candidate.** The candidate was `main` at `3a2fd71` with #63 (`3c5ab779`) and #64 merged; they merge without conflicts.
-  - On the iOS 27.0 simulator: 3,691 tests, 22 skipped, 9 failing tests (18 assertion failures).
-  - **None are regressions.** The 6 centering research tests fail the same way on plain `main` (they need local fixtures). The 3 local StoreKit tests in `CollectorToolsTests` pass when run alone on both the candidate and `main`, so their full-suite failures are interference between tests.
-  - The pre-existing centering and StoreKit-order failures are tracked separately, not as Stage 1 work.
-- **Merge order:** #64 and #63, in either order, since #62 is already merged.
-- **Owner approval of the budgets,** as scoped in the gate section below.
+**Complete iOS suite on the integrated candidate (done).** The candidate was `main` at `3a2fd71` with #63 (`3c5ab779`) and #64 merged locally, without conflicts.
+- On the iOS 27.0 simulator: 3,691 tests, 22 skipped, 9 failing tests (18 assertion failures).
+- **None are regressions.** The 6 centering research tests fail the same way on plain `main` (they need local fixtures). The 3 local StoreKit tests in `CollectorToolsTests` pass when run alone on both the candidate and `main`, so their full-suite failures are interference between tests.
+- The pre-existing centering and StoreKit-order failures are tracked separately, not as Stage 1 work.
+- **CI on merged `main` (`5c566e5`):** the PR checks passed on each branch before merge. The scheduled catalog jobs on `main` fail at the production pointer read with HTTP 509, not on code. A green scheduled run is part of the production verification below.
+
+**Still open before Stage 1 closes.** Each item needs Firebase to serve again (Blaze upgrade or the December 1 quota reset) or needs the owner:
+1. **Production revision inventory** of what existing clients, the Yu-Gi-Oh parent chains, rollback and audit need (Stage 1 item 9).
+2. **HTTPS rollback rehearsal** against the production origin.
+3. **Production readback of the price scope files** (`market-price-scope.json`): one scheduled price publish observed end to end, reading only the compact scopes and leaving the restore cache warm for the next run.
+4. **Fully populated memory measurement:** every game browsed and priced plus a collection refresh, with hosted updates arriving. The current numbers were taken while production returned 509.
+5. **Owner approval of the budgets,** as scoped in the gate section above. The memory budget stays provisional until item 4 is measured.
+
+Stage 1 closes when items 1–4 are recorded in the evidence document and item 5 is approved.
 
 ## Stage 1: stabilize the current app (no format or host changes)
 
