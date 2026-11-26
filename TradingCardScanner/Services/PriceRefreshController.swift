@@ -640,6 +640,20 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                     variant: target.variantID.map(PhysicalVariant.resolving))
                 guard storageContinuation?() ?? true, !Task.isCancelled else { break }
                 let previous = store.record(forKey: target.id)?.effectiveUnitMarketPriceUSD
+                if let price = lookup.usablePrice, price.retainedAfterRefreshFailure == true {
+                    // An outage may recover a previously acquired quote from disk,
+                    // but it is not a successful check today. Never replace an
+                    // existing owned amount with the fallback.
+                    if previous == nil {
+                        stage(store.store(lookup, game: target.game, printingID: target.printingID,
+                            variantID: target.variantID, at: .now), key: target.id)
+                    }
+                    failed += 1
+                    stage(store.recordFailure(game: target.game, printingID: target.printingID,
+                        variantID: target.variantID, at: .now), key: target.id)
+                    if checkpointIsDue() { _ = await commitStaged() }
+                    continue
+                }
                 let amount: Double?
                 if lookup.hasObservation { checkedUnstampedProvider = true }
                 if case let .price(price) = lookup { amount = price.unitMarketPriceUSD }

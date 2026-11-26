@@ -14,10 +14,12 @@ actor PokemonCatalogReleaseStore {
     typealias StoredRelease = Core.StoredRelease
     typealias ActivationResult = SignedCatalogActivationResult
     private let core: Core
+    nonisolated let pointerETagURL: URL
 
     init(root: URL? = nil) {
         let root = root ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first!.appendingPathComponent("BrowseCatalogCache/CatalogReleases", isDirectory: true)
+        pointerETagURL = root.appendingPathComponent("pointer-etag.json")
         core = Core(root: root, currentName: Slot.current.rawValue, previousName: Slot.previous.rawValue,
                     revisionPolicy: .currentSlot, validateRecovery: true, revision: { $0.revision },
                     encode: { try JSONEncoder().encode($0) })

@@ -117,7 +117,7 @@ final class QuoteCacheTests: XCTestCase {
         }
     }
 
-    func testSharedMirrorQuoteExpiresWithoutChangingOwnedValue() async throws {
+    func testSharedMirrorQuoteRetainsOriginalCaptureThroughFailedRefresh() async throws {
         let context = try makeContext()
         let capture = Date.now.addingTimeInterval(-2 * 86_400)
         let key = CatalogQuoteKey.make(game: .pokemon, providerID: "fixture", printRun: nil,
@@ -130,9 +130,15 @@ final class QuoteCacheTests: XCTestCase {
         let store = await ReferenceQuoteStore.makeBackground(modelContainer: context.container)
         await store.store([key: price], successfulCheckAt: .now)
         let recent = await store.quotes(forKeys: [key.rawValue], now: capture.addingTimeInterval(2 * 86_400))
-        let expired = await store.quotes(forKeys: [key.rawValue], now: capture.addingTimeInterval(8 * 86_400))
+        let outage = capture.addingTimeInterval(31 * 86_400)
+        await store.recordPriceCheckFailure(key: key, at: outage)
+        let historical = await store.quotes(forKeys: [key.rawValue], now: outage)
         XCTAssertEqual(recent[key.rawValue], price)
-        XCTAssertNil(expired[key.rawValue])
+        XCTAssertEqual(historical[key.rawValue], price)
+        let reopened = QuoteCache(context: ModelContext(context.container))
+            .quote(game: key.game, printingID: key.printingID, variantID: key.variantID)
+        XCTAssertEqual(reopened?.lastFailureAt, outage)
+        XCTAssertEqual(reopened?.retrievedAt, capture)
         XCTAssertEqual(prices.record(forKey: key.rawValue)?.display.amount, 12)
     }
 

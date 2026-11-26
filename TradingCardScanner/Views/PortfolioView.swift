@@ -630,6 +630,17 @@ struct PortfolioView: View {
                 PortfolioRefreshButton(refresh: refresh, onRefresh: onRefresh)
             }
 
+            if selectedHistoryPoint?.isLive != false, let asOf = portfolio.summary?.oldestPriceAsOf {
+                switch PriceDisplay.freshness(asOf: asOf) {
+                case .historical:
+                    Text("Includes historical price estimates").font(.caption).foregroundStyle(.secondary)
+                case .stale:
+                    Text("Includes stale prices").font(.caption).foregroundStyle(.secondary)
+                case .current:
+                    EmptyView()
+                }
+            }
+
             if let selectedHistoryPoint {
                 Text(
                     selectedHistoryPoint.isLive

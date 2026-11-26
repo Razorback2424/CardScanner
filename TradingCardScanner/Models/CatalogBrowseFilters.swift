@@ -207,10 +207,13 @@ struct CatalogBrowseQuote: Equatable, Sendable {
     var canRetry: Bool { status == .failed || status == .stale }
 
     var freshnessLabel: String? {
-        if status == .stale, source == .tcgCSV, let asOf {
-            return String(localized: "Stale · as of \(asOf.formatted(date: .abbreviated, time: .omitted))")
-        }
-        return status.label
+        guard amount != nil, let asOf else { return status.label }
+        let dated = PriceDisplay.datedFreshnessLabel(asOf: asOf)
+        // A quote kept after a failed refresh must still say so, even when the
+        // capture itself is recent enough to read as current.
+        guard status == .stale || status == .failed,
+              PriceDisplay.freshness(asOf: asOf) == .current else { return dated }
+        return String(localized: "Refresh failed · \(dated)")
     }
 
     static func from(_ update: CatalogPriceUpdate, id: String) -> Self {
@@ -228,7 +231,7 @@ struct CatalogBrowseQuote: Equatable, Sendable {
 
     static func merging(_ update: CatalogPriceUpdate, id: String, previous: Self?) -> Self? {
         let previous = previous.flatMap {
-            TCGCSVPriceMirror.canServe(source: $0.source, capturedAt: $0.asOf) ? $0 : nil
+            TCGCSVPriceMirror.hasValidCapture(source: $0.source, capturedAt: $0.asOf) ? $0 : nil
         }
         let incoming = from(update, id: id)
         if incoming.status == .pending { return previous }

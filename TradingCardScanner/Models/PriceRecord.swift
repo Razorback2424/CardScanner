@@ -388,6 +388,21 @@ final class PriceRecord {
 
 /// A price, plus everything needed to say honestly how much it can be trusted.
 struct PriceDisplay: Equatable, Sendable {
+    enum Freshness: Equatable, Sendable {
+        case current
+        case stale(days: Int)
+        case historical
+
+        var label: String {
+            switch self {
+            case .current: return String(localized: "Updated today")
+            case .stale(days: 1): return String(localized: "Updated 1 day ago · stale")
+            case let .stale(days): return String(localized: "Updated \(days) days ago · stale")
+            case .historical: return String(localized: "Historical estimate")
+            }
+        }
+    }
+
     enum State: Equatable, Sendable {
         /// Recent enough to present as the current market price.
         case current
@@ -419,6 +434,29 @@ struct PriceDisplay: Equatable, Sendable {
 
     /// Beyond this, a price is presented as stale rather than current.
     static let staleAfter: TimeInterval = 24 * 60 * 60
+
+    static func freshness(asOf: Date, now: Date = .now) -> Freshness {
+        let age = now.timeIntervalSince(asOf)
+        if age > 30 * staleAfter { return .historical }
+        if age > staleAfter { return .stale(days: Int(age / staleAfter)) }
+        return .current
+    }
+
+    static func datedFreshnessLabel(asOf: Date, now: Date = .now,
+                                    calendar: Calendar = .current) -> String {
+        let freshness = freshness(asOf: asOf, now: now)
+        // `.current` is a 24-hour window, so a capture from late yesterday is
+        // still current; say "yesterday" rather than contradict the date shown.
+        let label = freshness == .current && !calendar.isDate(asOf, inSameDayAs: now)
+            ? String(localized: "Updated yesterday")
+            : freshness.label
+        return String(localized: "\(label) · \(asOf.formatted(date: .abbreviated, time: .omitted))")
+    }
+
+    var datedFreshnessLabel: String? {
+        guard amount != nil, let effectiveAsOf else { return nil }
+        return Self.datedFreshnessLabel(asOf: effectiveAsOf)
+    }
 
     /// The moment the *market data* is current through, as far as this app can
     /// honestly claim. Falls back to the fetch time only for providers that do
@@ -458,7 +496,7 @@ struct PriceDisplay: Equatable, Sendable {
         guard lastCheckedAt != nil || fetchedAt != nil else { return .unknown }
         guard amount != nil else { return refreshFailed ? .unknown : .unavailable }
         guard let asOf = effectiveAsOf else { return .stale }
-        return now.timeIntervalSince(asOf) <= Self.staleAfter ? .current : .stale
+        return Self.freshness(asOf: asOf, now: now) == .current ? .current : .stale
     }
 }
 

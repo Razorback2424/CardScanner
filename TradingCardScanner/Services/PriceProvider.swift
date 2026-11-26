@@ -15,11 +15,14 @@ struct NormalizedPrice: Codable, Equatable, Sendable {
     let fetchedAt: Date
     /// Catalog-owned mapping evidence; nil for providers without this contract.
     var catalogIdentity: String? = nil
+    /// A stored-printing refresh could not revalidate this cached observation.
+    /// Nil for normal lookups and older serialized quotes.
+    var retainedAfterRefreshFailure: Bool? = nil
 
     var effectiveAsOf: Date { sourceUpdatedAt ?? fetchedAt }
 
     func isStale(now: Date = .now) -> Bool {
-        now.timeIntervalSince(effectiveAsOf) > PriceDisplay.staleAfter
+        PriceDisplay.freshness(asOf: effectiveAsOf, now: now) != .current
     }
 
     var isUsableUSD: Bool {
@@ -55,7 +58,7 @@ enum PokemonPriceSelection {
     static func preferred(embed: NormalizedPrice?, tcgCSV: NormalizedPrice?, now: Date) -> NormalizedPrice? {
         let embed = embed.flatMap { $0.isUsableUSD ? $0 : nil }
         let tcgCSV = tcgCSV.flatMap {
-            $0.isUsableUSD && TCGCSVPriceMirror.canServe(source: $0.source, capturedAt: $0.fetchedAt, now: now) ? $0 : nil
+            $0.isUsableUSD && $0.fetchedAt <= now ? $0 : nil
         }
         guard let embed, let tcgCSV else { return embed ?? tcgCSV }
         guard embed.isStale(now: now) else { return embed }
@@ -361,7 +364,7 @@ enum CardPricing {
         )
         if case let .pokemon(pokemon, _) = card.legacyIdentity {
             let supplemental = supplementalPokemonQuote
-                ?? pokemon.supplementalTCGCSV?.quote(cardID: pokemon.id, variant: variant, printRun: pokemonPrintRun)
+                ?? pokemon.supplementalTCGCSV?.quote(cardID: pokemon.id, variant: variant, printRun: pokemonPrintRun, now: now)
             if let preferred = PokemonPriceSelection.preferred(
                 embed: catalog.usablePrice, tcgCSV: supplemental?.usablePrice, now: now
             ) { return .price(preferred) }
