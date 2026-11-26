@@ -394,7 +394,7 @@ final class PriceCheckCoordinator {
 
         if Self.isUsableUSD(catalogQuote),
            let catalogEvidence = Self.evidence(from: catalogQuote),
-           TCGCSVPriceMirror.canServe(source: catalogEvidence.price.source, capturedAt: catalogEvidence.retrievedAt, now: now()),
+           acceptsStoredPrice(catalogEvidence.price, for: key),
            localEvidence.map({ QuoteEvidenceOrdering.isNewer(catalogEvidence.price, than: $0.price, game: key.game, now: now()) }) ?? true {
             storeReferenceQuote(
                 catalogQuote,
@@ -548,6 +548,11 @@ final class PriceCheckCoordinator {
         }
         let key = quoteKey(for: result.resolvedScan)
         let cached = cachedQuote(for: key)
+        if let price = lookup?.usablePrice, !acceptsStoredPrice(price, for: key) {
+            // The card was identified; only the price failed the collection's
+            // current mapping authority (for example mid catalog update).
+            return .failed(.providerUnavailable)
+        }
         if let price = lookup?.usablePrice, cached?.hasConfirmedMiss(for: price) == true {
             return .failed(.noExactPrice)
         }
@@ -558,7 +563,7 @@ final class PriceCheckCoordinator {
            case let .price(previous) = result.quote, previous.isUsableUSD {
             if candidate != previous,
                !QuoteEvidenceOrdering.isNewer(candidate, than: previous, game: result.card.game, now: now()),
-               TCGCSVPriceMirror.canServe(source: previous.source, capturedAt: previous.fetchedAt, now: now()) {
+               acceptsStoredPrice(previous, for: key) {
                 // A successful check can still return older upstream data.
                 // Preserve the better quote while the view records this new check.
                 let retentionIssue = issue ?? (cached?.hasConfirmedMiss(for: previous) == true ? .noExactPrice : nil)
@@ -664,9 +669,10 @@ final class PriceCheckCoordinator {
         let store = PriceStore(context: ModelContext(container))
         guard let record = store.record(forKey: key.rawValue), let amount = record.display.amount,
               let source = record.source, let fetchedAt = record.fetchedAt else { return .unavailable(nil) }
-        return .price(NormalizedPrice(unitMarketPriceUSD: amount, currencyCode: record.currencyCode,
+        let price = NormalizedPrice(unitMarketPriceUSD: amount, currencyCode: record.currencyCode,
             source: source, sourceVariantID: record.sourceVariantID ?? record.variantID ?? "",
-            sourceUpdatedAt: record.sourceUpdatedAt, fetchedAt: fetchedAt, catalogIdentity: record.catalogPriceIdentity))
+            sourceUpdatedAt: record.sourceUpdatedAt, fetchedAt: fetchedAt, catalogIdentity: record.catalogPriceIdentity)
+        return acceptsStoredPrice(price, for: key) ? .price(price) : .unavailable(nil)
     }
 
     /// A cached quote's retrieval is not proof of when a later check succeeded.
@@ -733,7 +739,7 @@ final class PriceCheckCoordinator {
         ).flatMap(Self.evidence(from:))
 
         let evidence = [record, reference].compactMap { $0 }.filter {
-            TCGCSVPriceMirror.canServe(source: $0.price.source, capturedAt: $0.retrievedAt, now: now())
+            acceptsStoredPrice($0.price, for: key)
         }
         guard !evidence.isEmpty else { return nil }
         let usdEvidence = evidence.filter {
@@ -741,6 +747,11 @@ final class PriceCheckCoordinator {
         }
         return (usdEvidence.isEmpty ? evidence : usdEvidence)
             .max(by: { QuoteEvidenceOrdering.isNewer($1.price, than: $0.price, game: key.game, now: now()) })
+    }
+
+    private func acceptsStoredPrice(_ price: NormalizedPrice, for key: QuoteKey) -> Bool {
+        TCGCSVPriceMirror.hasValidCapture(source: price.source, capturedAt: price.fetchedAt, now: now())
+            && CollectionStore.acceptsCatalogPrice(price, game: key.game, key: key.rawValue, in: container)
     }
 
     private static func evidence(from record: PriceRecord) -> LocalEvidence? {

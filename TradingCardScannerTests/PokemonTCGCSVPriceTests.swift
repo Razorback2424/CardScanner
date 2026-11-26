@@ -564,7 +564,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             let source = TCGCSVProductPriceSource(baseURL: base, session: session, cacheDirectory: root)
             do {
                 _ = try await source.quote(category: 71, group: 1, productID: 1, name: "Fixture", number: "1",
-                    lane: "Normal", generation: "fixture", minimumFetchedAt: nil)
+                    lane: "Normal", minimumFetchedAt: nil)
                 XCTFail("Invalid mirror reached pricing")
             } catch {}
             let pokemon = PokemonTCGCSVPriceService(session: session, baseURL: base, cacheDirectory: root)
@@ -622,7 +622,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             setID: "mee", feedBuild: "reviewed-fixture", fetchedAt: date)
         XCTAssertTrue(quoted.valuesByCardID.isEmpty, "Recorded finishes contain no prices")
         for entry in PokemonReviewedEnergyCatalog.entries {
-            XCTAssertEqual(quoted.quote(cardID: entry.cardID, variant: .holo, printRun: nil), .unavailable(.tcgCSV))
+            XCTAssertEqual(quoted.quote(cardID: entry.cardID, variant: .holo, printRun: nil, now: date), .unavailable(.tcgCSV))
             XCTAssertNil(quoted.quote(cardID: entry.cardID, variant: .normal, printRun: nil))
             XCTAssertEqual(finishes.filter { $0["productId"] as? Int == entry.productID }.map { $0["subTypeName"] as? String }, ["Holofoil"])
         }
@@ -869,7 +869,9 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
                 let result = try PokemonTCGCSVPriceService.decodeSnapshot(
                     products: products, prices: data, setID: "30th-c", feedBuild: "build", fetchedAt: date
                 )
-                XCTAssertEqual(result.quote(cardID: "30th-c-014", variant: .holo, printRun: nil), .unavailable(.tcgCSV))
+                XCTAssertEqual(result.quote(cardID: "30th-c-014", variant: .holo, printRun: nil, now: date), .unavailable(.tcgCSV))
+                XCTAssertNil(result.quote(cardID: "30th-c-014", variant: .holo, printRun: nil,
+                    now: date.addingTimeInterval(2 * 86_400)), "An old absence cannot disprove a quote")
                 XCTAssertEqual(result.valuesByCardID.count, 29)
             } else {
                 XCTAssertThrowsError(try PokemonTCGCSVPriceService.decodeSnapshot(
@@ -933,11 +935,11 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             _ = try await service.snapshot(setID: "30th-c", retry: false)
             XCTFail("A partial feed must fail instead of confirming a missing price")
         } catch {
-            guard case PokemonTCGCSVError.invalidResponse = error else {
+            guard case PriceQuoteError.providerUnavailable = error else {
                 return XCTFail("Unexpected error: \(error)")
             }
         }
-        XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("30th-c.json").path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("3-24837.json").path))
 
         TCGCSVTestURLProtocol.server = validServer
         let recovered = try await service.snapshot(setID: "30th-c", retry: true)
@@ -965,8 +967,9 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         }
         XCTAssertEqual(CardPricing.publishedPrices(for: identified).count, 1)
         XCTAssertFalse(CardPricing.publishedPrices(for: identified)[0].isGap)
-        XCTAssertNil(CardPricing.price(for: identified, variant: .holo, magicTreatments: [],
-            now: now.addingTimeInterval(7 * 86_400)).usablePrice)
+        let historical = CardPricing.price(for: identified, variant: .holo, magicTreatments: [],
+            now: now.addingTimeInterval(31 * 86_400)).usablePrice
+        XCTAssertEqual(historical?.fetchedAt, now)
         XCTAssertEqual(CardPricing.price(for: identified, variant: .normal, magicTreatments: []), .unavailable(.tcgplayer))
     }
 
@@ -1054,7 +1057,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertTrue(server.requests.allSatisfy { $0.value(forHTTPHeaderField: "User-Agent")?.contains("ScanStash") == true })
     }
 
-    func testUnchangedBuildCannotRenewAnExpiredServerCapture() async throws {
+    func testUnchangedBuildCannotRenewAnOldServerCapture() async throws {
         let server = try server()
         TCGCSVTestURLProtocol.server = server
         defer { TCGCSVTestURLProtocol.server = nil }
@@ -1063,7 +1066,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         let service = makeService(server: server, root: root)
         let original = try await service.snapshot(setID: "30th", retry: false)
         server.captureDate = original.fetchedAt
-        let file = root.appendingPathComponent("30th.json")
+        let file = root.appendingPathComponent("3-24722.json")
         server.advance(25 * 60 * 60)
         let stale = try await service.snapshot(setID: "30th", retry: false)
         XCTAssertEqual(stale.fetchedAt, original.fetchedAt)
@@ -1072,16 +1075,12 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertEqual(revalidated.validatedAt, server.now)
         let savedBytes = try Data(contentsOf: file)
         server.advance(8 * 86_400)
-        do { _ = try await service.snapshot(setID: "30th", retry: false); XCTFail("Expired capture was renewed") }
+        do { _ = try await service.snapshot(setID: "30th", retry: true); XCTFail("Old capture was renewed") }
         catch PriceQuoteError.providerUnavailable {}
         XCTAssertEqual(server.requests.filter { $0.url?.path.hasPrefix("/tcgplayer/") == true }.count, 4)
         XCTAssertEqual(try Data(contentsOf: file), savedBytes)
-        // A legacy cache may claim it was just validated despite an old capture.
-        var legacy = original
-        legacy.validatedAt = server.now
-        try JSONEncoder().encode(legacy).write(to: file)
-        do { _ = try await makeService(server: server, root: root).snapshot(setID: "30th"); XCTFail("Legacy validation revived an expired capture") }
-        catch PriceQuoteError.providerUnavailable {}
+        let reopened = try await makeService(server: server, root: root).snapshot(setID: "30th")
+        XCTAssertEqual(reopened.fetchedAt, original.fetchedAt)
         server.captureDate = server.now
         let recaptured = try await service.snapshot(setID: "30th", retry: true)
         XCTAssertEqual(recaptured.feedBuild, original.feedBuild)
@@ -1164,7 +1163,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
                 XCTFail("Mixed daily files must never become a quote")
             } catch PriceQuoteError.providerUnavailable {
             } catch { XCTFail("Unexpected error: \(error)") }
-            XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("30th-c.json").path))
+            XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("3-24837.json").path))
         }
         XCTAssertEqual(server.requests.count, 8, "Each attempt stops after files and one marker recheck")
     }
@@ -1219,7 +1218,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: root) }
         let service = makeService(server: server, root: root)
         let saved = try await service.snapshot(setID: "30th-c", retry: false)
-        let cacheURL = root.appendingPathComponent("30th-c.json")
+        let cacheURL = root.appendingPathComponent("3-24837.json")
         let savedBytes = try Data(contentsOf: cacheURL)
         server.advance(2 * 60 * 60)
         let nextBuild = "2026-09-30T00:00:00Z"
@@ -1308,7 +1307,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: root) }
         let service = makeService(server: server, root: root)
         let saved = try await service.snapshot(setID: "30th-c", retry: false)
-        let cacheURL = root.appendingPathComponent("30th-c.json")
+        let cacheURL = root.appendingPathComponent("3-24837.json")
         let savedBytes = try Data(contentsOf: cacheURL)
         server.advance(2 * 60 * 60)
         server.publish(build: "2026-09-30T00:00:00Z")
@@ -1323,26 +1322,25 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertEqual(server.requests.count - requestsBefore, 3, "Only one marker recheck is allowed")
     }
 
-    func testFreshFallbackExpiresWhileAnUnsuccessfulRequestIsInFlight() async throws {
+    func testManualFailureKeepsTheDatedSnapshotForOfflinePresentation() async throws {
         let server = try server()
         TCGCSVTestURLProtocol.server = server
         defer { TCGCSVTestURLProtocol.server = nil }
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
         let service = makeService(server: server, root: root)
-        _ = try await service.snapshot(setID: "30th-c", retry: false)
+        let original = try await service.snapshot(setID: "30th-c", retry: false)
         server.advance(7 * 86_400 - 1)
         server.fail = true
         server.advanceOnNextResponse(2)
         do {
             _ = try await service.snapshot(setID: "30th-c", retry: true)
-            XCTFail("A snapshot that expired during the request cannot be returned")
-        } catch PokemonTCGCSVError.invalidResponse {}
+            XCTFail("A manual check must report the provider failure")
+        } catch PriceQuoteError.providerUnavailable {}
         let requestCount = server.requests.count
-        do {
-            _ = try await service.snapshot(setID: "30th-c", retry: false)
-            XCTFail("An expired snapshot cannot bypass failure backoff")
-        } catch PokemonTCGCSVError.retryLater {}
+        let saved = try await service.snapshot(setID: "30th-c", retry: false)
+        XCTAssertEqual(saved.fetchedAt, original.fetchedAt)
+        XCTAssertEqual(saved.valuesByCardID, original.valuesByCardID)
         XCTAssertEqual(server.requests.count, requestCount)
     }
 
@@ -1353,14 +1351,14 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: root) }
         let service = makeService(server: server, root: root)
         let original = try await service.snapshot(setID: "30th-c")
-        let file = root.appendingPathComponent("30th-c.json")
+        let file = root.appendingPathComponent("3-24837.json")
         server.advance(7 * 3600)
         server.delay = 0.1
         server.publish(build: ISO8601DateFormatter().string(from: server.now.addingTimeInterval(-60)))
         let stale = try await service.snapshot(setID: "30th-c")
         XCTAssertEqual(stale.fetchedAt, original.fetchedAt)
         for _ in 0..<200 {
-            let saved = try JSONDecoder().decode(PokemonTCGCSVSnapshot.self, from: Data(contentsOf: file))
+            let saved = try JSONDecoder().decode(TCGCSVProductPriceSource.Snapshot.self, from: Data(contentsOf: file))
             if saved.fetchedAt > original.fetchedAt { break }
             try await Task.sleep(for: .milliseconds(10))
         }
@@ -1405,7 +1403,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertEqual(server.requests.last?.value(forHTTPHeaderField: "If-None-Match"), "\"\(build)\"")
     }
 
-    func testProductMirrorServesRecentOutageFallbackAndRejectsExpiredCapture() async throws {
+    func testProductMirrorKeepsDatedOutageFallbackAndEnforcesWatermark() async throws {
         let server = TCGCSVTestServer(routes: [
             "/last-updated.txt": Data("2026-09-29T20:05:57+0000".utf8),
             "/tcgplayer/71/1/products": Data(#"{"success":true,"errors":[],"results":[{"productId":1,"categoryId":71,"groupId":1,"name":"Fixture","extendedData":[]}]}"#.utf8),
@@ -1420,7 +1418,7 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             session: URLSession(configuration: configuration), cacheDirectory: root, now: { server.now })
         func quote(_ watermark: Date? = nil, allowsStaleFallback: Bool = true) async throws -> PriceLookup {
             try await source.quote(category: 71, group: 1, productID: 1, name: "Fixture", number: nil,
-                lane: "Normal", generation: "fixture", minimumFetchedAt: watermark,
+                lane: "Normal", minimumFetchedAt: watermark,
                 allowsStaleFallback: allowsStaleFallback)
         }
         guard case let .price(original) = try await quote() else { return XCTFail("Expected a saved quote") }
@@ -1440,11 +1438,128 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             _ = try await quote(original.fetchedAt)
             XCTFail("A snapshot at the watermark must be rejected")
         } catch PriceQuoteError.providerUnavailable {}
-        server.advance(6 * 86_400)
-        do {
-            _ = try await quote()
-            XCTFail("An eight-day-old capture must be rejected")
-        } catch PriceQuoteError.providerUnavailable {}
+        server.advance(29 * 86_400)
+        let historical = try await quote()
+        XCTAssertEqual(historical, .price(original))
+        XCTAssertEqual(PriceDisplay.freshness(asOf: original.fetchedAt, now: server.now), .historical)
+    }
+
+    func testCollectionRefreshWaitsForNewerBuildAndFallsBackOnlyAfterFailure() async throws {
+        let server = TCGCSVTestServer(routes: [
+            "/last-updated.txt": Data("2026-09-29T20:05:57+0000".utf8),
+            "/tcgplayer/71/1/products": Data(#"{"success":true,"errors":[],"results":[{"productId":1,"categoryId":71,"groupId":1,"name":"Fixture","extendedData":[]}]}"#.utf8),
+            "/tcgplayer/71/1/prices": Data(#"{"success":true,"errors":[],"results":[{"productId":1,"subTypeName":"Normal","marketPrice":4}]}"#.utf8),
+        ], now: date)
+        TCGCSVTestURLProtocol.server = server
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: root) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let source = TCGCSVProductPriceSource(baseURL: MarketMirrorFixture.baseURL,
+            session: URLSession(configuration: configuration), cacheDirectory: root, now: { server.now })
+        func collectionQuote() async throws -> PriceLookup {
+            try await TCGCSVPriceMirror.$awaitsRevalidation.withValue(true) {
+                try await source.quote(category: 71, group: 1, productID: 1, name: "Fixture", number: nil,
+                    lane: "Normal", minimumFetchedAt: nil, allowsStaleFallback: true)
+            }
+        }
+        guard case let .price(original) = try await collectionQuote() else { return XCTFail("Expected a quote") }
+        server.advance(7 * 3600)
+        server.publish(build: ISO8601DateFormatter().string(from: server.now.addingTimeInterval(-60)))
+        server.delay = 0.05
+        guard case let .price(updated) = try await collectionQuote() else { return XCTFail("Expected a quote") }
+        XCTAssertGreaterThan(updated.fetchedAt, original.fetchedAt,
+            "A collection refresh must wait for the newer build, not return the cached group")
+        server.delay = 0
+        server.advance(7 * 3600)
+        server.publish(build: ISO8601DateFormatter().string(from: server.now.addingTimeInterval(-60)))
+        server.fail = true
+        let afterFailure = try await collectionQuote()
+        XCTAssertEqual(afterFailure, .price(updated), "After a failed check the dated quote is still shown")
+    }
+
+    func testPriceStillServesWhenTheSnapshotCannotBeSavedToDisk() async throws {
+        let server = TCGCSVTestServer(routes: [
+            "/last-updated.txt": Data("2026-09-29T20:05:57+0000".utf8),
+            "/tcgplayer/71/1/products": Data(#"{"success":true,"errors":[],"results":[{"productId":1,"categoryId":71,"groupId":1,"name":"Fixture","extendedData":[]}]}"#.utf8),
+            "/tcgplayer/71/1/prices": Data(#"{"success":true,"errors":[],"results":[{"productId":1,"subTypeName":"Normal","marketPrice":4}]}"#.utf8),
+        ], now: date)
+        TCGCSVTestURLProtocol.server = server
+        // A regular file where the cache directory should be makes every write fail,
+        // the same outcome as a full disk.
+        let blocker = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try Data("not a directory".utf8).write(to: blocker)
+        defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: blocker) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let source = TCGCSVProductPriceSource(baseURL: MarketMirrorFixture.baseURL,
+            session: URLSession(configuration: configuration),
+            cacheDirectory: blocker.appendingPathComponent("prices"), now: { server.now })
+        func quote() async throws -> PriceLookup {
+            try await source.quote(category: 71, group: 1, productID: 1, name: "Fixture", number: nil,
+                lane: "Normal", minimumFetchedAt: nil)
+        }
+        guard case let .price(first) = try await quote() else { return XCTFail("Expected a quote without disk") }
+        XCTAssertEqual(first.unitMarketPriceUSD, 4)
+        server.fail = true
+        let duringOutage = try await quote()
+        XCTAssertEqual(duringOutage, .price(first), "The in-memory snapshot still serves during an outage")
+    }
+
+    func testCompleteSnapshotOutranksLegacyImportWhateverItsTimestamp() {
+        let build = "2026-09-29T20:05:57+0000"
+        let legacy = TCGCSVProductPriceSource.Snapshot(products: [], prices: [],
+            fetchedAt: date.addingTimeInterval(86_400), sourceBuild: build, legacyPositiveOnly: true)
+        let complete = TCGCSVProductPriceSource.Snapshot(products: [], prices: [], fetchedAt: date, sourceBuild: build)
+        XCTAssertTrue(complete.isNewer(than: legacy))
+        XCTAssertFalse(legacy.isNewer(than: complete))
+    }
+
+    func testSetProjectionDownloadsInsteadOfServingCacheWithoutFeedBuild() async throws {
+        let server = try server()
+        TCGCSVTestURLProtocol.server = server
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: root) }
+        let saved = try await makeService(server: server, root: root).snapshot(setID: "30th")
+        let file = root.appendingPathComponent("3-24722.json")
+        var old = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any])
+        old.removeValue(forKey: "sourceBuild")
+        try JSONSerialization.data(withJSONObject: old).write(to: file)
+        let upgraded = try await makeService(server: server, root: root).snapshot(setID: "30th")
+        XCTAssertEqual(upgraded.feedBuild, saved.feedBuild)
+        XCTAssertEqual(upgraded.valuesByCardID, saved.valuesByCardID)
+    }
+
+    func testMirrorStorageMigratesVerifiedFilesAndEvictsLeastRecentlyReadGroup() throws {
+        let manager = FileManager.default
+        let root = manager.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? manager.removeItem(at: root) }
+        let legacy = root.appendingPathComponent("Caches")
+        let support = root.appendingPathComponent("Support")
+        try manager.createDirectory(at: legacy, withIntermediateDirectories: true)
+        let data = try JSONEncoder().encode("fixture")
+        let files = TCGCSVSnapshotFiles(directory: support, legacyDirectory: legacy, byteLimit: 2 * data.count)
+        let first = legacy.appendingPathComponent("first.json")
+        try data.write(to: first)
+        let invalid: String? = files.read("first.json", maxBytes: data.count) { _ in false }
+        XCTAssertNil(invalid)
+        XCTAssertTrue(manager.fileExists(atPath: first.path))
+        XCTAssertFalse(manager.fileExists(atPath: support.path))
+        let migrated: String? = files.read("first.json", maxBytes: data.count) { $0 == "fixture" }
+        XCTAssertEqual(migrated, "fixture")
+        XCTAssertFalse(manager.fileExists(atPath: first.path))
+        XCTAssertEqual(try support.resourceValues(forKeys: [.isExcludedFromBackupKey]).isExcludedFromBackup, true)
+
+        files.save(data, as: "second.json")
+        let firstInSupport = support.appendingPathComponent("first.json")
+        let second = support.appendingPathComponent("second.json")
+        try manager.setAttributes([.modificationDate: Date.distantPast], ofItemAtPath: firstInSupport.path)
+        try manager.setAttributes([.modificationDate: Date.now.addingTimeInterval(-3_600)], ofItemAtPath: second.path)
+        let accessed: String? = files.read("first.json", maxBytes: data.count) { _ in true }
+        XCTAssertEqual(accessed, migrated)
+        files.save(data, as: "third.json")
+        XCTAssertTrue(manager.fileExists(atPath: firstInSupport.path))
+        XCTAssertFalse(manager.fileExists(atPath: second.path))
     }
 
     func testProductMirrorRefetchesLegacySnapshotAndThenChecksOnlyMarker() async throws {
@@ -1461,17 +1576,17 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             TCGCSVProductPriceSource(baseURL: MarketMirrorFixture.baseURL, session: session,
                 cacheDirectory: root, now: { server.now }, marker: marker)
         }
-        let pokemon = PokemonTCGCSVPriceService(session: session, baseURL: MarketMirrorFixture.baseURL,
-            cacheDirectory: root, now: { server.now }, spacing: 0, marker: marker)
+        let shared = productSource()
+        let pokemon = PokemonTCGCSVPriceService(transport: shared)
         let saved = try await pokemon.snapshot(setID: "30th")
         let mapping = try XCTUnwrap(PokemonTCGCSVMapping.entries.first { $0.setID == "30th" })
         func quote(_ source: TCGCSVProductPriceSource) async throws -> PriceLookup {
             try await source.quote(category: 3, group: 24722, productID: mapping.productID,
                 name: mapping.productName, number: mapping.printedNumber,
-                lane: "Holofoil", generation: nil, minimumFetchedAt: saved.fetchedAt.addingTimeInterval(-1))
+                lane: "Holofoil", minimumFetchedAt: saved.fetchedAt.addingTimeInterval(-1))
         }
-        let original = try await quote(productSource())
-        XCTAssertEqual(server.requests.count, 5, "Pokémon and product prices share the marker check")
+        let original = try await quote(shared)
+        XCTAssertEqual(server.requests.count, 3, "Set and product prices share the same group download")
         let file = root.appendingPathComponent("3-24722.json")
         var legacy = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any])
         legacy.removeValue(forKey: "sourceBuild")
@@ -1479,18 +1594,18 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         let reopened = productSource()
         let recovered = try await quote(reopened)
         XCTAssertEqual(recovered, original)
-        XCTAssertEqual(server.requests.count, 7)
+        XCTAssertEqual(server.requests.count, 5)
         server.advance(7 * 3600)
         let unchanged = try await quote(reopened)
         XCTAssertEqual(unchanged, original)
-        XCTAssertEqual(server.requests.count, 8)
+        XCTAssertEqual(server.requests.count, 6)
         XCTAssertEqual(server.requests.last?.url?.lastPathComponent, "last-updated.txt")
         server.advance(7 * 3600)
         server.publish(build: ISO8601DateFormatter().string(from: server.now.addingTimeInterval(-60)))
         let updated = try await quote(reopened)
         guard case let .price(price) = updated else { return XCTFail("Expected a new build quote") }
         XCTAssertGreaterThan(price.fetchedAt, saved.fetchedAt)
-        XCTAssertEqual(server.requests.count, 11)
+        XCTAssertEqual(server.requests.count, 9)
     }
 
     func testCanceledRolloverWaiterDoesNotReceiveCachedFallbackOrCancelOtherWaiters() async throws {

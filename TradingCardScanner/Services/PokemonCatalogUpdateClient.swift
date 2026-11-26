@@ -84,6 +84,8 @@ actor PokemonCatalogUpdateClient {
     private let diagnostics: PokemonCatalogRolloutDiagnostics
     private var lastETag: String?
     private var lastModified: String?
+    private var lastFetchedEnvelope: PokemonCatalogReleaseEnvelope?
+    private var pointerURL: URL { baseURL.appendingPathComponent(Self.pointerPath) }
 
     init(
         session: URLSession = .shared,
@@ -101,8 +103,7 @@ actor PokemonCatalogUpdateClient {
     }
 
     func fetch() async throws -> FetchResult {
-        let url = baseURL.appendingPathComponent(Self.pointerPath)
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: pointerURL)
         request.timeoutInterval = 15
         request.cachePolicy = .reloadIgnoringLocalCacheData
 
@@ -148,6 +149,10 @@ actor PokemonCatalogUpdateClient {
                 )
 
                 if http.statusCode == 304 {
+                    guard request.value(forHTTPHeaderField: "If-None-Match") != nil
+                        || request.value(forHTTPHeaderField: "If-Modified-Since") != nil else {
+                        throw UpdateError.badResponse(statusCode: 304)
+                    }
                     await diagnostics.recordNotModified()
                     Self.logger.info("Catalog release not modified (304)")
                     return .notModified
@@ -168,6 +173,7 @@ actor PokemonCatalogUpdateClient {
 
                 let decoder = JSONDecoder()
                 let envelope = try decoder.decode(PokemonCatalogReleaseEnvelope.self, from: data)
+                lastFetchedEnvelope = envelope
                 lastETag = http.value(forHTTPHeaderField: "ETag")
                 lastModified = http.value(forHTTPHeaderField: "Last-Modified")
                 Self.logger.info("Fetched catalog release envelope")
@@ -216,7 +222,19 @@ actor PokemonCatalogUpdateClient {
     }
 
     func resetConditionalState() {
+        lastFetchedEnvelope = nil
         lastETag = nil
         lastModified = nil
+    }
+
+    func useVerifiedETag(for envelope: PokemonCatalogReleaseEnvelope, from file: URL) {
+        lastETag = VerifiedCatalogETag.load(from: file, endpoint: pointerURL, keyID: envelope.keyID, signature: envelope.signature)
+    }
+
+    func rememberVerifiedETag(for envelope: PokemonCatalogReleaseEnvelope, at file: URL) {
+        guard envelope == lastFetchedEnvelope else { return }
+        guard let lastETag else { try? FileManager.default.removeItem(at: file); return }
+        VerifiedCatalogETag(endpoint: pointerURL, keyID: envelope.keyID, signature: envelope.signature, etag: lastETag)
+            .save(to: file)
     }
 }

@@ -104,7 +104,7 @@ enum CollectionRefreshStatusResolver {
             if summary.changedPrices {
                 return transient("Prices updated")
             }
-            return transient(summary.priced > 0 ? "Prices checked — already current" : "Price check complete")
+            return transient("Price check complete")
         }
 
         return fallbackPresentation
@@ -1947,13 +1947,18 @@ struct PriceLabel: View {
     var body: some View {
         switch price.state() {
         case .current:
-            amount(.primary)
+            VStack(spacing: 1) {
+                amount(.primary)
+                if style == .detailed, let label = price.datedFreshnessLabel {
+                    Text(label).font(.caption2).foregroundStyle(.secondary)
+                }
+            }
 
         case .stale:
             VStack(spacing: 1) {
                 amount(.secondary)
-                if style == .detailed, let asOf = price.effectiveAsOf {
-                    Text("Last updated \(asOf.formatted(date: .abbreviated, time: .shortened))")
+                if style == .detailed, let label = price.datedFreshnessLabel {
+                    Text(label)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

@@ -15,7 +15,7 @@ struct LorcanaTCGCSVPriceSource: LorcanaMarketPriceSource {
         }
         return try await transport.quote(category: 71, group: mapping.groupID, productID: mapping.productID,
             name: mapping.productName, number: mapping.productNumber, lane: mapping.providerVariantID,
-            generation: generation, minimumFetchedAt: minimumFetchedAt, allowsStaleFallback: allowsStaleFallback)
+            minimumFetchedAt: minimumFetchedAt, allowsStaleFallback: allowsStaleFallback)
     }
 }
 
@@ -59,8 +59,10 @@ struct LorcanaPriceAdapter: GamePriceAdapter {
     func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?, minimumFetchedAt: Date?) async throws -> PriceLookup {
         let current = try await currentRegistry()
         let card = try exactCard(printingID, registry: current)
-        return try await refresh(.init(identity: .legacy(card), variant: variant,
-            pokemonPrintRun: nil, catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt, allowsHistoricalFallback: false))
+        return try await TCGCSVPriceMirror.$awaitsRevalidation.withValue(true) {
+            try await refresh(.init(identity: .legacy(card), variant: variant,
+                pokemonPrintRun: nil, catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt))
+        }
     }
 
     private func exactCard(_ printingID: String, registry: LorcanaCatalogRegistry) throws -> ResolvedCatalogCard {

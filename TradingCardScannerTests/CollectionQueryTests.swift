@@ -224,7 +224,7 @@ final class CollectionQueryTests: XCTestCase {
         )
         XCTAssertEqual(
             CollectionRefreshStatusResolver.presentation(for: outcome)?.message,
-            "Prices checked — already current"
+            "Price check complete"
         )
 
         outcome = CollectionRefreshOutcome(

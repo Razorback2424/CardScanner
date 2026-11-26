@@ -816,6 +816,13 @@ final class YuGiOhPricingTests: XCTestCase {
             variant: .yugiohUnlimited, pokemonPrintRun: nil, catalogRefreshOverride: nil,
             allowsHistoricalFallback: false))
         XCTAssertEqual(currentCheck, .price(fresh), "Current checks must still accept a valid daily feed")
+
+        let outageDate = fresh.fetchedAt.addingTimeInterval(31 * 86_400)
+        let offlineWithReceipt = YuGiOhPriceAdapter(catalog: catalog, source: YuGiOhDailyPriceSource(transport:
+            .init(baseURL: nil, session: session, cacheDirectory: root, now: { outageDate })))
+        let carriedForward = try await offlineWithReceipt.refreshStoredPrinting(printing.idString, variant: .yugiohUnlimited)
+        XCTAssertEqual(carriedForward, .price(fresh), "Collection refresh keeps an acquired quote and its original date")
+
         amount = nil
         let absent = try await adapter.refreshStoredPrinting(printing.idString, variant: .yugiohUnlimited, minimumFetchedAt: .now)
         XCTAssertEqual(absent, .unavailable(.tcgCSV), "A fresh null lane cannot borrow another edition or an older bundle")
@@ -971,14 +978,14 @@ final class YuGiOhPricingTests: XCTestCase {
         var watermark: Date? = nil
         for next in 0...2 {
             mode = next
-            let quote = try await transport.quote(category: 2, group: 23416, productID: 1, name: "Fixture Card 1", number: "RA02-EN037", lane: "Unlimited", generation: "fixture", minimumFetchedAt: watermark)
+            let quote = try await transport.quote(category: 2, group: 23416, productID: 1, name: "Fixture Card 1", number: "RA02-EN037", lane: "Unlimited", minimumFetchedAt: watermark)
             if next < 2 { guard case .unavailable(.tcgCSV) = quote else { return XCTFail() } }
             else { guard case let .price(price) = quote else { return XCTFail() }; XCTAssertEqual(price.unitMarketPriceUSD, 42) }
             watermark = .now
         }
         do {
             _ = try await transport.quote(category: 2, group: 23416, productID: 1, name: "Fixture Card 1",
-                number: "RA02-EN037", lane: "Unknown Finish", generation: nil, minimumFetchedAt: nil)
+                number: "RA02-EN037", lane: "Unknown Finish", minimumFetchedAt: nil)
             XCTFail("The shared transport accepted an unknown finish")
         } catch PriceQuoteError.identityMismatch {}
         XCTAssertEqual(priceRequests, 3, "Each valid mode must fetch once, including the null lane")
