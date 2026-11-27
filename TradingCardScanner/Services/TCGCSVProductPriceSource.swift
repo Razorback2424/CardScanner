@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 /// Devices consume the app's server-ingested feeds. Upstream TCGCSV is only
 /// contacted by the daily publisher, never by a user-facing app or a redirect.
@@ -32,8 +33,8 @@ enum TCGCSVPriceMirror {
     static var baseURL: URL? {
         guard let value = Bundle.main.object(forInfoDictionaryKey: "TCGCSV_PRICE_BASE_URL") as? String,
               let url = URL(string: value), isPermitted(url),
-              ["catalog.scan-stash.com", "scanstash-catalog-prod.web.app"].contains(url.host?.lowercased() ?? ""),
-              url.path == "/market-prices/v1" else { return nil }
+              ["catalog.scan-stash.com", "scanstash-catalog-prod.web.app", "catalog-staging.scan-stash.com"].contains(url.host?.lowercased() ?? ""),
+              ["/market-prices/v1", "/market-prices/v2"].contains(url.path) else { return nil }
         return url
     }
 
@@ -87,6 +88,89 @@ enum TCGCSVPriceMirror {
             throw PriceQuoteError.providerUnavailable
         }
         return captured
+    }
+}
+
+/// PR #65/#70: a build is immutable; the manifest binds every relative path
+/// to its exact byte count and SHA-256. Never follow a URL from the manifest.
+struct TCGCSVPriceManifest: Codable, Sendable {
+    struct File: Codable, Sendable {
+        let path: String
+        let sha256: String
+        let byteCount: Int
+    }
+    let schemaVersion: Int
+    let sourceBuild: String
+    let build: String
+    let files: [File]
+
+    static let maxPointerBytes = 1_024 * 1_024
+    static let maxFileBytes = 8 * 1_024 * 1_024
+
+    static func sha256(_ data: Data) -> String {
+        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+
+    private static func isHash(_ value: String) -> Bool {
+        value.utf8.count == 64 && value.utf8.allSatisfy { (48...57).contains($0) || (97...102).contains($0) }
+    }
+
+    func validate(now: Date) throws {
+        let required: Set<String> = ["index.json", "last-updated.txt", "scopes/one-piece.json", "scopes/yugioh.json"]
+        guard schemaVersion == 2, Self.isHash(build), let date = TCGCSVPriceMirror.timestamp(sourceBuild),
+              date <= now, (6...1_804).contains(files.count) else { throw PriceQuoteError.providerUnavailable }
+        var paths = Set<String>()
+        var total = 0
+        for file in files {
+            let path = file.path
+            let group = path.range(of: #"\Atcgplayer/(2|3|68|71)/[1-9][0-9]*/(products|prices)\z"#,
+                                   options: .regularExpression) != nil
+            guard (required.contains(path) || group), paths.insert(path).inserted,
+                  Self.isHash(file.sha256) else { throw PriceQuoteError.providerUnavailable }
+            let limit = path == "index.json" ? Self.maxPointerBytes :
+                (path.hasPrefix("scopes/") ? 4 * 1_024 * 1_024 : Self.maxFileBytes)
+            guard file.byteCount > 0, file.byteCount <= limit else { throw PriceQuoteError.providerUnavailable }
+            total += file.byteCount
+        }
+        guard required.isSubset(of: paths), files.map(\.path) == paths.sorted(),
+              total <= 137 * 1_024 * 1_024 else { throw PriceQuoteError.providerUnavailable }
+        let groups = paths.subtracting(required)
+        guard !groups.isEmpty, groups.allSatisfy({ path in
+            let prefix = String(path.dropLast(path.hasSuffix("/products") ? 8 : 6))
+            return paths.contains(prefix + (path.hasSuffix("/products") ? "prices" : "products"))
+        }) else { throw PriceQuoteError.providerUnavailable }
+        // The publisher hashes canonical UTF-8 JSON, sorted keys, compact
+        // separators, no escaped slashes, and exactly one trailing newline.
+        struct Core: Encodable {
+            let schemaVersion: Int
+            let sourceBuild: String
+            let files: [File]
+        }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        var canonical = try encoder.encode(Core(schemaVersion: schemaVersion, sourceBuild: sourceBuild, files: files))
+        canonical.append(10)
+        guard Self.sha256(canonical) == build else { throw PriceQuoteError.providerUnavailable }
+    }
+
+    func file(path: String) throws -> File {
+        guard let entry = files.first(where: { $0.path == path }) else {
+            throw PriceQuoteError.providerUnavailable
+        }
+        return entry
+    }
+}
+
+struct TCGCSVPricePublication: Sendable {
+    let sourceBuild: String
+    let manifest: TCGCSVPriceManifest?
+
+    func matches(sourceBuild: String?, verifiedBuildID: String?) -> Bool {
+        self.sourceBuild == sourceBuild && manifest?.build == verifiedBuildID
+    }
+
+    func matches(_ other: Self) -> Bool {
+        matches(sourceBuild: other.sourceBuild, verifiedBuildID: other.manifest?.build)
     }
 }
 
@@ -173,12 +257,12 @@ actor TCGCSVMirrorBuildMarker {
 
     /// All mirrored groups in one user action share the same marker check.
     actor Recheck {
-        private var checks: [ObjectIdentifier: Task<String, Error>] = [:]
+        private var checks: [ObjectIdentifier: Task<TCGCSVPricePublication, Error>] = [:]
 
-        func build(using marker: TCGCSVMirrorBuildMarker) async throws -> String {
+        func build(using marker: TCGCSVMirrorBuildMarker) async throws -> TCGCSVPricePublication {
             let id = ObjectIdentifier(marker)
             if let check = checks[id] { return try await check.value }
-            let check = Task { try await marker.currentBuild(forceRefresh: true) }
+            let check = Task { try await marker.currentPublication(forceRefresh: true) }
             checks[id] = check
             return try await check.value
         }
@@ -188,6 +272,8 @@ actor TCGCSVMirrorBuildMarker {
         let value: String
         let checkedAt: Date
         let etag: String?
+        var manifest: TCGCSVPriceManifest? = nil
+        var publication: TCGCSVPricePublication { .init(sourceBuild: value, manifest: manifest) }
     }
 
     private let baseURL: URL?
@@ -204,39 +290,64 @@ actor TCGCSVMirrorBuildMarker {
         self.now = now
         self.defaultsKey = defaultsKey.map { "\($0)|\(baseURL?.absoluteString ?? "")" }
         if let key = self.defaultsKey, let bytes = UserDefaults.standard.data(forKey: key) {
-            check = try? JSONDecoder().decode(Check.self, from: bytes)
+            if let restored = try? JSONDecoder().decode(Check.self, from: bytes),
+               restored.manifest.map({ (try? $0.validate(now: now())) != nil && $0.sourceBuild == restored.value }) ?? true {
+                check = restored
+            }
         }
     }
 
     func lastKnownBuild() -> String? { check?.value }
+    func lastKnownPublication() -> TCGCSVPricePublication? { check?.publication }
 
     func currentBuild(forceRefresh: Bool = false) async throws -> String {
+        try await currentPublication(forceRefresh: forceRefresh).sourceBuild
+    }
+
+    func currentPublication(forceRefresh: Bool = false) async throws -> TCGCSVPricePublication {
         guard let baseURL, TCGCSVPriceMirror.isPermitted(baseURL) else {
             throw PriceQuoteError.providerUnavailable
         }
-        if let pending { return try await pending.value.value }
+        if let pending { return try await pending.value.publication }
         if !forceRefresh, let check, TCGCSVPriceMirror.isWithinAge(check.checkedAt,
-            now: now(), maxAge: TCGCSVPriceMirror.refreshAfter) { return check.value }
+            now: now(), maxAge: TCGCSVPriceMirror.refreshAfter) { return check.publication }
 
         let task = Task {
             defer { self.pending = nil }
             let previous = self.check
-            var request = URLRequest(url: baseURL.appendingPathComponent("last-updated.txt"),
-                cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 12)
-            request.setValue("ScanStash/1.0 (iOS; market build check)", forHTTPHeaderField: "User-Agent")
-            if let etag = previous?.etag { request.setValue(etag, forHTTPHeaderField: "If-None-Match") }
-            let (body, response) = try await TCGCSVPriceMirror.download(request, session: self.session, interval: "mirror.marker")
             let updated: Check
-            if response.statusCode == 304, let previous, previous.etag != nil {
-                updated = Check(value: previous.value, checkedAt: self.now(),
-                    etag: response.value(forHTTPHeaderField: "ETag") ?? previous.etag)
-            } else {
-                guard response.statusCode == 200, body.count <= 1_024,
-                      let value = String(data: body, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
-                      value.count < 100, ISO8601DateFormatter().date(from: value) != nil else {
-                    throw PriceQuoteError.providerUnavailable
+            if baseURL.path == "/market-prices/v2" {
+                var request = URLRequest(url: baseURL.appendingPathComponent("latest.json"),
+                    cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 12)
+                request.setValue("ScanStash/1.0 (iOS; market build check)", forHTTPHeaderField: "User-Agent")
+                if let previous, previous.manifest != nil, let etag = previous.etag {
+                    request.setValue(etag, forHTTPHeaderField: "If-None-Match")
                 }
-                updated = Check(value: value, checkedAt: self.now(), etag: response.value(forHTTPHeaderField: "ETag"))
+                let (body, response) = try await TCGCSVPriceMirror.download(request, session: self.session, interval: "mirror.marker")
+                if response.statusCode == 304, let previous, let manifest = previous.manifest, previous.etag != nil {
+                    updated = Check(value: previous.value, checkedAt: self.now(),
+                        etag: response.value(forHTTPHeaderField: "ETag") ?? previous.etag, manifest: manifest)
+                } else if response.statusCode == 404, previous?.manifest == nil {
+                    // Bootstrap compatibility before v2 is deployed on the
+                    // production hostname. After accepting v2, never downgrade
+                    // on a missing, invalid, or unavailable pointer.
+                    updated = try await self.readLegacy(baseURL.deletingLastPathComponent().appendingPathComponent("v1"),
+                                                        previous: previous)
+                } else {
+                    guard response.statusCode == 200, body.count <= TCGCSVPriceManifest.maxPointerBytes,
+                          let manifest = try? JSONDecoder().decode(TCGCSVPriceManifest.self, from: body) else {
+                        throw PriceQuoteError.providerUnavailable
+                    }
+                    try manifest.validate(now: self.now())
+                    if let previous, let old = TCGCSVPriceMirror.timestamp(previous.value),
+                       let new = TCGCSVPriceMirror.timestamp(manifest.sourceBuild), new < old {
+                        throw PriceQuoteError.providerUnavailable
+                    }
+                    updated = Check(value: manifest.sourceBuild, checkedAt: self.now(),
+                        etag: response.value(forHTTPHeaderField: "ETag"), manifest: manifest)
+                }
+            } else {
+                updated = try await self.readLegacy(baseURL, previous: previous)
             }
             self.check = updated
             if let defaultsKey = self.defaultsKey, let bytes = try? JSONEncoder().encode(updated) {
@@ -245,7 +356,25 @@ actor TCGCSVMirrorBuildMarker {
             return updated
         }
         pending = task
-        return try await task.value.value
+        return try await task.value.publication
+    }
+
+    private func readLegacy(_ baseURL: URL, previous: Check?) async throws -> Check {
+        var request = URLRequest(url: baseURL.appendingPathComponent("last-updated.txt"),
+            cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 12)
+        request.setValue("ScanStash/1.0 (iOS; market build check)", forHTTPHeaderField: "User-Agent")
+        if let etag = previous?.etag { request.setValue(etag, forHTTPHeaderField: "If-None-Match") }
+        let (body, response) = try await TCGCSVPriceMirror.download(request, session: session, interval: "mirror.marker")
+        if response.statusCode == 304, let previous, previous.etag != nil {
+            return Check(value: previous.value, checkedAt: now(),
+                etag: response.value(forHTTPHeaderField: "ETag") ?? previous.etag)
+        }
+        guard response.statusCode == 200, body.count <= 1_024,
+              let value = String(data: body, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
+              value.count < 100, ISO8601DateFormatter().date(from: value) != nil else {
+            throw PriceQuoteError.providerUnavailable
+        }
+        return Check(value: value, checkedAt: now(), etag: response.value(forHTTPHeaderField: "ETag"))
     }
 }
 
@@ -271,6 +400,7 @@ actor TCGCSVProductPriceSource {
         let products: [Product]; let prices: [Price]; let fetchedAt: Date
         var sourceBuild: String? = nil
         var validatedAt: Date? = nil
+        var verifiedBuildID: String? = nil
         // An upgrade can keep dated positive quotes from an older set cache.
         // It has no complete provider response or evidence of absence.
         var legacyPositiveOnly: Bool? = nil
@@ -376,7 +506,7 @@ actor TCGCSVProductPriceSource {
         let result = try await snapshot(group: key, minimumFetchedAt: nil, forceRefresh: rechecking,
                                           waitForKnownBuild: true) { !rechecking && $0.sourceBuild != nil }
         let received = result.value
-        return snapshots[key].flatMap { $0.sourceBuild != nil && $0.isNewer(than: received) ? $0 : nil } ?? received
+        return snapshots[key].flatMap { $0.sourceBuild != nil && $0.verifiedBuildID == received.verifiedBuildID && $0.isNewer(than: received) ? $0 : nil } ?? received
     }
 
     func quote(category: Int, group: Int, productID: Int, name: String, number: String?,
@@ -404,7 +534,7 @@ actor TCGCSVProductPriceSource {
         }
         try Task.checkCancellation()
         let fetched = result.value
-        let snapshot = snapshots[groupKey].flatMap { $0.isNewer(than: fetched) ? $0 : nil } ?? fetched
+        let snapshot = snapshots[groupKey].flatMap { $0.verifiedBuildID == fetched.verifiedBuildID && $0.isNewer(than: fetched) ? $0 : nil } ?? fetched
         guard snapshot.legacyPositiveOnly != true, isServable(snapshot) else { throw PriceQuoteError.providerUnavailable }
         let hasCurrentCapture = PriceDisplay.freshness(asOf: snapshot.fetchedAt, now: now()) == .current
         guard matchesProduct(snapshot) else { throw PriceQuoteError.identityMismatch }
@@ -429,7 +559,7 @@ actor TCGCSVProductPriceSource {
     private func snapshot(group: GroupKey, minimumFetchedAt: Date?, forceRefresh: Bool = false,
                           waitForKnownBuild: Bool = false,
                           canUseFallback: (Snapshot) -> Bool) async throws -> SnapshotResult {
-        let knownBuild = await marker.lastKnownBuild()
+        let knownBuild = await marker.lastKnownPublication()
         try Task.checkCancellation()
         // A withdrawal starts a new request cohort. It must not join a fetch
         // that began before its watermark. Each caller verifies the exact lane
@@ -445,11 +575,12 @@ actor TCGCSVProductPriceSource {
            TCGCSVPriceMirror.isWithinAge(cached.validatedAt ?? cached.fetchedAt, now: now(),
                maxAge: TCGCSVPriceMirror.refreshAfter), isServable(cached),
            (canUseFallback(cached) || isWithinDownloadAge(cached)),
-           knownBuild.map({ $0 == sourceBuild }) ?? true { return (cached, false) }
+           knownBuild.map({ $0.matches(sourceBuild: sourceBuild, verifiedBuildID: cached.verifiedBuildID) })
+                ?? (baseURL?.path != "/market-prices/v2" || cached.verifiedBuildID != nil) { return (cached, false) }
         let servable = cached.flatMap { isServable($0) && canUseFallback($0) ? $0 : nil }
         let immediateFallback = minimumFetchedAt == nil && !forceRefresh
             && !TCGCSVPriceMirror.awaitsRevalidation && (!waitForKnownBuild
-            || knownBuild == nil || knownBuild == cached?.sourceBuild
+            || knownBuild == nil || knownBuild?.matches(sourceBuild: cached?.sourceBuild, verifiedBuildID: cached?.verifiedBuildID) == true
             || cached.map({ !TCGCSVPriceMirror.isWithinAge($0.validatedAt ?? $0.fetchedAt,
                 now: now(), maxAge: TCGCSVPriceMirror.refreshAfter) }) == true)
         if let request = pending[key] {
@@ -470,17 +601,21 @@ actor TCGCSVProductPriceSource {
             defer { self.pending[key] = nil }
             let value: Snapshot
             do {
-                let build: String
+                let build: TCGCSVPricePublication
                 if let recheck = TCGCSVPriceMirror.explicitBuildRecheck {
                     build = try await recheck.build(using: self.marker)
                 } else {
-                    build = try await self.marker.currentBuild(forceRefresh: forceRefresh)
+                    build = try await self.marker.currentPublication(forceRefresh: forceRefresh)
                 }
                 if var cached, cached.legacyPositiveOnly != true,
-                   cached.sourceBuild == build, self.isWithinDownloadAge(cached) {
-                    if let latest = self.snapshots[group], latest.isNewer(than: cached) { return latest }
+                   build.matches(sourceBuild: cached.sourceBuild, verifiedBuildID: cached.verifiedBuildID),
+                   self.isWithinDownloadAge(cached) {
+                    try await self.requireCurrentV2(build)
+                    if let latest = self.snapshots[group], latest.verifiedBuildID == cached.verifiedBuildID,
+                       latest.isNewer(than: cached) { return latest }
                     if self.snapshots[group]?.fetchedAt == cached.fetchedAt,
-                       self.snapshots[group]?.sourceBuild == cached.sourceBuild {
+                       self.snapshots[group]?.sourceBuild == cached.sourceBuild,
+                       self.snapshots[group]?.verifiedBuildID == cached.verifiedBuildID {
                         cached.validatedAt = self.now()
                         self.snapshots[group] = cached
                     }
@@ -488,6 +623,10 @@ actor TCGCSVProductPriceSource {
                     return cached
                 }
                 value = try await self.download(group: group, build: build)
+                if let active = await self.marker.lastKnownPublication(), active.manifest != nil,
+                   !active.matches(sourceBuild: value.sourceBuild, verifiedBuildID: value.verifiedBuildID) {
+                    throw PriceQuoteError.providerUnavailable
+                }
                 guard minimumFetchedAt.map({ value.fetchedAt > $0 }) ?? true else {
                     throw PriceQuoteError.providerUnavailable
                 }
@@ -499,7 +638,8 @@ actor TCGCSVProductPriceSource {
             }
             self.failures[key] = nil
             // A slower, older request must not replace a newer observation.
-            if let latest = self.snapshots[group], latest.isNewer(than: value) { return latest }
+            if let latest = self.snapshots[group], latest.verifiedBuildID == value.verifiedBuildID,
+               latest.isNewer(than: value) { return latest }
             self.snapshots[group] = value
             if let bytes = try? JSONEncoder().encode(value) {
                 self.files.save(bytes, as: name)
@@ -515,13 +655,21 @@ actor TCGCSVProductPriceSource {
     /// The group files were readable but stamped for a different build than the marker.
     private struct BuildMismatch: Error {}
 
-    private func download(group: GroupKey, build: String) async throws -> Snapshot {
+    private func requireCurrentV2(_ publication: TCGCSVPricePublication) async throws {
+        // Different request cohorts may complete out of order. Do not let an
+        // earlier immutable build overwrite a newer publication's cache.
+        if let active = await marker.lastKnownPublication(), active.manifest != nil,
+           !active.matches(publication) { throw PriceQuoteError.providerUnavailable }
+    }
+
+    private func download(group: GroupKey, build: TCGCSVPricePublication) async throws -> Snapshot {
         do {
             return try await downloadGroup(group, expectedBuild: build)
         } catch is BuildMismatch {
             // The publication can advance between the marker and either group file.
-            let latest = try await marker.currentBuild(forceRefresh: true)
-            guard latest != build else { throw PriceQuoteError.providerUnavailable }
+            guard build.manifest == nil else { throw PriceQuoteError.providerUnavailable }
+            let latest = try await marker.currentPublication(forceRefresh: true)
+            guard !latest.matches(build) else { throw PriceQuoteError.providerUnavailable }
             do {
                 return try await downloadGroup(group, expectedBuild: latest)
             } catch is BuildMismatch {
@@ -530,15 +678,15 @@ actor TCGCSVProductPriceSource {
         }
     }
 
-    private func downloadGroup(_ group: GroupKey, expectedBuild: String) async throws -> Snapshot {
-        let productsData = try await fetch(group: group, resource: "products")
-        let pricesData = try await fetch(group: group, resource: "prices")
+    private func downloadGroup(_ group: GroupKey, expectedBuild: TCGCSVPricePublication) async throws -> Snapshot {
+        let productsData = try await fetch(group: group, resource: "products", publication: expectedBuild)
+        let pricesData = try await fetch(group: group, resource: "prices", publication: expectedBuild)
         // Only a build-stamp problem suggests a rollover worth rechecking the
         // marker for; an HTTP failure from fetch() is an ordinary outage.
         let fetchedAt: Date
         do {
             fetchedAt = try TCGCSVPriceMirror.captureDate(products: productsData, prices: pricesData,
-                expectedBuild: expectedBuild, now: now())
+                expectedBuild: expectedBuild.sourceBuild, now: now())
         } catch {
             throw BuildMismatch()
         }
@@ -550,7 +698,7 @@ actor TCGCSVProductPriceSource {
             throw PriceQuoteError.providerUnavailable
         }
         let value = Snapshot(products: products.results, prices: prices.results, fetchedAt: fetchedAt,
-            sourceBuild: prices.sourceBuild, validatedAt: now())
+            sourceBuild: prices.sourceBuild, validatedAt: now(), verifiedBuildID: expectedBuild.manifest?.build)
         try validate(value, group: group)
         return value
     }
@@ -594,18 +742,31 @@ actor TCGCSVProductPriceSource {
         }) else { throw PriceQuoteError.providerUnavailable }
     }
 
-    private func fetch(group: GroupKey, resource: String) async throws -> Data {
+    private func fetch(group: GroupKey, resource: String, publication: TCGCSVPricePublication) async throws -> Data {
         guard let baseURL, TCGCSVPriceMirror.isPermitted(baseURL) else { throw PriceQuoteError.providerUnavailable }
         let start = max(nextRequestAt, .now)
         nextRequestAt = start.addingTimeInterval(spacing)
         if start.timeIntervalSinceNow > 0 { try await Task.sleep(for: .seconds(start.timeIntervalSinceNow)) }
-        var request = URLRequest(url: baseURL.appendingPathComponent("tcgplayer/\(group.category)/\(group.group)/\(resource)"))
+        let path = "tcgplayer/\(group.category)/\(group.group)/\(resource)"
+        let entry = try publication.manifest?.file(path: path)
+        let url: URL
+        if let manifest = publication.manifest {
+            url = baseURL.appendingPathComponent("builds/\(manifest.build)/\(path)")
+        } else {
+            let legacy = baseURL.path == "/market-prices/v2"
+                ? baseURL.deletingLastPathComponent().appendingPathComponent("v1") : baseURL
+            url = legacy.appendingPathComponent(path)
+        }
+        var request = URLRequest(url: url)
         request.timeoutInterval = 15
         request.setValue("ScanStash/1.0 (iOS; daily product market pricing)", forHTTPHeaderField: "User-Agent")
         request.cachePolicy = .reloadRevalidatingCacheData
         let (data, http) = try await TCGCSVPriceMirror.download(request, session: session, interval: "mirror.group")
         guard http.statusCode == 200,
               data.count <= 8 * 1_024 * 1_024 else { throw PriceQuoteError.providerUnavailable }
+        if let entry, (data.count != entry.byteCount || TCGCSVPriceManifest.sha256(data) != entry.sha256) {
+            throw PriceQuoteError.providerUnavailable
+        }
         return data
     }
 }
