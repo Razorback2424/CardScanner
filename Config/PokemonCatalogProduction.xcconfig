@@ -5,6 +5,8 @@
 POKEMON_CATALOG_BASE_URL = https:/$()/catalog.scan-stash.com
 POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = catalog.scan-stash.com
 // Shared daily market feed for reviewed product/finish mappings across games.
+// Keep production v1 until the v2 publisher and Firebase rollback path are proven.
+// For staging validation, override TCGCSV_PRICE_BASE_URL with the staging v2 URL.
 TCGCSV_PRICE_BASE_URL = https:/$()/catalog.scan-stash.com/market-prices/v1
 // Operator-funded JustTCG pricing proxy (pricing-proxy/). Leave empty until
 // launch preparation: empty keeps the developer customer-key path; setting it

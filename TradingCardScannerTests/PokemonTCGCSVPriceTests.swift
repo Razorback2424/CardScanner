@@ -1403,6 +1403,136 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertEqual(server.requests.last?.value(forHTTPHeaderField: "If-None-Match"), "\"\(build)\"")
     }
 
+    private func v2Fixture(server: TCGCSVTestServer, sourceBuild: String, amount: Double,
+                           capturedAt: Date, install: Bool = true) throws -> (id: String, pointer: Data) {
+        let products = Data(#"{"success":true,"errors":[],"results":[{"productId":1,"categoryId":71,"groupId":1,"name":"Fixture","extendedData":[]}]}"#.utf8)
+        let prices = try JSONSerialization.data(withJSONObject: ["success": true, "errors": [],
+            "results": [["productId": 1, "subTypeName": "Normal", "marketPrice": amount]]])
+        let bodies = [
+            "index.json": Data("{}".utf8), "last-updated.txt": Data((sourceBuild + "\n").utf8),
+            "scopes/one-piece.json": Data("{}".utf8), "scopes/yugioh.json": Data("{}".utf8),
+            "tcgplayer/71/1/products": MarketMirrorFixture.stamped(products, capturedAt: capturedAt, build: sourceBuild),
+            "tcgplayer/71/1/prices": MarketMirrorFixture.stamped(prices, capturedAt: capturedAt, build: sourceBuild)
+        ]
+        let entries: [[String: Any]] = bodies.keys.sorted().map { path in
+            let raw = bodies[path]!
+            return ["path": path, "sha256": SHA256.hash(data: raw).map { String(format: "%02x", $0) }.joined(),
+                    "byteCount": raw.count]
+        }
+        var pointer: [String: Any] = ["schemaVersion": 2, "sourceBuild": sourceBuild, "files": entries]
+        var canonical = try JSONSerialization.data(withJSONObject: pointer, options: [.sortedKeys, .withoutEscapingSlashes])
+        canonical.append(10)
+        let buildID = SHA256.hash(data: canonical).map { String(format: "%02x", $0) }.joined()
+        pointer["build"] = buildID
+        var raw = try JSONSerialization.data(withJSONObject: pointer, options: [.sortedKeys, .withoutEscapingSlashes])
+        raw.append(10)
+        if install {
+            for (path, body) in bodies { server.setRawRoute("/market-prices/v2/builds/\(buildID)/\(path)", body) }
+            server.setRawRoute("/market-prices/v2/latest.json", raw)
+        }
+        return (buildID, raw)
+    }
+
+    func testV2CorrectedSameDayBuildRefetchesExactImmutablePairAndRetainsOnOutage() async throws {
+        let server = TCGCSVTestServer(routes: [:], now: date)
+        TCGCSVTestURLProtocol.server = server
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let base = URL(string: "https://price-fixture.example/market-prices/v2")!
+        let source = TCGCSVProductPriceSource(baseURL: base, session: session, cacheDirectory: root,
+                                             now: { server.now }, spacing: 0)
+        let build = "2026-09-29T20:05:57+0000"
+        let capture = server.now
+        let first = try v2Fixture(server: server, sourceBuild: build, amount: 4, capturedAt: capture)
+        func quote() async throws -> NormalizedPrice {
+            let lookup = try await source.quote(category: 71, group: 1, productID: 1, name: "Fixture",
+                number: nil, lane: "Normal", minimumFetchedAt: nil)
+            guard case let .price(value) = lookup else { throw PriceQuoteError.providerUnavailable }
+            return value
+        }
+        let original = try await quote()
+        XCTAssertEqual(original.unitMarketPriceUSD, 4)
+        XCTAssertEqual(original.fetchedAt, capture)
+        XCTAssertTrue(server.requests.contains { $0.url?.path.contains(first.id) == true })
+        let corrected = try v2Fixture(server: server, sourceBuild: build, amount: 9, capturedAt: capture)
+        XCTAssertNotEqual(first.id, corrected.id)
+        let updated = try await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(.init()) { try await quote() }
+        XCTAssertEqual(updated.unitMarketPriceUSD, 9)
+        XCTAssertEqual(updated.fetchedAt, capture)
+        let correctedRequests = server.requests.filter { $0.url?.path.contains(corrected.id) == true }
+        XCTAssertEqual(correctedRequests.count, 2)
+        server.advance(8 * 3600)
+        server.fail = true
+        let fallback = try await TCGCSVPriceMirror.$awaitsRevalidation.withValue(true) {
+            try await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(.init()) { try await quote() }
+        }
+        XCTAssertEqual(fallback.unitMarketPriceUSD, 9)
+        XCTAssertEqual(fallback.fetchedAt, capture)
+        XCTAssertEqual(fallback.retainedAfterRefreshFailure, true)
+    }
+
+    func testV2RejectsTamperedBytesAndDoesNotDowngradeAfterAcceptance() async throws {
+        let server = TCGCSVTestServer(routes: [:], now: date)
+        TCGCSVTestURLProtocol.server = server
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let base = URL(string: "https://price-fixture.example/market-prices/v2")!
+        let source = TCGCSVProductPriceSource(baseURL: base, session: session, cacheDirectory: root,
+                                             now: { server.now }, spacing: 0)
+        let build = "2026-09-29T20:05:57+0000"
+        let fixture = try v2Fixture(server: server, sourceBuild: build, amount: 4, capturedAt: server.now)
+        server.setRawRoute("/market-prices/v2/builds/\(fixture.id)/tcgplayer/71/1/prices", Data("wrong".utf8))
+        func quote() async throws -> PriceLookup {
+            try await source.quote(category: 71, group: 1, productID: 1, name: "Fixture",
+                number: nil, lane: "Normal", minimumFetchedAt: nil, allowsStaleFallback: false)
+        }
+        do { _ = try await quote(); XCTFail("Accepted tampered immutable bytes") }
+        catch PriceQuoteError.providerUnavailable {}
+        XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("71-1.json").path))
+        server.setRawRoute("/market-prices/v2/latest.json", nil)
+        do {
+            _ = try await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(.init()) { try await quote() }
+            XCTFail("Downgraded after accepting v2")
+        } catch PriceQuoteError.providerUnavailable {}
+        XCTAssertFalse(server.requests.contains { $0.url?.path.hasPrefix("/market-prices/v1/") == true })
+    }
+
+    func testV2BootstrapsLegacyOnlyOnMissingPointerAndValidatesManifestIdentity() async throws {
+        let build = "2026-09-29T20:05:57+0000"
+        let server = TCGCSVTestServer(routes: ["/last-updated.txt": Data(build.utf8)], now: date)
+        TCGCSVTestURLProtocol.server = server
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let base = URL(string: "https://price-fixture.example/market-prices/v2")!
+        let marker = TCGCSVMirrorBuildMarker(baseURL: base, session: session, now: { server.now })
+        let fallback = try await marker.currentPublication()
+        XCTAssertNil(fallback.manifest)
+        XCTAssertEqual(fallback.sourceBuild, build)
+        XCTAssertEqual(server.requests.map { $0.url?.path }, ["/market-prices/v2/latest.json", "/market-prices/v1/last-updated.txt"])
+        let fixture = try v2Fixture(server: server, sourceBuild: build, amount: 4, capturedAt: server.now)
+        let accepted = try await marker.currentPublication(forceRefresh: true)
+        XCTAssertEqual(accepted.manifest?.build, fixture.id)
+        let unchanged = try await marker.currentPublication(forceRefresh: true)
+        XCTAssertEqual(unchanged.manifest?.build, fixture.id)
+        XCTAssertNotNil(server.requests.last?.value(forHTTPHeaderField: "If-None-Match"))
+        var bad = try XCTUnwrap(JSONSerialization.jsonObject(with: fixture.pointer) as? [String: Any])
+        bad["build"] = String(repeating: "a", count: 64)
+        server.setRawRoute("/market-prices/v2/latest.json", try JSONSerialization.data(withJSONObject: bad))
+        do { _ = try await marker.currentPublication(forceRefresh: true); XCTFail("Accepted a false build identity") }
+        catch PriceQuoteError.providerUnavailable {}
+    }
+
     func testProductMirrorKeepsDatedOutageFallbackAndEnforcesWatermark() async throws {
         let server = TCGCSVTestServer(routes: [
             "/last-updated.txt": Data("2026-09-29T20:05:57+0000".utf8),
@@ -2451,6 +2581,9 @@ private final class TCGCSVTestServer: @unchecked Sendable {
     func publish(build: String) {
         lock.withLock { routeData["/last-updated.txt"] = Data(build.utf8) }
     }
+    func setRawRoute(_ path: String, _ body: Data?) {
+        lock.withLock { routeData[path] = body }
+    }
     func setPrice(productID: Int, groupID: Int, amount: Double) throws {
         try lock.withLock {
             let path = "/tcgplayer/3/\(groupID)/prices"
@@ -2470,6 +2603,22 @@ private final class TCGCSVTestServer: @unchecked Sendable {
             let build = routeData["/last-updated.txt"].flatMap { String(data: $0, encoding: .utf8) }?
                 .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             if shouldFail { return (503, Data(), [:]) }
+            if let path = request.url?.path, path.hasPrefix("/market-prices/") {
+                if path.hasPrefix("/market-prices/v2/") {
+                    guard let body = routeData[path] else { return (404, Data(), [:]) }
+                    if path.hasSuffix("/latest.json") {
+                        let etag = "\"\(TCGCSVPriceManifest.sha256(body))\""
+                        if request.value(forHTTPHeaderField: "If-None-Match") == etag { return (304, Data(), ["ETag": etag]) }
+                        return (200, body, ["ETag": etag])
+                    }
+                    return (200, body, [:])
+                }
+                // Legacy production-shaped paths, for bootstrap tests.
+                let legacy = String(path.dropFirst("/market-prices/v1".count))
+                guard let body = routeData[legacy] else { return (404, Data(), [:]) }
+                if legacy == "/last-updated.txt" { return (200, body, [:]) }
+                return (200, MarketMirrorFixture.stamped(body, capturedAt: capturedAt ?? clock, build: build), [:])
+            }
             let body = routeData[request.url!.path] ?? Data()
             if request.url?.lastPathComponent == "last-updated.txt" {
                 let etag = "\"\(build)\""
