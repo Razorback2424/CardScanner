@@ -30,6 +30,7 @@ MAX_SITE_BYTES = 128 * 1024 * 1024
 CAPTURE_REUSE_SECONDS = 12 * 60 * 60
 MAX_PUBLISH_AGE_SECONDS = 18 * 60 * 60
 ORIGIN = "https://scanstash-catalog-prod.web.app"
+R2_ORIGIN = "https://catalog-staging.scan-stash.com"
 FEED_PATH = re.compile(r"tcgplayer/(2|3|68|71)/[1-9][0-9]*/(products|prices)\Z")
 CATALOG_NAMESPACES = {"one-piece": (68, "one-piece/v1"), "yugioh": (2, "yugioh/v1")}
 SCOPE_FILE = "market-price-scope.json"
@@ -457,7 +458,7 @@ def read_site(raw, read_file):
 
 
 def restore(site, origin=ORIGIN, fetch=read_http, require_fresh=False, now=stamp, require_present=False):
-    if origin != ORIGIN:
+    if origin not in (ORIGIN, R2_ORIGIN):
         raise ValueError("Unexpected production origin")
     namespace = site / NAMESPACE
     local = namespace / "index.json"
@@ -516,6 +517,48 @@ def check_catalog_scopes(site, prepared):
             raise ValueError(f"The {game} price scope changed during preparation. Prepare prices again.")
 
 
+def read_r2_scope(game, namespace, fetch):
+    pointer = fetch(f"{R2_ORIGIN}/{namespace}/current.json", 65 * 1024 * 1024, absent_ok=True)
+    expected = digest(pointer) if pointer is not None else None
+    raw = fetch(f"{R2_ORIGIN}/{namespace}/{SCOPE_FILE}", MAX_SCOPE_BYTES, absent_ok=True)
+    if raw is not None:
+        validate_catalog_scope(raw, game)
+        if json.loads(raw)["pointerSHA256"] == expected:
+            return raw
+
+    # A catalog sync can be interrupted between its mutable scope and pointer.
+    # Reuse an authenticated scope from the current price build only if it
+    # still describes the active catalog revision.
+    import market_price_v2 as v2
+    active = v2.validate_pointer(fetch(f"{R2_ORIGIN}/{v2.LATEST}", v2.MAX_POINTER_BYTES))
+    relative = f"scopes/{game}.json"
+    row = next(item for item in active["files"] if item["path"] == relative)
+    raw = fetch(f"{R2_ORIGIN}/{v2.V2}/builds/{active['build']}/{relative}", row["byteCount"])
+    if v2.entry(relative, raw) != row:
+        raise ValueError(f"The immutable R2 {game} scope failed its build checks")
+    validate_catalog_scope(raw, game)
+    if json.loads(raw)["pointerSHA256"] != expected:
+        raise ValueError(f"The R2 {game} scope does not match its active catalog")
+    return raw
+
+
+def capture_r2_scopes(site, fetch=read_http):
+    """Use the scopes bound to R2's own active catalogs for primary prices."""
+    for game, (_, namespace) in CATALOG_NAMESPACES.items():
+        relative = Path(namespace) / SCOPE_FILE
+        raw = read_r2_scope(game, namespace, fetch)
+        path = site / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(raw)
+
+
+def confirm_r2_scopes(site, fetch=read_http):
+    for game, (_, namespace) in CATALOG_NAMESPACES.items():
+        relative = Path(namespace) / SCOPE_FILE
+        if read_r2_scope(game, namespace, fetch) != (site / relative).read_bytes():
+            raise ValueError(f"The R2 {game} scope changed during price preparation")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -543,6 +586,8 @@ def main():
     check_scopes = commands.add_parser("check-catalog-scopes")
     check_scopes.add_argument("--site-root", type=Path, required=True)
     check_scopes.add_argument("--prepared", type=Path, required=True)
+    capture = commands.add_parser("capture-r2-scopes")
+    capture.add_argument("--site-root", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "prepare":
         captures = ({game: (args.catalog_scopes / namespace / SCOPE_FILE).read_bytes()
@@ -560,6 +605,8 @@ def main():
         check_publication_build(args.site_root)
     elif args.command == "write-catalog-scopes":
         write_catalog_scopes(args.repo, args.site_root, args.game)
+    elif args.command == "capture-r2-scopes":
+        capture_r2_scopes(args.site_root)
     else:
         check_catalog_scopes(args.site_root, args.prepared)
 

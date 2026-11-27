@@ -13,7 +13,6 @@ from urllib.request import Request, build_opener
 from market_price_feeds import (
     CATALOG_NAMESPACES,
     MAX_SCOPE_BYTES,
-    NAMESPACE,
     NoRedirects,
     ORIGIN,
     SCOPE_FILE,
@@ -151,16 +150,13 @@ def confirm(work, site, get=get_pointer):
         raise ValueError(f"Production {namespace} changed during restoration")
 
 
-def confirm_mirror_candidate(work, site, fetch=read_http, get=get_pointer):
-    """Reject a verified artifact superseded while the R2 job waited or retried."""
-    price_files = {f"{NAMESPACE}/last-updated.txt": 1024, f"{NAMESPACE}/index.json": 1024 * 1024}
-    for _, namespace in CATALOG_NAMESPACES.values():
-        price_files[f"{namespace}/{SCOPE_FILE}"] = MAX_SCOPE_BYTES
-    # The index is cacheable and binds the group bytes even on the same build.
+def confirm_catalog_mirror_candidate(work, site, fetch=read_http, get=get_pointer):
+    """Confirm the Firebase catalog snapshot before the separate R2 catalog sync."""
     nonce = secrets.token_hex(8)
-    for path, limit in price_files.items():
-        if fetch(f"{ORIGIN}/{path}?r2v={nonce}", limit) != (site / path).read_bytes():
-            raise ValueError(f"Firebase {path} no longer matches this verified site")
+    for _, namespace in CATALOG_NAMESPACES.values():
+        path = f"{namespace}/{SCOPE_FILE}"
+        if fetch(f"{ORIGIN}/{path}?r2v={nonce}", MAX_SCOPE_BYTES) != (site / path).read_bytes():
+            raise ValueError(f"Firebase {path} no longer matches this verified catalog")
     # Reuse captured ETags so unchanged signed pointers stay cheap to confirm.
     confirm(work, site, get=get)
 

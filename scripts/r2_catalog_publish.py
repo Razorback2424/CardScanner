@@ -39,8 +39,9 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, build_opener
 
-from market_price_feeds import NAMESPACE, SCOPE_FILE, NoRedirects, instant
+from market_price_feeds import NAMESPACE, R2_ORIGIN, SCOPE_FILE, NoRedirects, confirm_r2_scopes, instant, restore
 import market_price_v2 as v2
+from market_price_rollback import VERIFIED
 
 IMMUTABLE, V2_POINTER, PRICE_DATA, PRICE_INDEX, POINTER, MARKER = range(6)
 TIER_NAMES = ("immutable releases and price builds", "v2 price pointer", "price files", "price index and scopes", "catalog pointers", "build marker")
@@ -271,7 +272,7 @@ def check_v2_activation(item, state, public_base, fetch, nonce):
 
 
 def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, verify_all=False,
-            workers=8, log=print, confirm_current=None):
+            workers=8, log=print, confirm_current=None, record_build=False):
     summary = {"uploaded": 0, "unchanged": 0, "verified": 0}
     nonce = secrets.token_hex(8)
     has_v2 = any(item["key"] == v2.LATEST for item in objects)
@@ -285,10 +286,11 @@ def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, v
             # A distinct URL prevents a cached pre-PUT pointer response from
             # being reused by the post-PUT public readback.
             check_v2_activation(items[0], states[0], public_base, fetch, secrets.token_hex(8))
-            # Recheck Firebase after the potentially long immutable upload,
-            # including same-day corrected artifacts. The workflow is serialized.
+            # Recheck the source scopes after the potentially long immutable upload.
             if confirm_current is not None:
                 confirm_current()
+            if record_build:
+                record_verified_build(items[0], store, public_base, fetch)
         pending = []
         for item, state in zip(items, states):
             matches = state is not None and state["sha256"] == item["sha256"] \
@@ -339,6 +341,20 @@ def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, v
     return summary
 
 
+def record_verified_build(pointer, store, public_base, fetch):
+    """Register verified bytes before any client can see the active pointer."""
+    build = v2.validate_pointer(pointer["path"].read_bytes())["build"]
+    item = {**pointer, "key": f"{VERIFIED}{build}.json", "cache_control": "public,max-age=31536000,immutable"}
+    state = store.head(item["key"])
+    if state is None:
+        store.put(item)
+    elif state["sha256"] != item["sha256"]:
+        raise PublishError(f"Conflicting verified v2 build receipt: {build}")
+    elif state["cache_control"] != item["cache_control"] or state["content_type"] != item["content_type"]:
+        store.put(item)
+    verify_readback(item, public_base, fetch, secrets.token_hex(8))
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--site", required=True, help="Site tree to publish (the Firebase public directory)")
@@ -348,7 +364,9 @@ def main(argv=None):
     parser.add_argument("--public-base", required=True, help="HTTPS origin used for readback")
     parser.add_argument("--dry-run", action="store_true", help="Compare with the bucket without uploading")
     parser.add_argument("--verify-all", action="store_true", help="Read back every object, not only uploads")
-    parser.add_argument("--mirror-work", type=Path, help="Verified Firebase artifact directory; stage v2 and recheck before activation")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--primary-prices", action="store_true", help="Publish prices bound to the active R2 scopes")
+    mode.add_argument("--catalog-work", type=Path, help="Mirror a verified Firebase catalog snapshot without prices")
     args = parser.parse_args(argv)
     if not args.public_base.startswith("https://"):
         parser.error("--public-base must be an https:// origin")
@@ -356,26 +374,30 @@ def main(argv=None):
         parser.error("Set --bucket/R2_BUCKET_NAME and a 32-hex --account-id/R2_ACCOUNT_ID")
     try:
         confirm_current = None
-        if args.mirror_work is not None:
-            from catalog_hosting_cache import confirm_mirror_candidate
-            from market_price_rollback import confirm_pointer
-            site = Path(args.site)
-            v2.stage(site)
-            candidate = v2.bounded(site / v2.LATEST, v2.MAX_POINTER_BYTES)
-
+        site = Path(args.site)
+        if args.primary_prices:
+            if args.public_base.rstrip("/") != R2_ORIGIN:
+                raise PublishError("Primary prices must use the approved R2 origin")
             def confirm_current():
-                confirm_mirror_candidate(args.mirror_work, site)
-                confirm_pointer(candidate)
+                confirm_r2_scopes(site)
 
             confirm_current()
-        elif (Path(args.site) / v2.V2).exists():
-            raise PublishError("v2 publication requires a verified Firebase mirror artifact")
-        objects = plan(args.site, HostingRules.load(args.firebase_config))
+            if not (site / NAMESPACE / "index.json").is_file():
+                raise PublishError("Missing local primary price capture")
+            restore(site, origin=R2_ORIGIN, require_fresh=True, require_present=True)
+            v2.stage(site)
+        elif (site / "market-prices").exists():
+            raise PublishError("Only the primary price publisher can change prices on R2")
+        elif args.catalog_work is not None:
+            from catalog_hosting_cache import confirm_catalog_mirror_candidate
+            confirm_catalog_mirror_candidate(args.catalog_work, site)
+        objects = plan(site, HostingRules.load(args.firebase_config))
+        if args.primary_prices:
+            # Scope files are authoritative catalog inputs on R2. This job only reads them.
+            objects = [item for item in objects if item["key"].startswith("market-prices/")]
         store = AwsCliStore(args.bucket, f"https://{args.account_id}.r2.cloudflarestorage.com")
         summary = publish(objects, store, args.public_base, dry_run=args.dry_run,
-                          verify_all=args.verify_all, confirm_current=confirm_current)
-        if confirm_current is not None and not args.dry_run:
-            confirm_pointer(candidate)
+                          verify_all=args.verify_all, confirm_current=confirm_current, record_build=args.primary_prices)
     except (PublishError, ValueError, OSError) as error:
         print(f"R2 publish stopped: {error}", file=sys.stderr)
         return 1

@@ -1,11 +1,13 @@
 import hashlib
 from http.client import IncompleteRead
 from io import BytesIO, StringIO
+import json
 from pathlib import Path
 from ssl import SSLEOFError
 import sys
 import tempfile
 import threading
+import shutil
 import unittest
 from unittest.mock import patch
 from urllib.error import HTTPError, URLError
@@ -260,6 +262,59 @@ class AtomicPriceV2Tests(unittest.TestCase):
         return r2.publish(r2.plan(site, self.rules), self.bucket, PUBLIC,
                           fetch=self.bucket.fetch, log=lambda _: None, **kwargs)
 
+    def test_primary_cli_publishes_with_only_r2_and_records_build_before_activation(self):
+        site, pointer = self.fixture("primary", marker=feeds.stamp())
+        shutil.rmtree(site / v2.V2)
+        reads = []
+
+        def scope_fetch(url, maximum, *, absent_ok=False):
+            self.assertTrue(url.startswith(feeds.R2_ORIGIN + "/"), url)
+            reads.append(url)
+            if url.endswith("/current.json"):
+                self.assertTrue(absent_ok)
+                return None
+            return (site / url.removeprefix(feeds.R2_ORIGIN + "/")).read_bytes()
+
+        def publish(*args, **options):
+            return real_publish(*args, **options, log=lambda _: None,
+                                fetch=lambda url: self.bucket.fetch(PUBLIC + url.removeprefix(feeds.R2_ORIGIN)))
+
+        real_publish = r2.publish
+        with patch.object(r2, "AwsCliStore", return_value=self.bucket), patch.object(r2, "publish", side_effect=publish), \
+                patch.object(r2, "confirm_r2_scopes", side_effect=lambda root: feeds.confirm_r2_scopes(root, scope_fetch)), \
+                patch.object(feeds, "build_opener", side_effect=AssertionError("Unexpected network request")):
+            self.assertEqual(r2.main(["--primary-prices", "--site", str(site), "--public-base", feeds.R2_ORIGIN,
+                                     "--bucket", "fixture", "--account-id", "a" * 32]), 0)
+        receipt = f"{r2.VERIFIED}{pointer['build']}.json"
+        self.assertLess(self.bucket.puts.index(receipt), self.bucket.puts.index(v2.LATEST))
+        self.assertEqual(self.bucket.objects[receipt]["body"], feeds.packed(pointer))
+        self.assertEqual(self.bucket.objects[v2.LATEST]["body"], feeds.packed(pointer))
+        self.assertEqual(self.bucket.puts[-1], feeds.NAMESPACE + "/last-updated.txt")
+        self.assertTrue(all(key.startswith("market-prices/") for key in self.bucket.puts))
+        self.assertEqual(len(reads), 2 * 2 * len(feeds.CATALOG_NAMESPACES))
+
+    def test_interrupted_catalog_sync_can_reuse_the_scope_bound_to_active_catalog(self):
+        site, pointer = self.fixture("prior")
+        key = "one-piece/v1/market-price-scope.json"
+        old = (site / key).read_bytes()
+        newer = json.loads(old) | {"revision": 2, "pointerSHA256": "1" * 64}
+        public = {
+            key: feeds.packed(newer),
+            v2.LATEST: feeds.packed(pointer),
+            f"{v2.V2}/builds/{pointer['build']}/scopes/one-piece.json": old,
+        }
+
+        def fetch(url, maximum, *, absent_ok=False):
+            self.assertTrue(url.startswith(feeds.R2_ORIGIN + "/"))
+            key = url.removeprefix(feeds.R2_ORIGIN + "/")
+            return public.get(key) if absent_ok else public[key]
+
+        self.assertEqual(feeds.read_r2_scope("one-piece", "one-piece/v1", fetch), old)
+        scope = f"{v2.V2}/builds/{pointer['build']}/scopes/one-piece.json"
+        public[scope] = public[scope].replace(b'"Normal"', b'"Foil"')
+        with self.assertRaisesRegex(ValueError, "failed its build checks"):
+            feeds.read_r2_scope("one-piece", "one-piece/v1", fetch)
+
     def test_same_capture_same_build_and_coverage(self):
         first, a = self.fixture("a")
         second, b = self.fixture("b")
@@ -291,8 +346,9 @@ class AtomicPriceV2Tests(unittest.TestCase):
         key = f"{v2.V2}/builds/{candidate['build']}/tcgplayer/3/1/prices"
         self.bucket.corrupt.add(key)
         with self.assertRaisesRegex(r2.PublishError, "SHA-256 mismatch"):
-            self.publish(new)
+            self.publish(new, record_build=True)
         self.assertEqual(self.bucket.objects[v2.LATEST]["body"], feeds.packed(pointer))
+        self.assertNotIn(f"{r2.VERIFIED}{candidate['build']}.json", self.bucket.objects)
         # Even if the failed attempt uploaded it, retry must reverify it.
         with self.assertRaisesRegex(r2.PublishError, "SHA-256 mismatch"):
             self.publish(new)

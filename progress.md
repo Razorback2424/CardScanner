@@ -1,3 +1,12 @@
+# 2026-11-27 — R2-first price publication
+
+Separated the primary R2 price job from Firebase catalog preparation and
+backup. Local replay verified that primary publication succeeds without a
+Firebase request, and that a later backup retains builds missed during a
+Firebase outage. The R2 scope check resolved the two live staging catalog
+scopes for 691 price groups. The [Stage 2 publishing plan](docs/plans/r2-price-v2-staging.md)
+records the remaining live acceptance. Production clients use v1.
+
 # 2026-11-27 — Firebase v2 price rollback compatibility
 
 Added bootstrap inventory from R2, immutable price history preservation for
