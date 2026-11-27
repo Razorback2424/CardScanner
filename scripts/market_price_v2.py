@@ -84,10 +84,16 @@ def stage(site):
     files["index.json"] = index_raw
     # Bind the catalog scopes to this price build as well. The legacy scope
     # paths remain untouched for old clients and catalog publishing.
+    scopes = {}
     for path, namespace in SCOPES.items():
         raw = bounded(site / namespace / SCOPE_FILE, MAX_SCOPE_BYTES)
         game = path.removeprefix("scopes/").removesuffix(".json")
-        validate_catalog_scope(raw, game)
+        scopes[game] = validate_catalog_scope(raw, game)
+        category = CATALOG_NAMESPACES[game][0]
+        actual_groups = {int(name.split("/")[2]) for name in files
+                         if name.startswith(f"tcgplayer/{category}/")}
+        if actual_groups != set(scopes[game]):
+            raise ValueError(f"v2 price groups do not match authorized catalog scope: {game}")
         files[path] = raw
     core = {"schemaVersion": 2, "sourceBuild": json.loads(index_raw)["sourceBuild"],
             "files": [entry(path, raw) for path, raw in sorted(files.items())]}
@@ -102,6 +108,11 @@ def stage(site):
     # PR 65's priced-product coverage gate: compare both representations of
     # the *same* captured build, not two different days of provider prices.
     for game, category in MIRROR_CATEGORIES.items():
+        # A verified catalog may explicitly withdraw its last eligible lane.
+        # The group-set check above proves there are no stray feed files.
+        if game in scopes and not scopes[game]:
+            print(f"v2 parity {game}: 0 priced product/finish lanes (authorized empty scope)", flush=True)
+            continue
         before = mirror_priced_products(legacy, category)
         after = mirror_priced_products(build, category)
         if before != after:

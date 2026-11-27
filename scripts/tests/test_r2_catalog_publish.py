@@ -171,11 +171,13 @@ class AtomicPriceV2Tests(unittest.TestCase):
         self.rules = r2.HostingRules.load(ROOT / "firebase.json")
         self.bucket = FakeBucket()
 
-    def fixture(self, name, marker="2026-11-26T20:05:59+00:00", price=12.34):
+    def fixture(self, name, marker="2026-11-26T20:05:59+00:00", price=12.34, *, omit=(), withdrawn=()):
         site = self.root / name
         old = site / feeds.NAMESPACE
         files = {"last-updated.txt": (marker + "\n").encode()}
         for category in (2, 3, 68, 71):
+            if category in omit:
+                continue
             for resource in ("products", "prices"):
                 row = ({"productId": 123, "categoryId": category, "groupId": 1,
                         "name": "Fixture", "extendedData": []} if resource == "products" else
@@ -194,8 +196,10 @@ class AtomicPriceV2Tests(unittest.TestCase):
             scope = site / namespace / feeds.SCOPE_FILE
             scope.parent.mkdir(parents=True, exist_ok=True)
             lane = "Normal" if game == "one-piece" else "Unlimited"
-            scope.write_bytes(feeds.packed({"schemaVersion": 1, "game": game, "revision": None,
-                "pointerSHA256": None, "catalogSHA256": "a" * 64, "groups": [[1, [[123, [lane]]]]]}))
+            empty = game in withdrawn
+            scope.write_bytes(feeds.packed({"schemaVersion": 1, "game": game,
+                "revision": 7 if empty else None, "pointerSHA256": "b" * 64 if empty else None,
+                "catalogSHA256": "a" * 64, "groups": [] if empty else [[1, [[123, [lane]]]]]}))
         pointer = v2.stage(site)
         return site, pointer
 
@@ -291,6 +295,87 @@ class AtomicPriceV2Tests(unittest.TestCase):
         self.assertEqual(self.bucket.objects[v2.LATEST]["body"], feeds.packed(pointer))
         self.assertTrue(all(f"{v2.V2}/builds/{pointer['build']}/{row['path']}" in self.bucket.objects
                             for row in pointer["files"]))
+
+    def test_authorized_empty_scopes_can_publish_without_affecting_other_games(self):
+        old, _ = self.fixture("old")
+        self.publish(old)
+        site, pointer = self.fixture("withdrawn", omit=(2, 68), withdrawn=("yugioh", "one-piece"))
+        self.publish(site)
+        self.assertEqual(self.bucket.objects[v2.LATEST]["body"], feeds.packed(pointer))
+        paths = {row["path"] for row in pointer["files"]}
+        self.assertIn("scopes/yugioh.json", paths)
+        self.assertIn("scopes/one-piece.json", paths)
+        self.assertTrue(any(path.startswith("tcgplayer/3/") for path in paths))
+        self.assertTrue(any(path.startswith("tcgplayer/71/") for path in paths))
+        self.assertFalse(any(path.startswith(("tcgplayer/2/", "tcgplayer/68/")) for path in paths))
+
+    def test_missing_or_unexpected_scope_groups_are_refused(self):
+        with self.assertRaisesRegex(ValueError, "authorized catalog scope: yugioh"):
+            self.fixture("missing", omit=(2,))
+        with self.assertRaisesRegex(ValueError, "authorized catalog scope: one-piece"):
+            self.fixture("stray", withdrawn=("one-piece",))
+        with self.assertRaisesRegex(ValueError, "no groups for category 3"):
+            self.fixture("missing-pokemon", omit=(3,))
+
+    def test_retry_repairs_corrupted_legacy_bytes_with_matching_metadata(self):
+        site, pointer = self.fixture("old")
+        self.publish(site)
+        key = feeds.NAMESPACE + "/tcgplayer/3/1/prices"
+        self.bucket.objects[key]["body"] = b"wrong bytes"
+        self.bucket.puts.clear()
+        result = self.publish(site)
+        self.assertEqual(self.bucket.puts, [key])
+        self.assertEqual(self.bucket.objects[key]["body"], (site / key).read_bytes())
+        self.assertEqual(self.bucket.objects[v2.LATEST]["body"], feeds.packed(pointer))
+        self.assertEqual(result["uploaded"], 1)
+        self.assertEqual(result["unchanged"] + result["uploaded"], result["verified"])
+
+    def test_retry_never_overwrites_corrupted_immutable_bytes(self):
+        site, pointer = self.fixture("old")
+        self.publish(site)
+        key = f"{v2.V2}/builds/{pointer['build']}/tcgplayer/3/1/prices"
+        self.bucket.objects[key]["body"] = b"wrong bytes"
+        self.bucket.puts.clear()
+        with self.assertRaisesRegex(r2.PublishError, "SHA-256 mismatch"):
+            self.publish(site)
+        self.assertEqual(self.bucket.puts, [])
+
+    def test_pointer_preflight_and_readback_use_distinct_cache_keys(self):
+        old, _ = self.fixture("old")
+        self.publish(old)
+        site, pointer = self.fixture("corrected", price=99)
+        cache = {}
+        pointer_urls = []
+
+        def caching_fetch(url):
+            if "/" + v2.LATEST + "?" in url:
+                pointer_urls.append(url)
+                if url not in cache:
+                    cache[url] = self.bucket.fetch(url)
+                return cache[url]
+            return self.bucket.fetch(url)
+
+        r2.publish(r2.plan(site, self.rules), self.bucket, PUBLIC, fetch=caching_fetch,
+                   log=lambda _: None)
+        self.assertEqual(len(pointer_urls), 2)
+        self.assertNotEqual(*pointer_urls)
+        self.assertEqual(self.bucket.objects[v2.LATEST]["body"], feeds.packed(pointer))
+
+    def test_transient_http_error_does_not_trigger_legacy_rewrite(self):
+        site, _ = self.fixture("old")
+        self.publish(site)
+        key = feeds.NAMESPACE + "/tcgplayer/3/1/prices"
+        self.bucket.puts.clear()
+
+        def unavailable_fetch(url):
+            if "/" + key + "?" in url:
+                return 503, {}, b""
+            return self.bucket.fetch(url)
+
+        with self.assertRaisesRegex(r2.PublishError, "HTTP 503"):
+            r2.publish(r2.plan(site, self.rules), self.bucket, PUBLIC,
+                       fetch=unavailable_fetch, log=lambda _: None)
+        self.assertEqual(self.bucket.puts, [])
 
     def test_headers(self):
         self.assertEqual(self.rules.headers(v2.LATEST), ("application/json; charset=utf-8", "no-cache"))

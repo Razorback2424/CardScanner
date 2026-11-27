@@ -19,7 +19,13 @@ objects, then confirms the artifact is still current on Firebase and checks
 the existing R2 pointer before activating v2. The workflow is serialized.
 Only then does it update R2's existing v1 paths, with the v1 marker last.
 A failed v1 publish leaves a complete v2 build available; rerunning the
-same still-current artifact repairs it. Superseded artifacts are rejected.
+same still-current artifact repairs it, including skipped mutable price
+objects whose metadata matched but whose public readback did not. Immutable
+objects are never repaired by overwriting different bytes; failed integrity
+checks stop publication. Pointer preflight and post-write readback use
+distinct cache-busting URLs. An explicitly authorized empty catalog price
+scope may omit that game's feed groups; unexpected missing or extra scope
+groups stop publication. Superseded artifacts are rejected.
 
 This PR does not enable app-side v2 consumption or change production DNS.
 Before enabling production v2 clients, implement and test v2 client support,

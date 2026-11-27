@@ -36,7 +36,7 @@ from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import Request, build_opener
 
-from market_price_feeds import NoRedirects, instant
+from market_price_feeds import NAMESPACE, SCOPE_FILE, NoRedirects, instant
 import market_price_v2 as v2
 
 IMMUTABLE, V2_POINTER, PRICE_DATA, PRICE_INDEX, POINTER, MARKER = range(6)
@@ -49,6 +49,10 @@ MAX_READBACK_BYTES = 128 * 1024 * 1024
 
 class PublishError(RuntimeError):
     pass
+
+
+class ReadbackMismatch(PublishError):
+    """Public bytes, headers, or object presence disagree with the verified source."""
 
 
 def sha256(path):
@@ -216,8 +220,11 @@ def verify_readback(item, public_base, fetch, nonce):
     url = f"{public_base.rstrip('/')}/{quote(item['key'])}?r2v={nonce}"
     status, headers, body = fetch(url)
     problems = []
-    if status != 200:
-        problems.append(f"HTTP {status}")
+    if status not in (200, 404):
+        # Transient HTTP errors are not evidence that the stored object is wrong.
+        raise PublishError(f"Readback failed for {item['key']}: HTTP {status}")
+    if status == 404:
+        problems.append("HTTP 404")
     elif len(body) > MAX_READBACK_BYTES:
         problems.append("body exceeds the readback limit")
     else:
@@ -230,7 +237,7 @@ def verify_readback(item, public_base, fetch, nonce):
         if headers.get("content-type") != item["content_type"]:
             problems.append(f"content-type {headers.get('content-type')!r}")
     if problems:
-        raise PublishError(f"Readback failed for {item['key']}: {', '.join(problems)}")
+        raise ReadbackMismatch(f"Readback failed for {item['key']}: {', '.join(problems)}")
 
 
 def check_v2_activation(item, state, public_base, fetch, nonce):
@@ -260,7 +267,9 @@ def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, v
         with ThreadPoolExecutor(max_workers=workers) as pool:
             states = list(pool.map(store.head, [item["key"] for item in items]))
         if current == V2_POINTER and not dry_run:
-            check_v2_activation(items[0], states[0], public_base, fetch, nonce)
+            # A distinct URL prevents a cached pre-PUT pointer response from
+            # being reused by the post-PUT public readback.
+            check_v2_activation(items[0], states[0], public_base, fetch, secrets.token_hex(8))
             # Recheck Firebase after the potentially long immutable upload,
             # including same-day corrected artifacts. The workflow is serialized.
             if confirm_current is not None:
@@ -286,8 +295,31 @@ def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, v
         # Never activate a v2 pointer based solely on object metadata, even
         # on a retry. Read back every referenced immutable price object.
         to_verify = items if verify_all or has_v2 else pending
+        pending_keys = {item["key"] for item in pending}
+        legacy_scopes = {f"{namespace}/{SCOPE_FILE}" for namespace in v2.SCOPES.values()}
+
+        def verify_or_repair(item):
+            key = item["key"]
+            try:
+                verify_readback(item, public_base, fetch, nonce)
+            except ReadbackMismatch:
+                # Metadata can match even when the actual object does not.
+                # Repair only skipped, mutable legacy pricing objects from
+                # the verified artifact; do not overwrite immutable builds
+                # or retry an already-failed upload within this publication.
+                if (key in pending_keys or item["tier"] == IMMUTABLE
+                        or not (key.startswith(NAMESPACE + "/") or key in legacy_scopes)):
+                    raise
+                log(f"Repairing legacy price object after readback mismatch: {key}")
+                store.put(item)
+                verify_readback(item, public_base, fetch, secrets.token_hex(8))
+                return 1
+            return 0
+
         with ThreadPoolExecutor(max_workers=workers) as pool:
-            list(pool.map(lambda item: verify_readback(item, public_base, fetch, nonce), to_verify))
+            repaired = sum(pool.map(verify_or_repair, to_verify))
+        summary["uploaded"] += repaired
+        summary["unchanged"] -= repaired
         summary["verified"] += len(to_verify)
     return summary
 
