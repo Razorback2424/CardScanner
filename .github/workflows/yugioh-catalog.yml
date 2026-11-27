@@ -338,7 +338,7 @@ jobs:
     needs: publish-prices
     if: ${{ !cancelled() && github.ref == 'refs/heads/main' && needs.publish-prices.outputs.firebase_readback == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     environment: r2-catalog-production
     concurrency:
       group: scanstash-catalog-r2-hosting
@@ -386,4 +386,5 @@ jobs:
           : "${AWS_ACCESS_KEY_ID:?Set R2_ACCESS_KEY_ID in r2-catalog-production}"
           : "${AWS_SECRET_ACCESS_KEY:?Set R2_SECRET_ACCESS_KEY in r2-catalog-production}"
           python3 scripts/r2_catalog_publish.py --site "$RUNNER_TEMP/firebase-verified-site/site" \
-            --public-base https://catalog-staging.scan-stash.com --verify-all
+            --public-base https://catalog-staging.scan-stash.com --verify-all \
+            --mirror-work "$RUNNER_TEMP/firebase-verified-site"

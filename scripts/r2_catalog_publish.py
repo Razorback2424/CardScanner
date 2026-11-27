@@ -10,10 +10,11 @@ Objects are published in tiers, and each tier is read back through the
 public hostname and hash-verified before the next one starts:
 
   0. immutable releases (never overwritten once present)
-  1. price group files
-  2. price index and catalog price scopes
-  3. catalog pointers (`current.json`)
-  4. the price build marker (`last-updated.txt`)
+  1. v2 price pointer (after the immutable price build is verified)
+  2. v1 price group files
+  3. v1 price index and catalog price scopes
+  4. catalog pointers (`current.json`)
+  5. the v1 price build marker (`last-updated.txt`)
 
 A failure in any tier stops the run before later tiers, so clients never see
 a pointer or marker that names objects missing from the public host. Objects
@@ -35,10 +36,11 @@ from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import Request, build_opener
 
-from market_price_feeds import NoRedirects
+from market_price_feeds import NoRedirects, instant
+import market_price_v2 as v2
 
-IMMUTABLE, PRICE_DATA, PRICE_INDEX, POINTER, MARKER = range(5)
-TIER_NAMES = ("immutable releases", "price files", "price index and scopes", "catalog pointers", "build marker")
+IMMUTABLE, V2_POINTER, PRICE_DATA, PRICE_INDEX, POINTER, MARKER = range(6)
+TIER_NAMES = ("immutable releases and price builds", "v2 price pointer", "price files", "price index and scopes", "catalog pointers", "build marker")
 MARKER_PATHS = {"market-prices/v1/last-updated.txt"}
 INDEX_PATHS = {"market-prices/v1/index.json"}
 DEFAULT_TYPES = {".json": "application/json", ".txt": "text/plain; charset=utf-8"}
@@ -119,8 +121,14 @@ class HostingRules:
 
 def tier(relative, cache_control):
     name = PurePosixPath(relative).name
+    if relative == v2.LATEST:
+        if cache_control != "no-cache":
+            raise PublishError("The v2 pointer must not be cached")
+        return V2_POINTER
     if "immutable" in cache_control:
         return IMMUTABLE
+    if relative.startswith(v2.V2 + "/"):
+        raise PublishError(f"Nonimmutable v2 price build object: {relative}")
     if relative in MARKER_PATHS:
         return MARKER
     if name == "current.json":
@@ -151,6 +159,10 @@ def plan(site, rules):
                         "tier": tier(relative, cache_control)})
     if not objects:
         raise PublishError("The site tree has nothing to publish")
+    try:
+        v2.check_plan(objects)
+    except ValueError as error:
+        raise PublishError(str(error)) from error
     return objects
 
 
@@ -221,16 +233,38 @@ def verify_readback(item, public_base, fetch, nonce):
         raise PublishError(f"Readback failed for {item['key']}: {', '.join(problems)}")
 
 
+def check_v2_activation(item, state, public_base, fetch, nonce):
+    candidate = v2.validate_pointer(item["path"].read_bytes())
+    if state is None:
+        return
+    # Read only an existing pointer, and ensure the public response actually
+    # matches the current R2 object (not a stale CDN response).
+    url = f"{public_base.rstrip('/')}/{v2.LATEST}?r2v={nonce}"
+    status, _, body = fetch(url)
+    if status != 200 or hashlib.sha256(body).hexdigest() != state["sha256"]:
+        raise PublishError("Cannot establish current v2 pointer from public readback")
+    active = v2.validate_pointer(body)
+    if instant(candidate["sourceBuild"]) < instant(active["sourceBuild"]):
+        raise PublishError("Refusing to activate an older v2 price build")
+
+
 def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, verify_all=False,
-            workers=8, log=print):
+            workers=8, log=print, confirm_current=None):
     summary = {"uploaded": 0, "unchanged": 0, "verified": 0}
     nonce = secrets.token_hex(8)
+    has_v2 = any(item["key"] == v2.LATEST for item in objects)
     for current in range(len(TIER_NAMES)):
         items = [item for item in objects if item["tier"] == current]
         if not items:
             continue
         with ThreadPoolExecutor(max_workers=workers) as pool:
             states = list(pool.map(store.head, [item["key"] for item in items]))
+        if current == V2_POINTER and not dry_run:
+            check_v2_activation(items[0], states[0], public_base, fetch, nonce)
+            # Recheck Firebase after the potentially long immutable upload,
+            # including same-day corrected artifacts. The workflow is serialized.
+            if confirm_current is not None:
+                confirm_current()
         pending = []
         for item, state in zip(items, states):
             matches = state is not None and state["sha256"] == item["sha256"] \
@@ -249,7 +283,9 @@ def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, v
         with ThreadPoolExecutor(max_workers=workers) as pool:
             list(pool.map(store.put, pending))
         summary["uploaded"] += len(pending)
-        to_verify = items if verify_all else pending
+        # Never activate a v2 pointer based solely on object metadata, even
+        # on a retry. Read back every referenced immutable price object.
+        to_verify = items if verify_all or has_v2 else pending
         with ThreadPoolExecutor(max_workers=workers) as pool:
             list(pool.map(lambda item: verify_readback(item, public_base, fetch, nonce), to_verify))
         summary["verified"] += len(to_verify)
@@ -265,16 +301,28 @@ def main(argv=None):
     parser.add_argument("--public-base", required=True, help="HTTPS origin used for readback")
     parser.add_argument("--dry-run", action="store_true", help="Compare with the bucket without uploading")
     parser.add_argument("--verify-all", action="store_true", help="Read back every object, not only uploads")
+    parser.add_argument("--mirror-work", type=Path, help="Verified Firebase artifact directory; stage v2 and recheck before activation")
     args = parser.parse_args(argv)
     if not args.public_base.startswith("https://"):
         parser.error("--public-base must be an https:// origin")
     if not args.bucket or not re.fullmatch(r"[0-9a-f]{32}", args.account_id or ""):
         parser.error("Set --bucket/R2_BUCKET_NAME and a 32-hex --account-id/R2_ACCOUNT_ID")
     try:
+        confirm_current = None
+        if args.mirror_work is not None:
+            from catalog_hosting_cache import confirm_mirror_candidate
+            site = Path(args.site)
+            def confirm_current():
+                confirm_mirror_candidate(args.mirror_work, site)
+            confirm_current()
+            v2.stage(site)
+        elif (Path(args.site) / v2.V2).exists():
+            raise PublishError("v2 publication requires a verified Firebase mirror artifact")
         objects = plan(args.site, HostingRules.load(args.firebase_config))
         store = AwsCliStore(args.bucket, f"https://{args.account_id}.r2.cloudflarestorage.com")
-        summary = publish(objects, store, args.public_base, dry_run=args.dry_run, verify_all=args.verify_all)
-    except PublishError as error:
+        summary = publish(objects, store, args.public_base, dry_run=args.dry_run,
+                          verify_all=args.verify_all, confirm_current=confirm_current)
+    except (PublishError, ValueError, OSError) as error:
         print(f"R2 publish stopped: {error}", file=sys.stderr)
         return 1
     print(f"R2 publish {'dry run ' if args.dry_run else ''}complete: {summary['uploaded']} uploaded, "
