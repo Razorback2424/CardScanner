@@ -543,6 +543,21 @@ final class PokemonCatalogSliceFTests: XCTestCase {
             PokemonCatalogRolloutMode.remoteAuthority.rawValue,
             "The normal local Debug configuration must activate the signed remote catalog"
         )
+        XCTAssertEqual(
+            debugLocalSettings["MAGIC_CATALOG_BASE_URL"],
+            "https:/$()/catalog.scan-stash.com",
+            "Magic production configuration must use the canonical catalog hostname"
+        )
+        XCTAssertEqual(
+            debugLocalSettings[MagicCatalogRolloutMode.infoPlistKey],
+            MagicCatalogRolloutMode.legacyLive.rawValue,
+            "Magic production configuration must remain in legacy-live mode"
+        )
+        XCTAssertEqual(
+            debugLocalSettings["TCGCSV_PRICE_BASE_URL"],
+            "https:/$()/catalog.scan-stash.com/market-prices/v1",
+            "Production pricing must remain on v1 by default until Stage 2 acceptance gates pass"
+        )
 
         let projectFileURL = repositoryRoot
             .appendingPathComponent("TradingCardScanner.xcodeproj", isDirectory: true)
@@ -562,6 +577,10 @@ final class PokemonCatalogSliceFTests: XCTestCase {
         XCTAssertFalse(
             xcBuildConfigurationSection.contains("MAGIC_CATALOG_"),
             "Magic catalog settings must come from xcconfig files, not project.pbxproj"
+        )
+        XCTAssertFalse(
+            xcBuildConfigurationSection.contains("TCGCSV_PRICE_"),
+            "Pricing endpoint settings must come from xcconfig files, not project.pbxproj"
         )
 
         let appConfigurationList = try XCTUnwrap(

@@ -1533,6 +1533,238 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         catch PriceQuoteError.providerUnavailable {}
     }
 
+    func testV1ToV2UpgradePreservesCachedPricesOfflineAndRetainsBuildIDWhenOnline() async throws {
+        let build = "2026-09-29T20:05:57+0000"
+        let capture = date
+        let server = TCGCSVTestServer(routes: [
+            "/last-updated.txt": Data(build.utf8),
+            "/tcgplayer/71/1/products": Data(#"{"success":true,"errors":[],"results":[{"productId":1,"categoryId":71,"groupId":1,"name":"Fixture","extendedData":[]}]}"#.utf8),
+            "/tcgplayer/71/1/prices": Data(#"{"success":true,"errors":[],"results":[{"productId":1,"subTypeName":"Normal","marketPrice":4}]}"#.utf8),
+        ], now: capture)
+        TCGCSVTestURLProtocol.server = server
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+
+        // Populate existing v1 disk cache before upgrading.
+        let v1Base = URL(string: "https://catalog.scan-stash.com/market-prices/v1")!
+        let v1Source = TCGCSVProductPriceSource(baseURL: v1Base, session: session, cacheDirectory: root,
+                                                now: { server.now }, spacing: 0)
+        guard case let .price(v1Price) = try await v1Source.quote(
+            category: 71, group: 1, productID: 1, name: "Fixture", number: nil, lane: "Normal", minimumFetchedAt: nil
+        ) else { return XCTFail("Expected v1 price before upgrade") }
+        XCTAssertEqual(v1Price.unitMarketPriceUSD, 4)
+
+        // Upgrade to v2 while offline: existing cached v1 price remains immediately available without restamping.
+        server.advance(2 * 3600)
+        server.fail = true
+        let v2Base = URL(string: "https://catalog.scan-stash.com/market-prices/v2")!
+        let offlineUpgraded = TCGCSVProductPriceSource(baseURL: v2Base, session: session, cacheDirectory: root,
+                                                       now: { server.now }, spacing: 0)
+        let offlineLookup = try await TCGCSVPriceMirror.$awaitsRevalidation.withValue(true) {
+            try await offlineUpgraded.quote(
+                category: 71, group: 1, productID: 1, name: "Fixture", number: nil, lane: "Normal", minimumFetchedAt: nil
+            )
+        }
+        guard case let .price(offlinePrice) = offlineLookup else {
+            return XCTFail("Expected dated cached price during offline upgrade")
+        }
+        XCTAssertEqual(offlinePrice.unitMarketPriceUSD, 4)
+        XCTAssertEqual(offlinePrice.fetchedAt, v1Price.fetchedAt)
+        XCTAssertEqual(offlinePrice.retainedAfterRefreshFailure, true)
+
+        // Connectivity returns: an immediate read still serves the cached v1 quote without blocking,
+        // and a revalidating refresh fetches the verified immutable v2 build, preserves its original
+        // capture date, and records verifiedBuildID in the existing group cache.
+        server.fail = false
+        let v2Capture = server.now.addingTimeInterval(-60)
+        let v2Build = "2026-09-29T22:00:00+0000"
+        let fixture = try v2Fixture(server: server, sourceBuild: v2Build, amount: 7.5, capturedAt: v2Capture)
+        let onlineUpgraded = TCGCSVProductPriceSource(baseURL: v2Base, session: session, cacheDirectory: root,
+                                                      now: { server.now }, spacing: 0)
+        let v2Lookup = try await TCGCSVPriceMirror.$awaitsRevalidation.withValue(true) {
+            try await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(.init()) {
+                try await onlineUpgraded.quote(
+                    category: 71, group: 1, productID: 1, name: "Fixture", number: nil, lane: "Normal", minimumFetchedAt: nil
+                )
+            }
+        }
+        guard case let .price(v2Price) = v2Lookup else {
+            return XCTFail("Expected verified v2 price after connectivity returns")
+        }
+        XCTAssertEqual(v2Price.unitMarketPriceUSD, 7.5)
+        XCTAssertEqual(v2Price.fetchedAt, v2Capture)
+        XCTAssertNil(v2Price.retainedAfterRefreshFailure)
+
+        let diskData = try Data(contentsOf: root.appendingPathComponent("71-1.json"))
+        let saved = try JSONDecoder().decode(TCGCSVProductPriceSource.Snapshot.self, from: diskData)
+        XCTAssertEqual(saved.verifiedBuildID, fixture.id)
+        XCTAssertEqual(saved.sourceBuild, v2Build)
+    }
+
+    func testV2NoDowngradePersistsAcrossRelaunchAndRejectsErrorsAndOlderBuilds() async throws {
+        let server = TCGCSVTestServer(routes: ["/last-updated.txt": Data("2026-09-29T20:05:57+0000".utf8)], now: date)
+        TCGCSVTestURLProtocol.server = server
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let defaultsKey = "TCGCSVTestMarker.\(UUID().uuidString)"
+        let v2Base = URL(string: "https://catalog.scan-stash.com/market-prices/v2")!
+        let persistedKey = "\(defaultsKey)|\(v2Base.absoluteString)"
+        defer {
+            TCGCSVTestURLProtocol.server = nil
+            UserDefaults.standard.removeObject(forKey: persistedKey)
+            try? FileManager.default.removeItem(at: root)
+        }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+
+        // Before accepting v2, server outage (500/fail) or invalid manifest must NOT downgrade to v1.
+        server.fail = true
+        let initialMarker = TCGCSVMirrorBuildMarker(baseURL: v2Base, session: session, now: { server.now }, defaultsKey: defaultsKey)
+        do { _ = try await initialMarker.currentPublication(); XCTFail("Outage must not downgrade to v1") }
+        catch PriceQuoteError.providerUnavailable {}
+        XCTAssertFalse(server.requests.contains { $0.url?.path.hasPrefix("/market-prices/v1/") == true })
+
+        server.fail = false
+        server.setRawRoute("/market-prices/v2/latest.json", Data("{invalid".utf8))
+        do { _ = try await initialMarker.currentPublication(forceRefresh: true); XCTFail("Invalid manifest must not downgrade to v1") }
+        catch PriceQuoteError.providerUnavailable {}
+        XCTAssertFalse(server.requests.contains { $0.url?.path.hasPrefix("/market-prices/v1/") == true })
+
+        // Accept a valid v2 publication and verify persistence across relaunch (new marker with same defaultsKey).
+        let newerBuild = "2026-09-29T20:05:57+0000"
+        let acceptedFixture = try v2Fixture(server: server, sourceBuild: newerBuild, amount: 5, capturedAt: server.now)
+        let accepted = try await initialMarker.currentPublication(forceRefresh: true)
+        XCTAssertEqual(accepted.manifest?.build, acceptedFixture.id)
+
+        let relaunchedMarker = TCGCSVMirrorBuildMarker(baseURL: v2Base, session: session, now: { server.now }, defaultsKey: defaultsKey)
+        let persisted = await relaunchedMarker.lastKnownPublication()
+        XCTAssertEqual(persisted?.manifest?.build, acceptedFixture.id)
+
+        // After relaunch, a missing v2 pointer (404) must NOT downgrade to v1.
+        server.setRawRoute("/market-prices/v2/latest.json", nil)
+        do { _ = try await relaunchedMarker.currentPublication(forceRefresh: true); XCTFail("Relaunched v2 client must not downgrade on 404") }
+        catch PriceQuoteError.providerUnavailable {}
+        XCTAssertFalse(server.requests.contains { $0.url?.path.hasPrefix("/market-prices/v1/") == true })
+
+        // Older sourceBuild returned by the server must be rejected.
+        _ = try v2Fixture(server: server, sourceBuild: "2026-09-28T20:05:57+0000", amount: 3, capturedAt: server.now.addingTimeInterval(-86_400))
+        do { _ = try await relaunchedMarker.currentPublication(forceRefresh: true); XCTFail("Older v2 sourceBuild must be rejected") }
+        catch PriceQuoteError.providerUnavailable {}
+
+        // Missing immutable group file must fail closed without caching.
+        let validFixture = try v2Fixture(server: server, sourceBuild: newerBuild, amount: 6, capturedAt: server.now)
+        server.setRawRoute("/market-prices/v2/builds/\(validFixture.id)/tcgplayer/71/1/prices", nil)
+        let source = TCGCSVProductPriceSource(baseURL: v2Base, session: session, cacheDirectory: root,
+                                              now: { server.now }, marker: relaunchedMarker, spacing: 0)
+        do {
+            _ = try await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(.init()) {
+                try await source.quote(category: 71, group: 1, productID: 1, name: "Fixture",
+                                       number: nil, lane: "Normal", minimumFetchedAt: nil, allowsStaleFallback: false)
+            }
+            XCTFail("Missing immutable group file must fail closed")
+        } catch PriceQuoteError.providerUnavailable {}
+        XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("71-1.json").path))
+    }
+
+    func testV1AndV2ReturnIdenticalFourGamePricesAndTimestampsForSameBuild() async throws {
+        let build = "2026-09-29T20:05:57+0000"
+        let capture = date
+        struct Case { let category: Int; let group: Int; let productID: Int; let name: String; let lane: String; let amount: Double }
+        let cases = [
+            Case(category: 3, group: 10, productID: 101, name: "Pikachu", lane: "Holofoil", amount: 12.25),
+            Case(category: 68, group: 20, productID: 201, name: "Monkey.D.Luffy", lane: "Foil", amount: 8.50),
+            Case(category: 71, group: 30, productID: 301, name: "Elsa", lane: "Cold Foil", amount: 44.00),
+            Case(category: 2, group: 40, productID: 401, name: "Blue-Eyes White Dragon", lane: "1st Edition", amount: 19.75),
+        ]
+
+        var v1Routes: [String: Data] = ["/last-updated.txt": Data((build + "\n").utf8)]
+        var v2Bodies: [String: Data] = [
+            "index.json": Data("{}".utf8),
+            "last-updated.txt": Data((build + "\n").utf8),
+            "scopes/one-piece.json": Data("{}".utf8),
+            "scopes/yugioh.json": Data("{}".utf8),
+        ]
+        for item in cases {
+            let productsRaw = try JSONSerialization.data(withJSONObject: [
+                "success": true, "errors": [],
+                "results": [["productId": item.productID, "categoryId": item.category, "groupId": item.group,
+                             "name": item.name, "extendedData": []]],
+            ])
+            let pricesRaw = try JSONSerialization.data(withJSONObject: [
+                "success": true, "errors": [],
+                "results": [
+                    ["productId": item.productID, "subTypeName": item.lane, "marketPrice": item.amount],
+                    ["productId": item.productID, "subTypeName": "Normal", "marketPrice": NSNull()],
+                ],
+            ])
+            let prodPath = "tcgplayer/\(item.category)/\(item.group)/products"
+            let pricePath = "tcgplayer/\(item.category)/\(item.group)/prices"
+            v1Routes["/" + prodPath] = productsRaw
+            v1Routes["/" + pricePath] = pricesRaw
+            v2Bodies[prodPath] = MarketMirrorFixture.stamped(productsRaw, capturedAt: capture, build: build)
+            v2Bodies[pricePath] = MarketMirrorFixture.stamped(pricesRaw, capturedAt: capture, build: build)
+        }
+        let server = TCGCSVTestServer(routes: v1Routes, now: capture)
+        let entries: [[String: Any]] = v2Bodies.keys.sorted().map { path in
+            let raw = v2Bodies[path]!
+            return ["path": path, "sha256": SHA256.hash(data: raw).map { String(format: "%02x", $0) }.joined(), "byteCount": raw.count]
+        }
+        var pointer: [String: Any] = ["schemaVersion": 2, "sourceBuild": build, "files": entries]
+        var canonical = try JSONSerialization.data(withJSONObject: pointer, options: [.sortedKeys, .withoutEscapingSlashes])
+        canonical.append(10)
+        let buildID = SHA256.hash(data: canonical).map { String(format: "%02x", $0) }.joined()
+        pointer["build"] = buildID
+        var pointerRaw = try JSONSerialization.data(withJSONObject: pointer, options: [.sortedKeys, .withoutEscapingSlashes])
+        pointerRaw.append(10)
+        for (path, body) in v2Bodies { server.setRawRoute("/market-prices/v2/builds/\(buildID)/\(path)", body) }
+        server.setRawRoute("/market-prices/v2/latest.json", pointerRaw)
+
+        TCGCSVTestURLProtocol.server = server
+        let rootV1 = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let rootV2 = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer {
+            TCGCSVTestURLProtocol.server = nil
+            try? FileManager.default.removeItem(at: rootV1)
+            try? FileManager.default.removeItem(at: rootV2)
+        }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+
+        let sourceV1 = TCGCSVProductPriceSource(
+            baseURL: URL(string: "https://catalog.scan-stash.com/market-prices/v1")!,
+            session: session, cacheDirectory: rootV1, now: { server.now }, spacing: 0
+        )
+        let sourceV2 = TCGCSVProductPriceSource(
+            baseURL: URL(string: "https://catalog.scan-stash.com/market-prices/v2")!,
+            session: session, cacheDirectory: rootV2, now: { server.now }, spacing: 0
+        )
+
+        for item in cases {
+            let q1 = try await sourceV1.quote(category: item.category, group: item.group, productID: item.productID,
+                                              name: item.name, number: nil, lane: item.lane, minimumFetchedAt: nil)
+            let q2 = try await sourceV2.quote(category: item.category, group: item.group, productID: item.productID,
+                                              name: item.name, number: nil, lane: item.lane, minimumFetchedAt: nil)
+            XCTAssertEqual(q1, q2, "v1 and v2 quotes must match for category \(item.category)")
+            guard case let .price(p2) = q2 else { return XCTFail("Expected price for category \(item.category)") }
+            XCTAssertEqual(p2.unitMarketPriceUSD, item.amount)
+            XCTAssertEqual(p2.fetchedAt, capture)
+
+            let missing1 = try await sourceV1.quote(category: item.category, group: item.group, productID: item.productID,
+                                                    name: item.name, number: nil, lane: "Normal", minimumFetchedAt: nil)
+            let missing2 = try await sourceV2.quote(category: item.category, group: item.group, productID: item.productID,
+                                                    name: item.name, number: nil, lane: "Normal", minimumFetchedAt: nil)
+            XCTAssertEqual(missing1, .unavailable(.tcgCSV))
+            XCTAssertEqual(missing2, .unavailable(.tcgCSV))
+        }
+    }
+
     func testProductMirrorKeepsDatedOutageFallbackAndEnforcesWatermark() async throws {
         let server = TCGCSVTestServer(routes: [
             "/last-updated.txt": Data("2026-09-29T20:05:57+0000".utf8),

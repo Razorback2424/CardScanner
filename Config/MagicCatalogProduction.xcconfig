@@ -2,6 +2,8 @@
 // The hosted Magic pointer was verified absent on 2026-09-20. This temporary
 // legacy pin must be replaced with the owner-supplied Magic-specific public
 // key before the first Magic publication; do not treat it as permanent.
-MAGIC_CATALOG_BASE_URL = https:/$()/scanstash-catalog-prod.web.app
+// `/$()/` keeps the xcconfig parser from treating the URL's `//` as a
+// comment; Xcode expands the empty variable reference back to `https://`.
+MAGIC_CATALOG_BASE_URL = https:/$()/catalog.scan-stash.com
 MAGIC_CATALOG_ROLLOUT_MODE = legacy-live
 MAGIC_CATALOG_PINNED_KEYS = pokemon-catalog-production-2026-09-18-01:CEQfURmtxBTE170BLAk1hVcKgBmGAgVlR7hhSgO6CLI

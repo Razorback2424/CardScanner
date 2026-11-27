@@ -13,8 +13,8 @@ actor MagicCatalogUpdateClient {
         case notModified
     }
 
-    static let productionBaseURL = URL(string: "https://scanstash-catalog-prod.web.app")!
-    private static let allowedHost = "scanstash-catalog-prod.web.app"
+    static let productionBaseURL = URL(string: "https://catalog.scan-stash.com")!
+    private static let allowedHost = "catalog.scan-stash.com"
     private static let pointerPath = "magic/v1/current.json"
     private static let maxPayloadBytes = 512 * 1024
     private static let maxRetries = 2

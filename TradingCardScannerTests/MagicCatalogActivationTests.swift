@@ -3,6 +3,33 @@ import XCTest
 @testable import TradingCardScanner
 
 final class MagicCatalogActivationTests: XCTestCase {
+    func testProductionOriginUsesCanonicalCatalogHostnameAndKeepsLegacyLiveMode() {
+        XCTAssertEqual(
+            MagicCatalogUpdateClient.productionBaseURL.absoluteString,
+            "https://catalog.scan-stash.com"
+        )
+        XCTAssertEqual(
+            MagicCatalogUpdateClient.defaultBaseURL.absoluteString,
+            "https://catalog.scan-stash.com"
+        )
+        XCTAssertTrue(
+            MagicCatalogUpdateClient.isAllowedOrigin(URL(string: "https://catalog.scan-stash.com")!)
+        )
+        for rejected in [
+            "https://scanstash-catalog-prod.web.app",
+            "https://catalog-staging.scan-stash.com",
+            "http://catalog.scan-stash.com",
+            "https://catalog.scan-stash.com/magic",
+            "https://catalog.scan-stash.com?x=1",
+        ] {
+            XCTAssertFalse(
+                MagicCatalogUpdateClient.isAllowedOrigin(URL(string: rejected)!),
+                "Magic client must reject non-canonical origin \(rejected)"
+            )
+        }
+        XCTAssertEqual(MagicCatalogRolloutMode.configured, .legacyLive)
+    }
+
     func testFailedActivationRefetchesWithoutValidators() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }

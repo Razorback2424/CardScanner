@@ -11,6 +11,16 @@ on:
       - "docs/plans/pr23-production-review-validation.md"
       - ".github/workflows/ios-release-gate.yml"
   workflow_dispatch:
+    inputs:
+      price_endpoint:
+        description: "TCGCSV price endpoint for Release candidate verification"
+        type: choice
+        options:
+          - production-v1
+          - production-v2
+          - staging-v2
+          - firebase-rollback-v2
+        default: production-v1
 
 permissions:
   contents: read
@@ -25,6 +35,7 @@ jobs:
     timeout-minutes: 90
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+      SELECTED_PRICE_ENDPOINT: ${{ inputs.price_endpoint || 'production-v1' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,6 +47,14 @@ jobs:
       - name: Build complete application in Release configuration
         run: |
           set -o pipefail
+          extra_args=()
+          case "$SELECTED_PRICE_ENDPOINT" in
+            production-v1) ;;
+            production-v2) extra_args+=("TCGCSV_PRICE_BASE_URL=https://catalog.scan-stash.com/market-prices/v2") ;;
+            staging-v2) extra_args+=("TCGCSV_PRICE_BASE_URL=https://catalog-staging.scan-stash.com/market-prices/v2") ;;
+            firebase-rollback-v2) extra_args+=("TCGCSV_PRICE_BASE_URL=https://scanstash-catalog-prod.web.app/market-prices/v2") ;;
+            *) echo "Unsupported price_endpoint: $SELECTED_PRICE_ENDPOINT" >&2; exit 1 ;;
+          esac
           xcodebuild build \
             -project TradingCardScanner.xcodeproj \
             -scheme TradingCardScanner \
@@ -43,13 +62,120 @@ jobs:
             -destination "generic/platform=iOS Simulator" \
             -derivedDataPath "$RUNNER_TEMP/ios-release-derived-data" \
             CODE_SIGNING_ALLOWED=NO \
+            "${extra_args[@]}" \
             2>&1 | tee "$RUNNER_TEMP/ios-release-build.log"
+      - name: Verify effective Release configuration and compiled Info.plist
+        run: |
+          set -euo pipefail
+          plist="$RUNNER_TEMP/ios-release-derived-data/Build/Products/Release-iphonesimulator/TradingCardScanner.app/Info.plist"
+          test -f "$plist"
+          xcodebuild -showBuildSettings \
+            -project TradingCardScanner.xcodeproj \
+            -scheme TradingCardScanner \
+            -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            > "$RUNNER_TEMP/ios-release-build-settings.txt"
+          python3 - "$plist" "$RUNNER_TEMP/ios-release-build-settings.txt" "$SELECTED_PRICE_ENDPOINT" "$RUNNER_TEMP/ios-release-config-evidence.json" <<'PY'
+          import json, subprocess, sys
+          from pathlib import Path
+
+          plist_path, settings_path, selected, evidence_path = sys.argv[1:5]
+          plist = json.loads(subprocess.check_output(["plutil", "-convert", "json", "-o", "-", plist_path]))
+          settings_text = Path(settings_path).read_text(encoding="utf-8")
+
+          expected_price_urls = {
+              "production-v1": "https://catalog.scan-stash.com/market-prices/v1",
+              "production-v2": "https://catalog.scan-stash.com/market-prices/v2",
+              "staging-v2": "https://catalog-staging.scan-stash.com/market-prices/v2",
+              "firebase-rollback-v2": "https://scanstash-catalog-prod.web.app/market-prices/v2",
+          }
+          expected_plist = {
+              "POKEMON_CATALOG_BASE_URL": "https://catalog.scan-stash.com",
+              "POKEMON_CATALOG_ALLOWED_ORIGIN_HOST": "catalog.scan-stash.com",
+              "POKEMON_CATALOG_ROLLOUT_MODE": "remote-authority",
+              "POKEMON_CATALOG_PINNED_KEYS": "pokemon-catalog-production-2026-09-18-01:CEQfURmtxBTE170BLAk1hVcKgBmGAgVlR7hhSgO6CLI",
+              "ONE_PIECE_CATALOG_BASE_URL": "https://catalog.scan-stash.com",
+              "ONE_PIECE_CATALOG_ROLLOUT_MODE": "remote-authority",
+              "ONE_PIECE_CATALOG_PINNED_KEYS": "one-piece-production-2026-10-23-01:DS0obpkWKBur/m9zFvZxRz6hdZFXGTsAqtAUI780hbA=",
+              "ONE_PIECE_COLLECTION_WRITES": "YES",
+              "MAGIC_CATALOG_BASE_URL": "https://catalog.scan-stash.com",
+              "MAGIC_CATALOG_ROLLOUT_MODE": "legacy-live",
+              "MAGIC_CATALOG_PINNED_KEYS": "pokemon-catalog-production-2026-09-18-01:CEQfURmtxBTE170BLAk1hVcKgBmGAgVlR7hhSgO6CLI",
+              "TCGCSV_PRICE_BASE_URL": expected_price_urls[selected],
+              "JUSTTCG_PROXY_BASE_URL": "",
+              "PRICING_APP_CHECK_APP_ID": "",
+              "PRICING_APP_CHECK_API_KEY": "",
+              "PrivacyPolicyURL": "",
+              "SupportURL": "",
+          }
+          observed = {}
+          for key, expected in expected_plist.items():
+              actual = plist.get(key)
+              observed[key] = actual
+              if actual != expected:
+                  raise SystemExit(f"Release Info.plist mismatch for {key}: expected {expected!r}, got {actual!r}")
+              if isinstance(actual, str) and ("$(" in actual or "/$()/" in actual):
+                  raise SystemExit(f"Unresolved build setting token in {key}: {actual!r}")
+
+          if selected in ("production-v1", "production-v2"):
+              for key, actual in observed.items():
+                  if isinstance(actual, str) and (
+                      "catalog-staging.scan-stash.com" in actual or "scanstash-catalog-prod.web.app" in actual
+                  ):
+                      raise SystemExit(f"Production Release leaked non-production host in {key}: {actual!r}")
+
+          if "NO_CLOUDKIT" not in settings_text:
+              raise SystemExit("Release build settings missing expected NO_CLOUDKIT compilation condition")
+
+          Path(evidence_path).write_text(
+              json.dumps({"selectedPriceEndpoint": selected, "releaseInfoPlist": observed}, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(f"Verified compiled Release Info.plist for {selected}: TCGCSV_PRICE_BASE_URL={observed['TCGCSV_PRICE_BASE_URL']}")
+          PY
+      - name: Verify production v2 build-setting override reaches compiled Info.plist
+        if: env.SELECTED_PRICE_ENDPOINT == 'production-v1'
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project TradingCardScanner.xcodeproj \
+            -scheme TradingCardScanner \
+            -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$RUNNER_TEMP/ios-release-derived-data" \
+            CODE_SIGNING_ALLOWED=NO \
+            TCGCSV_PRICE_BASE_URL=https://catalog.scan-stash.com/market-prices/v2 \
+            > "$RUNNER_TEMP/ios-release-v2-override.log" 2>&1
+          plist="$RUNNER_TEMP/ios-release-derived-data/Build/Products/Release-iphonesimulator/TradingCardScanner.app/Info.plist"
+          python3 - "$plist" "$RUNNER_TEMP/ios-release-config-evidence.json" <<'PY'
+          import json, subprocess, sys
+          from pathlib import Path
+
+          plist_path, evidence_path = sys.argv[1:3]
+          plist = json.loads(subprocess.check_output(["plutil", "-convert", "json", "-o", "-", plist_path]))
+          actual = plist.get("TCGCSV_PRICE_BASE_URL")
+          expected = "https://catalog.scan-stash.com/market-prices/v2"
+          if actual != expected:
+              raise SystemExit(f"Production v2 override did not reach compiled Info.plist: got {actual!r}")
+          if plist.get("MAGIC_CATALOG_BASE_URL") != "https://catalog.scan-stash.com":
+              raise SystemExit(f"Unexpected MAGIC_CATALOG_BASE_URL under v2 override: {plist.get('MAGIC_CATALOG_BASE_URL')!r}")
+          evidence = json.loads(Path(evidence_path).read_text(encoding="utf-8"))
+          evidence["verifiedProductionV2Override"] = {
+              "TCGCSV_PRICE_BASE_URL": actual,
+              "MAGIC_CATALOG_BASE_URL": plist.get("MAGIC_CATALOG_BASE_URL"),
+              "MAGIC_CATALOG_ROLLOUT_MODE": plist.get("MAGIC_CATALOG_ROLLOUT_MODE"),
+          }
+          Path(evidence_path).write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(f"Verified production v2 override in compiled Info.plist: {actual}")
+          PY
       - name: Retain Release build evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ios-release-build-log
-          path: ${{ runner.temp }}/ios-release-build.log
+          path: |
+            ${{ runner.temp }}/ios-release-build.log
+            ${{ runner.temp }}/ios-release-config-evidence.json
           retention-days: 14
 
   full-app-tests:
