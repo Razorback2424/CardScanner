@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from urllib.error import HTTPError
+from urllib.parse import urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import catalog_hosting_cache as hosting
@@ -108,6 +109,42 @@ class CatalogHostingCacheTests(unittest.TestCase):
         self.origin["v1"] = (b"pokemon-3", '"pokemon-3"')
         with self.assertRaisesRegex(ValueError, "changed during restoration"):
             hosting.confirm(self.work, self.site, get=self.fetch)
+
+    def test_r2_mirror_requires_the_current_index_scopes_and_catalog_pointers(self):
+        self.seal_verified_fixture()
+        hosting.prepare(self.cache, self.site, self.work, get=self.fetch)
+        controls = {
+            "/market-prices/v1/last-updated.txt": b"same build",
+            "/market-prices/v1/index.json": b"original group hashes",
+            "/one-piece/v1/market-price-scope.json": b"One Piece scope",
+            "/yugioh/v1/market-price-scope.json": b"Yu-Gi-Oh scope",
+        }
+        for relative, value in controls.items():
+            path = self.site / relative.lstrip("/")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(value)
+
+        def fetch(url, limit):
+            parsed = urlsplit(url)
+            self.assertEqual(f"{parsed.scheme}://{parsed.netloc}", hosting.ORIGIN)
+            self.assertTrue(parsed.query.startswith("r2v="))
+            self.assertLessEqual(len(controls[parsed.path]), limit)
+            return controls[parsed.path]
+
+        self.requests.clear()
+        hosting.confirm_mirror_candidate(self.work, self.site, fetch=fetch, get=self.fetch)
+        self.assertIn(("one-piece/v1", '"one-piece-2"'), self.requests)
+        for path, original in controls.copy().items():
+            with self.subTest(path=path):
+                controls[path] = b"new publication"
+                with self.assertRaisesRegex(ValueError, "no longer matches"):
+                    hosting.confirm_mirror_candidate(self.work, self.site, fetch=fetch, get=self.fetch)
+                controls[path] = original
+
+        # A catalog-only deployment can leave the entire price build unchanged.
+        self.origin["v1"] = (b"pokemon-3", '"pokemon-3"')
+        with self.assertRaisesRegex(ValueError, "Production v1 changed"):
+            hosting.confirm_mirror_candidate(self.work, self.site, fetch=fetch, get=self.fetch)
 
     def test_recheck_refuses_to_deploy_a_previously_verified_but_now_missing_revision(self):
         self.seal_verified_fixture()

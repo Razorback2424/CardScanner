@@ -210,6 +210,9 @@ jobs:
     runs-on: macos-15-intel
     timeout-minutes: 30
     environment: pokemon-catalog-production
+    outputs:
+      firebase_readback: ${{ steps.firebase-readback.outcome }}
+      r2_site_artifact: ${{ steps.share-r2-site.outputs.artifact-id }}
     concurrency:
       group: scanstash-catalog-production-hosting
       cancel-in-progress: false
@@ -282,6 +285,7 @@ jobs:
           python3 scripts/market_price_feeds.py check-publication-build --site-root publisher/site
           firebase deploy --only hosting:production --project "$FIREBASE_PROJECT_ID" --non-interactive
       - name: Verify published bytes from the origin
+        id: firebase-readback
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -308,3 +312,78 @@ jobs:
         with:
           path: ${{ runner.temp }}/firebase-catalog-cache
           key: firebase-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
+      # Preserve the exact verified deploy input. A handoff failure is reported
+      # by the mirror job independently of the Firebase publication result.
+      - name: Package the verified site for R2
+        id: package-r2-site
+        if: ${{ !cancelled() && steps.firebase-readback.outcome == 'success' }}
+        continue-on-error: true
+        run: |
+          tar -czf "$RUNNER_TEMP/firebase-verified-site.tar.gz" \
+            -C "$GITHUB_WORKSPACE/publisher" site \
+            -C "$RUNNER_TEMP/price-catalog-pointers" pointers.json
+      - name: Share the verified site with the R2 job
+        id: share-r2-site
+        if: ${{ !cancelled() && steps.package-r2-site.outcome == 'success' }}
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: firebase-verified-site-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/firebase-verified-site.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
+  mirror-prices-to-r2:
+    needs: publish-prices
+    if: ${{ !cancelled() && github.ref == 'refs/heads/main' && needs.publish-prices.outputs.firebase_readback == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: r2-catalog-production
+    concurrency:
+      group: scanstash-catalog-r2-hosting
+      queue: max
+    steps:
+      - name: Require the verified Firebase artifact
+        env:
+          ARTIFACT_ID: ${{ needs.publish-prices.outputs.r2_site_artifact }}
+        run: |
+          if [[ ! "$ARTIFACT_ID" =~ ^[0-9]+$ ]]; then
+            echo 'The verified Firebase site could not be handed off to R2.' >&2
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.publish-prices.outputs.r2_site_artifact }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/firebase-verified-site
+      - name: Confirm the verified site is still current on Firebase
+        run: |
+          mirror="$RUNNER_TEMP/firebase-verified-site"
+          tar -xzf "$mirror/firebase-verified-site.tar.gz" -C "$mirror"
+          python3 - "$mirror" <<'PY'
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, 'scripts')
+          from catalog_hosting_cache import confirm_mirror_candidate
+
+          root = Path(sys.argv[1])
+          confirm_mirror_candidate(root, root / 'site')
+          PY
+      - name: Publish and verify every object through catalog staging
+        env:
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          : "${AWS_ACCESS_KEY_ID:?Set R2_ACCESS_KEY_ID in r2-catalog-production}"
+          : "${AWS_SECRET_ACCESS_KEY:?Set R2_SECRET_ACCESS_KEY in r2-catalog-production}"
+          python3 scripts/r2_catalog_publish.py --site "$RUNNER_TEMP/firebase-verified-site/site" \
+            --public-base https://catalog-staging.scan-stash.com --verify-all
