@@ -1,3 +1,19 @@
+# 2026-11-27 — Cloudflare cache rules, targeted invalidation, and live verification
+
+Defined the version-controlled Cloudflare Cache Rules specification in
+[`Config/Cloudflare/catalog-cache-rules.json`](Config/Cloudflare/catalog-cache-rules.json)
+(staging active, production cutover template inactive), added targeted
+single-file Cloudflare purge and canonical client-visible readback
+verification in `scripts/cloudflare_cache.py`, integrated them across all
+R2-first catalog and pricing publishers without blocking independent
+Firebase backup on post-activation cache-control-plane failures, and
+extended `scripts/verify_pokemon_catalog_hosting_config.sh` +
+`scripts/verify_hosting_cache.py` with static and live staging verification
+(including authorized negative-cache probing and read-only ruleset
+inspection). See the [cache verification runbook](docs/plans/r2-cache-verification.md)
+for the open live staging acceptance gates. Production DNS and v1 client
+configuration remain unchanged.
+
 # 2026-11-27 — R2-first catalog publication
 
 Converted Pokémon, One Piece, Magic, and the local One Piece fallback to

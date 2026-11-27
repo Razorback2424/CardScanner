@@ -13,6 +13,11 @@ on:
       - "scripts/tests/test_catalog_hosting_restore.py"
       - "scripts/catalog_hosting_cache.py"
       - "scripts/tests/test_catalog_hosting_cache.py"
+      - "scripts/cloudflare_cache.py"
+      - "scripts/tests/test_cloudflare_cache.py"
+      - "scripts/verify_hosting_cache.py"
+      - "scripts/tests/test_verify_hosting_cache.py"
+      - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "scripts/r2_catalog_publish.py"
       - "scripts/market_price_v2.py"
       - "scripts/market_price_rollback.py"
@@ -27,10 +32,12 @@ on:
       - "scripts/tests/test_magic_catalog_workflow.py"
       - "scripts/tests/test_magic_publication_environment.py"
       - "scripts/tests/test_publish_one_piece_local.py"
+      - "Config/Cloudflare/catalog-cache-rules.json"
       - ".github/workflows/pokemon-catalog.yml"
       - ".github/workflows/one-piece-catalog.yml"
       - ".github/workflows/magic-catalog.yml"
       - ".github/workflows/yugioh-catalog.yml"
+      - ".github/workflows/r2-cache-verification.yml"
       - ".github/workflows/market-price-feed-tests.yml"
       - "firebase.json"
   push:
@@ -46,6 +53,11 @@ on:
       - "scripts/tests/test_catalog_hosting_restore.py"
       - "scripts/catalog_hosting_cache.py"
       - "scripts/tests/test_catalog_hosting_cache.py"
+      - "scripts/cloudflare_cache.py"
+      - "scripts/tests/test_cloudflare_cache.py"
+      - "scripts/verify_hosting_cache.py"
+      - "scripts/tests/test_verify_hosting_cache.py"
+      - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "scripts/r2_catalog_publish.py"
       - "scripts/market_price_v2.py"
       - "scripts/market_price_rollback.py"
@@ -60,10 +72,12 @@ on:
       - "scripts/tests/test_magic_catalog_workflow.py"
       - "scripts/tests/test_magic_publication_environment.py"
       - "scripts/tests/test_publish_one_piece_local.py"
+      - "Config/Cloudflare/catalog-cache-rules.json"
       - ".github/workflows/pokemon-catalog.yml"
       - ".github/workflows/one-piece-catalog.yml"
       - ".github/workflows/magic-catalog.yml"
       - ".github/workflows/yugioh-catalog.yml"
+      - ".github/workflows/r2-cache-verification.yml"
       - ".github/workflows/market-price-feed-tests.yml"
       - "firebase.json"
 permissions:
@@ -76,6 +90,8 @@ jobs:
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_market_price_feeds.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_catalog_hosting_restore.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_catalog_hosting_cache.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_cloudflare_cache.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_verify_hosting_cache.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_r2_catalog_publish.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_market_price_rollback.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_one_piece_hosting.py'

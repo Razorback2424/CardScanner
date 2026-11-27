@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "phase": "http_request_cache_settings",
+  "precedence": "last_match_wins",
+  "notes": [
+    "Cloudflare Cache Rules execute top-to-bottom as non-terminating set_cache_settings actions where later matching rules override earlier ones.",
+    "Rule 4 (verification nonce bypass) MUST remain last so publisher verification requests with ?r2v=, ?v2r=, or ?publication_check= bypass cache even on immutable and legacy v1 paths.",
+    "Error status codes 400-599 use value -1 (no-store), never 0 (force revalidation), so 404/410 and transient origin failures are never negatively cached.",
+    "Only exact catalog hostnames are matched; scan-stash.com root, legal pages, mail, and unrelated subdomains are untouched."
+  ],
+  "verificationQueryParams": [
+    "r2v",
+    "v2r",
+    "publication_check"
+  ],
+  "staging": {
+    "hostname": "catalog-staging.scan-stash.com",
+    "activated": true,
+    "rules": [
+      {
+        "id": "immutable-catalog-and-price-builds",
+        "description": "ScanStash staging: cache immutable catalog releases and v2 price builds, never store errors",
+        "action": "set_cache_settings",
+        "enabled": true,
+        "expression": "(http.host eq \"catalog-staging.scan-stash.com\") and (starts_with(http.request.uri.path, \"/v1/releases/\") or starts_with(http.request.uri.path, \"/magic/v1/releases/\") or starts_with(http.request.uri.path, \"/one-piece/v1/releases/\") or starts_with(http.request.uri.path, \"/yugioh/v1/releases/\") or starts_with(http.request.uri.path, \"/market-prices/v2/builds/\") or starts_with(http.request.uri.path, \"/market-prices/v2/verified-builds/\"))",
+        "action_parameters": {
+          "cache": true,
+          "edge_ttl": {
+            "mode": "respect_origin",
+            "status_code_ttl": [
+              {
+                "status_code_range": {
+                  "from": 400,
+                  "to": 599
+                },
+                "value": -1
+              }
+            ]
+          },
+          "browser_ttl": {
+            "mode": "respect_origin"
+          },
+          "serve_stale": {
+            "disable_stale_while_updating": true
+          }
+        }
+      },
+      {
+        "id": "legacy-v1-market-prices",
+        "description": "ScanStash staging: cache legacy v1 price index and group files for origin TTL (300s), never store errors",
+        "action": "set_cache_settings",
+        "enabled": true,
+        "expression": "(http.host eq \"catalog-staging.scan-stash.com\") and (http.request.uri.path eq \"/market-prices/v1/index.json\" or starts_with(http.request.uri.path, \"/market-prices/v1/tcgplayer/\"))",
+        "action_parameters": {
+          "cache": true,
+          "edge_ttl": {
+            "mode": "respect_origin",
+            "status_code_ttl": [
+              {
+                "status_code_range": {
+                  "from": 400,
+                  "to": 599
+                },
+                "value": -1
+              }
+            ]
+          },
+          "browser_ttl": {
+            "mode": "respect_origin"
+          },
+          "serve_stale": {
+            "disable_stale_while_updating": true
+          }
+        }
+      },
+      {
+        "id": "mutable-pointers-scopes-and-markers",
+        "description": "ScanStash staging: bypass edge cache for mutable catalog pointers, scopes, and pricing markers",
+        "action": "set_cache_settings",
+        "enabled": true,
+        "expression": "(http.host eq \"catalog-staging.scan-stash.com\") and (http.request.uri.path in {\"/v1/current.json\" \"/magic/v1/current.json\" \"/one-piece/v1/current.json\" \"/yugioh/v1/current.json\" \"/one-piece/v1/market-price-scope.json\" \"/yugioh/v1/market-price-scope.json\" \"/market-prices/v2/latest.json\" \"/market-prices/v2/history.json\" \"/market-prices/v1/last-updated.txt\"})",
+        "action_parameters": {
+          "cache": false
+        }
+      },
+      {
+        "id": "publisher-verification-nonce-bypass",
+        "description": "ScanStash staging: bypass edge cache for publisher verification requests with nonce query parameters",
+        "action": "set_cache_settings",
+        "enabled": true,
+        "expression": "(http.host eq \"catalog-staging.scan-stash.com\") and (starts_with(http.request.uri.path, \"/v1/\") or starts_with(http.request.uri.path, \"/magic/v1/\") or starts_with(http.request.uri.path, \"/one-piece/v1/\") or starts_with(http.request.uri.path, \"/yugioh/v1/\") or starts_with(http.request.uri.path, \"/market-prices/\")) and (starts_with(http.request.uri.query, \"r2v=\") or contains(http.request.uri.query, \"&r2v=\") or starts_with(http.request.uri.query, \"v2r=\") or contains(http.request.uri.query, \"&v2r=\") or starts_with(http.request.uri.query, \"publication_check=\") or contains(http.request.uri.query, \"&publication_check=\"))",
+        "action_parameters": {
+          "cache": false
+        }
+      }
+    ]
+  },
+  "production_cutover_template": {
+    "hostname": "catalog.scan-stash.com",
+    "activated": false,
+    "rules": [
+      {
+        "id": "immutable-catalog-and-price-builds",
+        "description": "ScanStash production: cache immutable catalog releases and v2 price builds, never store errors",
+        "action": "set_cache_settings",
+        "enabled": true,
+        "expression": "(http.host eq \"catalog.scan-stash.com\") and (starts_with(http.request.uri.path, \"/v1/releases/\") or starts_with(http.request.uri.path, \"/magic/v1/releases/\") or starts_with(http.request.uri.path, \"/one-piece/v1/releases/\") or starts_with(http.request.uri.path, \"/yugioh/v1/releases/\") or starts_with(http.request.uri.path, \"/market-prices/v2/builds/\") or starts_with(http.request.uri.path, \"/market-prices/v2/verified-builds/\"))",
+        "action_parameters": {
+          "cache": true,
+          "edge_ttl": {
+            "mode": "respect_origin",
+            "status_code_ttl": [
+              {
+                "status_code_range": {
+                  "from": 400,
+                  "to": 599
+                },
+                "value": -1
+              }
+            ]
+          },
+          "browser_ttl": {
+            "mode": "respect_origin"
+          },
+          "serve_stale": {
+            "disable_stale_while_updating": true
+          }
+        }
+      },
+      {
+        "id": "legacy-v1-market-prices",
+        "description": "ScanStash production: cache legacy v1 price index and group files for origin TTL (300s), never store errors",
+        "action": "set_cache_settings",
+        "enabled": true,
+        "expression": "(http.host eq \"catalog.scan-stash.com\") and (http.request.uri.path eq \"/market-prices/v1/index.json\" or starts_with(http.request.uri.path, \"/market-prices/v1/tcgplayer/\"))",
+        "action_parameters": {
+          "cache": true,
+          "edge_ttl": {
+            "mode": "respect_origin",
+            "status_code_ttl": [
+              {
+                "status_code_range": {
+                  "from": 400,
+                  "to": 599
+                },
+                "value": -1
+              }
+            ]
+          },
+          "browser_ttl": {
+            "mode": "respect_origin"
+          },
+          "serve_stale": {
+            "disable_stale_while_updating": true
+          }
+        }
+      },
+      {
+        "id": "mutable-pointers-scopes-and-markers",
+        "description": "ScanStash production: bypass edge cache for mutable catalog pointers, scopes, and pricing markers",
+        "action": "set_cache_settings",
+        "enabled": true,
+        "expression": "(http.host eq \"catalog.scan-stash.com\") and (http.request.uri.path in {\"/v1/current.json\" \"/magic/v1/current.json\" \"/one-piece/v1/current.json\" \"/yugioh/v1/current.json\" \"/one-piece/v1/market-price-scope.json\" \"/yugioh/v1/market-price-scope.json\" \"/market-prices/v2/latest.json\" \"/market-prices/v2/history.json\" \"/market-prices/v1/last-updated.txt\"})",
+        "action_parameters": {
+          "cache": false
+        }
+      },
+      {
+        "id": "publisher-verification-nonce-bypass",
+        "description": "ScanStash production: bypass edge cache for publisher verification requests with nonce query parameters",
+        "action": "set_cache_settings",
+        "enabled": true,
+        "expression": "(http.host eq \"catalog.scan-stash.com\") and (starts_with(http.request.uri.path, \"/v1/\") or starts_with(http.request.uri.path, \"/magic/v1/\") or starts_with(http.request.uri.path, \"/one-piece/v1/\") or starts_with(http.request.uri.path, \"/yugioh/v1/\") or starts_with(http.request.uri.path, \"/market-prices/\")) and (starts_with(http.request.uri.query, \"r2v=\") or contains(http.request.uri.query, \"&r2v=\") or starts_with(http.request.uri.query, \"v2r=\") or contains(http.request.uri.query, \"&v2r=\") or starts_with(http.request.uri.query, \"publication_check=\") or contains(http.request.uri.query, \"&publication_check=\"))",
+        "action_parameters": {
+          "cache": false
+        }
+      }
+    ]
+  }
+}

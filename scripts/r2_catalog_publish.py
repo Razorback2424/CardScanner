@@ -39,6 +39,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, build_opener
 
+from cloudflare_cache import CacheVerificationError, purge_and_verify
 from market_price_feeds import (
     CATALOG_NAMESPACES,
     MAX_SCOPE_BYTES,
@@ -65,6 +66,7 @@ DEFAULT_TYPES = {".json": "application/json", ".txt": "text/plain; charset=utf-8
 MAX_READBACK_BYTES = 128 * 1024 * 1024
 MAX_READBACK_RETRIES = 3
 SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
+CACHE_VERIFICATION_FAILED_EXIT = 2
 
 
 class PublishError(RuntimeError):
@@ -558,6 +560,33 @@ def record_verified_build(pointer, store, public_base, fetch):
     verify_readback(item, public_base, fetch, secrets.token_hex(8))
 
 
+def verify_existing_origin(objects, public_base, *, fetch=fetch_public, workers=8):
+    """Idempotent origin-only readback check used by --recover-cache-only (never uploads)."""
+    nonce = secrets.token_hex(8)
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        list(pool.map(lambda item: verify_readback(item, public_base, fetch, nonce), objects))
+    return {"uploaded": 0, "unchanged": len(objects), "verified": len(objects)}
+
+
+def _publication_label(args, site, catalog_metadata):
+    if args.primary_catalog is not None and catalog_metadata is not None:
+        return f"catalog:{args.primary_catalog}@rev-{catalog_metadata['revision']}"
+    if args.primary_prices:
+        pointer_path = site / v2.LATEST
+        if pointer_path.is_file():
+            build = v2.validate_pointer(pointer_path.read_bytes())["build"]
+            return f"prices:v2@{build[:12]}"
+        return "prices:v2"
+    return "site"
+
+
+def _write_cache_report(path, payload):
+    if path is None:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--site", required=True, help="Site tree to publish (the Firebase public directory)")
@@ -567,6 +596,16 @@ def main(argv=None):
     parser.add_argument("--public-base", help="HTTPS origin used for readback")
     parser.add_argument("--dry-run", action="store_true", help="Compare with the bucket without uploading")
     parser.add_argument("--verify-all", action="store_true", help="Read back every object, not only uploads")
+    parser.add_argument("--recover-cache-only", action="store_true",
+                        help="Verify active origin objects without uploading, then rerun purge and canonical readback")
+    parser.add_argument("--cloudflare-zone-id", default=os.environ.get("CLOUDFLARE_ZONE_ID"),
+                        help="32-hex Cloudflare zone ID for targeted single-file cache purge")
+    parser.add_argument("--cloudflare-purge-token", default=os.environ.get("CLOUDFLARE_CACHE_PURGE_TOKEN"),
+                        help="Least-privilege Cloudflare API token with Cache Purge permission")
+    parser.add_argument("--require-cache-verification", action="store_true",
+                        help="Fail cache verification if Cloudflare purge credentials are not configured")
+    parser.add_argument("--cache-report", type=Path,
+                        help="Write structured JSON origin and client-visible cache verification report")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--primary-prices", action="store_true", help="Publish prices bound to the active R2 scopes")
     mode.add_argument("--primary-catalog", choices=PRIMARY_CATALOG_NAMESPACES,
@@ -598,7 +637,7 @@ def main(argv=None):
         return 0
     if not args.public_base or not args.public_base.startswith("https://"):
         parser.error("--public-base must be an https:// origin")
-    if not args.bucket or not re.fullmatch(r"[0-9a-f]{32}", args.account_id or ""):
+    if not args.recover_cache_only and (not args.bucket or not re.fullmatch(r"[0-9a-f]{32}", args.account_id or "")):
         parser.error("Set --bucket/R2_BUCKET_NAME and a 32-hex --account-id/R2_ACCOUNT_ID")
     try:
         confirm_current = None
@@ -614,7 +653,8 @@ def main(argv=None):
             if not (site / NAMESPACE / "index.json").is_file():
                 raise PublishError("Missing local primary price capture")
             restore(site, origin=R2_ORIGIN, require_fresh=True, require_present=True)
-            v2.stage(site)
+            if not (args.recover_cache_only and (site / v2.LATEST).is_file()):
+                v2.stage(site)
         elif args.primary_catalog is not None:
             if args.public_base.rstrip("/") != R2_ORIGIN:
                 raise PublishError("Primary catalogs must use the approved R2 origin")
@@ -630,15 +670,74 @@ def main(argv=None):
         if args.primary_prices:
             # Scope files are authoritative catalog inputs on R2. This job only reads them.
             objects = [item for item in objects if item["key"].startswith("market-prices/")]
-        store = AwsCliStore(args.bucket, f"https://{args.account_id}.r2.cloudflarestorage.com")
-        summary = publish(objects, store, args.public_base, dry_run=args.dry_run,
-                          verify_all=args.verify_all, confirm_current=confirm_current,
-                          record_build=args.primary_prices, catalog_metadata=catalog_metadata)
+        if args.recover_cache_only:
+            if catalog_metadata is not None:
+                validate_primary_catalog_plan(objects, catalog_metadata)
+            summary = verify_existing_origin(objects, args.public_base)
+        else:
+            store = AwsCliStore(args.bucket, f"https://{args.account_id}.r2.cloudflarestorage.com")
+            summary = publish(objects, store, args.public_base, dry_run=args.dry_run,
+                              verify_all=args.verify_all, confirm_current=confirm_current,
+                              record_build=args.primary_prices, catalog_metadata=catalog_metadata)
     except (PublishError, ValueError, OSError) as error:
         print(f"R2 publish stopped: {error}", file=sys.stderr)
         return 1
+
+    publication = _publication_label(args, site, catalog_metadata)
+    print(f"Origin verification (nonce-based) {'dry run ' if args.dry_run else ''}complete for {publication}: "
+          f"{summary['uploaded']} uploaded, {summary['unchanged']} unchanged, {summary['verified']} verified")
+
+    if args.primary_catalog is None and not args.primary_prices:
+        print(f"R2 publish {'dry run ' if args.dry_run else ''}complete: {summary['uploaded']} uploaded, "
+              f"{summary['unchanged']} unchanged, {summary['verified']} verified")
+        return 0
+
+    enforce_cache = args.require_cache_verification or os.environ.get("CLOUDFLARE_CACHE_ENFORCE") == "true"
+    try:
+        cache_result = purge_and_verify(
+            objects,
+            args.public_base,
+            primary_catalog=args.primary_catalog,
+            primary_prices=args.primary_prices,
+            zone_id=args.cloudflare_zone_id,
+            api_token=args.cloudflare_purge_token,
+            enforce=enforce_cache,
+            dry_run=args.dry_run,
+        )
+    except (CacheVerificationError, ValueError) as error:
+        affected = getattr(error, "affected_urls", [])
+        stage = getattr(error, "stage", "cache")
+        report = {
+            "publication": publication,
+            "originVerified": True,
+            "cacheStatus": "failed",
+            "stage": stage,
+            "affectedUrls": affected,
+            "error": str(error),
+        }
+        _write_cache_report(args.cache_report, report)
+        print(
+            f"Client-visible cache verification FAILED after verified R2 activation for {publication} "
+            f"(stage={stage}, affected={', '.join(affected) or 'none'}): {error}\n"
+            "R2 immutable objects and active pointer remain intact; publication is NOT Stage 2 cache-ready. "
+            "Re-run with --recover-cache-only (or rerun the publish job) to retry invalidation and canonical readback.",
+            file=sys.stderr,
+        )
+        return CACHE_VERIFICATION_FAILED_EXIT
+
+    report = {
+        "publication": publication,
+        "originVerified": True,
+        "cacheStatus": cache_result["status"],
+        "reason": cache_result.get("reason"),
+        "affectedUrls": cache_result["affectedUrls"],
+        "purged": cache_result["purged"],
+        "canonical": cache_result["canonical"],
+    }
+    _write_cache_report(args.cache_report, report)
     print(f"R2 publish {'dry run ' if args.dry_run else ''}complete: {summary['uploaded']} uploaded, "
-          f"{summary['unchanged']} unchanged, {summary['verified']} verified")
+          f"{summary['unchanged']} unchanged, {summary['verified']} verified "
+          f"(client-visible cache verification: {cache_result['status']})")
     return 0
 
 
