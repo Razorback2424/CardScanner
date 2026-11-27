@@ -1,0 +1,97 @@
+name: R2 catalog connectivity
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: r2-catalog-production
+    timeout-minutes: 5
+    steps:
+      - name: Verify upload, HTTPS readback, and deletion
+        shell: bash
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID || vars.R2_ACCOUNT_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+        run: |
+          : "${AWS_ACCESS_KEY_ID:?Set R2_ACCESS_KEY_ID in r2-catalog-production}"
+          : "${AWS_SECRET_ACCESS_KEY:?Set R2_SECRET_ACCESS_KEY in r2-catalog-production}"
+          if [[ ! "$R2_ACCOUNT_ID" =~ ^[[:xdigit:]]{32}$ ]]; then
+            echo 'Set R2_ACCOUNT_ID in r2-catalog-production.' >&2
+            exit 1
+          fi
+
+          bucket=scanstash-catalog-prod
+          endpoint="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          nonce=$(openssl rand -hex 16)
+          key="_connectivity/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${nonce}.txt"
+          url="https://catalog-staging.scan-stash.com/${key}"
+          work=$(mktemp -d)
+          upload_attempted=false
+
+          s3() {
+            aws --endpoint-url "$endpoint" --cli-connect-timeout 10 --cli-read-timeout 15 \
+              --no-cli-pager s3api "$@" --bucket "$bucket" --key "$key" >/dev/null
+          }
+
+          cleanup() {
+            local result=$?
+            if [[ "$upload_attempted" == true ]] && ! s3 delete-object; then
+              echo "Cleanup failed for ${key}." >&2
+              result=1
+            fi
+            rm -rf -- "$work"
+            exit "$result"
+          }
+          trap cleanup EXIT
+          trap 'exit 130' INT
+          trap 'exit 143' TERM
+
+          fetch() {
+            curl --silent --show-error --proto '=https' --max-time 20 \
+              --dump-header "$work/headers" --output "$work/readback" --write-out '%{http_code}' "$@"
+          }
+
+          expect_header() {
+            if ! tr -d '\r' < "$work/headers" | grep -Eix "$1" >/dev/null; then
+              echo "Unexpected staging response headers. Expected ${1}." >&2
+              return 1
+            fi
+          }
+
+          printf 'ScanStash R2 connectivity %s\n' "$nonce" > "$work/upload"
+          expected=$(sha256sum < "$work/upload")
+          echo "Probing ${key}."
+          upload_attempted=true
+          s3 put-object --body "$work/upload" --content-type text/plain --cache-control no-store
+
+          status=$(fetch "$url")
+          [[ "$status" == 200 ]] || { echo "Expected HTTP 200, received ${status}." >&2; exit 1; }
+          actual=$(sha256sum < "$work/readback")
+          [[ "$actual" == "$expected" ]] || { echo 'Readback SHA-256 mismatch.' >&2; exit 1; }
+          expect_header 'content-type: *text/plain(;.*)?'
+          expect_header 'cache-control: *no-store'
+          expect_header 'cf-ray: *[^[:space:]]+'
+          expect_header 'cf-cache-status: *(DYNAMIC|BYPASS)'
+
+          s3 delete-object
+          upload_attempted=false
+
+          status=$(fetch -H 'Cache-Control: no-cache' "${url}?deleted=${nonce}")
+          [[ "$status" == 404 ]] || { echo "Expected HTTP 404 after deletion, received ${status}." >&2; exit 1; }
+          expect_header 'cf-ray: *[^[:space:]]+'
+          expect_header 'cf-cache-status: *(DYNAMIC|BYPASS)'
+
+          # Repeat the same cache key without the request directive to catch a cached 404.
+          status=$(fetch "${url}?deleted=${nonce}")
+          [[ "$status" == 404 ]] || { echo "Expected HTTP 404 on repeat, received ${status}." >&2; exit 1; }
+          expect_header 'cf-cache-status: *(DYNAMIC|BYPASS)'
+          echo 'R2 upload, readback, and uncached deletion verified.'
