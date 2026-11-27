@@ -11,6 +11,8 @@ on:
       - "publisher/pokemon-prize-pack-printings.json"
       - "scripts/restore_catalog_hosting_site.sh"
       - "scripts/tests/test_catalog_hosting_restore.py"
+      - "scripts/r2_catalog_publish.py"
+      - "scripts/tests/test_r2_catalog_publish.py"
       - ".github/workflows/yugioh-catalog.yml"
       - ".github/workflows/market-price-feed-tests.yml"
       - "firebase.json"
@@ -25,6 +27,8 @@ on:
       - "publisher/pokemon-prize-pack-printings.json"
       - "scripts/restore_catalog_hosting_site.sh"
       - "scripts/tests/test_catalog_hosting_restore.py"
+      - "scripts/r2_catalog_publish.py"
+      - "scripts/tests/test_r2_catalog_publish.py"
       - ".github/workflows/yugioh-catalog.yml"
       - ".github/workflows/market-price-feed-tests.yml"
       - "firebase.json"
@@ -37,4 +41,5 @@ jobs:
       - uses: actions/checkout@v4
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_market_price_feeds.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_catalog_hosting_restore.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_r2_catalog_publish.py'
       - run: bash scripts/verify_pokemon_catalog_hosting_config.sh
