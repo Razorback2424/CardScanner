@@ -11,6 +11,8 @@ enum TCGCSVPriceMirror {
     /// so a refresh is not recorded as a successful check of stale data.
     @TaskLocal static var awaitsRevalidation = false
 
+    @TaskLocal static var explicitBuildRecheck: TCGCSVMirrorBuildMarker.Recheck?
+
     static func isWithinAge(_ date: Date, now: Date, maxAge: TimeInterval) -> Bool {
         let age = now.timeIntervalSince(date)
         return age >= 0 && age < maxAge
@@ -168,6 +170,19 @@ struct TCGCSVSnapshotFiles {
 actor TCGCSVMirrorBuildMarker {
     static let shared = TCGCSVMirrorBuildMarker(baseURL: TCGCSVPriceMirror.baseURL,
         session: TCGCSVPriceMirror.session, defaultsKey: "TCGCSVMirrorBuildMarker.v1")
+
+    /// All mirrored groups in one user action share the same marker check.
+    actor Recheck {
+        private var checks: [ObjectIdentifier: Task<String, Error>] = [:]
+
+        func build(using marker: TCGCSVMirrorBuildMarker) async throws -> String {
+            let id = ObjectIdentifier(marker)
+            if let check = checks[id] { return try await check.value }
+            let check = Task { try await marker.currentBuild(forceRefresh: true) }
+            checks[id] = check
+            return try await check.value
+        }
+    }
 
     private struct Check: Codable, Sendable {
         let value: String
@@ -357,8 +372,9 @@ actor TCGCSVProductPriceSource {
         }
         // Set projections are keyed to a feed build; a cache file written
         // before builds were recorded cannot stand in for one.
-        let result = try await snapshot(group: key, minimumFetchedAt: nil, forceRefresh: retry,
-                                          waitForKnownBuild: true) { !retry && $0.sourceBuild != nil }
+        let rechecking = retry || TCGCSVPriceMirror.explicitBuildRecheck != nil
+        let result = try await snapshot(group: key, minimumFetchedAt: nil, forceRefresh: rechecking,
+                                          waitForKnownBuild: true) { !rechecking && $0.sourceBuild != nil }
         let received = result.value
         return snapshots[key].flatMap { $0.sourceBuild != nil && $0.isNewer(than: received) ? $0 : nil } ?? received
     }
@@ -376,8 +392,13 @@ actor TCGCSVProductPriceSource {
             let numbers = product.extendedData.filter { $0.name == "Number" }.map(\.value)
             return numbers == (number.map { [$0] } ?? []) || (allowsMissingNumber && numbers.isEmpty)
         }
-        let result = try await snapshot(group: groupKey, minimumFetchedAt: minimumFetchedAt) { cached in
-            allowsStaleFallback && cached.legacyPositiveOnly != true && matchesProduct(cached) && cached.prices.contains {
+        let rechecking = TCGCSVPriceMirror.explicitBuildRecheck != nil
+        // Browse keeps the last displayed amount on a failed check. Collection
+        // may also recover a saved amount, attaching its existing failure flag.
+        let canRetainQuote = allowsStaleFallback && (!rechecking || TCGCSVPriceMirror.awaitsRevalidation)
+        let result = try await snapshot(group: groupKey, minimumFetchedAt: minimumFetchedAt,
+                                        forceRefresh: rechecking) { cached in
+            canRetainQuote && cached.legacyPositiveOnly != true && matchesProduct(cached) && cached.prices.contains {
                 $0.productId == productID && $0.subTypeName == lane && $0.marketPrice != nil
             }
         }
@@ -449,7 +470,12 @@ actor TCGCSVProductPriceSource {
             defer { self.pending[key] = nil }
             let value: Snapshot
             do {
-                let build = try await self.marker.currentBuild(forceRefresh: forceRefresh)
+                let build: String
+                if let recheck = TCGCSVPriceMirror.explicitBuildRecheck {
+                    build = try await recheck.build(using: self.marker)
+                } else {
+                    build = try await self.marker.currentBuild(forceRefresh: forceRefresh)
+                }
                 if var cached, cached.legacyPositiveOnly != true,
                    cached.sourceBuild == build, self.isWithinDownloadAge(cached) {
                     if let latest = self.snapshots[group], latest.isNewer(than: cached) { return latest }

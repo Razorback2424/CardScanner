@@ -1480,6 +1480,60 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertEqual(afterFailure.retainedAfterRefreshFailure, true, "The refresh is still reported as failed")
     }
 
+    func testExplicitProductRetryChecksWarmMarkerOnceAndRetainsDatedCollectionQuoteOnFailure() async throws {
+        var routes = ["/last-updated.txt": Data("2026-09-29T20:05:57+0000".utf8)]
+        for group in 1...2 {
+            routes["/tcgplayer/71/\(group)/products"] = Data(#"{"success":true,"errors":[],"results":[{"productId":1,"categoryId":71,"groupId":\#(group),"name":"Fixture","extendedData":[]}]}"#.utf8)
+            routes["/tcgplayer/71/\(group)/prices"] = Data(#"{"success":true,"errors":[],"results":[{"productId":1,"subTypeName":"Normal","marketPrice":4}]}"#.utf8)
+        }
+        let server = TCGCSVTestServer(routes: routes, now: date)
+        TCGCSVTestURLProtocol.server = server
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: root) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let source = TCGCSVProductPriceSource(baseURL: MarketMirrorFixture.baseURL,
+            session: URLSession(configuration: configuration), cacheDirectory: root, now: { server.now }, spacing: 0)
+
+        func quote(_ group: Int) async throws -> NormalizedPrice {
+            let lookup = try await source.quote(category: 71, group: group, productID: 1, name: "Fixture",
+                number: nil, lane: "Normal", minimumFetchedAt: nil)
+            return try XCTUnwrap(lookup.usablePrice)
+        }
+        func markerCount() -> Int { server.requests.filter { $0.url?.lastPathComponent == "last-updated.txt" }.count }
+
+        let original = try await quote(1)
+        _ = try await quote(2)
+        server.advance(60 * 60)
+        server.publish(build: ISO8601DateFormatter().string(from: server.now.addingTimeInterval(-60)))
+        let cached = try await quote(1)
+        XCTAssertEqual(cached, original)
+        XCTAssertEqual(markerCount(), 1)
+
+        let updated = try await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(.init()) {
+            let first = try await quote(1)
+            let second = try await quote(2)
+            XCTAssertEqual(first.fetchedAt, second.fetchedAt)
+            return first
+        }
+        XCTAssertGreaterThan(updated.fetchedAt, original.fetchedAt)
+        XCTAssertEqual(markerCount(), 2)
+
+        server.fail = true
+        do {
+            _ = try await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(.init()) { try await quote(1) }
+            XCTFail("A Browse retry must surface the failed check")
+        } catch PriceQuoteError.providerUnavailable {}
+
+        let retained = try await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(.init()) {
+            try await TCGCSVPriceMirror.$awaitsRevalidation.withValue(true) { try await quote(1) }
+        }
+        XCTAssertEqual(retained.fetchedAt, updated.fetchedAt)
+        XCTAssertEqual(retained.unitMarketPriceUSD, updated.unitMarketPriceUSD)
+        XCTAssertEqual(retained.retainedAfterRefreshFailure, true)
+        XCTAssertEqual(markerCount(), 4, "Each explicit action checks the marker even during cache backoff")
+    }
+
     func testPriceStillServesWhenTheSnapshotCannotBeSavedToDisk() async throws {
         let server = TCGCSVTestServer(routes: [
             "/last-updated.txt": Data("2026-09-29T20:05:57+0000".utf8),
