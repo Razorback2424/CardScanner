@@ -45,7 +45,7 @@ The project moved to the Blaze plan on November 26 and hosting stopped returning
 | `market-prices/v1/` | `index.json`, `last-updated.txt`, and a products and prices file per group: Yu-Gi-Oh! 1,226, One Piece 102, Lorcana 40, Pokémon 14 | Build marker `2026-11-20T20:06:21+0000`; no publish has succeeded since the 509 began. |
 | `__/firebase/` | Firebase SDK init files | — |
 
-- **Not hosted:** there are no Yu-Gi-Oh!, Magic or Lorcana catalog objects on the origin. Those games run only from bundled catalogs today, so there are no hosted Yu-Gi-Oh! parent chains or Magic objects to retain, retire or migrate in Stage 2. Stage 2's historical copy is the 112 Pokémon and One Piece catalog files plus the current price build.
+- **Not hosted:** there are no Yu-Gi-Oh!, Magic or Lorcana catalog objects on the origin. Those games run only from bundled catalogs today, so there are no hosted Yu-Gi-Oh! parent chains or Magic objects to retain, retire or migrate in Stage 2. Stage 2's historical copy is the 113 Pokémon and One Piece catalog files (111 immutable releases and 2 pointers) plus the current price build.
 - **Rollback rehearsal (HTTPS, custom domain):**
   - The certificate served for `catalog.scan-stash.com` validates. It is a Google Trust Services (WR3) certificate whose subject alternative names include the domain, valid until 2027-02-15.
   - All 1,497 content files returned HTTP 200. Each response's ETag equals the file hash in the API inventory (0 mismatches). The catalog files total 324,693,299 bytes uncompressed.
