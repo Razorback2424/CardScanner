@@ -118,9 +118,11 @@ Before enabling production v2 clients or cutting over production DNS:
 5. Complete live acceptance of Cloudflare cache rules, targeted invalidation,
    and canonical readback verification (implemented in PR #76; see
    [the cache verification runbook](r2-cache-verification.md)), continuous
-   rollback readiness/certificate/quota checks and roll-forward rehearsal
-   (PR #77), Magic hostname/production v2 client config (PR #78), the
-   seven-day parallel publication period, and production DNS cutover.
+   rollback readiness, SNI certificate, Firebase quota monitoring, and signed
+   content roll-forward rehearsals (implemented in PR #77; see
+   [the rollback readiness runbook](r2-rollback-readiness.md)), Magic hostname
+   and production v2 client config (PR #78), the seven-day parallel
+   publication period, and production DNS cutover.
    Production clients remain on v1 until those gates pass. The workflow
    retains all builds; track restoration time and transfer as history grows
    before setting a retention policy.

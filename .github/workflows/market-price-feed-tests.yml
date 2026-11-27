@@ -17,6 +17,10 @@ on:
       - "scripts/tests/test_cloudflare_cache.py"
       - "scripts/verify_hosting_cache.py"
       - "scripts/tests/test_verify_hosting_cache.py"
+      - "scripts/rollback_readiness.py"
+      - "scripts/tests/test_rollback_readiness.py"
+      - "scripts/catalog_roll_forward.py"
+      - "scripts/tests/test_catalog_roll_forward.py"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "scripts/r2_catalog_publish.py"
       - "scripts/market_price_v2.py"
@@ -38,6 +42,7 @@ on:
       - ".github/workflows/magic-catalog.yml"
       - ".github/workflows/yugioh-catalog.yml"
       - ".github/workflows/r2-cache-verification.yml"
+      - ".github/workflows/r2-rollback-readiness.yml"
       - ".github/workflows/market-price-feed-tests.yml"
       - "firebase.json"
   push:
@@ -57,6 +62,10 @@ on:
       - "scripts/tests/test_cloudflare_cache.py"
       - "scripts/verify_hosting_cache.py"
       - "scripts/tests/test_verify_hosting_cache.py"
+      - "scripts/rollback_readiness.py"
+      - "scripts/tests/test_rollback_readiness.py"
+      - "scripts/catalog_roll_forward.py"
+      - "scripts/tests/test_catalog_roll_forward.py"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "scripts/r2_catalog_publish.py"
       - "scripts/market_price_v2.py"
@@ -78,6 +87,7 @@ on:
       - ".github/workflows/magic-catalog.yml"
       - ".github/workflows/yugioh-catalog.yml"
       - ".github/workflows/r2-cache-verification.yml"
+      - ".github/workflows/r2-rollback-readiness.yml"
       - ".github/workflows/market-price-feed-tests.yml"
       - "firebase.json"
 permissions:
@@ -92,6 +102,8 @@ jobs:
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_catalog_hosting_cache.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_cloudflare_cache.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_verify_hosting_cache.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_rollback_readiness.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_catalog_roll_forward.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_r2_catalog_publish.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_market_price_rollback.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_one_piece_hosting.py'

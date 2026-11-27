@@ -406,6 +406,33 @@ jobs:
           python3 scripts/market_price_rollback.py confirm-primary --site-root publisher/site
           python3 scripts/catalog_hosting_cache.py confirm --origin "$R2_READ_ORIGIN" --site publisher/site \
             --work "$RUNNER_TEMP/price-catalog-pointers"
+      - name: Verify continuous rollback readiness and report status
+        env:
+          FIREBASE_QUOTA_MODE: ${{ vars.FIREBASE_QUOTA_MODE }}
+        run: |
+          service_account_file="$(mktemp "$RUNNER_TEMP/firebase-readiness-sa.XXXXXX")"
+          trap 'rm -f "$service_account_file"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$service_account_file"
+          python3 scripts/rollback_readiness.py \
+            --r2-origin "$R2_READ_ORIGIN" \
+            --firebase-origin https://scanstash-catalog-prod.web.app \
+            --rollback-hostname catalog.scan-stash.com \
+            --site-root publisher/site \
+            --firebase-project "$FIREBASE_PROJECT_ID" \
+            --firebase-site "$FIREBASE_HOSTING_SITE_ID" \
+            --service-account "$service_account_file" \
+            --quota-mode "${FIREBASE_QUOTA_MODE:-strict}" \
+            --report "$RUNNER_TEMP/rollback-readiness.json" \
+            --summary "$GITHUB_STEP_SUMMARY"
+      - name: Upload rollback readiness report
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: price-rollback-readiness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/rollback-readiness.json
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Seal the verified R2 catalog tree for the next backup
         id: catalog-cache
         continue-on-error: true
@@ -422,5 +449,5 @@ jobs:
       - name: Report a failed backup separately from the primary publication
         if: failure()
         run: |
-          echo '::warning title=Firebase price backup failed::The verified R2 price publication remains active.'
-          echo 'Firebase backup failed. The verified R2 price publication remains active.' >> "$GITHUB_STEP_SUMMARY"
+          echo '::warning title=Firebase price backup failed::Rollback target marked NOT READY. The verified R2 price publication remains active.'
+          echo '**Rollback readiness: NOT READY** — Firebase backup failed. The verified R2 price publication remains active.' >> "$GITHUB_STEP_SUMMARY"

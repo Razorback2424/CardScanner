@@ -1,3 +1,21 @@
+# 2026-11-27 — Continuous rollback readiness, content roll-forward, and recovery rehearsals
+
+Added continuous Firebase rollback readiness verification and explicit `READY`
+/ `NOT READY` reporting in `scripts/rollback_readiness.py`, covering live
+catalog/scope/price parity against R2, Firebase origin and SNI custom-domain
+(`catalog.scan-stash.com`) HTTPS certificate validity and expiry headroom, and
+Firebase Hosting storage and bandwidth headroom (staged site plus Firebase
+Hosting REST API and Cloud Monitoring metrics without false-green reporting).
+Wired rollback readiness reporting and artifact uploads into all four
+independent Firebase backup jobs (`pokemon-catalog.yml`,
+`one-piece-catalog.yml`, `magic-catalog.yml`, `yugioh-catalog.yml`), added
+signed monotonic content roll-forward preparation and a 6-phase offline
+infrastructure failure/recovery rehearsal in `scripts/catalog_roll_forward.py`,
+and added the read-only `.github/workflows/r2-rollback-readiness.yml` dispatch
+workflow. See the [rollback readiness runbook](docs/plans/r2-rollback-readiness.md)
+for IAM and open live acceptance gates. Production DNS and v1 client
+configuration remain unchanged.
+
 # 2026-11-27 — Cloudflare cache rules, targeted invalidation, and live verification
 
 Defined the version-controlled Cloudflare Cache Rules specification in
