@@ -1,9 +1,14 @@
 import hashlib
+from http.client import IncompleteRead
+from io import BytesIO, StringIO
 from pathlib import Path
+from ssl import SSLEOFError
 import sys
 import tempfile
 import threading
 import unittest
+from unittest.mock import patch
+from urllib.error import HTTPError, URLError
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -12,6 +17,54 @@ import market_price_feeds as feeds
 import market_price_v2 as v2
 
 PUBLIC = "https://catalog-staging.example.test"
+
+
+class PublicReadbackTests(unittest.TestCase):
+    def test_retries_transient_http_and_transport_errors(self):
+        transient_errors = (
+            HTTPError(PUBLIC, 429, "Rate limited", {}, None),
+            HTTPError(PUBLIC, 502, "Bad gateway", {}, None),
+            URLError("Temporary name resolution failure"),
+            TimeoutError(),
+            ConnectionResetError(),
+            IncompleteRead(b"partial"),
+            SSLEOFError(8, "TLS connection closed during read"),
+        )
+        for error in transient_errors:
+            with self.subTest(error=error), patch.object(r2, "build_opener") as make_opener, \
+                    patch.object(r2.time, "sleep") as sleep, patch.object(r2.sys, "stderr", new_callable=StringIO):
+                open_request = make_opener.return_value.open
+                response = open_request.return_value.__enter__.return_value
+                response.status = 200
+                response.headers = {"Content-Type": "application/json"}
+                if isinstance(error, (IncompleteRead, SSLEOFError)):
+                    response.read.side_effect = [error, b"{}"]
+                else:
+                    open_request.side_effect = [error, open_request.return_value]
+                    response.read.return_value = b"{}"
+
+                self.assertEqual(r2.fetch_public(PUBLIC), (200, {"content-type": "application/json"}, b"{}"))
+                self.assertEqual(open_request.call_count, 2)
+                sleep.assert_called_once_with(1)
+
+    def test_returns_404_without_retrying(self):
+        with patch.object(r2, "build_opener") as make_opener, patch.object(r2.time, "sleep") as sleep:
+            open_request = make_opener.return_value.open
+            open_request.side_effect = HTTPError(PUBLIC, 404, "Not found", {}, None)
+
+            self.assertEqual(r2.fetch_public(PUBLIC), (404, {}, b""))
+            open_request.assert_called_once()
+            sleep.assert_not_called()
+
+    def test_stops_after_three_retries(self):
+        with patch.object(r2, "build_opener") as make_opener, patch.object(r2.time, "sleep") as sleep, \
+                patch.object(r2.sys, "stderr", new_callable=StringIO):
+            open_request = make_opener.return_value.open
+            open_request.side_effect = [HTTPError(PUBLIC, 503, "Unavailable", {}, None) for _ in range(4)]
+
+            self.assertEqual(r2.fetch_public(PUBLIC), (503, {}, b""))
+            self.assertEqual(open_request.call_count, 4)
+            self.assertEqual([call.args for call in sleep.call_args_list], [(1,), (2,), (4,)])
 
 
 class FakeBucket:
@@ -361,21 +414,46 @@ class AtomicPriceV2Tests(unittest.TestCase):
         self.assertNotEqual(*pointer_urls)
         self.assertEqual(self.bucket.objects[v2.LATEST]["body"], feeds.packed(pointer))
 
-    def test_transient_http_error_does_not_trigger_legacy_rewrite(self):
+    def test_network_retries_and_confirmed_legacy_corruption_repair(self):
         site, _ = self.fixture("old")
         self.publish(site)
         key = feeds.NAMESPACE + "/tcgplayer/3/1/prices"
         self.bucket.puts.clear()
+        self.bucket.objects[key]["body"] = b"wrong bytes"
+        requests = []
+        unavailable_reads = 5
 
-        def unavailable_fetch(url):
+        def open_request(request, timeout):
+            nonlocal unavailable_reads
+            url = request.full_url
             if "/" + key + "?" in url:
-                return 503, {}, b""
-            return self.bucket.fetch(url)
+                requests.append(url)
+                if unavailable_reads:
+                    unavailable_reads -= 1
+                    raise HTTPError(url, 503, "Unavailable", {}, None)
+            status, headers, body = self.bucket.fetch(url)
+            response = BytesIO(body)
+            response.status = status
+            response.headers = headers
+            return response
 
-        with self.assertRaisesRegex(r2.PublishError, "HTTP 503"):
-            r2.publish(r2.plan(site, self.rules), self.bucket, PUBLIC,
-                       fetch=unavailable_fetch, log=lambda _: None)
-        self.assertEqual(self.bucket.puts, [])
+        objects = r2.plan(site, self.rules)
+        with patch.object(r2, "build_opener") as make_opener, patch.object(r2.time, "sleep") as sleep, \
+                patch.object(r2.sys, "stderr", new_callable=StringIO):
+            make_opener.return_value.open.side_effect = open_request
+            with self.assertRaisesRegex(r2.PublishError, "HTTP 503"):
+                r2.publish(objects, self.bucket, PUBLIC, log=lambda _: None)
+            self.assertEqual(self.bucket.puts, [])
+            self.assertEqual(len(requests), 4)
+
+            requests.clear()
+            r2.publish(objects, self.bucket, PUBLIC, log=lambda _: None)
+            self.assertEqual(self.bucket.puts, [key])
+            self.assertEqual(self.bucket.objects[key]["body"], (site / key).read_bytes())
+            failed_url, retried_url, repaired_url = requests
+            self.assertEqual(failed_url, retried_url)
+            self.assertNotEqual(retried_url, repaired_url)
+            self.assertEqual([call.args for call in sleep.call_args_list], [(1,), (2,), (4,), (1,)])
 
     def test_headers(self):
         self.assertEqual(self.rules.headers(v2.LATEST), ("application/json; charset=utf-8", "no-cache"))

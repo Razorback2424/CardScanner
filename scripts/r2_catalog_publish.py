@@ -25,14 +25,17 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 import fnmatch
 import hashlib
+from http.client import IncompleteRead
 import json
 import os
 from pathlib import Path, PurePosixPath
 import re
 import secrets
+from ssl import SSLEOFError
 import subprocess
 import sys
-from urllib.error import HTTPError
+import time
+from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, build_opener
 
@@ -45,6 +48,7 @@ MARKER_PATHS = {"market-prices/v1/last-updated.txt"}
 INDEX_PATHS = {"market-prices/v1/index.json"}
 DEFAULT_TYPES = {".json": "application/json", ".txt": "text/plain; charset=utf-8"}
 MAX_READBACK_BYTES = 128 * 1024 * 1024
+MAX_READBACK_RETRIES = 3
 
 
 class PublishError(RuntimeError):
@@ -205,15 +209,26 @@ class AwsCliStore:
 
 
 def fetch_public(url):
-    """Return (status, headers, body) for an identity-encoded GET with no redirects."""
+    """Return (status, headers, body) for a bounded GET, retrying transient failures."""
     request = Request(url, headers={"User-Agent": "ScanStashCatalogPublisher/1.0", "Accept-Encoding": "identity",
                                     "Cache-Control": "no-cache"})
-    try:
-        with build_opener(NoRedirects()).open(request, timeout=60) as response:
-            body = response.read(MAX_READBACK_BYTES + 1)
-            return response.status, {k.lower(): v for k, v in response.headers.items()}, body
-    except HTTPError as error:
-        return error.code, {k.lower(): v for k, v in error.headers.items()}, b""
+    opener = build_opener(NoRedirects())
+    for attempt in range(MAX_READBACK_RETRIES + 1):
+        try:
+            with opener.open(request, timeout=60) as response:
+                body = response.read(MAX_READBACK_BYTES + 1)
+                return response.status, {k.lower(): v for k, v in response.headers.items()}, body
+        except HTTPError as error:
+            with error:
+                retryable = error.code == 429 or 500 <= error.code < 600
+                if not retryable or attempt == MAX_READBACK_RETRIES:
+                    return error.code, {k.lower(): v for k, v in error.headers.items()}, b""
+        except (URLError, TimeoutError, ConnectionError, IncompleteRead, SSLEOFError) as error:
+            if attempt == MAX_READBACK_RETRIES:
+                raise PublishError(f"Public readback failed for {url}: {error}") from error
+        print(f"Retrying public readback ({attempt + 1}/{MAX_READBACK_RETRIES}): {url}",
+              file=sys.stderr, flush=True)
+        time.sleep(2 ** attempt)
 
 
 def verify_readback(item, public_base, fetch, nonce):
