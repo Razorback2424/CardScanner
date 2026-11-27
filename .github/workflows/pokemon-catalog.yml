@@ -13,6 +13,10 @@ on:
       - "publisher/discovery-policy.json"
       - "scripts/restore_pokemon_catalog_releases.sh"
       - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/catalog_hosting_cache.py"
+      - "scripts/r2_catalog_publish.py"
+      - "scripts/market_price_feeds.py"
+      - "scripts/market_price_rollback.py"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "scripts/catalog_release_preflight.py"
       - "firebase.json"
@@ -30,6 +34,10 @@ on:
       - "publisher/discovery-policy.json"
       - "scripts/restore_pokemon_catalog_releases.sh"
       - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/catalog_hosting_cache.py"
+      - "scripts/r2_catalog_publish.py"
+      - "scripts/market_price_feeds.py"
+      - "scripts/market_price_rollback.py"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "scripts/catalog_release_preflight.py"
       - "firebase.json"
@@ -63,7 +71,8 @@ permissions:
   contents: read
 
 env:
-  POKEMON_CATALOG_PRODUCTION_READ_ORIGIN: https://scanstash-catalog-prod.web.app
+  POKEMON_CATALOG_PRODUCTION_READ_ORIGIN: https://catalog-staging.scan-stash.com
+  FIREBASE_CATALOG_BACKUP_ORIGIN: https://scanstash-catalog-prod.web.app
 
 jobs:
   validate:
@@ -94,9 +103,6 @@ jobs:
     if: >-
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && inputs.publish == false)
-    concurrency:
-      group: scanstash-catalog-production-hosting
-      cancel-in-progress: false
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
@@ -104,7 +110,8 @@ jobs:
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
           if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
-            "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
+            --header 'Cache-Control: no-cache' \
+            "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json?r2v=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
             echo "Failed to read the active production pointer" >&2
@@ -223,31 +230,31 @@ jobs:
           retention-days: 7
 
   publish-production:
-    name: Publish production catalog
+    name: Sign and stage Pokémon catalog
     needs: [validate, prepare-production]
     if: >-
       (!cancelled() && needs.validate.result == 'success' && github.ref == 'refs/heads/main' &&
       ((github.event_name == 'schedule' && needs.prepare-production.result == 'success' &&
         needs.prepare-production.outputs.has_changes == 'true' && needs.prepare-production.outputs.requires_approval == 'false') ||
        (github.event_name == 'workflow_dispatch' && inputs.publish == true)))
-    concurrency:
-      group: scanstash-catalog-production-hosting
-      cancel-in-progress: false
     runs-on: macos-15
     permissions:
       actions: read
       contents: read
     environment: pokemon-catalog-production
+    outputs:
+      catalog_artifact: ${{ steps.share-catalog.outputs.artifact-id }}
+      revision: ${{ steps.stage.outputs.revision }}
     env:
       GITHUB_ENVIRONMENT: pokemon-catalog-production
       POKEMON_CATALOG_PUBLISH: "true"
       POKEMON_CATALOG_SIGNING_KEY: ${{ secrets.POKEMON_CATALOG_SIGNING_KEY }}
       POKEMON_CATALOG_KEY_ID: ${{ secrets.POKEMON_CATALOG_KEY_ID }}
-      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-      FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
       - name: Select the production candidate
         id: candidate
         env:
@@ -297,11 +304,12 @@ jobs:
             cd publisher
             shasum -a 256 -c reports/production-manifest.sha256
           )
-      - name: Read the active production pointer
+      - name: Read the active R2 production pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
           if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
-            "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
+            --header 'Cache-Control: no-cache' \
+            "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json?r2v=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
             echo "Failed to read the active production pointer" >&2
@@ -326,48 +334,26 @@ jobs:
           esac
       - name: Recheck the candidate against the active production release
         run: |
-          swift run --package-path PokemonCatalogCore pokemon-catalog-publisher verify-candidate \
-            --candidate-root publisher/candidate --environment production \
-            --active-release "${RUNNER_TEMP}/pokemon-catalog-production-current.json"
-      - name: Read the active Magic production pointer
-        run: |
-          active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
-          if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
-            "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json" \
-            --output "$active_path" \
-            --write-out '%{http_code}')"; then
-            echo "Failed to read the active Magic production pointer" >&2
-            exit 1
-          fi
-          case "$status" in
-            200)
-              echo "Active Magic production release downloaded to $active_path"
-              ;;
-            404)
-              echo "No active Magic production release is available; treating this as initial publication"
-              rm -f "$active_path"
-              ;;
-            *)
-              echo "Unexpected HTTP $status while reading the active Magic production pointer" >&2
-              exit 1
-              ;;
-          esac
-      - name: Restore previously published production revision objects
-        run: |
-          restore_args=()
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.bootstrap }}" = "true" ]; then
-            restore_args+=(--bootstrap-pokemon)
-          fi
-          bash scripts/restore_catalog_hosting_site.sh "${restore_args[@]}" \
-            "${RUNNER_TEMP}/pokemon-catalog-production-current.json" \
-            "${RUNNER_TEMP}/magic-catalog-production-current.json" \
-            publisher/site "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}"
-      - name: Publish the immutable production revision and current pointer
-        run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
           active_args=()
           if [ -f "$active_path" ]; then
             active_args+=(--active-release "$active_path")
+          fi
+          swift run --package-path PokemonCatalogCore pokemon-catalog-publisher verify-candidate \
+            --candidate-root publisher/candidate --environment production \
+            "${active_args[@]}"
+      - name: Sign and stage the immutable revision and pointer for R2
+        id: stage
+        run: |
+          active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
+          active_args=()
+          metadata_args=()
+          if [ -f "$active_path" ]; then
+            previous_revision="$(swift run --package-path PokemonCatalogCore pokemon-catalog-publisher verify-release \
+              --path "$active_path" --environment production \
+              --trusted-keys-file Config/PokemonCatalogProduction.xcconfig)"
+            active_args+=(--active-release "$active_path")
+            metadata_args+=(--previous-revision "$previous_revision" --previous-pointer "$active_path")
           fi
           change_class="$(jq -er .changeClass publisher/candidate/review-report.json)"
           case "$change_class" in
@@ -375,19 +361,27 @@ jobs:
             baselineMigration|authority|newSet) test "$GITHUB_EVENT_NAME" = "workflow_dispatch" ;;
             *) echo "::error::Catalog change class is ineligible for publication"; exit 1 ;;
           esac
+          rm -rf publisher/r2-catalog-candidate
+          mkdir -p publisher/r2-catalog-candidate/site
           swift run --package-path PokemonCatalogCore pokemon-catalog-publisher publish \
             --candidate-root publisher/candidate \
-            --site-root publisher/site \
+            --site-root publisher/r2-catalog-candidate/site \
             --environment production \
             --change-class "$change_class" \
             "${active_args[@]}" \
             --report publisher/reports/production.json
-      - name: Verify the assembled release matches the reviewed candidate
-        run: |
           revision="$(jq -er .revision publisher/candidate/catalog-payload.json)"
           for artifact in catalog-payload.json pokemon-catalog-snapshot.json review-report.json; do
-            cmp "publisher/candidate/$artifact" "publisher/site/v1/releases/$revision/$artifact"
+            cmp "publisher/candidate/$artifact" "publisher/r2-catalog-candidate/site/v1/releases/$revision/$artifact"
           done
+          swift run --skip-build --package-path PokemonCatalogCore pokemon-catalog-publisher verify-release \
+            --path "publisher/r2-catalog-candidate/site/v1/current.json" --environment production \
+            --trusted-keys-file Config/PokemonCatalogProduction.xcconfig --expected-revision "$revision" >/dev/null
+          python3 scripts/r2_catalog_publish.py \
+            --site publisher/r2-catalog-candidate/site \
+            --write-catalog-metadata publisher/r2-catalog-candidate/catalog-publish-metadata.json \
+            --namespace v1 --revision "$revision" "${metadata_args[@]}"
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - name: Retain the production review report
         if: always()
         uses: actions/upload-artifact@v4
@@ -396,9 +390,159 @@ jobs:
           path: publisher/reports/production.json
           if-no-files-found: warn
           retention-days: 90
+      - name: Hand off the verified Pokémon release to R2
+        id: share-catalog
+        uses: actions/upload-artifact@v4
+        with:
+          name: pokemon-r2-catalog-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: publisher/r2-catalog-candidate
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-r2-catalog:
+    name: Publish and verify primary R2 Pokémon catalog
+    needs: publish-production
+    if: ${{ !cancelled() && needs.publish-production.result == 'success' && needs.publish-production.outputs.catalog_artifact != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: r2-catalog-production
+    concurrency:
+      group: scanstash-catalog-r2-hosting
+      cancel-in-progress: false
+      queue: max
+    outputs:
+      inventory_artifact: ${{ steps.share-inventory.outputs.artifact-id }}
+    steps:
+      - name: Require the staged Pokémon artifact
+        env:
+          ARTIFACT_ID: ${{ needs.publish-production.outputs.catalog_artifact }}
+        run: |
+          if [[ ! "$ARTIFACT_ID" =~ ^[0-9]+$ ]]; then
+            echo 'The staged Pokémon catalog artifact could not be handed off to R2.' >&2
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.publish-production.outputs.catalog_artifact }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/pokemon-r2-catalog
+      - name: Publish immutable release and activate pointer on R2
+        env:
+          PYTHONUNBUFFERED: "1"
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          REVISION: ${{ needs.publish-production.outputs.revision }}
+        run: |
+          : "${AWS_ACCESS_KEY_ID:?Set R2_ACCESS_KEY_ID in r2-catalog-production}"
+          : "${AWS_SECRET_ACCESS_KEY:?Set R2_SECRET_ACCESS_KEY in r2-catalog-production}"
+          python3 scripts/r2_catalog_publish.py \
+            --primary-catalog v1 \
+            --catalog-metadata "$RUNNER_TEMP/pokemon-r2-catalog/catalog-publish-metadata.json" \
+            --site "$RUNNER_TEMP/pokemon-r2-catalog/site" \
+            --public-base "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            --verify-all
+          echo "Verified Pokémon revision $REVISION on R2. Firebase backup reports separately." >> "$GITHUB_STEP_SUMMARY"
+      - name: Inventory R2 price builds for Firebase backup
+        id: inventory
+        continue-on-error: true
+        env:
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          [[ "$R2_ACCOUNT_ID" =~ ^[0-9a-f]{32}$ ]]
+          : "${R2_BUCKET_NAME:?Set R2_BUCKET_NAME in r2-catalog-production}"
+          list_r2=(aws --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+            --cli-connect-timeout 10 --cli-read-timeout 60 --no-cli-pager --output json
+            s3api list-objects-v2 --bucket "$R2_BUCKET_NAME")
+          "${list_r2[@]}" --prefix market-prices/v2/verified-builds/ --query 'Contents[].Key' \
+            > "$RUNNER_TEMP/r2-verified-builds.json"
+          "${list_r2[@]}" --prefix market-prices/v2/builds/ --delimiter / --query 'CommonPrefixes[].Prefix' \
+            > "$RUNNER_TEMP/r2-legacy-inventory.json"
+      - name: Share R2 price inventory for Firebase backup
+        if: steps.inventory.outcome == 'success'
+        id: share-inventory
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: pokemon-r2-price-builds-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/r2-verified-builds.json
+            ${{ runner.temp }}/r2-legacy-inventory.json
+          if-no-files-found: error
+          retention-days: 7
+
+  backup-firebase-catalog:
+    name: Back up verified R2 site to Firebase
+    needs: [publish-production, publish-r2-catalog]
+    if: ${{ !cancelled() && needs.publish-r2-catalog.result == 'success' }}
+    runs-on: macos-15
+    timeout-minutes: 45
+    environment: pokemon-catalog-production
+    concurrency:
+      group: scanstash-catalog-production-hosting
+      cancel-in-progress: false
+      queue: max
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
+      REVISION: ${{ needs.publish-production.outputs.revision }}
+    steps:
+      - name: Require the R2 price build inventory
+        env:
+          INVENTORY_ARTIFACT: ${{ needs.publish-r2-catalog.outputs.inventory_artifact }}
+        run: |
+          if [[ ! "$INVENTORY_ARTIFACT" =~ ^[0-9]+$ ]]; then
+            echo '::error title=Firebase catalog backup::The R2 price build inventory is unavailable.'
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/cache/restore@v4
+        continue-on-error: true
+        with:
+          path: ${{ runner.temp }}/r2-catalog-cache
+          key: r2-catalog-restore-v1-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: r2-catalog-restore-v1-
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.publish-r2-catalog.outputs.inventory_artifact }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/r2-price-inventory
+      - name: Restore the complete verified site from R2
+        env:
+          PREFER_R2_PRICE_HISTORY: "true"
+        run: |
+          export CATALOG_RESTORE_CACHE_WORK="$RUNNER_TEMP/r2-catalog-pointers"
+          python3 scripts/catalog_hosting_cache.py prepare --origin "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            --site publisher/site --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$CATALOG_RESTORE_CACHE_WORK"
+          bash scripts/restore_catalog_hosting_site.sh \
+            "$CATALOG_RESTORE_CACHE_WORK/pokemon-current.json" \
+            "$CATALOG_RESTORE_CACHE_WORK/magic-current.json" publisher/site \
+            "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            PokemonCatalogCore Config/PokemonCatalogProduction.xcconfig \
+            MagicCatalogCore Config/MagicCatalogProduction.xcconfig \
+            "$CATALOG_RESTORE_CACHE_WORK/one-piece-current.json" \
+            OnePieceCatalogCore Config/OnePieceCatalogProduction.xcconfig \
+            "$CATALOG_RESTORE_CACHE_WORK/yugioh-current.json"
+          test -f "publisher/site/v1/releases/$REVISION/catalog-release.json"
+          bash scripts/verify_pokemon_catalog_hosting_config.sh
       - name: Install Firebase CLI
         run: npm install --global firebase-tools@13.35.1
-      - name: Bind and deploy the production Firebase Hosting target
+      - name: Confirm R2 parity and deploy Firebase backup
         run: |
           test -n "$FIREBASE_PROJECT_ID"
           test -n "$FIREBASE_HOSTING_SITE_ID"
@@ -407,26 +551,50 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS="$service_account_file"
           firebase target:apply hosting production "$FIREBASE_HOSTING_SITE_ID" \
             --project "$FIREBASE_PROJECT_ID"
+          python3 scripts/catalog_hosting_cache.py confirm --origin "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            --site publisher/site --work "$RUNNER_TEMP/r2-catalog-pointers"
+          python3 scripts/catalog_hosting_cache.py confirm-r2-scopes --site publisher/site
+          inventory="$RUNNER_TEMP/r2-price-inventory/r2-verified-builds.json"
+          if [[ ! -f publisher/site/market-prices/v2/history.json ]]; then
+            inventory="$RUNNER_TEMP/r2-price-inventory/r2-legacy-inventory.json"
+          fi
+          python3 -u scripts/market_price_rollback.py sync-r2 --site-root publisher/site --r2-inventory "$inventory"
           firebase deploy --only hosting:production \
             --project "$FIREBASE_PROJECT_ID" --non-interactive
-      - name: Verify the deployed revision on both catalog hosts
+      - name: Verify Firebase backup readback and R2 parity
         run: |
-          revision="$(jq -er .revision publisher/candidate/catalog-payload.json)"
-          readback="$RUNNER_TEMP/pokemon-catalog-readback.json"
-          for host in "$POKEMON_CATALOG_PRODUCTION_READ_ORIGIN" https://catalog.scan-stash.com; do
-            for artifact in current.json "releases/$revision/catalog-release.json" "releases/$revision/pokemon-catalog-snapshot.json"; do
-              for attempt in 1 2 3 4 5 6; do
-                if curl --fail --silent --show-error --compressed --max-time 25 --proto '=https' \
-                  --header 'Cache-Control: no-cache' --output "$readback" "$host/v1/$artifact" &&
-                  cmp -s "publisher/site/v1/$artifact" "$readback"; then
-                  break
-                fi
-                if [ "$attempt" -eq 6 ]; then
-                  echo "::error::Catalog readback did not match the deployed revision at $host/v1/$artifact"
-                  exit 1
-                fi
-                sleep 5
-              done
-            done
-          done
-          echo "Verified revision $revision against both catalog hosts." >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/catalog_hosting_cache.py verify-firebase-catalogs \
+            --site publisher/site --namespace v1 --revision "$REVISION"
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, 'scripts')
+          from market_price_feeds import NAMESPACE, restore
+          destination = Path('publisher/price-readback')
+          assert restore(destination, require_fresh=False, require_present=True)
+          expected = Path('publisher/site') / NAMESPACE / 'index.json'
+          assert (destination / NAMESPACE / 'index.json').read_bytes() == expected.read_bytes()
+          PY
+          python3 -u scripts/market_price_rollback.py verify --site-root publisher/site
+          python3 scripts/market_price_rollback.py confirm-primary --site-root publisher/site
+          python3 scripts/catalog_hosting_cache.py confirm --origin "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            --site publisher/site --work "$RUNNER_TEMP/r2-catalog-pointers"
+          echo "Verified Firebase backup for Pokémon revision $REVISION against $FIREBASE_CATALOG_BACKUP_ORIGIN." >> "$GITHUB_STEP_SUMMARY"
+      - name: Seal the verified R2 catalog cache
+        id: catalog-cache
+        continue-on-error: true
+        run: |
+          key=$(python3 scripts/catalog_hosting_cache.py seal --site publisher/site \
+            --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$RUNNER_TEMP/r2-catalog-pointers")
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/save@v4
+        if: steps.catalog-cache.outputs.key != ''
+        continue-on-error: true
+        with:
+          path: ${{ runner.temp }}/r2-catalog-cache
+          key: r2-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Report a failed backup separately from the primary publication
+        if: failure()
+        run: |
+          echo '::warning title=Firebase Pokémon catalog backup failed::The verified R2 catalog publication remains active.'
+          echo 'Firebase backup failed. The verified R2 Pokémon catalog publication remains active.' >> "$GITHUB_STEP_SUMMARY"

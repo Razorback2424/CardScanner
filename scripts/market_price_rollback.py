@@ -8,7 +8,9 @@ import re
 import secrets
 from urllib.error import HTTPError
 
-from market_price_feeds import MAX_SCOPE_BYTES, ORIGIN, R2_ORIGIN as R2, instant, packed, read_http, validate_site
+from market_price_feeds import (
+    MAX_SCOPE_BYTES, NAMESPACE, ORIGIN, R2_ORIGIN as R2, instant, packed, read_http, validate_site,
+)
 import market_price_v2 as v2
 
 
@@ -146,6 +148,41 @@ def prepare(site, r2_builds, expected, fetch=read_http):
     return candidate
 
 
+def sync_r2(site, r2_builds, fetch=read_http):
+    """Catch up Firebase v2 prices from R2 during a catalog backup deploy.
+
+    Unlike prepare(), this does not re-stage v2 from mutable catalog scopes,
+    because a freshly published R2 catalog can legitimately advance its scope
+    before the next scheduled price capture runs.
+    """
+    expected = fetch_path(R2, v2.LATEST, v2.MAX_POINTER_BYTES, fetch=fetch, fresh=True)
+    primary = v2.validate_pointer(expected)
+    history_path = site / HISTORY
+    retained = history(history_path.read_bytes()) if history_path.exists() else set()
+    if primary["build"] not in (r2_builds | retained):
+        raise ValueError("R2 inventory is missing its active price build")
+    firebase_path = site / v2.LATEST
+    if firebase_path.exists():
+        previous = v2.validate_pointer(firebase_path.read_bytes())
+        if instant(primary["sourceBuild"]) < instant(previous["sourceBuild"]):
+            raise ValueError("Refusing to publish an older Firebase v2 price build")
+    for build in sorted(r2_builds - retained):
+        raw, files = read_build(R2, build, fetch)
+        if build == primary["build"] and raw != expected:
+            raise ValueError("R2 active v2 build disagrees with its pointer")
+        v2.write_build(site / BUILDS / build, files)
+    active_index = v2.bounded(site / BUILDS / primary["build"] / "index.json", v2.MAX_POINTER_BYTES)
+    legacy_index = v2.bounded(site / NAMESPACE / "index.json", v2.MAX_POINTER_BYTES)
+    if legacy_index != active_index:
+        raise ValueError("R2 legacy v1 prices do not match the active v2 build")
+    confirm_preserved(site, fetch)
+    confirm_primary_pointer(expected, fetch)
+    (site / v2.LATEST).parent.mkdir(parents=True, exist_ok=True)
+    (site / v2.LATEST).write_bytes(expected)
+    history_path.write_bytes(history_bytes(retained | r2_builds))
+    return primary
+
+
 def confirm_primary_pointer(expected, fetch=read_http):
     actual = fetch_path(R2, v2.LATEST, v2.MAX_POINTER_BYTES, fetch=fetch, fresh=True)
     if actual != expected:
@@ -175,7 +212,7 @@ def verify(site, fetch=read_http):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("restore", "prepare", "confirm-preserved", "verify", "confirm-primary"))
+    parser.add_argument("action", choices=("restore", "prepare", "sync-r2", "confirm-preserved", "verify", "confirm-primary"))
     parser.add_argument("--site-root", required=True, type=Path)
     parser.add_argument("--r2-inventory", type=Path)
     parser.add_argument("--primary-pointer", type=Path)
@@ -185,6 +222,10 @@ def main():
         if args.r2_inventory is None or args.primary_pointer is None:
             parser.error("prepare requires --r2-inventory and --primary-pointer")
         prepare(args.site_root, inventory_ids(args.r2_inventory), v2.bounded(args.primary_pointer, v2.MAX_POINTER_BYTES))
+    elif args.action == "sync-r2":
+        if args.r2_inventory is None:
+            parser.error("sync-r2 requires --r2-inventory")
+        sync_r2(args.site_root, inventory_ids(args.r2_inventory))
     elif args.action == "confirm-primary":
         confirm_primary_pointer(v2.bounded(args.site_root / v2.LATEST, v2.MAX_POINTER_BYTES))
     elif args.action == "restore":

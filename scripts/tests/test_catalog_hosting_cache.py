@@ -167,6 +167,70 @@ class CatalogHostingCacheTests(unittest.TestCase):
                              (200, b"validated signed pointer fixture", '"fresh"'))
             request = opener.return_value.open.call_args.args[0]
             self.assertEqual(request.get_header("If-none-match"), '"old"')
+            self.assertEqual(request.get_header("Cache-control"), "no-cache")
+
+    def test_get_pointer_supports_r2_origin_with_cache_busting_and_rejects_unknown_origin(self):
+        response = io.BytesIO(b"r2 pointer")
+        response.status = 200
+        response.headers = {"Content-Encoding": "identity", "ETag": '"r2-etag"'}
+        with patch("catalog_hosting_cache.build_opener") as opener:
+            opener.return_value.open.return_value = response
+            self.assertEqual(
+                hosting.get_pointer("v1", '"old"', optional=False, origin=hosting.R2_ORIGIN, fresh=True),
+                (200, b"r2 pointer", '"r2-etag"'),
+            )
+            request = opener.return_value.open.call_args.args[0]
+            self.assertTrue(request.full_url.startswith(f"{hosting.R2_ORIGIN}/v1/current.json?r2v="))
+        with self.assertRaisesRegex(ValueError, "Unexpected catalog restore origin"):
+            hosting.get_pointer("v1", None, optional=False, origin="https://unapproved.example.test")
+
+    def test_verify_firebase_catalogs_checks_pointers_scopes_and_immutable_headers(self):
+        files = {
+            "v1/current.json": (b'{"rev":2}', {"cache-control": "no-cache"}),
+            "v1/releases/2/catalog-release.json": (b'{"rev":2}', {"cache-control": "public,max-age=31536000,immutable"}),
+            "v1/releases/2/pokemon-catalog-snapshot.json": (b'{"snap":2}', {"cache-control": "public,max-age=31536000,immutable"}),
+            "one-piece/v1/market-price-scope.json": (b'{"scope":"op"}', {"cache-control": "no-cache"}),
+            "yugioh/v1/market-price-scope.json": (b'{"scope":"ygo"}', {"cache-control": "no-cache"}),
+        }
+        for rel, (body, _) in files.items():
+            path = self.site / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(body)
+
+        def fetch(url, limit):
+            parsed = urlsplit(url)
+            self.assertEqual(f"{parsed.scheme}://{parsed.netloc}", hosting.ORIGIN)
+            self.assertTrue(parsed.query.startswith("fbv="))
+            return files[parsed.path.lstrip("/")]
+
+        hosting.verify_firebase_catalogs(self.site, namespace="v1", revision=2, fetch=fetch)
+        files["v1/releases/2/catalog-release.json"] = (b'{"rev":2}', {"cache-control": "no-cache"})
+        with self.assertRaisesRegex(ValueError, "lacks immutable cache header"):
+            hosting.verify_firebase_catalogs(self.site, namespace="v1", revision=2, fetch=fetch)
+        files["v1/releases/2/catalog-release.json"] = (b'{"rev":1}', {"cache-control": "public,max-age=31536000,immutable"})
+        with self.assertRaisesRegex(ValueError, "bytes differ"):
+            hosting.verify_firebase_catalogs(self.site, namespace="v1", revision=2, fetch=fetch)
+
+        # Transient post-deploy propagation lag retries with distinct cache-busting nonces.
+        attempts_seen = []
+        files["v1/releases/2/catalog-release.json"] = (b'{"rev":2}', {"cache-control": "public,max-age=31536000,immutable"})
+
+        def flaky_fetch(url, limit):
+            parsed = urlsplit(url)
+            rel = parsed.path.lstrip("/")
+            if rel == "v1/current.json":
+                attempts_seen.append(parsed.query)
+                if len(attempts_seen) == 1:
+                    return b'{"rev":1}', {"cache-control": "no-cache"}
+            return files[rel]
+
+        sleeps = []
+        with patch.object(hosting.sys, "stderr", new_callable=io.StringIO):
+            hosting.verify_firebase_catalogs(self.site, namespace="v1", revision=2,
+                                             fetch=flaky_fetch, attempts=3, sleep=sleeps.append)
+        self.assertEqual(len(attempts_seen), 2)
+        self.assertNotEqual(attempts_seen[0], attempts_seen[1])
+        self.assertEqual(sleeps, [1])
 
 
 if __name__ == "__main__":

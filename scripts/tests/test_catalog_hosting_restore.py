@@ -94,11 +94,24 @@ sys.exit(subprocess.call([{sys.executable!r}] + sys.argv[1:]))
         path.write_text(body)
         path.chmod(0o755)
 
-    def restore(self, *, bootstrap=False):
+    def restore(self, *, bootstrap=False, origin="https://scanstash-catalog-prod.web.app"):
         options = ["--bootstrap-pokemon"] if bootstrap else []
         return subprocess.run(["bash", "scripts/restore_catalog_hosting_site.sh", *options,
-                               str(self.pokemon_pointer), "", "publisher/site", "https://scanstash-catalog-prod.web.app"], cwd=self.root,
+                               str(self.pokemon_pointer), "", "publisher/site", origin], cwd=self.root,
                               env=self.environment, capture_output=True, text=True)
+
+    def test_r2_origin_restores_all_revisions_and_unapproved_origin_is_rejected(self):
+        r2_origin = "https://catalog-staging.scan-stash.com"
+        result = self.restore(origin=r2_origin)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        requests = (self.root / "curl-requests").read_text()
+        self.assertIn(f"{r2_origin}/v1/releases/1/catalog-release.json", requests)
+        self.assertIn(f"{r2_origin}/v1/releases/2/catalog-release.json", requests)
+        self.assertNotIn("web.app", requests)
+        self.assertEqual((self.root / "publisher/site/v1/current.json").read_text(), "2")
+        bad = self.restore(origin="https://unapproved.example.test")
+        self.assertEqual(bad.returncode, 2)
+        self.assertIn("unexpected production catalog restore origin", bad.stderr)
 
     def test_unverified_v2_history_blocks_the_complete_site_deploy(self):
         self.environment['ROLLBACK_RESTORE_FAIL'] = '1'

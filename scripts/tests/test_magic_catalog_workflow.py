@@ -12,7 +12,9 @@ class MagicCatalogWorkflowTests(unittest.TestCase):
     def setUpClass(cls):
         cls.text = WORKFLOW.read_text()
         cls.prepare = cls.text.split('  prepare-production:\n', 1)[1].split('  publish-production:\n', 1)[0]
-        cls.publish = cls.text.split('  publish-production:\n', 1)[1]
+        cls.publish = cls.text.split('  publish-production:\n', 1)[1].split('  publish-r2-catalog:\n', 1)[0]
+        cls.r2_publish = cls.text.split('  publish-r2-catalog:\n', 1)[1].split('  backup-firebase-catalog:\n', 1)[0]
+        cls.backup = cls.text.split('  backup-firebase-catalog:\n', 1)[1]
         cls.condition = re.search(r'    if: >-\n((?:      .*\n)+)', cls.publish).group(1).strip()
 
     def eligible(self, event, publish, changes, approval, change_class):
@@ -54,12 +56,21 @@ class MagicCatalogWorkflowTests(unittest.TestCase):
                          '::warning title=Magic catalog needs manual publication::',
                          'authority|newSet|unknown)', 'publish_environment="magic-catalog-production"'):
             self.assertIn(expected, self.prepare)
-        for expected in ('group: scanstash-catalog-production-hosting', 'cancel-in-progress: false',
-                         'name: ${{ needs.prepare-production.outputs.publish_environment }}',
-                         'scripts/verify_magic_publication_environment.sh',
+        for expected in ('name: ${{ needs.prepare-production.outputs.publish_environment }}',
+                         'scripts/verify_magic_publication_environment.sh --signing-only',
                          'candidate_manifest_sha256', 'shasum -a 256 -c',
-                         'scripts/restore_catalog_hosting_site.sh', '--trusted-keys-file Config/MagicCatalogProduction.xcconfig'):
+                         '--trusted-keys-file Config/MagicCatalogProduction.xcconfig',
+                         '--write-catalog-metadata'):
             self.assertIn(expected, self.publish)
+        self.assertNotIn('FIREBASE_', self.publish)
+        for expected in ('environment: r2-catalog-production', 'group: scanstash-catalog-r2-hosting',
+                         'cancel-in-progress: false', '--primary-catalog magic/v1'):
+            self.assertIn(expected, self.r2_publish)
+        self.assertNotIn('FIREBASE_', self.r2_publish)
+        for expected in ('group: scanstash-catalog-production-hosting', 'cancel-in-progress: false',
+                         'scripts/restore_catalog_hosting_site.sh', 'market_price_rollback.py sync-r2',
+                         'The verified R2 catalog publication remains active.'):
+            self.assertIn(expected, self.backup)
         self.assertIn('test_magic_catalog_workflow.py', self.text)
 
 

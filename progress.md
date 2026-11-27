@@ -1,3 +1,18 @@
+# 2026-11-27 — R2-first catalog publication
+
+Converted Pokémon, One Piece, Magic, and the local One Piece fallback to
+publish verified immutable catalog releases, price scopes, and active
+pointers directly to Cloudflare R2 before running independent Firebase
+backups from R2. Removed Firebase-originated catalog syncing from
+`yugioh-catalog.yml`, coordinated catalog and price writes under the shared
+R2 and Firebase locks, and added `sync-r2` backup catch-up so Firebase
+recovers missed catalog revisions and price builds after outages. Offline
+tests verified ordering, interrupted uploads, predecessor/monotonicity
+checks, namespace isolation, Firebase backup catch-up, and five-game
+catalog/pricing parity. Live acceptance requirements are recorded in the
+[Stage 2 publishing plan](docs/plans/r2-price-v2-staging.md). Production
+clients remain on v1.
+
 # 2026-11-27 — R2-first price publication
 
 Separated the primary R2 price job from Firebase catalog preparation and

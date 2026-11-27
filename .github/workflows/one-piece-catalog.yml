@@ -35,8 +35,15 @@ on:
       - ".github/workflows/one-piece-catalog.yml"
       - "firebase.json"
       - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/catalog_hosting_cache.py"
+      - "scripts/r2_catalog_publish.py"
+      - "scripts/market_price_feeds.py"
+      - "scripts/market_price_rollback.py"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "scripts/tests/test_catalog_hosting_restore.py"
+      - "scripts/tests/test_catalog_hosting_cache.py"
+      - "scripts/tests/test_r2_catalog_publish.py"
+      - "scripts/tests/test_market_price_rollback.py"
       - "scripts/prepare_one_piece_acceptance_samples.py"
       - "scripts/tests/test_one_piece_acceptance_samples.py"
       - "scripts/tests/test_one_piece_workflow.py"
@@ -102,9 +109,9 @@ jobs:
           import sys
           from pathlib import Path
           sys.path.insert(0, 'scripts')
-          from market_price_feeds import ORIGIN, read_http
+          from market_price_feeds import R2_ORIGIN, read_http
 
-          data = read_http(f'{ORIGIN}/one-piece/v1/current.json', 64 * 1024 * 1024, absent_ok=True)
+          data = read_http(f'{R2_ORIGIN}/one-piece/v1/current.json', 64 * 1024 * 1024, absent_ok=True)
           if data is None:
               print('Hosted One Piece catalog returned 404. Auditing the bundled seed.')
               data = Path('TradingCardScanner/OnePieceCatalogSeed/one-piece-catalog-release.json').read_bytes()
@@ -239,18 +246,19 @@ jobs:
           retention-days: 30
 
   publish-reviewed-artifact:
+    name: Verify and stage One Piece catalog
     needs: [validate, validate-catalog-core]
     if: github.event_name == 'workflow_dispatch' && inputs.publish == true && github.ref == 'refs/heads/main'
-    runs-on: macos-15
+    runs-on: ubuntu-24.04
     environment: one-piece-catalog-production
-    concurrency:
-      group: scanstash-catalog-production-hosting
-      cancel-in-progress: false
     permissions:
       actions: read
       contents: read
+    outputs:
+      catalog_artifact: ${{ steps.share-catalog.outputs.artifact-id }}
+      revision: ${{ steps.stage.outputs.revision }}
     env:
-      HOSTING_ORIGIN: https://scanstash-catalog-prod.web.app
+      R2_READ_ORIGIN: https://catalog-staging.scan-stash.com
       SIGNED_RUN_ID: ${{ inputs.signed_run_id }}
       REVIEWED_SHA256: ${{ inputs.reviewed_sha256 }}
       REVIEWED_ENVELOPE_SHA256: ${{ inputs.reviewed_envelope_sha256 }}
@@ -258,6 +266,9 @@ jobs:
       BOOTSTRAP: ${{ inputs.bootstrap }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
       - name: Check the reviewed signing run
         env:
           GH_TOKEN: ${{ github.token }}
@@ -278,7 +289,7 @@ jobs:
           path: ${{ runner.temp }}/one-piece-reviewed-artifact
           github-token: ${{ github.token }}
           run-id: ${{ inputs.signed_run_id }}
-      - name: Verify the reviewed artifact against production and stage it
+      - name: Verify the reviewed artifact against R2 and stage it
         id: stage
         shell: bash
         run: |
@@ -290,7 +301,7 @@ jobs:
             "$REVIEWED_MANIFEST_SHA256" "$artifact/verified-manifest.json" | shasum -a 256 -c -
           inputs="$RUNNER_TEMP/one-piece-hosting-inputs"
           revision=$(python3 scripts/prepare_one_piece_hosting.py --artifact "$artifact" \
-            --output-dir "$inputs" --bootstrap "$BOOTSTRAP")
+            --output-dir "$inputs" --bootstrap "$BOOTSTRAP" --origin "$R2_READ_ORIGIN" --one-piece-only)
           if [ "$BOOTSTRAP" = true ]; then
             baseline=(--bootstrap-registry yes)
           else
@@ -303,28 +314,180 @@ jobs:
             --reviewed-payload-sha256 "$REVIEWED_SHA256" "${baseline[@]}" \
             --manifest "$RUNNER_TEMP/one-piece-verified-manifest.json"
           cmp "$RUNNER_TEMP/one-piece-verified-manifest.json" "$artifact/verified-manifest.json"
-          bash scripts/restore_catalog_hosting_site.sh \
-            "$inputs/pokemon-current.json" "$inputs/magic-current.json" publisher/site "$HOSTING_ORIGIN" \
-            '' '' '' '' "$inputs/one-piece-current.json"
-          destination=publisher/site/one-piece/v1
+          rm -rf publisher/r2-catalog-candidate
+          destination=publisher/r2-catalog-candidate/site/one-piece/v1
           immutable="$destination/releases/$revision/catalog-release.json"
           mkdir -p "$(dirname "$immutable")"
-          if [ -f "$immutable" ]; then
-            cmp "$envelope" "$immutable"
-          else
-            cp "$envelope" "$immutable"
-          fi
+          cp "$envelope" "$immutable"
           cp "$envelope" "$destination/current.json"
-          python3 scripts/market_price_feeds.py write-catalog-scopes --site-root publisher/site --game one-piece
+          python3 scripts/market_price_feeds.py write-catalog-scopes \
+            --site-root publisher/r2-catalog-candidate/site --game one-piece
+          metadata_args=()
+          if [ "$BOOTSTRAP" != true ]; then
+            previous_revision="$(jq -er .previousRevision "$artifact/verified-manifest.json")"
+            metadata_args+=(--previous-revision "$previous_revision" --previous-pointer "$inputs/one-piece-predecessor.json")
+          fi
+          python3 scripts/r2_catalog_publish.py \
+            --site publisher/r2-catalog-candidate/site \
+            --write-catalog-metadata publisher/r2-catalog-candidate/catalog-publish-metadata.json \
+            --namespace one-piece/v1 --revision "$revision" "${metadata_args[@]}"
           bash scripts/verify_pokemon_catalog_hosting_config.sh
           printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"
+      - name: Hand off the verified One Piece release to R2
+        id: share-catalog
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-piece-r2-catalog-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: publisher/r2-catalog-candidate
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-r2-catalog:
+    name: Publish and verify primary R2 One Piece catalog
+    needs: publish-reviewed-artifact
+    if: ${{ !cancelled() && needs.publish-reviewed-artifact.result == 'success' && needs.publish-reviewed-artifact.outputs.catalog_artifact != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: r2-catalog-production
+    concurrency:
+      group: scanstash-catalog-r2-hosting
+      cancel-in-progress: false
+      queue: max
+    outputs:
+      inventory_artifact: ${{ steps.share-inventory.outputs.artifact-id }}
+    steps:
+      - name: Require the staged One Piece artifact
+        env:
+          ARTIFACT_ID: ${{ needs.publish-reviewed-artifact.outputs.catalog_artifact }}
+        run: |
+          if [[ ! "$ARTIFACT_ID" =~ ^[0-9]+$ ]]; then
+            echo 'The staged One Piece catalog artifact could not be handed off to R2.' >&2
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.publish-reviewed-artifact.outputs.catalog_artifact }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/one-piece-r2-catalog
+      - name: Publish immutable release, price scope and pointer on R2
+        env:
+          PYTHONUNBUFFERED: "1"
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          REVISION: ${{ needs.publish-reviewed-artifact.outputs.revision }}
+        run: |
+          : "${AWS_ACCESS_KEY_ID:?Set R2_ACCESS_KEY_ID in r2-catalog-production}"
+          : "${AWS_SECRET_ACCESS_KEY:?Set R2_SECRET_ACCESS_KEY in r2-catalog-production}"
+          python3 scripts/r2_catalog_publish.py \
+            --primary-catalog one-piece/v1 \
+            --catalog-metadata "$RUNNER_TEMP/one-piece-r2-catalog/catalog-publish-metadata.json" \
+            --site "$RUNNER_TEMP/one-piece-r2-catalog/site" \
+            --public-base https://catalog-staging.scan-stash.com \
+            --verify-all
+          echo "Verified One Piece revision $REVISION on R2. Firebase backup reports separately." >> "$GITHUB_STEP_SUMMARY"
+      - name: Inventory R2 price builds for Firebase backup
+        id: inventory
+        continue-on-error: true
+        env:
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          [[ "$R2_ACCOUNT_ID" =~ ^[0-9a-f]{32}$ ]]
+          : "${R2_BUCKET_NAME:?Set R2_BUCKET_NAME in r2-catalog-production}"
+          list_r2=(aws --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+            --cli-connect-timeout 10 --cli-read-timeout 60 --no-cli-pager --output json
+            s3api list-objects-v2 --bucket "$R2_BUCKET_NAME")
+          "${list_r2[@]}" --prefix market-prices/v2/verified-builds/ --query 'Contents[].Key' \
+            > "$RUNNER_TEMP/r2-verified-builds.json"
+          "${list_r2[@]}" --prefix market-prices/v2/builds/ --delimiter / --query 'CommonPrefixes[].Prefix' \
+            > "$RUNNER_TEMP/r2-legacy-inventory.json"
+      - name: Share R2 price inventory for Firebase backup
+        if: steps.inventory.outcome == 'success'
+        id: share-inventory
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-piece-r2-price-builds-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/r2-verified-builds.json
+            ${{ runner.temp }}/r2-legacy-inventory.json
+          if-no-files-found: error
+          retention-days: 7
+
+  backup-firebase-catalog:
+    name: Back up verified R2 site to Firebase
+    needs: [publish-reviewed-artifact, publish-r2-catalog]
+    if: ${{ !cancelled() && needs.publish-r2-catalog.result == 'success' }}
+    runs-on: macos-15
+    timeout-minutes: 45
+    environment: pokemon-catalog-production
+    concurrency:
+      group: scanstash-catalog-production-hosting
+      cancel-in-progress: false
+      queue: max
+    env:
+      R2_READ_ORIGIN: https://catalog-staging.scan-stash.com
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
+      REVISION: ${{ needs.publish-reviewed-artifact.outputs.revision }}
+    steps:
+      - name: Require the R2 price build inventory
+        env:
+          INVENTORY_ARTIFACT: ${{ needs.publish-r2-catalog.outputs.inventory_artifact }}
+        run: |
+          if [[ ! "$INVENTORY_ARTIFACT" =~ ^[0-9]+$ ]]; then
+            echo '::error title=Firebase catalog backup::The R2 price build inventory is unavailable.'
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/cache/restore@v4
+        continue-on-error: true
+        with:
+          path: ${{ runner.temp }}/r2-catalog-cache
+          key: r2-catalog-restore-v1-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: r2-catalog-restore-v1-
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.publish-r2-catalog.outputs.inventory_artifact }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/r2-price-inventory
+      - name: Restore the complete verified site from R2
+        env:
+          PREFER_R2_PRICE_HISTORY: "true"
+        shell: bash
+        run: |
+          set -euo pipefail
+          export CATALOG_RESTORE_CACHE_WORK="$RUNNER_TEMP/r2-catalog-pointers"
+          python3 scripts/catalog_hosting_cache.py prepare --origin "$R2_READ_ORIGIN" \
+            --site publisher/site --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$CATALOG_RESTORE_CACHE_WORK"
+          bash scripts/restore_catalog_hosting_site.sh \
+            "$CATALOG_RESTORE_CACHE_WORK/pokemon-current.json" \
+            "$CATALOG_RESTORE_CACHE_WORK/magic-current.json" publisher/site "$R2_READ_ORIGIN" \
+            PokemonCatalogCore Config/PokemonCatalogProduction.xcconfig \
+            MagicCatalogCore Config/MagicCatalogProduction.xcconfig \
+            "$CATALOG_RESTORE_CACHE_WORK/one-piece-current.json" \
+            OnePieceCatalogCore Config/OnePieceCatalogProduction.xcconfig \
+            "$CATALOG_RESTORE_CACHE_WORK/yugioh-current.json"
+          test -f "publisher/site/one-piece/v1/releases/$REVISION/catalog-release.json"
+          bash scripts/verify_pokemon_catalog_hosting_config.sh
       - name: Install Firebase CLI
         run: npm install --global firebase-tools@13.35.1
-      - name: Deploy the preserved site to Firebase Hosting
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
+      - name: Confirm R2 parity and deploy Firebase backup
         shell: bash
         run: |
           set -euo pipefail
@@ -336,31 +499,50 @@ jobs:
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$service_account_file"
           export GOOGLE_APPLICATION_CREDENTIALS="$service_account_file"
           firebase target:apply hosting production "$FIREBASE_HOSTING_SITE_ID" --project "$FIREBASE_PROJECT_ID"
+          python3 scripts/catalog_hosting_cache.py confirm --origin "$R2_READ_ORIGIN" \
+            --site publisher/site --work "$RUNNER_TEMP/r2-catalog-pointers"
+          python3 scripts/catalog_hosting_cache.py confirm-r2-scopes --site publisher/site
+          inventory="$RUNNER_TEMP/r2-price-inventory/r2-verified-builds.json"
+          if [[ ! -f publisher/site/market-prices/v2/history.json ]]; then
+            inventory="$RUNNER_TEMP/r2-price-inventory/r2-legacy-inventory.json"
+          fi
+          python3 -u scripts/market_price_rollback.py sync-r2 --site-root publisher/site --r2-inventory "$inventory"
           firebase deploy --only hosting:production --project "$FIREBASE_PROJECT_ID" --non-interactive
       - name: Verify live catalog bytes and cache headers
-        env:
-          REVISION: ${{ steps.stage.outputs.revision }}
         shell: bash
         run: |
           set -euo pipefail
-          readback="$RUNNER_TEMP/one-piece-hosting-readback"
-          headers="$RUNNER_TEMP/one-piece-hosting-headers"
-          for origin in "$HOSTING_ORIGIN" https://catalog.scan-stash.com; do
-            for path in one-piece/v1/current.json "one-piece/v1/releases/$REVISION/catalog-release.json" \
-              one-piece/v1/market-price-scope.json yugioh/v1/market-price-scope.json \
-              v1/current.json magic/v1/current.json yugioh/v1/current.json market-prices/v1/index.json; do
-              expected="publisher/site/$path"
-              if [ ! -f "$expected" ]; then continue; fi
-              curl --fail --silent --show-error --compressed --retry 3 --max-time 60 \
-                --dump-header "$headers" --output "$readback" \
-                "$origin/$path?publication_check=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
-              cmp "$expected" "$readback"
-              case "$path" in
-                one-piece/v1/current.json|*/market-price-scope.json) grep -qi '^cache-control:.*no-cache' "$headers" ;;
-                one-piece/v1/releases/*)
-                  grep -qi '^cache-control:.*max-age=31536000' "$headers"
-                  grep -qi '^cache-control:.*immutable' "$headers" ;;
-              esac
-              printf 'Verified %s/%s\n' "$origin" "$path"
-            done
-          done
+          python3 scripts/catalog_hosting_cache.py verify-firebase-catalogs \
+            --site publisher/site --namespace one-piece/v1 --revision "$REVISION"
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, 'scripts')
+          from market_price_feeds import NAMESPACE, restore
+          destination = Path('publisher/price-readback')
+          assert restore(destination, require_fresh=False, require_present=True)
+          expected = Path('publisher/site') / NAMESPACE / 'index.json'
+          assert (destination / NAMESPACE / 'index.json').read_bytes() == expected.read_bytes()
+          PY
+          python3 -u scripts/market_price_rollback.py verify --site-root publisher/site
+          python3 scripts/market_price_rollback.py confirm-primary --site-root publisher/site
+          python3 scripts/catalog_hosting_cache.py confirm --origin "$R2_READ_ORIGIN" \
+            --site publisher/site --work "$RUNNER_TEMP/r2-catalog-pointers"
+      - name: Seal the verified R2 catalog cache
+        id: catalog-cache
+        continue-on-error: true
+        run: |
+          key=$(python3 scripts/catalog_hosting_cache.py seal --site publisher/site \
+            --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$RUNNER_TEMP/r2-catalog-pointers")
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/save@v4
+        if: steps.catalog-cache.outputs.key != ''
+        continue-on-error: true
+        with:
+          path: ${{ runner.temp }}/r2-catalog-cache
+          key: r2-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Report a failed backup separately from the primary publication
+        if: failure()
+        run: |
+          echo '::warning title=Firebase One Piece catalog backup failed::The verified R2 catalog publication remains active.'
+          echo 'Firebase backup failed. The verified R2 One Piece catalog publication remains active.' >> "$GITHUB_STEP_SUMMARY"

@@ -37,8 +37,12 @@ class OnePieceWorkflowTests(unittest.TestCase):
     def test_signing_and_publication_retain_protected_verification(self):
         signing = job(self.text, 'sign-reviewed-artifact')
         publishing = job(self.text, 'publish-reviewed-artifact')
+        r2_publish = job(self.text, 'publish-r2-catalog')
+        backup = job(self.text, 'backup-firebase-catalog')
         self.assertIn('runs-on: ubuntu-24.04', signing)
-        self.assertIn('runs-on: macos-15', publishing)
+        self.assertIn('runs-on: ubuntu-24.04', publishing)
+        self.assertIn('runs-on: ubuntu-latest', r2_publish)
+        self.assertIn('runs-on: macos-15', backup)
         for content, environment in ((signing, 'one-piece-catalog-signing'),
                                      (publishing, 'one-piece-catalog-production')):
             self.assertIn(f'environment: {environment}', content)
@@ -51,11 +55,21 @@ class OnePieceWorkflowTests(unittest.TestCase):
                         signing.index('one-piece-catalog-publisher sign'))
         self.assertIn('catalog_release_preflight.py --game one-piece --envelope', signing)
         self.assertIn('cmp "$artifact_root/manifest.json" "$artifact_root/verified-manifest.json"', signing)
-        self.assertIn('group: scanstash-catalog-production-hosting', publishing)
-        self.assertIn('cancel-in-progress: false', publishing)
-        self.assertIn('scripts/restore_catalog_hosting_site.sh', publishing)
         self.assertIn('cmp "$RUNNER_TEMP/one-piece-verified-manifest.json" "$artifact/verified-manifest.json"', publishing)
-        self.assertIn('Verify live catalog bytes and cache headers', publishing)
+        self.assertIn('--write-catalog-metadata', publishing)
+        self.assertNotIn('FIREBASE_', publishing)
+        self.assertNotIn('web.app', publishing)
+        self.assertIn('environment: r2-catalog-production', r2_publish)
+        self.assertIn('group: scanstash-catalog-r2-hosting', r2_publish)
+        self.assertIn('cancel-in-progress: false', r2_publish)
+        self.assertIn('--primary-catalog one-piece/v1', r2_publish)
+        self.assertNotIn('FIREBASE_', r2_publish)
+        self.assertIn('needs: [publish-reviewed-artifact, publish-r2-catalog]', backup)
+        self.assertIn('group: scanstash-catalog-production-hosting', backup)
+        self.assertIn('cancel-in-progress: false', backup)
+        self.assertIn('scripts/restore_catalog_hosting_site.sh', backup)
+        self.assertIn('Verify live catalog bytes and cache headers', backup)
+        self.assertIn('The verified R2 catalog publication remains active.', backup)
 
 
 if __name__ == '__main__':

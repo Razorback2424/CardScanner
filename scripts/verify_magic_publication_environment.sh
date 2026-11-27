@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Presence check only. Signing authorization, key validity and Firebase access
+# Presence check only. Signing authorization, key validity and hosting access
 # remain enforced by the publisher and deployment commands.
+required=(
+  MAGIC_CATALOG_SIGNING_KEY
+  MAGIC_CATALOG_KEY_ID
+  FIREBASE_SERVICE_ACCOUNT
+  FIREBASE_PROJECT_ID
+  FIREBASE_HOSTING_SITE_ID
+)
+if [ "${1:-}" = "--signing-only" ]; then
+  required=(
+    MAGIC_CATALOG_SIGNING_KEY
+    MAGIC_CATALOG_KEY_ID
+  )
+fi
+
 missing=0
-for name in MAGIC_CATALOG_SIGNING_KEY MAGIC_CATALOG_KEY_ID \
-  FIREBASE_SERVICE_ACCOUNT FIREBASE_PROJECT_ID FIREBASE_HOSTING_SITE_ID; do
+for name in "${required[@]}"; do
   if [ -z "${!name:-}" ]; then
     echo "Missing required publication variable: $name" >&2
     missing=1

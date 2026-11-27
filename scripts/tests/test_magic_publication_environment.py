@@ -13,11 +13,11 @@ REQUIRED = (
 
 
 class MagicPublicationEnvironmentTests(unittest.TestCase):
-    def run_preflight(self, values):
+    def run_preflight(self, values, *extra_args):
         # Never inherit a developer's real signing or hosting credentials.
         environment = {"PATH": os.defpath, "GITHUB_ENVIRONMENT": "magic-catalog-production"}
         environment.update(values)
-        return subprocess.run(["bash", str(SCRIPT)], env=environment,
+        return subprocess.run(["bash", str(SCRIPT), *extra_args], env=environment,
                               capture_output=True, text=True)
 
     def test_reports_every_unset_variable(self):
@@ -51,6 +51,16 @@ class MagicPublicationEnvironmentTests(unittest.TestCase):
                 result = self.run_preflight(values)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(result.stdout + result.stderr, "")
+
+    def test_signing_only_mode_does_not_require_firebase_credentials(self):
+        signing = {"MAGIC_CATALOG_SIGNING_KEY": "private-key", "MAGIC_CATALOG_KEY_ID": "key-1"}
+        result = self.run_preflight(signing, "--signing-only")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout + result.stderr, "")
+        missing = self.run_preflight({"MAGIC_CATALOG_KEY_ID": "key-1"}, "--signing-only")
+        self.assertNotEqual(missing.returncode, 0)
+        self.assertIn("Missing required publication variable: MAGIC_CATALOG_SIGNING_KEY", missing.stderr)
+        self.assertNotIn("FIREBASE_", missing.stderr)
 
     def test_diagnostics_never_expand_or_execute_variable_contents(self):
         values = dict.fromkeys(REQUIRED, "$(exit 42)\nprivate-test-canary")

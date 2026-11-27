@@ -70,7 +70,7 @@ jobs:
             exit 0
           fi
           case "$APPROVED_PARENT_URL" in
-            https://scanstash-catalog-prod.web.app/yugioh/v1/current.json|https://catalog.scan-stash.com/yugioh/v1/current.json) ;;
+            https://catalog-staging.scan-stash.com/yugioh/v1/current.json|https://scanstash-catalog-prod.web.app/yugioh/v1/current.json|https://catalog.scan-stash.com/yugioh/v1/current.json) ;;
             *) echo "Unapproved parent origin/path" >&2; exit 1 ;;
           esac
           cache="$RUNNER_TEMP/yugioh-parent-cache"
@@ -156,6 +156,7 @@ jobs:
     environment: r2-catalog-production
     concurrency:
       group: scanstash-catalog-r2-hosting
+      cancel-in-progress: false
       queue: max
     outputs:
       price_artifact: ${{ steps.share.outputs.artifact-id }}
@@ -256,12 +257,12 @@ jobs:
     runs-on: macos-15-intel
     timeout-minutes: 45
     environment: pokemon-catalog-production
-    outputs:
-      catalog_artifact: ${{ steps.share-catalogs.outputs.artifact-id }}
     concurrency:
       group: scanstash-catalog-production-hosting
       cancel-in-progress: false
+      queue: max
     env:
+      R2_READ_ORIGIN: https://catalog-staging.scan-stash.com
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
       FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
@@ -282,9 +283,9 @@ jobs:
       - uses: actions/cache/restore@v4
         continue-on-error: true
         with:
-          path: ${{ runner.temp }}/firebase-catalog-cache
-          key: firebase-catalog-restore-v1-probe-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: firebase-catalog-restore-v1-
+          path: ${{ runner.temp }}/r2-catalog-cache
+          key: r2-catalog-restore-v1-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: r2-catalog-restore-v1-
       - uses: actions/download-artifact@v4
         with:
           artifact-ids: ${{ needs.publish-prices-to-r2.outputs.price_artifact }}
@@ -314,7 +315,7 @@ jobs:
           shutil.copytree(source / NAMESPACE, destination)
           PY
           bash scripts/verify_pokemon_catalog_hosting_config.sh
-      - name: Restore Firebase catalogs and retained builds alongside the R2 capture
+      - name: Restore verified R2 catalogs and retained builds alongside the R2 capture
         env:
           RECONCILE_CATALOG_HISTORY: ${{ inputs.reconcile_catalog_history == true }}
           PREFER_R2_PRICE_HISTORY: "true"
@@ -322,34 +323,14 @@ jobs:
           export CATALOG_RESTORE_CACHE_WORK="$RUNNER_TEMP/price-catalog-pointers"
           reconcile=()
           if [[ "$RECONCILE_CATALOG_HISTORY" == true ]]; then reconcile+=(--reconcile-history); fi
-          python3 scripts/catalog_hosting_cache.py prepare --site publisher/site \
-            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$CATALOG_RESTORE_CACHE_WORK" "${reconcile[@]}"
+          python3 scripts/catalog_hosting_cache.py prepare --origin "$R2_READ_ORIGIN" --site publisher/site \
+            --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$CATALOG_RESTORE_CACHE_WORK" "${reconcile[@]}"
           bash scripts/restore_catalog_hosting_site.sh \
             "$CATALOG_RESTORE_CACHE_WORK/pokemon-current.json" \
             "$CATALOG_RESTORE_CACHE_WORK/magic-current.json" publisher/site \
-            https://scanstash-catalog-prod.web.app PokemonCatalogCore Config/PokemonCatalogProduction.xcconfig \
+            "$R2_READ_ORIGIN" PokemonCatalogCore Config/PokemonCatalogProduction.xcconfig \
             MagicCatalogCore Config/MagicCatalogProduction.xcconfig "$CATALOG_RESTORE_CACHE_WORK/one-piece-current.json" \
             OnePieceCatalogCore Config/OnePieceCatalogProduction.xcconfig "$CATALOG_RESTORE_CACHE_WORK/yugioh-current.json"
-      # Catalogs may advance on Firebase while their R2 scopes lag. Hand off
-      # the catalog-only snapshot even if that prevents this price backup.
-      - name: Package the restored catalog snapshot for R2
-        continue-on-error: true
-        id: package-catalogs
-        run: |
-          tar -czf "$RUNNER_TEMP/firebase-catalogs.tar.gz" --exclude=site/market-prices \
-            -C "$GITHUB_WORKSPACE/publisher" site \
-            -C "$RUNNER_TEMP/price-catalog-pointers" pointers.json
-      - name: Share the catalog-only snapshot
-        if: steps.package-catalogs.outcome == 'success'
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        id: share-catalogs
-        with:
-          name: firebase-catalogs-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/firebase-catalogs.tar.gz
-          if-no-files-found: error
-          compression-level: 0
-          retention-days: 7
       - name: Install Firebase CLI
         run: npm install --global firebase-tools@13.35.1
       - name: Publish the complete preserved site
@@ -360,8 +341,9 @@ jobs:
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$service_account_file"
           export GOOGLE_APPLICATION_CREDENTIALS="$service_account_file"
           firebase target:apply hosting production "$FIREBASE_HOSTING_SITE_ID" --project "$FIREBASE_PROJECT_ID"
-          python3 scripts/catalog_hosting_cache.py confirm --site publisher/site \
-            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$RUNNER_TEMP/price-catalog-pointers"
+          python3 scripts/catalog_hosting_cache.py confirm --origin "$R2_READ_ORIGIN" --site publisher/site \
+            --work "$RUNNER_TEMP/price-catalog-pointers"
+          python3 scripts/catalog_hosting_cache.py confirm-r2-scopes --site publisher/site
           python3 scripts/market_price_feeds.py check-catalog-scopes --site-root publisher/site \
             --prepared publisher/price-candidate/site
           python3 scripts/market_price_feeds.py check-publication-build --site-root publisher/site
@@ -376,6 +358,7 @@ jobs:
       - name: Verify published bytes from the origin
         id: firebase-readback
         run: |
+          python3 scripts/catalog_hosting_cache.py verify-firebase-catalogs --site publisher/site
           python3 - <<'PY'
           from pathlib import Path
           import sys
@@ -392,67 +375,23 @@ jobs:
           PY
           python3 -u scripts/market_price_rollback.py verify --site-root publisher/site
           python3 scripts/market_price_rollback.py confirm-primary --site-root publisher/site
-      - name: Seal the verified catalog tree for the next price publication
+          python3 scripts/catalog_hosting_cache.py confirm --origin "$R2_READ_ORIGIN" --site publisher/site \
+            --work "$RUNNER_TEMP/price-catalog-pointers"
+      - name: Seal the verified R2 catalog tree for the next backup
         id: catalog-cache
         continue-on-error: true
         run: |
           key=$(python3 scripts/catalog_hosting_cache.py seal --site publisher/site \
-            --cache "$RUNNER_TEMP/firebase-catalog-cache" --work "$RUNNER_TEMP/price-catalog-pointers")
+            --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$RUNNER_TEMP/price-catalog-pointers")
           echo "key=$key" >> "$GITHUB_OUTPUT"
       - uses: actions/cache/save@v4
         if: steps.catalog-cache.outputs.key != ''
         continue-on-error: true
         with:
-          path: ${{ runner.temp }}/firebase-catalog-cache
-          key: firebase-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/r2-catalog-cache
+          key: r2-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Report a failed backup separately from the primary publication
         if: failure()
         run: |
           echo '::warning title=Firebase price backup failed::The verified R2 price publication remains active.'
           echo 'Firebase backup failed. The verified R2 price publication remains active.' >> "$GITHUB_STEP_SUMMARY"
-
-  mirror-catalogs-to-r2:
-    name: Sync Firebase catalogs and scopes to R2
-    needs: publish-firebase-backup
-    if: ${{ !cancelled() && needs.publish-firebase-backup.outputs.catalog_artifact != '' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    environment: r2-catalog-production
-    concurrency:
-      group: scanstash-catalog-r2-hosting
-      queue: max
-    steps:
-      - name: Require the restored catalog artifact
-        env:
-          ARTIFACT_ID: ${{ needs.publish-firebase-backup.outputs.catalog_artifact }}
-        run: |
-          if [[ ! "$ARTIFACT_ID" =~ ^[0-9]+$ ]]; then
-            echo 'The catalog snapshot could not be handed off to R2.' >&2
-            exit 1
-          fi
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-      - uses: actions/download-artifact@v4
-        with:
-          artifact-ids: ${{ needs.publish-firebase-backup.outputs.catalog_artifact }}
-          merge-multiple: true
-          path: ${{ runner.temp }}/firebase-catalogs
-      - name: Restore the catalog-only handoff
-        run: tar -xzf "$RUNNER_TEMP/firebase-catalogs/firebase-catalogs.tar.gz" -C "$RUNNER_TEMP/firebase-catalogs"
-      - name: Verify and publish the catalog-only snapshot
-        env:
-          PYTHONUNBUFFERED: "1"
-          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
-          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-        run: |
-          : "${AWS_ACCESS_KEY_ID:?Set R2_ACCESS_KEY_ID in r2-catalog-production}"
-          : "${AWS_SECRET_ACCESS_KEY:?Set R2_SECRET_ACCESS_KEY in r2-catalog-production}"
-          python3 scripts/r2_catalog_publish.py --site "$RUNNER_TEMP/firebase-catalogs/site" \
-            --public-base https://catalog-staging.scan-stash.com --verify-all \
-            --catalog-work "$RUNNER_TEMP/firebase-catalogs"

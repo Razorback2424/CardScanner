@@ -126,6 +126,85 @@ class FirebaseRollbackTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "pointer differs"):
             rollback.confirm_primary_pointer(packed(pointer), self.fetch)
 
+    def test_sync_r2_catches_up_missed_builds_even_when_catalog_scope_advanced(self):
+        first_site, first = self.fixture("first", price=10)
+        self.host_v2(rollback.R2, first_site)
+        (first_site / rollback.HISTORY).write_bytes(rollback.history_bytes({first["build"]}))
+        self.host_v2(ORIGIN, first_site)
+
+        # Two price builds land on R2 while Firebase is out.
+        missed_site, missed = self.fixture("missed", price=15)
+        self.host_v2(rollback.R2, missed_site)
+        latest_site, latest = self.fixture("latest", price=20)
+        self.host_v2(rollback.R2, latest_site)
+
+        # Now a catalog publish advances One Piece's scope on R2 ahead of the last price build.
+        backup_site = self.root / "catalog-backup-site"
+        shutil.copytree(latest_site / NAMESPACE, backup_site / NAMESPACE)
+        advanced_scope = backup_site / "one-piece/v1/market-price-scope.json"
+        advanced_scope.parent.mkdir(parents=True, exist_ok=True)
+        advanced_scope.write_bytes(packed({
+            "schemaVersion": 1, "game": "one-piece", "revision": 9,
+            "catalogSHA256": "c" * 64, "pointerSHA256": "d" * 64,
+            "groups": [[99, [[456, ["Normal"]]]]],
+        }))
+        rollback.restore(backup_site, self.fetch, prefer_r2=True)
+        synced = rollback.sync_r2(backup_site, {first["build"], missed["build"], latest["build"]}, self.fetch)
+        self.assertEqual(synced, latest)
+        self.assertEqual(rollback.history((backup_site / rollback.HISTORY).read_bytes()),
+                         {first["build"], missed["build"], latest["build"]})
+        self.assertEqual((backup_site / v2.LATEST).read_bytes(), packed(latest))
+
+        # Verify against Firebase once deployed.
+        self.host_v2(ORIGIN, backup_site)
+        rollback.verify(backup_site, self.fetch)
+        rollback.confirm_primary_pointer(packed(latest), self.fetch)
+
+        # Reject if R2 legacy v1 index disagrees with R2 active v2 build.
+        (backup_site / NAMESPACE / "index.json").write_bytes(b'{"schemaVersion":1}\n')
+        with self.assertRaisesRegex(ValueError, "legacy v1 prices do not match"):
+            rollback.sync_r2(backup_site, {first["build"], missed["build"], latest["build"]}, self.fetch)
+
+    def test_sync_r2_accepts_already_retained_pre_receipt_build_and_rejects_unrecorded_new_build(self):
+        legacy_site, legacy = self.fixture("legacy-retained", price=10)
+        self.host_v2(rollback.R2, legacy_site)
+        (legacy_site / rollback.HISTORY).write_bytes(rollback.history_bytes({legacy["build"]}))
+        self.host_v2(ORIGIN, legacy_site)
+        backup_site = self.root / "pre-receipt-backup"
+        shutil.copytree(legacy_site / NAMESPACE, backup_site / NAMESPACE)
+        rollback.restore(backup_site, self.fetch, prefer_r2=True)
+        # Empty verified-builds inventory is valid when the active R2 build is already retained on Firebase.
+        self.assertEqual(rollback.sync_r2(backup_site, set(), self.fetch), legacy)
+        # A brand-new R2 build absent from both verified-builds and retained history still fails closed.
+        unrecorded_site, _ = self.fixture("unrecorded-new", price=15)
+        self.host_v2(rollback.R2, unrecorded_site)
+        with self.assertRaisesRegex(ValueError, "missing its active price build"):
+            rollback.sync_r2(backup_site, set(), self.fetch)
+
+    def test_sync_r2_rejects_older_r2_build_or_concurrent_firebase_change(self):
+        newer_site, newer = self.fixture("newer", marker="2026-11-28T20:05:59+00:00", price=30)
+        (newer_site / rollback.HISTORY).write_bytes(rollback.history_bytes({newer["build"]}))
+        self.host_v2(ORIGIN, newer_site)
+        older_site, older = self.fixture("older", marker="2026-11-27T20:05:59+00:00", price=20)
+        self.host_v2(rollback.R2, older_site)
+        backup_site = self.root / "older-sync"
+        shutil.copytree(older_site / NAMESPACE, backup_site / NAMESPACE)
+        rollback.restore(backup_site, self.fetch)
+        with self.assertRaisesRegex(ValueError, "older Firebase v2"):
+            rollback.sync_r2(backup_site, {older["build"]}, self.fetch)
+
+        # Concurrent Firebase mutation during sync is rejected too.
+        fresh_site, fresh = self.fixture("fresh", marker="2026-11-29T20:05:59+00:00", price=40)
+        self.host_v2(rollback.R2, fresh_site)
+        backup_site2 = self.root / "concurrent-sync"
+        shutil.copytree(fresh_site / NAMESPACE, backup_site2 / NAMESPACE)
+        rollback.restore(backup_site2, self.fetch)
+        # Mutate Firebase while backup_site2 was staged.
+        (fresh_site / rollback.HISTORY).write_bytes(rollback.history_bytes({newer["build"], fresh["build"]}))
+        self.host_v2(ORIGIN, fresh_site)
+        with self.assertRaisesRegex(ValueError, "changed before the catalog deploy"):
+            rollback.sync_r2(backup_site2, {fresh["build"]}, self.fetch)
+
     def test_workflow_can_publish_primary_prices_without_any_firebase_job(self):
         workflow_file = Path(__file__).resolve().parents[2] / ".github/workflows/yugioh-catalog.yml"
         workflow = workflow_file.read_text()
@@ -137,6 +216,39 @@ class FirebaseRollbackTests(unittest.TestCase):
         self.assertIn("needs: publish-prices-to-r2", remaining)
         self.assertIn("needs: [publish-prices-to-r2, inventory-r2-price-builds]", remaining)
         self.assertIn("The verified R2 price publication remains active.", remaining)
+        # Catalog synchronization must no longer originate from Firebase.
+        self.assertNotIn("mirror-catalogs-to-r2:", workflow)
+        self.assertIn("--origin \"$R2_READ_ORIGIN\"", remaining)
+
+    def test_all_catalog_workflows_are_r2_first_with_independent_firebase_backup(self):
+        workflows = Path(__file__).resolve().parents[2] / ".github/workflows"
+        cases = (
+            ("pokemon-catalog.yml", "publish-production", "v1"),
+            ("one-piece-catalog.yml", "publish-reviewed-artifact", "one-piece/v1"),
+            ("magic-catalog.yml", "publish-production", "magic/v1"),
+        )
+        for filename, stage_job, namespace in cases:
+            with self.subTest(workflow=filename):
+                text = (workflows / filename).read_text()
+                stage_body = text.split(f"\n  {stage_job}:\n", 1)[1].split("\n  publish-r2-catalog:\n", 1)[0]
+                r2_body = text.split("\n  publish-r2-catalog:\n", 1)[1].split("\n  backup-firebase-catalog:\n", 1)[0]
+                backup_body = text.split("\n  backup-firebase-catalog:\n", 1)[1]
+                # Staging and R2 primary publication must not depend on Firebase.
+                self.assertNotIn("FIREBASE_", stage_body)
+                self.assertNotIn("web.app", stage_body)
+                self.assertIn("--write-catalog-metadata", stage_body)
+                self.assertNotIn("FIREBASE_", r2_body)
+                self.assertNotIn("web.app", r2_body)
+                self.assertIn("environment: r2-catalog-production", r2_body)
+                self.assertIn("group: scanstash-catalog-r2-hosting", r2_body)
+                self.assertIn(f"--primary-catalog {namespace}", r2_body)
+                # Firebase backup runs strictly downstream of R2 publication and restores from R2.
+                self.assertIn(f"needs: [{stage_job}, publish-r2-catalog]", backup_body)
+                self.assertIn("group: scanstash-catalog-production-hosting", backup_body)
+                self.assertIn("scripts/restore_catalog_hosting_site.sh", backup_body)
+                self.assertIn("market_price_rollback.py sync-r2", backup_body)
+                self.assertIn("verify-firebase-catalogs", backup_body)
+                self.assertIn("The verified R2 catalog publication remains active.", backup_body)
 
     def test_firebase_header_rules_do_not_overlap_for_v2(self):
         rules = HostingRules.load(Path(__file__).resolve().parents[2] / "firebase.json")

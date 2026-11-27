@@ -519,5 +519,194 @@ class AtomicPriceV2Tests(unittest.TestCase):
                          ("text/plain; charset=utf-8", "public,max-age=31536000,immutable"))
 
 
+class PrimaryCatalogPublishTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.root = Path(temp.name)
+        self.rules = r2.HostingRules.load(ROOT / "firebase.json")
+        self.bucket = FakeBucket()
+
+    def stage_catalog(self, name, namespace, revision, payload, *, previous_revision=None, previous_pointer=None,
+                      extra_files=(), scope_groups=None):
+        site = self.root / name / "site"
+        release_dir = site / namespace / "releases" / str(revision)
+        release_dir.mkdir(parents=True, exist_ok=True)
+        (release_dir / "catalog-release.json").write_bytes(payload)
+        for filename, body in extra_files:
+            (release_dir / filename).write_bytes(body)
+        (site / namespace / "current.json").write_bytes(payload)
+        if namespace in r2.SCOPED_CATALOG_NAMESPACES:
+            game = r2.SCOPED_CATALOG_NAMESPACES[namespace]
+            lane = "Normal" if game == "one-piece" else "Unlimited"
+            groups = [[1, [[123, [lane]]]]] if scope_groups is None else scope_groups
+            scope_doc = {
+                "schemaVersion": 1,
+                "game": game,
+                "revision": revision,
+                "catalogSHA256": hashlib.sha256(payload).hexdigest(),
+                "pointerSHA256": hashlib.sha256(payload).hexdigest(),
+                "groups": groups,
+            }
+            (site / namespace / feeds.SCOPE_FILE).write_bytes(feeds.packed(scope_doc))
+        metadata = r2.build_catalog_metadata(
+            site, namespace, revision,
+            previous_revision=previous_revision,
+            previous_pointer_path=previous_pointer,
+            rules=self.rules,
+        )
+        metadata_path = self.root / name / "catalog-publish-metadata.json"
+        metadata_path.write_bytes(feeds.packed(metadata))
+        return site, metadata, metadata_path
+
+    def publish_catalog(self, site, metadata, **options):
+        objects = r2.plan(site, self.rules)
+        return r2.publish(objects, self.bucket, PUBLIC, fetch=self.bucket.fetch,
+                          log=lambda _: None, catalog_metadata=metadata, **options)
+
+    def test_primary_catalog_publishes_immutable_then_scope_then_pointer_and_keeps_history(self):
+        rev1_site, rev1_meta, _ = self.stage_catalog("op-1", "one-piece/v1", 1, b'{"rev":1}')
+        self.publish_catalog(rev1_site, rev1_meta)
+        self.assertEqual(self.bucket.puts, [
+            "one-piece/v1/releases/1/catalog-release.json",
+            "one-piece/v1/market-price-scope.json",
+            "one-piece/v1/current.json",
+        ])
+
+        rev2_site, rev2_meta, _ = self.stage_catalog(
+            "op-2", "one-piece/v1", 2, b'{"rev":2}',
+            previous_revision=1, previous_pointer=rev1_site / "one-piece/v1/current.json",
+        )
+        self.bucket.puts.clear()
+        self.publish_catalog(rev2_site, rev2_meta)
+        self.assertEqual(self.bucket.puts, [
+            "one-piece/v1/releases/2/catalog-release.json",
+            "one-piece/v1/market-price-scope.json",
+            "one-piece/v1/current.json",
+        ])
+        # Historical revision 1 remains intact in R2.
+        self.assertEqual(self.bucket.objects["one-piece/v1/releases/1/catalog-release.json"]["body"], b'{"rev":1}')
+        self.assertEqual(self.bucket.objects["one-piece/v1/current.json"]["body"], b'{"rev":2}')
+
+    def test_interrupted_immutable_upload_leaves_pointer_and_scope_untouched_and_retry_reverifies(self):
+        rev1_site, rev1_meta, _ = self.stage_catalog("pk-1", "v1", 1, b'{"rev":1}',
+                                                     extra_files=(("pokemon-catalog-snapshot.json", b'{"snap":1}'),))
+        self.publish_catalog(rev1_site, rev1_meta)
+        rev2_site, rev2_meta, _ = self.stage_catalog(
+            "pk-2", "v1", 2, b'{"rev":2}',
+            previous_revision=1, previous_pointer=rev1_site / "v1/current.json",
+            extra_files=(("pokemon-catalog-snapshot.json", b'{"snap":2}'),),
+        )
+        self.bucket.corrupt.add("v1/releases/2/pokemon-catalog-snapshot.json")
+        with self.assertRaisesRegex(r2.PublishError, "SHA-256 mismatch"):
+            self.publish_catalog(rev2_site, rev2_meta)
+        # Pointer must remain on rev 1.
+        self.assertEqual(self.bucket.objects["v1/current.json"]["body"], b'{"rev":1}')
+        # Retry must reverify immutable bytes even though metadata already matches, and never overwrite immutable.
+        self.bucket.puts.clear()
+        with self.assertRaisesRegex(r2.PublishError, "SHA-256 mismatch"):
+            self.publish_catalog(rev2_site, rev2_meta)
+        self.assertEqual(self.bucket.puts, [])
+        self.assertEqual(self.bucket.objects["v1/current.json"]["body"], b'{"rev":1}')
+        # Once readback returns intact bytes, retry activates rev 2 cleanly.
+        self.bucket.corrupt.clear()
+        self.publish_catalog(rev2_site, rev2_meta)
+        self.assertEqual(self.bucket.objects["v1/current.json"]["body"], b'{"rev":2}')
+        # Idempotent retry after pointer activation succeeds without re-uploading.
+        self.bucket.puts.clear()
+        summary = self.publish_catalog(rev2_site, rev2_meta)
+        self.assertEqual(self.bucket.puts, [])
+        self.assertEqual(summary["uploaded"], 0)
+        self.assertEqual(summary["verified"], 3)
+
+    def test_concurrent_catalog_advance_or_missing_predecessor_blocks_activation(self):
+        rev1_site, rev1_meta, _ = self.stage_catalog("m-1", "magic/v1", 1, b'{"rev":1}')
+        self.publish_catalog(rev1_site, rev1_meta)
+        rev2a_site, rev2a_meta, _ = self.stage_catalog(
+            "m-2a", "magic/v1", 2, b'{"rev":2,"a":1}',
+            previous_revision=1, previous_pointer=rev1_site / "magic/v1/current.json",
+        )
+        rev2b_site, rev2b_meta, _ = self.stage_catalog(
+            "m-2b", "magic/v1", 2, b'{"rev":2,"b":2}',
+            previous_revision=1, previous_pointer=rev1_site / "magic/v1/current.json",
+        )
+        self.publish_catalog(rev2a_site, rev2a_meta)
+        # Competing candidate built against rev 1 is refused before writing anything.
+        self.bucket.puts.clear()
+        with self.assertRaisesRegex(r2.PublishError, "changed before activation"):
+            self.publish_catalog(rev2b_site, rev2b_meta)
+        self.assertEqual(self.bucket.puts, [])
+        self.assertEqual(self.bucket.objects["magic/v1/current.json"]["body"], b'{"rev":2,"a":1}')
+
+        # Missing predecessor immutable release on R2 also blocks advancing to rev 3.
+        rev3_site, rev3_meta, _ = self.stage_catalog(
+            "m-3", "magic/v1", 3, b'{"rev":3}',
+            previous_revision=2, previous_pointer=rev2a_site / "magic/v1/current.json",
+        )
+        del self.bucket.objects["magic/v1/releases/2/catalog-release.json"]
+        with self.assertRaisesRegex(r2.PublishError, "Predecessor immutable release"):
+            self.publish_catalog(rev3_site, rev3_meta)
+        self.assertEqual(self.bucket.objects["magic/v1/current.json"]["body"], b'{"rev":2,"a":1}')
+
+    def test_primary_catalog_rejects_foreign_namespaces_and_price_files(self):
+        site, meta, meta_path = self.stage_catalog("pk-isolated", "v1", 1, b'{"rev":1}')
+        # Stray file in another catalog namespace is rejected.
+        foreign = site / "magic/v1/current.json"
+        foreign.parent.mkdir(parents=True)
+        foreign.write_bytes(b'{"rev":99}')
+        with self.assertRaisesRegex(r2.PublishError, "staged files mismatch"):
+            self.publish_catalog(site, meta)
+        foreign.unlink()
+        # Any market-prices file is refused at CLI level too.
+        price = site / "market-prices/v1/last-updated.txt"
+        price.parent.mkdir(parents=True)
+        price.write_bytes(b"2026-11-27T00:00:00Z\n")
+        with patch.object(r2.sys, "stderr", new_callable=StringIO) as stderr:
+            code = r2.main(["--primary-catalog", "v1", "--catalog-metadata", str(meta_path),
+                            "--site", str(site), "--public-base", feeds.R2_ORIGIN,
+                            "--bucket", "fixture", "--account-id", "a" * 32])
+        self.assertEqual(code, 1)
+        self.assertIn("Only the primary price publisher", stderr.getvalue())
+
+    def test_primary_catalog_cli_publishes_without_touching_firebase_or_prices(self):
+        # Seed existing v2 prices in R2 bucket to confirm catalog publish leaves them untouched.
+        price_helper = AtomicPriceV2Tests()
+        price_helper.root = self.root
+        price_helper.rules = self.rules
+        price_helper.bucket = self.bucket
+        price_site, price_pointer = price_helper.fixture("existing-prices")
+        price_helper.publish(price_site)
+        self.bucket.puts.clear()
+
+        site, meta, meta_path = self.stage_catalog("pk-cli", "v1", 1, b'{"rev":1}')
+        real_publish = r2.publish
+
+        def publish_mock(*args, **options):
+            return real_publish(*args, **options, log=lambda _: None,
+                                fetch=lambda url: self.bucket.fetch(PUBLIC + url.removeprefix(feeds.R2_ORIGIN)))
+
+        with patch.object(r2, "AwsCliStore", return_value=self.bucket), patch.object(r2, "publish", side_effect=publish_mock), \
+                patch.object(feeds, "build_opener", side_effect=AssertionError("Unexpected Firebase or network call")):
+            code = r2.main(["--primary-catalog", "v1", "--catalog-metadata", str(meta_path),
+                            "--site", str(site), "--public-base", feeds.R2_ORIGIN,
+                            "--bucket", "fixture", "--account-id", "a" * 32])
+        self.assertEqual(code, 0)
+        self.assertEqual(self.bucket.puts, ["v1/releases/1/catalog-release.json", "v1/current.json"])
+        self.assertEqual(self.bucket.objects[v2.LATEST]["body"], feeds.packed(price_pointer))
+
+    def test_write_catalog_metadata_cli_ignores_dotfiles_and_validates_scope_binding(self):
+        site, _, _ = self.stage_catalog("magic-dot", "magic/v1", 1, b'{"rev":1}',
+                                        extra_files=(("catalog-payload.json", b'{"rev":1}'), (".complete", b"complete\n")))
+        out = self.root / "magic-dot" / "cli-meta.json"
+        code = r2.main(["--site", str(site), "--write-catalog-metadata", str(out),
+                        "--namespace", "magic/v1", "--revision", "1"])
+        self.assertEqual(code, 0)
+        doc = r2.validate_catalog_metadata(out.read_bytes(), expected_namespace="magic/v1")
+        self.assertEqual(doc["immutableFiles"], [
+            "magic/v1/releases/1/catalog-payload.json",
+            "magic/v1/releases/1/catalog-release.json",
+        ])
+
+
 if __name__ == "__main__":
     unittest.main()
