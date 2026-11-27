@@ -5,11 +5,21 @@ import gzip
 import hashlib
 import json
 from pathlib import Path
+import secrets
 import shutil
 from urllib.error import HTTPError
 from urllib.request import Request, build_opener
 
-from market_price_feeds import NoRedirects, ORIGIN, packed
+from market_price_feeds import (
+    CATALOG_NAMESPACES,
+    MAX_SCOPE_BYTES,
+    NAMESPACE,
+    NoRedirects,
+    ORIGIN,
+    SCOPE_FILE,
+    packed,
+    read_http,
+)
 
 NAMESPACES = {"pokemon": "v1", "magic": "magic/v1", "one-piece": "one-piece/v1", "yugioh": "yugioh/v1"}
 ROOT = Path(__file__).resolve().parents[1]
@@ -139,6 +149,20 @@ def confirm(work, site, get=get_pointer):
         if entry and (status == 304 or (status == 200 and hashlib.sha256(body).hexdigest() == entry["pointerSHA256"])):
             continue
         raise ValueError(f"Production {namespace} changed during restoration")
+
+
+def confirm_mirror_candidate(work, site, fetch=read_http, get=get_pointer):
+    """Reject a verified artifact superseded while the R2 job waited or retried."""
+    price_files = {f"{NAMESPACE}/last-updated.txt": 1024, f"{NAMESPACE}/index.json": 1024 * 1024}
+    for _, namespace in CATALOG_NAMESPACES.values():
+        price_files[f"{namespace}/{SCOPE_FILE}"] = MAX_SCOPE_BYTES
+    # The index is cacheable and binds the group bytes even on the same build.
+    nonce = secrets.token_hex(8)
+    for path, limit in price_files.items():
+        if fetch(f"{ORIGIN}/{path}?r2v={nonce}", limit) != (site / path).read_bytes():
+            raise ValueError(f"Firebase {path} no longer matches this verified site")
+    # Reuse captured ETags so unchanged signed pointers stay cheap to confirm.
+    confirm(work, site, get=get)
 
 
 def seal(cache, site, work):
