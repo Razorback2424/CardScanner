@@ -253,6 +253,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var printingReviewSortPrices: Set<String> = []
     private var activeSortPriceSlots: [UUID: Set<String>] = [:]
     private var sortPriceRetries: Set<String> = []
+    private var sortPriceRetryChecks: [String: TCGCSVMirrorBuildMarker.Recheck] = [:]
     private var sortPriceCheckedAt: [String: Date] = [:]
     private var sortPriceSources: [String: PriceSource] = [:]
     private var sortPriceEvidence: [String: NormalizedPrice] = [:]
@@ -1598,6 +1599,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             missingMappingSortPrices = missingMappingSortPrices.filter { !$0.hasPrefix(prefix) }
             printingReviewSortPrices = printingReviewSortPrices.filter { !$0.hasPrefix(prefix) }
             sortPriceRetries = sortPriceRetries.filter { !$0.hasPrefix(prefix) }
+            sortPriceRetryChecks = sortPriceRetryChecks.filter { !$0.key.hasPrefix(prefix) }
         }
         yieldUpdate(game: game, revision: snapshot.revision, providerSetID: nil)
     }
@@ -1640,11 +1642,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
         guard !ids.isEmpty else { return }
         let retryIDs = Set(ids)
         sortPriceRetries.formUnion(retryIDs)
+        let recheck = TCGCSVMirrorBuildMarker.Recheck()
         for request in Array(activeSortPriceSlots.keys) {
             activeSortPriceSlots[request]?.subtract(retryIDs)
         }
         var pokemonSetIDs: Set<String> = []
         for id in retryIDs {
+            sortPriceRetryChecks[id] = recheck
             missingMappingSortPrices.remove(id)
             printingReviewSortPrices.remove(id)
             resolvedSortPrices.remove(id)
@@ -1847,7 +1851,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             try await withThrowingTaskGroup(of: SortPriceGroupResult.self) { group in
                 for _ in 0..<min(6, pending.count) {
                     guard let providerGroup = iterator.next() else { break }
-                    group.addTask { try await self.sortPriceGroup(for: providerGroup) }
+                    group.addTask { try await self.loadSortPriceGroup(for: providerGroup, request: request) }
                 }
 
                 while let result = try await group.next() {
@@ -1941,7 +1945,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         while let waiting = iterator.next() {
                             let active = waiting.filter { isCurrent($0.id) }
                             guard !active.isEmpty else { continue }
-                            group.addTask { try await self.sortPriceGroup(for: active) }
+                            group.addTask { try await self.loadSortPriceGroup(for: active, request: request) }
                             break
                         }
                     }
@@ -2062,6 +2066,16 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 return (id, source)
             })
         )
+    }
+
+    private func loadSortPriceGroup(for summaries: [CatalogCardSummary], request: UUID) async throws -> SortPriceGroupResult {
+        try Task.checkCancellation()
+        let active = summaries.filter { activeSortPriceSlots[request]?.contains($0.id) == true }
+        guard !active.isEmpty else { return .init(slots: []) }
+        let checks = active.compactMap { sortPriceRetryChecks.removeValue(forKey: $0.id) }
+        return try await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(checks.first) {
+            try await sortPriceGroup(for: active)
+        }
     }
 
     private func sortPriceGroup(for summaries: [CatalogCardSummary]) async throws -> SortPriceGroupResult {

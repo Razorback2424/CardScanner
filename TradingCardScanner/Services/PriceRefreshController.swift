@@ -430,12 +430,10 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             runOutcome = "no-targets"
             return .noTargets
         }
-        let result = await performRefresh(
-            targets,
-            request: request,
-            store: store,
-            progress: progress
-        )
+        let recheck = request.intent == .manual ? TCGCSVMirrorBuildMarker.Recheck() : nil
+        let result = await TCGCSVPriceMirror.$explicitBuildRecheck.withValue(recheck) {
+            await performRefresh(targets, request: request, store: store, progress: progress)
+        }
         runOutcome = switch result {
         case .noTargets: "no-targets"
         case .targetBuildFailed: "target-build-failed"
