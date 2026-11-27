@@ -244,6 +244,8 @@ def main(argv=None):
         if not args.yes and input("Type 'publish' to deploy: ").strip() != "publish":
             sys.exit("Not deployed.")
 
+        run(["python3", "scripts/market_price_rollback.py", "confirm-preserved", "--site-root", SITE_ROOT],
+            cwd=checkout)
         run(["firebase", "deploy", "--only", "hosting:production", "--project", PROJECT, "--non-interactive"],
             cwd=checkout)
         problems = readback_problems(site, revision, lambda url: fetch(url, absent_ok=True))

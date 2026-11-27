@@ -274,3 +274,4 @@ fi
 # daily prices too; an unreadable/corrupt existing namespace blocks preparation.
 python3 scripts/market_price_feeds.py restore --site-root "$site_root" --origin "$origin" --require-present
 python3 scripts/market_price_feeds.py write-catalog-scopes --site-root "$site_root"
+python3 scripts/market_price_rollback.py restore --site-root "$site_root"

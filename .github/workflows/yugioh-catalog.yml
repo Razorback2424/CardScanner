@@ -201,14 +201,69 @@ jobs:
           retention-days: 7
       # Catalog candidates remain separate from the price-only publication below.
 
+  inventory-r2-price-builds:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      ((github.event_name == 'workflow_dispatch' && inputs.publish_prices == true) ||
+       (github.event_name == 'schedule' && vars.MARKET_PRICE_FEEDS_ACTIVE == 'true'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: r2-catalog-production
+    concurrency:
+      group: scanstash-catalog-r2-hosting
+      queue: max
+    outputs:
+      inventory_artifact: ${{ steps.share.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Check whether Firebase v2 history has been bootstrapped
+        id: firebase-history
+        run: |
+          PYTHONPATH=scripts python3 - <<'PY'
+          import os
+          from market_price_feeds import ORIGIN, read_http
+          from market_price_rollback import hosted_state
+          pointer, _ = hosted_state(ORIGIN, read_http)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              print('bootstrap=' + ('true' if pointer is None else 'false'), file=output)
+          PY
+          printf '{"bootstrap":false}\n' > "$RUNNER_TEMP/r2-price-builds.json"
+      - name: Inventory every existing R2 v2 build for the Firebase bootstrap
+        if: steps.firebase-history.outputs.bootstrap == 'true'
+        env:
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          [[ "$R2_ACCOUNT_ID" =~ ^[0-9a-f]{32}$ ]]
+          : "${R2_BUCKET_NAME:?Set R2_BUCKET_NAME in r2-catalog-production}"
+          aws --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" \
+            --cli-connect-timeout 10 --cli-read-timeout 60 --no-cli-pager --output json \
+            s3api list-objects-v2 --bucket "$R2_BUCKET_NAME" --prefix market-prices/v2/builds/ \
+            --delimiter / --query 'CommonPrefixes[].Prefix' > "$RUNNER_TEMP/r2-price-builds.json"
+      - uses: actions/upload-artifact@v4
+        id: share
+        with:
+          name: r2-price-builds-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/r2-price-builds.json
+          if-no-files-found: error
+          retention-days: 7
+
   publish-prices:
-    needs: ingest-candidate
+    needs: [ingest-candidate, inventory-r2-price-builds]
     if: >-
       github.ref == 'refs/heads/main' &&
       ((github.event_name == 'workflow_dispatch' && inputs.publish_prices == true) ||
        (github.event_name == 'schedule' && vars.MARKET_PRICE_FEEDS_ACTIVE == 'true'))
     runs-on: macos-15-intel
-    timeout-minutes: 30
+    timeout-minutes: 45
     environment: pokemon-catalog-production
     outputs:
       firebase_readback: ${{ steps.firebase-readback.outcome }}
@@ -234,6 +289,11 @@ jobs:
         with:
           name: market-price-feeds
           path: publisher/price-candidate
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.inventory-r2-price-builds.outputs.inventory_artifact }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/r2-price-inventory
       # Stage the complete validated replacement first. The restore script then
       # verifies these local prices instead of downloading the obsolete feed.
       - name: Validate and stage the prepared price namespace
@@ -283,6 +343,8 @@ jobs:
           python3 scripts/market_price_feeds.py check-catalog-scopes --site-root publisher/site \
             --prepared publisher/price-candidate/scopes
           python3 scripts/market_price_feeds.py check-publication-build --site-root publisher/site
+          python3 -u scripts/market_price_rollback.py prepare --site-root publisher/site \
+            --r2-inventory "$RUNNER_TEMP/r2-price-inventory/r2-price-builds.json"
           firebase deploy --only hosting:production --project "$FIREBASE_PROJECT_ID" --non-interactive
       - name: Verify published bytes from the origin
         id: firebase-readback
@@ -301,6 +363,7 @@ jobs:
               relative = Path(namespace) / SCOPE_FILE
               assert read_http(f'{ORIGIN}/{relative}', MAX_SCOPE_BYTES) == (Path('publisher/site') / relative).read_bytes()
           PY
+          python3 -u scripts/market_price_rollback.py verify --site-root publisher/site
       - name: Seal the verified catalog tree for the next price publication
         id: catalog-cache
         run: |
@@ -319,7 +382,7 @@ jobs:
         if: ${{ !cancelled() && steps.firebase-readback.outcome == 'success' }}
         continue-on-error: true
         run: |
-          tar -czf "$RUNNER_TEMP/firebase-verified-site.tar.gz" \
+          tar -czf "$RUNNER_TEMP/firebase-verified-site.tar.gz" --exclude=site/market-prices/v2 \
             -C "$GITHUB_WORKSPACE/publisher" site \
             -C "$RUNNER_TEMP/price-catalog-pointers" pointers.json
       - name: Share the verified site with the R2 job
