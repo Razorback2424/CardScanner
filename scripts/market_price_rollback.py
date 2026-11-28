@@ -358,7 +358,7 @@ def fetch_hosting_release_files(site_id, service_account, *, token_minter=None, 
         version = release.get("version") or {}
         name = version.get("name")
         status = version.get("status")
-        if isinstance(name, str) and name and status in ("FINALIZED", None):
+        if isinstance(name, str) and name and status == "FINALIZED":
             if name not in finalized_versions:
                 finalized_versions.append(name)
         if len(finalized_versions) >= 2:

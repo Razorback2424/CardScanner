@@ -383,6 +383,43 @@ class FirebaseRollbackTests(unittest.TestCase):
         )
         self.assertTrue(any(p.startswith(f"{rollback.BUILDS}{older['build']}/") for p in http_paths))
 
+    def test_fetch_hosting_release_files_requires_finalized_status(self):
+        sa = self.root / "sa.json"
+        sa.write_text("{}")
+
+        def fake_api(url, token):
+            if "/releases?" in url:
+                return {
+                    "releases": [
+                        {"version": {"name": "sites/s/versions/missing-status"}},
+                        {"version": {"name": "sites/s/versions/created", "status": "CREATED"}},
+                        {"version": {"name": "sites/s/versions/final2", "status": "FINALIZED"}},
+                        {"version": {"name": "sites/s/versions/final1", "status": "FINALIZED"}},
+                    ]
+                }
+            if "/versions/final2/files" in url:
+                return {"files": [{"path": "/a", "hash": "h2", "status": "ACTIVE"}]}
+            if "/versions/final1/files" in url:
+                return {"files": [{"path": "/a", "hash": "h1", "status": "ACTIVE"}]}
+            raise AssertionError(f"Unexpected Hosting API URL: {url}")
+
+        cur_ver, cur_files, prev_ver, prev_files = rollback.fetch_hosting_release_files(
+            "s",
+            sa,
+            token_minter=lambda *a, **k: "tok",
+            api_get=fake_api,
+        )
+        self.assertEqual(cur_ver, "sites/s/versions/final2")
+        self.assertEqual(prev_ver, "sites/s/versions/final1")
+        self.assertEqual(cur_files["/a"]["hash"], "h2")
+        self.assertEqual(prev_files["/a"]["hash"], "h1")
+
+        def no_finalized(url, token):
+            return {"releases": [{"version": {"name": "sites/s/versions/nostatus"}}]}
+
+        with self.assertRaisesRegex(ValueError, "no finalized releases"):
+            rollback.fetch_hosting_release_files("s", sa, token_minter=lambda *a, **k: "tok", api_get=no_finalized)
+
 
 if __name__ == "__main__":
     unittest.main()
