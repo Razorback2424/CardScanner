@@ -40,7 +40,14 @@ class ArgumentTests(unittest.TestCase):
                       '--manifest-sha256', DIGEST, '--work-dir', '/tmp/x')
 
     def test_deploy_requires_confirmation_unless_requested(self):
-        self.assertFalse(self.parse('--signed-run-id', '1').yes)
+        parsed = self.parse('--signed-run-id', '1')
+        self.assertFalse(parsed.yes)
+        self.assertFalse(parsed.skip_firebase_backup)
+        skipped = self.parse('--signed-run-id', '1', '--skip-firebase-backup',
+                             '--r2-bucket', 'bucket', '--r2-account-id', 'a' * 32)
+        self.assertTrue(skipped.skip_firebase_backup)
+        self.assertEqual(skipped.r2_bucket, 'bucket')
+        self.assertEqual(skipped.r2_account_id, 'a' * 32)
 
 
 class SafeguardTests(unittest.TestCase):

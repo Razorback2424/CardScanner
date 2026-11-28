@@ -30,10 +30,13 @@ yugioh_keys="${14:-Config/YuGiOhCatalogProduction.keys.json}"
 expected_site_root="publisher/site"
 max_restore_revision=100000
 
-if [ "$origin" != "https://scanstash-catalog-prod.web.app" ]; then
-  echo "unexpected production catalog restore origin: $origin" >&2
-  exit 2
-fi
+case "$origin" in
+  https://scanstash-catalog-prod.web.app|https://catalog-staging.scan-stash.com) ;;
+  *)
+    echo "unexpected production catalog restore origin: $origin" >&2
+    exit 2
+    ;;
+esac
 
 if [ "$site_root" != "$expected_site_root" ]; then
   echo "site root $site_root is not the production catalog site root" >&2

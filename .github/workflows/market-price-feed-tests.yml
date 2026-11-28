@@ -18,8 +18,18 @@ on:
       - "scripts/market_price_rollback.py"
       - "scripts/tests/test_market_price_rollback.py"
       - "scripts/publish_one_piece_local.py"
+      - "scripts/prepare_one_piece_hosting.py"
+      - "scripts/verify_magic_publication_environment.sh"
       - "scripts/catalog_parity.py"
       - "scripts/tests/test_r2_catalog_publish.py"
+      - "scripts/tests/test_one_piece_hosting.py"
+      - "scripts/tests/test_one_piece_workflow.py"
+      - "scripts/tests/test_magic_catalog_workflow.py"
+      - "scripts/tests/test_magic_publication_environment.py"
+      - "scripts/tests/test_publish_one_piece_local.py"
+      - ".github/workflows/pokemon-catalog.yml"
+      - ".github/workflows/one-piece-catalog.yml"
+      - ".github/workflows/magic-catalog.yml"
       - ".github/workflows/yugioh-catalog.yml"
       - ".github/workflows/market-price-feed-tests.yml"
       - "firebase.json"
@@ -41,8 +51,18 @@ on:
       - "scripts/market_price_rollback.py"
       - "scripts/tests/test_market_price_rollback.py"
       - "scripts/publish_one_piece_local.py"
+      - "scripts/prepare_one_piece_hosting.py"
+      - "scripts/verify_magic_publication_environment.sh"
       - "scripts/catalog_parity.py"
       - "scripts/tests/test_r2_catalog_publish.py"
+      - "scripts/tests/test_one_piece_hosting.py"
+      - "scripts/tests/test_one_piece_workflow.py"
+      - "scripts/tests/test_magic_catalog_workflow.py"
+      - "scripts/tests/test_magic_publication_environment.py"
+      - "scripts/tests/test_publish_one_piece_local.py"
+      - ".github/workflows/pokemon-catalog.yml"
+      - ".github/workflows/one-piece-catalog.yml"
+      - ".github/workflows/magic-catalog.yml"
       - ".github/workflows/yugioh-catalog.yml"
       - ".github/workflows/market-price-feed-tests.yml"
       - "firebase.json"
@@ -58,4 +78,9 @@ jobs:
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_catalog_hosting_cache.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_r2_catalog_publish.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_market_price_rollback.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_one_piece_hosting.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_one_piece_workflow.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_magic_catalog_workflow.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_magic_publication_environment.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_publish_one_piece_local.py'
       - run: bash scripts/verify_pokemon_catalog_hosting_config.sh

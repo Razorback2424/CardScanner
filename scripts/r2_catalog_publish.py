@@ -39,7 +39,19 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, build_opener
 
-from market_price_feeds import NAMESPACE, R2_ORIGIN, SCOPE_FILE, NoRedirects, confirm_r2_scopes, instant, restore
+from market_price_feeds import (
+    CATALOG_NAMESPACES,
+    MAX_SCOPE_BYTES,
+    NAMESPACE,
+    R2_ORIGIN,
+    SCOPE_FILE,
+    NoRedirects,
+    confirm_r2_scopes,
+    instant,
+    packed,
+    restore,
+    validate_catalog_scope,
+)
 import market_price_v2 as v2
 from market_price_rollback import VERIFIED
 
@@ -47,9 +59,12 @@ IMMUTABLE, V2_POINTER, PRICE_DATA, PRICE_INDEX, POINTER, MARKER = range(6)
 TIER_NAMES = ("immutable releases and price builds", "v2 price pointer", "price files", "price index and scopes", "catalog pointers", "build marker")
 MARKER_PATHS = {"market-prices/v1/last-updated.txt"}
 INDEX_PATHS = {"market-prices/v1/index.json"}
+PRIMARY_CATALOG_NAMESPACES = ("v1", "magic/v1", "one-piece/v1", "yugioh/v1")
+SCOPED_CATALOG_NAMESPACES = {namespace: game for game, (_, namespace) in CATALOG_NAMESPACES.items()}
 DEFAULT_TYPES = {".json": "application/json", ".txt": "text/plain; charset=utf-8"}
 MAX_READBACK_BYTES = 128 * 1024 * 1024
 MAX_READBACK_RETRIES = 3
+SHA256_RE = re.compile(r"[0-9a-f]{64}\Z")
 
 
 class PublishError(RuntimeError):
@@ -271,11 +286,196 @@ def check_v2_activation(item, state, public_base, fetch, nonce):
         raise PublishError("Refusing to activate an older v2 price build")
 
 
+def build_catalog_metadata(site, namespace, revision, *, previous_revision=None, previous_pointer_path=None, rules=None):
+    """Build canonical metadata binding a staged primary catalog release to its predecessor."""
+    site = Path(site)
+    if namespace not in PRIMARY_CATALOG_NAMESPACES:
+        raise PublishError(f"Unsupported primary catalog namespace: {namespace}")
+    if type(revision) is not int or not 1 <= revision <= 100_000:
+        raise PublishError(f"Invalid catalog revision: {revision}")
+    if (previous_revision is None) != (previous_pointer_path is None):
+        raise PublishError("Predecessor revision and pointer path must either both be set or both be omitted")
+    previous_sha = None
+    if previous_revision is not None:
+        if type(previous_revision) is not int or not 1 <= previous_revision < revision:
+            raise PublishError(f"Catalog revision {revision} must be greater than predecessor {previous_revision}")
+        previous_path = Path(previous_pointer_path)
+        if not previous_path.is_file():
+            raise PublishError(f"Missing predecessor pointer file: {previous_path}")
+        previous_sha = sha256(previous_path)
+
+    pointer_path = site / namespace / "current.json"
+    release_dir = site / namespace / "releases" / str(revision)
+    release_envelope = release_dir / "catalog-release.json"
+    if not pointer_path.is_file() or not release_envelope.is_file():
+        raise PublishError(f"Missing staged {namespace} pointer or immutable release {revision}")
+    pointer_sha = sha256(pointer_path)
+    if sha256(release_envelope) != pointer_sha:
+        raise PublishError(f"Staged {namespace}/current.json disagrees with immutable revision {revision}")
+
+    immutable_files = []
+    for entry in sorted(release_dir.rglob("*")):
+        if entry.is_symlink():
+            raise PublishError(f"Refusing to publish a link: {entry}")
+        if not entry.is_file():
+            continue
+        rel = entry.relative_to(site).as_posix()
+        if rules is not None and rules.ignored(rel):
+            continue
+        if any(part.startswith(".") for part in PurePosixPath(rel).parts):
+            continue
+        immutable_files.append(rel)
+
+    scope_sha = None
+    if namespace in SCOPED_CATALOG_NAMESPACES:
+        game = SCOPED_CATALOG_NAMESPACES[namespace]
+        scope_path = site / namespace / SCOPE_FILE
+        if not scope_path.is_file():
+            raise PublishError(f"Missing staged {namespace}/{SCOPE_FILE}")
+        raw_scope = scope_path.read_bytes()
+        validate_catalog_scope(raw_scope, game)
+        scope_doc = json.loads(raw_scope)
+        if scope_doc["pointerSHA256"] != pointer_sha or scope_doc["revision"] != revision:
+            raise PublishError(f"Staged {namespace}/{SCOPE_FILE} is not bound to revision {revision}")
+        scope_sha = sha256(scope_path)
+
+    metadata = {
+        "schemaVersion": 1,
+        "namespace": namespace,
+        "revision": revision,
+        "previousRevision": previous_revision,
+        "previousPointerSHA256": previous_sha,
+        "pointerSHA256": pointer_sha,
+        "immutableFiles": immutable_files,
+        "scopeSHA256": scope_sha,
+    }
+    return validate_catalog_metadata(packed(metadata), expected_namespace=namespace)
+
+
+def validate_catalog_metadata(raw, expected_namespace=None):
+    if len(raw) > 1024 * 1024:
+        raise PublishError("Catalog publish metadata exceeds byte limit")
+    doc = json.loads(raw)
+    expected_keys = {
+        "schemaVersion", "namespace", "revision", "previousRevision",
+        "previousPointerSHA256", "pointerSHA256", "immutableFiles", "scopeSHA256",
+    }
+    if not isinstance(doc, dict) or set(doc) != expected_keys or doc["schemaVersion"] != 1:
+        raise PublishError("Invalid catalog publish metadata")
+    namespace = doc["namespace"]
+    if namespace not in PRIMARY_CATALOG_NAMESPACES:
+        raise PublishError(f"Unsupported primary catalog namespace: {namespace}")
+    if expected_namespace is not None and namespace != expected_namespace:
+        raise PublishError(f"Catalog metadata namespace {namespace} does not match {expected_namespace}")
+    revision = doc["revision"]
+    previous_revision = doc["previousRevision"]
+    previous_sha = doc["previousPointerSHA256"]
+    pointer_sha = doc["pointerSHA256"]
+    if type(revision) is not int or not 1 <= revision <= 100_000:
+        raise PublishError("Invalid catalog metadata revision")
+    if (previous_revision is None) != (previous_sha is None):
+        raise PublishError("Incomplete catalog metadata predecessor")
+    if previous_revision is not None:
+        if type(previous_revision) is not int or not 1 <= previous_revision < revision:
+            raise PublishError("Catalog metadata revision is not greater than predecessor")
+        if not isinstance(previous_sha, str) or not SHA256_RE.match(previous_sha):
+            raise PublishError("Invalid catalog metadata predecessor SHA-256")
+    if not isinstance(pointer_sha, str) or not SHA256_RE.match(pointer_sha):
+        raise PublishError("Invalid catalog metadata pointer SHA-256")
+    immutable_files = doc["immutableFiles"]
+    prefix = f"{namespace}/releases/{revision}/"
+    envelope_key = f"{prefix}catalog-release.json"
+    if (not isinstance(immutable_files, list) or not immutable_files
+            or len(set(immutable_files)) != len(immutable_files)
+            or immutable_files != sorted(immutable_files)
+            or envelope_key not in immutable_files
+            or any(not isinstance(path, str) or not path.startswith(prefix)
+                   or ".." in PurePosixPath(path).parts for path in immutable_files)):
+        raise PublishError("Invalid catalog metadata immutable file list")
+    scope_sha = doc["scopeSHA256"]
+    if namespace in SCOPED_CATALOG_NAMESPACES:
+        if not isinstance(scope_sha, str) or not SHA256_RE.match(scope_sha):
+            raise PublishError(f"Primary catalog {namespace} requires a bound scope SHA-256")
+    elif scope_sha is not None:
+        raise PublishError(f"Unexpected scope SHA-256 for {namespace}")
+    return doc
+
+
+def validate_primary_catalog_plan(objects, metadata):
+    """Ensure a primary catalog publication contains only its exact verified namespace objects."""
+    namespace = metadata["namespace"]
+    pointer_key = f"{namespace}/current.json"
+    envelope_key = f"{namespace}/releases/{metadata['revision']}/catalog-release.json"
+    scope_key = f"{namespace}/{SCOPE_FILE}" if metadata["scopeSHA256"] is not None else None
+    expected_keys = set(metadata["immutableFiles"]) | {pointer_key}
+    if scope_key is not None:
+        expected_keys.add(scope_key)
+    by_key = {item["key"]: item for item in objects}
+    if set(by_key) != expected_keys:
+        extra = sorted(set(by_key) - expected_keys)
+        missing = sorted(expected_keys - set(by_key))
+        raise PublishError(f"Primary catalog staged files mismatch (extra={extra}, missing={missing})")
+    for key in metadata["immutableFiles"]:
+        if by_key[key]["tier"] != IMMUTABLE:
+            raise PublishError(f"Expected immutable cache rule for {key}")
+    if by_key[pointer_key]["tier"] != POINTER:
+        raise PublishError(f"Expected pointer tier for {pointer_key}")
+    if by_key[pointer_key]["sha256"] != metadata["pointerSHA256"]:
+        raise PublishError(f"Staged {pointer_key} SHA-256 differs from catalog metadata")
+    if by_key[envelope_key]["sha256"] != metadata["pointerSHA256"]:
+        raise PublishError(f"Staged {envelope_key} SHA-256 differs from {pointer_key}")
+    if scope_key is not None:
+        scope_item = by_key[scope_key]
+        if scope_item["tier"] != PRICE_INDEX:
+            raise PublishError(f"Expected scope tier for {scope_key}")
+        if scope_item["sha256"] != metadata["scopeSHA256"]:
+            raise PublishError(f"Staged {scope_key} SHA-256 differs from catalog metadata")
+        raw_scope = scope_item["path"].read_bytes()
+        if len(raw_scope) > MAX_SCOPE_BYTES:
+            raise PublishError(f"Staged {scope_key} exceeds byte limit")
+        validate_catalog_scope(raw_scope, SCOPED_CATALOG_NAMESPACES[namespace])
+        scope_doc = json.loads(raw_scope)
+        if scope_doc["pointerSHA256"] != metadata["pointerSHA256"] or scope_doc["revision"] != metadata["revision"]:
+            raise PublishError(f"Staged {scope_key} is not bound to active revision {metadata['revision']}")
+
+
+def check_catalog_activation(metadata, store, public_base, fetch):
+    """Confirm R2's active catalog pointer and predecessor immutable object before mutating."""
+    namespace = metadata["namespace"]
+    pointer_key = f"{namespace}/current.json"
+    state = store.head(pointer_key)
+    url = f"{public_base.rstrip('/')}/{quote(pointer_key)}?r2v={secrets.token_hex(8)}"
+    status, _, body = fetch(url)
+    if state is None:
+        if status != 404:
+            raise PublishError(f"Cannot establish current {pointer_key} from public readback")
+        if metadata["previousPointerSHA256"] is not None:
+            raise PublishError(f"Active R2 {pointer_key} is missing; refusing implicit re-baseline")
+        return
+    if status != 200:
+        raise PublishError(f"Cannot establish current {pointer_key} from public readback")
+    live_sha = hashlib.sha256(body).hexdigest()
+    if state["sha256"] and live_sha != state["sha256"]:
+        raise PublishError(f"Cannot establish current {pointer_key} from public readback")
+    if live_sha not in (metadata["previousPointerSHA256"], metadata["pointerSHA256"]):
+        raise PublishError(f"Active R2 {pointer_key} changed before activation")
+    if metadata["previousRevision"] is not None:
+        prev_key = f"{namespace}/releases/{metadata['previousRevision']}/catalog-release.json"
+        prev_url = f"{public_base.rstrip('/')}/{quote(prev_key)}?r2v={secrets.token_hex(8)}"
+        prev_status, _, prev_body = fetch(prev_url)
+        if prev_status != 200 or hashlib.sha256(prev_body).hexdigest() != metadata["previousPointerSHA256"]:
+            raise PublishError(f"Predecessor immutable release {prev_key} is missing or mismatched on R2")
+
+
 def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, verify_all=False,
-            workers=8, log=print, confirm_current=None, record_build=False):
+            workers=8, log=print, confirm_current=None, record_build=False, catalog_metadata=None):
     summary = {"uploaded": 0, "unchanged": 0, "verified": 0}
     nonce = secrets.token_hex(8)
     has_v2 = any(item["key"] == v2.LATEST for item in objects)
+    if catalog_metadata is not None:
+        validate_primary_catalog_plan(objects, catalog_metadata)
+        if not dry_run:
+            check_catalog_activation(catalog_metadata, store, public_base, fetch)
     for current in range(len(TIER_NAMES)):
         items = [item for item in objects if item["tier"] == current]
         if not items:
@@ -291,6 +491,9 @@ def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, v
                 confirm_current()
             if record_build:
                 record_verified_build(items[0], store, public_base, fetch)
+        if catalog_metadata is not None and current in (PRICE_INDEX, POINTER) and not dry_run:
+            # Recheck active catalog pointer and predecessor after immutable upload/readback.
+            check_catalog_activation(catalog_metadata, store, public_base, fetch)
         pending = []
         for item, state in zip(items, states):
             matches = state is not None and state["sha256"] == item["sha256"] \
@@ -309,9 +512,9 @@ def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, v
         with ThreadPoolExecutor(max_workers=workers) as pool:
             list(pool.map(store.put, pending))
         summary["uploaded"] += len(pending)
-        # Never activate a v2 pointer based solely on object metadata, even
-        # on a retry. Read back every referenced immutable price object.
-        to_verify = items if verify_all or has_v2 else pending
+        # Never activate a v2 or catalog pointer based solely on object metadata,
+        # even on a retry. Read back every referenced immutable object.
+        to_verify = items if verify_all or has_v2 or catalog_metadata is not None else pending
         pending_keys = {item["key"] for item in pending}
         legacy_scopes = {f"{namespace}/{SCOPE_FILE}" for namespace in v2.SCOPES.values()}
 
@@ -361,19 +564,45 @@ def main(argv=None):
     parser.add_argument("--firebase-config", default=str(Path(__file__).resolve().parents[1] / "firebase.json"))
     parser.add_argument("--bucket", default=os.environ.get("R2_BUCKET_NAME"))
     parser.add_argument("--account-id", default=os.environ.get("R2_ACCOUNT_ID"))
-    parser.add_argument("--public-base", required=True, help="HTTPS origin used for readback")
+    parser.add_argument("--public-base", help="HTTPS origin used for readback")
     parser.add_argument("--dry-run", action="store_true", help="Compare with the bucket without uploading")
     parser.add_argument("--verify-all", action="store_true", help="Read back every object, not only uploads")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--primary-prices", action="store_true", help="Publish prices bound to the active R2 scopes")
-    mode.add_argument("--catalog-work", type=Path, help="Mirror a verified Firebase catalog snapshot without prices")
+    mode.add_argument("--primary-catalog", choices=PRIMARY_CATALOG_NAMESPACES,
+                      help="Publish a single verified catalog namespace directly to R2")
+    mode.add_argument("--write-catalog-metadata", type=Path,
+                      help="Write canonical primary-catalog publish metadata and exit")
+    parser.add_argument("--catalog-metadata", type=Path, help="Metadata file for --primary-catalog")
+    parser.add_argument("--namespace", choices=PRIMARY_CATALOG_NAMESPACES, help="Namespace for --write-catalog-metadata")
+    parser.add_argument("--revision", type=int, help="Revision for --write-catalog-metadata")
+    parser.add_argument("--previous-revision", type=int, help="Predecessor revision for --write-catalog-metadata")
+    parser.add_argument("--previous-pointer", type=Path, help="Predecessor pointer path for --write-catalog-metadata")
     args = parser.parse_args(argv)
-    if not args.public_base.startswith("https://"):
+    if args.write_catalog_metadata is not None:
+        if not args.namespace or args.revision is None:
+            parser.error("--write-catalog-metadata requires --namespace and --revision")
+        try:
+            rules = HostingRules.load(args.firebase_config)
+            metadata = build_catalog_metadata(
+                args.site, args.namespace, args.revision,
+                previous_revision=args.previous_revision,
+                previous_pointer_path=args.previous_pointer,
+                rules=rules,
+            )
+            args.write_catalog_metadata.parent.mkdir(parents=True, exist_ok=True)
+            args.write_catalog_metadata.write_bytes(packed(metadata))
+        except (PublishError, ValueError, OSError) as error:
+            print(f"R2 metadata preparation stopped: {error}", file=sys.stderr)
+            return 1
+        return 0
+    if not args.public_base or not args.public_base.startswith("https://"):
         parser.error("--public-base must be an https:// origin")
     if not args.bucket or not re.fullmatch(r"[0-9a-f]{32}", args.account_id or ""):
         parser.error("Set --bucket/R2_BUCKET_NAME and a 32-hex --account-id/R2_ACCOUNT_ID")
     try:
         confirm_current = None
+        catalog_metadata = None
         site = Path(args.site)
         if args.primary_prices:
             if args.public_base.rstrip("/") != R2_ORIGIN:
@@ -386,18 +615,25 @@ def main(argv=None):
                 raise PublishError("Missing local primary price capture")
             restore(site, origin=R2_ORIGIN, require_fresh=True, require_present=True)
             v2.stage(site)
+        elif args.primary_catalog is not None:
+            if args.public_base.rstrip("/") != R2_ORIGIN:
+                raise PublishError("Primary catalogs must use the approved R2 origin")
+            if args.catalog_metadata is None:
+                raise PublishError("--primary-catalog requires --catalog-metadata")
+            if (site / "market-prices").exists():
+                raise PublishError("Only the primary price publisher can change prices on R2")
+            catalog_metadata = validate_catalog_metadata(
+                args.catalog_metadata.read_bytes(), expected_namespace=args.primary_catalog)
         elif (site / "market-prices").exists():
             raise PublishError("Only the primary price publisher can change prices on R2")
-        elif args.catalog_work is not None:
-            from catalog_hosting_cache import confirm_catalog_mirror_candidate
-            confirm_catalog_mirror_candidate(args.catalog_work, site)
         objects = plan(site, HostingRules.load(args.firebase_config))
         if args.primary_prices:
             # Scope files are authoritative catalog inputs on R2. This job only reads them.
             objects = [item for item in objects if item["key"].startswith("market-prices/")]
         store = AwsCliStore(args.bucket, f"https://{args.account_id}.r2.cloudflarestorage.com")
         summary = publish(objects, store, args.public_base, dry_run=args.dry_run,
-                          verify_all=args.verify_all, confirm_current=confirm_current, record_build=args.primary_prices)
+                          verify_all=args.verify_all, confirm_current=confirm_current,
+                          record_build=args.primary_prices, catalog_metadata=catalog_metadata)
     except (PublishError, ValueError, OSError) as error:
         print(f"R2 publish stopped: {error}", file=sys.stderr)
         return 1

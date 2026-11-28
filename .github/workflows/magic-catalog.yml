@@ -15,6 +15,10 @@ on:
       - "Config/**"
       - "magic-publisher/**"
       - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/catalog_hosting_cache.py"
+      - "scripts/r2_catalog_publish.py"
+      - "scripts/market_price_feeds.py"
+      - "scripts/market_price_rollback.py"
       - "scripts/verify_magic_publication_environment.sh"
       - "scripts/tests/test_magic_publication_environment.py"
       - "scripts/tests/test_magic_catalog_workflow.py"
@@ -42,7 +46,8 @@ permissions:
   contents: read
 
 env:
-  MAGIC_CATALOG_PRODUCTION_READ_ORIGIN: https://scanstash-catalog-prod.web.app
+  MAGIC_CATALOG_PRODUCTION_READ_ORIGIN: https://catalog-staging.scan-stash.com
+  FIREBASE_CATALOG_BACKUP_ORIGIN: https://scanstash-catalog-prod.web.app
 
 jobs:
   validate:
@@ -90,7 +95,8 @@ jobs:
         run: |
           active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
           if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
-            "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json" \
+            --header 'Cache-Control: no-cache' \
+            "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json?r2v=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
             echo "Failed to read the active Magic production pointer" >&2
@@ -211,7 +217,7 @@ jobs:
           retention-days: 7
 
   publish-production:
-    name: Publish Magic production catalog
+    name: Sign and stage Magic production catalog
     needs: prepare-production
     if: >-
       needs.prepare-production.outputs.has_changes == 'true' &&
@@ -219,24 +225,24 @@ jobs:
         needs.prepare-production.outputs.requires_approval == 'false' &&
         needs.prepare-production.outputs.change_class == 'contentOnly') ||
        (github.event_name == 'workflow_dispatch' && inputs.publish == true))
-    concurrency:
-      group: scanstash-catalog-production-hosting
-      cancel-in-progress: false
     runs-on: macos-15
     environment:
       name: ${{ needs.prepare-production.outputs.publish_environment }}
+    outputs:
+      catalog_artifact: ${{ steps.share-catalog.outputs.artifact-id }}
+      revision: ${{ steps.stage.outputs.revision }}
     env:
       GITHUB_ENVIRONMENT: ${{ needs.prepare-production.outputs.publish_environment }}
       MAGIC_CATALOG_PUBLISH: "true"
       MAGIC_CATALOG_SIGNING_KEY: ${{ secrets.MAGIC_CATALOG_SIGNING_KEY }}
       MAGIC_CATALOG_KEY_ID: ${{ secrets.MAGIC_CATALOG_KEY_ID }}
-      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-      FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
     steps:
       - uses: actions/checkout@v4
-      - name: Check required Magic publication configuration
-        run: bash scripts/verify_magic_publication_environment.sh
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Check required Magic signing configuration
+        run: bash scripts/verify_magic_publication_environment.sh --signing-only
       - name: Download the validated production candidate
         uses: actions/download-artifact@v4
         with:
@@ -255,11 +261,12 @@ jobs:
             cd magic-publisher
             shasum -a 256 -c reports/production-manifest.sha256
           )
-      - name: Read the active Magic production pointer
+      - name: Read the active R2 Magic production pointer
         run: |
           active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
           if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
-            "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json" \
+            --header 'Cache-Control: no-cache' \
+            "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json?r2v=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
             echo "Failed to read the active Magic production pointer" >&2
@@ -270,50 +277,41 @@ jobs:
             404) rm -f "$active_path" ;;
             *) echo "Unexpected HTTP $status while reading the active Magic production pointer" >&2; exit 1 ;;
           esac
-      - name: Read the active Pokémon production pointer
-        run: |
-          active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
-          if ! status="$(curl --compressed --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
-            "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
-            --output "$active_path" \
-            --write-out '%{http_code}')"; then
-            echo "Failed to read the active Pokémon production pointer" >&2
-            exit 1
-          fi
-          case "$status" in
-            200) ;;
-            404)
-              echo "::error::Production pointer v1/current.json is missing; restore the last verified Pokémon release before deploying the shared site." >&2
-              exit 1
-              ;;
-            *) echo "Unexpected HTTP $status while reading the active Pokémon production pointer" >&2; exit 1 ;;
-          esac
-      - name: Restore the shared production hosting tree
-        run: >-
-          bash scripts/restore_catalog_hosting_site.sh
-          "${RUNNER_TEMP}/pokemon-catalog-production-current.json"
-          "${RUNNER_TEMP}/magic-catalog-production-current.json"
-          publisher/site
-          "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}"
-          PokemonCatalogCore
-          Config/PokemonCatalogProduction.xcconfig
-          MagicCatalogCore
-          Config/MagicCatalogProduction.xcconfig
-      - name: Publish the immutable Magic revision and current pointer
+      - name: Sign and stage the immutable Magic revision and pointer for R2
+        id: stage
         run: |
           active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
           active_args=()
+          metadata_args=()
           if [ -f "$active_path" ]; then
+            previous_revision="$(swift run --package-path MagicCatalogCore magic-catalog-publisher verify-release \
+              --path "$active_path" --environment production \
+              --trusted-keys-file Config/MagicCatalogProduction.xcconfig)"
             active_args+=(--active-release "$active_path")
+            metadata_args+=(--previous-revision "$previous_revision" --previous-pointer "$active_path")
           fi
+          rm -rf magic-publisher/r2-catalog-candidate
+          mkdir -p magic-publisher/r2-catalog-candidate/site
           swift run --package-path MagicCatalogCore magic-catalog-publisher publish \
             --candidate-root magic-publisher/candidate \
-            --site-root publisher/site \
+            --site-root magic-publisher/r2-catalog-candidate/site \
             --environment production \
             --change-class "${{ needs.prepare-production.outputs.change_class }}" \
             --trusted-keys-file Config/MagicCatalogProduction.xcconfig \
             --report magic-publisher/reports/production.json \
             "${active_args[@]}"
+          revision="$(jq -er .revision magic-publisher/candidate/catalog-payload.json)"
+          for artifact in catalog-payload.json review-report.json; do
+            cmp "magic-publisher/candidate/$artifact" "magic-publisher/r2-catalog-candidate/site/magic/v1/releases/$revision/$artifact"
+          done
+          swift run --skip-build --package-path MagicCatalogCore magic-catalog-publisher verify-release \
+            --path "magic-publisher/r2-catalog-candidate/site/magic/v1/current.json" --environment production \
+            --trusted-keys-file Config/MagicCatalogProduction.xcconfig --expected-revision "$revision" >/dev/null
+          python3 scripts/r2_catalog_publish.py \
+            --site magic-publisher/r2-catalog-candidate/site \
+            --write-catalog-metadata magic-publisher/r2-catalog-candidate/catalog-publish-metadata.json \
+            --namespace magic/v1 --revision "$revision" "${metadata_args[@]}"
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - name: Retain the production review report
         if: always()
         uses: actions/upload-artifact@v4
@@ -322,9 +320,159 @@ jobs:
           path: magic-publisher/reports/production.json
           if-no-files-found: warn
           retention-days: 90
+      - name: Hand off the verified Magic release to R2
+        id: share-catalog
+        uses: actions/upload-artifact@v4
+        with:
+          name: magic-r2-catalog-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: magic-publisher/r2-catalog-candidate
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-r2-catalog:
+    name: Publish and verify primary R2 Magic catalog
+    needs: publish-production
+    if: ${{ !cancelled() && needs.publish-production.result == 'success' && needs.publish-production.outputs.catalog_artifact != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: r2-catalog-production
+    concurrency:
+      group: scanstash-catalog-r2-hosting
+      cancel-in-progress: false
+      queue: max
+    outputs:
+      inventory_artifact: ${{ steps.share-inventory.outputs.artifact-id }}
+    steps:
+      - name: Require the staged Magic artifact
+        env:
+          ARTIFACT_ID: ${{ needs.publish-production.outputs.catalog_artifact }}
+        run: |
+          if [[ ! "$ARTIFACT_ID" =~ ^[0-9]+$ ]]; then
+            echo 'The staged Magic catalog artifact could not be handed off to R2.' >&2
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.publish-production.outputs.catalog_artifact }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/magic-r2-catalog
+      - name: Publish immutable release and activate pointer on R2
+        env:
+          PYTHONUNBUFFERED: "1"
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          REVISION: ${{ needs.publish-production.outputs.revision }}
+        run: |
+          : "${AWS_ACCESS_KEY_ID:?Set R2_ACCESS_KEY_ID in r2-catalog-production}"
+          : "${AWS_SECRET_ACCESS_KEY:?Set R2_SECRET_ACCESS_KEY in r2-catalog-production}"
+          python3 scripts/r2_catalog_publish.py \
+            --primary-catalog magic/v1 \
+            --catalog-metadata "$RUNNER_TEMP/magic-r2-catalog/catalog-publish-metadata.json" \
+            --site "$RUNNER_TEMP/magic-r2-catalog/site" \
+            --public-base "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            --verify-all
+          echo "Verified Magic revision $REVISION on R2. Firebase backup reports separately." >> "$GITHUB_STEP_SUMMARY"
+      - name: Inventory R2 price builds for Firebase backup
+        id: inventory
+        continue-on-error: true
+        env:
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          [[ "$R2_ACCOUNT_ID" =~ ^[0-9a-f]{32}$ ]]
+          : "${R2_BUCKET_NAME:?Set R2_BUCKET_NAME in r2-catalog-production}"
+          list_r2=(aws --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+            --cli-connect-timeout 10 --cli-read-timeout 60 --no-cli-pager --output json
+            s3api list-objects-v2 --bucket "$R2_BUCKET_NAME")
+          "${list_r2[@]}" --prefix market-prices/v2/verified-builds/ --query 'Contents[].Key' \
+            > "$RUNNER_TEMP/r2-verified-builds.json"
+          "${list_r2[@]}" --prefix market-prices/v2/builds/ --delimiter / --query 'CommonPrefixes[].Prefix' \
+            > "$RUNNER_TEMP/r2-legacy-inventory.json"
+      - name: Share R2 price inventory for Firebase backup
+        if: steps.inventory.outcome == 'success'
+        id: share-inventory
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: magic-r2-price-builds-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/r2-verified-builds.json
+            ${{ runner.temp }}/r2-legacy-inventory.json
+          if-no-files-found: error
+          retention-days: 7
+
+  backup-firebase-catalog:
+    name: Back up verified R2 site to Firebase
+    needs: [publish-production, publish-r2-catalog]
+    if: ${{ !cancelled() && needs.publish-r2-catalog.result == 'success' }}
+    runs-on: macos-15
+    timeout-minutes: 45
+    environment: pokemon-catalog-production
+    concurrency:
+      group: scanstash-catalog-production-hosting
+      cancel-in-progress: false
+      queue: max
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
+      REVISION: ${{ needs.publish-production.outputs.revision }}
+    steps:
+      - name: Require the R2 price build inventory
+        env:
+          INVENTORY_ARTIFACT: ${{ needs.publish-r2-catalog.outputs.inventory_artifact }}
+        run: |
+          if [[ ! "$INVENTORY_ARTIFACT" =~ ^[0-9]+$ ]]; then
+            echo '::error title=Firebase catalog backup::The R2 price build inventory is unavailable.'
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/cache/restore@v4
+        continue-on-error: true
+        with:
+          path: ${{ runner.temp }}/r2-catalog-cache
+          key: r2-catalog-restore-v1-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: r2-catalog-restore-v1-
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.publish-r2-catalog.outputs.inventory_artifact }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/r2-price-inventory
+      - name: Restore the complete verified site from R2
+        env:
+          PREFER_R2_PRICE_HISTORY: "true"
+        run: |
+          export CATALOG_RESTORE_CACHE_WORK="$RUNNER_TEMP/r2-catalog-pointers"
+          python3 scripts/catalog_hosting_cache.py prepare --origin "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            --site publisher/site --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$CATALOG_RESTORE_CACHE_WORK"
+          bash scripts/restore_catalog_hosting_site.sh \
+            "$CATALOG_RESTORE_CACHE_WORK/pokemon-current.json" \
+            "$CATALOG_RESTORE_CACHE_WORK/magic-current.json" publisher/site \
+            "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            PokemonCatalogCore Config/PokemonCatalogProduction.xcconfig \
+            MagicCatalogCore Config/MagicCatalogProduction.xcconfig \
+            "$CATALOG_RESTORE_CACHE_WORK/one-piece-current.json" \
+            OnePieceCatalogCore Config/OnePieceCatalogProduction.xcconfig \
+            "$CATALOG_RESTORE_CACHE_WORK/yugioh-current.json"
+          test -f "publisher/site/magic/v1/releases/$REVISION/catalog-release.json"
+          bash scripts/verify_pokemon_catalog_hosting_config.sh
       - name: Install Firebase CLI
         run: npm install --global firebase-tools@13.35.1
-      - name: Bind and deploy the shared production Firebase Hosting target
+      - name: Confirm R2 parity and deploy Firebase backup
         run: |
           test -n "$FIREBASE_PROJECT_ID"
           test -n "$FIREBASE_HOSTING_SITE_ID"
@@ -333,5 +481,50 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS="$service_account_file"
           firebase target:apply hosting production "$FIREBASE_HOSTING_SITE_ID" \
             --project "$FIREBASE_PROJECT_ID"
+          python3 scripts/catalog_hosting_cache.py confirm --origin "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            --site publisher/site --work "$RUNNER_TEMP/r2-catalog-pointers"
+          python3 scripts/catalog_hosting_cache.py confirm-r2-scopes --site publisher/site
+          inventory="$RUNNER_TEMP/r2-price-inventory/r2-verified-builds.json"
+          if [[ ! -f publisher/site/market-prices/v2/history.json ]]; then
+            inventory="$RUNNER_TEMP/r2-price-inventory/r2-legacy-inventory.json"
+          fi
+          python3 -u scripts/market_price_rollback.py sync-r2 --site-root publisher/site --r2-inventory "$inventory"
           firebase deploy --only hosting:production \
             --project "$FIREBASE_PROJECT_ID" --non-interactive
+      - name: Verify Firebase backup readback and R2 parity
+        run: |
+          python3 scripts/catalog_hosting_cache.py verify-firebase-catalogs \
+            --site publisher/site --namespace magic/v1 --revision "$REVISION"
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, 'scripts')
+          from market_price_feeds import NAMESPACE, restore
+          destination = Path('publisher/price-readback')
+          assert restore(destination, require_fresh=False, require_present=True)
+          expected = Path('publisher/site') / NAMESPACE / 'index.json'
+          assert (destination / NAMESPACE / 'index.json').read_bytes() == expected.read_bytes()
+          PY
+          python3 -u scripts/market_price_rollback.py verify --site-root publisher/site
+          python3 scripts/market_price_rollback.py confirm-primary --site-root publisher/site
+          python3 scripts/catalog_hosting_cache.py confirm --origin "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            --site publisher/site --work "$RUNNER_TEMP/r2-catalog-pointers"
+          echo "Verified Firebase backup for Magic revision $REVISION against $FIREBASE_CATALOG_BACKUP_ORIGIN." >> "$GITHUB_STEP_SUMMARY"
+      - name: Seal the verified R2 catalog cache
+        id: catalog-cache
+        continue-on-error: true
+        run: |
+          key=$(python3 scripts/catalog_hosting_cache.py seal --site publisher/site \
+            --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$RUNNER_TEMP/r2-catalog-pointers")
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/save@v4
+        if: steps.catalog-cache.outputs.key != ''
+        continue-on-error: true
+        with:
+          path: ${{ runner.temp }}/r2-catalog-cache
+          key: r2-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Report a failed backup separately from the primary publication
+        if: failure()
+        run: |
+          echo '::warning title=Firebase Magic catalog backup failed::The verified R2 catalog publication remains active.'
+          echo 'Firebase backup failed. The verified R2 Magic catalog publication remains active.' >> "$GITHUB_STEP_SUMMARY"
