@@ -125,15 +125,18 @@ class _ExprParser:
             inner = self.parse_or()
             self.consume("RPAREN")
             return inner
-        if kind == "IDENT" and val in ("starts_with", "contains"):
-            func = self.consume("IDENT")[1]
+        if kind == "IDENT" and val == "contains":
+            raise ValueError(
+                'Cloudflare \'contains\' must be used as an infix operator (field contains "value"), not a function'
+            )
+        if kind == "IDENT" and val == "starts_with":
+            self.consume("IDENT")
             self.consume("LPAREN")
             field_name = self.consume("IDENT")[1]
             self.consume("COMMA")
             needle = self.consume("STRING")[1]
             self.consume("RPAREN")
-            haystack = self._field(field_name)
-            return haystack.startswith(needle) if func == "starts_with" else (needle in haystack)
+            return self._field(field_name).startswith(needle)
         if kind == "IDENT":
             field_name = self.consume("IDENT")[1]
             op = self.consume("IDENT")[1]
@@ -141,6 +144,9 @@ class _ExprParser:
             if op == "eq":
                 target = self.consume("STRING")[1]
                 return haystack == target
+            if op == "contains":
+                target = self.consume("STRING")[1]
+                return target in haystack
             if op == "in":
                 self.consume("LBRACE")
                 values = set()
@@ -358,7 +364,14 @@ def verify_static(firebase_path=DEFAULT_FIREBASE, rules_path=DEFAULT_RULES):
             "/market-prices/v1/tcgplayer/3/1/products",
             "/v1/current.json",
         ):
-            for query in ("r2v=deadbeef", "foo=1&r2v=deadbeef", "v2r=cafebabe", "publication_check=local-1"):
+            for query in (
+                "r2v=deadbeef",
+                "foo=1&r2v=deadbeef",
+                "v2r=cafebabe",
+                "foo=1&v2r=cafebabe",
+                "publication_check=local-1",
+                "foo=1&publication_check=local-1",
+            ):
                 matched, eff = evaluate_ruleset(rules, host=host, path=path, query=query)
                 if "publisher-verification-nonce-bypass" not in matched or eff.get("cache") is not False:
                     raise ValueError(f"{section_name}: nonce query {path}?{query} did not bypass: {matched}, {eff}")
