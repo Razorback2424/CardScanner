@@ -6,14 +6,15 @@ import json
 from pathlib import Path
 import re
 import secrets
+from urllib.error import HTTPError
 
-from market_price_feeds import MAX_SCOPE_BYTES, ORIGIN, instant, packed, read_http, validate_site
+from market_price_feeds import MAX_SCOPE_BYTES, ORIGIN, R2_ORIGIN as R2, instant, packed, read_http, validate_site
 import market_price_v2 as v2
 
 
-R2 = "https://catalog-staging.scan-stash.com"
 HISTORY = f"{v2.V2}/history.json"
 BUILDS = f"{v2.V2}/builds/"
+VERIFIED = f"{v2.V2}/verified-builds/"
 BUILD_ID = re.compile(r"[0-9a-f]{64}")
 
 
@@ -82,13 +83,19 @@ def read_build(origin, build, fetch):
     return packed(pointer), metadata | rows
 
 
-def restore(site, fetch=read_http):
+def restore(site, fetch=read_http, *, prefer_r2=False):
     pointer, inventory = hosted_state(ORIGIN, fetch)
     if pointer is None:
         return
     current = v2.validate_pointer(pointer)["build"]
     for build in sorted(history(inventory)):
-        raw, files = read_build(ORIGIN, build, fetch)
+        try:
+            raw, files = read_build(R2 if prefer_r2 else ORIGIN, build, fetch)
+        except HTTPError as error:
+            if not prefer_r2 or error.code != 404:
+                raise
+            # A retained Firebase-first build may never have reached R2.
+            raw, files = read_build(ORIGIN, build, fetch)
         if build == current and raw != pointer:
             raise ValueError("Firebase v2 pointer does not match its build")
         v2.write_build(site / BUILDS / build, files)
@@ -100,53 +107,49 @@ def restore(site, fetch=read_http):
 
 def inventory_ids(path):
     prefixes = json.loads(v2.bounded(path, v2.MAX_POINTER_BYTES))
-    if prefixes == {"bootstrap": False}:
-        return None
     if prefixes is None:  # AWS CLI emits null when the bucket has no matching keys.
         return set()
-    if not isinstance(prefixes, list) or any(not isinstance(prefix, str) or not prefix.startswith(BUILDS)
-                                            or not prefix.endswith("/") for prefix in prefixes):
+    if not isinstance(prefixes, list):
         raise ValueError("Invalid R2 build prefixes")
-    return build_ids([prefix[len(BUILDS):-1] for prefix in prefixes])
+    builds = []
+    for prefix in prefixes:
+        if isinstance(prefix, str) and prefix.startswith(BUILDS) and prefix.endswith("/"):
+            builds.append(prefix[len(BUILDS):-1])
+        elif isinstance(prefix, str) and prefix.startswith(VERIFIED) and prefix.endswith(".json"):
+            builds.append(prefix[len(VERIFIED):-5])
+        else:
+            raise ValueError("Invalid R2 build inventory entry")
+    return build_ids(builds)
 
 
-def prepare(site, r2_builds, fetch=read_http):
+def prepare(site, r2_builds, expected, fetch=read_http):
+    primary = v2.validate_pointer(expected)
+    confirm_primary_pointer(expected, fetch)
     history_path = site / HISTORY
     retained = history(history_path.read_bytes()) if history_path.exists() else set()
     firebase_path = site / v2.LATEST
-    prior = [v2.validate_pointer(firebase_path.read_bytes())] if firebase_path.exists() else []
-    r2_raw = None
-    r2_active = None
-    if not retained:
-        if r2_builds is None:
-            raise ValueError("Firebase v2 history disappeared after the R2 inventory check")
-        r2_raw = fetch_path(R2, v2.LATEST, v2.MAX_POINTER_BYTES, fetch=fetch, absent_ok=True, fresh=True)
-        if r2_raw is not None:
-            r2_pointer = v2.validate_pointer(r2_raw)
-            prior.append(r2_pointer)
-            r2_active = r2_pointer["build"]
-            r2_builds = r2_builds | {r2_active}
-    else:
-        # Every later R2 activation starts from a verified Firebase build.
-        r2_builds = set()
-    candidate_date = instant(json.loads(v2.bounded(site / v2.NAMESPACE / "index.json", v2.MAX_POINTER_BYTES))["sourceBuild"])
-    if any(candidate_date < instant(pointer["sourceBuild"]) for pointer in prior):
-        raise ValueError("Refusing to publish an older Firebase v2 price build")
-    for build in sorted(r2_builds):
-        raw, files = read_build(R2, build, fetch)
-        if build == r2_active and raw != r2_raw:
-            raise ValueError("R2 active pointer does not match its immutable build")
+    if firebase_path.exists():
+        previous = v2.validate_pointer(firebase_path.read_bytes())
+        if instant(primary["sourceBuild"]) < instant(previous["sourceBuild"]):
+            raise ValueError("Refusing to publish an older Firebase v2 price build")
+    if primary["build"] not in r2_builds:
+        raise ValueError("R2 inventory is missing its active price build")
+    for build in sorted(r2_builds - retained - {primary["build"]}):
+        _, files = read_build(R2, build, fetch)
         v2.write_build(site / BUILDS / build, files)
     confirm_preserved(site, fetch)
     candidate = v2.stage(site, retain_history=True)
-    history_path.write_bytes(history_bytes(retained | r2_builds | {candidate["build"]}))
+    if packed(candidate) != expected:
+        raise ValueError("Firebase backup input does not reproduce the verified R2 build")
+    confirm_primary_pointer(expected, fetch)
+    history_path.write_bytes(history_bytes(retained | r2_builds))
     return candidate
 
 
-def confirm_pointer(expected, fetch=read_http):
-    actual = fetch_path(ORIGIN, v2.LATEST, v2.MAX_POINTER_BYTES, fetch=fetch, fresh=True)
+def confirm_primary_pointer(expected, fetch=read_http):
+    actual = fetch_path(R2, v2.LATEST, v2.MAX_POINTER_BYTES, fetch=fetch, fresh=True)
     if actual != expected:
-        raise ValueError("Firebase v2 pointer differs from the R2 publication candidate")
+        raise ValueError("R2 v2 pointer differs from the Firebase backup candidate")
 
 
 def confirm_preserved(site, fetch=read_http):
@@ -172,16 +175,22 @@ def verify(site, fetch=read_http):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("restore", "prepare", "confirm-preserved", "verify"))
+    parser.add_argument("action", choices=("restore", "prepare", "confirm-preserved", "verify", "confirm-primary"))
     parser.add_argument("--site-root", required=True, type=Path)
     parser.add_argument("--r2-inventory", type=Path)
+    parser.add_argument("--primary-pointer", type=Path)
+    parser.add_argument("--prefer-r2", action="store_true")
     args = parser.parse_args()
     if args.action == "prepare":
-        if args.r2_inventory is None:
-            parser.error("prepare requires --r2-inventory")
-        prepare(args.site_root, inventory_ids(args.r2_inventory))
+        if args.r2_inventory is None or args.primary_pointer is None:
+            parser.error("prepare requires --r2-inventory and --primary-pointer")
+        prepare(args.site_root, inventory_ids(args.r2_inventory), v2.bounded(args.primary_pointer, v2.MAX_POINTER_BYTES))
+    elif args.action == "confirm-primary":
+        confirm_primary_pointer(v2.bounded(args.site_root / v2.LATEST, v2.MAX_POINTER_BYTES))
+    elif args.action == "restore":
+        restore(args.site_root, prefer_r2=args.prefer_r2)
     else:
-        actions = {"restore": restore, "confirm-preserved": confirm_preserved, "verify": verify}
+        actions = {"confirm-preserved": confirm_preserved, "verify": verify}
         actions[args.action](args.site_root)
 
 

@@ -41,23 +41,25 @@ class FirebaseRollbackTests(unittest.TestCase):
             if path.is_file():
                 self.remote[origin][path.relative_to(site).as_posix()] = path.read_bytes()
 
-    def test_bootstrap_retains_all_r2_builds_and_later_deploys_keep_them(self):
+    def test_backup_bootstraps_and_catches_up_on_builds_missed_during_an_outage(self):
         old, old_pointer = self.fixture("older-r2", price=10)
         active, active_pointer = self.fixture("active-r2", price=20)
         self.host_v2(rollback.R2, old)
         self.host_v2(rollback.R2, active)
         candidate_site, candidate = self.fixture("candidate", price=30)
+        self.host_v2(rollback.R2, candidate_site)
         shutil.rmtree(candidate_site / v2.V2)
         inventory = self.root / "inventory.json"
         inventory.write_bytes(packed([f"{rollback.BUILDS}{pointer['build']}/"
-                                      for pointer in (old_pointer, active_pointer)]))
-        self.assertEqual(rollback.prepare(candidate_site, rollback.inventory_ids(inventory), self.fetch), candidate)
+                                      for pointer in (old_pointer, active_pointer, candidate)]))
+        self.assertEqual(rollback.prepare(candidate_site, rollback.inventory_ids(inventory),
+                                          packed(candidate), self.fetch), candidate)
         all_builds = {pointer["build"] for pointer in (old_pointer, active_pointer, candidate)}
         inventory_bytes = (candidate_site / rollback.HISTORY).read_bytes()
         self.assertEqual(rollback.history(inventory_bytes), all_builds)
         self.host_v2(ORIGIN, candidate_site)
         rollback.verify(candidate_site, self.fetch)
-        rollback.confirm_pointer(packed(candidate), self.fetch)
+        rollback.confirm_primary_pointer(packed(candidate), self.fetch)
 
         # A new full-site catalog checkout has no staged prices of its own.
         catalog = self.root / "catalog-only"
@@ -68,12 +70,18 @@ class FirebaseRollbackTests(unittest.TestCase):
                          {path.relative_to(candidate_site): path.read_bytes()
                           for path in (candidate_site / v2.V2).rglob("*") if path.is_file()})
 
+        missed_site, missed = self.fixture("firebase-outage", price=35)
+        self.host_v2(rollback.R2, missed_site)
         next_site, next_pointer = self.fixture("next", price=40)
+        self.host_v2(rollback.R2, next_site)
         shutil.rmtree(next_site / v2.V2)
-        rollback.restore(next_site, self.fetch)
-        self.remote[rollback.R2].clear()
-        self.assertEqual(rollback.prepare(next_site, None, self.fetch), next_pointer)
-        self.assertEqual(rollback.history((next_site / rollback.HISTORY).read_bytes()), all_builds | {next_pointer["build"]})
+        rollback.restore(next_site, self.fetch, prefer_r2=True)
+        inventory.write_bytes(packed([f"{rollback.VERIFIED}{pointer['build']}.json"
+                                      for pointer in (missed, next_pointer)]))
+        self.assertEqual(rollback.prepare(next_site, rollback.inventory_ids(inventory),
+                                          packed(next_pointer), self.fetch), next_pointer)
+        self.assertEqual(rollback.history((next_site / rollback.HISTORY).read_bytes()),
+                         all_builds | {missed["build"], next_pointer["build"]})
         self.assertEqual((next_site / NAMESPACE / "index.json").read_bytes(),
                          (next_site / rollback.BUILDS / next_pointer["build"] / "index.json").read_bytes())
 
@@ -96,24 +104,39 @@ class FirebaseRollbackTests(unittest.TestCase):
     def test_superseded_candidate_and_incomplete_inventory_fail_closed(self):
         active, pointer = self.fixture("r2", marker="2026-11-27T20:05:59+00:00")
         self.host_v2(rollback.R2, active)
-        old, _ = self.fixture("old")
+        old, older = self.fixture("old")
         shutil.rmtree(old / v2.V2)
-        with self.assertRaisesRegex(ValueError, "older Firebase v2"):
-            rollback.prepare(old, {pointer["build"]}, self.fetch)
-        with self.assertRaisesRegex(ValueError, "history disappeared"):
-            rollback.prepare(old, None, self.fetch)
+        with self.assertRaisesRegex(ValueError, "pointer differs"):
+            rollback.prepare(old, {older["build"]}, packed(older), self.fetch)
+        with self.assertRaisesRegex(ValueError, "missing its active"):
+            rollback.prepare(old, set(), packed(pointer), self.fetch)
+        with self.assertRaisesRegex(ValueError, "does not reproduce"):
+            rollback.prepare(old, {pointer["build"]}, packed(pointer), self.fetch)
+        (old / v2.LATEST).unlink()
         self.remote[ORIGIN][v2.LATEST] = packed(pointer)
         with self.assertRaisesRegex(ValueError, "pointer and history are incomplete"):
             rollback.restore(old, self.fetch)
 
-    def test_r2_requires_byte_identical_firebase_pointer(self):
+    def test_firebase_backup_requires_byte_identical_r2_pointer(self):
         first, pointer = self.fixture("old")
         second, _ = self.fixture("correction", price=25)
-        self.host_v2(ORIGIN, first)
-        rollback.confirm_pointer(packed(pointer), self.fetch)
-        self.host_v2(ORIGIN, second)
+        self.host_v2(rollback.R2, first)
+        rollback.confirm_primary_pointer(packed(pointer), self.fetch)
+        self.host_v2(rollback.R2, second)
         with self.assertRaisesRegex(ValueError, "pointer differs"):
-            rollback.confirm_pointer(packed(pointer), self.fetch)
+            rollback.confirm_primary_pointer(packed(pointer), self.fetch)
+
+    def test_workflow_can_publish_primary_prices_without_any_firebase_job(self):
+        workflow_file = Path(__file__).resolve().parents[2] / ".github/workflows/yugioh-catalog.yml"
+        workflow = workflow_file.read_text()
+        primary, remaining = workflow.split("\n  publish-prices-to-r2:\n", 1)[1].split("\n  inventory-r2-price-builds:\n", 1)
+        self.assertNotIn("needs:", primary)
+        self.assertNotIn("FIREBASE_", primary)
+        self.assertNotIn("web.app", primary)
+        self.assertIn("--primary-prices", primary)
+        self.assertIn("needs: publish-prices-to-r2", remaining)
+        self.assertIn("needs: [publish-prices-to-r2, inventory-r2-price-builds]", remaining)
+        self.assertIn("The verified R2 price publication remains active.", remaining)
 
     def test_firebase_header_rules_do_not_overlap_for_v2(self):
         rules = HostingRules.load(Path(__file__).resolve().parents[2] / "firebase.json")
