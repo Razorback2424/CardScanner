@@ -1,6 +1,6 @@
 # Offline catalog delivery · Stage 1 evidence
 
-**Status** · 2026-11-26, working tree based on `cf59824f`; all changes are local and uncommitted. Stage 1 is complete except for two items that need the owner: the production revision inventory and HTTPS rollback rehearsal (blocked while Firebase returns HTTP 509), and approval of the storage and performance budgets below.
+**Status** · 2026-11-26. Stage 1 code is merged to `main` ([#62](https://github.com/Razorback2424/CardScanner/pull/62), [#63](https://github.com/Razorback2424/CardScanner/pull/63)). Stage 1 is not closed. The production inventory and HTTPS rollback rehearsal are done (Firebase serves again after the Blaze upgrade). The price publish readback and the populated memory measurement are done. The populated session exceeds the proposed 400 MB memory budget, so the budgets need an owner decision before Stage 1 closes. The [delivery plan](offline-catalog-delivery-plan.md#stage-1-status-2026-11-26) lists the closing criteria.
 
 | Stage 1 item | State |
 | --- | --- |
@@ -16,11 +16,11 @@
 | Collection fixture | Done. `CollectionPrintingBaselineTests` pins every holdable printing (Yu-Gi-Oh 47,917, One Piece 4,153, Lorcana 3,576) and fails if any stops resolving. Pokémon and Magic collections store provider IDs resolved live, so the parity tool covers them. |
 | Budgets measured | Done on the simulator; awaiting owner approval. |
 | Failure drills | Done; see the drill table. |
-| Production inventory and rollback rehearsal | **Blocked** by HTTP 509 until the monthly quota reset or a plan upgrade. |
+| Production inventory and rollback rehearsal | Done on 2026-11-26 after the Blaze upgrade cleared HTTP 509; see the inventory below. The scheduled price publish readback is still open. |
 
 ## Historical release inventory
 
-Keep the complete production history until a verified origin inventory and an HTTPS rollback rehearsal establish what can be retired. The restore checks each revision through the signed pointer and rejects a missing active immutable release. Read-only HEAD checks on November 26 returned HTTP 509 for the Firebase Pokémon pointer and the custom-domain price marker, so the table uses retained repository evidence. [Restore script](../../scripts/restore_catalog_hosting_site.sh) · [Hosting audit](../audits/release-stability-ledger.md)
+Keep the complete production history until a verified origin inventory and an HTTPS rollback rehearsal establish what can be retired. The restore checks each revision through the signed pointer and rejects a missing active immutable release. The table below records the repository evidence; the verified origin inventory after it supersedes it for what is actually hosted. [Restore script](../../scripts/restore_catalog_hosting_site.sh) · [Hosting audit](../audits/release-stability-ledger.md)
 
 | Game | Evidence in the repository | Keep for existing clients and recovery |
 | --- | --- | --- |
@@ -31,6 +31,27 @@ Keep the complete production history until a verified origin inventory and an HT
 | Lorcana | The app bundles discovery and reviewed physical catalogs. The signed rollout path is available in source. | Keep the bundled resources and review evidence. Record any hosted Lorcana revisions in the pre-cutover origin inventory. [Bundled catalogs](../../TradingCardScanner/LorcanaCatalogSeed) · [Activation](../../TradingCardScanner/Games/Lorcana/LorcanaCatalogCoordinator.swift) |
 
 Before migration, record each origin pointer with its ETag, verified revision and SHA-256. Inventory every immutable object and hash, then associate them with the supported client versions, signed parent chains and rollback releases. Rehearse infrastructure rollback with a real HTTPS request against Firebase's custom domain and verify the returned bytes and certificate before changing nameservers.
+
+### Verified origin inventory (2026-11-26)
+
+The project moved to the Blaze plan on November 26 and hosting stopped returning HTTP 509 at 21:33 UTC. The inventory comes from the Firebase Hosting REST API, which lists every file and its hash without using hosting bandwidth. The rehearsal then fetched every file through the custom domain. All checks were read-only: nothing was deployed or changed.
+
+- **Live version:** `sites/scanstash-catalog-prod/versions/aaa3aab8ff241a63`, released 2026-11-21 08:32 UTC, 1,499 files. The release history holds 67 finalized deploys back to 2026-09-19.
+
+| Hosted path | Contents | Signed pointer |
+| --- | --- | --- |
+| `v1/` (Pokémon) | `current.json` and revisions 1–26, each with `catalog-payload.json`, `catalog-release.json`, `pokemon-catalog-snapshot.json` and `review-report.json` (104 files) | Revision 26, generated 2026-11-19. Byte-identical to revision 26's `catalog-release.json` and to the release bundled in the app (SHA-256 `62b4bc15…`); the bundled checklist snapshot also matches revision 26. |
+| `one-piece/v1/` | `current.json` and revisions 1–7 (`catalog-release.json` each) | Revision 7, rules version 2. Same hash as revision 7's envelope. |
+| `market-prices/v1/` | `index.json`, `last-updated.txt`, and a products and prices file per group: Yu-Gi-Oh! 1,226, One Piece 102, Lorcana 40, Pokémon 14 | Build marker `2026-11-20T20:06:21+0000`; no publish has succeeded since the 509 began. |
+| `__/firebase/` | Firebase SDK init files | — |
+
+- **Not hosted:** there are no Yu-Gi-Oh!, Magic or Lorcana catalog objects on the origin. Those games run only from bundled catalogs today, so there are no hosted Yu-Gi-Oh! parent chains or Magic objects to retain, retire or migrate in Stage 2. Stage 2's historical copy is the 113 Pokémon and One Piece catalog files (111 immutable releases and 2 pointers) plus the current price build.
+- **Rollback rehearsal (HTTPS, custom domain):**
+  - The certificate served for `catalog.scan-stash.com` validates. It is a Google Trust Services (WR3) certificate whose subject alternative names include the domain, valid until 2027-02-15.
+  - All 1,497 content files returned HTTP 200. Each response's ETag equals the file hash in the API inventory (0 mismatches). The catalog files total 324,693,299 bytes uncompressed.
+  - Both pointers' Ed25519 signatures verify against the keys pinned in `Config/PokemonCatalogProduction.xcconfig` and `Config/OnePieceCatalogProduction.xcconfig`. The signature covers the decoded payload bytes.
+  - Pointers and catalog files are served with `cache-control: no-cache`; price files with `public,max-age=300`.
+- **Retention decision:** keep everything. Nothing on the origin is unused: each Pokémon and One Piece revision is a possible roll-forward source and audit record, and the totals are small enough that retirement buys nothing.
 
 ## Simulator size checkpoint
 
@@ -60,6 +81,21 @@ Xcode 27.2, `TradingCardScanner-ProfileLocal` / `DebugRemoteLocal`, iOS 27.0 rev
 
 **Proposed budgets for owner approval:** bundle growth within 5% per stage; data container under 300 MB; launch to first view no slower than this baseline; peak memory under 400 MB on first launch.
 
+### Populated session (2026-11-26, simulator, ReleaseLocal, fresh install, production serving)
+
+Same simulator and configuration as above, built from `main` at `5c566e5`. Production served HTTP 200 throughout. Memory is `Physical footprint (peak)` from `vmmap -summary`, sampled every 5 seconds.
+
+| Measure | Value | Notes |
+| --- | ---: | --- |
+| Peak memory, first launch (first minute) | 546 MB | Includes downloading, verifying and activating hosted One Piece revision 7. |
+| Peak memory, whole session | 629.5 MB | All five games browsed and priced, one card of each added, Portfolio opened and refreshed. |
+| Peak memory, later cold launch | 491.9 MB | Settles at 470 MB. The pre-509 baseline was 251 MB without the hosted One Piece release active. |
+| Data container after the session | 76 MB | One Piece revision 7 store 49.9 MB (byte-identical to the live envelope), artwork caches 18 MB, price snapshots 140 KB. |
+
+- **Cause.** The hosted One Piece revision 7 envelope is 49.9 MB uncompressed (the bundled revision 4 seed is 33.3 MB). Once active, it adds about 240 MB to every launch. Stage 3's sharded format, with lazy loading if needed, is the planned fix. The computed storage bound above used the 33.3 MB seed; with revision 7 the One Piece update peak is about 150 MB.
+- **Budget consequence.** The 400 MB memory proposal is not met by the current app with hosted updates active. The owner decides whether to set the Stage 1 memory baseline at the measured values and require Stage 3 to bring it under 400 MB, or to treat it as a release blocker now. Device numbers are still required before either is final.
+- **Behaviour observed on live data.** Freshness labels, the "Includes stale prices" total and dated fallback all appeared as designed. One price-marker request at launch timed out over HTTP/3 and the app kept dated prices. **Finding:** "Retry Prices" and the Portfolio refresh do not re-check the price build marker, which is cached for six hours. After a new build is published, a retry within that window makes no request and keeps showing the older build as stale.
+
 ## Parity and release gates
 
 Run `python3 scripts/catalog_parity.py <game> --before A --after B` with the appropriate inputs below. A reviewed exception must include the exact before and after digests and a reason. For mirror price coverage, supply both complete, captured `market-prices/v1` directories with `--before-prices` and `--after-prices`. The comparator verifies feed hashes and build identifiers and tracks the presence of each priced product and finish. [Comparator](../../scripts/catalog_parity.py)
@@ -86,4 +122,9 @@ The remaining Stage 1 publication work is production readback of the scope files
 
 - ProfileLocal on the iOS 27.0 review simulator covered 808 distinct cases across pricing, game integrations, activation, recovery, variant resolution, portfolio eligibility and Collection. The final result for each case was 797 passes and 11 skips. The Yu-Gi-Oh! integration run caught an unnormalized cancellation in the collection refresh. The targeted rerun passed after the repair and verified that a historical mirror quote keeps its original date. The One Piece withdrawal rerun verified that a late response cannot restore a withdrawn lane. The `ScanStash-Stage1-*.xcresult` bundles are on the T7 SSD.
 - The catalog and market-feed Python selections passed all 82 cases. The publication tests used local fixtures. Production workflow execution and device verification remain open.
+- **Production price publish (2026-11-26, run `45900178304`, manual dispatch with `publish_prices=true` on `main`).** Both jobs succeeded. The live build marker moved from `2026-11-20T20:06:21+0000` to `2026-11-26T20:05:59+0000`.
+  - The restore cache was empty on this first run, so the job restored the full tree (26 Pokémon revisions and the One Piece history), deployed 1,499 files, read the price index and both scope files back from the origin, sealed the verified tree and saved a 33 MB restore cache for the next run.
+  - The scope sidecars did not exist yet, so the candidate rebuilt them once from the signed One Piece release and the bundled Yu-Gi-Oh! seed, then published `one-piece/v1/market-price-scope.json` (57,196 bytes) and `yugioh/v1/market-price-scope.json` (1,298,421 bytes). Later publishes read only these files.
+  - No Yu-Gi-Oh! approval endpoint is configured, so the ETag-cached parent path ran as "bootstrap candidate only". It is exercised once Yu-Gi-Oh! has a hosted approved parent.
+  - **Warm path confirmed** by the next scheduled run (`45904884248`, 22:27 UTC, success). The restore cache hit, the restore re-downloaded 0 Pokémon and 0 One Piece revision objects, and the candidate job took 2 minutes instead of 16. The marker stayed at `2026-11-26T20:05:59+0000` because the upstream build had not changed.
 - The scope changes passed 60 focused Python cases across market feeds, Hosting restoration and both One Piece publishing paths. A local replay of the price workflow requested only the two compact scopes. The bundled projections were 47,643 bytes for One Piece and 1,298,421 bytes for Yu-Gi-Oh! before compression. An intervening catalog approval blocked stale prepared prices in the fixture.
