@@ -446,6 +446,11 @@ def _strip_meta(payload: dict, ignored_keys: set[str]) -> dict:
     return {k: v for k, v in payload.items() if k not in ignored_keys}
 
 
+def _require(condition: bool, message: str) -> None:
+    if not condition:
+        raise RollForwardError(message)
+
+
 def _prepare_pokemon(
     *,
     active_payload: dict,
@@ -462,7 +467,10 @@ def _prepare_pokemon(
     payload_raw = read_obj(f"{ns}/releases/{target_revision}/catalog-payload.json")
     snapshot_raw = read_obj(f"{ns}/releases/{target_revision}/pokemon-catalog-snapshot.json")
     report_raw = read_obj(f"{ns}/releases/{target_revision}/review-report.json")
-    assert payload_raw is not None and snapshot_raw is not None and report_raw is not None
+    _require(
+        payload_raw is not None and snapshot_raw is not None and report_raw is not None,
+        f"Pokémon revision {target_revision} is missing required companion release files",
+    )
 
     disk_payload = json.loads(payload_raw)
     if canonical_json_bytes(disk_payload) != canonical_json_bytes(target_payload):
@@ -699,7 +707,7 @@ def _prepare_yugioh(
 ) -> tuple[dict[str, str], dict, list[str]]:
     ns = NAMESPACES["yugioh"]
     target_catalog_raw = read_obj(f"{ns}/releases/{target_revision}/catalog.json")
-    assert target_catalog_raw is not None
+    _require(target_catalog_raw is not None, f"Yu-Gi-Oh! revision {target_revision} is missing catalog.json")
     if target_manifest.get("sha256") != sha256_bytes(target_catalog_raw):
         raise RollForwardError(
             f"Yu-Gi-Oh! revision {target_revision} catalog.json hash does not match signed manifest"
@@ -782,7 +790,7 @@ def prepare_roll_forward(
         return _read_source_object(rel, local_site=local_site, origin=origin, fetch=fetch, optional=optional)
 
     active_raw = read_obj(f"{namespace}/current.json")
-    assert active_raw is not None
+    _require(active_raw is not None, f"Missing active pointer {namespace}/current.json")
     _, active_payload = decode_envelope(active_raw, f"{namespace}/current.json")
     active_revision = active_payload.get("revision")
     if type(active_revision) is not int or active_revision < 1:
@@ -795,7 +803,7 @@ def prepare_roll_forward(
 
     target_rel_path = f"{namespace}/releases/{target_revision}/catalog-release.json"
     target_raw = read_obj(target_rel_path)
-    assert target_raw is not None
+    _require(target_raw is not None, f"Missing target release {target_rel_path}")
     _, target_payload = decode_envelope(target_raw, target_rel_path)
     if target_payload.get("revision") != target_revision:
         raise RollForwardError(
@@ -1299,7 +1307,7 @@ def rehearse_recovery(*, repo_root: Path | None = None) -> dict:
 
         # Phase 1: Baseline READY.
         phase1 = run_probe()
-        assert phase1["rollbackReady"] is True, f"Phase 1 baseline failed: {phase1['failures']}"
+        _require(phase1["rollbackReady"] is True, f"Phase 1 baseline failed: {phase1['failures']}")
 
         # Phase 2: Firebase outage while R2 advances to rev 3 + price build B.
         firebase_down["down"] = True
@@ -1314,13 +1322,19 @@ def rehearse_recovery(*, repo_root: Path | None = None) -> dict:
         build_b = pointer_b["build"]
 
         phase2 = run_probe()
-        assert phase2["rollbackReady"] is False and phase2["hardFailed"] is True
+        _require(
+            phase2["rollbackReady"] is False and phase2["hardFailed"] is True,
+            "Phase 2 failed: Firebase outage must hard-fail rollback readiness",
+        )
 
         # Phase 3: Firebase recovers and catches up from R2 while retaining build A + rev 1-2.
         firebase_down["down"] = False
         # Before catch-up, parity must fail because Firebase is still on rev 2 / build A.
         phase3_before = run_probe()
-        assert phase3_before["rollbackReady"] is False and phase3_before["checks"]["parity"]["status"] == "failed"
+        _require(
+            phase3_before["rollbackReady"] is False and phase3_before["checks"]["parity"]["status"] == "failed",
+            "Phase 3 pre-catch-up parity check did not detect stale Firebase state",
+        )
 
         # Catch up catalogs, scopes, v1 prices, and v2 price builds via market_price_rollback.sync_r2.
         for rel in (
@@ -1345,13 +1359,16 @@ def rehearse_recovery(*, repo_root: Path | None = None) -> dict:
         shutil.copytree(r2_site / PRICE_V1_NAMESPACE, fb_site / PRICE_V1_NAMESPACE, dirs_exist_ok=True)
 
         synced = price_rollback.sync_r2(fb_site, {build_a, build_b}, fetch=mock_fetch_bytes)
-        assert synced["build"] == build_b
+        _require(synced["build"] == build_b, "Phase 3 sync_r2 did not activate build B")
         retained_after = price_rollback.history((fb_site / price_rollback.HISTORY).read_bytes())
-        assert retained_after == {build_a, build_b}
-        assert (fb_site / "v1/releases/2/catalog-release.json").is_file()
+        _require(retained_after == {build_a, build_b}, "Phase 3 sync_r2 did not retain both builds")
+        _require(
+            (fb_site / "v1/releases/2/catalog-release.json").is_file(),
+            "Phase 3 lost historical Pokémon revision 2 during catch-up",
+        )
 
         phase3_after = run_probe()
-        assert phase3_after["rollbackReady"] is True, f"Phase 3 recovery failed: {phase3_after['failures']}"
+        _require(phase3_after["rollbackReady"] is True, f"Phase 3 recovery failed: {phase3_after['failures']}")
 
         # Phase 4: Certificate expiry and quota exhaustion guardrails.
         def expiring_cert(connect_host: str, server_hostname: str) -> dict:
@@ -1361,18 +1378,27 @@ def rehearse_recovery(*, repo_root: Path | None = None) -> dict:
             return cert
 
         phase4_cert = run_probe(cert_fn=expiring_cert)
-        assert phase4_cert["rollbackReady"] is False and phase4_cert["checks"]["certificate"]["status"] == "failed"
+        _require(
+            phase4_cert["rollbackReady"] is False and phase4_cert["checks"]["certificate"]["status"] == "failed",
+            "Phase 4 failed: expiring rollback hostname certificate did not fail readiness",
+        )
 
         def exhausted_metrics(**kwargs) -> dict:
             m = healthy_metrics(**kwargs)
-            m["storageTotalBytes"] = int(9.2 * 1024 * 1024 * 1024)  # 92% > 80% ceiling
-            m["bandwidthSent24hBytes"] = int(320 * 1024 * 1024)  # 88.9% > 80% ceiling
+            m["storageTotalBytes"] = int(readiness.DEFAULT_STORAGE_LIMIT_BYTES * 0.92)  # 92% > 80% ceiling
+            m["bandwidthSent24hBytes"] = int(readiness.DEFAULT_DAILY_BANDWIDTH_LIMIT_BYTES * 0.90)  # 90% > 80% ceiling
             return m
 
         phase4_quota = run_probe(metrics_fn=exhausted_metrics)
-        assert phase4_quota["rollbackReady"] is False
-        assert phase4_quota["checks"]["storageHeadroom"]["status"] == "failed"
-        assert phase4_quota["checks"]["bandwidthHeadroom"]["status"] == "failed"
+        _require(phase4_quota["rollbackReady"] is False, "Phase 4 quota exhaustion unexpectedly passed")
+        _require(
+            phase4_quota["checks"]["storageHeadroom"]["status"] == "failed",
+            "Phase 4 storage exhaustion guardrail did not trigger",
+        )
+        _require(
+            phase4_quota["checks"]["bandwidthHeadroom"]["status"] == "failed",
+            "Phase 4 bandwidth exhaustion guardrail did not trigger",
+        )
 
         # Phase 5: Content roll-forward across all 4 hosted catalog games (bad rev 3 -> rev 4 from known-good rev 2).
         roll_forward_results = {}
@@ -1387,8 +1413,11 @@ def rehearse_recovery(*, repo_root: Path | None = None) -> dict:
                 verify_signatures=False,
                 repo_root=root,
             )
-            assert rf["activeRevision"] == 3 and rf["targetRevision"] == 2 and rf["nextRevision"] == 4
-            assert rf["parityVerified"] is True
+            _require(
+                rf["activeRevision"] == 3 and rf["targetRevision"] == 2 and rf["nextRevision"] == 4,
+                f"Phase 5 roll-forward revision arithmetic failed for {game}",
+            )
+            _require(rf["parityVerified"] is True, f"Phase 5 parity verification failed for {game}")
             roll_forward_results[game] = {
                 "activeRevision": rf["activeRevision"],
                 "targetRevision": rf["targetRevision"],
@@ -1399,7 +1428,7 @@ def rehearse_recovery(*, repo_root: Path | None = None) -> dict:
         # Phase 6: DNS fallback check (Firebase serves byte-identical active catalog & v2 price builds).
         fb_latest_raw, _ = mock_fetch(f"{FIREBASE_ORIGIN}/{price_v2.LATEST}", price_v2.MAX_POINTER_BYTES)
         r2_latest_raw, _ = mock_fetch(f"{R2_ORIGIN}/{price_v2.LATEST}", price_v2.MAX_POINTER_BYTES)
-        assert fb_latest_raw == r2_latest_raw
+        _require(fb_latest_raw == r2_latest_raw, "Phase 6 DNS fallback parity mismatch between Firebase and R2")
 
         return {
             "schemaVersion": 1,

@@ -322,13 +322,15 @@ def main(argv=None):
             inventory_file = (r2_inventory / "r2-verified-builds.json"
                               if (site / "market-prices/v2/history.json").is_file()
                               else r2_inventory / "r2-legacy-inventory.json")
+            v2_state = scratch / "firebase-v2-deploy-state.json"
             run(["python3", "scripts/market_price_rollback.py", "sync-r2", "--site-root", SITE_ROOT,
-                 "--r2-inventory", inventory_file], cwd=checkout)
+                 "--r2-inventory", inventory_file, "--state-file", v2_state], cwd=checkout)
             run(["firebase", "deploy", "--only", "hosting:production", "--project", PROJECT, "--non-interactive"],
                 cwd=checkout)
             run(["python3", "scripts/catalog_hosting_cache.py", "verify-firebase-catalogs",
                  "--site", SITE_ROOT, "--namespace", "one-piece/v1", "--revision", revision], cwd=checkout)
-            run(["python3", "scripts/market_price_rollback.py", "verify", "--site-root", SITE_ROOT], cwd=checkout)
+            run(["python3", "scripts/market_price_rollback.py", "verify", "--site-root", SITE_ROOT,
+                 "--state-file", v2_state], cwd=checkout)
             run(["python3", "scripts/market_price_rollback.py", "confirm-primary", "--site-root", SITE_ROOT],
                 cwd=checkout)
             print(f"Firebase backup for One Piece revision {revision} verified on {ORIGINS[0]}.")

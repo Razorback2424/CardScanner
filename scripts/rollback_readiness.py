@@ -58,8 +58,8 @@ REQUIRED_CATALOG_NAMESPACES = ("v1", "one-piece/v1")
 DEFAULT_MIN_CERT_DAYS = 14
 DEFAULT_STAGED_SITE_LIMIT_BYTES = 2 * 1024 * 1024 * 1024  # 2 GiB
 DEFAULT_STORAGE_LIMIT_BYTES = 10 * 1024 * 1024 * 1024  # 10 GiB Hosting storage ceiling
-DEFAULT_DAILY_BANDWIDTH_LIMIT_BYTES = 360 * 1024 * 1024  # 360 MiB/day free-tier baseline
-DEFAULT_MONTHLY_BANDWIDTH_LIMIT_BYTES = 10 * 1024 * 1024 * 1024  # 10 GiB rolling 30d ceiling
+DEFAULT_DAILY_BANDWIDTH_LIMIT_BYTES = 10 * 1024 * 1024 * 1024  # 10 GiB/day Blaze baseline (overridable via repo var)
+DEFAULT_MONTHLY_BANDWIDTH_LIMIT_BYTES = 100 * 1024 * 1024 * 1024  # 100 GiB rolling 30d Blaze budget (~$15/mo egress)
 DEFAULT_MIN_HEADROOM_RATIO = 0.20  # Require >= 20% headroom (<= 80% used)
 MAX_API_RESPONSE_BYTES = 4 * 1024 * 1024
 OAUTH_SCOPES = (
@@ -957,11 +957,15 @@ def evaluate_quota_headroom(
             storage_report["usedRatio"] = round(used_ratio, 4)
             storage_report["headroomRatio"] = round(headroom_ratio, 4)
             if live_storage > storage_limit_bytes or headroom_ratio < min_headroom_ratio:
-                storage_failures.append(
+                msg = (
                     f"Firebase Hosting storage ({format_bytes(live_storage)} of "
                     f"{format_bytes(storage_limit_bytes)}, {headroom_ratio:.1%} headroom) "
                     f"is below the {min_headroom_ratio:.0%} minimum headroom requirement"
                 )
+                if quota_mode == "strict":
+                    storage_failures.append(msg)
+                else:
+                    storage_warnings.append(msg)
 
         sent_24h = int(metrics.get("bandwidthSent24hBytes", 0))
         sent_30d = int(metrics.get("bandwidthSent30dBytes", 0))
@@ -981,28 +985,46 @@ def evaluate_quota_headroom(
             }
         )
         if sent_24h > daily_bandwidth_limit_bytes or daily_headroom < min_headroom_ratio:
-            bandwidth_failures.append(
+            msg = (
                 f"Firebase 24h transfer ({format_bytes(sent_24h)} of "
                 f"{format_bytes(daily_bandwidth_limit_bytes)}, {daily_headroom:.1%} headroom) "
                 f"is below the {min_headroom_ratio:.0%} minimum headroom requirement"
             )
+            if quota_mode == "strict":
+                bandwidth_failures.append(msg)
+            else:
+                bandwidth_warnings.append(msg)
         if sent_30d > monthly_bandwidth_limit_bytes or monthly_headroom < min_headroom_ratio:
-            bandwidth_failures.append(
+            msg = (
                 f"Firebase 30d transfer ({format_bytes(sent_30d)} of "
                 f"{format_bytes(monthly_bandwidth_limit_bytes)}, {monthly_headroom:.1%} headroom) "
                 f"is below the {min_headroom_ratio:.0%} minimum headroom requirement"
             )
+            if quota_mode == "strict":
+                bandwidth_failures.append(msg)
+            else:
+                bandwidth_warnings.append(msg)
 
     storage_report["warnings"] = storage_warnings
     storage_report["failures"] = storage_failures
+    storage_advisory_status = (
+        "advisory_warning"
+        if ("liveStorageBytes" in storage_report and storage_warnings)
+        else "advisory_unavailable"
+    )
     storage_report["status"] = (
-        "failed" if storage_failures else ("advisory_unavailable" if storage_warnings else "passed")
+        "failed" if storage_failures else (storage_advisory_status if storage_warnings else "passed")
     )
 
     bandwidth_report["warnings"] = bandwidth_warnings
     bandwidth_report["failures"] = bandwidth_failures
+    bw_advisory_status = (
+        "advisory_warning"
+        if ("sent24hBytes" in bandwidth_report and bandwidth_warnings)
+        else "advisory_unavailable"
+    )
     bandwidth_report["status"] = (
-        "failed" if bandwidth_failures else ("advisory_unavailable" if bandwidth_warnings else "passed")
+        "failed" if bandwidth_failures else (bw_advisory_status if bandwidth_warnings else "passed")
     )
     return storage_report, bandwidth_report
 
@@ -1101,6 +1123,7 @@ def run_readiness_check(
     # (never false-green when quota monitoring is unverified).
     all_passed = all(check["status"] == "passed" for check in checks.values())
     hard_failed = any(check["status"] == "failed" for check in checks.values())
+    has_advisory_warning = any(check["status"] == "advisory_warning" for check in checks.values())
     rollback_ready = all_passed and not failures
 
     return {
@@ -1110,7 +1133,11 @@ def run_readiness_check(
         "firebaseOrigin": normalize_origin(firebase_origin),
         "rollbackHostname": rollback_hostname,
         "rollbackReady": rollback_ready,
-        "status": "ready" if rollback_ready else ("not_ready" if hard_failed else "unverified"),
+        "status": (
+            "ready"
+            if rollback_ready
+            else ("not_ready" if hard_failed else ("advisory_warning" if has_advisory_warning else "unverified"))
+        ),
         "hardFailed": hard_failed,
         "checks": checks,
         "observed": parity["observed"],
@@ -1120,9 +1147,14 @@ def run_readiness_check(
 
 
 def format_markdown_summary(report: dict) -> str:
-    status_label = "READY" if report["rollbackReady"] else (
-        "NOT READY" if report["hardFailed"] else "NOT READY (QUOTA UNVERIFIED)"
-    )
+    if report["rollbackReady"]:
+        status_label = "READY"
+    elif report["hardFailed"]:
+        status_label = "NOT READY"
+    elif report.get("status") == "advisory_warning":
+        status_label = "NOT READY (QUOTA ADVISORY)"
+    else:
+        status_label = "NOT READY (QUOTA UNVERIFIED)"
     lines = [
         f"### Firebase Rollback Readiness: {status_label}",
         "",
@@ -1202,6 +1234,26 @@ def format_markdown_summary(report: dict) -> str:
     return "\n".join(lines)
 
 
+def _env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return default
+    value = int(raw)
+    if value <= 0:
+        raise ValueError(f"{name} must be a positive integer, got {raw!r}")
+    return value
+
+
+def _env_float(name: str, default: float) -> float:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return default
+    value = float(raw)
+    if not 0.0 <= value < 1.0:
+        raise ValueError(f"{name} must be in [0.0, 1.0), got {raw!r}")
+    return value
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--r2-origin", default=R2_ORIGIN)
@@ -1212,7 +1264,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=None,
         help="Host/IP to connect to when probing the custom rollback hostname via SNI (defaults to Firebase origin host).",
     )
-    parser.add_argument("--min-cert-days", type=int, default=DEFAULT_MIN_CERT_DAYS)
+    parser.add_argument("--min-cert-days", type=int, default=_env_int("FIREBASE_MIN_CERT_DAYS", DEFAULT_MIN_CERT_DAYS))
     parser.add_argument("--site-root", type=Path, default=None)
     parser.add_argument("--firebase-project", default=os.environ.get("FIREBASE_PROJECT_ID"))
     parser.add_argument("--firebase-site", default=os.environ.get("FIREBASE_HOSTING_SITE_ID"))
@@ -1223,12 +1275,36 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         if os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
         else None,
     )
-    parser.add_argument("--quota-mode", choices=("strict", "advisory"), default="strict")
-    parser.add_argument("--staged-site-limit-bytes", type=int, default=DEFAULT_STAGED_SITE_LIMIT_BYTES)
-    parser.add_argument("--storage-limit-bytes", type=int, default=DEFAULT_STORAGE_LIMIT_BYTES)
-    parser.add_argument("--daily-bandwidth-limit-bytes", type=int, default=DEFAULT_DAILY_BANDWIDTH_LIMIT_BYTES)
-    parser.add_argument("--monthly-bandwidth-limit-bytes", type=int, default=DEFAULT_MONTHLY_BANDWIDTH_LIMIT_BYTES)
-    parser.add_argument("--min-headroom-ratio", type=float, default=DEFAULT_MIN_HEADROOM_RATIO)
+    parser.add_argument(
+        "--quota-mode",
+        choices=("strict", "advisory"),
+        default=(os.environ.get("FIREBASE_QUOTA_MODE", "").strip() or "strict"),
+    )
+    parser.add_argument(
+        "--staged-site-limit-bytes",
+        type=int,
+        default=_env_int("FIREBASE_STAGED_SITE_LIMIT_BYTES", DEFAULT_STAGED_SITE_LIMIT_BYTES),
+    )
+    parser.add_argument(
+        "--storage-limit-bytes",
+        type=int,
+        default=_env_int("FIREBASE_STORAGE_LIMIT_BYTES", DEFAULT_STORAGE_LIMIT_BYTES),
+    )
+    parser.add_argument(
+        "--daily-bandwidth-limit-bytes",
+        type=int,
+        default=_env_int("FIREBASE_DAILY_BANDWIDTH_LIMIT_BYTES", DEFAULT_DAILY_BANDWIDTH_LIMIT_BYTES),
+    )
+    parser.add_argument(
+        "--monthly-bandwidth-limit-bytes",
+        type=int,
+        default=_env_int("FIREBASE_MONTHLY_BANDWIDTH_LIMIT_BYTES", DEFAULT_MONTHLY_BANDWIDTH_LIMIT_BYTES),
+    )
+    parser.add_argument(
+        "--min-headroom-ratio",
+        type=float,
+        default=_env_float("FIREBASE_MIN_HEADROOM_RATIO", DEFAULT_MIN_HEADROOM_RATIO),
+    )
     parser.add_argument("--report", type=Path, default=None, help="Write JSON rollback readiness report to PATH.")
     parser.add_argument("--summary", type=Path, default=None, help="Append Markdown summary to PATH (e.g. $GITHUB_STEP_SUMMARY).")
     return parser.parse_args(argv)

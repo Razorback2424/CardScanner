@@ -38,10 +38,10 @@ MUTABLE_PRICE_PATHS = (
     f"{NAMESPACE}/index.json",
 )
 BYPASS_REQUIRED_PATHS = frozenset(
-    {v2.LATEST, f"{v2.V2}/history.json", f"{NAMESPACE}/last-updated.txt"}
+    {v2.LATEST, f"{v2.V2}/history.json", f"{NAMESPACE}/last-updated.txt", f"{NAMESPACE}/index.json"}
     | {path for paths in MUTABLE_CATALOG_PATHS.values() for path in paths}
 )
-SHORT_TTL_MUTABLE_PATHS = frozenset({f"{NAMESPACE}/index.json"})
+SHORT_TTL_MUTABLE_PATHS = frozenset()
 ALLOWED_PURGE_PATHS = frozenset(
     set(MUTABLE_PRICE_PATHS)
     | {path for paths in MUTABLE_CATALOG_PATHS.values() for path in paths}

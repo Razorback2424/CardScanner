@@ -564,13 +564,13 @@ class PrimaryCatalogPublishTests(unittest.TestCase):
         return r2.publish(objects, self.bucket, PUBLIC, fetch=self.bucket.fetch,
                           log=lambda _: None, catalog_metadata=metadata, **options)
 
-    def test_primary_catalog_publishes_immutable_then_scope_then_pointer_and_keeps_history(self):
+    def test_primary_catalog_publishes_immutable_then_pointer_then_scope_and_keeps_history(self):
         rev1_site, rev1_meta, _ = self.stage_catalog("op-1", "one-piece/v1", 1, b'{"rev":1}')
         self.publish_catalog(rev1_site, rev1_meta)
         self.assertEqual(self.bucket.puts, [
             "one-piece/v1/releases/1/catalog-release.json",
-            "one-piece/v1/market-price-scope.json",
             "one-piece/v1/current.json",
+            "one-piece/v1/market-price-scope.json",
         ])
 
         rev2_site, rev2_meta, _ = self.stage_catalog(
@@ -581,12 +581,37 @@ class PrimaryCatalogPublishTests(unittest.TestCase):
         self.publish_catalog(rev2_site, rev2_meta)
         self.assertEqual(self.bucket.puts, [
             "one-piece/v1/releases/2/catalog-release.json",
-            "one-piece/v1/market-price-scope.json",
             "one-piece/v1/current.json",
+            "one-piece/v1/market-price-scope.json",
         ])
         # Historical revision 1 remains intact in R2.
         self.assertEqual(self.bucket.objects["one-piece/v1/releases/1/catalog-release.json"]["body"], b'{"rev":1}')
         self.assertEqual(self.bucket.objects["one-piece/v1/current.json"]["body"], b'{"rev":2}')
+
+    def test_failed_pointer_upload_leaves_price_scope_untouched(self):
+        rev1_site, rev1_meta, _ = self.stage_catalog("op-scope-1", "one-piece/v1", 1, b'{"rev":1}')
+        self.publish_catalog(rev1_site, rev1_meta)
+        original_scope = self.bucket.objects["one-piece/v1/market-price-scope.json"]["body"]
+        rev2_site, rev2_meta, _ = self.stage_catalog(
+            "op-scope-2", "one-piece/v1", 2, b'{"rev":2}',
+            previous_revision=1, previous_pointer=rev1_site / "one-piece/v1/current.json",
+        )
+        real_put = self.bucket.put
+
+        def fail_on_pointer_put(item):
+            if item["key"] == "one-piece/v1/current.json":
+                raise r2.PublishError("Simulated pointer upload failure")
+            return real_put(item)
+
+        self.bucket.puts.clear()
+        with patch.object(self.bucket, "put", side_effect=fail_on_pointer_put):
+            with self.assertRaisesRegex(r2.PublishError, "Simulated pointer upload failure"):
+                self.publish_catalog(rev2_site, rev2_meta)
+        # Immutable release uploaded, pointer failed, and scope was never written.
+        self.assertEqual(self.bucket.puts, ["one-piece/v1/releases/2/catalog-release.json"])
+        self.assertNotIn("one-piece/v1/market-price-scope.json", self.bucket.puts)
+        self.assertEqual(self.bucket.objects["one-piece/v1/market-price-scope.json"]["body"], original_scope)
+        self.assertEqual(self.bucket.objects["one-piece/v1/current.json"]["body"], b'{"rev":1}')
 
     def test_interrupted_immutable_upload_leaves_pointer_and_scope_untouched_and_retry_reverifies(self):
         rev1_site, rev1_meta, _ = self.stage_catalog("pk-1", "v1", 1, b'{"rev":1}',
