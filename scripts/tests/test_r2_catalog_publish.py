@@ -518,6 +518,15 @@ class AtomicPriceV2Tests(unittest.TestCase):
         self.assertEqual(self.rules.headers(v2.V2 + "/builds/a/last-updated.txt"),
                          ("text/plain; charset=utf-8", "public,max-age=31536000,immutable"))
 
+    def test_swift_v2_manifest_parity_fixture_matches_python_canonical_build_id(self):
+        fixture_path = ROOT / "TradingCardScannerTests/Fixtures/TCGCSVPriceV2ManifestParity.json"
+        raw = fixture_path.read_bytes()
+        pointer = v2.validate_pointer(raw)
+        recomputed = v2.pointer_for(pointer["sourceBuild"], pointer["files"])
+        self.assertEqual(recomputed["build"], pointer["build"])
+        self.assertEqual(feeds.packed(recomputed), raw)
+        self.assertEqual(pointer["build"], "cc512246f9c9cc6ba430eb79dc898c7df19e0d5b9b233cdd785986c8ab7c0aee")
+
 
 class PrimaryCatalogPublishTests(unittest.TestCase):
     def setUp(self):

@@ -92,6 +92,7 @@
 		A0090302 /* PokemonTCGCSVPriceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090302 /* PokemonTCGCSVPriceService.swift */; };
 		A0090303 /* PokemonTCGCSVPriceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090303 /* PokemonTCGCSVPriceTests.swift */; };
 		A0090304 /* TCGCSV30th.json in Resources */ = {isa = PBXBuildFile; fileRef = B0090304 /* TCGCSV30th.json */; };
+		A0090305 /* TCGCSVPriceV2ManifestParity.json in Resources */ = {isa = PBXBuildFile; fileRef = B0090305 /* TCGCSVPriceV2ManifestParity.json */; };
 		A0010007 /* CardScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010007 /* CardScanner.swift */; };
 		A0010008 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010008 /* CameraPreview.swift */; };
 		A0010009 /* ScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010009 /* ScannerViewModel.swift */; };
@@ -492,6 +493,7 @@
 		B0090302 /* PokemonTCGCSVPriceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonTCGCSVPriceService.swift; sourceTree = "<group>"; };
 		B0090303 /* PokemonTCGCSVPriceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonTCGCSVPriceTests.swift; sourceTree = "<group>"; };
 		B0090304 /* TCGCSV30th.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Fixtures/TCGCSV30th.json; sourceTree = "<group>"; };
+		B0090305 /* TCGCSVPriceV2ManifestParity.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Fixtures/TCGCSVPriceV2ManifestParity.json; sourceTree = "<group>"; };
 		B0010007 /* CardScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScanner.swift; sourceTree = "<group>"; };
 		B0010008 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		B0010009 /* ScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModel.swift; sourceTree = "<group>"; };
@@ -1249,6 +1251,7 @@
 				B0F17E02 /* BrowseFilterTests.swift */,
 				B0090303 /* PokemonTCGCSVPriceTests.swift */,
 				B0090304 /* TCGCSV30th.json */,
+				B0090305 /* TCGCSVPriceV2ManifestParity.json */,
 				B00904E1 /* mee-primary.json */,
 				B00904E2 /* mee-reviewed-products.json */,
 				B00904E3 /* catalog-input.json */,
@@ -1444,6 +1447,7 @@
 				C011EC700000000000000004 /* CollectorTools.storekit in Resources */,
 				A00200E1 /* MagicTreatmentSnapshot in Resources */,
 				A0090304 /* TCGCSV30th.json in Resources */,
+				A0090305 /* TCGCSVPriceV2ManifestParity.json in Resources */,
 				A00904E1 /* mee-primary.json in Resources */,
 				A00904E2 /* mee-reviewed-products.json in Resources */,
 				A00904E3 /* catalog-input.json in Resources */,
