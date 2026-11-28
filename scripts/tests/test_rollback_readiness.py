@@ -395,7 +395,8 @@ class QuotaAndOAuthTests(unittest.TestCase):
         self.assertEqual(storage["status"], "failed")
         self.assertEqual(bw["status"], "failed")
 
-        # Advisory mode marks advisory_unavailable (still NOT READY overall), but fails hard on over-budget.
+        # Advisory mode marks advisory_unavailable (still NOT READY overall), and turns
+        # live storage/bandwidth overages into advisory warnings (never hard-failing pre-cutover Blaze traffic).
         storage_adv, bw_adv = rr.evaluate_quota_headroom(
             site_root=fb_dir,
             metrics=None,
@@ -405,21 +406,34 @@ class QuotaAndOAuthTests(unittest.TestCase):
         self.assertEqual(storage_adv["status"], "advisory_unavailable")
         self.assertEqual(bw_adv["status"], "advisory_unavailable")
 
-        # Over-budget usage ALWAYS fails hard even in advisory mode.
-        storage_over, bw_over = rr.evaluate_quota_headroom(
+        over_metrics = {
+            "storageTotalBytes": int(9.0 * 1024**3),
+            "bandwidthSent24hBytes": int(9.0 * 1024**3),
+            "bandwidthSent30dBytes": int(95.0 * 1024**3),
+            "bandwidthPointCount": 5,
+        }
+        storage_over_adv, bw_over_adv = rr.evaluate_quota_headroom(
             site_root=fb_dir,
-            metrics={
-                "storageTotalBytes": int(9.0 * 1024**3),
-                "bandwidthSent24hBytes": int(310 * 1024**2),
-                "bandwidthSent30dBytes": int(9.5 * 1024**3),
-                "bandwidthPointCount": 5,
-            },
+            metrics=over_metrics,
             quota_mode="advisory",
         )
-        self.assertEqual(storage_over["status"], "failed")
-        self.assertEqual(bw_over["status"], "failed")
+        self.assertEqual(storage_over_adv["status"], "advisory_warning")
+        self.assertEqual(bw_over_adv["status"], "advisory_warning")
+        self.assertEqual(storage_over_adv["failures"], [])
+        self.assertEqual(bw_over_adv["failures"], [])
+        self.assertTrue(storage_over_adv["warnings"])
+        self.assertTrue(bw_over_adv["warnings"])
 
-        # Staged site limit check fails closed.
+        # In strict mode, the exact same overages hard-fail.
+        storage_over_strict, bw_over_strict = rr.evaluate_quota_headroom(
+            site_root=fb_dir,
+            metrics=over_metrics,
+            quota_mode="strict",
+        )
+        self.assertEqual(storage_over_strict["status"], "failed")
+        self.assertEqual(bw_over_strict["status"], "failed")
+
+        # Staged site limit check ALWAYS fails closed even in advisory mode.
         storage_staged_over, _ = rr.evaluate_quota_headroom(
             site_root=fb_dir,
             metrics={
@@ -429,7 +443,7 @@ class QuotaAndOAuthTests(unittest.TestCase):
                 "bandwidthPointCount": 1,
             },
             staged_site_limit_bytes=10,
-            quota_mode="strict",
+            quota_mode="advisory",
         )
         self.assertEqual(storage_staged_over["status"], "failed")
         self.assertTrue(any("Staged Firebase site" in f for f in storage_staged_over["failures"]))
@@ -569,6 +583,55 @@ class ReadinessReportAndWorkflowTests(unittest.TestCase):
         self.assertIn("NOT READY (QUOTA UNVERIFIED)", unverified_summary)
         self.assertIn("roles/monitoring.viewer", unverified_summary)
 
+        # In advisory mode with over-budget Blaze traffic, parity & cert still pass,
+        # hardFailed stays False (does not break backup jobs pre-cutover), and rollbackReady stays False.
+        def over_budget_metrics(**kwargs):
+            return {
+                "hosting": {"latestVersionFileCount": 1499},
+                "storageTotalBytes": 500 * 1024**2,
+                "storageObservedAt": "2026-11-27T11:30:00Z",
+                "bandwidthSent24hBytes": 12 * 1024**3,
+                "bandwidthSent30dBytes": 150 * 1024**3,
+                "bandwidthPointCount": 30,
+            }
+
+        advisory_over = rr.run_readiness_check(
+            site_root=fb_dir,
+            firebase_project="scanstash-catalog-prod",
+            firebase_site="scanstash-catalog-prod",
+            service_account=sa,
+            quota_mode="advisory",
+            fetch=_make_fetcher(r2_dir, fb_dir),
+            cert_fetcher=ok_cert,
+            token_minter=lambda *a, **k: "tok",
+            metrics_fetcher=over_budget_metrics,
+            now=self.NOW,
+        )
+        self.assertFalse(advisory_over["rollbackReady"])
+        self.assertFalse(advisory_over["hardFailed"])
+        self.assertEqual(advisory_over["status"], "advisory_warning")
+        self.assertIn("NOT READY (QUOTA ADVISORY)", rr.format_markdown_summary(advisory_over))
+
+        # Environment variable overrides configure Blaze budgets without code changes.
+        import os
+        from unittest.mock import patch as mock_patch
+
+        with mock_patch.dict(
+            os.environ,
+            {
+                "FIREBASE_STORAGE_LIMIT_BYTES": str(20 * 1024**3),
+                "FIREBASE_DAILY_BANDWIDTH_LIMIT_BYTES": str(25 * 1024**3),
+                "FIREBASE_MONTHLY_BANDWIDTH_LIMIT_BYTES": str(250 * 1024**3),
+                "FIREBASE_MIN_HEADROOM_RATIO": "0.15",
+            },
+            clear=False,
+        ):
+            parsed = rr.parse_args([])
+            self.assertEqual(parsed.storage_limit_bytes, 20 * 1024**3)
+            self.assertEqual(parsed.daily_bandwidth_limit_bytes, 25 * 1024**3)
+            self.assertEqual(parsed.monthly_bandwidth_limit_bytes, 250 * 1024**3)
+            self.assertAlmostEqual(parsed.min_headroom_ratio, 0.15)
+
     def test_all_four_backup_workflows_report_rollback_readiness_and_preserve_r2_isolation(self):
         for name in (
             "pokemon-catalog.yml",
@@ -584,6 +647,12 @@ class ReadinessReportAndWorkflowTests(unittest.TestCase):
                 self.assertIn("--summary \"$GITHUB_STEP_SUMMARY\"", text)
                 self.assertIn("Upload rollback readiness report", text)
                 self.assertIn("**Rollback readiness: NOT READY**", text)
+                self.assertIn("--quota-mode \"${FIREBASE_QUOTA_MODE:-advisory}\"", text)
+                self.assertIn("FIREBASE_MONTHLY_BANDWIDTH_LIMIT_BYTES:", text)
+                self.assertIn("FIREBASE_DAILY_BANDWIDTH_LIMIT_BYTES:", text)
+                self.assertIn("--state-file \"$RUNNER_TEMP/firebase-v2-deploy-state.json\"", text)
+                # Cache save must run BEFORE rollback readiness so a readiness failure never drops the restore cache.
+                self.assertLess(text.index("actions/cache/save@v4"), text.index("scripts/rollback_readiness.py"))
 
         rehearsal_wf = (WORKFLOWS / "r2-rollback-readiness.yml").read_text(encoding="utf-8")
         self.assertIn("workflow_dispatch:", rehearsal_wf)

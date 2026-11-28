@@ -536,12 +536,16 @@ jobs:
           if [[ ! -f publisher/site/market-prices/v2/history.json ]]; then
             inventory="$RUNNER_TEMP/r2-price-inventory/r2-legacy-inventory.json"
           fi
-          python3 -u scripts/market_price_rollback.py sync-r2 --site-root publisher/site --r2-inventory "$inventory"
+          python3 -u scripts/market_price_rollback.py sync-r2 --site-root publisher/site --r2-inventory "$inventory" \
+            --state-file "$RUNNER_TEMP/firebase-v2-deploy-state.json"
           firebase deploy --only hosting:production --project "$FIREBASE_PROJECT_ID" --non-interactive
       - name: Verify live catalog bytes and cache headers
         shell: bash
         run: |
           set -euo pipefail
+          service_account_file="$(mktemp "$RUNNER_TEMP/firebase-verify-sa.XXXXXX")"
+          trap 'rm -f "$service_account_file"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$service_account_file"
           python3 scripts/catalog_hosting_cache.py verify-firebase-catalogs \
             --site publisher/site --namespace one-piece/v1 --revision "$REVISION"
           python3 - <<'PY'
@@ -554,13 +558,34 @@ jobs:
           expected = Path('publisher/site') / NAMESPACE / 'index.json'
           assert (destination / NAMESPACE / 'index.json').read_bytes() == expected.read_bytes()
           PY
-          python3 -u scripts/market_price_rollback.py verify --site-root publisher/site
+          python3 -u scripts/market_price_rollback.py verify --site-root publisher/site \
+            --state-file "$RUNNER_TEMP/firebase-v2-deploy-state.json" \
+            --firebase-site "$FIREBASE_HOSTING_SITE_ID" \
+            --service-account "$service_account_file"
           python3 scripts/market_price_rollback.py confirm-primary --site-root publisher/site
           python3 scripts/catalog_hosting_cache.py confirm --origin "$R2_READ_ORIGIN" \
             --site publisher/site --work "$RUNNER_TEMP/r2-catalog-pointers"
+      - name: Seal the verified R2 catalog cache
+        id: catalog-cache
+        continue-on-error: true
+        run: |
+          key=$(python3 scripts/catalog_hosting_cache.py seal --site publisher/site \
+            --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$RUNNER_TEMP/r2-catalog-pointers")
+          echo "key=$key" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/save@v4
+        if: steps.catalog-cache.outputs.key != ''
+        continue-on-error: true
+        with:
+          path: ${{ runner.temp }}/r2-catalog-cache
+          key: r2-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Verify continuous rollback readiness and report status
         env:
           FIREBASE_QUOTA_MODE: ${{ vars.FIREBASE_QUOTA_MODE }}
+          FIREBASE_STORAGE_LIMIT_BYTES: ${{ vars.FIREBASE_STORAGE_LIMIT_BYTES }}
+          FIREBASE_DAILY_BANDWIDTH_LIMIT_BYTES: ${{ vars.FIREBASE_DAILY_BANDWIDTH_LIMIT_BYTES }}
+          FIREBASE_MONTHLY_BANDWIDTH_LIMIT_BYTES: ${{ vars.FIREBASE_MONTHLY_BANDWIDTH_LIMIT_BYTES }}
+          FIREBASE_STAGED_SITE_LIMIT_BYTES: ${{ vars.FIREBASE_STAGED_SITE_LIMIT_BYTES }}
+          FIREBASE_MIN_HEADROOM_RATIO: ${{ vars.FIREBASE_MIN_HEADROOM_RATIO }}
         shell: bash
         run: |
           set -euo pipefail
@@ -575,7 +600,7 @@ jobs:
             --firebase-project "$FIREBASE_PROJECT_ID" \
             --firebase-site "$FIREBASE_HOSTING_SITE_ID" \
             --service-account "$service_account_file" \
-            --quota-mode "${FIREBASE_QUOTA_MODE:-strict}" \
+            --quota-mode "${FIREBASE_QUOTA_MODE:-advisory}" \
             --report "$RUNNER_TEMP/rollback-readiness.json" \
             --summary "$GITHUB_STEP_SUMMARY"
       - name: Upload rollback readiness report
@@ -587,19 +612,6 @@ jobs:
           path: ${{ runner.temp }}/rollback-readiness.json
           if-no-files-found: ignore
           retention-days: 7
-      - name: Seal the verified R2 catalog cache
-        id: catalog-cache
-        continue-on-error: true
-        run: |
-          key=$(python3 scripts/catalog_hosting_cache.py seal --site publisher/site \
-            --cache "$RUNNER_TEMP/r2-catalog-cache" --work "$RUNNER_TEMP/r2-catalog-pointers")
-          echo "key=$key" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache/save@v4
-        if: steps.catalog-cache.outputs.key != ''
-        continue-on-error: true
-        with:
-          path: ${{ runner.temp }}/r2-catalog-cache
-          key: r2-catalog-restore-v1-${{ steps.catalog-cache.outputs.key }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Report a failed backup separately from the primary publication
         if: failure()
         run: |

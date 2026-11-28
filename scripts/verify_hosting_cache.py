@@ -259,8 +259,8 @@ def verify_static(firebase_path=DEFAULT_FIREBASE, rules_path=DEFAULT_RULES):
         "magic/v1/current.json": ("application/json", "no-cache", r2.POINTER),
         "one-piece/v1/current.json": ("application/json", "no-cache", r2.POINTER),
         "yugioh/v1/current.json": ("application/json", "no-cache", r2.POINTER),
-        "one-piece/v1/market-price-scope.json": ("application/json", "no-cache", r2.PRICE_INDEX),
-        "yugioh/v1/market-price-scope.json": ("application/json", "no-cache", r2.PRICE_INDEX),
+        "one-piece/v1/market-price-scope.json": ("application/json", "no-cache", r2.CATALOG_SCOPE),
+        "yugioh/v1/market-price-scope.json": ("application/json", "no-cache", r2.CATALOG_SCOPE),
         # Mutable pricing metadata
         "market-prices/v2/latest.json": (json_utf8, "no-cache", r2.V2_POINTER),
         "market-prices/v1/last-updated.txt": (text_utf8, "no-cache", r2.MARKER),
@@ -327,12 +327,12 @@ def verify_static(firebase_path=DEFAULT_FIREBASE, rules_path=DEFAULT_RULES):
                 raise ValueError(f"{section_name}: immutable path {path} misclassified: {matched}, {eff}")
             _assert_no_store_error_rules(eff, f"{section_name}:{path}")
 
-        # Test legacy v1 price paths (including extensionless)
+        # Test legacy v1 price paths (including extensionless): must bypass edge cache so
+        # legacy v1 clients never receive stale group files paired with a new last-updated.txt.
         for path in ("/market-prices/v1/index.json", "/market-prices/v1/tcgplayer/68/23232/prices"):
             matched, eff = evaluate_ruleset(rules, host=host, path=path)
-            if matched != ["legacy-v1-market-prices"] or eff.get("cache") is not True:
-                raise ValueError(f"{section_name}: legacy v1 path {path} misclassified: {matched}, {eff}")
-            _assert_no_store_error_rules(eff, f"{section_name}:{path}")
+            if matched != ["legacy-v1-market-prices"] or eff.get("cache") is not False:
+                raise ValueError(f"{section_name}: legacy v1 path {path} must bypass edge cache: {matched}, {eff}")
 
         # Test mutable pointers, scopes, and markers
         for path in (
@@ -491,7 +491,7 @@ def verify_live_mutable(origin, key, expected_content_type, *, fetch=fetch_canon
 
 
 def verify_live_legacy_v1(origin, key, expected_sha, expected_content_type, *,
-                          fetch=fetch_canonical, attempts=3, sleep=time.sleep):
+                          fetch=fetch_canonical, attempts=2, sleep=time.sleep):
     url = f"{origin}/{key}"
     statuses = []
     last = None
@@ -509,9 +509,12 @@ def verify_live_legacy_v1(origin, key, expected_sha, expected_content_type, *,
         if ctype != expected_content_type:
             raise ValueError(f"Unexpected legacy v1 Content-Type for {url}: {ctype!r}")
         cf_status = headers.get("cf-cache-status", "").strip().upper()
-        if cf_status == "STALE":
-            raise ValueError(f"Legacy v1 resource served STALE at {url}")
-        statuses.append(cf_status or "MISSING")
+        if cf_status not in BYPASS_CACHE_STATUSES:
+            raise ValueError(
+                f"Legacy v1 resource was not bypassed at edge for {url}: "
+                f"cf-cache-status={cf_status or 'missing'!r} (expected BYPASS or DYNAMIC)"
+            )
+        statuses.append(cf_status)
         last = {
             "url": url,
             "pathClass": "legacy-v1",
@@ -525,12 +528,9 @@ def verify_live_legacy_v1(origin, key, expected_sha, expected_content_type, *,
             "etag": headers.get("etag"),
             "cfRay": headers.get("cf-ray"),
         }
-        if cf_status in EDGE_HIT_CACHE_STATUSES:
-            return last, body
         if index + 1 < attempts:
-            sleep(0.5)
-    raise ValueError(f"Legacy v1 resource did not demonstrate edge caching at {url}: "
-                     f"observed cf-cache-status={statuses}")
+            sleep(0.2)
+    return last, body
 
 
 def run_negative_cache_probe(origin, put_object, delete_object, *, fetch=fetch_canonical,

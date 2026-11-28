@@ -33,19 +33,23 @@ Probes TLS 1.2+ certificates and full trust-chain validation on two endpoints:
 
 Connecting directly to Firebase with SNI `catalog.scan-stash.com` ensures readiness checks continue validating **Firebase's** custom-domain certificate even after public DNS moves `catalog.scan-stash.com` to Cloudflare. Each certificate must cover its hostname in SAN, be currently valid (`notBefore <= now < notAfter`), and retain at least **14 days** of expiry headroom (`--min-cert-days 14`).
 
-### 3. Firebase storage and bandwidth headroom
+### 3. Firebase storage, bandwidth headroom, and 7-day v2 retention
 
-Enforces both local staged-site and live Google Cloud / Firebase Hosting usage budgets (default minimum headroom: **20% remaining**, i.e., fail when usage exceeds 80%):
+Enforces both local staged-site and live Google Cloud / Firebase Hosting usage budgets (default minimum headroom: **20% remaining**, i.e., warn/fail when usage exceeds 80%), configurable via repository variables without a PR:
 
-| Budget | Default limit | Source |
-| --- | ---: | --- |
-| Staged Firebase site deploy | `2 GiB` | Local `publisher/site` walk before/after deploy |
-| Total Firebase Hosting storage (all retained versions) | `10 GiB` | Cloud Monitoring `firebasehosting.googleapis.com/storage/total_bytes` |
-| Rolling 24-hour transfer | `360 MiB` | Cloud Monitoring `firebasehosting.googleapis.com/network/sent_bytes_count` |
-| Rolling 30-day transfer | `10 GiB` | Cloud Monitoring `firebasehosting.googleapis.com/network/sent_bytes_count` |
+| Budget | Default limit | Repository variable override | Source |
+| --- | ---: | --- | --- |
+| Staged Firebase site deploy | `2 GiB` | `FIREBASE_STAGED_SITE_LIMIT_BYTES` | Local `publisher/site` walk before/after deploy (always hard-fails) |
+| Total Firebase Hosting storage (all retained versions) | `10 GiB` | `FIREBASE_STORAGE_LIMIT_BYTES` | Cloud Monitoring `firebasehosting.googleapis.com/storage/total_bytes` |
+| Rolling 24-hour transfer | `10 GiB` | `FIREBASE_DAILY_BANDWIDTH_LIMIT_BYTES` | Cloud Monitoring `firebasehosting.googleapis.com/network/sent_bytes_count` |
+| Rolling 30-day transfer | `100 GiB` (~$15/mo Blaze egress) | `FIREBASE_MONTHLY_BANDWIDTH_LIMIT_BYTES` | Cloud Monitoring `firebasehosting.googleapis.com/network/sent_bytes_count` |
+| Minimum headroom ratio | `0.20` (20%) | `FIREBASE_MIN_HEADROOM_RATIO` | Applied to live storage and bandwidth ceilings |
 
-- **Authentication & IAM:** `scripts/rollback_readiness.py` mints a short-lived Google OAuth2 bearer token from `FIREBASE_SERVICE_ACCOUNT` using `openssl dgst -sha256 -sign` (zero external Python dependencies) and queries Firebase Hosting REST API + Cloud Monitoring API. The service account requires **`roles/monitoring.viewer`** in addition to its existing Firebase Hosting permissions.
-- **No false-green readiness:** In default `strict` mode (`FIREBASE_QUOTA_MODE=strict`), missing credentials, `HTTP 403` from Cloud Monitoring, missing storage data points, or exhausted headroom fail the backup job visibly and mark Firebase **NOT READY**. Setting repository/environment variable `FIREBASE_QUOTA_MODE=advisory` during initial IAM rollout still fails closed on over-budget usage, parity, certificate, and staged-site checks, while warning on missing Monitoring IAM and still reporting `NOT READY (QUOTA UNVERIFIED)` in `$GITHUB_STEP_SUMMARY`.
+- **Retention & zero-egress verification (`scripts/market_price_rollback.py`):** R2 retains every immutable v2 build indefinitely. Firebase Hosting retains the active build plus all builds from the last **7 days** (~14 builds / ~210 MB) and prunes older builds from Firebase's `history.json` and staging tree. During post-deploy backup verification, `verify` reads back only the active build and newly added builds over HTTP and verifies older retained builds via the Firebase Hosting API's live version file hashes (zero Firebase Hosting egress, failing closed if any file is missing/inactive and falling back to HTTP readback if a hash changes).
+- **Restore cache ordering:** All four backup workflows seal and save the R2 restore cache immediately after backup readback succeeds and **before** running `rollback_readiness.py`, so a readiness failure never forces the next run to re-download the entire site.
+- **Authentication, IAM, and pre-cutover vs. post-cutover quota mode:** `scripts/rollback_readiness.py` mints a short-lived Google OAuth2 bearer token from `FIREBASE_SERVICE_ACCOUNT` using `openssl dgst -sha256 -sign` (zero external Python dependencies) and queries Firebase Hosting REST API + Cloud Monitoring API. The service account requires **`roles/monitoring.viewer`** in addition to its existing Firebase Hosting permissions.
+  - **Pre-cutover default (`FIREBASE_QUOTA_MODE=advisory`):** Because Firebase still serves all production Blaze traffic until DNS cutover, backup workflows default to `advisory`, treating live storage/bandwidth overages or missing Monitoring IAM as visible warnings (`NOT READY (QUOTA ADVISORY)` / `NOT READY (QUOTA UNVERIFIED)`, never false-green) while keeping content parity, TLS certificate, and staged-site limits as hard failures.
+  - **Post-cutover enforcement (`FIREBASE_QUOTA_MODE=strict`):** Set repository variable `FIREBASE_QUOTA_MODE=strict` (and tune `FIREBASE_MONTHLY_BANDWIDTH_LIMIT_BYTES` / `FIREBASE_DAILY_BANDWIDTH_LIMIT_BYTES` if desired) once production DNS moves to Cloudflare so missing Monitoring data or budget overages fail the backup job visibly.
 
 ## Signed content roll-forward procedure
 

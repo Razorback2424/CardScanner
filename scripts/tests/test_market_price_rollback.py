@@ -278,6 +278,111 @@ class FirebaseRollbackTests(unittest.TestCase):
                 self.assertEqual(sum(rule.match(path) is not None for rule, _ in rules.rules), 1)
                 self.assertEqual(rules.headers(path), headers)
 
+    def test_firebase_7_day_retention_prunes_expired_builds_and_skips_full_r2_downloads(self):
+        expired_site, expired = self.fixture("expired-10d", marker="2026-11-17T10:00:00+00:00", price=10)
+        recent_site, recent = self.fixture("recent-3d", marker="2026-11-24T10:00:00+00:00", price=20)
+        old_missed_site, old_missed = self.fixture("old-missed-12d", marker="2026-11-15T10:00:00+00:00", price=12)
+        active_site, active = self.fixture("active-now", marker="2026-11-27T10:00:00+00:00", price=30)
+        for site in (expired_site, recent_site, old_missed_site, active_site):
+            self.host_v2(rollback.R2, site)
+
+        # Firebase previously held expired (10d old) and recent (3d old).
+        fb_prev = self.root / "fb-prev"
+        for src in (expired_site, recent_site):
+            shutil.copytree(src / v2.V2, fb_prev / v2.V2, dirs_exist_ok=True)
+        (fb_prev / v2.LATEST).write_bytes(packed(recent))
+        (fb_prev / rollback.HISTORY).write_bytes(rollback.history_bytes({expired["build"], recent["build"]}))
+        self.host_v2(ORIGIN, fb_prev)
+
+        # Prepare active build on Firebase; old_missed (12d old on R2) must not have its group files downloaded.
+        shutil.rmtree(active_site / v2.V2)
+        rollback.restore(active_site, self.fetch, prefer_r2=True)
+        fetched_urls = []
+
+        def tracking_fetch(url, limit, *, absent_ok=False):
+            fetched_urls.append(urlsplit(url).path.lstrip("/"))
+            return self.fetch(url, limit, absent_ok=absent_ok)
+
+        state_file = self.root / "deploy-state.json"
+        r2_all = {expired["build"], recent["build"], old_missed["build"], active["build"]}
+        rollback.prepare(active_site, r2_all, packed(active), tracking_fetch, state_file=state_file)
+
+        # Only recent (3d) and active are kept on Firebase; expired (10d) is pruned from disk and history.json.
+        retained = rollback.history((active_site / rollback.HISTORY).read_bytes())
+        self.assertEqual(retained, {recent["build"], active["build"]})
+        self.assertFalse((active_site / rollback.BUILDS / expired["build"]).exists())
+        self.assertTrue((active_site / rollback.BUILDS / recent["build"]).is_dir())
+        self.assertTrue((active_site / rollback.BUILDS / active["build"]).is_dir())
+        # R2 still retains expired builds untouched.
+        self.assertIn(f"{rollback.BUILDS}{old_missed['build']}/tcgplayer/3/1/prices", self.remote[rollback.R2])
+        # Old missed build only checked index.json on R2; its tcgplayer/** files were never fetched.
+        self.assertIn(f"{rollback.BUILDS}{old_missed['build']}/index.json", fetched_urls)
+        self.assertFalse(any(p.startswith(f"{rollback.BUILDS}{old_missed['build']}/tcgplayer/") for p in fetched_urls))
+
+        state = rollback._load_state_file(state_file)
+        self.assertEqual(state["activeBuild"], active["build"])
+        self.assertEqual(state["previousBuilds"], {expired["build"], recent["build"]})
+        self.assertEqual(state["newBuilds"], {active["build"]})
+
+    def test_verify_uses_hosting_api_for_older_builds_with_zero_egress_and_fails_closed_on_missing(self):
+        older_site, older = self.fixture("older-retained", marker="2026-11-26T10:00:00+00:00", price=15)
+        active_site, active = self.fixture("active-new", marker="2026-11-27T10:00:00+00:00", price=25)
+        self.host_v2(rollback.R2, older_site)
+        self.host_v2(rollback.R2, active_site)
+
+        # Previous Firebase state held only `older`.
+        (older_site / rollback.HISTORY).write_bytes(rollback.history_bytes({older["build"]}))
+        self.host_v2(ORIGIN, older_site)
+
+        # Deploy `active` while retaining `older`.
+        shutil.rmtree(active_site / v2.V2)
+        rollback.restore(active_site, self.fetch, prefer_r2=True)
+        state_file = self.root / "verify-state.json"
+        rollback.prepare(active_site, {older["build"], active["build"]}, packed(active), self.fetch, state_file=state_file)
+        self.host_v2(ORIGIN, active_site)
+
+        older_paths = rollback.local_build_expected_paths(active_site, older["build"])
+        hosting_files = {path: {"hash": f"gzhash-{idx}", "status": "ACTIVE"} for idx, path in enumerate(older_paths)}
+
+        http_paths = []
+
+        def tracking_fetch(url, limit, *, absent_ok=False):
+            http_paths.append(urlsplit(url).path.lstrip("/"))
+            return self.fetch(url, limit, absent_ok=absent_ok)
+
+        rollback.verify(
+            active_site,
+            tracking_fetch,
+            state_file=state_file,
+            hosting_files_fetcher=lambda: ("versions/v2", dict(hosting_files), "versions/v1", dict(hosting_files)),
+        )
+        # Active build was read over HTTP; older retained build caused ZERO Firebase Hosting HTTP egress.
+        self.assertTrue(any(p.startswith(f"{rollback.BUILDS}{active['build']}/") for p in http_paths))
+        self.assertFalse(any(p.startswith(f"{rollback.BUILDS}{older['build']}/") for p in http_paths))
+
+        # Missing/inactive file in live Hosting version fails closed immediately.
+        broken_files = dict(hosting_files)
+        broken_files.pop(older_paths[0])
+        with self.assertRaisesRegex(ValueError, "missing active file for retained build"):
+            rollback.verify(
+                active_site,
+                tracking_fetch,
+                state_file=state_file,
+                hosting_files_fetcher=lambda: ("versions/v2", broken_files, "versions/v1", dict(hosting_files)),
+            )
+
+        # Changed hash between Hosting versions safely falls back to full HTTP readback of the older build.
+        http_paths.clear()
+        recompressed_files = {k: dict(v) for k, v in hosting_files.items()}
+        recompressed_files[older_paths[0]]["hash"] = "gzhash-recompressed"
+        rollback.verify(
+            active_site,
+            tracking_fetch,
+            state_file=state_file,
+            hosting_files_fetcher=lambda: ("versions/v2", recompressed_files, "versions/v1", dict(hosting_files)),
+        )
+        self.assertTrue(any(p.startswith(f"{rollback.BUILDS}{older['build']}/") for p in http_paths))
+
 
 if __name__ == "__main__":
     unittest.main()

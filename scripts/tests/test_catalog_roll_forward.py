@@ -234,6 +234,13 @@ class RollForwardTests(unittest.TestCase):
             )
 
     def test_end_to_end_offline_infrastructure_failure_and_recovery_rehearsal(self):
+        import ast
+
+        source = (Path(__file__).resolve().parents[1] / "catalog_roll_forward.py").read_text(encoding="utf-8")
+        tree = ast.parse(source)
+        asserts = [node.lineno for node in ast.walk(tree) if isinstance(node, ast.Assert)]
+        self.assertEqual(asserts, [], f"catalog_roll_forward.py must not rely on assert (stripped under -O): {asserts}")
+
         receipt = rf.rehearse_recovery()
         self.assertTrue(receipt["allPassed"])
         self.assertEqual(receipt["rehearsalMode"], "offline-fixture")

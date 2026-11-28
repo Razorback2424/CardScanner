@@ -12,12 +12,12 @@ The machine-readable ruleset specification lives in [`Config/Cloudflare/catalog-
 | --- | --- | --- | --- | --- |
 | Immutable catalog releases | `/v1/releases/**`, `/magic/v1/releases/**`, `/one-piece/v1/releases/**`, `/yugioh/v1/releases/**` | `public,max-age=31536000,immutable` | Cache eligible, respect origin TTL & browser TTL, disable stale-while-updating | `status_code_ttl` `value: -1` (`no-store`) |
 | Immutable v2 price builds & receipts | `/market-prices/v2/builds/**` (including extensionless `products`/`prices`, `index.json`, `scopes/*.json`, `last-updated.txt`), `/market-prices/v2/verified-builds/*.json` | `public,max-age=31536000,immutable` | Cache eligible (do not rely on default file-extension rules), respect origin TTL & browser TTL | `status_code_ttl` `value: -1` (`no-store`) |
-| Legacy v1 price files | `/market-prices/v1/index.json`, `/market-prices/v1/tcgplayer/**` (extensionless) | `public,max-age=300` | Cache eligible, respect origin 5-minute TTL, disable stale-while-updating | `status_code_ttl` `value: -1` (`no-store`) |
+| Legacy v1 price files | `/market-prices/v1/index.json`, `/market-prices/v1/tcgplayer/**` (extensionless) | `public,max-age=300` | Explicit edge bypass (`cache: false`) so legacy v1 clients never mix a new `last-updated.txt` with 300s edge-cached group files | Not cached |
 | Mutable catalog pointers & scopes | `/v1/current.json`, `/magic/v1/current.json`, `/one-piece/v1/current.json`, `/yugioh/v1/current.json`, `/one-piece/v1/market-price-scope.json`, `/yugioh/v1/market-price-scope.json` | `no-cache` | Explicit edge bypass (`cache: false`), preserve conditional revalidation (`If-None-Match`) | Not cached |
 | Mutable pricing metadata | `/market-prices/v2/latest.json`, `/market-prices/v2/history.json` (if exposed), `/market-prices/v1/last-updated.txt` | `no-cache` | Explicit edge bypass (`cache: false`) | Not cached |
 | Publisher verification requests | Any managed catalog or pricing path with `?r2v=`, `?v2r=`, or `?publication_check=` | Origin header preserved | Explicit edge bypass (`cache: false`) overriding cacheable rules | Not cached |
 
-**Legacy v1 limitation:** Legacy `/market-prices/v1/**` paths remain mutable with a 5-minute TTL (`public,max-age=300`) for older v1 clients. A brief cache-consistency window remains possible across group files while a v1 publication rolls out; v1 clients continue to enforce build consistency checks and fall back to dated on-device prices. Immutable v2 builds (`market-prices/v2/builds/<build>/**` + `latest.json`) provide atomic publication.
+**Legacy v1 note:** Legacy `/market-prices/v1/**` paths bypass Cloudflare edge caching (`cache: false`) while preserving origin `public,max-age=300` headers for browser/Firebase compatibility. Because R2 egress is free, bypassing edge caching for mutable v1 group files prevents mixed-build responses after a price publish without purging 1,300+ group URLs per run. Immutable v2 builds (`market-prices/v2/builds/<build>/**` + `latest.json`) provide atomic publication and full one-year edge caching.
 
 ## 2. Cloudflare Cache Rules & Precedence
 
@@ -26,7 +26,7 @@ Cloudflare Cache Rules (`http_request_cache_settings` phase) evaluate top-to-bot
 Configure the four rules from [`Config/Cloudflare/catalog-cache-rules.json`](../../Config/Cloudflare/catalog-cache-rules.json) (`staging.rules`) in this exact order, scoped strictly to `http.host eq "catalog-staging.scan-stash.com"`:
 
 1. **`immutable-catalog-and-price-builds`**: Eligible for cache, Edge TTL = Respect origin, Browser TTL = Respect origin, Status Code TTL `400–599` = Do not cache (`no-store`, API `value: -1`, **not** `0`), Serve stale = Disable stale-while-updating.
-2. **`legacy-v1-market-prices`**: Eligible for cache, Edge TTL = Respect origin (300s), Browser TTL = Respect origin, Status Code TTL `400–599` = Do not cache (`value: -1`), Serve stale = Disable stale-while-updating.
+2. **`legacy-v1-market-prices`**: Bypass cache (`cache: false`) for `/market-prices/v1/index.json` and `/market-prices/v1/tcgplayer/**`.
 3. **`mutable-pointers-scopes-and-markers`**: Bypass cache (`cache: false`).
 4. **`publisher-verification-nonce-bypass`** *(must be last)*: Bypass cache (`cache: false`) for managed catalog/pricing paths whose query contains `r2v=`, `v2r=`, or `publication_check=`.
 

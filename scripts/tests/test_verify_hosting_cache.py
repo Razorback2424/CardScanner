@@ -146,7 +146,7 @@ class LiveHostingCacheVerificationTests(unittest.TestCase):
         if extra_headers and extra_headers.get("If-None-Match") == obj["etag"]:
             return 304, {"cache-control": obj["cache_control"], "etag": obj["etag"],
                          "cf-cache-status": "BYPASS", "cf-ray": "test-DEN"}, b""
-        if obj["cache_control"] == "no-cache":
+        if obj["cache_control"] == "no-cache" or key.startswith("market-prices/v1/"):
             cf_status = (force_cf or {}).get(key, "BYPASS")
         else:
             cf_status = (force_cf or {}).get(key, "MISS" if self.counts[key] == 1 else "HIT")
@@ -186,12 +186,20 @@ class LiveHostingCacheVerificationTests(unittest.TestCase):
         # Verify conditional 304 revalidation was exercised on mutable pointers.
         self.assertTrue(any(row["conditionalRevalidation"]["status"] == 304 for row in report["mutable"]))
 
-    def test_live_verification_rejects_cached_mutable_pointer_and_negative_cached_404(self):
+    def test_live_verification_rejects_cached_mutable_pointer_legacy_v1_and_negative_cached_404(self):
         with self.assertRaisesRegex(ValueError, "not bypassed"):
             verify.verify_live(
                 self.origin,
                 fetch=lambda url, extra_headers=None: self._fetch(
                     url, extra_headers=extra_headers, force_cf={"v1/current.json": "HIT"}),
+                sleep=lambda _: None,
+            )
+
+        with self.assertRaisesRegex(ValueError, "Legacy v1 resource was not bypassed"):
+            verify.verify_live(
+                self.origin,
+                fetch=lambda url, extra_headers=None: self._fetch(
+                    url, extra_headers=extra_headers, force_cf={"market-prices/v1/tcgplayer/3/1/prices": "HIT"}),
                 sleep=lambda _: None,
             )
 

@@ -47,30 +47,12 @@
       },
       {
         "id": "legacy-v1-market-prices",
-        "description": "ScanStash staging: cache legacy v1 price index and group files for origin TTL (300s), never store errors",
+        "description": "ScanStash staging: bypass edge cache for legacy v1 price index and group files so v1 clients never mix builds with last-updated.txt",
         "action": "set_cache_settings",
         "enabled": true,
         "expression": "(http.host eq \"catalog-staging.scan-stash.com\") and (http.request.uri.path eq \"/market-prices/v1/index.json\" or starts_with(http.request.uri.path, \"/market-prices/v1/tcgplayer/\"))",
         "action_parameters": {
-          "cache": true,
-          "edge_ttl": {
-            "mode": "respect_origin",
-            "status_code_ttl": [
-              {
-                "status_code_range": {
-                  "from": 400,
-                  "to": 599
-                },
-                "value": -1
-              }
-            ]
-          },
-          "browser_ttl": {
-            "mode": "respect_origin"
-          },
-          "serve_stale": {
-            "disable_stale_while_updating": true
-          }
+          "cache": false
         }
       },
       {
@@ -129,30 +111,12 @@
       },
       {
         "id": "legacy-v1-market-prices",
-        "description": "ScanStash production: cache legacy v1 price index and group files for origin TTL (300s), never store errors",
+        "description": "ScanStash production: bypass edge cache for legacy v1 price index and group files so v1 clients never mix builds with last-updated.txt",
         "action": "set_cache_settings",
         "enabled": true,
         "expression": "(http.host eq \"catalog.scan-stash.com\") and (http.request.uri.path eq \"/market-prices/v1/index.json\" or starts_with(http.request.uri.path, \"/market-prices/v1/tcgplayer/\"))",
         "action_parameters": {
-          "cache": true,
-          "edge_ttl": {
-            "mode": "respect_origin",
-            "status_code_ttl": [
-              {
-                "status_code_range": {
-                  "from": 400,
-                  "to": 599
-                },
-                "value": -1
-              }
-            ]
-          },
-          "browser_ttl": {
-            "mode": "respect_origin"
-          },
-          "serve_stale": {
-            "disable_stale_while_updating": true
-          }
+          "cache": false
         }
       },
       {

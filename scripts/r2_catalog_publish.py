@@ -12,9 +12,10 @@ public hostname and hash-verified before the next one starts:
   0. immutable releases (never overwritten once present)
   1. v2 price pointer (after the immutable price build is verified)
   2. v1 price group files
-  3. v1 price index and catalog price scopes
+  3. v1 price index
   4. catalog pointers (`current.json`)
-  5. the v1 price build marker (`last-updated.txt`)
+  5. catalog price scopes (`market-price-scope.json`)
+  6. the v1 price build marker (`last-updated.txt`)
 
 A failure in any tier stops the run before later tiers, so clients never see
 a pointer or marker that names objects missing from the public host. Objects
@@ -56,8 +57,16 @@ from market_price_feeds import (
 import market_price_v2 as v2
 from market_price_rollback import VERIFIED
 
-IMMUTABLE, V2_POINTER, PRICE_DATA, PRICE_INDEX, POINTER, MARKER = range(6)
-TIER_NAMES = ("immutable releases and price builds", "v2 price pointer", "price files", "price index and scopes", "catalog pointers", "build marker")
+IMMUTABLE, V2_POINTER, PRICE_DATA, PRICE_INDEX, POINTER, CATALOG_SCOPE, MARKER = range(7)
+TIER_NAMES = (
+    "immutable releases and price builds",
+    "v2 price pointer",
+    "price files",
+    "price index",
+    "catalog pointers",
+    "catalog price scopes",
+    "build marker",
+)
 MARKER_PATHS = {"market-prices/v1/last-updated.txt"}
 INDEX_PATHS = {"market-prices/v1/index.json"}
 PRIMARY_CATALOG_NAMESPACES = ("v1", "magic/v1", "one-piece/v1", "yugioh/v1")
@@ -159,7 +168,9 @@ def tier(relative, cache_control):
         return MARKER
     if name == "current.json":
         return POINTER
-    if relative in INDEX_PATHS or name == "market-price-scope.json":
+    if name == "market-price-scope.json":
+        return CATALOG_SCOPE
+    if relative in INDEX_PATHS:
         return PRICE_INDEX
     if relative.startswith("market-prices/"):
         return PRICE_DATA
@@ -428,7 +439,7 @@ def validate_primary_catalog_plan(objects, metadata):
         raise PublishError(f"Staged {envelope_key} SHA-256 differs from {pointer_key}")
     if scope_key is not None:
         scope_item = by_key[scope_key]
-        if scope_item["tier"] != PRICE_INDEX:
+        if scope_item["tier"] != CATALOG_SCOPE:
             raise PublishError(f"Expected scope tier for {scope_key}")
         if scope_item["sha256"] != metadata["scopeSHA256"]:
             raise PublishError(f"Staged {scope_key} SHA-256 differs from catalog metadata")
@@ -493,7 +504,7 @@ def publish(objects, store, public_base, *, fetch=fetch_public, dry_run=False, v
                 confirm_current()
             if record_build:
                 record_verified_build(items[0], store, public_base, fetch)
-        if catalog_metadata is not None and current in (PRICE_INDEX, POINTER) and not dry_run:
+        if catalog_metadata is not None and current in (POINTER, CATALOG_SCOPE) and not dry_run:
             # Recheck active catalog pointer and predecessor after immutable upload/readback.
             check_catalog_activation(catalog_metadata, store, public_base, fetch)
         pending = []

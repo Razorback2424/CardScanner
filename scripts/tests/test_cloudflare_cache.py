@@ -202,6 +202,18 @@ class CanonicalReadbackAndOrderingTests(unittest.TestCase):
                         retries=0,
                     )
 
+        # Legacy v1 index.json must also bypass edge cache so it never mixes builds with last-updated.txt.
+        index_problems, _ = cf.check_canonical_response(
+            "market-prices/v1/index.json",
+            hashlib.sha256(b'{"schemaVersion":1}').hexdigest(),
+            "application/json",
+            "public,max-age=300",
+            200,
+            {"content-type": "application/json", "cache-control": "public,max-age=300", "cf-cache-status": "HIT"},
+            b'{"schemaVersion":1}',
+        )
+        self.assertTrue(any("cf-cache-status" in p for p in index_problems))
+
         # Wrong bytes, wrong cache-control, wrong content-type are rejected.
         with self.assertRaisesRegex(cf.CacheVerificationError, "SHA-256 mismatch"):
             cf.verify_canonical_objects(
