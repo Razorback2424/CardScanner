@@ -15,7 +15,7 @@ from market_price_feeds import (
 
 V2 = "market-prices/v2"
 LATEST = f"{V2}/latest.json"
-MAX_POINTER_BYTES = 1024 * 1024
+MAX_POINTER_BYTES = 4 * 1024 * 1024
 SCOPES = {f"scopes/{game}.json": namespace
           for game, (_, namespace) in CATALOG_NAMESPACES.items()}
 
@@ -43,7 +43,7 @@ def validate_pointer(raw):
         raise ValueError("Invalid v2 price pointer")
     instant(pointer["sourceBuild"])
     rows = pointer["files"]
-    if not isinstance(rows, list) or not 5 <= len(rows) <= 1804:
+    if not isinstance(rows, list) or not 5 <= len(rows) <= 20_000:
         raise ValueError("Invalid v2 price manifest")
     seen = set()
     total = 0

@@ -24,7 +24,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 NAMESPACE = "market-prices/v1"
 MAX_FILE_BYTES = 8 * 1024 * 1024
-MAX_SITE_BYTES = 128 * 1024 * 1024
+MAX_SITE_BYTES = 500 * 1024 * 1024
 # Leave two scheduled six-hour opportunities before clients reject a capture.
 # Renewing a receipt always requires an actual upstream product/price fetch.
 CAPTURE_REUSE_SECONDS = 12 * 60 * 60
@@ -266,7 +266,7 @@ def scope_from_repo(repo, one_piece_envelope=None, *, scopes=None):
             for group, products in validate_catalog_scope(scopes[game], game).items():
                 scope[(category, group)] = products
     required_categories = {2, 3, 68, 71} if scopes is None else {3, 71}
-    if not required_categories <= {category for category, _ in scope} or len(scope) > 900:
+    if not required_categories <= {category for category, _ in scope} or len(scope) > 9_990:
         raise ValueError("Unexpected catalog pricing scope")
     return scope
 
@@ -441,7 +441,7 @@ def read_site(raw, read_file):
     index = json.loads(raw)
     # Preflight paths and declared budgets before network/file reads.
     entries = index.get("files")
-    if not isinstance(entries, list) or len(entries) > 1801:
+    if not isinstance(entries, list) or len(entries) > 19_997:
         raise ValueError("Invalid price feed index")
     files = {}
     total = 0
@@ -462,7 +462,7 @@ def restore(site, origin=ORIGIN, fetch=read_http, require_fresh=False, now=stamp
         raise ValueError("Unexpected production origin")
     namespace = site / NAMESPACE
     local = namespace / "index.json"
-    raw = local.read_bytes() if local.exists() else fetch(origin + "/" + NAMESPACE + "/index.json", 1024 * 1024, absent_ok=True)
+    raw = local.read_bytes() if local.exists() else fetch(origin + "/" + NAMESPACE + "/index.json", 4 * 1024 * 1024, absent_ok=True)
     if raw is None:
         if require_present:
             raise ValueError("Published market-prices/v1/index.json is missing; restore the last feed or stage a validated replacement.")

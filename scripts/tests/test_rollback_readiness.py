@@ -505,6 +505,65 @@ class QuotaAndOAuthTests(unittest.TestCase):
         with self.assertRaisesRegex(rr.ReadinessError, "Refusing untrusted OAuth token URI"):
             rr.mint_google_access_token(bad_sa, now=self.NOW, opener=fake_open)
 
+    def test_fetch_uses_cloudflare_r2v_bypass_param_and_google_api_retries_transient_errors(self):
+        seen_urls = []
+
+        def fake_fetch(url, maximum, *, absent_ok=False):
+            seen_urls.append(url)
+            return b"ok", {}
+
+        rr.fetch_with_retry("https://catalog-staging.scan-stash.com", "v1/current.json", 1024, fetch=fake_fetch)
+        self.assertEqual(len(seen_urls), 1)
+        self.assertIn("?r2v=", seen_urls[0])
+        self.assertNotIn("?rbv=", seen_urls[0])
+
+        calls = {"n": 0}
+        sleeps = []
+
+        class OkResp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self, n=-1):
+                return b'{"releases":[]}'
+
+        def transient_opener(req, timeout=30):
+            calls["n"] += 1
+            if calls["n"] == 1:
+                raise HTTPError(req.full_url, 503, "Service Unavailable", {}, io.BytesIO(b""))
+            return OkResp()
+
+        doc = rr.google_api_get_json(
+            "https://firebasehosting.googleapis.com/v1beta1/sites/test/releases",
+            "tok",
+            opener=transient_opener,
+            sleep=sleeps.append,
+        )
+        self.assertEqual(doc, {"releases": []})
+        self.assertEqual(calls["n"], 2)
+        self.assertEqual(sleeps, [1])
+
+        forbidden_calls = {"n": 0}
+        forbidden_sleeps = []
+
+        def forbidden_opener(req, timeout=30):
+            forbidden_calls["n"] += 1
+            raise HTTPError(req.full_url, 403, "Forbidden", {}, io.BytesIO(b""))
+
+        with self.assertRaises(HTTPError) as ctx:
+            rr.google_api_get_json(
+                "https://firebasehosting.googleapis.com/v1beta1/sites/test/releases",
+                "tok",
+                opener=forbidden_opener,
+                sleep=forbidden_sleeps.append,
+            )
+        self.assertEqual(ctx.exception.code, 403)
+        self.assertEqual(forbidden_calls["n"], 1)
+        self.assertEqual(forbidden_sleeps, [])
+
 
 class ReadinessReportAndWorkflowTests(unittest.TestCase):
     NOW = datetime(2026, 11, 27, 12, 0, 0, tzinfo=timezone.utc)

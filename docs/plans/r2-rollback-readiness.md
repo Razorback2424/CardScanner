@@ -17,7 +17,7 @@ Every Firebase backup job in [`pokemon-catalog.yml`](../../.github/workflows/pok
 
 ### 1. Continuous catalog and pricing parity
 
-Compares R2 (`https://catalog-staging.scan-stash.com`, or the configured primary origin) against Firebase (`https://scanstash-catalog-prod.web.app`) using fresh `?rbv=<nonce>` cache-bypassing readbacks:
+Compares R2 (`https://catalog-staging.scan-stash.com`, or the configured primary origin) against Firebase (`https://scanstash-catalog-prod.web.app`) using fresh `?r2v=<nonce>` cache-bypassing readbacks:
 
 - **Catalog pointers & active immutables:** Required namespaces (`v1`, `one-piece/v1`) and any published optional namespaces (`magic/v1`, `yugioh/v1`) must exist on both origins with identical `current.json` SHA-256 digests and identical active immutable release files (`catalog-release.json`, plus `pokemon-catalog-snapshot.json` for Pokémon and `catalog.json` for Yu-Gi-Oh!). Half-published optional namespaces fail parity.
 - **Catalog price scopes:** `one-piece/v1/market-price-scope.json` and `yugioh/v1/market-price-scope.json` must match byte for byte between R2 and Firebase.

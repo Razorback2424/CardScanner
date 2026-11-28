@@ -153,7 +153,7 @@ def fetch_with_retry(
     last_error: Exception | None = None
     for attempt in range(max_attempts):
         nonce = secrets.token_hex(8)
-        url = f"{origin}/{rel_path}?rbv={nonce}"
+        url = f"{origin}/{rel_path}?r2v={nonce}"
         try:
             return fetch(url, maximum, absent_ok=absent_ok)
         except (HTTPError, URLError, TimeoutError, ConnectionError, IncompleteRead, ssl.SSLEOFError, ValueError) as err:
@@ -733,7 +733,14 @@ def mint_google_access_token(
     return token
 
 
-def google_api_get_json(url: str, access_token: str, *, opener=None) -> dict:
+def google_api_get_json(
+    url: str,
+    access_token: str,
+    *,
+    opener=None,
+    attempts: int = 3,
+    sleep=time.sleep,
+) -> dict:
     req = Request(
         url,
         headers={
@@ -743,11 +750,23 @@ def google_api_get_json(url: str, access_token: str, *, opener=None) -> dict:
         },
     )
     http_open = opener or build_opener(NoRedirects()).open
-    with http_open(req, timeout=30) as resp:
-        data = resp.read(MAX_API_RESPONSE_BYTES + 1)
-        if len(data) > MAX_API_RESPONSE_BYTES:
-            raise ReadinessError(f"Google API response exceeded {MAX_API_RESPONSE_BYTES} bytes")
-        return json.loads(data)
+    max_attempts = max(1, attempts)
+    for attempt in range(max_attempts):
+        try:
+            with http_open(req, timeout=30) as resp:
+                data = resp.read(MAX_API_RESPONSE_BYTES + 1)
+                if len(data) > MAX_API_RESPONSE_BYTES:
+                    raise ReadinessError(f"Google API response exceeded {MAX_API_RESPONSE_BYTES} bytes")
+                return json.loads(data)
+        except HTTPError as err:
+            retryable = err.code in (429, 500, 502, 503, 504)
+            if not retryable or attempt + 1 >= max_attempts:
+                raise
+        except (URLError, TimeoutError, ConnectionError, IncompleteRead, ssl.SSLEOFError):
+            if attempt + 1 >= max_attempts:
+                raise
+        sleep(2 ** attempt)
+    raise ReadinessError(f"Google API request exhausted retries: {url}")
 
 
 def _point_number(point: dict) -> float:

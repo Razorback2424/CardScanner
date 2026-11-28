@@ -593,6 +593,22 @@ def run_negative_cache_probe(origin, put_object, delete_object, *, fetch=fetch_c
     }
 
 
+def _params_match(deployed, expected):
+    """Allow Cloudflare API default fields while requiring every spec key/value to match."""
+    if isinstance(expected, dict):
+        if not isinstance(deployed, dict):
+            return False
+        for key, exp_val in expected.items():
+            if key not in deployed or not _params_match(deployed[key], exp_val):
+                return False
+        return True
+    if isinstance(expected, list):
+        return isinstance(deployed, list) and len(deployed) == len(expected) and all(
+            _params_match(d, e) for d, e in zip(deployed, expected)
+        )
+    return deployed == expected
+
+
 def inspect_deployed_cloudflare_rules(zone_id, read_token, expected_rules_path=DEFAULT_RULES, *, opener=None):
     """Read-only inspection of deployed Cloudflare Cache Rules against the repo spec."""
     if not zone_id or not ZONE_ID_RE.match(zone_id):
@@ -624,15 +640,15 @@ def inspect_deployed_cloudflare_rules(zone_id, read_token, expected_rules_path=D
     deployed = [rule for rule in (doc["result"].get("rules") or []) if rule.get("enabled", True)]
     staging_indices = [idx for idx, rule in enumerate(deployed) if expected_host in (rule.get("expression") or "")]
     staging_deployed = [deployed[idx] for idx in staging_indices]
-    expected_exprs = [rule["expression"] for rule in expected_rules]
-    deployed_exprs = [rule.get("expression") for rule in staging_deployed]
-    if deployed_exprs != expected_exprs:
+    expected_tokens = [_tokenize(rule["expression"]) for rule in expected_rules]
+    deployed_tokens = [_tokenize(rule.get("expression") or "") for rule in staging_deployed]
+    if deployed_tokens != expected_tokens:
         raise ValueError(
             f"Deployed Cloudflare staging rules for {expected_host} do not match spec order/expressions "
             f"(deployed={len(staging_deployed)}, expected={len(expected_rules)})"
         )
     for dep, exp in zip(staging_deployed, expected_rules):
-        if dep.get("action") != exp["action"] or dep.get("action_parameters") != exp["action_parameters"]:
+        if dep.get("action") != exp["action"] or not _params_match(dep.get("action_parameters"), exp["action_parameters"]):
             raise ValueError(f"Deployed Cloudflare rule action_parameters disagree with spec for {exp['id']}")
     # Detect overlapping catch-all zone rules positioned after our first staging rule.
     first_idx = staging_indices[0]

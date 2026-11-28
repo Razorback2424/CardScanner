@@ -256,6 +256,13 @@ class LiveHostingCacheVerificationTests(unittest.TestCase):
         result = verify.inspect_deployed_cloudflare_rules(zone, read_token, opener=Opener(spec))
         self.assertEqual(result["matchedRuleCount"], 4)
 
+        # Dashboard-normalized whitespace in expressions and extra API default keys in action_parameters must pass.
+        dashboard_normalized = copy.deepcopy(spec)
+        dashboard_normalized[0]["expression"] = "  " + dashboard_normalized[0]["expression"].replace(" and ", "  and\n ")
+        dashboard_normalized[0]["action_parameters"]["serve_stale"]["stale_if_error"] = True
+        norm_result = verify.inspect_deployed_cloudflare_rules(zone, read_token, opener=Opener(dashboard_normalized))
+        self.assertEqual(norm_result["matchedRuleCount"], 4)
+
         drifted = copy.deepcopy(spec)
         drifted[0]["action_parameters"]["edge_ttl"]["status_code_ttl"][0]["value"] = 0
         with self.assertRaises(ValueError) as ctx:
