@@ -104,8 +104,10 @@ struct TCGCSVPriceManifest: Codable, Sendable {
     let build: String
     let files: [File]
 
-    static let maxPointerBytes = 1_024 * 1_024
+    static let maxPointerBytes = 4 * 1_024 * 1_024
     static let maxFileBytes = 8 * 1_024 * 1_024
+    static let maxFileCount = 20_000
+    static let maxBuildBytes = 512 * 1_024 * 1_024
 
     static func sha256(_ data: Data) -> String {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
@@ -118,26 +120,29 @@ struct TCGCSVPriceManifest: Codable, Sendable {
     func validate(now: Date) throws {
         let required: Set<String> = ["index.json", "last-updated.txt", "scopes/one-piece.json", "scopes/yugioh.json"]
         guard schemaVersion == 2, Self.isHash(build), let date = TCGCSVPriceMirror.timestamp(sourceBuild),
-              date <= now, (6...1_804).contains(files.count) else { throw PriceQuoteError.providerUnavailable }
+              date <= now, (6...Self.maxFileCount).contains(files.count) else { throw PriceQuoteError.providerUnavailable }
         var paths = Set<String>()
+        var groupPaths = Set<String>()
         var total = 0
         for file in files {
             let path = file.path
-            let group = path.range(of: #"\Atcgplayer/(2|3|68|71)/[1-9][0-9]*/(products|prices)\z"#,
-                                   options: .regularExpression) != nil
-            guard (required.contains(path) || group), paths.insert(path).inserted,
+            let isScope = path.range(of: #"\Ascopes/[a-z0-9][a-z0-9-]*\.json\z"#,
+                                     options: .regularExpression) != nil
+            let isGroup = path.range(of: #"\Atcgplayer/[1-9][0-9]*/[1-9][0-9]*/(products|prices)\z"#,
+                                     options: .regularExpression) != nil
+            guard (required.contains(path) || isScope || isGroup), paths.insert(path).inserted,
                   Self.isHash(file.sha256) else { throw PriceQuoteError.providerUnavailable }
+            if isGroup { groupPaths.insert(path) }
             let limit = path == "index.json" ? Self.maxPointerBytes :
-                (path.hasPrefix("scopes/") ? 4 * 1_024 * 1_024 : Self.maxFileBytes)
+                (isScope ? 4 * 1_024 * 1_024 : Self.maxFileBytes)
             guard file.byteCount > 0, file.byteCount <= limit else { throw PriceQuoteError.providerUnavailable }
             total += file.byteCount
         }
         guard required.isSubset(of: paths), files.map(\.path) == paths.sorted(),
-              total <= 137 * 1_024 * 1_024 else { throw PriceQuoteError.providerUnavailable }
-        let groups = paths.subtracting(required)
-        guard !groups.isEmpty, groups.allSatisfy({ path in
+              total <= Self.maxBuildBytes else { throw PriceQuoteError.providerUnavailable }
+        guard !groupPaths.isEmpty, groupPaths.allSatisfy({ path in
             let prefix = String(path.dropLast(path.hasSuffix("/products") ? 8 : 6))
-            return paths.contains(prefix + (path.hasSuffix("/products") ? "prices" : "products"))
+            return groupPaths.contains(prefix + (path.hasSuffix("/products") ? "prices" : "products"))
         }) else { throw PriceQuoteError.providerUnavailable }
         // The publisher hashes canonical UTF-8 JSON, sorted keys, compact
         // separators, no escaped slashes, and exactly one trailing newline.
@@ -279,21 +284,85 @@ actor TCGCSVMirrorBuildMarker {
     private let baseURL: URL?
     private let session: URLSession
     private let now: @Sendable () -> Date
-    private let defaultsKey: String?
+    private let legacyDefaultsKey: String?
+    private let storageFileURL: URL?
+    private let excludesStorageFromBackup: Bool
     private var check: Check?
     private var pending: Task<Check, Error>?
 
+    private static let maxPersistedCheckBytes = TCGCSVPriceManifest.maxPointerBytes + 64 * 1_024
+
+    private static func defaultStorageDirectory() -> URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("TCGCSVMirrorBuildMarker-v1", isDirectory: true)
+    }
+
+    private static func decodeValidatedCheck(_ bytes: Data, now: Date) -> Check? {
+        guard bytes.count <= maxPersistedCheckBytes,
+              let restored = try? JSONDecoder().decode(Check.self, from: bytes),
+              restored.manifest.map({ (try? $0.validate(now: now)) != nil && $0.sourceBuild == restored.value }) ?? true else {
+            return nil
+        }
+        return restored
+    }
+
+    private static func readPersistedCheck(at url: URL, now: Date) -> Check? {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+        defer { try? handle.close() }
+        guard let bytes = try? handle.read(upToCount: maxPersistedCheckBytes + 1),
+              bytes.count <= maxPersistedCheckBytes else { return nil }
+        return decodeValidatedCheck(bytes, now: now)
+    }
+
+    @discardableResult
+    private static func writePersistedCheck(_ bytes: Data, to url: URL, excludeFromBackup: Bool) -> Bool {
+        guard bytes.count <= maxPersistedCheckBytes else { return false }
+        let directory = url.deletingLastPathComponent()
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            if excludeFromBackup {
+                var root = directory
+                var values = URLResourceValues()
+                values.isExcludedFromBackup = true
+                try root.setResourceValues(values)
+            }
+            try bytes.write(to: url, options: .atomic)
+            return true
+        } catch {
+            return false
+        }
+    }
+
     init(baseURL: URL?, session: URLSession, now: @escaping @Sendable () -> Date = { .now },
-         defaultsKey: String? = nil) {
+         defaultsKey: String? = nil, storageDirectory: URL? = nil) {
         self.baseURL = baseURL
         self.session = session
         self.now = now
-        self.defaultsKey = defaultsKey.map { "\($0)|\(baseURL?.absoluteString ?? "")" }
-        if let key = self.defaultsKey, let bytes = UserDefaults.standard.data(forKey: key) {
-            if let restored = try? JSONDecoder().decode(Check.self, from: bytes),
-               restored.manifest.map({ (try? $0.validate(now: now())) != nil && $0.sourceBuild == restored.value }) ?? true {
+        let scopedKey = defaultsKey.map { "\($0)|\(baseURL?.absoluteString ?? "")" }
+        self.legacyDefaultsKey = scopedKey
+        self.excludesStorageFromBackup = storageDirectory == nil
+        if let scopedKey {
+            let directory = storageDirectory ?? Self.defaultStorageDirectory()
+            let fileURL = directory.appendingPathComponent("\(TCGCSVPriceManifest.sha256(Data(scopedKey.utf8))).json")
+            self.storageFileURL = fileURL
+            let currentNow = now()
+            if let restored = Self.readPersistedCheck(at: fileURL, now: currentNow) {
                 check = restored
+                if UserDefaults.standard.object(forKey: scopedKey) != nil {
+                    UserDefaults.standard.removeObject(forKey: scopedKey)
+                }
+            } else if let legacyBytes = UserDefaults.standard.data(forKey: scopedKey) {
+                if let restored = Self.decodeValidatedCheck(legacyBytes, now: currentNow) {
+                    check = restored
+                    if Self.writePersistedCheck(legacyBytes, to: fileURL, excludeFromBackup: excludesStorageFromBackup) {
+                        UserDefaults.standard.removeObject(forKey: scopedKey)
+                    }
+                } else {
+                    UserDefaults.standard.removeObject(forKey: scopedKey)
+                }
             }
+        } else {
+            self.storageFileURL = nil
         }
     }
 
@@ -350,8 +419,11 @@ actor TCGCSVMirrorBuildMarker {
                 updated = try await self.readLegacy(baseURL, previous: previous)
             }
             self.check = updated
-            if let defaultsKey = self.defaultsKey, let bytes = try? JSONEncoder().encode(updated) {
-                UserDefaults.standard.set(bytes, forKey: defaultsKey)
+            if let fileURL = self.storageFileURL, let bytes = try? JSONEncoder().encode(updated) {
+                Self.writePersistedCheck(bytes, to: fileURL, excludeFromBackup: self.excludesStorageFromBackup)
+                if let legacyKey = self.legacyDefaultsKey, UserDefaults.standard.object(forKey: legacyKey) != nil {
+                    UserDefaults.standard.removeObject(forKey: legacyKey)
+                }
             }
             return updated
         }

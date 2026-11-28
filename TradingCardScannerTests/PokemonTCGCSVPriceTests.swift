@@ -1383,7 +1383,8 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         let session = URLSession(configuration: configuration)
         defer { session.invalidateAndCancel() }
         func marker() -> TCGCSVMirrorBuildMarker {
-            TCGCSVMirrorBuildMarker(baseURL: base, session: session, now: { server.now }, defaultsKey: defaultsKey)
+            TCGCSVMirrorBuildMarker(baseURL: base, session: session, now: { server.now },
+                                    defaultsKey: defaultsKey, storageDirectory: root)
         }
         let initial = PokemonTCGCSVPriceService(session: session, baseURL: base, cacheDirectory: root,
             now: { server.now }, spacing: 0, marker: marker())
@@ -1624,7 +1625,8 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
 
         // Before accepting v2, server outage (500/fail) or invalid manifest must NOT downgrade to v1.
         server.fail = true
-        let initialMarker = TCGCSVMirrorBuildMarker(baseURL: v2Base, session: session, now: { server.now }, defaultsKey: defaultsKey)
+        let initialMarker = TCGCSVMirrorBuildMarker(baseURL: v2Base, session: session, now: { server.now },
+                                                    defaultsKey: defaultsKey, storageDirectory: root)
         do { _ = try await initialMarker.currentPublication(); XCTFail("Outage must not downgrade to v1") }
         catch PriceQuoteError.providerUnavailable {}
         XCTAssertFalse(server.requests.contains { $0.url?.path.hasPrefix("/market-prices/v1/") == true })
@@ -1640,8 +1642,11 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         let acceptedFixture = try v2Fixture(server: server, sourceBuild: newerBuild, amount: 5, capturedAt: server.now)
         let accepted = try await initialMarker.currentPublication(forceRefresh: true)
         XCTAssertEqual(accepted.manifest?.build, acceptedFixture.id)
+        XCTAssertNil(UserDefaults.standard.object(forKey: persistedKey),
+                     "v2 manifest persistence must use file storage, not UserDefaults")
 
-        let relaunchedMarker = TCGCSVMirrorBuildMarker(baseURL: v2Base, session: session, now: { server.now }, defaultsKey: defaultsKey)
+        let relaunchedMarker = TCGCSVMirrorBuildMarker(baseURL: v2Base, session: session, now: { server.now },
+                                                       defaultsKey: defaultsKey, storageDirectory: root)
         let persisted = await relaunchedMarker.lastKnownPublication()
         XCTAssertEqual(persisted?.manifest?.build, acceptedFixture.id)
 
@@ -1763,6 +1768,179 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
             XCTAssertEqual(missing1, .unavailable(.tcgCSV))
             XCTAssertEqual(missing2, .unavailable(.tcgCSV))
         }
+    }
+
+    func testV2ManifestMatchesPythonGeneratedParityFixture() throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "TCGCSVPriceV2ManifestParity", withExtension: "json"))
+        let data = try Data(contentsOf: url)
+        let manifest = try JSONDecoder().decode(TCGCSVPriceManifest.self, from: data)
+        let expectedBuildID = "cc512246f9c9cc6ba430eb79dc898c7df19e0d5b9b233cdd785986c8ab7c0aee"
+        XCTAssertEqual(manifest.build, expectedBuildID)
+        XCTAssertEqual(manifest.sourceBuild, "2026-11-27T20:05:57+0000")
+        let checkTime = try XCTUnwrap(TCGCSVPriceMirror.timestamp("2026-11-27T21:00:00Z"))
+        try manifest.validate(now: checkTime)
+
+        // Mutating any manifest entry invalidates the Python-generated build ID.
+        var tamperedFiles = manifest.files
+        tamperedFiles[0] = TCGCSVPriceManifest.File(
+            path: tamperedFiles[0].path,
+            sha256: String(repeating: "0", count: 64),
+            byteCount: tamperedFiles[0].byteCount
+        )
+        let tampered = TCGCSVPriceManifest(
+            schemaVersion: manifest.schemaVersion,
+            sourceBuild: manifest.sourceBuild,
+            build: manifest.build,
+            files: tamperedFiles
+        )
+        XCTAssertThrowsError(try tampered.validate(now: checkTime))
+    }
+
+    func testV2ManifestAcceptsUnknownCategoriesFutureScopesAndOver1804Files() async throws {
+        let sourceBuild = "2026-09-29T20:05:57+0000"
+        let dummyHash = String(repeating: "a", count: 64)
+
+        func makeSignedManifest(files: [TCGCSVPriceManifest.File]) throws -> (manifest: TCGCSVPriceManifest, raw: Data) {
+            let sorted = files.sorted { $0.path < $1.path }
+            let entries: [[String: Any]] = sorted.map {
+                ["path": $0.path, "sha256": $0.sha256, "byteCount": $0.byteCount]
+            }
+            var doc: [String: Any] = ["schemaVersion": 2, "sourceBuild": sourceBuild, "files": entries]
+            var canonical = try JSONSerialization.data(withJSONObject: doc, options: [.sortedKeys, .withoutEscapingSlashes])
+            canonical.append(10)
+            let buildID = TCGCSVPriceManifest.sha256(canonical)
+            doc["build"] = buildID
+            var raw = try JSONSerialization.data(withJSONObject: doc, options: [.sortedKeys, .withoutEscapingSlashes])
+            raw.append(10)
+            let manifest = try JSONDecoder().decode(TCGCSVPriceManifest.self, from: raw)
+            return (manifest, raw)
+        }
+
+        // 1. Unknown/future TCGPlayer category IDs (e.g. 1, 999) and future scope files (scopes/magic.json)
+        //    must be accepted without rejecting the manifest, while known groups remain readable.
+        let products = MarketMirrorFixture.stamped(
+            Data(#"{"success":true,"errors":[],"results":[{"productId":1,"categoryId":71,"groupId":1,"name":"Fixture","extendedData":[]}]}"#.utf8),
+            capturedAt: date, build: sourceBuild
+        )
+        let prices = MarketMirrorFixture.stamped(
+            Data(#"{"success":true,"errors":[],"results":[{"productId":1,"subTypeName":"Normal","marketPrice":11.25}]}"#.utf8),
+            capturedAt: date, build: sourceBuild
+        )
+        let futureEntries: [TCGCSVPriceManifest.File] = [
+            .init(path: "index.json", sha256: dummyHash, byteCount: 64),
+            .init(path: "last-updated.txt", sha256: dummyHash, byteCount: 25),
+            .init(path: "scopes/magic.json", sha256: dummyHash, byteCount: 64),
+            .init(path: "scopes/one-piece.json", sha256: dummyHash, byteCount: 64),
+            .init(path: "scopes/yugioh.json", sha256: dummyHash, byteCount: 64),
+            .init(path: "tcgplayer/1/500/products", sha256: dummyHash, byteCount: 128),
+            .init(path: "tcgplayer/1/500/prices", sha256: dummyHash, byteCount: 128),
+            .init(path: "tcgplayer/71/1/products", sha256: TCGCSVPriceManifest.sha256(products), byteCount: products.count),
+            .init(path: "tcgplayer/71/1/prices", sha256: TCGCSVPriceManifest.sha256(prices), byteCount: prices.count),
+            .init(path: "tcgplayer/999/42/products", sha256: dummyHash, byteCount: 128),
+            .init(path: "tcgplayer/999/42/prices", sha256: dummyHash, byteCount: 128),
+        ]
+        let futureManifest = try makeSignedManifest(files: futureEntries)
+        try futureManifest.manifest.validate(now: date)
+
+        let server = TCGCSVTestServer(routes: [:], now: date)
+        server.setRawRoute("/market-prices/v2/latest.json", futureManifest.raw)
+        server.setRawRoute("/market-prices/v2/builds/\(futureManifest.manifest.build)/tcgplayer/71/1/products", products)
+        server.setRawRoute("/market-prices/v2/builds/\(futureManifest.manifest.build)/tcgplayer/71/1/prices", prices)
+        TCGCSVTestURLProtocol.server = server
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { TCGCSVTestURLProtocol.server = nil; try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let source = TCGCSVProductPriceSource(
+            baseURL: URL(string: "https://catalog.scan-stash.com/market-prices/v2")!,
+            session: session, cacheDirectory: root, now: { server.now }, spacing: 0
+        )
+        guard case let .price(quoted) = try await source.quote(
+            category: 71, group: 1, productID: 1, name: "Fixture", number: nil, lane: "Normal", minimumFetchedAt: nil
+        ) else { return XCTFail("Expected quote from known category alongside unknown future categories") }
+        XCTAssertEqual(quoted.unitMarketPriceUSD, 11.25)
+
+        // 2. Manifests exceeding the old 1,804-file cap (e.g. 2,004 files = 1,000 groups + 4 metadata files)
+        //    must be accepted cleanly.
+        var largeEntries: [TCGCSVPriceManifest.File] = [
+            .init(path: "index.json", sha256: dummyHash, byteCount: 64),
+            .init(path: "last-updated.txt", sha256: dummyHash, byteCount: 25),
+            .init(path: "scopes/one-piece.json", sha256: dummyHash, byteCount: 64),
+            .init(path: "scopes/yugioh.json", sha256: dummyHash, byteCount: 64),
+        ]
+        for groupID in 1...1_000 {
+            largeEntries.append(.init(path: "tcgplayer/3/\(groupID)/products", sha256: dummyHash, byteCount: 256))
+            largeEntries.append(.init(path: "tcgplayer/3/\(groupID)/prices", sha256: dummyHash, byteCount: 256))
+        }
+        XCTAssertEqual(largeEntries.count, 2_004)
+        let largeManifest = try makeSignedManifest(files: largeEntries)
+        try largeManifest.manifest.validate(now: date)
+
+        // 3. Unsafe paths, zero category IDs, and unpaired products/prices still fail closed.
+        for badPath in [
+            "tcgplayer/0/1/products",
+            "tcgplayer/abc/1/products",
+            "tcgplayer/3/1/../prices",
+            "scopes/BadUpper.json",
+        ] {
+            var badEntries = futureEntries
+            badEntries.append(.init(path: badPath, sha256: dummyHash, byteCount: 64))
+            let badManifest = try makeSignedManifest(files: badEntries)
+            XCTAssertThrowsError(try badManifest.manifest.validate(now: date), "Must reject path \(badPath)")
+        }
+        let unpaired = futureEntries.filter { $0.path != "tcgplayer/999/42/prices" }
+        XCTAssertThrowsError(try makeSignedManifest(files: unpaired).manifest.validate(now: date))
+    }
+
+    func testV2MarkerPersistsManifestToFileStorageNotUserDefaultsAndMigratesLegacy() async throws {
+        let build = "2026-09-29T20:05:57+0000"
+        let server = TCGCSVTestServer(routes: [:], now: date)
+        let fixture = try v2Fixture(server: server, sourceBuild: build, amount: 8.5, capturedAt: server.now)
+        TCGCSVTestURLProtocol.server = server
+        let storageDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let defaultsKey = "TCGCSVFileStorageTest.\(UUID().uuidString)"
+        let v2Base = URL(string: "https://catalog.scan-stash.com/market-prices/v2")!
+        let legacyScopedKey = "\(defaultsKey)|\(v2Base.absoluteString)"
+        defer {
+            TCGCSVTestURLProtocol.server = nil
+            UserDefaults.standard.removeObject(forKey: legacyScopedKey)
+            try? FileManager.default.removeItem(at: storageDir)
+        }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [TCGCSVTestURLProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+
+        // 1. Fresh v2 marker writes to storageDirectory file, NOT UserDefaults, and survives relaunch.
+        let marker = TCGCSVMirrorBuildMarker(baseURL: v2Base, session: session, now: { server.now },
+                                             defaultsKey: defaultsKey, storageDirectory: storageDir)
+        let accepted = try await marker.currentPublication(forceRefresh: true)
+        XCTAssertEqual(accepted.manifest?.build, fixture.id)
+        XCTAssertNil(UserDefaults.standard.object(forKey: legacyScopedKey))
+        let storedFiles = try FileManager.default.contentsOfDirectory(at: storageDir, includingPropertiesForKeys: nil)
+        XCTAssertEqual(storedFiles.count, 1)
+
+        let relaunched = TCGCSVMirrorBuildMarker(baseURL: v2Base, session: session, now: { server.now },
+                                                 defaultsKey: defaultsKey, storageDirectory: storageDir)
+        let restored = await relaunched.lastKnownPublication()
+        XCTAssertEqual(restored?.manifest?.build, fixture.id)
+
+        // 2. Legacy UserDefaults blob is migrated to file storage and deleted from UserDefaults on init.
+        let legacyBytes = try Data(contentsOf: storedFiles[0])
+        try FileManager.default.removeItem(at: storedFiles[0])
+        UserDefaults.standard.set(legacyBytes, forKey: legacyScopedKey)
+        XCTAssertNotNil(UserDefaults.standard.data(forKey: legacyScopedKey))
+
+        let migrated = TCGCSVMirrorBuildMarker(baseURL: v2Base, session: session, now: { server.now },
+                                               defaultsKey: defaultsKey, storageDirectory: storageDir)
+        let migratedPub = await migrated.lastKnownPublication()
+        XCTAssertEqual(migratedPub?.manifest?.build, fixture.id)
+        XCTAssertNil(UserDefaults.standard.object(forKey: legacyScopedKey),
+                     "Legacy UserDefaults manifest blob must be removed after migrating to file storage")
+        let migratedFiles = try FileManager.default.contentsOfDirectory(at: storageDir, includingPropertiesForKeys: nil)
+        XCTAssertEqual(migratedFiles.count, 1)
     }
 
     func testProductMirrorKeepsDatedOutageFallbackAndEnforcesWatermark() async throws {
