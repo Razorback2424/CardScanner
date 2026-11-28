@@ -213,7 +213,12 @@ class FirebaseRollbackTests(unittest.TestCase):
         self.assertNotIn("FIREBASE_", primary)
         self.assertNotIn("web.app", primary)
         self.assertIn("--primary-prices", primary)
+        self.assertIn("CLOUDFLARE_ZONE_ID", primary)
+        self.assertIn("CLOUDFLARE_CACHE_PURGE_TOKEN", primary)
+        self.assertIn("--cache-report", primary)
+        self.assertIn("origin_verified=true", primary)
         self.assertIn("needs: publish-prices-to-r2", remaining)
+        self.assertIn("needs.publish-prices-to-r2.outputs.origin_verified == 'true'", remaining)
         self.assertIn("needs: [publish-prices-to-r2, inventory-r2-price-builds]", remaining)
         self.assertIn("The verified R2 price publication remains active.", remaining)
         # Catalog synchronization must no longer originate from Firebase.
@@ -242,8 +247,13 @@ class FirebaseRollbackTests(unittest.TestCase):
                 self.assertIn("environment: r2-catalog-production", r2_body)
                 self.assertIn("group: scanstash-catalog-r2-hosting", r2_body)
                 self.assertIn(f"--primary-catalog {namespace}", r2_body)
-                # Firebase backup runs strictly downstream of R2 publication and restores from R2.
+                self.assertIn("CLOUDFLARE_ZONE_ID", r2_body)
+                self.assertIn("CLOUDFLARE_CACHE_PURGE_TOKEN", r2_body)
+                self.assertIn("--cache-report", r2_body)
+                self.assertIn("origin_verified=true", r2_body)
+                # Firebase backup runs whenever R2 origin activation succeeded, independent of cache-control-plane failures.
                 self.assertIn(f"needs: [{stage_job}, publish-r2-catalog]", backup_body)
+                self.assertIn("needs.publish-r2-catalog.outputs.origin_verified == 'true'", backup_body)
                 self.assertIn("group: scanstash-catalog-production-hosting", backup_body)
                 self.assertIn("scripts/restore_catalog_hosting_site.sh", backup_body)
                 self.assertIn("market_price_rollback.py sync-r2", backup_body)
@@ -261,6 +271,7 @@ class FirebaseRollbackTests(unittest.TestCase):
             "market-prices/v2/builds/hash/scopes/yugioh.json": (json_type, immutable),
             "market-prices/v2/builds/hash/tcgplayer/3/1/products": (json_type, immutable),
             "market-prices/v2/builds/hash/last-updated.txt": ("text/plain; charset=utf-8", immutable),
+            "market-prices/v2/verified-builds/hash.json": (json_type, immutable),
         }
         for path, headers in expected.items():
             with self.subTest(path=path):

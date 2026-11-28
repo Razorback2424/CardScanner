@@ -1,0 +1,64 @@
+name: R2 staging cache verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe_missing_object:
+        description: "Run authorized staging missing-object negative-cache probe (uploads and deletes one diagnostic file)"
+        type: boolean
+        default: false
+      inspect_cloudflare_rules:
+        description: "Compare deployed staging Cache Rules against Config/Cloudflare/catalog-cache-rules.json (requires read-only token)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify-staging-cache:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: r2-catalog-production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Run static hosting and Cloudflare rule checks
+        run: bash scripts/verify_pokemon_catalog_hosting_config.sh
+      - name: Verify live Cloudflare staging cache behavior
+        env:
+          PYTHONUNBUFFERED: "1"
+          PROBE_MISSING: ${{ inputs.probe_missing_object == true }}
+          INSPECT_RULES: ${{ inputs.inspect_cloudflare_rules == true }}
+          R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_RULES_READ_TOKEN: ${{ secrets.CLOUDFLARE_RULES_READ_TOKEN }}
+        run: |
+          args=(live --origin https://catalog-staging.scan-stash.com --report "$RUNNER_TEMP/r2-cache-live-report.json")
+          if [[ "$PROBE_MISSING" == true ]]; then
+            : "${AWS_ACCESS_KEY_ID:?Set R2_ACCESS_KEY_ID in r2-catalog-production}"
+            : "${AWS_SECRET_ACCESS_KEY:?Set R2_SECRET_ACCESS_KEY in r2-catalog-production}"
+            args+=(--probe-missing-object)
+          fi
+          if [[ "$INSPECT_RULES" == true ]]; then
+            : "${CLOUDFLARE_ZONE_ID:?Set CLOUDFLARE_ZONE_ID in r2-catalog-production}"
+            : "${CLOUDFLARE_RULES_READ_TOKEN:?Set CLOUDFLARE_RULES_READ_TOKEN in r2-catalog-production}"
+            args+=(--inspect-cloudflare-rules)
+          fi
+          python3 scripts/verify_hosting_cache.py "${args[@]}"
+      - name: Retain staging cache verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r2-staging-cache-verification-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/r2-cache-live-report.json
+          if-no-files-found: warn
+          retention-days: 30

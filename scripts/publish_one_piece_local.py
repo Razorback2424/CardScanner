@@ -55,6 +55,10 @@ def parse_args(argv):
                         help="Target R2 bucket name (default: R2_BUCKET_NAME)")
     parser.add_argument("--r2-account-id", default=os.environ.get("R2_ACCOUNT_ID"),
                         help="32-hex Cloudflare account ID (default: R2_ACCOUNT_ID)")
+    parser.add_argument("--cloudflare-zone-id", default=os.environ.get("CLOUDFLARE_ZONE_ID"),
+                        help="32-hex Cloudflare zone ID for targeted cache purge (default: CLOUDFLARE_ZONE_ID)")
+    parser.add_argument("--require-cache-verification", action="store_true",
+                        help="Fail if Cloudflare purge credentials are missing or cache verification fails")
     parser.add_argument("--skip-firebase-backup", action="store_true",
                         help="Publish and verify on R2 without backing up to Firebase")
     parser.add_argument("--skip-github-run-check", action="store_true",
@@ -253,14 +257,33 @@ def main(argv=None):
         if not args.yes and input("Type 'publish' to deploy: ").strip() != "publish":
             sys.exit("Not deployed.")
 
-        run(["python3", "scripts/r2_catalog_publish.py", "--primary-catalog", "one-piece/v1",
-             "--catalog-metadata", metadata_path, "--site", r2_site,
-             "--bucket", args.r2_bucket, "--account-id", args.r2_account_id,
-             "--public-base", R2_ORIGIN, "--verify-all"], cwd=checkout)
-        print(f"One Piece revision {revision} is live and verified on {R2_ORIGIN}.")
+        cache_report = scratch / "cache-verification.json"
+        publish_cmd = ["python3", "scripts/r2_catalog_publish.py", "--primary-catalog", "one-piece/v1",
+                       "--catalog-metadata", metadata_path, "--site", r2_site,
+                       "--bucket", args.r2_bucket, "--account-id", args.r2_account_id,
+                       "--public-base", R2_ORIGIN, "--verify-all", "--cache-report", cache_report]
+        if args.cloudflare_zone_id:
+            publish_cmd += ["--cloudflare-zone-id", args.cloudflare_zone_id]
+        if args.require_cache_verification:
+            publish_cmd.append("--require-cache-verification")
+        print("+ " + " ".join(str(part) for part in publish_cmd), flush=True)
+        publish_result = subprocess.run([str(part) for part in publish_cmd], cwd=checkout)
+        cache_failed = False
+        if publish_result.returncode == 2:
+            cache_failed = True
+            print(f"Warning: One Piece revision {revision} is active on {R2_ORIGIN}, "
+                  "but Cloudflare purge or canonical cache verification failed. "
+                  "Proceeding with independent Firebase backup; rerun cache verification before cutover.",
+                  file=sys.stderr)
+        elif publish_result.returncode != 0:
+            sys.exit(publish_result.returncode)
+        else:
+            print(f"One Piece revision {revision} is live and verified on {R2_ORIGIN}.")
 
         if args.skip_firebase_backup:
             print("Skipping Firebase backup by request.")
+            if cache_failed:
+                sys.exit(2)
             return
 
         try:
@@ -312,6 +335,9 @@ def main(argv=None):
         except Exception as error:
             print(f"Warning: Firebase backup failed ({error}). The verified R2 catalog publication remains active.",
                   file=sys.stderr)
+        if cache_failed:
+            sys.exit("R2 publication is active, but Cloudflare cache verification failed. "
+                     "See cache-verification.json and rerun with --recover-cache-only.")
     finally:
         run(["git", "worktree", "remove", "--force", checkout], cwd=repo)
 

@@ -44,10 +44,13 @@ class ArgumentTests(unittest.TestCase):
         self.assertFalse(parsed.yes)
         self.assertFalse(parsed.skip_firebase_backup)
         skipped = self.parse('--signed-run-id', '1', '--skip-firebase-backup',
-                             '--r2-bucket', 'bucket', '--r2-account-id', 'a' * 32)
+                             '--r2-bucket', 'bucket', '--r2-account-id', 'a' * 32,
+                             '--cloudflare-zone-id', 'b' * 32, '--require-cache-verification')
         self.assertTrue(skipped.skip_firebase_backup)
         self.assertEqual(skipped.r2_bucket, 'bucket')
         self.assertEqual(skipped.r2_account_id, 'a' * 32)
+        self.assertEqual(skipped.cloudflare_zone_id, 'b' * 32)
+        self.assertTrue(skipped.require_cache_verification)
 
 
 class SafeguardTests(unittest.TestCase):

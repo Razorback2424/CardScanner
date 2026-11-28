@@ -33,15 +33,19 @@ on:
       - "scripts/tests/test_one_piece_tcgcsv_catalog.py"
       - "scripts/tests/test_normalize_one_piece_sources.py"
       - ".github/workflows/one-piece-catalog.yml"
+      - "Config/Cloudflare/catalog-cache-rules.json"
       - "firebase.json"
       - "scripts/restore_catalog_hosting_site.sh"
       - "scripts/catalog_hosting_cache.py"
+      - "scripts/cloudflare_cache.py"
       - "scripts/r2_catalog_publish.py"
+      - "scripts/verify_hosting_cache.py"
       - "scripts/market_price_feeds.py"
       - "scripts/market_price_rollback.py"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "scripts/tests/test_catalog_hosting_restore.py"
       - "scripts/tests/test_catalog_hosting_cache.py"
+      - "scripts/tests/test_cloudflare_cache.py"
       - "scripts/tests/test_r2_catalog_publish.py"
       - "scripts/tests/test_market_price_rollback.py"
       - "scripts/prepare_one_piece_acceptance_samples.py"
@@ -354,6 +358,8 @@ jobs:
       cancel-in-progress: false
       queue: max
     outputs:
+      origin_verified: ${{ steps.publish.outputs.origin_verified }}
+      cache_verified: ${{ steps.publish.outputs.cache_verified }}
       inventory_artifact: ${{ steps.share-inventory.outputs.artifact-id }}
     steps:
       - name: Require the staged One Piece artifact
@@ -375,24 +381,38 @@ jobs:
           artifact-ids: ${{ needs.publish-reviewed-artifact.outputs.catalog_artifact }}
           merge-multiple: true
           path: ${{ runner.temp }}/one-piece-r2-catalog
-      - name: Publish immutable release, price scope and pointer on R2
+      - name: Publish immutable release, price scope, pointer and verify Cloudflare cache
+        id: publish
         env:
           PYTHONUNBUFFERED: "1"
           R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
           R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_ZONE_ID: ${{ vars.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_CACHE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_CACHE_PURGE_TOKEN }}
+          CLOUDFLARE_CACHE_ENFORCE: ${{ vars.CLOUDFLARE_CACHE_ENFORCE }}
           REVISION: ${{ needs.publish-reviewed-artifact.outputs.revision }}
         run: |
           : "${AWS_ACCESS_KEY_ID:?Set R2_ACCESS_KEY_ID in r2-catalog-production}"
           : "${AWS_SECRET_ACCESS_KEY:?Set R2_SECRET_ACCESS_KEY in r2-catalog-production}"
+          set +e
           python3 scripts/r2_catalog_publish.py \
             --primary-catalog one-piece/v1 \
             --catalog-metadata "$RUNNER_TEMP/one-piece-r2-catalog/catalog-publish-metadata.json" \
             --site "$RUNNER_TEMP/one-piece-r2-catalog/site" \
             --public-base https://catalog-staging.scan-stash.com \
+            --cache-report "$RUNNER_TEMP/one-piece-cache-verification.json" \
             --verify-all
-          echo "Verified One Piece revision $REVISION on R2. Firebase backup reports separately." >> "$GITHUB_STEP_SUMMARY"
+          rc=$?
+          set -e
+          if [[ "$rc" -ne 0 && "$rc" -ne 2 ]]; then
+            exit "$rc"
+          fi
+          echo "origin_verified=true" >> "$GITHUB_OUTPUT"
+          cache_status="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["cacheStatus"])' "$RUNNER_TEMP/one-piece-cache-verification.json")"
+          echo "cache_verified=$cache_status" >> "$GITHUB_OUTPUT"
+          echo "Origin verification (nonce-based) passed for One Piece revision $REVISION on R2. Client-visible cache verification: $cache_status. Firebase backup reports separately." >> "$GITHUB_STEP_SUMMARY"
       - name: Inventory R2 price builds for Firebase backup
         id: inventory
         continue-on-error: true
@@ -424,11 +444,21 @@ jobs:
             ${{ runner.temp }}/r2-legacy-inventory.json
           if-no-files-found: error
           retention-days: 7
+      - name: Enforce client-visible cache verification status
+        if: steps.publish.outputs.cache_verified != 'passed'
+        env:
+          CACHE_STATUS: ${{ steps.publish.outputs.cache_verified }}
+        run: |
+          if [[ "$CACHE_STATUS" == "failed" ]]; then
+            echo '::error title=Cloudflare cache verification failed::One Piece R2 origin publication is active, but purge or canonical verification failed. Not eligible for Stage 2 cutover readiness until recovered.'
+            exit 1
+          fi
+          echo '::warning title=Cloudflare cache verification skipped::Configure CLOUDFLARE_ZONE_ID and CLOUDFLARE_CACHE_PURGE_TOKEN in r2-catalog-production for Stage 2 cache readiness.'
 
   backup-firebase-catalog:
     name: Back up verified R2 site to Firebase
     needs: [publish-reviewed-artifact, publish-r2-catalog]
-    if: ${{ !cancelled() && needs.publish-r2-catalog.result == 'success' }}
+    if: ${{ !cancelled() && needs.publish-r2-catalog.outputs.origin_verified == 'true' }}
     runs-on: macos-15
     timeout-minutes: 45
     environment: pokemon-catalog-production

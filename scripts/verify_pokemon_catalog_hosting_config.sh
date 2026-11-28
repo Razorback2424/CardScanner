@@ -48,12 +48,29 @@ jq -e '
        | (map(.source) | unique | length) == 2
          and all(.[]; ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1))
     and
+    (map(select(.source == "/yugioh/v1/current.json" and
+       ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/yugioh/v1/releases/**" and
+       ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=31536000,immutable")] | length) == 1)) | length == 1)
+    and
     (map(select(.source == "/market-prices/v1/index.json" and
        ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=300")] | length) == 1)) | length == 1)
     and
     (map(select(.source == "/market-prices/v1/tcgplayer/**" and
        ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=300")] | length) == 1 and
        ([.headers[]? | select(.key == "Content-Type" and .value == "application/json; charset=utf-8")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/market-prices/v2/latest.json" and
+       ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/market-prices/v2/history.json" and
+       ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/market-prices/v2/verified-builds/*.json" and
+       ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=31536000,immutable")] | length) == 1)) | length == 1)
 ' firebase.json >/dev/null
 
-echo "Firebase Hosting production target, catalog caches and daily price feed rules are valid"
+python3 "$(dirname "$0")/verify_hosting_cache.py" static
+
+echo "Firebase Hosting production target, catalog caches, daily price feed rules and Cloudflare cache policy are valid"
