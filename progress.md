@@ -1,3 +1,32 @@
+# 2026-11-28 — Live Cloudflare staging cache verification and enforcement activation
+
+Completed Stage 2, Step 5 live Cloudflare staging cache verification on `main`
+(`c9343034`) after merging PR #82 and applying the four staging Cache Rules to
+`catalog-staging.scan-stash.com`.
+
+- Workflow run:
+  [`r2-cache-verification.yml` run `46155407293`](https://github.com/Razorback2424/CardScanner/actions/runs/46155407293)
+  (artifact `r2-staging-cache-verification-46155407293-1` →
+  `r2-cache-live-report.json`, checked `2026-11-28T14:35:26+00:00`).
+- Verified deployed ruleset inspection (`matchedRuleCount = 4`,
+  `totalEnabledZoneRules = 4` matching
+  [`Config/Cloudflare/catalog-cache-rules.json`](Config/Cloudflare/catalog-cache-rules.json)),
+  edge caching (`MISS` → `HIT` / `HIT`) across immutable catalog releases, v2
+  price build artifacts (including extensionless `tcgplayer/2/1110/prices`), and
+  `verified-builds/*.json`, edge bypass (`DYNAMIC`) + `304` `If-None-Match`
+  conditional revalidation across mutable pointers, scopes, and markers, edge
+  bypass with origin `public,max-age=300` headers on legacy v1 pricing paths,
+  and missing-object negative-cache prevention (`404` `BYPASS` pre-upload,
+  immediate `200` `MISS` post-upload, and `cleanedUp = true`).
+- Enabled `CLOUDFLARE_CACHE_ENFORCE = true` in GitHub Environment
+  `r2-catalog-production` and confirmed readback after all live checks passed.
+- Recorded full per-URL evidence in the
+  [Cloudflare cache verification ledger](docs/plans/r2-cache-verification.md).
+  Qualifying live catalog and price publish runs under cache enforcement,
+  Stage 2 recovery/roll-forward drills, client rollback rehearsal, seven-day
+  parallel publishing, production v2 client activation, and production DNS
+  cutover remain open.
+
 # 2026-11-27 — Canonical catalog hostname and production v2 release preparation
 
 Corrected Magic's production catalog origin from `scanstash-catalog-prod.web.app`
