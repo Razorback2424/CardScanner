@@ -1,3 +1,44 @@
+# 2026-11-27 — Canonical catalog hostname and production v2 release preparation
+
+Corrected Magic's production catalog origin from `scanstash-catalog-prod.web.app`
+to the canonical hostname `https://catalog.scan-stash.com` in
+[`Config/MagicCatalogProduction.xcconfig`](Config/MagicCatalogProduction.xcconfig)
+and [`TradingCardScanner/Services/MagicCatalogUpdateClient.swift`](TradingCardScanner/Services/MagicCatalogUpdateClient.swift)
+while preserving `MAGIC_CATALOG_ROLLOUT_MODE = legacy-live` and existing key pins
+(plus replacing the local-review stub origin in
+`TradingCardScanner/Services/OnePieceCatalogBootstrap.swift`). Kept production
+pricing on `v1` by default (`https://catalog.scan-stash.com/market-prices/v1`),
+documented the exact one-line `v2` activation change and all four verification
+configurations in [`docs/plans/r2-price-v2-client.md`](docs/plans/r2-price-v2-client.md),
+and extended [`.github/workflows/ios-release-gate.yml`](.github/workflows/ios-release-gate.yml)
+to verify compiled `Release` `Info.plist` settings, reject accidental staging or
+Firebase hosts in production-designated builds, and verify the explicit `v2`
+build-setting override.
+
+Evidence on `stage2/production-v2-readiness` (based on `bf79d2d8`, Xcode 27.2,
+DerivedData and `.xcresult` bundles on `/Volumes/T7`):
+- `Release` simulator build compiled cleanly and `plutil` verified every compiled
+  `Info.plist` key (`POKEMON_CATALOG_BASE_URL`, `ONE_PIECE_CATALOG_BASE_URL`, and
+  `MAGIC_CATALOG_BASE_URL` all expand to `https://catalog.scan-stash.com`;
+  `MAGIC_CATALOG_ROLLOUT_MODE = legacy-live`; `TCGCSV_PRICE_BASE_URL` defaults to
+  `v1`; `NO_CLOUDKIT` preserved; and explicit `production-v2`, `staging-v2`, and
+  `firebase-rollback-v2` build-setting overrides expand cleanly).
+- Focused `TradingCardScanner-ProfileLocal` run across 15 pricing, catalog,
+  config, and collection-identity classes on an iOS 27.0 iPhone 17 Pro simulator
+  (`pr78-focused-20261127.xcresult` + `PokemonTCGCSVPriceTests` rerun
+  `pr78-pricing-rerun-20261127.xcresult`): **505 passed, 0 failed, 9 opt-in
+  skips** (live-feed receipt tests across Pokémon, One Piece, Lorcana, and
+  Yu-Gi-Oh!, plus 3 retained-expansion Lorcana tests). Added focused regressions
+  for Magic canonical origin enforcement, v1-to-v2 offline upgrade and build-ID
+  retention, relaunch persistence of the v2 no-downgrade boundary, older build
+  rejection, and four-game v1 vs v2 price parity.
+- Python parity, preflight, workflow, and rollback-readiness checks passed
+  (39/39), and `ios-release-gate.yml` YAML and Markdown link checks passed.
+- Live infrastructure, direct Firebase rollback client rehearsal, full
+  manually-dispatched `ios-release-gate.yml` suite, physical-device verification,
+  and the seven-day parallel-hosting gate remain open before switching production
+  to `v2` or moving DNS.
+
 # 2026-11-27 — Continuous rollback readiness, content roll-forward, and recovery rehearsals
 
 Added continuous Firebase rollback readiness verification and explicit `READY`

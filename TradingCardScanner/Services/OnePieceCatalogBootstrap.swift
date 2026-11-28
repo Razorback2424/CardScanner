@@ -185,7 +185,7 @@ enum OnePieceCatalogBootstrap {
         }
         let configuration = try OnePieceCatalogBootstrapConfiguration(mode: .remoteAuthority,
             pinnedKeys: encodedPins,
-            baseURL: "https://scanstash-catalog-prod.web.app")
+            baseURL: "https://catalog.scan-stash.com")
         let handle = try FileHandle(forReadingFrom: seedURL)
         defer { try? handle.close() }
         let seed = try handle.read(upToCount: OnePieceCatalogSignature.maximumEnvelopeBytes + 1) ?? Data()

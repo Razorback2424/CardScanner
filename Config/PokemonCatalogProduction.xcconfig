@@ -5,8 +5,12 @@
 POKEMON_CATALOG_BASE_URL = https:/$()/catalog.scan-stash.com
 POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = catalog.scan-stash.com
 // Shared daily market feed for reviewed product/finish mappings across games.
-// Keep production v1 until the v2 publisher and Firebase rollback path are proven.
-// For staging validation, override TCGCSV_PRICE_BASE_URL with the staging v2 URL.
+// Keep production on v1 until all Stage 2 live acceptance gates pass (see
+// docs/plans/r2-price-v2-client.md). When authorized, activate production v2
+// by changing only the line below to:
+//   TCGCSV_PRICE_BASE_URL = https:/$()/catalog.scan-stash.com/market-prices/v2
+// For staging or Firebase rollback validation, pass TCGCSV_PRICE_BASE_URL as an
+// Xcode build-setting override instead of editing this file.
 TCGCSV_PRICE_BASE_URL = https:/$()/catalog.scan-stash.com/market-prices/v1
 // Operator-funded JustTCG pricing proxy (pricing-proxy/). Leave empty until
 // launch preparation: empty keeps the developer customer-key path; setting it
