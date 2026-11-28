@@ -70,41 +70,59 @@ def validate_pointer(raw):
     return pointer
 
 
-def stage(site):
+def pointer_for(source_build, rows):
+    core = {"schemaVersion": 2, "sourceBuild": source_build,
+            "files": sorted(rows, key=lambda row: row["path"])}
+    pointer = {**core, "build": digest(packed(core))}
+    validate_pointer(packed(pointer))
+    return pointer
+
+
+def write_build(build, files):
+    for path, raw in files.items():
+        destination = build / path
+        if destination.exists():
+            if bounded(destination, len(raw)) != raw:
+                raise ValueError(f"Conflicting immutable v2 price file: {destination}")
+        else:
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(raw)
+
+
+def validate_scopes(paths, scope_files):
+    scopes = {}
+    for path, raw in scope_files.items():
+        game = path.removeprefix("scopes/").removesuffix(".json")
+        scopes[game] = validate_catalog_scope(raw, game)
+        category = CATALOG_NAMESPACES[game][0]
+        groups = {int(name.split("/")[2]) for name in paths if name.startswith(f"tcgplayer/{category}/")}
+        if groups != set(scopes[game]):
+            raise ValueError(f"v2 price groups do not match authorized catalog scope: {game}")
+    return scopes
+
+
+def stage(site, *, retain_history=False):
     """Return the staged pointer; keep v1 and its capture receipts byte-identical."""
     from catalog_parity import MIRROR_CATEGORIES, mirror_priced_products
 
     site = Path(site)
     legacy = site / NAMESPACE
     target = site / V2
-    if target.exists():
+    if target.exists() and not retain_history:
         raise ValueError("Stage v2 into a fresh verified artifact")
     index_raw = bounded(legacy / "index.json", MAX_POINTER_BYTES)
     files = read_site(index_raw, lambda path, size: bounded(legacy / path, size))
     files["index.json"] = index_raw
     # Bind the catalog scopes to this price build as well. The legacy scope
     # paths remain untouched for old clients and catalog publishing.
-    scopes = {}
-    for path, namespace in SCOPES.items():
-        raw = bounded(site / namespace / SCOPE_FILE, MAX_SCOPE_BYTES)
-        game = path.removeprefix("scopes/").removesuffix(".json")
-        scopes[game] = validate_catalog_scope(raw, game)
-        category = CATALOG_NAMESPACES[game][0]
-        actual_groups = {int(name.split("/")[2]) for name in files
-                         if name.startswith(f"tcgplayer/{category}/")}
-        if actual_groups != set(scopes[game]):
-            raise ValueError(f"v2 price groups do not match authorized catalog scope: {game}")
-        files[path] = raw
-    core = {"schemaVersion": 2, "sourceBuild": json.loads(index_raw)["sourceBuild"],
-            "files": [entry(path, raw) for path, raw in sorted(files.items())]}
-    pointer = {**core, "build": digest(packed(core))}
+    scope_files = {path: bounded(site / namespace / SCOPE_FILE, MAX_SCOPE_BYTES) for path, namespace in SCOPES.items()}
+    scopes = validate_scopes(files, scope_files)
+    files.update(scope_files)
+    pointer = pointer_for(json.loads(index_raw)["sourceBuild"],
+                          [entry(path, raw) for path, raw in files.items()])
     raw_pointer = packed(pointer)
-    validate_pointer(raw_pointer)
     build = target / "builds" / pointer["build"]
-    for path, raw in files.items():
-        destination = build / path
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(raw)
+    write_build(build, files)
     # PR 65's priced-product coverage gate: compare both representations of
     # the *same* captured build, not two different days of provider prices.
     for game, category in MIRROR_CATEGORIES.items():

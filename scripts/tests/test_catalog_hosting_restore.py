@@ -79,6 +79,10 @@ if len(sys.argv)>1 and sys.argv[1].endswith('market_price_feeds.py'):
     assert '--require-present' in sys.argv
     pathlib.Path(os.environ['RUNNER_TEMP'], 'price-restore-called').write_text('called')
     sys.exit(1 if os.environ.get('PRICE_RESTORE_FAIL') else 0)
+if len(sys.argv)>1 and sys.argv[1].endswith('market_price_rollback.py'):
+    assert sys.argv[2] == 'restore'
+    pathlib.Path(os.environ['RUNNER_TEMP'], 'rollback-restore-called').write_text('called')
+    sys.exit(1 if os.environ.get('ROLLBACK_RESTORE_FAIL') else 0)
 sys.exit(subprocess.call([{sys.executable!r}] + sys.argv[1:]))
 """)
 
@@ -95,6 +99,12 @@ sys.exit(subprocess.call([{sys.executable!r}] + sys.argv[1:]))
         return subprocess.run(["bash", "scripts/restore_catalog_hosting_site.sh", *options,
                                str(self.pokemon_pointer), "", "publisher/site", "https://scanstash-catalog-prod.web.app"], cwd=self.root,
                               env=self.environment, capture_output=True, text=True)
+
+    def test_unverified_v2_history_blocks_the_complete_site_deploy(self):
+        self.environment['ROLLBACK_RESTORE_FAIL'] = '1'
+        result = self.restore()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue((self.root / "rollback-restore-called").is_file())
 
     def test_missing_published_pokemon_pointer_blocks_shared_site_deploy(self):
         self.pokemon_pointer.unlink()

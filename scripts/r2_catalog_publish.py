@@ -358,17 +358,24 @@ def main(argv=None):
         confirm_current = None
         if args.mirror_work is not None:
             from catalog_hosting_cache import confirm_mirror_candidate
+            from market_price_rollback import confirm_pointer
             site = Path(args.site)
+            v2.stage(site)
+            candidate = v2.bounded(site / v2.LATEST, v2.MAX_POINTER_BYTES)
+
             def confirm_current():
                 confirm_mirror_candidate(args.mirror_work, site)
+                confirm_pointer(candidate)
+
             confirm_current()
-            v2.stage(site)
         elif (Path(args.site) / v2.V2).exists():
             raise PublishError("v2 publication requires a verified Firebase mirror artifact")
         objects = plan(args.site, HostingRules.load(args.firebase_config))
         store = AwsCliStore(args.bucket, f"https://{args.account_id}.r2.cloudflarestorage.com")
         summary = publish(objects, store, args.public_base, dry_run=args.dry_run,
                           verify_all=args.verify_all, confirm_current=confirm_current)
+        if confirm_current is not None and not args.dry_run:
+            confirm_pointer(candidate)
     except (PublishError, ValueError, OSError) as error:
         print(f"R2 publish stopped: {error}", file=sys.stderr)
         return 1

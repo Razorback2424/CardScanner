@@ -15,6 +15,9 @@ on:
       - "scripts/tests/test_catalog_hosting_cache.py"
       - "scripts/r2_catalog_publish.py"
       - "scripts/market_price_v2.py"
+      - "scripts/market_price_rollback.py"
+      - "scripts/tests/test_market_price_rollback.py"
+      - "scripts/publish_one_piece_local.py"
       - "scripts/catalog_parity.py"
       - "scripts/tests/test_r2_catalog_publish.py"
       - ".github/workflows/yugioh-catalog.yml"
@@ -35,6 +38,9 @@ on:
       - "scripts/tests/test_catalog_hosting_cache.py"
       - "scripts/r2_catalog_publish.py"
       - "scripts/market_price_v2.py"
+      - "scripts/market_price_rollback.py"
+      - "scripts/tests/test_market_price_rollback.py"
+      - "scripts/publish_one_piece_local.py"
       - "scripts/catalog_parity.py"
       - "scripts/tests/test_r2_catalog_publish.py"
       - ".github/workflows/yugioh-catalog.yml"
@@ -51,4 +57,5 @@ jobs:
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_catalog_hosting_restore.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_catalog_hosting_cache.py'
       - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_r2_catalog_publish.py'
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p 'test_market_price_rollback.py'
       - run: bash scripts/verify_pokemon_catalog_hosting_config.sh

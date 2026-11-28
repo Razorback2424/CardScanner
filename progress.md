@@ -1,3 +1,12 @@
+# 2026-11-27 — Firebase v2 price rollback compatibility
+
+Added bootstrap inventory from R2, immutable price history preservation for
+Firebase full-site deploys, and an active-pointer byte comparison before and
+after R2 activation. Fixture replay verified that a subsequent catalog deploy
+keeps earlier builds and refuses missing or corrupt history. The
+[Stage 2 publishing plan](docs/plans/r2-price-v2-staging.md) records the
+remaining live Firebase and client rollback gates. Production clients use v1.
+
 # 2026-11-26 — Revision-bound publisher price scopes
 
 Added compact One Piece and Yu-Gi-Oh! scope files generated from verified
