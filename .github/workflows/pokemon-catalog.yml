@@ -612,6 +612,33 @@ jobs:
           python3 scripts/catalog_hosting_cache.py confirm --origin "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}" \
             --site publisher/site --work "$RUNNER_TEMP/r2-catalog-pointers"
           echo "Verified Firebase backup for Pokémon revision $REVISION against $FIREBASE_CATALOG_BACKUP_ORIGIN." >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify continuous rollback readiness and report status
+        env:
+          FIREBASE_QUOTA_MODE: ${{ vars.FIREBASE_QUOTA_MODE }}
+        run: |
+          service_account_file="$(mktemp "$RUNNER_TEMP/firebase-readiness-sa.XXXXXX")"
+          trap 'rm -f "$service_account_file"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$service_account_file"
+          python3 scripts/rollback_readiness.py \
+            --r2-origin "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}" \
+            --firebase-origin "${FIREBASE_CATALOG_BACKUP_ORIGIN}" \
+            --rollback-hostname catalog.scan-stash.com \
+            --site-root publisher/site \
+            --firebase-project "$FIREBASE_PROJECT_ID" \
+            --firebase-site "$FIREBASE_HOSTING_SITE_ID" \
+            --service-account "$service_account_file" \
+            --quota-mode "${FIREBASE_QUOTA_MODE:-strict}" \
+            --report "$RUNNER_TEMP/rollback-readiness.json" \
+            --summary "$GITHUB_STEP_SUMMARY"
+      - name: Upload rollback readiness report
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: pokemon-rollback-readiness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/rollback-readiness.json
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Seal the verified R2 catalog cache
         id: catalog-cache
         continue-on-error: true
@@ -628,5 +655,5 @@ jobs:
       - name: Report a failed backup separately from the primary publication
         if: failure()
         run: |
-          echo '::warning title=Firebase Pokémon catalog backup failed::The verified R2 catalog publication remains active.'
-          echo 'Firebase backup failed. The verified R2 Pokémon catalog publication remains active.' >> "$GITHUB_STEP_SUMMARY"
+          echo '::warning title=Firebase Pokémon catalog backup failed::Rollback target marked NOT READY. The verified R2 catalog publication remains active.'
+          echo '**Rollback readiness: NOT READY** — Firebase backup failed. The verified R2 Pokémon catalog publication remains active.' >> "$GITHUB_STEP_SUMMARY"

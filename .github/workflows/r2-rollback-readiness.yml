@@ -1,0 +1,99 @@
+name: R2 rollback readiness & recovery rehearsal
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_live_readiness:
+        description: "Run live read-only Firebase rollback readiness check (parity, TLS cert, quota)"
+        type: boolean
+        default: true
+      quota_mode:
+        description: "Quota enforcement mode for live check (strict or advisory)"
+        type: choice
+        options:
+          - strict
+          - advisory
+        default: strict
+      min_cert_days:
+        description: "Minimum required TLS certificate validity headroom in days"
+        type: string
+        default: "14"
+
+permissions:
+  contents: read
+
+jobs:
+  offline-rehearsal:
+    name: Run offline failure, catch-up & roll-forward rehearsal
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Execute offline recovery & roll-forward drill
+        run: |
+          python3 scripts/catalog_roll_forward.py rehearse-recovery \
+            --report "$RUNNER_TEMP/recovery-rehearsal.json" \
+            --summary "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stage2-recovery-rehearsal-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/recovery-rehearsal.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+  live-rollback-readiness:
+    name: Read-only live Firebase rollback readiness check
+    if: ${{ inputs.run_live_readiness == true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: pokemon-catalog-production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Validate numeric certificate headroom input
+        env:
+          MIN_CERT_DAYS: ${{ inputs.min_cert_days }}
+        run: |
+          if [[ ! "$MIN_CERT_DAYS" =~ ^[0-9]+$ ]] || (( MIN_CERT_DAYS < 1 || MIN_CERT_DAYS > 365 )); then
+            echo 'min_cert_days must be an integer between 1 and 365' >&2
+            exit 1
+          fi
+      - name: Check live parity, rollback TLS certificate and Firebase quota headroom
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
+          QUOTA_MODE: ${{ inputs.quota_mode }}
+          MIN_CERT_DAYS: ${{ inputs.min_cert_days }}
+        run: |
+          service_account_file="$(mktemp "$RUNNER_TEMP/firebase-readiness-sa.XXXXXX")"
+          trap 'rm -f "$service_account_file"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$service_account_file"
+          python3 scripts/rollback_readiness.py \
+            --r2-origin https://catalog-staging.scan-stash.com \
+            --firebase-origin https://scanstash-catalog-prod.web.app \
+            --rollback-hostname catalog.scan-stash.com \
+            --firebase-project "$FIREBASE_PROJECT_ID" \
+            --firebase-site "$FIREBASE_HOSTING_SITE_ID" \
+            --service-account "$service_account_file" \
+            --quota-mode "$QUOTA_MODE" \
+            --min-cert-days "$MIN_CERT_DAYS" \
+            --report "$RUNNER_TEMP/live-rollback-readiness.json" \
+            --summary "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-rollback-readiness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/live-rollback-readiness.json
+          if-no-files-found: ignore
+          retention-days: 7
