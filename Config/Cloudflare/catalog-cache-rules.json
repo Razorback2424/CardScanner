@@ -70,7 +70,7 @@
         "description": "ScanStash staging: bypass edge cache for publisher verification requests with nonce query parameters",
         "action": "set_cache_settings",
         "enabled": true,
-        "expression": "(http.host eq \"catalog-staging.scan-stash.com\") and (starts_with(http.request.uri.path, \"/v1/\") or starts_with(http.request.uri.path, \"/magic/v1/\") or starts_with(http.request.uri.path, \"/one-piece/v1/\") or starts_with(http.request.uri.path, \"/yugioh/v1/\") or starts_with(http.request.uri.path, \"/market-prices/\")) and (starts_with(http.request.uri.query, \"r2v=\") or contains(http.request.uri.query, \"&r2v=\") or starts_with(http.request.uri.query, \"v2r=\") or contains(http.request.uri.query, \"&v2r=\") or starts_with(http.request.uri.query, \"publication_check=\") or contains(http.request.uri.query, \"&publication_check=\"))",
+        "expression": "(http.host eq \"catalog-staging.scan-stash.com\") and (starts_with(http.request.uri.path, \"/v1/\") or starts_with(http.request.uri.path, \"/magic/v1/\") or starts_with(http.request.uri.path, \"/one-piece/v1/\") or starts_with(http.request.uri.path, \"/yugioh/v1/\") or starts_with(http.request.uri.path, \"/market-prices/\")) and (starts_with(http.request.uri.query, \"r2v=\") or http.request.uri.query contains \"&r2v=\" or starts_with(http.request.uri.query, \"v2r=\") or http.request.uri.query contains \"&v2r=\" or starts_with(http.request.uri.query, \"publication_check=\") or http.request.uri.query contains \"&publication_check=\")",
         "action_parameters": {
           "cache": false
         }
@@ -134,7 +134,7 @@
         "description": "ScanStash production: bypass edge cache for publisher verification requests with nonce query parameters",
         "action": "set_cache_settings",
         "enabled": true,
-        "expression": "(http.host eq \"catalog.scan-stash.com\") and (starts_with(http.request.uri.path, \"/v1/\") or starts_with(http.request.uri.path, \"/magic/v1/\") or starts_with(http.request.uri.path, \"/one-piece/v1/\") or starts_with(http.request.uri.path, \"/yugioh/v1/\") or starts_with(http.request.uri.path, \"/market-prices/\")) and (starts_with(http.request.uri.query, \"r2v=\") or contains(http.request.uri.query, \"&r2v=\") or starts_with(http.request.uri.query, \"v2r=\") or contains(http.request.uri.query, \"&v2r=\") or starts_with(http.request.uri.query, \"publication_check=\") or contains(http.request.uri.query, \"&publication_check=\"))",
+        "expression": "(http.host eq \"catalog.scan-stash.com\") and (starts_with(http.request.uri.path, \"/v1/\") or starts_with(http.request.uri.path, \"/magic/v1/\") or starts_with(http.request.uri.path, \"/one-piece/v1/\") or starts_with(http.request.uri.path, \"/yugioh/v1/\") or starts_with(http.request.uri.path, \"/market-prices/\")) and (starts_with(http.request.uri.query, \"r2v=\") or http.request.uri.query contains \"&r2v=\" or starts_with(http.request.uri.query, \"v2r=\") or http.request.uri.query contains \"&v2r=\" or starts_with(http.request.uri.query, \"publication_check=\") or http.request.uri.query contains \"&publication_check=\")",
         "action_parameters": {
           "cache": false
         }

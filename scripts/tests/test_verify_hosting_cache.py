@@ -73,6 +73,55 @@ class StaticHostingCacheVerificationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Firestore"):
             verify.verify_static(p4, ROOT / "Config/Cloudflare/catalog-cache-rules.json")
 
+    def test_cloudflare_contains_requires_infix_operator_and_rejects_function_syntax(self):
+        self.assertTrue(
+            verify.eval_expression(
+                'http.request.uri.query contains "&r2v="',
+                host="catalog-staging.scan-stash.com",
+                path="/v1/current.json",
+                query="foo=1&r2v=abc",
+            )
+        )
+        self.assertFalse(
+            verify.eval_expression(
+                'http.request.uri.query contains "&r2v="',
+                host="catalog-staging.scan-stash.com",
+                path="/v1/current.json",
+                query="r2v=abc",
+            )
+        )
+        with self.assertRaisesRegex(ValueError, "infix operator"):
+            verify.eval_expression(
+                'contains(http.request.uri.query, "&r2v=")',
+                host="catalog-staging.scan-stash.com",
+                path="/v1/current.json",
+                query="foo=1&r2v=abc",
+            )
+
+        spec = json.loads((ROOT / "Config/Cloudflare/catalog-cache-rules.json").read_text())
+
+        bad_staging = copy.deepcopy(spec)
+        bad_staging["staging"]["rules"][3]["expression"] = bad_staging["staging"]["rules"][3]["expression"].replace(
+            'http.request.uri.query contains "&r2v="',
+            'contains(http.request.uri.query, "&r2v=")',
+        )
+        p_staging = self.root / "bad-staging-contains.json"
+        p_staging.write_text(json.dumps(bad_staging))
+        with self.assertRaisesRegex(ValueError, "infix operator"):
+            verify.verify_static(ROOT / "firebase.json", p_staging)
+
+        bad_prod = copy.deepcopy(spec)
+        bad_prod["production_cutover_template"]["rules"][3]["expression"] = (
+            bad_prod["production_cutover_template"]["rules"][3]["expression"].replace(
+                'http.request.uri.query contains "&v2r="',
+                'contains(http.request.uri.query, "&v2r=")',
+            )
+        )
+        p_prod = self.root / "bad-prod-contains.json"
+        p_prod.write_text(json.dumps(bad_prod))
+        with self.assertRaisesRegex(ValueError, "infix operator"):
+            verify.verify_static(ROOT / "firebase.json", p_prod)
+
 
 class LiveHostingCacheVerificationTests(unittest.TestCase):
     def setUp(self):
